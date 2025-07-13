@@ -19,6 +19,7 @@ import yaml
 from ophyd import Component as Cpt
 from ophyd import EpicsMotor
 from ophyd import Kind
+from ophyd import PositionerBase
 from ophyd import PseudoPositioner
 from ophyd import PseudoSingle
 from ophyd import SoftPositioner
@@ -612,11 +613,21 @@ class DiffractometerBase(PseudoPositioner):
     def wh(self, digits=4, full=False):
         """Concise report of the current diffractometer positions."""
 
-        def wh_round(label, value):
+        def labeled_value(label, value):
             return f"{label}={roundoff(value, digits)}"
 
         def print_axes(names):
-            print(", ".join([wh_round(nm, getattr(self, nm).position) for nm in names]))
+            # TODO: #25: Add labels to each row.
+            if len(names):
+                print(
+                    ", ".join(
+                        [
+                            # Any instance of PositionerBase.
+                            labeled_value(nm, getattr(self, nm).position)
+                            for nm in names
+                        ]
+                    )
+                )
 
         if full:
             print(f"diffractometer={self.name!r}")
@@ -625,11 +636,15 @@ class DiffractometerBase(PseudoPositioner):
             for v in self.sample.reflections.values():
                 print(f"{v}")
             print(f"Orienting reflections: {self.sample.reflections.order}")
+            # TODO: #25: apply digits formatting to U & UB
+            # np.array2string(array, formatter={'float_kind': lambda x: f"{x:.{decimal_places}f}"})
+            # This will affect comparisons in unit tests!
             print(f"U={self.sample.U}")
             print(f"UB={self.sample.UB}")
             for v in self.core.constraints.values():
                 print(f"constraint: {v}")
             print(f"Mode: {self.core.mode}")
+            # TODO: #25: apply digits formatting to energy & wavelength
             print(f"beam={self.beam._asdict()}")
         else:
             print(f"wavelength={self.beam.wavelength.get()}")
@@ -638,7 +653,16 @@ class DiffractometerBase(PseudoPositioner):
         print_axes(self.real_axis_names)
         extras = self.core.extras
         if len(extras) > 0:
-            print(" ".join([wh_round(k, v) for k, v in extras.items()]))
+            print(" ".join([labeled_value(k, v) for k, v in extras.items()]))
+        print_axes(
+            [
+                # Additional positioners of any sort.
+                attr
+                for attr in self.component_names
+                if isinstance(getattr(self, attr), PositionerBase)
+                if attr not in (self.pseudo_axis_names + self.real_axis_names)
+            ]
+        )
 
 
 def creator(
