@@ -228,11 +228,12 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
 
 
 @pytest.mark.parametrize(
-    "specs, full, mode, config_file, output, context, expected",
+    "specs, full, digits, mode, config_file, output, context, expected",
     [
         [
             {},
             False,
+            4,
             None,
             None,
             [
@@ -246,15 +247,17 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
         [
             {},
             True,
+            3,
             "psi_constant",
             None,
             [
                 "diffractometer='e4cv'",
-                "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
+                # Don't test for version-specific content.
+                # "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='psi_constant')",
                 "Sample(name='sample', lattice=Lattice(a=1, system='cubic'))",
                 "Orienting reflections: []",
-                "U=[[1, 0, 0], [0, 1, 0], [0, 0, 1]]",
-                "UB=[[6.283185307179586, 0.0, 0.0], [0.0, 6.283185307179586, 0.0], [0.0, 0.0, 6.283185307179586]]",
+                "U=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]",
+                "UB=[[6.283, 0.0, 0.0], [0.0, 6.283, 0.0], [0.0, 0.0, 6.283]]",
                 "constraint: -180.0 <= omega <= 180.0",
                 "constraint: -180.0 <= chi <= 180.0",
                 "constraint: -180.0 <= phi <= 180.0",
@@ -271,23 +274,55 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
         [
             {},
             True,
+            4,
             None,
             HKLPY2_DIR / "tests" / "e4cv_orient.yml",
             [
                 "diffractometer='e4cv'",
-                "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
+                # "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
                 "Sample(name='vibranium', lattice=Lattice(a=6.2832, system='cubic'))",
                 "Reflection(name='r400', h=4, k=0, l=0)",
                 "Reflection(name='r040', h=0, k=4, l=0)",
                 "Reflection(name='r004', h=0, k=0, l=4)",
                 "Orienting reflections: ['r040', 'r004']",
-                "U=[[0.000279252677, -0.999999961009, -2.2e-11], [-7.7982e-08, 0.0, -1], [0.999999961009, 0.000279252677, -7.7982e-08]]",
-                "UB=[[0.000279252677, -0.999999961009, -2.2e-11], [-7.7982e-08, 0.0, -1], [0.999999961009, 0.000279252677, -7.7982e-08]]",
+                "U=[[0.0003, -1.0, 0.0], [0.0, 0.0, -1.0], [1.0, 0.0003, 0.0]]",
+                "UB=[[0.0003, -1.0, 0.0], [0.0, 0.0, -1.0], [1.0, 0.0003, 0.0]]",
                 "constraint: -180.2 <= omega <= 180.2",
                 "constraint: -180.2 <= chi <= 180.2",
                 "constraint: -180.2 <= phi <= 180.2",
                 "constraint: -180.2 <= tth <= 180.2",
                 "Mode: bissector",
+                "beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source', 'energy': 8.050921976530415, 'wavelength': 1.54, 'energy_units': 'keV', 'wavelength_units': 'angstrom'}",
+                "h=0, k=0, l=0",
+                "omega=0, chi=0, phi=0, tth=0",
+            ],
+            does_not_raise(),
+            None,
+        ],
+        [
+            {},
+            True,
+            2,
+            None,
+            HKLPY2_DIR / "tests" / "e4cv_orient.yml",
+            [
+                "diffractometer='e4cv'",
+                # "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
+                "Sample(name='vibranium', lattice=Lattice(a=6.2832, system='cubic'))",
+                "Reflection(name='r400', h=4, k=0, l=0)",
+                "Reflection(name='r040', h=0, k=4, l=0)",
+                "Reflection(name='r004', h=0, k=0, l=4)",
+                "Orienting reflections: ['r040', 'r004']",
+                "U=[[0.0, -1.0, 0.0], [0.0, 0.0, -1.0], [1.0, 0.0, 0.0]]",
+                "UB=[[0.0, -1.0, 0.0], [0.0, 0.0, -1.0], [1.0, 0.0, 0.0]]",
+                "constraint: -180.2 <= omega <= 180.2",
+                "constraint: -180.2 <= chi <= 180.2",
+                "constraint: -180.2 <= phi <= 180.2",
+                "constraint: -180.2 <= tth <= 180.2",
+                "Mode: bissector",
+                "beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source', 'energy': 8.050921976530415, 'wavelength': 1.54, 'energy_units': 'keV', 'wavelength_units': 'angstrom'}",
+                "h=0, k=0, l=0",
+                "omega=0, chi=0, phi=0, tth=0",
             ],
             does_not_raise(),
             None,
@@ -295,6 +330,7 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
         [
             {"reals": "omega chi phi tth huey dewey louie".split()},
             False,
+            4,
             None,
             None,
             [
@@ -309,7 +345,7 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
     ],
 )
 def test_diffractometer_wh(
-    specs, full, mode, config_file, output, context, expected, capsys
+    specs, full, digits, mode, config_file, output, context, expected, capsys
 ):
     from ..diffract import creator
 
@@ -320,7 +356,7 @@ def test_diffractometer_wh(
         if mode is not None:
             gonio.core.mode = mode
 
-        gonio.wh(full=full)
+        gonio.wh(full=full, digits=digits)
         captured = capsys.readouterr()
         lines = captured.out.splitlines()
         for out in output:

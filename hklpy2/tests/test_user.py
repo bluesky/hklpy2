@@ -11,6 +11,7 @@ from ..blocks.lattice import SI_LATTICE_PARAMETER
 from ..diffract import creator
 from ..incident import WavelengthXray
 from ..misc import ReflectionError
+from ..misc import roundoff
 from ..ops import CoreError
 from ..user import add_sample
 from ..user import cahkl
@@ -32,8 +33,6 @@ from .common import PV_ENERGY
 from .common import PV_WAVELENGTH
 from .common import TESTS_DIR
 from .common import assert_context_result
-
-twopi = 2 * math.pi
 
 
 @pytest.fixture(scope="function")
@@ -224,12 +223,14 @@ def test_pa(fourc, capsys):
     assert len(out) > 0
     assert err == ""
     out = [v.rstrip() for v in out.strip().splitlines()]
+
+    twopi = roundoff(2 * math.pi, 4)
     expected = [
         "diffractometer='fourc'",
         "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
         "Sample(name='sample', lattice=Lattice(a=1, system='cubic'))",
         "Orienting reflections: []",
-        "U=[[1, 0, 0], [0, 1, 0], [0, 0, 1]]",
+        "U=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]",
         f"UB=[[{twopi}, 0.0, 0.0], [0.0, {twopi}, 0.0], [0.0, 0.0, {twopi}]]",
         "constraint: -180.0 <= omega <= 180.0",
         "constraint: -180.0 <= chi <= 180.0",
