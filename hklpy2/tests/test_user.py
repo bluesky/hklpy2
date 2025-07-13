@@ -239,11 +239,11 @@ def test_pa(fourc, capsys):
         "Mode: bissector",
         (
             "beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source',"
-            " 'energy': 12.398419843856837, 'wavelength': 1.0, 'energy_units': 'keV',"
+            " 'energy': 12.3984, 'wavelength': 1.0, 'energy_units': 'keV',"
             " 'wavelength_units': 'angstrom'}"
         ),
-        "h=0, k=0, l=0",
-        "omega=0, chi=0, phi=0, tth=0",
+        "pseudos: h=0, k=0, l=0",
+        "reals: omega=0, chi=0, phi=0, tth=0",
     ]
     assert len(out) == len(expected), f"{out=}"
     assert out == expected
@@ -402,8 +402,8 @@ def test_wh(fourc, capsys):
     out = [v.rstrip() for v in out.strip().splitlines()]
     expected = [
         "wavelength=1.0",
-        "h=0, k=0, l=0",
-        "omega=0, chi=0, phi=0, tth=0",
+        "pseudos: h=0, k=0, l=0",
+        "reals: omega=0, chi=0, phi=0, tth=0",
     ]
     assert len(out) == len(expected)
     assert out == expected
