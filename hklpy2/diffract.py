@@ -616,18 +616,16 @@ class DiffractometerBase(PseudoPositioner):
         def labeled_value(label, value):
             return f"{label}={roundoff(value, digits)}"
 
-        def print_axes(names):
-            # TODO: #25: Add labels to each row.
+        def print_axes(names: list[str], preface: str = ""):
             if len(names):
-                print(
-                    ", ".join(
-                        [
-                            # Any instance of PositionerBase.
-                            labeled_value(nm, getattr(self, nm).position)
-                            for nm in names
-                        ]
-                    )
+                value_text = ", ".join(
+                    [
+                        # Any instance of PositionerBase.
+                        labeled_value(nm, getattr(self, nm).position)
+                        for nm in names
+                    ]
                 )
+                print(preface + value_text)
 
         if full:
             print(f"diffractometer={self.name!r}")
@@ -649,11 +647,13 @@ class DiffractometerBase(PseudoPositioner):
         else:
             print(f"wavelength={self.beam.wavelength.get()}")
 
+        # TODO: #25: Add preface to each row.
         print_axes(self.pseudo_axis_names)
         print_axes(self.real_axis_names)
         extras = self.core.extras
         if len(extras) > 0:
-            print(" ".join([labeled_value(k, v) for k, v in extras.items()]))
+            value_text = " ".join([labeled_value(k, v) for k, v in extras.items()])
+            print("" + value_text)
         print_axes(
             [
                 # Additional positioners of any sort.
