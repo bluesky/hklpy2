@@ -227,47 +227,92 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
     assert_context_result(expected, reason)
 
 
-def test_diffractometer_wh(capsys):
+@pytest.mark.parametrize(
+    "specs, full, mode, config_file, output, context, expected",
+    [
+        [
+            {},
+            False,
+            None,
+            None,
+            [
+                "wavelength=1.0",
+                "h=0, k=0, l=0",
+                "omega=0, chi=0, phi=0, tth=0",
+            ],
+            does_not_raise(),
+            None,
+        ],
+        [
+            {},
+            True,
+            "psi_constant",
+            None,
+            [
+                "diffractometer='e4cv'",
+                "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
+                "Sample(name='sample', lattice=Lattice(a=1, system='cubic'))",
+                "Orienting reflections: []",
+                "U=[[1, 0, 0], [0, 1, 0], [0, 0, 1]]",
+                "UB=[[6.283185307179586, 0.0, 0.0], [0.0, 6.283185307179586, 0.0], [0.0, 0.0, 6.283185307179586]]",
+                "constraint: -180.0 <= omega <= 180.0",
+                "constraint: -180.0 <= chi <= 180.0",
+                "constraint: -180.0 <= phi <= 180.0",
+                "constraint: -180.0 <= tth <= 180.0",
+                "Mode: psi_constant",
+                "beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source', 'energy': 12.398419843856837, 'wavelength': 1.0, 'energy_units': 'keV', 'wavelength_units': 'angstrom'}",
+                "h=0, k=0, l=0",
+                "omega=0, chi=0, phi=0, tth=0",
+                "h2=0 k2=0 l2=0 psi=0",
+            ],
+            does_not_raise(),
+            None,
+        ],
+        [
+            {},
+            True,
+            None,
+            HKLPY2_DIR / "tests" / "e4cv_orient.yml",
+            [
+                "diffractometer='e4cv'",
+                "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
+                "Sample(name='vibranium', lattice=Lattice(a=6.2832, system='cubic'))",
+                "Reflection(name='r400', h=4, k=0, l=0)",
+                "Reflection(name='r040', h=0, k=4, l=0)",
+                "Reflection(name='r004', h=0, k=0, l=4)",
+                "Orienting reflections: ['r040', 'r004']",
+                "U=[[0.000279252677, -0.999999961009, -2.2e-11], [-7.7982e-08, 0.0, -1], [0.999999961009, 0.000279252677, -7.7982e-08]]",
+                "UB=[[0.000279252677, -0.999999961009, -2.2e-11], [-7.7982e-08, 0.0, -1], [0.999999961009, 0.000279252677, -7.7982e-08]]",
+                "constraint: -180.2 <= omega <= 180.2",
+                "constraint: -180.2 <= chi <= 180.2",
+                "constraint: -180.2 <= phi <= 180.2",
+                "constraint: -180.2 <= tth <= 180.2",
+                "Mode: bissector",
+            ],
+            does_not_raise(),
+            None,
+        ],
+    ],
+)
+def test_diffractometer_wh(
+    specs, full, mode, config_file, output, context, expected, capsys
+):
     from ..diffract import creator
 
-    e4cv = creator()
-    e4cv.restore(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
+    with context as reason:
+        gonio = creator(**specs)
+        if config_file is not None:
+            gonio.restore(config_file)
+        if mode is not None:
+            gonio.core.mode = mode
 
-    e4cv.wh()
-    captured = capsys.readouterr()
-    lines = captured.out.splitlines()
-    assert len(lines) == 3, f"{captured.out=}"
-    assert lines[0].startswith("wavelength=")
-    assert lines[1].startswith("h=")
-    assert lines[2].startswith("omega=")
+        gonio.wh(full=full)
+        captured = capsys.readouterr()
+        lines = captured.out.splitlines()
+        for out in output:
+            assert out in lines, f"{out=!r} {lines=}"
 
-    e4cv.core.mode = "psi_constant"
-    e4cv.wh(full=True)
-    captured = capsys.readouterr()
-    lines = captured.out.splitlines()
-    expected = """
-        diffractometer=
-        HklSolver(name
-        Sample(name=
-    """.strip().split()
-    for _r in e4cv.sample.reflections:
-        expected.append("Reflection(name='")
-    expected.append("Orienting reflections: ")
-    expected.append("U=")
-    expected.append("UB=")
-    for _r in e4cv.core.constraints:
-        expected.append("constraint: ")
-    expected.append(f"Mode: {e4cv.core.mode}")
-    expected.append("beam=")
-    expected.append(f"{e4cv.pseudo_axis_names[0]}=")
-    expected.append(f"{e4cv.real_axis_names[0]}=")
-    extra_names = e4cv.core.solver_extra_axis_names
-    if len(extra_names) > 0:
-        expected.append(f"{extra_names[0]}=")
-
-    assert len(lines) == len(expected), f"{captured.out=}"
-    for actual, exp in zip(lines, expected):
-        assert actual.startswith(exp)
+    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
