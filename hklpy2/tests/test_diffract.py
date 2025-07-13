@@ -292,6 +292,20 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
             does_not_raise(),
             None,
         ],
+        [
+            {"reals": "omega chi phi tth huey dewey louie".split()},
+            False,
+            None,
+            None,
+            [
+                "wavelength=1.0",
+                "h=0, k=0, l=0",
+                "omega=0, chi=0, phi=0, tth=0",
+                "huey=0, dewey=0, louie=0",
+            ],
+            does_not_raise(),
+            None,
+        ],
     ],
 )
 def test_diffractometer_wh(
