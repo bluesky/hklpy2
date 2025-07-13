@@ -15,6 +15,7 @@ from collections.abc import Iterable
 from typing import Callable
 from typing import Optional
 
+import numpy as np
 import yaml
 from ophyd import Component as Cpt
 from ophyd import EpicsMotor
@@ -627,6 +628,20 @@ class DiffractometerBase(PseudoPositioner):
                 )
                 print(preface + value_text)
 
+        def format_array(array):
+            """Apply (fixed-point) digits formatting to numpy array."""
+
+            def each(x):
+                """Roundoff each float."""
+                # return roundoff(x, digits)
+                text = f"{x:.{digits}f}"
+                if text.startswith("-0."):
+                    text = text[1:]
+                return float(text)
+
+            # Apply formatting function to each element.
+            return np.vectorize(each)(np.array(array)).tolist()
+
         if full:
             print(f"diffractometer={self.name!r}")
             print(f"{self.core.solver}")
@@ -634,11 +649,8 @@ class DiffractometerBase(PseudoPositioner):
             for v in self.sample.reflections.values():
                 print(f"{v}")
             print(f"Orienting reflections: {self.sample.reflections.order}")
-            # TODO: #25: apply digits formatting to U & UB
-            # np.array2string(array, formatter={'float_kind': lambda x: f"{x:.{decimal_places}f}"})
-            # This will affect comparisons in unit tests!
-            print(f"U={self.sample.U}")
-            print(f"UB={self.sample.UB}")
+            print(f"U={format_array(self.sample.U)}")
+            print(f"UB={format_array(self.sample.UB)}")
             for v in self.core.constraints.values():
                 print(f"constraint: {v}")
             print(f"Mode: {self.core.mode}")
