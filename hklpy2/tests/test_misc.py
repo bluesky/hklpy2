@@ -13,10 +13,14 @@ from bluesky import RunEngine
 from bluesky import plans as bp
 from ophyd import Component
 from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import PVPositioner
 from ophyd import Signal
+from ophyd import SoftPositioner
 from yaml.parser import ParserError
 
 from ..diffract import creator
+from ..diffract import diffractometer_class_factory
 from ..misc import AnyAxesType
 from ..misc import AxesArray
 from ..misc import AxesDict
@@ -25,6 +29,7 @@ from ..misc import AxesTuple
 from ..misc import ConfigurationRunWrapper
 from ..misc import DiffractometerError
 from ..misc import SolverError
+from ..misc import VirtualPositionerBase
 from ..misc import axes_to_dict
 from ..misc import compare_float_dicts
 from ..misc import convert_units
@@ -46,6 +51,13 @@ from ..tests.common import assert_context_result
 sim4c = creator(name="sim4c")
 sim6c = creator(name="sim6c", geometry="E6C")
 signal = Signal(name="signal", value=1.234)
+
+
+class MyPVPositioner(PVPositioner):
+    done = Component(Signal, value=1)
+    limits = (-100, 100)
+    readback = Component(Signal, value=0)
+    setpoint = Component(Signal, value=0)
 
 
 @pytest.fixture
@@ -577,5 +589,131 @@ def test_choice_function(pos, possibilities, function, selected, context, expect
     with context as reason:
         choice = function(pos, possibilities)
         assert choice == selected
+
+    assert_context_result(expected, reason)
+
+
+@pytest.mark.parametrize(
+    "specs, context, expected",
+    [
+        [{}, pytest.raises(ValueError), "Must provide a value for 'physical_name'."],
+        [
+            {"physical_name": "guess"},
+            pytest.raises(AttributeError),
+            "'NoneType' object has no attribute 'guess'",
+        ],
+    ],
+)
+def test_VirtualPositionerBase(specs, context, expected):
+    with context as reason:
+        VirtualPositionerBase(name="gonio", **specs)
+
+    assert_context_result(expected, reason)
+
+
+@pytest.mark.parametrize(
+    "specs, context, expected",
+    [
+        [
+            dict(init_pos=0, physical_name="linear", kind="hinted"),
+            does_not_raise(),
+            None,
+        ],
+        [
+            dict(),
+            pytest.raises(ValueError),
+            "Must provide a value for 'physical_name'.",
+        ],
+        [
+            # Compare with 'guess' test case above.
+            dict(init_pos=0, physical_name="guess"),
+            pytest.raises(RuntimeError),
+            "AttributeError while instantiating component: tth",
+        ],
+    ],
+)
+def test_virtual_axis(specs, context, expected):
+    GoniometerBase = diffractometer_class_factory(
+        solver="hkl_soleil",
+        geometry="E4CV",
+    )
+
+    class Goniometer(GoniometerBase):
+        tth = Component(VirtualPositionerBase, **specs)
+
+        # Add the translation axis 'dy'.
+        linear = Component(
+            SoftPositioner,
+            init_pos=0,
+            limits=(-10, 200),
+            kind="hinted",
+        )
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.tth._finish_setup()
+
+    with context as reason:
+        gonio = Goniometer(name="gonio")
+        gonio.add_sample("vibranium", 2 * math.pi)
+        gonio.wh()
+
+        assert gonio.l.position == 0
+        assert gonio.linear.position == 0
+        assert gonio.tth.position == 0
+        gonio.linear.move(1)
+        assert gonio.linear.position == 1
+        assert gonio.tth.position == 2
+        assert math.isclose(gonio.l.position, 0.22, abs_tol=0.01)
+        assert math.isclose(
+            gonio.tth.forward(gonio.tth.inverse(math.pi)),
+            math.pi,
+            abs_tol=0.01,
+        )
+
+    assert_context_result(expected, reason)
+
+
+@pytest.mark.parametrize(
+    "klass, specs, context, expected",
+    [
+        [EpicsMotor, dict(prefix="IOC:m1"), does_not_raise(), None],
+        [MyPVPositioner, dict(), does_not_raise(), None],
+        [SoftPositioner, dict(), does_not_raise(), None],
+        [
+            Signal,
+            dict(),
+            pytest.raises(TypeError),
+            "Unknown 'readback' for 'gonio_linear'.",
+        ],
+    ],
+)
+def test_virtual_axis_physical(klass, specs, context, expected):
+    GoniometerBase = diffractometer_class_factory(
+        solver="hkl_soleil",
+        geometry="E4CV",
+    )
+
+    class Goniometer(GoniometerBase):
+        tth = Component(
+            VirtualPositionerBase,
+            init_pos=0,
+            physical_name="linear",
+            kind="hinted",
+        )
+
+        # Add the translation axis 'dy'.
+        linear = Component(klass, **specs)
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.tth._finish_setup()
+
+    with context as reason:
+        gonio = Goniometer(name="gonio")
+        gonio.tth._finish_setup()
+        gonio.tth.move(-2)
+        if gonio.connected:
+            assert math.isclose(gonio.linear.position or -1, -1, abs_tol=0.01)
 
     assert_context_result(expected, reason)
