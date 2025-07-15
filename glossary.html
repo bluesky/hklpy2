@@ -32,7 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=d3068bf2"></script>
+    <script src="_static/documentation_options.js?v=9aa3891e"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -353,6 +353,7 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/nslsii-tardis.html"><strong>NSLS-II</strong> <strong>tardis</strong> diffractometer</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="examples/tst_e4cv_fourc.html">Compare <strong>hkl_soleil</strong> <strong>E4CV</strong> with <strong>SPEC</strong> <strong>fourc</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/virtual-axis.html">Virtual diffractometer axis</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="guides.html">Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -438,6 +439,20 @@ other glossary entries.</p>
 <dl class="field-list simple" id="index-2">
 <dt class="field-odd">axis<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Either a <em>pseudo</em>, <em>real</em>, or <em>extra</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd"><em>physical</em><span class="colon">:</span></dt>
+<dd class="field-odd"><p>Axis (either <strong>pseudo</strong> or <strong>real</strong>) which is not computed from
+other axes (except by the solver).  “Physical” for a <em>real</em> implies a direct
+connection to hardware,</p>
+</dd>
+<dt class="field-even"><em>virtual</em><span class="colon">:</span></dt>
+<dd class="field-even"><p>Axis (either <strong>pseudo</strong> and <strong>real</strong>) which is computed from one
+or more other axes.</p>
+</dd>
+<dt class="field-odd"><em>extra</em><span class="colon">:</span></dt>
+<dd class="field-odd"><p>See below for definition of <strong>extra</strong>.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <dl class="field-list simple" id="index-3">
@@ -505,13 +520,14 @@ an engine for each separate type of transformation (and related
 <em>pseudos</em>).</p>
 </dd>
 </dl>
-<dl class="field-list simple" id="index-11">
+<dl class="field-list" id="index-11">
 <dt class="field-odd">extra<span class="colon">:</span></dt>
 <dd class="field-odd"><p>An additional axis used by a <strong>Solver</strong> for operation of
 a <em>diffractometer</em>.
 For example, when rotating by angle <span class="math notranslate nohighlight">\(\psi\)</span> around some arbitrary
 diffraction vector, <span class="math notranslate nohighlight">\((h_2,k_2,l_2)\)</span>, the extra axes are:
 <code class="docutils literal notranslate"><span class="pre">&quot;h2&quot;,</span> <span class="pre">&quot;k2&quot;,</span> <span class="pre">&quot;l2&quot;,</span> <span class="pre">&quot;psi&quot;</span></code>.</p>
+<p>An <em>extra</em> axis is not defined as a diffractometer <cite>Component</cite>.</p>
 </dd>
 </dl>
 <dl class="field-list simple" id="index-12">
@@ -565,11 +581,13 @@ range), such that it may be characterized by a single floating point value.</p>
 frame (described by the <em>reals</em>).</p>
 </dd>
 </dl>
-<dl class="field-list simple" id="index-19">
+<dl class="field-list" id="index-19">
 <dt class="field-odd">pseudo<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Reciprocal-space axis, such as <span class="math notranslate nohighlight">\(h\)</span>, <span class="math notranslate nohighlight">\(k\)</span>, and <span class="math notranslate nohighlight">\(l\)</span>.
 The engineering units (rarely examined for <em>crystalline</em> work) are reciprocal
 of the <em>wavelength</em> units.</p>
+<p>Note: <strong>pseudo</strong> axes are <strong>virtual</strong> axes, computed by the solver from
+<strong>real</strong> axes.</p>
 </dd>
 </dl>
 <dl class="field-list simple" id="index-20">
@@ -626,6 +644,12 @@ pattern of the <em>crystal</em>, characterized by its <em>lattice</em> parameter
 </dd>
 </dl>
 <dl class="field-list simple" id="index-26">
+<dt class="field-odd">real<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Virtual (computed) diffractometer <strong>axis</strong> (either <strong>pseudo</strong> or
+<strong>real</strong>), computed from one or more additional <strong>diffractometer</strong> axes.</p>
+</dd>
+</dl>
+<dl class="field-list simple" id="index-27">
 <dt class="field-odd">wavelength<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The numerical value of the wavelength of the incident radiation.
 The radiation is expected to be <em>monochromatic</em> neutrons or X-rays.

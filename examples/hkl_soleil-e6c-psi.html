@@ -32,7 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=d3068bf2"></script>
+    <script src="../_static/documentation_options.js?v=9aa3891e"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -353,6 +353,7 @@
 <li class="toctree-l2"><a class="reference internal" href="nslsii-tardis.html"><strong>NSLS-II</strong> <strong>tardis</strong> diffractometer</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="tst_e4cv_fourc.html">Compare <strong>hkl_soleil</strong> <strong>E4CV</strong> with <strong>SPEC</strong> <strong>fourc</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="virtual-axis.html">Virtual diffractometer axis</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guides.html">Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -568,7 +569,7 @@ vector <code class="docutils literal notranslate"><span class="pre">Q</span></co
 <section id="setup-e6c-simulators">
 <h2>Setup E6C Simulators<a class="headerlink" href="#setup-e6c-simulators" title="Link to this heading">#</a></h2>
 <p>Create instances of (simulated) E6C for the <code class="docutils literal notranslate"><span class="pre">&quot;hkl&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;psi&quot;</span></code> solver engines.
-The <code class="docutils literal notranslate"><span class="pre">hklpy2.creator()</span></code> function creates both.</p>
+The <a class="reference internal" href="../autoapi/hklpy2/index.html#hklpy2.creator" title="hklpy2.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.creator()</span></code></a> function creates both.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
@@ -874,14 +875,14 @@ e6c_psi.real_position=Hklpy2DiffractometerRealPos(mu=0, omega=113.608391926862, 
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2Diffractometer(prefix=&#39;&#39;, name=&#39;e6c_hkl&#39;, settle_time=0.0, timeout=None, egu=&#39;&#39;, limits=(0, 0), source=&#39;computed&#39;, read_attrs=[&#39;beam&#39;, &#39;beam.wavelength&#39;, &#39;beam.energy&#39;, &#39;h&#39;, &#39;h.readback&#39;, &#39;h.setpoint&#39;, &#39;k&#39;, &#39;k.readback&#39;, &#39;k.setpoint&#39;, &#39;l&#39;, &#39;l.readback&#39;, &#39;l.setpoint&#39;, &#39;mu&#39;, &#39;omega&#39;, &#39;chi&#39;, &#39;phi&#39;, &#39;gamma&#39;, &#39;delta&#39;], configuration_attrs=[&#39;solver_signature&#39;, &#39;beam&#39;, &#39;beam.source_type&#39;, &#39;beam.wavelength_units&#39;, &#39;beam.wavelength_deadband&#39;, &#39;beam.energy_units&#39;, &#39;h&#39;, &#39;k&#39;, &#39;l&#39;], concurrent=True)
 wavelength=1.54
-h=1.0, k=1.0, l=1.0
-mu=0, omega=113.6084, chi=80.2262, phi=130.0027, gamma=0, delta=-24.5098
-h2=1 k2=1 l2=0 psi=12
+pseudos: h=1.0, k=1.0, l=1.0
+reals: mu=0, omega=113.6084, chi=80.2262, phi=130.0027, gamma=0, delta=-24.5098
+extras: h2=1 k2=1 l2=0 psi=12
 Hklpy2Diffractometer(prefix=&#39;&#39;, name=&#39;e6c_psi&#39;, settle_time=0.0, timeout=None, egu=&#39;&#39;, limits=(0, 0), source=&#39;computed&#39;, read_attrs=[&#39;beam&#39;, &#39;beam.wavelength&#39;, &#39;beam.energy&#39;, &#39;psi&#39;, &#39;psi.readback&#39;, &#39;psi.setpoint&#39;, &#39;mu&#39;, &#39;omega&#39;, &#39;chi&#39;, &#39;phi&#39;, &#39;gamma&#39;, &#39;delta&#39;], configuration_attrs=[&#39;solver_signature&#39;, &#39;beam&#39;, &#39;beam.source_type&#39;, &#39;beam.wavelength_units&#39;, &#39;beam.wavelength_deadband&#39;, &#39;beam.energy_units&#39;, &#39;psi&#39;], concurrent=True)
 wavelength=1.0
-psi=12.0
-mu=0, omega=113.6084, chi=80.2262, phi=130.0027, gamma=0, delta=-24.5098
-h2=1 k2=1 l2=0
+pseudos: psi=12.0
+reals: mu=0, omega=113.6084, chi=80.2262, phi=130.0027, gamma=0, delta=-24.5098
+extras: h2=1 k2=1 l2=0
 </pre></div>
 </div>
 </div>
@@ -954,36 +955,36 @@ positioner values will be available for plotting later.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 1     Time: 2025-04-20 23:56:35
-Persistent Unique Scan ID: &#39;9aa20f82-eadb-480b-8ac0-8898b0075e34&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 1     Time: 2025-07-13 14:53:46
+Persistent Unique Scan ID: &#39;ec9a9967-a846-44a4-9ca2-f5542d78ecf1&#39;
 New stream: &#39;primary&#39;
 +-----------+------------+------------+--------------------+-------------------------+---------------------+------------+------------+------------+------------+---------------+-------------+-------------+---------------+---------------+
 |   seq_num |       time |  noisy_det | e6c_hkl_extras_psi | e6c_hkl_beam_wavelength | e6c_hkl_beam_energy |  e6c_hkl_h |  e6c_hkl_k |  e6c_hkl_l | e6c_hkl_mu | e6c_hkl_omega | e6c_hkl_chi | e6c_hkl_phi | e6c_hkl_gamma | e6c_hkl_delta |
 +-----------+------------+------------+--------------------+-------------------------+---------------------+------------+------------+------------+------------+---------------+-------------+-------------+---------------+---------------+
-|         1 | 23:56:35.1 |      1.042 |              0.000 |                   1.540 |               8.051 |     -0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     155.434 |             0 |       -28.375 |
-|         2 | 23:56:35.1 |      0.981 |             10.714 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     144.720 |             0 |       -28.375 |
-|         3 | 23:56:35.1 |      1.073 |             21.429 |                   1.540 |               8.051 |     -0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     134.005 |             0 |       -28.375 |
-|         4 | 23:56:35.1 |      0.943 |             32.143 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     123.291 |             0 |       -28.375 |
-|         5 | 23:56:35.2 |      1.075 |             42.857 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |     112.577 |             0 |       -28.375 |
-|         6 | 23:56:35.2 |      1.064 |             53.571 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     101.863 |             0 |       -28.375 |
-|         7 | 23:56:35.2 |      0.917 |             64.286 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      91.148 |             0 |       -28.375 |
-|         8 | 23:56:35.2 |      0.944 |             75.000 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      80.434 |             0 |       -28.375 |
-|         9 | 23:56:35.3 |      1.017 |             85.714 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      69.720 |             0 |       -28.375 |
-|        10 | 23:56:35.3 |      0.963 |             96.429 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      59.005 |             0 |       -28.375 |
-|        11 | 23:56:35.3 |      1.089 |            107.143 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      48.291 |             0 |       -28.375 |
-|        12 | 23:56:35.3 |      0.957 |            117.857 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      37.577 |             0 |       -28.375 |
-|        13 | 23:56:35.3 |      0.962 |            128.571 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      26.863 |             0 |       -28.375 |
-|        14 | 23:56:35.3 |      1.012 |            139.286 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      16.148 |             0 |       -28.375 |
-|        15 | 23:56:35.4 |      0.972 |            150.000 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |       5.434 |             0 |       -28.375 |
+|         1 | 14:53:46.3 |      1.024 |              0.000 |                   1.540 |               8.051 |     -0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     155.434 |             0 |       -28.375 |
+|         2 | 14:53:46.3 |      0.982 |             10.714 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     144.720 |             0 |       -28.375 |
+|         3 | 14:53:46.3 |      1.053 |             21.429 |                   1.540 |               8.051 |     -0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     134.005 |             0 |       -28.375 |
+|         4 | 14:53:46.3 |      1.039 |             32.143 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     123.291 |             0 |       -28.375 |
+|         5 | 14:53:46.3 |      1.078 |             42.857 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |     112.577 |             0 |       -28.375 |
+|         6 | 14:53:46.3 |      0.979 |             53.571 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     101.863 |             0 |       -28.375 |
+|         7 | 14:53:46.3 |      0.961 |             64.286 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      91.148 |             0 |       -28.375 |
+|         8 | 14:53:46.3 |      1.067 |             75.000 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      80.434 |             0 |       -28.375 |
+|         9 | 14:53:46.3 |      0.927 |             85.714 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      69.720 |             0 |       -28.375 |
+|        10 | 14:53:46.3 |      1.036 |             96.429 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      59.005 |             0 |       -28.375 |
+|        11 | 14:53:46.3 |      0.972 |            107.143 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      48.291 |             0 |       -28.375 |
+|        12 | 14:53:46.4 |      1.060 |            117.857 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      37.577 |             0 |       -28.375 |
+|        13 | 14:53:46.4 |      0.969 |            128.571 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      26.863 |             0 |       -28.375 |
+|        14 | 14:53:46.4 |      0.984 |            139.286 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      16.148 |             0 |       -28.375 |
+|        15 | 14:53:46.4 |      1.030 |            150.000 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |       5.434 |             0 |       -28.375 |
 +-----------+------------+------------+--------------------+-------------------------+---------------------+------------+------------+------------+------------+---------------+-------------+-------------+---------------+---------------+
-generator scan_extra [&#39;9aa20f82&#39;] (scan num: 1)
+generator scan_extra [&#39;ec9a9967&#39;] (scan num: 1)
 </pre></div>
 </div>
 </div>
 </div>
 <section id="plot-any-motions">
 <h3>Plot any motions<a class="headerlink" href="#plot-any-motions" title="Link to this heading">#</a></h3>
-<p>The only real-space axis to be moved by this scan is $\varphi$.  Plot $\phi$ <em>vs.</em>
+<p>The only real-space axis to be moved by this scan is $\varphi$.  Plot $\varphi$ <em>vs.</em>
 $\psi$.</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -1029,7 +1030,7 @@ name.</p>
   &#39;dims&#39;: dict(self._ds.dims),
 </pre></div>
 </div>
-<img alt="../_images/6e836ee1fc815099c7a8fc988d04a5a47d28e3f03d4451ec4ee771e17558b10f.png" src="../_images/6e836ee1fc815099c7a8fc988d04a5a47d28e3f03d4451ec4ee771e17558b10f.png" />
+<img alt="../_images/a2c423dc357a7e2f7517f78e1c5d267f92cdb9013693ee0d6a9f224b82e2c595.png" src="../_images/a2c423dc357a7e2f7517f78e1c5d267f92cdb9013693ee0d6a9f224b82e2c595.png" />
 </div>
 </div>
 </section>

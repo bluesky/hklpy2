@@ -7,6 +7,11 @@ hklpy2.misc
 
    Miscellaneous Support.
 
+   .. rubric: Base classes
+   .. autosummary::
+
+       ~VirtualPositionerBase
+
    .. rubric: Functions
    .. autosummary::
 
@@ -105,6 +110,7 @@ Classes
 
 .. autoapisummary::
 
+   hklpy2.misc.VirtualPositionerBase
    hklpy2.misc.ConfigurationRunWrapper
 
 
@@ -264,6 +270,71 @@ Module Contents
 
 
    A solver did not find any 'forward()' solutions.
+
+
+.. py:class:: VirtualPositionerBase(*, physical_name: str = '', **kwargs)
+
+   Bases: :py:obj:`ophyd.SoftPositioner`
+
+
+   Base class for a diffractometer's virtual axis.
+
+   This base class also serves as an example where
+   the virtual axis is twice the value of the physical axis.
+
+
+   .. py:attribute:: _setup_finished
+      :type:  bool
+      :value: False
+
+
+
+   .. py:attribute:: physical
+
+
+   .. py:method:: _setup_move(position, status)
+
+      Move requested to position.
+
+
+
+   .. py:method:: forward(physical: float) -> float
+
+      Return virtual position from physical position.
+
+      Subclass should override.
+
+
+
+   .. py:method:: inverse(virtual: float) -> float
+
+      Return physical position from virtual position.
+
+      Subclass should override.
+
+
+
+   .. py:method:: _cb_update_position(value, **kwargs)
+
+      Called when physical position is changed.
+
+
+
+   .. py:method:: _finish_setup()
+
+      Complete the axis setup after diffractometer is built.
+
+      Update our:
+
+      * Position by subscription to readback changes.
+      * Limits from physical axis.
+
+
+
+   .. py:method:: _recompute_limits() -> None
+
+      Compute virtual axis limits from physical axis.
+
 
 
 .. py:class:: ConfigurationRunWrapper(*devices, knowns=None)

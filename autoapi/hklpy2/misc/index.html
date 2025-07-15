@@ -32,7 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=d3068bf2"></script>
+    <script src="../../../_static/documentation_options.js?v=9aa3891e"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -408,6 +408,14 @@
 <p>Miscellaneous Support.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.VirtualPositionerBase" title="hklpy2.misc.VirtualPositionerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VirtualPositionerBase</span></code></a>(*[, physical_name])</p></td>
+<td><p>Base class for a diffractometer's virtual axis.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
+<tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.axes_to_dict" title="hklpy2.misc.axes_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes_to_dict</span></code></a>(input, names)</p></td>
 <td><p>Convert any acceptable axes input to standard form (dict).</p></td>
 </tr>
@@ -622,7 +630,10 @@
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper" title="hklpy2.misc.ConfigurationRunWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.VirtualPositionerBase" title="hklpy2.misc.VirtualPositionerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VirtualPositionerBase</span></code></a></p></td>
+<td><p>Base class for a diffractometer's virtual axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper" title="hklpy2.misc.ConfigurationRunWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a></p></td>
 <td><p>Write configuration of supported device(s) to a bluesky run.</p></td>
 </tr>
 </tbody>
@@ -850,6 +861,68 @@
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">SolverNoForwardSolutions</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#SolverNoForwardSolutions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.SolverNoForwardSolutions" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.SolverError" title="hklpy2.misc.SolverError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SolverError</span></code></a></p>
 <p>A solver did not find any ‘forward()’ solutions.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">VirtualPositionerBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physical_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.SoftPositioner</span></code></p>
+<p>Base class for a diffractometer’s virtual axis.</p>
+<p>This base class also serves as an example where
+the virtual axis is twice the value of the physical axis.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._setup_finished">
+<span class="sig-name descname"><span class="pre">_setup_finished</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._setup_finished"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._setup_finished" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase.physical">
+<span class="sig-name descname"><span class="pre">physical</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase.physical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase.physical" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._setup_move">
+<span class="sig-name descname"><span class="pre">_setup_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._setup_move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._setup_move" title="Link to this definition">#</a></dt>
+<dd><p>Move requested to position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">physical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase.forward" title="Link to this definition">#</a></dt>
+<dd><p>Return virtual position from physical position.</p>
+<p>Subclass should override.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">virtual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase.inverse" title="Link to this definition">#</a></dt>
+<dd><p>Return physical position from virtual position.</p>
+<p>Subclass should override.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._cb_update_position">
+<span class="sig-name descname"><span class="pre">_cb_update_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._cb_update_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._cb_update_position" title="Link to this definition">#</a></dt>
+<dd><p>Called when physical position is changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._finish_setup">
+<span class="sig-name descname"><span class="pre">_finish_setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._finish_setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._finish_setup" title="Link to this definition">#</a></dt>
+<dd><p>Complete the axis setup after diffractometer is built.</p>
+<p>Update our:</p>
+<ul class="simple">
+<li><p>Position by subscription to readback changes.</p></li>
+<li><p>Limits from physical axis.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._recompute_limits">
+<span class="sig-name descname"><span class="pre">_recompute_limits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._recompute_limits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._recompute_limits" title="Link to this definition">#</a></dt>
+<dd><p>Compute virtual axis limits from physical axis.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -1317,6 +1390,17 @@ a solution from a list of possible solutions.  Assign to diffractometer’s
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.SampleError"><code class="docutils literal notranslate"><span class="pre">SampleError</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.SolverError"><code class="docutils literal notranslate"><span class="pre">SolverError</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.SolverNoForwardSolutions"><code class="docutils literal notranslate"><span class="pre">SolverNoForwardSolutions</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._setup_finished"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._setup_finished</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase.physical"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase.physical</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._setup_move"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._setup_move()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase.forward"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase.inverse"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase.inverse()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._cb_update_position"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._cb_update_position()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._finish_setup"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._finish_setup()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._recompute_limits"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._recompute_limits()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.devices"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.devices</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.known_bases"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.known_bases</span></code></a></li>

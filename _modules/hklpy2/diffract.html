@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=d3068bf2"></script>
+    <script src="../../_static/documentation_options.js?v=9aa3891e"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -377,13 +377,16 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Cpt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpicsMotor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Kind</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PositionerBase</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PseudoPositioner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PseudoSingle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoftPositioner</span>
@@ -501,6 +504,7 @@
 <span class="sd">        ~inverse</span>
 <span class="sd">        ~move_dict</span>
 <span class="sd">        ~move_forward_with_extras</span>
+<span class="sd">        ~move_inverse_with_extras</span>
 <span class="sd">        ~move_reals</span>
 <span class="sd">        ~restore</span>
 <span class="sd">        ~scan_extra</span>
@@ -828,20 +832,16 @@
 
 <div class="viewcode-block" id="DiffractometerBase.move_forward_with_extras">
 <a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_forward_with_extras">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">move_forward_with_extras</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">pseudos</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span>  <span class="c1"># (h, k, l)</span>
-        <span class="n">extras</span><span class="p">:</span> <span class="n">AxesDict</span><span class="p">,</span>  <span class="c1"># (h2, k2, l2, psi)</span>
-    <span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move_forward_with_extras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="n">AxesDict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        (plan stub) Set extras and compute forward solution at fixed Q and extras.</span>
+<span class="sd">        (plan stub) Compute forward solution at fixed pseudos and extras.</span>
 
 <span class="sd">        EXAMPLE::</span>
 
 <span class="sd">            RE(</span>
 <span class="sd">                move_forward_with_extras(</span>
 <span class="sd">                    diffractometer,</span>
-<span class="sd">                    Q=dict(h=2, k=1, l=0),</span>
+<span class="sd">                    pseudos=dict(h=2, k=1, l=0),</span>
 <span class="sd">                    extras=dict(h2=2, k2=2, l2=0, psi=25),</span>
 <span class="sd">                )</span>
 <span class="sd">            )</span>
@@ -850,6 +850,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
         <span class="n">solution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">standardize_pseudos</span><span class="p">(</span><span class="n">pseudos</span><span class="p">))</span>
         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_dict</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DiffractometerBase.move_inverse_with_extras">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_inverse_with_extras">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move_inverse_with_extras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span> <span class="n">extras</span><span class="p">:</span> <span class="n">AxesDict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (plan stub) Compute inverse solution at fixed reals and extras.</span>
+
+<span class="sd">        EXAMPLE::</span>
+
+<span class="sd">            RE(</span>
+<span class="sd">                move_inverse_with_extras(</span>
+<span class="sd">                    diffractometer,</span>
+<span class="sd">                    reals=dict(omega=10, chi=0, phi=0, phi=20),</span>
+<span class="sd">                    extras=dict(h2=2, k2=2, l2=0, psi=25),</span>
+<span class="sd">                )</span>
+<span class="sd">            )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="n">extras</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
+        <span class="n">pseudos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">standardize_reals</span><span class="p">(</span><span class="n">reals</span><span class="p">))</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_dict</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span></div>
 
 
     <span class="nd">@real_position_argument</span>
@@ -867,7 +889,7 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.scan_extra">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">scan_extra</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">detectors</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+        <span class="n">detectors</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
         <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># name of extra parameter to be scanned</span>
         <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">finish</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -884,18 +906,15 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Scan one extra diffractometer parameter, such as &#39;psi&#39;.</span>
 
-<span class="sd">        * TODO: one **or more** (such as bp.scan)</span>
-<span class="sd">        * TODO: support &quot;inverse&quot; transformation scan</span>
+<span class="sd">        * TODO: #107 one **or more** (such as bp.scan)</span>
 
-<span class="sd">        * iterate extra positions as decribed:</span>
+<span class="sd">        * iterate extra positions as described:</span>
 <span class="sd">            * set extras</span>
 <span class="sd">            * solution = forward(pseudos)</span>
 <span class="sd">            * move to solution</span>
 <span class="sd">            * acquire (trigger) all controls</span>
 <span class="sd">            * read and record all controls</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
-
         <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan_stubs</span> <span class="k">as</span> <span class="n">bps</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">preprocessors</span> <span class="k">as</span> <span class="n">bpp</span>
@@ -905,16 +924,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
 
         <span class="c1"># validate</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">detectors</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">detectors</span><span class="si">=}</span><span class="s2"> is not iterable.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_extra_axis_names</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axis</span><span class="si">!r}</span><span class="s2"> not in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_extra_axis_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">reals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Inverse transformation.&quot;</span><span class="p">)</span>  <span class="c1"># FIXME: #37</span>
         <span class="k">if</span> <span class="n">pseudos</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">reals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must define either pseudos or reals.&quot;</span><span class="p">)</span>
-        <span class="c1"># if pseudos is not None and reals is not None:  # TODO: #37</span>
-        <span class="c1">#     raise ValueError(&quot;Cannot define both pseudos and reals.&quot;)</span>
+        <span class="k">if</span> <span class="n">pseudos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">reals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot define both pseudos and reals.&quot;</span><span class="p">)</span>
 
         <span class="n">_md</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;diffractometer&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -958,8 +973,8 @@
 <span class="w">                    </span><span class="sd">&quot;&quot;&quot;Move extras, then reals or pseudos, move to the solution.&quot;&quot;&quot;</span>
                     <span class="k">if</span> <span class="n">reals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_forward_with_extras</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span>
-                    <span class="c1"># else: # TODO: #37</span>
-                    <span class="c1">#     yield from self.inverse_move_with_extras(reals, extras)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_inverse_with_extras</span><span class="p">(</span><span class="n">reals</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span>
 
                 <span class="k">def</span><span class="w"> </span><span class="nf">acquire</span><span class="p">(</span><span class="n">objects</span><span class="p">):</span>
 <span class="w">                    </span><span class="sd">&quot;&quot;&quot;Tell each object to acquire its data.&quot;&quot;&quot;</span>
@@ -986,7 +1001,7 @@
                     <span class="k">if</span> <span class="n">fail_on_exception</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">reason</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="c1"># Scan psi beyond limits will trigger this code.</span>
+                        <span class="c1"># Scan axis beyond limits will trigger this code.</span>
                         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FAIL: </span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Inform the user!</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="k">yield from</span> <span class="n">_inner</span><span class="p">())</span></div>
@@ -1053,11 +1068,33 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">wh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Concise report of the current diffractometer positions.&quot;&quot;&quot;</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">wh_round</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">labeled_value</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">print_axes</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">wh_round</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nm</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">)</span> <span class="k">for</span> <span class="n">nm</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]))</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">print_axes</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">preface</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+                <span class="n">value_text</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="c1"># Any instance of PositionerBase.</span>
+                        <span class="n">labeled_value</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nm</span><span class="p">)</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">nm</span> <span class="ow">in</span> <span class="n">names</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">preface</span> <span class="o">+</span> <span class="n">value_text</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">format_array</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Apply (fixed-point) digits formatting to numpy array.&quot;&quot;&quot;</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">each</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Roundoff each float.&quot;&quot;&quot;</span>
+                <span class="c1"># return roundoff(x, digits)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="n">digits</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;-0.&quot;</span><span class="p">):</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="c1"># Apply formatting function to each element.</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">each</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;diffractometer=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1066,20 +1103,35 @@
             <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Orienting reflections: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UB=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U=</span><span class="si">{</span><span class="n">format_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UB=</span><span class="si">{</span><span class="n">format_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;constraint: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mode: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;beam=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">beam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="s2">&quot;energy wavelength&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">beam</span><span class="p">:</span>
+                    <span class="n">beam</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">roundoff</span><span class="p">(</span><span class="n">beam</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">digits</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;beam=</span><span class="si">{</span><span class="n">beam</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;wavelength=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;wavelength=</span><span class="si">{</span><span class="n">roundoff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">digits</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">print_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">)</span>
-        <span class="n">print_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">)</span>
+        <span class="n">print_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">,</span> <span class="n">preface</span><span class="o">=</span><span class="s2">&quot;pseudos: &quot;</span><span class="p">)</span>
+        <span class="n">print_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span> <span class="n">preface</span><span class="o">=</span><span class="s2">&quot;reals: &quot;</span><span class="p">)</span>
         <span class="n">extras</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extras</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">wh_round</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">extras</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span></div>
+            <span class="n">value_text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">labeled_value</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">extras</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;extras: &quot;</span> <span class="o">+</span> <span class="n">value_text</span><span class="p">)</span>
+        <span class="n">print_axes</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="c1"># Names of any positioners not described above.</span>
+                <span class="n">attr</span>
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">),</span> <span class="n">PositionerBase</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">attr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">)</span>
+            <span class="p">],</span>
+            <span class="n">preface</span><span class="o">=</span><span class="s2">&quot;positioners: &quot;</span><span class="p">,</span>
+        <span class="p">)</span></div>
 </div>
 
 

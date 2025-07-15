@@ -31,7 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=d3068bf2"></script>
+    <script src="../../_static/documentation_options.js?v=9aa3891e"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -367,6 +367,11 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Miscellaneous Support.</span>
 
+<span class="sd">.. rubric: Base classes</span>
+<span class="sd">.. autosummary::</span>
+
+<span class="sd">    ~VirtualPositionerBase</span>
+
 <span class="sd">.. rubric: Functions</span>
 <span class="sd">.. autosummary::</span>
 
@@ -430,6 +435,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
@@ -447,6 +453,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpicsMotor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PVPositioner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoftPositioner</span>
 
 <div class="viewcode-block" id="logger">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.logger">[docs]</a>
@@ -583,6 +592,137 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.SolverNoForwardSolutions">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SolverNoForwardSolutions</span><span class="p">(</span><span class="n">SolverError</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A solver did not find any &#39;forward()&#39; solutions.&quot;&quot;&quot;</span></div>
+
+
+
+<span class="c1"># Virtual positioner base class</span>
+
+
+<div class="viewcode-block" id="VirtualPositionerBase">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VirtualPositionerBase</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for a diffractometer&#39;s virtual axis.</span>
+
+<span class="sd">    This base class also serves as an example where</span>
+<span class="sd">    the virtual axis is twice the value of the physical axis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">physical_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
+
+<span class="sd">        Subclass should override and add any additional kwargs, as needed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">physical_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must provide a value for &#39;physical_name&#39;.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VirtualPositionerBase._setup_finished">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._setup_finished">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="VirtualPositionerBase.physical">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase.physical">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physical</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">physical_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VirtualPositionerBase._setup_move">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._setup_move">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Move requested to position.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finish_setup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run_subs</span><span class="p">(</span><span class="n">sub_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SUB_START</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_started_moving</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moving</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">position</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">physical</span><span class="p">,</span> <span class="n">PVPositioner</span><span class="p">):</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">physical</span><span class="o">.</span><span class="n">_setup_move</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_position</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_done_moving</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="VirtualPositionerBase.forward">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">physical</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return virtual position from physical position.</span>
+
+<span class="sd">        Subclass should override.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">physical</span>  <span class="c1"># Subclass should redefine.</span></div>
+
+
+<div class="viewcode-block" id="VirtualPositionerBase.inverse">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase.inverse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">virtual</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return physical position from virtual position.</span>
+
+<span class="sd">        Subclass should override.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">virtual</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># Subclass should redefine.</span></div>
+
+
+<div class="viewcode-block" id="VirtualPositionerBase._cb_update_position">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._cb_update_position">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cb_update_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when physical position is changed.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_finish_setup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Update our position in diffractometer&#39;s internal cache.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">_real_cur_pos</span><span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position</span></div>
+
+
+<div class="viewcode-block" id="VirtualPositionerBase._finish_setup">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._finish_setup">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_finish_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Complete the axis setup after diffractometer is built.</span>
+
+<span class="sd">        Update our:</span>
+
+<span class="sd">        * Position by subscription to readback changes.</span>
+<span class="sd">        * Limits from physical axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">physical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">physical</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># During initialization.</span>
+
+        <span class="c1"># Readback signal is in different locations.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">physical</span><span class="p">,</span> <span class="n">SoftPositioner</span><span class="p">):</span>
+            <span class="c1"># Includes PseudoPositioner subclass</span>
+            <span class="n">readback</span> <span class="o">=</span> <span class="n">physical</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">physical</span><span class="p">,</span> <span class="n">EpicsMotor</span><span class="p">):</span>
+            <span class="n">readback</span> <span class="o">=</span> <span class="n">physical</span><span class="o">.</span><span class="n">user_readback</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">physical</span><span class="p">,</span> <span class="n">PVPositioner</span><span class="p">):</span>
+            <span class="n">readback</span> <span class="o">=</span> <span class="n">physical</span><span class="o">.</span><span class="n">readback</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown &#39;readback&#39; for </span><span class="si">{</span><span class="n">physical</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">connected</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">readback</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cb_update_position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recompute_limits</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="VirtualPositionerBase._recompute_limits">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._recompute_limits">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_recompute_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute virtual axis limits from physical axis.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">physical</span><span class="o">.</span><span class="n">limits</span><span class="p">)))</span></div>
+</div>
 
 
 

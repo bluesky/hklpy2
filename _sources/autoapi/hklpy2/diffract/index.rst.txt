@@ -130,6 +130,7 @@ Module Contents
        ~inverse
        ~move_dict
        ~move_forward_with_extras
+       ~move_inverse_with_extras
        ~move_reals
        ~restore
        ~scan_extra
@@ -288,14 +289,30 @@ Module Contents
 
    .. py:method:: move_forward_with_extras(pseudos: hklpy2.misc.AnyAxesType, extras: hklpy2.misc.AxesDict)
 
-      (plan stub) Set extras and compute forward solution at fixed Q and extras.
+      (plan stub) Compute forward solution at fixed pseudos and extras.
 
       EXAMPLE::
 
           RE(
               move_forward_with_extras(
                   diffractometer,
-                  Q=dict(h=2, k=1, l=0),
+                  pseudos=dict(h=2, k=1, l=0),
+                  extras=dict(h2=2, k2=2, l2=0, psi=25),
+              )
+          )
+
+
+
+   .. py:method:: move_inverse_with_extras(reals: hklpy2.misc.AnyAxesType, extras: hklpy2.misc.AxesDict)
+
+      (plan stub) Compute inverse solution at fixed reals and extras.
+
+      EXAMPLE::
+
+          RE(
+              move_inverse_with_extras(
+                  diffractometer,
+                  reals=dict(omega=10, chi=0, phi=0, phi=20),
                   extras=dict(h2=2, k2=2, l2=0, psi=25),
               )
           )
@@ -308,14 +325,13 @@ Module Contents
 
 
 
-   .. py:method:: scan_extra(detectors: list, axis: Optional[str] = None, start: Optional[float] = None, finish: Optional[float] = None, num: Optional[int] = 2, *, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None)
+   .. py:method:: scan_extra(detectors: collections.abc.Iterable, axis: Optional[str] = None, start: Optional[float] = None, finish: Optional[float] = None, num: Optional[int] = 2, *, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None)
 
       Scan one extra diffractometer parameter, such as 'psi'.
 
-      * TODO: one **or more** (such as bp.scan)
-      * TODO: support "inverse" transformation scan
+      * TODO: #107 one **or more** (such as bp.scan)
 
-      * iterate extra positions as decribed:
+      * iterate extra positions as described:
           * set extras
           * solution = forward(pseudos)
           * move to solution

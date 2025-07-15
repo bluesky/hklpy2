@@ -22,6 +22,15 @@ Glossary
 
 :axis: Either a *pseudo*, *real*, or *extra*.
 
+  :*physical*: Axis (either **pseudo** or **real**) which is not computed from
+    other axes (except by the solver).  "Physical" for a *real* implies a direct
+    connection to hardware,
+
+  :*virtual*: Axis (either **pseudo** and **real**) which is computed from one
+    or more other axes.
+
+  :*extra*: See below for definition of **extra**.
+
 ..  index::
     !definition; backend
     !backend
@@ -108,6 +117,8 @@ Glossary
   diffraction vector, :math:`(h_2,k_2,l_2)`, the extra axes are:
   ``"h2", "k2", "l2", "psi"``.
 
+  An *extra* axis is not defined as a diffractometer `Component`.
+
 ..  index::
     !definition; geometry
     !geometry
@@ -176,6 +187,9 @@ Glossary
   The engineering units (rarely examined for *crystalline* work) are reciprocal
   of the *wavelength* units.
 
+  Note: **pseudo** axes are **virtual** axes, computed by the solver from
+  **real** axes.
+
 ..  index::
     !definition; real
     !real
@@ -239,6 +253,13 @@ Glossary
 
 :unit cell: The parallelepiped representing the smallest repeating structural
   pattern of the *crystal*, characterized by its *lattice* parameters.
+
+..  index::
+    !definition; virtual
+    !real
+
+:real: Virtual (computed) diffractometer **axis** (either **pseudo** or
+    **real**), computed from one or more additional **diffractometer** axes.
 
 ..  index::
     !definition; wavelength
