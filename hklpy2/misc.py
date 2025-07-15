@@ -1,6 +1,11 @@
 """
 Miscellaneous Support.
 
+.. rubric: Base classes
+.. autosummary::
+
+    ~VirtualPositionerBase
+
 .. rubric: Functions
 .. autosummary::
 
@@ -64,6 +69,7 @@ import logging
 import math
 import pathlib
 import sys
+import time
 import uuid
 import warnings
 from collections.abc import Iterable
@@ -81,6 +87,9 @@ import tqdm
 import yaml
 from ophyd import Component
 from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import PVPositioner
+from ophyd import SoftPositioner
 
 logger = logging.getLogger(__name__)
 
@@ -161,6 +170,110 @@ class SolverError(Hklpy2Error):
 
 class SolverNoForwardSolutions(SolverError):
     """A solver did not find any 'forward()' solutions."""
+
+
+# Virtual positioner base class
+
+
+class VirtualPositionerBase(SoftPositioner):
+    """
+    Base class for a diffractometer's virtual axis.
+
+    This base class also serves as an example where
+    the virtual axis is twice the value of the physical axis.
+    """
+
+    def __init__(self, *, physical_name: str = "", **kwargs):
+        """Constructor.
+
+        Subclass should override and add any additional kwargs, as needed.
+        """
+        if len(physical_name) == 0:
+            raise ValueError("Must provide a value for 'physical_name'.")
+
+        self._setup_finished: bool = False
+
+        super().__init__(**kwargs)
+
+        self.physical = getattr(self.parent, physical_name)
+
+    def _setup_move(self, position, status):
+        """Move requested to position."""
+        self._finish_setup()
+        self._run_subs(sub_type=self.SUB_START, timestamp=time.time())
+
+        self._started_moving = True
+        self._moving = False
+
+        if self._setup_finished:
+            args = [self.inverse(position)]
+            if not isinstance(self.physical, PVPositioner):
+                args.append(status)
+            self.physical._setup_move(*args)
+
+        self._set_position(position)
+        self._done_moving()
+
+    def forward(self, physical: float) -> float:
+        """
+        Return virtual position from physical position.
+
+        Subclass should override.
+        """
+        return 2 * physical  # Subclass should redefine.
+
+    def inverse(self, virtual: float) -> float:
+        """
+        Return physical position from virtual position.
+
+        Subclass should override.
+        """
+        return virtual / 2  # Subclass should redefine.
+
+    def _cb_update_position(self, value, **kwargs):
+        """Called when physical position is changed."""
+        self._finish_setup()
+        self._position = self.forward(value)
+
+        # Update our position in diffractometer's internal cache.
+        self.parent._real_cur_pos[self] = self._position
+
+    def _finish_setup(self):
+        """
+        Complete the axis setup after diffractometer is built.
+
+        Update our:
+
+        * Position by subscription to readback changes.
+        * Limits from physical axis.
+        """
+        try:
+            physical = self.physical
+        except AttributeError:
+            return  # During initialization.
+
+        # Readback signal is in different locations.
+        if isinstance(physical, SoftPositioner):
+            # Includes PseudoPositioner subclass
+            readback = physical
+        elif isinstance(physical, EpicsMotor):
+            readback = physical.user_readback
+        elif isinstance(physical, PVPositioner):
+            readback = physical.readback
+        else:
+            raise TypeError(f"Unknown 'readback' for {physical.name!r}.")
+
+        if not self.parent.connected or self._setup_finished:
+            return
+
+        self._setup_finished = True
+        readback.subscribe(self._cb_update_position)
+        self._recompute_limits()
+
+    def _recompute_limits(self) -> None:
+        """Compute virtual axis limits from physical axis."""
+        if self._setup_finished:
+            self._limits = tuple(sorted(map(self.forward, self.physical.limits)))
 
 
 # Custom preprocessors
