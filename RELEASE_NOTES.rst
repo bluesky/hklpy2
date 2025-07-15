@@ -33,13 +33,14 @@ describe future plans.
     0.1.4
     #####
 
-    Release expected by 2025-05-01.
+    Release expected by 2025-08-01.
 
     New Features
     ------------
 
     * Added FAQ document.
     * Added 'pick_closest_solution()' as alternative 'forward()' decision function.
+    * Added 'VirtualPositionerBase' base class.
 
     Maintenance
     -----------
