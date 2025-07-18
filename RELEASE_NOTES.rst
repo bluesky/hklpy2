@@ -35,6 +35,11 @@ describe future plans.
 
     Release expected 2025-Q3.
 
+    Maintenance
+    -----------
+
+    * Cancel in-progress GHA jobs when new one is started.
+
 0.1.4
 #####
 
