@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=9aa3891e"></script>
+    <script src="../../_static/documentation_options.js?v=fd825880"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -419,16 +419,16 @@
 <span class="sd">.. rubric: Custom Exceptions</span>
 <span class="sd">.. autosummary::</span>
 
-<span class="sd">    ~Hklpy2Error</span>
 <span class="sd">    ~ConfigurationError</span>
 <span class="sd">    ~ConstraintsError</span>
-<span class="sd">    ~DiffractometerError</span>
-<span class="sd">    ~LatticeError</span>
 <span class="sd">    ~CoreError</span>
+<span class="sd">    ~DiffractometerError</span>
+<span class="sd">    ~Hklpy2Error</span>
+<span class="sd">    ~LatticeError</span>
+<span class="sd">    ~NoForwardSolutions</span>
 <span class="sd">    ~ReflectionError</span>
 <span class="sd">    ~SampleError</span>
 <span class="sd">    ~SolverError</span>
-<span class="sd">    ~SolverNoForwardSolutions</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -567,6 +567,13 @@
 
 
 
+<div class="viewcode-block" id="NoForwardSolutions">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.NoForwardSolutions">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NoForwardSolutions</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A solver did not find any &#39;forward()&#39; solutions.&quot;&quot;&quot;</span></div>
+
+
+
 <div class="viewcode-block" id="ReflectionError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.ReflectionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ReflectionError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
@@ -588,13 +595,6 @@
 
 
 
-<div class="viewcode-block" id="SolverNoForwardSolutions">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.SolverNoForwardSolutions">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">SolverNoForwardSolutions</span><span class="p">(</span><span class="n">SolverError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A solver did not find any &#39;forward()&#39; solutions.&quot;&quot;&quot;</span></div>
-
-
-
 <span class="c1"># Virtual positioner base class</span>
 
 
@@ -604,8 +604,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for a diffractometer&#39;s virtual axis.</span>
 
-<span class="sd">    This base class also serves as an example where</span>
-<span class="sd">    the virtual axis is twice the value of the physical axis.</span>
+<span class="sd">    This base class also serves as an example where the virtual axis is twice</span>
+<span class="sd">    the value of the physical axis.  It is used as a Component of a</span>
+<span class="sd">    &#39;DiffractometerBase&#39; definition.  The ``physical_name`` is the name of a</span>
+<span class="sd">    sibling positioner attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">physical_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -632,7 +634,6 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._setup_move">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_setup_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Move requested to position.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_finish_setup</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_run_subs</span><span class="p">(</span><span class="n">sub_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SUB_START</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_started_moving</span> <span class="o">=</span> <span class="kc">True</span>
@@ -674,7 +675,6 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._cb_update_position">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_cb_update_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when physical position is changed.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_finish_setup</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="c1"># Update our position in diffractometer&#39;s internal cache.</span>
@@ -687,6 +687,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Complete the axis setup after diffractometer is built.</span>
 
+<span class="sd">        This method is crucial for ensuring that the positioner is correctly</span>
+<span class="sd">        initialized and ready to operate within the system, handling updates and</span>
+<span class="sd">        constraints appropriately.</span>
+
 <span class="sd">        Update our:</span>
 
 <span class="sd">        * Position by subscription to readback changes.</span>
@@ -695,7 +699,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">physical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">physical</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">return</span>  <span class="c1"># During initialization.</span>
+            <span class="c1"># During initialization when &#39;self.physical&#39;  isn&#39;t yet set up.</span>
+            <span class="k">return</span>
 
         <span class="c1"># Readback signal is in different locations.</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">physical</span><span class="p">,</span> <span class="n">SoftPositioner</span><span class="p">):</span>
@@ -712,6 +717,7 @@
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># Call &#39;self._cb_update_position&#39; when readback updates.</span>
         <span class="n">readback</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cb_update_position</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_recompute_limits</span><span class="p">()</span></div>
 
@@ -719,9 +725,51 @@
 <div class="viewcode-block" id="VirtualPositionerBase._recompute_limits">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._recompute_limits">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_recompute_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute virtual axis limits from physical axis.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">physical</span><span class="o">.</span><span class="n">limits</span><span class="p">)))</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute virtual axis limits from physical axis and refine constraints.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">physical</span><span class="o">.</span><span class="n">limits</span><span class="p">)))</span>
+            <span class="c1"># Adjust constraints, only as needed.</span>
+            <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attr_name</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
+            <span class="n">lo</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">lo</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">hi</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">hi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limits</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">attr_name</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VirtualPositionerBase.__getattribute__">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase.__getattribute__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run final setup automatically, on conditions.</span>
+
+<span class="sd">        This is a special method in Python that is called</span>
+<span class="sd">        whenever an attribute is accessed on an object. This method is</span>
+<span class="sd">        overridden here to add custom behavior when accessing attributes,</span>
+<span class="sd">        particularly the &#39;position&#39; attribute.</span>
+
+<span class="sd">        This implementation ensures that the setup process is completed before</span>
+<span class="sd">        accessing the &#39;position&#39; attribute, provided the object and its parent are</span>
+<span class="sd">        connected. It adds robustness to the attribute access by handling</span>
+<span class="sd">        potential errors gracefully and avoiding infinite recursion.</span>
+
+<span class="sd">        This virtual positioner must subscribe to position updates of the</span>
+<span class="sd">        physical positioner to which it is related.  Because that positioner</span>
+<span class="sd">        might not be fully initialized and connected during construction of this</span>
+<span class="sd">        virtual positioner, a final setup method must be called later.  The</span>
+<span class="sd">        additional steps in this method ensure that final setup is called under</span>
+<span class="sd">        the correct conditions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;position&quot;</span><span class="p">:</span>  <span class="c1"># Caution here to avoid recursion.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
+                        <span class="c1"># Run the final setup.</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_finish_setup</span><span class="p">()</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">RecursionError</span><span class="p">):</span>
+                    <span class="k">pass</span>  <span class="c1"># Ignore, still not ready.</span>
+
+        <span class="c1"># Return the actual attribute</span>
+        <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 </div>
 
 
@@ -1339,7 +1387,7 @@
 <span class="sd">        :func:`~hklpy2.misc.pick_first_solution`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">solutions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">DiffractometerError</span><span class="p">(</span><span class="s2">&quot;No solutions.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">NoForwardSolutions</span><span class="p">(</span><span class="s2">&quot;No solutions.&quot;</span><span class="p">)</span>
 
     <span class="n">nearest</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">separation</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1377,7 +1425,7 @@
 <span class="sd">        :func:`~hklpy2.misc.pick_closest_solution`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">solutions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">DiffractometerError</span><span class="p">(</span><span class="s2">&quot;No solutions.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">NoForwardSolutions</span><span class="p">(</span><span class="s2">&quot;No solutions.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 

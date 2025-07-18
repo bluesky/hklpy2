@@ -59,16 +59,16 @@ hklpy2.misc
    .. rubric: Custom Exceptions
    .. autosummary::
 
-       ~Hklpy2Error
        ~ConfigurationError
        ~ConstraintsError
-       ~DiffractometerError
-       ~LatticeError
        ~CoreError
+       ~DiffractometerError
+       ~Hklpy2Error
+       ~LatticeError
+       ~NoForwardSolutions
        ~ReflectionError
        ~SampleError
        ~SolverError
-       ~SolverNoForwardSolutions
 
 
 
@@ -99,10 +99,10 @@ Exceptions
    hklpy2.misc.DiffractometerError
    hklpy2.misc.LatticeError
    hklpy2.misc.CoreError
+   hklpy2.misc.NoForwardSolutions
    hklpy2.misc.ReflectionError
    hklpy2.misc.SampleError
    hklpy2.misc.SolverError
-   hklpy2.misc.SolverNoForwardSolutions
 
 
 Classes
@@ -240,6 +240,14 @@ Module Contents
    Custom exceptions from :class:`~Core`.
 
 
+.. py:exception:: NoForwardSolutions
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   A solver did not find any 'forward()' solutions.
+
+
 .. py:exception:: ReflectionError
 
    Bases: :py:obj:`Hklpy2Error`
@@ -264,14 +272,6 @@ Module Contents
    Custom exceptions from a |solver|.
 
 
-.. py:exception:: SolverNoForwardSolutions
-
-   Bases: :py:obj:`SolverError`
-
-
-   A solver did not find any 'forward()' solutions.
-
-
 .. py:class:: VirtualPositionerBase(*, physical_name: str = '', **kwargs)
 
    Bases: :py:obj:`ophyd.SoftPositioner`
@@ -279,8 +279,10 @@ Module Contents
 
    Base class for a diffractometer's virtual axis.
 
-   This base class also serves as an example where
-   the virtual axis is twice the value of the physical axis.
+   This base class also serves as an example where the virtual axis is twice
+   the value of the physical axis.  It is used as a Component of a
+   'DiffractometerBase' definition.  The ``physical_name`` is the name of a
+   sibling positioner attribute.
 
 
    .. py:attribute:: _setup_finished
@@ -324,6 +326,10 @@ Module Contents
 
       Complete the axis setup after diffractometer is built.
 
+      This method is crucial for ensuring that the positioner is correctly
+      initialized and ready to operate within the system, handling updates and
+      constraints appropriately.
+
       Update our:
 
       * Position by subscription to readback changes.
@@ -333,7 +339,30 @@ Module Contents
 
    .. py:method:: _recompute_limits() -> None
 
-      Compute virtual axis limits from physical axis.
+      Compute virtual axis limits from physical axis and refine constraints.
+
+
+
+   .. py:method:: __getattribute__(name)
+
+      Run final setup automatically, on conditions.
+
+      This is a special method in Python that is called
+      whenever an attribute is accessed on an object. This method is
+      overridden here to add custom behavior when accessing attributes,
+      particularly the 'position' attribute.
+
+      This implementation ensures that the setup process is completed before
+      accessing the 'position' attribute, provided the object and its parent are
+      connected. It adds robustness to the attribute access by handling
+      potential errors gracefully and avoiding infinite recursion.
+
+      This virtual positioner must subscribe to position updates of the
+      physical positioner to which it is related.  Because that positioner
+      might not be fully initialized and connected during construction of this
+      virtual positioner, a final setup method must be called later.  The
+      additional steps in this method ensure that final setup is called under
+      the correct conditions.
 
 
 
