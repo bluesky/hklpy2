@@ -30,6 +30,11 @@ describe future plans.
 
     Release expected 2025-Q4.
 
+    0.2.0
+    #####
+
+    Release expected 2025-Q3.
+
 0.1.4
 #####
 
