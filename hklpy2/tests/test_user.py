@@ -435,21 +435,42 @@ def test_solver_summary(fourc, capsys):
 
 
 @pytest.mark.parametrize(
-    "pseudos, text, context, expected",
+    "specs, mode, pseudos, text, context, expected",
     [
-        [(1, 0, 0), "RealPos(", does_not_raise(), None],
+        [{}, None, (1, 0, 0), "RealPos(", does_not_raise(), None],
         [
+            {},
+            None,
             (1, 0, 11_110),  # A reflection far beyond the Ewald sphere.
-            "No forward solutions found.",
+            "No solutions.",
+            does_not_raise(),
+            None,
+        ],
+        [
+            dict(geometry="APS POLAR"),
+            None,
+            (1, 0, 0),
+            "RealPos(",
+            does_not_raise(),
+            None,
+        ],
+        [
+            dict(geometry="APS POLAR"),
+            "psi constant vertical",
+            (1, 0, 0),
+            "No solutions.",
             does_not_raise(),
             None,
         ],
     ],
 )
-def test_cahkl_no_solutions(pseudos, text, context, expected):
+def test_cahkl_no_solutions(specs, mode, pseudos, text, context, expected):
     with context as reason:
-        sim = creator()
+        sim = creator(**specs)
+        if mode is not None:
+            sim.core.mode = mode
         set_diffractometer(sim)
-        assert text in str(cahkl(*pseudos))
+        result = cahkl(*pseudos)
+        assert text in str(result), f"{text=!r}  {str(result)=}"
 
     assert_context_result(expected, reason)

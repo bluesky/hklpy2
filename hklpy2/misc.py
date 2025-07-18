@@ -53,16 +53,16 @@ Miscellaneous Support.
 .. rubric: Custom Exceptions
 .. autosummary::
 
-    ~Hklpy2Error
     ~ConfigurationError
     ~ConstraintsError
-    ~DiffractometerError
-    ~LatticeError
     ~CoreError
+    ~DiffractometerError
+    ~Hklpy2Error
+    ~LatticeError
+    ~NoForwardSolutions
     ~ReflectionError
     ~SampleError
     ~SolverError
-    ~SolverNoForwardSolutions
 """
 
 import logging
@@ -156,6 +156,10 @@ class CoreError(Hklpy2Error):
     """Custom exceptions from :class:`~Core`."""
 
 
+class NoForwardSolutions(Hklpy2Error):
+    """A solver did not find any 'forward()' solutions."""
+
+
 class ReflectionError(Hklpy2Error):
     """Custom exceptions from :mod:`hklpy2.blocks.reflection`."""
 
@@ -166,10 +170,6 @@ class SampleError(Hklpy2Error):
 
 class SolverError(Hklpy2Error):
     """Custom exceptions from a |solver|."""
-
-
-class SolverNoForwardSolutions(SolverError):
-    """A solver did not find any 'forward()' solutions."""
 
 
 # Virtual positioner base class
@@ -866,7 +866,7 @@ def pick_closest_solution(
         :func:`~hklpy2.misc.pick_first_solution`
     """
     if len(solutions) == 0:
-        raise DiffractometerError("No solutions.")
+        raise NoForwardSolutions("No solutions.")
 
     nearest = None
     separation = None
@@ -901,7 +901,7 @@ def pick_first_solution(
         :func:`~hklpy2.misc.pick_closest_solution`
     """
     if len(solutions) == 0:
-        raise DiffractometerError("No solutions.")
+        raise NoForwardSolutions("No solutions.")
     return solutions[0]
 
 

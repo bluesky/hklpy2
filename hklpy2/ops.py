@@ -26,6 +26,7 @@ from .incident import DEFAULT_WAVELENGTH_UNITS
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import CoreError
+from .misc import NoForwardSolutions
 from .misc import axes_to_dict
 from .misc import convert_units
 from .misc import solver_factory
@@ -437,12 +438,14 @@ class Core:
         self.update_solver(wavelength=wavelength)
 
         # Filter just the solutions that fit the constraints.
-        results = self.solver.forward(self._axes_names_d2s(pdict))
         solutions = []
-        for solution in results:
-            reals.update(self._axes_names_s2d(solution))  # Update with new values.
-            if self.constraints.valid(**reals):
-                solutions.append(self.diffractometer.RealPosition(**reals))
+        try:
+            for solution in self.solver.forward(self._axes_names_d2s(pdict)):
+                reals.update(self._axes_names_s2d(solution))  # Update with new values.
+                if self.constraints.valid(**reals):
+                    solutions.append(self.diffractometer.RealPosition(**reals))
+        except NoForwardSolutions:
+            pass
 
         return solutions
 

@@ -43,7 +43,7 @@ import platform
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
-from ..misc import SolverNoForwardSolutions
+from ..misc import NoForwardSolutions
 from ..misc import check_value_in_list
 from ..misc import istype
 from ..misc import roundoff
@@ -349,8 +349,7 @@ class HklSolver(SolverBase):
                 LIBHKL_USER_UNITS,
             )
         except GLib.GError as exc:
-            msg = "No forward solutions found."
-            raise SolverNoForwardSolutions(msg) from exc
+            raise NoForwardSolutions("No forward solutions found.") from exc
 
         solutions = []
         for glist_item in raw_solutions.items():
