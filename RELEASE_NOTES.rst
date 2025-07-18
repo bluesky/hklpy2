@@ -30,23 +30,23 @@ describe future plans.
 
     Release expected 2025-Q4.
 
-    0.1.4
-    #####
+0.1.4
+#####
 
-    Release expected by 2025-08-01.
+Released 2025-07-18.
 
-    New Features
-    ------------
+New Features
+------------
 
-    * Added FAQ document.
-    * Added 'pick_closest_solution()' as alternative 'forward()' decision function.
-    * Added 'VirtualPositionerBase' base class.
+* Added FAQ document.
+* Added 'pick_closest_solution()' as alternative 'forward()' decision function.
+* Added 'VirtualPositionerBase' base class.
 
-    Maintenance
-    -----------
+Maintenance
+-----------
 
-    * Completed 'refineLattice()' method for both Core and Sample classes.
-    * Utility function 'check_value_in_list()' not needed at package level.
+* Completed 'refineLattice()' method for both Core and Sample classes.
+* Utility function 'check_value_in_list()' not needed at package level.
 
 0.1.3
 #####
