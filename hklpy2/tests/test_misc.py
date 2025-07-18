@@ -1,11 +1,4 @@
-# TODO: Need to test hklpy2/misc.py, Lines:  254-255, 306
-# 258-260:
-#         except AttributeError:
-#             # During initialization when 'self.physical'  isn't yet set up.
-#             return
-# 318:
-#                         object.__getattribute__(self, "_finish_setup")()
-
+"""Test code in the 'misc' module."""
 
 import math
 import pathlib
@@ -726,3 +719,28 @@ def test_virtual_axis_physical(klass, specs, context, expected):
             assert math.isclose(gonio.linear.position or -1, -1, abs_tol=0.01)
 
     assert_context_result(expected, reason)
+
+
+def test_virtual_axis_finish_setup_trigger():
+    class SpecialCase(Device):
+        physical = Component(
+            SoftPositioner,
+            init_pos=0,
+            limits=(-10, 10),
+            kind="hinted",
+        )
+        virtual = Component(
+            VirtualPositionerBase,
+            init_pos=0,
+            limits=(-10, 10),
+            physical_name="physical",
+            kind="hinted",
+        )
+
+    multi = SpecialCase("", name="multi")
+    assert multi.connected
+    assert not multi.virtual._setup_finished
+    multi.physical.position
+    assert not multi.virtual._setup_finished
+    multi.virtual.position
+    assert multi.virtual._setup_finished
