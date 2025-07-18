@@ -34,6 +34,7 @@ from .blocks.sample import Sample
 from .incident import WavelengthXray
 from .misc import AnyAxesType
 from .misc import AxesDict
+from .misc import DiffractometerError
 from .misc import load_yaml_file
 from .misc import pick_first_solution
 from .misc import roundoff
@@ -613,6 +614,9 @@ class DiffractometerBase(PseudoPositioner):
 
     def wh(self, digits=4, full=False):
         """Concise report of the current diffractometer positions."""
+
+        if not self.connected:
+            raise DiffractometerError(f"Diffractometer {self.name!r} is not connected.")
 
         def labeled_value(label, value):
             return f"{label}={roundoff(value, digits)}"

@@ -8,6 +8,7 @@ from contextlib import nullcontext as does_not_raise
 import bluesky
 import pytest
 from numpy.testing import assert_almost_equal
+from ophyd import Component
 from ophyd import EpicsMotor
 from ophyd import SoftPositioner
 from ophyd.signal import AttributeSignal
@@ -22,6 +23,7 @@ from ..diffract import diffractometer_class_factory
 from ..misc import ConfigurationError
 from ..misc import DiffractometerError
 from ..misc import SolverNoForwardSolutions
+from ..misc import VirtualPositionerBase
 from ..ops import DEFAULT_SAMPLE_NAME
 from ..ops import Core
 from ..ops import CoreError
@@ -345,7 +347,15 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
     ],
 )
 def test_diffractometer_wh(
-    specs, full, digits, mode, config_file, output, context, expected, capsys
+    specs,
+    full,
+    digits,
+    mode,
+    config_file,
+    output,
+    context,
+    expected,
+    capsys,
 ):
     from ..diffract import creator
 
@@ -1002,3 +1012,20 @@ def test_signature(solver: str, geometry: str):
     assert isinstance(text, str)
     assert solver in text
     assert geometry in text
+
+
+def test_wh_virtual_issue_114():
+    base = diffractometer_class_factory()
+
+    class Virtual(base):
+        theta = Component(
+            VirtualPositionerBase,
+            physical_name="physical",
+            kind="hinted",
+        )
+        physical = Component(EpicsMotor, "NO_IOC:motor", kind="hinted")
+
+    gonio = Virtual("", name="gonio")
+    assert not gonio.connected
+    with pytest.raises(DiffractometerError):
+        gonio.wh()
