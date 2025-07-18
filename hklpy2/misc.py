@@ -179,12 +179,10 @@ class VirtualPositionerBase(SoftPositioner):
     """
     Base class for a diffractometer's virtual axis.
 
-    This base class also serves as an example where
-    the virtual axis is twice the value of the physical axis.
-
-    This class should only be used as a Component of a
-    DiffractometerBase definition.  The ``physical_name``
-    is the name of a sibling positioner attribute.
+    This base class also serves as an example where the virtual axis is twice
+    the value of the physical axis.  It is used as a Component of a
+    'DiffractometerBase' definition.  The ``physical_name`` is the name of a
+    sibling positioner attribute.
     """
 
     def __init__(self, *, physical_name: str = "", **kwargs):
