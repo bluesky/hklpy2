@@ -199,7 +199,6 @@ class VirtualPositionerBase(SoftPositioner):
 
     def _setup_move(self, position, status):
         """Move requested to position."""
-        self._finish_setup()
         self._run_subs(sub_type=self.SUB_START, timestamp=time.time())
 
         self._started_moving = True
@@ -232,7 +231,6 @@ class VirtualPositionerBase(SoftPositioner):
 
     def _cb_update_position(self, value, **kwargs):
         """Called when physical position is changed."""
-        self._finish_setup()
         self._position = self.forward(value)
 
         # Update our position in diffractometer's internal cache.
@@ -271,9 +269,33 @@ class VirtualPositionerBase(SoftPositioner):
         self._recompute_limits()
 
     def _recompute_limits(self) -> None:
-        """Compute virtual axis limits from physical axis."""
-        if self._setup_finished:
+        """Compute virtual axis limits from physical axis and refine constraints."""
+        if self.parent.connected:
             self._limits = tuple(sorted(map(self.forward, self.physical.limits)))
+            # Adjust constraints, only as needed.
+            lo, hi = self.parent.core.constraints[self.attr_name].limits
+            lo = max(lo, self._limits[0])
+            hi = min(hi, self._limits[-1])
+            self.parent.core.constraints[self.attr_name].limits = (lo, hi)
+
+    def __getattribute__(self, name):
+        """Run final setup automatically, on conditions."""
+
+        # Caution here to ovoid recursion.
+        if name == "position":
+            connected = object.__getattribute__(self, "connected")
+            _setup_finished = object.__getattribute__(self, "_setup_finished")
+            if connected and not _setup_finished:
+                try:
+                    parent = object.__getattribute__(self, "parent")
+                    if object.__getattribute__(parent, "connected"):
+                        # Run the final setup.
+                        object.__getattribute__(self, "_finish_setup")()
+                except (AttributeError, RecursionError):
+                    pass  # Ignore, still not ready.
+
+        # Return the actual attribute
+        return object.__getattribute__(self, name)
 
 
 # Custom preprocessors
