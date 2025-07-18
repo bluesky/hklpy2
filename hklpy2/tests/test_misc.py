@@ -1,3 +1,12 @@
+# TODO: Need to test hklpy2/misc.py, Lines:  254-255, 306
+# 258-260:
+#         except AttributeError:
+#             # During initialization when 'self.physical'  isn't yet set up.
+#             return
+# 318:
+#                         object.__getattribute__(self, "_finish_setup")()
+
+
 import math
 import pathlib
 import types

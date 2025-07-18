@@ -181,6 +181,10 @@ class VirtualPositionerBase(SoftPositioner):
 
     This base class also serves as an example where
     the virtual axis is twice the value of the physical axis.
+
+    This class should only be used as a Component of a
+    DiffractometerBase definition.  The ``physical_name``
+    is the name of a sibling positioner attribute.
     """
 
     def __init__(self, *, physical_name: str = "", **kwargs):
@@ -240,6 +244,10 @@ class VirtualPositionerBase(SoftPositioner):
         """
         Complete the axis setup after diffractometer is built.
 
+        This method is crucial for ensuring that the positioner is correctly
+        initialized and ready to operate within the system, handling updates and
+        constraints appropriately.
+
         Update our:
 
         * Position by subscription to readback changes.
@@ -248,7 +256,8 @@ class VirtualPositionerBase(SoftPositioner):
         try:
             physical = self.physical
         except AttributeError:
-            return  # During initialization.
+            # During initialization when 'self.physical'  isn't yet set up.
+            return
 
         # Readback signal is in different locations.
         if isinstance(physical, SoftPositioner):
@@ -265,6 +274,7 @@ class VirtualPositionerBase(SoftPositioner):
             return
 
         self._setup_finished = True
+        # Call 'self._cb_update_position' when readback updates.
         readback.subscribe(self._cb_update_position)
         self._recompute_limits()
 
@@ -279,18 +289,33 @@ class VirtualPositionerBase(SoftPositioner):
             self.parent.core.constraints[self.attr_name].limits = (lo, hi)
 
     def __getattribute__(self, name):
-        """Run final setup automatically, on conditions."""
+        """
+        Run final setup automatically, on conditions.
 
-        # Caution here to ovoid recursion.
-        if name == "position":
-            connected = object.__getattribute__(self, "connected")
-            _setup_finished = object.__getattribute__(self, "_setup_finished")
-            if connected and not _setup_finished:
+        This is a special method in Python that is called
+        whenever an attribute is accessed on an object. This method is
+        overridden here to add custom behavior when accessing attributes,
+        particularly the 'position' attribute.
+
+        This implementation ensures that the setup process is completed before
+        accessing the 'position' attribute, provided the object and its parent are
+        connected. It adds robustness to the attribute access by handling
+        potential errors gracefully and avoiding infinite recursion.
+
+        This virtual positioner must subscribe to position updates of the
+        physical positioner to which it is related.  Because that positioner
+        might not be fully initialized and connected during construction of this
+        virtual positioner, a final setup method must be called later.  The
+        additional steps in this method ensure that final setup is called under
+        the correct conditions.
+        """
+
+        if name == "position":  # Caution here to avoid recursion.
+            if not self._setup_finished and self.connected:
                 try:
-                    parent = object.__getattribute__(self, "parent")
-                    if object.__getattribute__(parent, "connected"):
+                    if self.parent.connected:
                         # Run the final setup.
-                        object.__getattribute__(self, "_finish_setup")()
+                        self._finish_setup()
                 except (AttributeError, RecursionError):
                     pass  # Ignore, still not ready.
 
