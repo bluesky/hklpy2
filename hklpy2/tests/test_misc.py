@@ -29,7 +29,7 @@ from ..misc import AxesDict
 from ..misc import AxesList
 from ..misc import AxesTuple
 from ..misc import ConfigurationRunWrapper
-from ..misc import DiffractometerError
+from ..misc import NoForwardSolutions
 from ..misc import SolverError
 from ..misc import VirtualPositionerBase
 from ..misc import axes_to_dict
@@ -562,7 +562,7 @@ def test_distance_between_pos_tuples(pos1, pos2, dist, tol, context, expected):
             (),
             pick_first_solution,
             None,
-            pytest.raises(DiffractometerError),
+            pytest.raises(NoForwardSolutions),
             "No solutions.",
         ],
         [
@@ -582,7 +582,7 @@ def test_distance_between_pos_tuples(pos1, pos2, dist, tol, context, expected):
             [],
             pick_closest_solution,
             None,
-            pytest.raises(DiffractometerError),
+            pytest.raises(NoForwardSolutions),
             "No solutions.",
         ],
     ],

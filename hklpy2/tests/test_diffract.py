@@ -22,7 +22,7 @@ from ..diffract import creator
 from ..diffract import diffractometer_class_factory
 from ..misc import ConfigurationError
 from ..misc import DiffractometerError
-from ..misc import SolverNoForwardSolutions
+from ..misc import NoForwardSolutions
 from ..misc import VirtualPositionerBase
 from ..ops import DEFAULT_SAMPLE_NAME
 from ..ops import Core
@@ -154,8 +154,8 @@ def test_DiffractometerBase():
         [1, does_not_raise(), None],
         [-1.2, does_not_raise(), None],
         [1.2, does_not_raise(), None],
-        [12, pytest.raises(SolverNoForwardSolutions), "No forward solutions found."],
-        [-12, pytest.raises(SolverNoForwardSolutions), "No forward solutions found."],
+        [12, pytest.raises(NoForwardSolutions), "No solutions."],
+        [-12, pytest.raises(NoForwardSolutions), "No solutions."],
     ],
 )
 def test_limits(axis, value, context, expected):
@@ -657,8 +657,8 @@ def test_repeated_reflections(
                 fail_on_exception=True,
             ),
             "psi_constant",
-            pytest.raises(SolverNoForwardSolutions),
-            "No forward solutions found.",
+            pytest.raises(NoForwardSolutions),
+            "No solutions.",
         ],
         [
             dict(
@@ -787,7 +787,7 @@ def test_scan_extra_print_fail(scan_kwargs, mode, context, expected, capsys):
 
     out, err = capsys.readouterr()
     assert len(err) == 0
-    assert "FAIL: psi=555.0 No forward solutions found." in out
+    assert "FAIL: psi=555.0 No solutions." in out
 
 
 def test_set_UB():
