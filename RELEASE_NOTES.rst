@@ -39,6 +39,7 @@ describe future plans.
     -----------
 
     * Cancel in-progress GHA jobs when new one is started.
+    * Remove diffractometer solver_signature component.
 
 0.1.4
 #####

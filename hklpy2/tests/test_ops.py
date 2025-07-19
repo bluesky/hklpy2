@@ -329,6 +329,7 @@ def test_reset_samples():
 @pytest.mark.parametrize(
     "solver, geometry",
     [
+        ["hkl_soleil", "APS POLAR"],
         ["hkl_soleil", "E4CV"],
         ["th_tth", "TH TTH Q"],
     ],
@@ -338,11 +339,9 @@ def test_signature(solver: str, geometry: str):
     assert isinstance(sim, DiffractometerBase)
     core = sim.core
     assert isinstance(core, Core)
-
-    signature: str = core.solver_signature
-    assert isinstance(signature, str)
-    assert solver in signature
-    assert geometry in signature
+    assert isinstance(core.solver_signature, str)
+    assert solver in core.solver_signature
+    assert geometry in core.solver_signature
 
 
 @pytest.mark.parametrize(

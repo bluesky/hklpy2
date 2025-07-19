@@ -11,7 +11,6 @@ from numpy.testing import assert_almost_equal
 from ophyd import Component
 from ophyd import EpicsMotor
 from ophyd import SoftPositioner
-from ophyd.signal import AttributeSignal
 from ophyd.sim import noisy_det
 
 from ..backends.base import SolverBase
@@ -992,26 +991,6 @@ def test_diffractometer_class_factory(specs, context, expected):
         gonio = klass(name="gonio")
         assert isinstance(gonio, DiffractometerBase)
     assert_context_result(expected, reason)
-
-
-@pytest.mark.parametrize(
-    "solver, geometry",
-    [
-        ["hkl_soleil", "PETRA3 P09 EH2"],
-        ["th_tth", "TH TTH Q"],
-    ],
-)
-def test_signature(solver: str, geometry: str):
-    sim = creator(solver=solver, geometry=geometry)
-    assert isinstance(sim, DiffractometerBase)
-
-    signature = sim.solver_signature
-    assert isinstance(signature, AttributeSignal)
-
-    text = signature.get()
-    assert isinstance(text, str)
-    assert solver in text
-    assert geometry in text
 
 
 def test_wh_virtual_issue_114():
