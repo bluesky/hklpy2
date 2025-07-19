@@ -232,11 +232,6 @@ and :attr:`~hklpy2.ops.Core.sample`)
     ~hklpy2.diffract.DiffractometerBase.sample (property)
     ~hklpy2.diffract.DiffractometerBase.samples (property)
 
-.. rubric:: Solver-related methods and properties
-.. autosummary::
-
-    ~hklpy2.diffract.DiffractometerBase.solver_signature (ophyd AttributeSignal)
-
 .. rubric:: Related methods and properties from other classes
 .. autosummary::
 

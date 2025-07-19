@@ -45,33 +45,7 @@ EXAMPLE::
     >>> e4cv.sample.reflections
     {'r1': {'name': 'r1', 'geometry': 'E4CV', 'pseudos': {'h': 1, 'k': 0, 'l': 0}, 'reals': {'omega': 10, 'chi': 0, 'phi': 0, 'tth': 20}, 'wavelength': 1.0, 'order': 0}, 'r2': {'name': 'r2', 'geometry': 'E4CV', 'pseudos': {'h': 0, 'k': 1, 'l': 0}, 'reals': {'omega': 10, 'chi': -90, 'phi': 0, 'tth': 20}, 'wavelength': 1.0, 'order': 1}}
 
-..  note:: The :class:`~hklpy2.ops.Core` class provides
-    key diffractometer features as Python properties.  This enables their
-    inclusion in the :class:`~hklpy2.diffract.DiffractometerBase` class
-    using ophyd `AttributeSignal <https://github.com/bluesky/ophyd/blob/5c03c3fff974dc6390836fc83dae4c247a35e662/ophyd/signal.py#L2192>`_.
-    One such example is the |solver| geometry name:
-
-    .. code-block:: Python
-        :linenos:
-
-        solver_signature = Cpt(
-            AttributeSignal,
-            attr="core.solver_signature",
-            doc="Description of diffractometer's |solver|.",
-            write_access=False,
-            kind="config",
-        )
-        """Name of backend |solver| (library)."""
-
     Using the ``e4cv`` simulator, the property is::
 
         >>> e4cv.core.solver_signature
         "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')"
-
-    The diffractometer object reports the same:
-
-        >>> e4cv.solver_signature.get()
-        "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')"
-
-    The signal is assigned ``kind="config"``: so it shows up in the
-    data from the ``RE`` (in the ``descriptor`` document).

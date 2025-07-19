@@ -27,7 +27,6 @@ from ophyd import SoftPositioner
 from ophyd.device import required_for_connection
 from ophyd.pseudopos import pseudo_position_argument
 from ophyd.pseudopos import real_position_argument
-from ophyd.signal import AttributeSignal
 
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
@@ -94,13 +93,6 @@ class DiffractometerBase(PseudoPositioner):
 
     .. rubric:: (ophyd) Components
 
-    .. rubric :: (ophyd) Attribute Components
-
-    .. autosummary::
-
-        ~beam
-        ~solver_signature
-
     .. rubric:: Python Attributes
 
     .. autosummary::
@@ -134,15 +126,6 @@ class DiffractometerBase(PseudoPositioner):
         ~sample
         ~samples
     """
-
-    solver_signature = Cpt(
-        AttributeSignal,
-        attr="core.solver_signature",
-        doc="Description of diffractometer's |solver|.",
-        write_access=False,
-        kind="config",
-    )
-    """Name of backend |solver| (library)."""
 
     beam = Cpt(WavelengthXray)
     """Incident monochromatic beam."""
