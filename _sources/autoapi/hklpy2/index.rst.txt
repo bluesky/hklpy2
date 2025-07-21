@@ -431,13 +431,6 @@ Package Contents
 
    .. rubric:: (ophyd) Components
 
-   .. rubric :: (ophyd) Attribute Components
-
-   .. autosummary::
-
-       ~beam
-       ~solver_signature
-
    .. rubric:: Python Attributes
 
    .. autosummary::
@@ -465,16 +458,12 @@ Package Contents
    .. rubric:: Python Properties
 
    .. autosummary::
+       ~auxiliary_axis_names
        ~configuration
        ~pseudo_axis_names
        ~real_axis_names
        ~sample
        ~samples
-
-
-   .. py:attribute:: solver_signature
-
-      Name of backend |solver| (library).
 
 
    .. py:attribute:: beam
@@ -664,6 +653,21 @@ Package Contents
           * acquire (trigger) all controls
           * read and record all controls
 
+
+
+   .. py:property:: auxiliary_axis_names
+      :type: list[str]
+
+
+      Names of all auxiliary positioners, in order of appearance.
+
+      Auxiliary axes are all components using (subclasses of
+      'ophyd.PositionerBase') that are not pseudos or reals.
+
+      Example::
+
+          >>> fourc.auxiliary_axis_names
+          ['h2', 'k2', 'l2']
 
 
    .. py:property:: pseudo_axis_names

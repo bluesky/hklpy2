@@ -48,7 +48,7 @@ Then, install from the new ``hklpy2`` directory:
 Development
 ===========
 
-Follow these steps (in bash shell) to setup a conda environment fordevelopment
+Follow these steps (in bash shell) to setup a conda environment for development
 and testing:
 
 .. code-block:: bash

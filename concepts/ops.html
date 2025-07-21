@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=fd825880"></script>
+    <script src="../_static/documentation_options.js?v=59fadc99"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -475,37 +475,12 @@ diffractometer with the <a class="reference internal" href="../diffractometers.h
 <span class="go">Reflection(name=&#39;r2&#39;, geometry=&#39;E4CV&#39;, pseudos={&#39;h&#39;: 0, &#39;k&#39;: 1, &#39;l&#39;: 0}, reals={&#39;omega&#39;: 10, &#39;chi&#39;: -90, &#39;phi&#39;: 0, &#39;tth&#39;: 20}, wavelength=1.0)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span>
 <span class="go">{&#39;r1&#39;: {&#39;name&#39;: &#39;r1&#39;, &#39;geometry&#39;: &#39;E4CV&#39;, &#39;pseudos&#39;: {&#39;h&#39;: 1, &#39;k&#39;: 0, &#39;l&#39;: 0}, &#39;reals&#39;: {&#39;omega&#39;: 10, &#39;chi&#39;: 0, &#39;phi&#39;: 0, &#39;tth&#39;: 20}, &#39;wavelength&#39;: 1.0, &#39;order&#39;: 0}, &#39;r2&#39;: {&#39;name&#39;: &#39;r2&#39;, &#39;geometry&#39;: &#39;E4CV&#39;, &#39;pseudos&#39;: {&#39;h&#39;: 0, &#39;k&#39;: 1, &#39;l&#39;: 0}, &#39;reals&#39;: {&#39;omega&#39;: 10, &#39;chi&#39;: -90, &#39;phi&#39;: 0, &#39;tth&#39;: 20}, &#39;wavelength&#39;: 1.0, &#39;order&#39;: 1}}</span>
+
+<span class="go">Using the ``e4cv`` simulator, the property is::</span>
+
+<span class="go">    &gt;&gt;&gt; e4cv.core.solver_signature</span>
+<span class="go">    &quot;HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)&quot;</span>
 </pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> class provides
-key diffractometer features as Python properties.  This enables their
-inclusion in the <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a> class
-using ophyd <a class="reference external" href="https://github.com/bluesky/ophyd/blob/5c03c3fff974dc6390836fc83dae4c247a35e662/ophyd/signal.py#L2192">AttributeSignal</a>.
-One such example is the <strong>Solver</strong> geometry name:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">solver_signature</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
-<span class="linenos">2</span>    <span class="n">AttributeSignal</span><span class="p">,</span>
-<span class="linenos">3</span>    <span class="n">attr</span><span class="o">=</span><span class="s2">&quot;core.solver_signature&quot;</span><span class="p">,</span>
-<span class="linenos">4</span>    <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Description of diffractometer&#39;s |solver|.&quot;</span><span class="p">,</span>
-<span class="linenos">5</span>    <span class="n">write_access</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="linenos">6</span>    <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;config&quot;</span><span class="p">,</span>
-<span class="linenos">7</span><span class="p">)</span>
-<span class="linenos">8</span><span class="sd">&quot;&quot;&quot;Name of backend |solver| (library).&quot;&quot;&quot;</span>
-</pre></div>
-</div>
-<p>Using the <code class="docutils literal notranslate"><span class="pre">e4cv</span></code> simulator, the property is:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_signature</span>
-<span class="go">&quot;HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)&quot;</span>
-</pre></div>
-</div>
-<p>The diffractometer object reports the same:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">solver_signature</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-<span class="go">&quot;HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)&quot;</span>
-</pre></div>
-</div>
-<p>The signal is assigned <code class="docutils literal notranslate"><span class="pre">kind=&quot;config&quot;</span></code>: so it shows up in the
-data from the <code class="docutils literal notranslate"><span class="pre">RE</span></code> (in the <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> document).</p>
 </div>
 </section>
 

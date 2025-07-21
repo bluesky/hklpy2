@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=fd825880"></script>
+    <script src="../_static/documentation_options.js?v=59fadc99"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -480,9 +480,9 @@ simulated motors for the example (no EPICS required).</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.0
-q=0
-th=0, tth=0
-th2th.component_names=(&#39;solver_signature&#39;, &#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;)
+pseudos: q=0
+reals: th=0, tth=0
+th2th.component_names=(&#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;)
 </pre></div>
 </div>
 </div>
@@ -506,9 +506,10 @@ th2th.component_names=(&#39;solver_signature&#39;, &#39;beam&#39;, &#39;q&#39;, 
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.0
-q=0
-th=0, tth=0
-th2th.component_names=(&#39;solver_signature&#39;, &#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;, &#39;spinner&#39;)
+pseudos: q=0
+reals: th=0, tth=0
+auxiliaries: spinner=0
+th2th.component_names=(&#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;, &#39;spinner&#39;)
 </pre></div>
 </div>
 </div>
@@ -550,8 +551,9 @@ to the pseudo positioners?</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.0
-Q=0
-sample=0, detector=0
+pseudos: Q=0
+reals: sample=0, detector=0
+auxiliaries: d=0, spinner=0
 </pre></div>
 </div>
 </div>
@@ -618,27 +620,28 @@ Let’s skip the factory function and show how to build a structure directly.</p
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.0
-q=0
-th=0, tth=0
+pseudos: q=0
+reals: th=0, tth=0
+auxiliaries: spinner=0, atth=0
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OrderedDict([(&#39;th2tth_beam_wavelength&#39;,
-              {&#39;value&#39;: 1.0, &#39;timestamp&#39;: 1744256777.7262537}),
+              {&#39;value&#39;: 1.0, &#39;timestamp&#39;: 1753128590.120337}),
              (&#39;th2tth_beam_energy&#39;,
-              {&#39;value&#39;: 12.398419843856837, &#39;timestamp&#39;: 1744256777.7262843}),
-             (&#39;th2tth_q&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1744256777.7263556}),
+              {&#39;value&#39;: 12.398419843856837, &#39;timestamp&#39;: 1753128590.1203966}),
+             (&#39;th2tth_q&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1204944}),
              (&#39;th2tth_q_setpoint&#39;,
-              {&#39;value&#39;: 0, &#39;timestamp&#39;: 1744256777.726387}),
-             (&#39;th2tth_th&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1744256777.7611496}),
-             (&#39;th2tth_tth&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1744256777.7611551}),
-             (&#39;th2tth_spinner&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1744256777.7611592}),
-             (&#39;th2tth_atth&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1744256777.7611616}),
+              {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1205065}),
+             (&#39;th2tth_th&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492393}),
+             (&#39;th2tth_tth&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492438}),
+             (&#39;th2tth_spinner&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492467}),
+             (&#39;th2tth_atth&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492488}),
              (&#39;th2tth_temperature&#39;,
-              {&#39;value&#39;: 25, &#39;timestamp&#39;: 1744256777.726868}),
-             (&#39;th2tth_xy_x&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1744256777.7611754}),
-             (&#39;th2tth_xy_y&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1744256777.7611783}),
+              {&#39;value&#39;: 25, &#39;timestamp&#39;: 1753128590.1208959}),
+             (&#39;th2tth_xy_x&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492596}),
+             (&#39;th2tth_xy_y&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492617}),
              (&#39;th2tth_xy_solenoid_lock&#39;,
-              {&#39;value&#39;: True, &#39;timestamp&#39;: 1744256777.7270894})])
+              {&#39;value&#39;: True, &#39;timestamp&#39;: 1753128590.1210973})])
 </pre></div>
 </div>
 </div>

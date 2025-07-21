@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=fd825880"></script>
+    <script src="../_static/documentation_options.js?v=59fadc99"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -453,8 +453,8 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-04-09 21:36:09.713474
-hklpy2.__version__=&#39;0.0.29.dev43+gdc399a0&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2025-07-19 10:15:59.536245
+hklpy2.__version__=&#39;0.1.5.dev4+g80f208f.d20250719&#39;
 hklpy2.solvers()={&#39;hkl_soleil&#39;: &#39;hklpy2.backends.hkl_soleil:HklSolver&#39;, &#39;no_op&#39;: &#39;hklpy2.backends.no_op:NoOpSolver&#39;, &#39;th_tth&#39;: &#39;hklpy2.backends.th_tth_q:ThTthSolver&#39;}
 </pre></div>
 </div>
@@ -475,8 +475,8 @@ hklpy2.solvers()={&#39;hkl_soleil&#39;: &#39;hklpy2.backends.hkl_soleil:HklSolve
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.0
-h=0, k=0, l=0
-omega=0, chi=0, phi=0, tth=0
+pseudos: h=0, k=0, l=0
+reals: omega=0, chi=0, phi=0, tth=0
 </pre></div>
 </div>
 </div>
@@ -497,8 +497,8 @@ was written in Python to demonstrate this new capability as a design goal for <s
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.0
-q=0
-th=0, tth=0
+pseudos: q=0
+reals: th=0, tth=0
 </pre></div>
 </div>
 </div>
@@ -541,8 +541,8 @@ th=0, tth=0
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.0
-h=0, k=0, l=0
-omega=0, chi=0, phi=0, tth=0
+pseudos: h=0, k=0, l=0
+reals: omega=0, chi=0, phi=0, tth=0
 </pre></div>
 </div>
 </div>
@@ -658,13 +658,13 @@ fourc.inverse(10, 0, 0, 20)=Hklpy2DiffractometerPseudoPos(h=2.182127379109, k=0,
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fourc</span><span class="o">.</span><span class="n">solver_signature</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_signature</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fourc</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>fourc.solver_signature.get()=&quot;HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)&quot;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>fourc.core.solver_signature=&quot;HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)&quot;
 fourc.beam.wavelength.get()=1.0
 </pre></div>
 </div>
@@ -705,8 +705,8 @@ fourc.core.solver_extra_axis_names=[]
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.0
-h=0, k=0, l=0
-omega=0, chi=0, phi=0, tth=0
+pseudos: h=0, k=0, l=0
+reals: omega=0, chi=0, phi=0, tth=0
 </pre></div>
 </div>
 </div>
@@ -722,7 +722,6 @@ omega=0, chi=0, phi=0, tth=0
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>data keys (* hints)
 -------------------
 *fourc_beam_energy
-*fourc_beam_source_type
 *fourc_beam_wavelength
 *fourc_chi
 *fourc_h
@@ -738,7 +737,6 @@ omega=0, chi=0, phi=0, tth=0
 read attrs
 ----------
 beam                 WavelengthXray      (&#39;fourc_beam&#39;)
-beam.source_type     SignalRO            (&#39;fourc_beam_source_type&#39;)
 beam.wavelength      Signal              (&#39;fourc_beam_wavelength&#39;)
 beam.energy          AttributeSignal     (&#39;fourc_beam_energy&#39;)
 h                    Hklpy2PseudoAxis    (&#39;fourc_h&#39;)
@@ -758,14 +756,16 @@ tth                  SoftPositioner      (&#39;fourc_tth&#39;)
 config keys
 -----------
 fourc_beam_energy_units
+fourc_beam_source_type
+fourc_beam_wavelength_deadband
 fourc_beam_wavelength_units
-fourc_solver_signature
 
 configuration attrs
 -------------------
-solver_signature     AttributeSignal     (&#39;fourc_solver_signature&#39;)
 beam                 WavelengthXray      (&#39;fourc_beam&#39;)
+beam.source_type     SignalRO            (&#39;fourc_beam_source_type&#39;)
 beam.wavelength_units Signal              (&#39;fourc_beam_wavelength_units&#39;)
+beam.wavelength_deadband Signal              (&#39;fourc_beam_wavelength_deadband&#39;)
 beam.energy_units    Signal              (&#39;fourc_beam_energy_units&#39;)
 h                    Hklpy2PseudoAxis    (&#39;fourc_h&#39;)
 k                    Hklpy2PseudoAxis    (&#39;fourc_k&#39;)
