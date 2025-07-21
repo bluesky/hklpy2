@@ -73,8 +73,8 @@ Notice
 ------
 
 * Move project to bluesky organization on GitHub.
-  * home: https://blueskyproject.io/hklpy2/
-  * code: https://github.com/bluesky/hklpy2
+    * home: https://blueskyproject.io/hklpy2/
+    * code: https://github.com/bluesky/hklpy2
 
 Fixes
 -----
