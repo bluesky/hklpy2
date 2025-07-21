@@ -50,7 +50,19 @@ H_OR_N = Kind.hinted | Kind.normal
 
 
 class Hklpy2PseudoAxis(PseudoSingle):
-    """Override to allow additional pseudos."""
+    """Override to allow auxiliary pseudos."""
+
+    @property
+    def position(self):
+        """The current position of the positioner in its engineering units
+
+        Returns
+        -------
+        position
+        """
+        if self._idx is None:
+            return self._position  # This is an auxiliary pseudo axis.
+        return self._parent.position[self._idx]
 
     @required_for_connection(description="{device.name} readback subscription")
     def _sub_proxy_readback(self, obj=None, value=None, **kwargs):
@@ -59,7 +71,7 @@ class Hklpy2PseudoAxis(PseudoSingle):
         pseudo axis.
         """
         if hasattr(value, "__getitem__"):
-            if self._idx is not None:  # Extra pseudos are ignored here.
+            if self._idx is not None:  # auxiliary pseudos are ignored here.
                 value = value[self._idx]
 
         return self._run_subs(obj=self, value=value, **kwargs)
@@ -120,6 +132,7 @@ class DiffractometerBase(PseudoPositioner):
     .. rubric:: Python Properties
 
     .. autosummary::
+        ~auxiliary_axis_names
         ~configuration
         ~pseudo_axis_names
         ~real_axis_names
@@ -177,6 +190,13 @@ class DiffractometerBase(PseudoPositioner):
             reals = [axis.attr_name for axis in self._real]
         self.core.assign_axes(pseudos, reals)
         self.beam.wavelength_updated_func = self.core.request_solver_update
+
+        for attr in self.auxiliary_axis_names:  # auxiliary
+            component = getattr(self, attr)
+            if isinstance(component, Hklpy2PseudoAxis):
+                if component.position is None:
+                    # Set position of all uninitialized auxiliary pseudo axes.
+                    component._position = 0.0
 
     def add_reflection(
         self,
@@ -554,6 +574,28 @@ class DiffractometerBase(PseudoPositioner):
     # ---- get/set properties
 
     @property
+    def auxiliary_axis_names(self) -> list[str]:
+        """
+        Names of all auxiliary positioners, in order of appearance.
+
+        Auxiliary axes are all components using (subclasses of
+        'ophyd.PositionerBase') that are not pseudos or reals.
+
+        Example::
+
+            >>> fourc.auxiliary_axis_names
+            ['h2', 'k2', 'l2']
+        """
+        pseudos_and_reals = self.pseudo_axis_names + self.real_axis_names
+        return [
+            # Names of any auxiliary positioners not described above.
+            attr
+            for attr in self.component_names
+            if attr not in pseudos_and_reals
+            if isinstance(getattr(self, attr), PositionerBase)
+        ]
+
+    @property
     def pseudo_axis_names(self):
         """
         Names of all the pseudo axes, in order of appearance.
@@ -605,15 +647,15 @@ class DiffractometerBase(PseudoPositioner):
             return f"{label}={roundoff(value, digits)}"
 
         def print_axes(names: list[str], preface: str = ""):
-            if len(names):
-                value_text = ", ".join(
-                    [
-                        # Any instance of PositionerBase.
-                        labeled_value(nm, getattr(self, nm).position)
-                        for nm in names
-                    ]
-                )
-                print(preface + value_text)
+            pairs = []
+            for nm in names:
+                # Any instance of PositionerBase.
+                component = getattr(self, nm)
+                value = component.position
+                pair = labeled_value(nm, value)
+                pairs.append(pair)
+            if len(pairs):
+                print(preface + ", ".join(pairs))
 
         def format_array(array):
             """Apply (fixed-point) digits formatting to numpy array."""
@@ -655,16 +697,7 @@ class DiffractometerBase(PseudoPositioner):
         if len(extras) > 0:
             value_text = " ".join([labeled_value(k, v) for k, v in extras.items()])
             print("extras: " + value_text)
-        print_axes(
-            [
-                # Names of any positioners not described above.
-                attr
-                for attr in self.component_names
-                if isinstance(getattr(self, attr), PositionerBase)
-                if attr not in (self.pseudo_axis_names + self.real_axis_names)
-            ],
-            preface="positioners: ",
-        )
+        print_axes(self.auxiliary_axis_names, preface="positioners: ")
 
 
 def creator(
