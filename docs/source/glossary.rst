@@ -17,10 +17,16 @@ Glossary
     other glossary entries.
 
 ..  index::
+    !definition; auxiliary
+    !auxiliary
+
+:auxiliary: Axes that are not *pseudos* or *reals*.
+
+..  index::
     !definition; axis
     !axis
 
-:axis: Either a *pseudo*, *real*, or *extra*.
+:axis: Either a *pseudo*, *real*, *extra*.
 
   :*physical*: Axis (either **pseudo** or **real**) which is not computed from
     other axes (except by the solver).  "Physical" for a *real* implies a direct
