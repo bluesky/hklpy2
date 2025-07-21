@@ -1,7 +1,7 @@
 ..
-  This file describes user-visible changes between the versions.
+    This file describes user-visible changes between the versions.
 
-  subsections could include these headings (in this order), omit if no content
+    subsections could include these headings (in this order), omit if no content
 
     Notice
     Breaking Changes
@@ -34,6 +34,11 @@ describe future plans.
     #####
 
     Release expected 2025-Q3.
+
+    Fixes
+    -----------
+
+    * Resolve TypeError raised from auxiliary pseudo position.
 
     Maintenance
     -----------
