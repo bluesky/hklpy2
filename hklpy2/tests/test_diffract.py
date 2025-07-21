@@ -1008,3 +1008,25 @@ def test_wh_virtual_issue_114():
     assert not gonio.connected
     with pytest.raises(DiffractometerError):
         gonio.wh()
+
+
+@pytest.mark.parametrize(
+    "specs, context, expected",
+    [
+        [{}, does_not_raise(), None],
+        [{"pseudos": "h k l ralph".split()}, does_not_raise(), None],
+        [
+            dict(
+                pseudos="h k l h2 k2 l2".split(),
+                reals="theta chi phi ttheta psi temperature".split(),
+            ),
+            does_not_raise(),
+            None,
+        ],
+    ],
+)
+def test_TypeError_issue_120(specs, context, expected):
+    with context as reason:
+        gonio = creator(**specs)
+        gonio.wh()
+    assert_context_result(expected, reason)
