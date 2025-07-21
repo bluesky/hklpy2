@@ -33,13 +33,16 @@ describe future plans.
     0.2.0
     #####
 
-    Release expected 2025-Q3.
+0.1.5
+#####
 
-    Maintenance
-    -----------
+Released 2025-07-21.
 
-    * Cancel in-progress GHA jobs when new one is started.
-    * Remove diffractometer solver_signature component.
+Maintenance
+-----------
+
+* Cancel in-progress GHA jobs when new one is started.
+* Remove diffractometer solver_signature component.
 
 0.1.4
 #####
