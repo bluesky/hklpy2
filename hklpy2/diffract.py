@@ -697,7 +697,7 @@ class DiffractometerBase(PseudoPositioner):
         if len(extras) > 0:
             value_text = " ".join([labeled_value(k, v) for k, v in extras.items()])
             print("extras: " + value_text)
-        print_axes(self.auxiliary_axis_names, preface="positioners: ")
+        print_axes(self.auxiliary_axis_names, preface="auxiliaries: ")
 
 
 def creator(
