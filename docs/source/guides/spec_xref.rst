@@ -38,9 +38,9 @@ the tools in Bluesky's |hklpy2| package.
 --               ``diffractometer.samples``                                     List all defined crystal samples.
 --               :func:`~hklpy2.user.add_sample`                                Define a new crystal sample.
 ``setaz h k l``  :meth:`~hklpy2.backends.base.SolverBase.extras`                Set the azimuthal reference vector to the given :math:`h, k, l`.
-``setsector``    TODO:                                                          Select a sector.
-``cz``           TODO:                                                          Calculate zone from two reflections
-``mz``           TODO:                                                          Move zone
-``pl``           TODO:                                                          Set the scattering plane
-``sz``           TODO:                                                          Set zone
+``setsector``    Not yet implemented.                                           Select a sector.
+``cz``           Not yet implemented.                                           Calculate zone from two reflections
+``mz``           Not yet implemented.                                           Move zone
+``pl``           Not yet implemented.                                           Set the scattering plane
+``sz``           Not yet implemented.                                           Set zone
 ===============  =============================================================  ============
