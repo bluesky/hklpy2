@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=ea12b9fa"></script>
+    <script src="../_static/documentation_options.js?v=5b101d3a"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -457,41 +457,17 @@ the tools in Bluesky’s <strong>hklpy2</strong> package.</p>
 <td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.wh" title="hklpy2.user.wh"><code class="xref py py-func docutils literal notranslate"><span class="pre">wh()</span></code></a></p></td>
 <td><p>Report (brief) diffractometer settings. (wh: where)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">br</span> <span class="pre">h</span> <span class="pre">k</span> <span class="pre">l</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">diffractometer.move(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></td>
-<td><p>(command line) Move motors of <code class="docutils literal notranslate"><span class="pre">diffractometer</span></code> to the given <span class="math notranslate nohighlight">\(h, k, l\)</span>.</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setmode</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">diffractometer.core.mode</span> <span class="pre">=</span> <span class="pre">&quot;psi_constant</span></code></p></td>
+<td><p>Set the diffractometer mode for the <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">br</span> <span class="pre">h</span> <span class="pre">k</span> <span class="pre">l</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span> <span class="pre">bps.mv(diffractometer,</span> <span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l))</span></code></p></td>
-<td><p>(bluesky plan) Move motors of <code class="docutils literal notranslate"><span class="pre">diffractometer</span></code> to the given <span class="math notranslate nohighlight">\(h, k, l\)</span>.</p></td>
+<tr class="row-even"><td><p>–</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">diffractometer.core.modes</span></code></p></td>
+<td><p>List all available diffractometer modes.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ca</span> <span class="pre">h</span> <span class="pre">k</span> <span class="pre">l</span></code></p></td>
-<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.cahkl" title="hklpy2.user.cahkl"><code class="xref py py-func docutils literal notranslate"><span class="pre">cahkl()</span></code></a></p></td>
-<td><p>Prints calculated motor settings for the given <span class="math notranslate nohighlight">\(h, k, l\)</span>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">or_swap</span></code></p></td>
-<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.or_swap" title="hklpy2.user.or_swap"><code class="xref py py-func docutils literal notranslate"><span class="pre">or_swap()</span></code></a></p></td>
-<td><p>Exchange primary &amp; secondary orientation reflections.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">or0</span></code></p></td>
-<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.setor" title="hklpy2.user.setor"><code class="xref py py-func docutils literal notranslate"><span class="pre">setor()</span></code></a></p></td>
-<td><p>Define a crystal reflection and its motor positions.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">or1</span></code></p></td>
-<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.setor" title="hklpy2.user.setor"><code class="xref py py-func docutils literal notranslate"><span class="pre">setor()</span></code></a></p></td>
-<td><p>Define a crystal reflection and its motor positions.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflex</span></code></p></td>
-<td><p><a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.refine_lattice" title="hklpy2.blocks.sample.Sample.refine_lattice"><code class="xref py py-func docutils literal notranslate"><span class="pre">refine_lattice()</span></code></a></p></td>
-<td><p>Refinement of lattice parameters from list of 3 or more reflections</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reflex_beg</span></code></p></td>
-<td><p>not necessary</p></td>
-<td><p>Initializes the reflections file</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflex_end</span></code></p></td>
-<td><p>not necessary</p></td>
-<td><p>Closes the reflections file</p></td>
+<tr class="row-odd"><td><p>–</p></td>
+<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.add_sample" title="hklpy2.user.add_sample"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_sample()</span></code></a></p></td>
+<td><p>Define a new crystal sample.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">setlat</span></code></p></td>
 <td><p><a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.lattice" title="hklpy2.blocks.sample.Sample.lattice"><code class="xref py py-meth docutils literal notranslate"><span class="pre">lattice()</span></code></a></p></td>
@@ -505,37 +481,61 @@ the tools in Bluesky’s <strong>hklpy2</strong> package.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">diffractometer.samples</span></code></p></td>
 <td><p>List all defined crystal samples.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setmode</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">diffractometer.core.mode</span> <span class="pre">=</span> <span class="pre">&quot;psi_constant</span></code></p></td>
-<td><p>Set the diffractometer mode for the <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">or0</span></code></p></td>
+<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.setor" title="hklpy2.user.setor"><code class="xref py py-func docutils literal notranslate"><span class="pre">setor()</span></code></a></p></td>
+<td><p>Define a crystal reflection and its motor positions.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">or1</span></code></p></td>
+<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.setor" title="hklpy2.user.setor"><code class="xref py py-func docutils literal notranslate"><span class="pre">setor()</span></code></a></p></td>
+<td><p>Define a crystal reflection and its motor positions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">or_swap</span></code></p></td>
+<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.or_swap" title="hklpy2.user.or_swap"><code class="xref py py-func docutils literal notranslate"><span class="pre">or_swap()</span></code></a></p></td>
+<td><p>Exchange primary &amp; secondary orientation reflections.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">br</span> <span class="pre">h</span> <span class="pre">k</span> <span class="pre">l</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">diffractometer.move(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></td>
+<td><p>(command line) Move motors of <code class="docutils literal notranslate"><span class="pre">diffractometer</span></code> to the given <span class="math notranslate nohighlight">\(h, k, l\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">br</span> <span class="pre">h</span> <span class="pre">k</span> <span class="pre">l</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">yield</span> <span class="pre">from</span> <span class="pre">bps.mv(diffractometer,</span> <span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l))</span></code></p></td>
+<td><p>(bluesky plan) Move motors of <code class="docutils literal notranslate"><span class="pre">diffractometer</span></code> to the given <span class="math notranslate nohighlight">\(h, k, l\)</span>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ca</span> <span class="pre">h</span> <span class="pre">k</span> <span class="pre">l</span></code></p></td>
+<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.cahkl" title="hklpy2.user.cahkl"><code class="xref py py-func docutils literal notranslate"><span class="pre">cahkl()</span></code></a></p></td>
+<td><p>Prints calculated motor settings for the given <span class="math notranslate nohighlight">\(h, k, l\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflex</span></code></p></td>
+<td><p><a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.refine_lattice" title="hklpy2.blocks.sample.Sample.refine_lattice"><code class="xref py py-func docutils literal notranslate"><span class="pre">refine_lattice()</span></code></a></p></td>
+<td><p>Refinement of lattice parameters from list of 3 or more reflections</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reflex_beg</span></code></p></td>
+<td><p>not necessary</p></td>
+<td><p>Initializes the reflections file</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflex_end</span></code></p></td>
+<td><p>not necessary</p></td>
+<td><p>Closes the reflections file</p></td>
 </tr>
 <tr class="row-even"><td><p>–</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">diffractometer.core.modes</span></code></p></td>
-<td><p>List all available diffractometer modes.</p></td>
-</tr>
-<tr class="row-odd"><td><p>–</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">diffractometer.core.constraints</span></code></p></td>
 <td><p>Show the current set of constraints (cut points).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cuts</span></code></p></td>
-<td><p><a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LimitsConstraint()</span></code></a></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cuts</span></code></p></td>
+<td><p>See <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LimitsConstraint()</span></code></a></p></td>
 <td><p>Add constraints to the diffractometer <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">freeze</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">freeze</span></code></p></td>
 <td><p>Move axis to value, Choose mode that does not update <em>axis</em>.</p></td>
 <td><p>Hold an axis constant during the diffractometer <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">unfreeze</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">unfreeze</span></code></p></td>
 <td><p>Choose mode that updates <em>axis</em>.</p></td>
 <td><p>Allow axis to be updated by <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.</p></td>
 </tr>
-<tr class="row-odd"><td><p>–</p></td>
+<tr class="row-even"><td><p>–</p></td>
 <td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.calc_UB" title="hklpy2.user.calc_UB"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_UB()</span></code></a></p></td>
 <td><p>Compute the UB matrix with two reflections.</p></td>
-</tr>
-<tr class="row-even"><td><p>–</p></td>
-<td><p><a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.add_sample" title="hklpy2.user.add_sample"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_sample()</span></code></a></p></td>
-<td><p>Define a new crystal sample.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setaz</span> <span class="pre">h</span> <span class="pre">k</span> <span class="pre">l</span></code></p></td>
 <td><p><a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.extras" title="hklpy2.ops.Core.extras"><code class="xref py py-attr docutils literal notranslate"><span class="pre">extras</span></code></a></p></td>
