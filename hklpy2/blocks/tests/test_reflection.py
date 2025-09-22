@@ -487,3 +487,97 @@ def test_wrong_real_names():
             core=e4cv.core,
         )
     assert_context_result(expected, reason)
+
+
+# === Combined parametrized tests for Reflection arithmetic (__add__ and __sub__) ===
+
+
+@pytest.mark.parametrize(
+    "left,right,ctx,expect_pseudos,expect_reals",
+    [
+        # successes for addition
+        pytest.param(
+            r_1,
+            r_2,
+            does_not_raise(),
+            {"a": 2, "b": 4},
+            {"c": 2, "d": 4},
+            id="add_identical",
+        ),
+        pytest.param(
+            r_1,
+            r_4,
+            does_not_raise(),
+            {"a": 2, "b": 5},
+            {"c": 2, "d": 4},
+            id="add_diff",
+        ),
+        # error cases for addition (non-Reflection operand)
+        pytest.param(
+            r_1, 5, pytest.raises(TypeError), None, None, id="add_type_error_int"
+        ),
+        pytest.param(
+            r_1,
+            ["not", "a", "reflection"],
+            pytest.raises(TypeError),
+            None,
+            None,
+            id="add_type_error_list",
+        ),
+    ],
+)
+def test_reflection_add(left, right, ctx, expect_pseudos, expect_reals):
+    r1 = Reflection(*left)
+    # for non-Reflection right operands, we do not construct Reflection(*right)
+    with ctx:
+        r2 = Reflection(*right)
+        if isinstance(ctx, type(does_not_raise())):
+            # success path: compute and assert
+            r3 = r1 + r2
+            assert "plus" in r3.name
+            assert r3.pseudos == expect_pseudos
+            assert r3.reals == expect_reals
+
+
+@pytest.mark.parametrize(
+    "left,right,ctx,expect_pseudos,expect_reals",
+    [
+        # successes for subtraction
+        pytest.param(
+            r_1,
+            r_2,
+            does_not_raise(),
+            {"a": 0, "b": 0},
+            {"c": 0, "d": 0},
+            id="sub_identical",
+        ),
+        pytest.param(
+            r_4,
+            r_1,
+            does_not_raise(),
+            {"a": 0, "b": 1},
+            {"c": 0, "d": 0},
+            id="sub_diff",
+        ),
+        # error cases for subtraction (non-Reflection operand)
+        pytest.param(
+            r_1, 5, pytest.raises(TypeError), None, None, id="sub_type_error_int"
+        ),
+        pytest.param(
+            r_1,
+            ["not", "a", "reflection"],
+            pytest.raises(TypeError),
+            None,
+            None,
+            id="sub_type_error_list",
+        ),
+    ],
+)
+def test_reflection_sub(left, right, ctx, expect_pseudos, expect_reals):
+    r1 = Reflection(*left)
+    with ctx:
+        r2 = Reflection(*right)
+        r3 = r1 - r2
+        assert "minus" in r3.name
+        assert r3.pseudos == expect_pseudos
+        assert r3.reals == expect_reals

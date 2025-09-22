@@ -30,6 +30,8 @@ class Reflection:
     """
     Coordinates real and pseudo axes.
 
+    Two reflections can be added, subtracted, or compared for equality.
+
     .. note:: Internal use only.
 
        It is expected this class is called from a method of
@@ -50,7 +52,9 @@ class Reflection:
 
     .. autosummary::
 
+        ~__add__
         ~__eq__
+        ~__sub__
         ~_asdict
         ~_fromdict
         ~_validate_pseudos
@@ -150,6 +154,60 @@ class Reflection:
         ]
         guts = [f"name={self.name!r}"] + pseudos
         return f"{self.__class__.__name__}({', '.join(guts)})"
+
+    def __add__(self, other):
+        """
+        Add a Reflection object to this one and return as a new Reflection.
+
+        Combines the pseudos and reals of self and other.
+        """
+        if not isinstance(other, Reflection):
+            raise TypeError(
+                f"Unsupported operand type(s) for +: 'Reflection' and '{type(other).__name__}'"
+            )
+
+        # Create a new Reflection with combined pseudo and real values.
+        new_name = f"{self.name}_plus_{other.name}"
+        new_pseudos = {
+            key: self.pseudos[key] + other.pseudos[key] for key in self.pseudos
+        }
+        new_reals = {key: self.reals[key] + other.reals[key] for key in self.reals}
+        return Reflection(
+            name=new_name,
+            pseudos=new_pseudos,
+            reals=new_reals,
+            wavelength=self.wavelength,  # Preserve wavelength from self.
+            geometry=self.geometry,
+            pseudo_axis_names=self.pseudo_axis_names,
+            real_axis_names=self.real_axis_names,
+        )
+
+    def __sub__(self, other):
+        """
+        Subtract another Reflection from this one and return as a new Reflection.
+
+        Subtracts the pseudos and reals of other from self.
+        """
+        if not isinstance(other, Reflection):
+            raise TypeError(
+                f"Unsupported operand type(s) for -: 'Reflection' and '{type(other).__name__}'"
+            )
+
+        # Create a new Reflection with subtracted pseudo and real values.
+        new_name = f"{self.name}_minus_{other.name}"
+        new_pseudos = {
+            key: self.pseudos[key] - other.pseudos[key] for key in self.pseudos
+        }
+        new_reals = {key: self.reals[key] - other.reals[key] for key in self.reals}
+        return Reflection(
+            name=new_name,
+            pseudos=new_pseudos,
+            reals=new_reals,
+            wavelength=self.wavelength,  # Preserve wavelength from self.
+            geometry=self.geometry,
+            pseudo_axis_names=self.pseudo_axis_names,
+            real_axis_names=self.real_axis_names,
+        )
 
     def __eq__(self, r2):
         """
