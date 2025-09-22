@@ -30,6 +30,8 @@ class Reflection:
     """
     Coordinates real and pseudo axes.
 
+    Two reflections can be added, subtracted, or compared for equality.
+
     .. note:: Internal use only.
 
        It is expected this class is called from a method of
