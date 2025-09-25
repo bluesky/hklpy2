@@ -102,6 +102,85 @@ class Reflection:
         self.reals = reals
         self.wavelength = wavelength
 
+    def __add__(self, other):
+        """
+        Add a Reflection object to this one and return as a new Reflection.
+
+        Combines the pseudos and reals of self and other.
+        """
+        if not isinstance(other, Reflection):
+            raise TypeError(
+                f"Unsupported operand type(s) for +: 'Reflection' and '{type(other).__name__}'"
+            )
+
+        # Create a new Reflection with combined pseudo and real values.
+        new_name = f"{self.name}_plus_{other.name}"
+        new_pseudos = {
+            key: self.pseudos[key] + other.pseudos[key] for key in self.pseudos
+        }
+        new_reals = {key: self.reals[key] + other.reals[key] for key in self.reals}
+        return Reflection(
+            name=new_name,
+            pseudos=new_pseudos,
+            reals=new_reals,
+            wavelength=self.wavelength,  # Preserve wavelength from self.
+            geometry=self.geometry,
+            pseudo_axis_names=self.pseudo_axis_names,
+            real_axis_names=self.real_axis_names,
+        )
+
+    def __eq__(self, r2):
+        """
+        Compare this reflection with another for equality.
+
+        Precision is controlled by rounding to smallest number of digits
+        between the reflections.
+        """
+        digits = min(self.digits, r2.digits)
+        return (
+            compare_float_dicts(self.pseudos, r2.pseudos, digits)
+            and compare_float_dicts(self.reals, r2.reals, digits)
+            and round(self.wavelength, digits) == round(r2.wavelength, digits)
+        )
+
+    def __repr__(self):
+        """
+        Standard brief representation of reflection.
+        """
+        pseudos = [
+            f"{k}={round(v, self.digits)}"  # roundoff
+            for k, v in self.pseudos.items()
+        ]
+        guts = [f"name={self.name!r}"] + pseudos
+        return f"{self.__class__.__name__}({', '.join(guts)})"
+
+    def __sub__(self, other):
+        """
+        Subtract another Reflection from this one and return as a new Reflection.
+
+        Subtracts the pseudos and reals of other from self.
+        """
+        if not isinstance(other, Reflection):
+            raise TypeError(
+                f"Unsupported operand type(s) for -: 'Reflection' and '{type(other).__name__}'"
+            )
+
+        # Create a new Reflection with subtracted pseudo and real values.
+        new_name = f"{self.name}_minus_{other.name}"
+        new_pseudos = {
+            key: self.pseudos[key] - other.pseudos[key] for key in self.pseudos
+        }
+        new_reals = {key: self.reals[key] - other.reals[key] for key in self.reals}
+        return Reflection(
+            name=new_name,
+            pseudos=new_pseudos,
+            reals=new_reals,
+            wavelength=self.wavelength,  # Preserve wavelength from self.
+            geometry=self.geometry,
+            pseudo_axis_names=self.pseudo_axis_names,
+            real_axis_names=self.real_axis_names,
+        )
+
     def _asdict(self):
         """Describe this reflection as a dictionary."""
         return {
@@ -143,85 +222,6 @@ class Reflection:
         self.wavelength = config.get("wavelength", self.wavelength)
         self.pseudos = config["pseudos"]
         self.reals = config["reals"]
-
-    def __repr__(self):
-        """
-        Standard brief representation of reflection.
-        """
-        pseudos = [
-            f"{k}={round(v, self.digits)}"  # roundoff
-            for k, v in self.pseudos.items()
-        ]
-        guts = [f"name={self.name!r}"] + pseudos
-        return f"{self.__class__.__name__}({', '.join(guts)})"
-
-    def __add__(self, other):
-        """
-        Add a Reflection object to this one and return as a new Reflection.
-
-        Combines the pseudos and reals of self and other.
-        """
-        if not isinstance(other, Reflection):
-            raise TypeError(
-                f"Unsupported operand type(s) for +: 'Reflection' and '{type(other).__name__}'"
-            )
-
-        # Create a new Reflection with combined pseudo and real values.
-        new_name = f"{self.name}_plus_{other.name}"
-        new_pseudos = {
-            key: self.pseudos[key] + other.pseudos[key] for key in self.pseudos
-        }
-        new_reals = {key: self.reals[key] + other.reals[key] for key in self.reals}
-        return Reflection(
-            name=new_name,
-            pseudos=new_pseudos,
-            reals=new_reals,
-            wavelength=self.wavelength,  # Preserve wavelength from self.
-            geometry=self.geometry,
-            pseudo_axis_names=self.pseudo_axis_names,
-            real_axis_names=self.real_axis_names,
-        )
-
-    def __sub__(self, other):
-        """
-        Subtract another Reflection from this one and return as a new Reflection.
-
-        Subtracts the pseudos and reals of other from self.
-        """
-        if not isinstance(other, Reflection):
-            raise TypeError(
-                f"Unsupported operand type(s) for -: 'Reflection' and '{type(other).__name__}'"
-            )
-
-        # Create a new Reflection with subtracted pseudo and real values.
-        new_name = f"{self.name}_minus_{other.name}"
-        new_pseudos = {
-            key: self.pseudos[key] - other.pseudos[key] for key in self.pseudos
-        }
-        new_reals = {key: self.reals[key] - other.reals[key] for key in self.reals}
-        return Reflection(
-            name=new_name,
-            pseudos=new_pseudos,
-            reals=new_reals,
-            wavelength=self.wavelength,  # Preserve wavelength from self.
-            geometry=self.geometry,
-            pseudo_axis_names=self.pseudo_axis_names,
-            real_axis_names=self.real_axis_names,
-        )
-
-    def __eq__(self, r2):
-        """
-        Compare this reflection with another for equality.
-
-        Precision is controlled by rounding to smallest number of digits
-        between the reflections.
-        """
-        digits = min(self.digits, r2.digits)
-        return (
-            compare_float_dicts(self.pseudos, r2.pseudos, digits)
-            and compare_float_dicts(self.reals, r2.reals, digits)
-            and round(self.wavelength, digits) == round(r2.wavelength, digits)
-        )
 
     def _validate_pseudos(self, value):
         """Raise Exception if pseudos do not match expectations."""
