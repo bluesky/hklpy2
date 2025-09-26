@@ -103,13 +103,13 @@ DEFAULT_START_KEY = "diffractometers"
 
 # Custom data types
 
-AxesArray = numpy.typing.NDArray[float]
+AxesArray = numpy.typing.NDArray[numpy.floating]
 """Numpy array of axes values."""
 
 AxesDict = dict[str, float]
 """Dictionary of axes names and values."""
 
-AxesList = list[float, ...]
+AxesList = list[float]
 """List of axes values."""
 
 AxesTuple = tuple[float, ...]
