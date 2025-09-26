@@ -9,16 +9,16 @@ import pytest
 from ophyd.utils import ReadOnlyError
 
 from ..diffract import creator
-from ..incident import DEFAULT_ENERGY_UNITS
 from ..incident import DEFAULT_SOURCE_TYPE
 from ..incident import DEFAULT_WAVELENGTH
 from ..incident import DEFAULT_WAVELENGTH_DEADBAND
-from ..incident import DEFAULT_WAVELENGTH_UNITS
 from ..incident import EpicsMonochromatorRO
 from ..incident import EpicsWavelengthRO
 from ..incident import Wavelength
 from ..incident import WavelengthXray
 from ..incident import _WavelengthBase
+from ..misc import INTERNAL_ENERGY_UNITS
+from ..misc import INTERNAL_WAVELENGTH_UNITS
 from .common import PV_WAVELENGTH
 from .common import assert_context_result
 
@@ -44,7 +44,7 @@ def check_keys(wl, ref, tol=0.001):
             {},
             dict(
                 wavelength=DEFAULT_WAVELENGTH,
-                wavelength_units=DEFAULT_WAVELENGTH_UNITS,
+                wavelength_units=INTERNAL_WAVELENGTH_UNITS,
                 source_type=DEFAULT_SOURCE_TYPE,
             ),
             does_not_raise(),
@@ -62,7 +62,7 @@ def check_keys(wl, ref, tol=0.001):
             {},
             dict(
                 wavelength=DEFAULT_WAVELENGTH,
-                wavelength_units=DEFAULT_WAVELENGTH_UNITS,
+                wavelength_units=INTERNAL_WAVELENGTH_UNITS,
                 source_type=DEFAULT_SOURCE_TYPE,
             ),
             does_not_raise(),
@@ -73,7 +73,7 @@ def check_keys(wl, ref, tol=0.001):
             dict(wavelength=2),
             dict(
                 wavelength=2,
-                wavelength_units=DEFAULT_WAVELENGTH_UNITS,
+                wavelength_units=INTERNAL_WAVELENGTH_UNITS,
                 source_type=DEFAULT_SOURCE_TYPE,
             ),
             does_not_raise(),
@@ -105,9 +105,9 @@ def check_keys(wl, ref, tol=0.001):
             {},
             dict(
                 energy=12.3984,
-                energy_units=DEFAULT_ENERGY_UNITS,
+                energy_units=INTERNAL_ENERGY_UNITS,
                 wavelength=DEFAULT_WAVELENGTH,
-                wavelength_units=DEFAULT_WAVELENGTH_UNITS,
+                wavelength_units=INTERNAL_WAVELENGTH_UNITS,
                 source_type=DEFAULT_SOURCE_TYPE,
             ),
             does_not_raise(),
@@ -159,7 +159,7 @@ def test_constructors(Klass, parms, ref, context, expected):
             Wavelength,
             {"class": "Wavelength", "wavelength_units": "kg"},  # incompatible
             pytest.raises(pint.DimensionalityError),
-            DEFAULT_WAVELENGTH_UNITS,
+            INTERNAL_WAVELENGTH_UNITS,
         ],
         [
             Wavelength,

@@ -55,8 +55,8 @@ from ophyd import Signal
 from ophyd import SignalRO
 from ophyd.signal import AttributeSignal
 
-from .misc import DEFAULT_ENERGY_UNITS
-from .misc import DEFAULT_WAVELENGTH_UNITS
+from .misc import INTERNAL_ENERGY_UNITS
+from .misc import INTERNAL_WAVELENGTH_UNITS
 
 logger = logging.getLogger(__name__)
 DEFAULT_SOURCE_TYPE = "Synchrotron X-ray Source"
@@ -102,7 +102,7 @@ class _WavelengthBase(Device):
     wavelength = Component(SignalRO, value=DEFAULT_WAVELENGTH, kind="hinted")
     """Constant wavelength (:math:`\\lambda`) of incident monochromatic beam."""
     wavelength_units = Component(
-        SignalRO, value=DEFAULT_WAVELENGTH_UNITS, kind="config"
+        SignalRO, value=INTERNAL_WAVELENGTH_UNITS, kind="config"
     )
     """Constant engineering units of wavelength. (Same units as unit cell lengths.)"""
 
@@ -127,9 +127,9 @@ class _WavelengthBase(Device):
             for attr, value in info.items():
                 # Check first for incompatible units, before any signal.put() operations.
                 if attr == "energy_units" and value is not None:
-                    pint.UnitRegistry().convert(1, value, DEFAULT_ENERGY_UNITS)
+                    pint.UnitRegistry().convert(1, value, INTERNAL_ENERGY_UNITS)
                 elif attr == "wavelength_units" and value is not None:
-                    pint.UnitRegistry().convert(1, value, DEFAULT_WAVELENGTH_UNITS)
+                    pint.UnitRegistry().convert(1, value, INTERNAL_WAVELENGTH_UNITS)
 
             for attr in self._keyset:
                 value = info.get(attr)
@@ -157,7 +157,7 @@ class _WavelengthBase(Device):
 
         if wavelength_units is not None:
             # validate first
-            pint.UnitRegistry().convert(1, wavelength_units, DEFAULT_WAVELENGTH_UNITS)
+            pint.UnitRegistry().convert(1, wavelength_units, INTERNAL_WAVELENGTH_UNITS)
             self.wavelength_units.put(wavelength_units)
 
         if wavelength is not None:
@@ -222,7 +222,7 @@ class Wavelength(_WavelengthBase):
 
     wavelength = Component(Signal, value=DEFAULT_WAVELENGTH, kind="hinted")
     """Wavelength (:math:`\\lambda`) of incident monochromatic beam."""
-    wavelength_units = Component(Signal, value=DEFAULT_WAVELENGTH_UNITS, kind="config")
+    wavelength_units = Component(Signal, value=INTERNAL_WAVELENGTH_UNITS, kind="config")
     """Engineering units of wavelength. (Same units as unit cell lengths.)"""
 
 
@@ -240,7 +240,7 @@ class WavelengthXray(Wavelength):
             \\lambda = (h \\nu) / E
 
     """
-    energy_units = Component(Signal, value=DEFAULT_ENERGY_UNITS, kind="config")
+    energy_units = Component(Signal, value=INTERNAL_ENERGY_UNITS, kind="config")
     """
     Engineering units of energy.
 
@@ -268,7 +268,7 @@ class WavelengthXray(Wavelength):
         super().__init__(prefix, **kwargs)
         if energy_units is not None:
             # validate first
-            pint.UnitRegistry().convert(1, energy_units, DEFAULT_ENERGY_UNITS)
+            pint.UnitRegistry().convert(1, energy_units, INTERNAL_ENERGY_UNITS)
             self.energy_units.put(energy_units)
         if energy is not None:
             self.energy.put(energy)
@@ -281,11 +281,11 @@ class WavelengthXray(Wavelength):
         wavelength = convert_units(
             self.wavelength.get(),
             self.wavelength_units.get(),
-            DEFAULT_WAVELENGTH_UNITS,
+            INTERNAL_WAVELENGTH_UNITS,
         )
         return convert_units(
             A_KEV / wavelength,
-            DEFAULT_ENERGY_UNITS,
+            INTERNAL_ENERGY_UNITS,
             self.energy_units.get(),
         )
 
@@ -297,12 +297,12 @@ class WavelengthXray(Wavelength):
         energy = convert_units(
             value,
             self.energy_units.get(),
-            DEFAULT_ENERGY_UNITS,
+            INTERNAL_ENERGY_UNITS,
         )
         self.wavelength.put(
             convert_units(
                 A_KEV / energy,
-                DEFAULT_WAVELENGTH_UNITS,
+                INTERNAL_WAVELENGTH_UNITS,
                 self.wavelength_units.get(),
             )
         )
@@ -313,7 +313,7 @@ class EpicsWavelengthRO(_WavelengthBase):
 
     wavelength = FC(EpicsSignalRO, "{prefix}{_pv_wavelength}", kind="hinted")
     wavelength_units = Component(
-        SignalRO, value=DEFAULT_WAVELENGTH_UNITS, kind="config"
+        SignalRO, value=INTERNAL_WAVELENGTH_UNITS, kind="config"
     )
 
     def __init__(
@@ -321,7 +321,7 @@ class EpicsWavelengthRO(_WavelengthBase):
         prefix: str = "",
         *,
         pv_wavelength: str = "",
-        wavelength_units: str = DEFAULT_WAVELENGTH_UNITS,
+        wavelength_units: str = INTERNAL_WAVELENGTH_UNITS,
         **kwargs,
     ):
         """."""
@@ -345,7 +345,7 @@ class EpicsMonochromatorRO(EpicsWavelengthRO):
     """
 
     energy = FC(EpicsSignalRO, "{prefix}{_pv_energy}", kind="hinted")
-    energy_units = Component(SignalRO, value=DEFAULT_ENERGY_UNITS, kind="config")
+    energy_units = Component(SignalRO, value=INTERNAL_ENERGY_UNITS, kind="config")
 
     _keyset: list[str] = (
         "source_type energy wavelength energy_units wavelength_units".split()
@@ -357,7 +357,7 @@ class EpicsMonochromatorRO(EpicsWavelengthRO):
         prefix: str = "",
         *,
         pv_energy: str = "",
-        energy_units: str = DEFAULT_ENERGY_UNITS,
+        energy_units: str = INTERNAL_ENERGY_UNITS,
         **kwargs,
     ):
         """."""

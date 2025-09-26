@@ -22,7 +22,7 @@ from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
-from .incident import DEFAULT_WAVELENGTH_UNITS
+from .misc import INTERNAL_WAVELENGTH_UNITS
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import CoreError
@@ -569,7 +569,7 @@ class Core:
         """(internal) Convert units in list of reflections to be sent to a solver."""
         k = "wavelength"
         wl_units = self.diffractometer.beam.wavelength_units.get()
-        wl_units_solver = DEFAULT_WAVELENGTH_UNITS
+        wl_units_solver = INTERNAL_WAVELENGTH_UNITS
         reflections = []
         for refl in refl_list:
             if isinstance(refl, str):
@@ -740,11 +740,11 @@ class Core:
     def to_solver_units(self, wavelength: float = None) -> dict:
         """Convert quantities from diffractometer units to solver units."""
         # TODO Lattice should have its own units
-        uc_units = DEFAULT_WAVELENGTH_UNITS  # uc: Unit Cell length
-        uc_units_solver = DEFAULT_WAVELENGTH_UNITS
+        uc_units = INTERNAL_WAVELENGTH_UNITS  # uc: Unit Cell length
+        uc_units_solver = INTERNAL_WAVELENGTH_UNITS
         # Lattice angles are degrees
         wl_units = self.diffractometer.beam.wavelength_units.get()
-        wl_units_solver = DEFAULT_WAVELENGTH_UNITS
+        wl_units_solver = INTERNAL_WAVELENGTH_UNITS
 
         lattice = self.sample.lattice._asdict()
         for k in "a b c".split():
