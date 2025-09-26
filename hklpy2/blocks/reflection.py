@@ -118,7 +118,7 @@ class Reflection:
         Combines the pseudos and reals of self and other.
         """
         if not isinstance(other, Reflection):
-            raise TypeError(
+            raise TypeError(  # TODO needs test
                 "Unsupported operand type(s) for +: 'Reflection'"
                 #
                 f" and '{type(other).__name__}'"
@@ -175,7 +175,7 @@ class Reflection:
         Subtracts the pseudos and reals of other from self.
         """
         if not isinstance(other, Reflection):
-            raise TypeError(
+            raise TypeError(  # TODO needs test
                 "Unsupported operand type(s) for -: 'Reflection' "
                 #
                 f"and '{type(other).__name__}'"
