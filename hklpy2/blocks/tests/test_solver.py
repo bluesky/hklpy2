@@ -10,19 +10,19 @@ ________________________________ test_HklSolver ________________________________
     def test_HklSolver():
         Solver = get_solver("hkl_soleil")
         assert Solver is not None
-    
+
         solver = Solver("E4CV")
         assert solver is not None
         assert isinstance(solver.version, str)
-    
+
         gname = "ESRF ID01 PSIC"
         assert solver.geometry != gname
-    
+
         with pytest.raises(AttributeError) as reason:
             solver.geometry = "E4CV"
 >       assert_context_result("has no setter", reason)
-hklpy2/blocks/tests/test_solver.py:43: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+hklpy2/blocks/tests/test_solver.py:43:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 expected = 'has no setter'
 reason = <ExceptionInfo AttributeError("can't set attribute 'geometry'") tblen=1>
     def assert_context_result(expected, reason):
@@ -34,6 +34,7 @@ reason = <ExceptionInfo AttributeError("can't set attribute 'geometry'") tblen=1
 E           AssertionError: expected='has no setter' reason=<ExceptionInfo AttributeError("can't set attribute 'geometry'") tblen=1>
 hklpy2/tests/common.py:16: AssertionError
 '''
+
 
 @pytest.mark.parametrize(
     "solver_name, geometry", [["hkl_soleil", "E4CV"], ["no_op", "anything"]]

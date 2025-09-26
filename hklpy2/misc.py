@@ -653,7 +653,9 @@ def get_solver(solver_name):
         libhkl_solver = SolverClass()
     """
     if solver_name not in solvers():
-        raise SolverError(f"{solver_name=!r} unknown.  Pick one of: {solvers()!r}")  # TODO needs test
+        raise SolverError(
+            f"{solver_name=!r} unknown.  Pick one of: {solvers()!r}"
+        )  # TODO needs test
     entries = entry_points(group=SOLVER_ENTRYPOINT_GROUP)
     return entries[solver_name].load()
 
