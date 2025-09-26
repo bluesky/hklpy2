@@ -58,3 +58,5 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 ## Notes
 
 - Keep agent actions small, reversible, and reviewable.
+- When updating a file, verify that a change has actually been made by comparing
+  the mtime before and after the edits.
