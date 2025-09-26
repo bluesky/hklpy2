@@ -639,6 +639,9 @@ class DiffractometerBase(PseudoPositioner):
 
     def wh(self, digits=4, full=False):
         """Concise report of the current diffractometer positions."""
+        # TODO 135 lattice length units
+        # TODO 136 angle units
+        # TODO 137 wavelength_units
 
         if not self.connected:
             raise DiffractometerError(f"Diffractometer {self.name!r} is not connected.")

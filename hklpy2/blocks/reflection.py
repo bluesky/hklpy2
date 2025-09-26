@@ -354,6 +354,7 @@ class ReflectionsDict(dict):
         ~setor
         ~swap
     """
+    # TODO 137 wavelength_units
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

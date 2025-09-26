@@ -239,7 +239,7 @@ class Core:
         self,
         pseudos: AnyAxesType,
         reals: Union[AnyAxesType, None] = None,
-        wavelength=None,
+        wavelength=None,  # TODO 137 wavelength_units
         name=None,
         replace: bool = False,
     ) -> Reflection:
@@ -294,7 +294,7 @@ class Core:
             pnames,
             rnames,
         )
-        self.sample.reflections.add(refl, replace=replace)
+        self.sample.reflections.add(refl, replace=replace)  # TODO 137 wavelength_units
         return refl
 
     def add_sample(
@@ -402,7 +402,7 @@ class Core:
         two_reflections = [_get(r1), _get(r2)]
         self.sample.reflections.set_orientation_reflections(two_reflections)
 
-        solver_reflections = self._reflections_to_solver(two_reflections)
+        solver_reflections = self._reflections_to_solver(two_reflections)  # TODO 137 wavelength_units
         ub = self.solver.calculate_UB(*solver_reflections)
         self.sample.U = self.solver.U
         self.sample.UB = ub
@@ -560,13 +560,14 @@ class Core:
                 # fmt: on
             )
         logger.debug("Refining lattice using reflections %r", rnames)
-        # TODO unit conversions: lattice
+        # TODO 135 unit conversions: lattice
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
-        # TODO unit conversions: lattice
+        # TODO 135 unit conversions: lattice
         return Lattice(**lattice)
 
     def _reflections_to_solver(self, refl_list: list) -> dict:
         """(internal) Convert units in list of reflections to be sent to a solver."""
+          # TODO 137 wavelength_units
         k = "wavelength"
         wl_units = self.diffractometer.beam.wavelength_units.get()
         wl_units_solver = INTERNAL_WAVELENGTH_UNITS
@@ -577,8 +578,8 @@ class Core:
             refl = refl._asdict()
             refl[k] = convert_units(refl[k], wl_units, wl_units_solver)
             reflections.append(refl)
-        # TODO reals (angle) could have units, assume in degrees now
-        # TODO reflection wavelength should have its own units
+        # TODO 136 reals (angle) could have units, assume in degrees now
+        # TODO 137 reflection wavelength should have its own units
         return reflections
 
     def remove_sample(self, name):
@@ -739,10 +740,10 @@ class Core:
 
     def to_solver_units(self, wavelength: float = None) -> dict:
         """Convert quantities from diffractometer units to solver units."""
-        # TODO Lattice should have its own units
+        # TODO 135 Lattice should have its own units
         uc_units = INTERNAL_WAVELENGTH_UNITS  # uc: Unit Cell length
         uc_units_solver = INTERNAL_WAVELENGTH_UNITS
-        # Lattice angles are degrees
+        # TODO 136 Lattice angles are degrees
         wl_units = self.diffractometer.beam.wavelength_units.get()
         wl_units_solver = INTERNAL_WAVELENGTH_UNITS
 

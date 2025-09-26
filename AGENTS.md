@@ -11,6 +11,7 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 - Concise type annotations
 - code location described in pyproject.toml
 - style information described in pyproject.toml
+- `pre-commit run --all-files`
 
 ## Agent behavior rules
 
