@@ -55,12 +55,13 @@ from ophyd import Signal
 from ophyd import SignalRO
 from ophyd.signal import AttributeSignal
 
+from .misc import DEFAULT_ENERGY_UNITS
+from .misc import DEFAULT_WAVELENGTH_UNITS
+
 logger = logging.getLogger(__name__)
-DEFAULT_ENERGY_UNITS = "keV"
 DEFAULT_SOURCE_TYPE = "Synchrotron X-ray Source"
 DEFAULT_WAVELENGTH = 1.0
 DEFAULT_WAVELENGTH_DEADBAND = 0.000_1
-DEFAULT_WAVELENGTH_UNITS = "angstrom"
 
 XRAY_ENERGY_EQUIVALENT_ = 8.065_543_937e5
 """
