@@ -402,7 +402,9 @@ class Core:
         two_reflections = [_get(r1), _get(r2)]
         self.sample.reflections.set_orientation_reflections(two_reflections)
 
-        solver_reflections = self._reflections_to_solver(two_reflections)  # TODO 137 wavelength_units
+        solver_reflections = self._reflections_to_solver(
+            two_reflections
+        )  # TODO 137 wavelength_units
         ub = self.solver.calculate_UB(*solver_reflections)
         self.sample.U = self.solver.U
         self.sample.UB = ub
@@ -567,7 +569,7 @@ class Core:
 
     def _reflections_to_solver(self, refl_list: list) -> dict:
         """(internal) Convert units in list of reflections to be sent to a solver."""
-          # TODO 137 wavelength_units
+        # TODO 137 wavelength_units
         k = "wavelength"
         wl_units = self.diffractometer.beam.wavelength_units.get()
         wl_units_solver = INTERNAL_WAVELENGTH_UNITS

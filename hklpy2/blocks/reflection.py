@@ -126,7 +126,11 @@ class Reflection:
 
         # Create a new Reflection with combined pseudo and real values.
         new_name = f"{self.name}_plus_{other.name}"
-        new_pseudos = {key: self.pseudos[key] + other.pseudos[key] for key in self.pseudos}
+        new_pseudos = {
+            key: self.pseudos[key] + other.pseudos[key]
+            #
+            for key in self.pseudos
+        }
         new_reals = {key: self.reals[key] + other.reals[key] for key in self.reals}
         return Reflection(
             name=new_name,
@@ -354,6 +358,7 @@ class ReflectionsDict(dict):
         ~setor
         ~swap
     """
+
     # TODO 137 wavelength_units
 
     def __init__(self, *args, **kwargs):
@@ -395,7 +400,7 @@ class ReflectionsDict(dict):
                 geometry=refl_config["geometry"],
                 pseudo_axis_names=list(refl_config["pseudos"]),
                 real_axis_names=list(refl_config["reals"]),
-                digits=refl_config.get("digits"),  # TODO: needs test(s) if None or not defined
+                digits=refl_config.get("digits"),
                 core=core,
             )
             self.add(reflection, replace=True)
