@@ -101,9 +101,9 @@ SOLVER_ENTRYPOINT_GROUP = "hklpy2.solver"
 
 DEFAULT_START_KEY = "diffractometers"
 
-# Shared default engineering units used across the package
 DEFAULT_ENERGY_UNITS = "keV"
-DEFAULT_WAVELENGTH_UNITS = "angstrom"
+DEFAULT_LATTICE_LENGTH_UNITS = "angstrom"
+DEFAULT_WAVELENGTH_UNITS = DEFAULT_LATTICE_LENGTH_UNITS  # must be identical
 
 # Custom data types
 
