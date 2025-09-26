@@ -3,9 +3,11 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ...diffract import creator
+from ...misc import INTERNAL_WAVELENGTH_UNITS
 from ...misc import ConfigurationError
 from ...tests.common import assert_context_result
 from ...tests.models import add_oriented_vibranium_to_e4cv
+from ..reflection import DEFAULT_REFLECTION_DIGITS
 from ..reflection import Reflection
 from ..reflection import ReflectionError
 from ..reflection import ReflectionsDict
@@ -581,3 +583,95 @@ def test_reflection_sub(left, right, ctx, expect_pseudos, expect_reals):
         assert "minus" in r3.name
         assert r3.pseudos == expect_pseudos
         assert r3.reals == expect_reals
+
+
+@pytest.mark.parametrize(
+    "init_kwargs, expect_digits, expect_wavelength_units, context, expected",
+    [
+        (
+            {},
+            DEFAULT_REFLECTION_DIGITS,
+            INTERNAL_WAVELENGTH_UNITS,
+            does_not_raise(),
+            None,
+        ),
+        (
+            {"digits": 6, "wavelength_units": "angstrom"},
+            6,
+            "angstrom",
+            does_not_raise(),
+            None,
+        ),
+    ],
+)
+def test_reflection_digits_and_wavelength_units_defaults(
+    init_kwargs, expect_digits, expect_wavelength_units, context, expected
+):
+    """Ensure digits and wavelength_units default behavior and preservation."""
+    pseudos = {"h": 1.0}
+    reals = {"x": 0.0}
+
+    with context:
+        r = Reflection(
+            "r_defaults",
+            pseudos,
+            reals,
+            1.0,
+            "geo",
+            list(pseudos.keys()),
+            list(reals.keys()),
+            **init_kwargs,
+        )
+
+    assert r.digits == expect_digits
+    assert r.wavelength_units == expect_wavelength_units
+
+
+@pytest.mark.parametrize(
+    "config, explicit_digits, context, expected",
+    [
+        (
+            {
+                "r1": {
+                    "name": "r1",
+                    "geometry": "geo",
+                    "pseudos": {"h": 1.0},
+                    "reals": {"x": 0.0},
+                    "wavelength": 1.0,
+                }
+            },
+            None,
+            does_not_raise(),
+            None,
+        ),
+        (
+            {
+                "r2": {
+                    "name": "r2",
+                    "geometry": "geo",
+                    "pseudos": {"h": 1.0},
+                    "reals": {"x": 0.0},
+                    "wavelength": 1.0,
+                    "digits": 8,
+                }
+            },
+            8,
+            does_not_raise(),
+            None,
+        ),
+    ],
+)
+def test_reflectionsdict_fromdict_defaults(config, explicit_digits, context, expected):
+    """Test ReflectionsDict._fromdict handles missing digits and wavelength_units."""
+    rd = ReflectionsDict()
+    with context:
+        rd._fromdict(config)
+
+    # get the single reflection by name
+    name = list(config.keys())[0]
+    r = rd[name]
+    if explicit_digits is None:
+        assert r.digits == DEFAULT_REFLECTION_DIGITS
+    else:
+        assert r.digits == explicit_digits
+    assert r.wavelength_units == INTERNAL_WAVELENGTH_UNITS

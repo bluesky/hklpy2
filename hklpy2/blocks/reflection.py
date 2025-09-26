@@ -14,13 +14,19 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 """
 
 import logging
+from typing import Optional
 
+import pint
+
+from ..misc import INTERNAL_WAVELENGTH_UNITS
 from ..misc import ConfigurationError
 from ..misc import ReflectionError
 from ..misc import check_value_in_list
 from ..misc import compare_float_dicts
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_REFLECTION_DIGITS = 4
 
 UNUSED_REFLECTION = "unused"
 """Identifies an unused reflection in the ReflectionsDict."""
@@ -74,8 +80,10 @@ class Reflection:
         geometry: str,
         pseudo_axis_names: list,
         real_axis_names: list,
-        digits: int = 4,
-        core: object = None,
+        *,
+        core: Optional[object] = None,
+        digits: Optional[int] = None,
+        wavelength_units: str = None,
     ) -> None:
         from ..ops import Core
 
@@ -91,7 +99,7 @@ class Reflection:
                     f" or solver ({axes_solver})."
                 )
 
-        self.digits = digits
+        self.digits = DEFAULT_REFLECTION_DIGITS if digits is None else digits
         self.geometry = geometry
         self.name = name
         self.pseudo_axis_names = pseudo_axis_names
@@ -101,6 +109,7 @@ class Reflection:
         self.pseudos = pseudos
         self.reals = reals
         self.wavelength = wavelength
+        self.wavelength_units = wavelength_units or INTERNAL_WAVELENGTH_UNITS
 
     def __add__(self, other):
         """
@@ -110,14 +119,14 @@ class Reflection:
         """
         if not isinstance(other, Reflection):
             raise TypeError(
-                f"Unsupported operand type(s) for +: 'Reflection' and '{type(other).__name__}'"
+                "Unsupported operand type(s) for +: 'Reflection'"
+                #
+                f" and '{type(other).__name__}'"
             )
 
         # Create a new Reflection with combined pseudo and real values.
         new_name = f"{self.name}_plus_{other.name}"
-        new_pseudos = {
-            key: self.pseudos[key] + other.pseudos[key] for key in self.pseudos
-        }
+        new_pseudos = {key: self.pseudos[key] + other.pseudos[key] for key in self.pseudos}
         new_reals = {key: self.reals[key] + other.reals[key] for key in self.reals}
         return Reflection(
             name=new_name,
@@ -149,6 +158,7 @@ class Reflection:
         """
         pseudos = [
             f"{k}={round(v, self.digits)}"  # roundoff
+            #
             for k, v in self.pseudos.items()
         ]
         guts = [f"name={self.name!r}"] + pseudos
@@ -162,13 +172,17 @@ class Reflection:
         """
         if not isinstance(other, Reflection):
             raise TypeError(
-                f"Unsupported operand type(s) for -: 'Reflection' and '{type(other).__name__}'"
+                "Unsupported operand type(s) for -: 'Reflection' "
+                #
+                f"and '{type(other).__name__}'"
             )
 
         # Create a new Reflection with subtracted pseudo and real values.
         new_name = f"{self.name}_minus_{other.name}"
         new_pseudos = {
-            key: self.pseudos[key] - other.pseudos[key] for key in self.pseudos
+            key: self.pseudos[key] - other.pseudos[key]
+            #
+            for key in self.pseudos
         }
         new_reals = {key: self.reals[key] - other.reals[key] for key in self.reals}
         return Reflection(
@@ -197,6 +211,7 @@ class Reflection:
         if config.get("name") != self.name:
             raise ConfigurationError(
                 f"Mismatched name for reflection {self.name!r}."
+                #
                 f" Received configuration: {config!r}"
             )
         if config.get("geometry") != self.geometry:
@@ -311,6 +326,17 @@ class Reflection:
         self._validate_wavelength(value)
         self._wavelength = value
 
+    @property
+    def wavelength_units(self) -> str:
+        """Engineering units of this reflection's wavelength."""
+        return self._wavelength_units
+
+    @wavelength_units.setter
+    def wavelength_units(self, value: str) -> None:
+        # Ensure that new value is convertible to the internal wavelength units.
+        assert pint.UnitRegistry().convert(1, value, INTERNAL_WAVELENGTH_UNITS)
+        self._wavelength_units = value
+
 
 class ReflectionsDict(dict):
     """
@@ -368,7 +394,7 @@ class ReflectionsDict(dict):
                 geometry=refl_config["geometry"],
                 pseudo_axis_names=list(refl_config["pseudos"]),
                 real_axis_names=list(refl_config["reals"]),
-                digits=refl_config["digits"],  # TODO: Digits are optional?
+                digits=refl_config.get("digits"),  # TODO: needs test(s) if None or not defined
                 core=core,
             )
             self.add(reflection, replace=True)
@@ -421,6 +447,7 @@ class ReflectionsDict(dict):
         """Validate the new reflection."""
         if not isinstance(reflection, Reflection):
             raise TypeError(
+                #
                 f"Unexpected {reflection=!r}.  Must be a 'Reflection' type."
             )
 
@@ -441,6 +468,7 @@ class ReflectionsDict(dict):
             if reflection.name in matching:
                 raise ReflectionError(
                     f"Reflection name {reflection.name!r} is known."
+                    #
                     "  Use 'replace=True' to overwrite."
                 )
             else:
