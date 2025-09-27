@@ -3,7 +3,7 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ...diffract import creator
-from ...misc import INTERNAL_WAVELENGTH_UNITS
+from ...misc import INTERNAL_LENGTH_UNITS
 from ...misc import ConfigurationError
 from ...tests.common import assert_context_result
 from ...tests.models import add_oriented_vibranium_to_e4cv
@@ -591,7 +591,7 @@ def test_reflection_sub(left, right, ctx, expect_pseudos, expect_reals):
         (
             {},
             DEFAULT_REFLECTION_DIGITS,
-            INTERNAL_WAVELENGTH_UNITS,
+            INTERNAL_LENGTH_UNITS,
             does_not_raise(),
             None,
         ),
@@ -674,7 +674,7 @@ def test_reflectionsdict_fromdict_defaults(config, explicit_digits, context, exp
         assert r.digits == DEFAULT_REFLECTION_DIGITS
     else:
         assert r.digits == explicit_digits
-    assert r.wavelength_units == INTERNAL_WAVELENGTH_UNITS
+    assert r.wavelength_units == INTERNAL_LENGTH_UNITS
 
 
 # ---------------------------------------------------------------------------
@@ -721,7 +721,7 @@ def test_add_and_sub_success_case():
     "initial_units, expect_units, context, expected",
     [
         ("angstrom", "angstrom", does_not_raise(), None),
-        (None, INTERNAL_WAVELENGTH_UNITS, does_not_raise(), None),
+        (None, INTERNAL_LENGTH_UNITS, does_not_raise(), None),
     ],
 )
 def test_asdict_fromdict_preserves_wavelength_units(
@@ -816,7 +816,7 @@ def test_reflections_to_solver_converts_per_reflection_units():
     """Ensure _reflections_to_solver converts each reflection's wavelength
     from its own units into the solver internal units."""
     from ...diffract import creator
-    from ...misc import INTERNAL_WAVELENGTH_UNITS, convert_units
+    from ...misc import INTERNAL_LENGTH_UNITS, convert_units
 
     # create a minimal diffractometer/core to use the conversion helper
     dif = creator(name="testdif")
@@ -850,12 +850,12 @@ def test_reflections_to_solver_converts_per_reflection_units():
 
     out = core._reflections_to_solver([rA, rB])
     assert len(out) == 2
-    # both wavelengths converted to INTERNAL_WAVELENGTH_UNITS should be equal
+    # both wavelengths converted to INTERNAL_LENGTH_UNITS should be equal
     wl0 = out[0]["wavelength"]
     wl1 = out[1]["wavelength"]
     assert wl0 == pytest.approx(wl1)
     assert wl0 == pytest.approx(
-        convert_units(1.0, "angstrom", INTERNAL_WAVELENGTH_UNITS)
+        convert_units(1.0, "angstrom", INTERNAL_LENGTH_UNITS)
     )
 
 

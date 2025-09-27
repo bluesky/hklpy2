@@ -18,7 +18,7 @@ from typing import Optional
 
 import pint
 
-from ..misc import INTERNAL_WAVELENGTH_UNITS
+from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import ConfigurationError
 from ..misc import ReflectionError
 from ..misc import check_value_in_list
@@ -109,7 +109,7 @@ class Reflection:
         self.pseudos = pseudos
         self.reals = reals
         self.wavelength = wavelength
-        self.wavelength_units = wavelength_units or INTERNAL_WAVELENGTH_UNITS
+        self.wavelength_units = wavelength_units or INTERNAL_LENGTH_UNITS
 
     def __add__(self, other):
         """
@@ -353,7 +353,7 @@ class Reflection:
     @wavelength_units.setter
     def wavelength_units(self, value: str) -> None:
         # Ensure that new value is convertible to the internal wavelength units.
-        assert pint.UnitRegistry().convert(1, value, INTERNAL_WAVELENGTH_UNITS)
+        assert pint.UnitRegistry().convert(1, value, INTERNAL_LENGTH_UNITS)
         self._wavelength_units = value
 
 
