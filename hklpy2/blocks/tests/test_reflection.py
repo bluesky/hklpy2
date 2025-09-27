@@ -1,6 +1,7 @@
 from contextlib import nullcontext as does_not_raise
 
 import pytest
+import pint
 
 from ...diffract import creator
 from ...misc import INTERNAL_LENGTH_UNITS
@@ -1213,7 +1214,7 @@ def test_reflection_eq(r1_kwargs, r2_kwargs, expect_eq, expect_exception):
                 "angstrom",
             ],
             False,
-            does_not_raise(),
+            pytest.raises(pint.errors.UndefinedUnitError),
         ),
     ],
 )

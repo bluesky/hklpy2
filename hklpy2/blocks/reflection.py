@@ -23,6 +23,7 @@ from ..misc import ConfigurationError
 from ..misc import ReflectionError
 from ..misc import check_value_in_list
 from ..misc import compare_float_dicts
+from ..misc import convert_units
 
 logger = logging.getLogger(__name__)
 

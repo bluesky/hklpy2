@@ -332,7 +332,7 @@ class Core:
         if name in self.samples:
             if not replace:
                 raise CoreError(f"Sample {name=!r} already defined.")
-        lattice = Lattice(a, b, c, alpha, beta, gamma, digits)
+        lattice = Lattice(a, b, c, alpha, beta, gamma, digits=digits)
         self._samples[name] = Sample(self, name, lattice)
         self.sample = name
         self.request_solver_update(True)  # 58  test_diffract line 410: 2 pi a
@@ -773,10 +773,12 @@ class Core:
     def to_solver_units(self, wavelength: float = None) -> dict:
         """Convert quantities from diffractometer units to solver units."""
         lattice = self.sample.lattice._asdict()
+        # TODO: Could length_units be added to the dict without adverse consequence?
 
         # angle_units_uc = lattice.angle_units    # FIXME 136  lattice could define its angle units
         # angle_units_solver = INTERNAL_ANGLE_UNITS  # TODO 139 solver could define its internal units
-        length_units_uc = lattice.length_units
+        # 'lattice' is a dict (from _asdict()); get units from the Lattice object
+        length_units_uc = self.sample.lattice.length_units
         length_units_solver = INTERNAL_LENGTH_UNITS  # TODO 139 solver could define its internal units
         for k in "a b c  alpha beta gamma".split():
             if k in "a b c".split():
