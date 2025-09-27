@@ -35,6 +35,40 @@ Safe edit checklist for agents
 3. Run `pre-commit run --all-files` and fix issues.
 4. If tests fail, iterate locally until targeted tests pass.
 
+Agent pytest style (for automated agents)
+------------------------------------------------
+
+- Agents must write tests using parametrized pytest patterns and explicit context managers for expected success/failure.
+- Prefer more parameter sets to minimize the number of test functions.
+- Use `from contextlib import nullcontext as does_not_raise` for success cases and `pytest.raises(...)` for expected exceptions.
+- Construct objects and perform assignments that may raise inside the `with context:` block. Place assertions about object state after the `with` when the case expects success.
+- Use the project's helper `assert_context_result(expected, reason)` where available to standardize result checks.
+
+Example (brief):
+
+```py
+@pytest.mark.parametrize(
+  "set_value, context, expected",
+  [
+    ("angstrom", does_not_raise(), "angstrom"),
+    ("not_a_unit", pytest.raises(Exception), None),
+  ],
+)
+def test_length_units_property_and_validation(set_value, context, expected):
+  with context:
+    lat = Lattice(3.0)
+    lat.length_units = set_value
+
+  if expected is not None:
+    assert lat.length_units == expected
+```
+
+This makes tests explicit and machine-friendly for automated agents.
+
+## Enforcement
+
+PRs opened or modified by automated agents must follow the "Agent pytest style" described above. Reviewers and CI will check for this pattern (test parametrization, use of context managers for expected outcomes, and the `assert_context_result` helper). Changes from agents that do not comply may be requested for revision or reverted.
+
 Integration points & external deps
 - `pint` is used for units (see `reflection.py`).
 - Backends may interface with EPICS/solvers; avoid adding runtime hardware calls in unit tests — mock them instead.
