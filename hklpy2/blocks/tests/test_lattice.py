@@ -146,3 +146,22 @@ def test_fromdict(config, context, expected):
             assert getattr(lattice, k) == config[k], f"{k=!r}  {lattice=!r}"
 
     assert_context_result(expected, reason)
+
+
+@pytest.mark.parametrize(
+    "set_value, context, expected",
+    [
+        ("angstrom", does_not_raise(), "angstrom"),
+        ("not_a_unit", pytest.raises(Exception), None),
+    ],
+)
+def test_length_units_property_and_validation(set_value, context, expected):
+    # Create and set inside the context so exceptions from construction or
+    # assignment are captured by the parametrized context manager.
+    with context:
+        lat = Lattice(3.0)
+        assert hasattr(lat, "length_units")
+        lat.length_units = set_value
+
+    if expected is not None:
+        assert lat.length_units == expected

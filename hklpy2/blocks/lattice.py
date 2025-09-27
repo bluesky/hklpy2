@@ -3,6 +3,7 @@ Lattice parameters for a single crystal.
 
 .. autosummary::
 
+    ~DEFAULT_LATTICE_DIGITS
     ~Lattice
     ~SI_LATTICE_PARAMETER
     ~SI_LATTICE_PARAMETER_UNCERTAINTY
@@ -11,11 +12,17 @@ Lattice parameters for a single crystal.
 import enum
 import logging
 import math
+from typing import Optional
 
-from ..misc import LatticeError
+import pint
+
+from ..misc import INTERNAL_ANGLE_UNITS, INTERNAL_LENGTH_UNITS, LatticeError
 from ..misc import compare_float_dicts
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_LATTICE_DIGITS = 4
+"""Default number of digits to display for lattice parameters."""
 
 SI_LATTICE_PARAMETER = 5.431020511
 """
@@ -72,16 +79,40 @@ class Lattice:
         alpha: float = 90.0,  # degrees
         beta: float = None,  # degrees
         gamma: float = None,  # degrees
-        digits: int = 4,
-    ):
+        *,
+        # TODO: Review and update support for length_units throughout entire project.
+        # TODO: Add getter/setter property methods here for length_units
+        # TODO: Add pytests for length_units.
+        length_units: Optional[str] = None,
+        # FIXME 136  lattice should define its angle units
+        angle_units: Optional[str] = None,
+        digits: Optional[int] = None,
+        ):
+        """Initialize lattice parameters.
+
+        Parameters
+        ----------
+        a, b, c : float
+            Unit cell edge lengths (default units: Angstrom unless length_units specified)
+        alpha, beta, gamma : float
+            Unit cell angles (default units: degrees unless angle_units specified)
+        length_units : str, optional
+            Units for lattice lengths (e.g., 'angstrom', 'nm', 'pm')
+        angle_units : str, optional
+            Units for lattice angles (not yet implemented)
+        digits : int, optional
+            Number of digits to display.  (default: 4)
+        """
         self.a = a
         self.b = b or a
         self.c = c or a
         self.alpha = alpha
         self.beta = beta or alpha
         self.gamma = gamma or alpha
-        self.digits = digits
-
+        self.length_units = length_units or INTERNAL_LENGTH_UNITS
+        self.angle_units = angle_units or INTERNAL_ANGLE_UNITS  # FIXME 136
+        self.digits = digits or DEFAULT_LATTICE_DIGITS
+        
     def __eq__(self, latt):
         """
         Compare two lattices for equality.
@@ -220,3 +251,15 @@ class Lattice:
     @digits.setter
     def digits(self, value: int):
         self._digits = value
+
+    @property
+    def length_units(self) -> str:
+        """Units for lattice lengths (e.g. 'angstrom')."""
+        return self._length_units
+
+    @length_units.setter
+    def length_units(self, value: str) -> None:
+        # Ensure that new value is convertible to the internal length units.
+        # Use pint to validate units; an exception will be raised for invalid units.
+        assert pint.UnitRegistry().convert(1, value, INTERNAL_LENGTH_UNITS)
+        self._length_units = value
