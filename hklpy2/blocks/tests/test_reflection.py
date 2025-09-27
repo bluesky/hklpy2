@@ -675,3 +675,138 @@ def test_reflectionsdict_fromdict_defaults(config, explicit_digits, context, exp
     else:
         assert r.digits == explicit_digits
     assert r.wavelength_units == INTERNAL_WAVELENGTH_UNITS
+
+
+# ---------------------------------------------------------------------------
+# Ensure non-Reflection operands raise TypeError for __add__ and __sub__
+# ---------------------------------------------------------------------------
+
+
+def _make_simple_reflection(name: str = "r"):
+    pseudos = {"a": 1.0, "b": 2.0}
+    reals = {"x": 0.0, "y": 0.0}
+    return Reflection(
+        name, pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys())
+    )
+
+
+@pytest.mark.parametrize("bad", [5, "string", [1, 2, 3], {"not": "refl"}])
+def test_add_type_error_for_non_reflection_operand(bad):
+    r = _make_simple_reflection("r1")
+    with pytest.raises(TypeError) as exc:
+        _ = r + bad
+    assert "Unsupported operand type(s) for +" in str(exc.value)
+
+
+@pytest.mark.parametrize("bad", [5, "string", [1, 2, 3], {"not": "refl"}])
+def test_sub_type_error_for_non_reflection_operand(bad):
+    r = _make_simple_reflection("r1")
+    with pytest.raises(TypeError) as exc:
+        _ = r - bad
+    assert "Unsupported operand type(s) for -" in str(exc.value)
+
+
+def test_add_and_sub_success_case():
+    r1 = _make_simple_reflection("r1")
+    r2 = _make_simple_reflection("r2")
+    r3 = r1 + r2
+    assert "plus" in r3.name
+    assert r3.pseudos["a"] == 2.0
+    r4 = r2 - r1
+    assert "minus" in r4.name
+    assert r4.reals["x"] == 0.0
+
+
+@pytest.mark.parametrize(
+    "initial_units, expect_units, context, expected",
+    [
+        ("angstrom", "angstrom", does_not_raise(), None),
+        (None, INTERNAL_WAVELENGTH_UNITS, does_not_raise(), None),
+    ],
+)
+def test_asdict_fromdict_preserves_wavelength_units(
+    initial_units, expect_units, context, expected
+):
+    pseudos = {"h": 1, "k": 0, "l": 0}
+    reals = {"omega": 0, "chi": 0, "phi": 0, "tth": 0}
+    if initial_units is None:
+        r = Reflection(
+            "r1", pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys())
+        )
+    else:
+        r = Reflection(
+            "r1",
+            pseudos,
+            reals,
+            1.0,
+            "geo",
+            list(pseudos.keys()),
+            list(reals.keys()),
+            wavelength_units=initial_units,
+        )
+
+    d = r._asdict()
+    assert d["wavelength_units"] == expect_units
+
+    # create a new Reflection with same name/geometry to test _fromdict
+    r2 = Reflection(
+        "r1", pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys())
+    )
+    with context:
+        r2._fromdict(d)
+    assert r2.wavelength_units == expect_units
+
+
+@pytest.mark.parametrize(
+    "wl1,u1,wl2,u2,context,expect_eq",
+    [
+        (1.0, "angstrom", 0.1, "nanometer", does_not_raise(), True),
+        (1.0, "angstrom", 1.1, "angstrom", does_not_raise(), False),
+    ],
+)
+def test_eq_converts_wavelength_units(wl1, u1, wl2, u2, context, expect_eq):
+    pseudos = {"h": 1, "k": 0, "l": 0}
+    reals = {"omega": 0, "chi": 0, "phi": 0, "tth": 0}
+    with context:
+        r1 = Reflection(
+            "ra",
+            pseudos,
+            reals,
+            wl1,
+            "geo",
+            list(pseudos.keys()),
+            list(reals.keys()),
+            wavelength_units=u1,
+        )
+        r2 = Reflection(
+            "rb",
+            pseudos,
+            reals,
+            wl2,
+            "geo",
+            list(pseudos.keys()),
+            list(reals.keys()),
+            wavelength_units=u2,
+        )
+
+    if expect_eq:
+        assert r1 == r2
+    else:
+        assert not (r1 == r2)
+
+
+@pytest.mark.parametrize(
+    "value,from_u,to_u,context,expected",
+    [
+        (1.0, "angstrom", "nanometer", does_not_raise(), 0.1),
+        (1.0, "nanometer", "angstrom", does_not_raise(), 10.0),
+        (1.0, "not_a_unit", "angstrom", pytest.raises(Exception), None),
+    ],
+)
+def test_convert_units_helper(value, from_u, to_u, context, expected):
+    from ...misc import convert_units
+
+    with context:
+        result = convert_units(value, from_u, to_u)
+        if expected is not None:
+            assert result == pytest.approx(expected)

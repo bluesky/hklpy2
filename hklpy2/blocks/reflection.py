@@ -118,7 +118,7 @@ class Reflection:
         Combines the pseudos and reals of self and other.
         """
         if not isinstance(other, Reflection):
-            raise TypeError(  # TODO needs test
+            raise TypeError(
                 "Unsupported operand type(s) for +: 'Reflection'"
                 #
                 f" and '{type(other).__name__}'"
@@ -149,12 +149,21 @@ class Reflection:
         Precision is controlled by rounding to smallest number of digits
         between the reflections.
         """
+        from ..misc import convert_units
+
         digits = min(self.digits, r2.digits)
-        return (
-            compare_float_dicts(self.pseudos, r2.pseudos, digits)
-            and compare_float_dicts(self.reals, r2.reals, digits)
-            and round(self.wavelength, digits) == round(r2.wavelength, digits)
-        )
+        pseudos_ok = compare_float_dicts(self.pseudos, r2.pseudos, digits)
+        reals_ok = compare_float_dicts(self.reals, r2.reals, digits)
+        # Convert r2 wavelength to this reflection's units before comparing
+        try:
+            r2_wl_in_self_units = convert_units(
+                r2.wavelength, r2.wavelength_units, self.wavelength_units
+            )
+        except Exception:
+            # If conversion fails, fall back to raw comparison (will likely fail)
+            r2_wl_in_self_units = r2.wavelength
+        wavelength_ok = round(self.wavelength, digits) == round(r2_wl_in_self_units, digits)
+        return pseudos_ok and reals_ok and wavelength_ok
 
     def __repr__(self):
         """
@@ -175,7 +184,7 @@ class Reflection:
         Subtracts the pseudos and reals of other from self.
         """
         if not isinstance(other, Reflection):
-            raise TypeError(  # TODO needs test
+            raise TypeError(
                 "Unsupported operand type(s) for -: 'Reflection' "
                 #
                 f"and '{type(other).__name__}'"
@@ -207,6 +216,7 @@ class Reflection:
             "pseudos": self.pseudos,
             "reals": self.reals,
             "wavelength": self.wavelength,
+            "wavelength_units": self.wavelength_units,
             "digits": self.digits,
         }
 
@@ -238,6 +248,9 @@ class Reflection:
             )
 
         self.digits = config.get("digits", self.digits)
+        # accept explicit wavelength_units if present
+        if "wavelength_units" in config:
+            self.wavelength_units = config.get("wavelength_units")
         self.wavelength = config.get("wavelength", self.wavelength)
         self.pseudos = config["pseudos"]
         self.reals = config["reals"]
@@ -395,8 +408,9 @@ class ReflectionsDict(dict):
             reflection = Reflection(
                 refl_config["name"],
                 refl_config["pseudos"],
-                refl_config["reals"],
-                wavelength=refl_config["wavelength"],
+                    refl_config["reals"],
+                    wavelength=refl_config["wavelength"],
+                    wavelength_units=refl_config.get("wavelength_units"),
                 geometry=refl_config["geometry"],
                 pseudo_axis_names=list(refl_config["pseudos"]),
                 real_axis_names=list(refl_config["reals"]),
