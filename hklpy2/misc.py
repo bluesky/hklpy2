@@ -101,15 +101,19 @@ SOLVER_ENTRYPOINT_GROUP = "hklpy2.solver"
 
 DEFAULT_START_KEY = "diffractometers"
 
+INTERNAL_ANGLE_UNITS = "degrees"
+INTERNAL_LENGTH_UNITS = "angstrom"
+INTERNAL_XRAY_ENERGY_UNITS = "keV"
+
 # Custom data types
 
-AxesArray = numpy.typing.NDArray[float]
+AxesArray = numpy.typing.NDArray[numpy.floating]
 """Numpy array of axes values."""
 
 AxesDict = dict[str, float]
 """Dictionary of axes names and values."""
 
-AxesList = list[float, ...]
+AxesList = list[float]
 """List of axes values."""
 
 AxesTuple = tuple[float, ...]
@@ -648,12 +652,14 @@ def get_solver(solver_name):
         libhkl_solver = SolverClass()
     """
     if solver_name not in solvers():
-        raise SolverError(f"{solver_name=!r} unknown.  Pick one of: {solvers()!r}")
+        raise SolverError(
+            f"{solver_name=!r} unknown.  Pick one of: {solvers()!r}"
+        )  # TODO needs test
     entries = entry_points(group=SOLVER_ENTRYPOINT_GROUP)
     return entries[solver_name].load()
 
 
-def get_run_orientation(run, name=None, start_key=DEFAULT_START_KEY):
+def get_run_orientation(run, name=None, start_key=DEFAULT_START_KEY):  # TODO needs test
     """
     Return the orientation information dictionary from a run.
 
@@ -734,7 +740,7 @@ def get_run_orientation(run, name=None, start_key=DEFAULT_START_KEY):
     return info
 
 
-def istype(value: Any, annotation: Type) -> bool:
+def istype(value: Any, annotation: Type) -> bool:  # TODO needs test
     """
     Check if 'value' matches the type 'annotation'.
 

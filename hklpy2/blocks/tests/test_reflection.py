@@ -3,9 +3,11 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ...diffract import creator
+from ...misc import INTERNAL_LENGTH_UNITS
 from ...misc import ConfigurationError
 from ...tests.common import assert_context_result
 from ...tests.models import add_oriented_vibranium_to_e4cv
+from ..reflection import DEFAULT_REFLECTION_DIGITS
 from ..reflection import Reflection
 from ..reflection import ReflectionError
 from ..reflection import ReflectionsDict
@@ -581,3 +583,702 @@ def test_reflection_sub(left, right, ctx, expect_pseudos, expect_reals):
         assert "minus" in r3.name
         assert r3.pseudos == expect_pseudos
         assert r3.reals == expect_reals
+
+
+@pytest.mark.parametrize(
+    "init_kwargs, expect_digits, expect_wavelength_units, context, expected",
+    [
+        (
+            {},
+            DEFAULT_REFLECTION_DIGITS,
+            INTERNAL_LENGTH_UNITS,
+            does_not_raise(),
+            None,
+        ),
+        (
+            {"digits": 6, "wavelength_units": "angstrom"},
+            6,
+            "angstrom",
+            does_not_raise(),
+            None,
+        ),
+    ],
+)
+def test_reflection_digits_and_wavelength_units_defaults(
+    init_kwargs, expect_digits, expect_wavelength_units, context, expected
+):
+    """Ensure digits and wavelength_units default behavior and preservation."""
+    pseudos = {"h": 1.0}
+    reals = {"x": 0.0}
+
+    with context:
+        r = Reflection(
+            "r_defaults",
+            pseudos,
+            reals,
+            1.0,
+            "geo",
+            list(pseudos.keys()),
+            list(reals.keys()),
+            **init_kwargs,
+        )
+
+    assert r.digits == expect_digits
+    assert r.wavelength_units == expect_wavelength_units
+
+
+@pytest.mark.parametrize(
+    "config, explicit_digits, context, expected",
+    [
+        (
+            {
+                "r1": {
+                    "name": "r1",
+                    "geometry": "geo",
+                    "pseudos": {"h": 1.0},
+                    "reals": {"x": 0.0},
+                    "wavelength": 1.0,
+                }
+            },
+            None,
+            does_not_raise(),
+            None,
+        ),
+        (
+            {
+                "r2": {
+                    "name": "r2",
+                    "geometry": "geo",
+                    "pseudos": {"h": 1.0},
+                    "reals": {"x": 0.0},
+                    "wavelength": 1.0,
+                    "digits": 8,
+                }
+            },
+            8,
+            does_not_raise(),
+            None,
+        ),
+    ],
+)
+def test_reflectionsdict_fromdict_defaults(config, explicit_digits, context, expected):
+    """Test ReflectionsDict._fromdict handles missing digits and wavelength_units."""
+    rd = ReflectionsDict()
+    with context:
+        rd._fromdict(config)
+
+    # get the single reflection by name
+    name = list(config.keys())[0]
+    r = rd[name]
+    if explicit_digits is None:
+        assert r.digits == DEFAULT_REFLECTION_DIGITS
+    else:
+        assert r.digits == explicit_digits
+    assert r.wavelength_units == INTERNAL_LENGTH_UNITS
+
+
+# ---------------------------------------------------------------------------
+# Ensure non-Reflection operands raise TypeError for __add__ and __sub__
+# ---------------------------------------------------------------------------
+
+
+def _make_simple_reflection(name: str = "r"):
+    pseudos = {"a": 1.0, "b": 2.0}
+    reals = {"x": 0.0, "y": 0.0}
+    return Reflection(
+        name, pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys())
+    )
+
+
+@pytest.mark.parametrize("bad", [5, "string", [1, 2, 3], {"not": "refl"}])
+def test_add_type_error_for_non_reflection_operand(bad):
+    r = _make_simple_reflection("r1")
+    with pytest.raises(TypeError) as exc:
+        _ = r + bad
+    assert "Unsupported operand type(s) for +" in str(exc.value)
+
+
+@pytest.mark.parametrize("bad", [5, "string", [1, 2, 3], {"not": "refl"}])
+def test_sub_type_error_for_non_reflection_operand(bad):
+    r = _make_simple_reflection("r1")
+    with pytest.raises(TypeError) as exc:
+        _ = r - bad
+    assert "Unsupported operand type(s) for -" in str(exc.value)
+
+
+def test_add_and_sub_success_case():
+    r1 = _make_simple_reflection("r1")
+    r2 = _make_simple_reflection("r2")
+    r3 = r1 + r2
+    assert "plus" in r3.name
+    assert r3.pseudos["a"] == 2.0
+    r4 = r2 - r1
+    assert "minus" in r4.name
+    assert r4.reals["x"] == 0.0
+
+
+@pytest.mark.parametrize(
+    "initial_units, expect_units, context, expected",
+    [
+        ("angstrom", "angstrom", does_not_raise(), None),
+        (None, INTERNAL_LENGTH_UNITS, does_not_raise(), None),
+    ],
+)
+def test_asdict_fromdict_preserves_wavelength_units(
+    initial_units, expect_units, context, expected
+):
+    pseudos = {"h": 1, "k": 0, "l": 0}
+    reals = {"omega": 0, "chi": 0, "phi": 0, "tth": 0}
+    if initial_units is None:
+        r = Reflection(
+            "r1", pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys())
+        )
+    else:
+        r = Reflection(
+            "r1",
+            pseudos,
+            reals,
+            1.0,
+            "geo",
+            list(pseudos.keys()),
+            list(reals.keys()),
+            wavelength_units=initial_units,
+        )
+
+    d = r._asdict()
+    assert d["wavelength_units"] == expect_units
+
+    # create a new Reflection with same name/geometry to test _fromdict
+    r2 = Reflection(
+        "r1", pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys())
+    )
+    with context:
+        r2._fromdict(d)
+    assert r2.wavelength_units == expect_units
+
+
+@pytest.mark.parametrize(
+    "wl1,u1,wl2,u2,context,expect_eq",
+    [
+        (1.0, "angstrom", 0.1, "nanometer", does_not_raise(), True),
+        (1.0, "angstrom", 1.1, "angstrom", does_not_raise(), False),
+    ],
+)
+def test_eq_converts_wavelength_units(wl1, u1, wl2, u2, context, expect_eq):
+    pseudos = {"h": 1, "k": 0, "l": 0}
+    reals = {"omega": 0, "chi": 0, "phi": 0, "tth": 0}
+    with context:
+        r1 = Reflection(
+            "ra",
+            pseudos,
+            reals,
+            wl1,
+            "geo",
+            list(pseudos.keys()),
+            list(reals.keys()),
+            wavelength_units=u1,
+        )
+        r2 = Reflection(
+            "rb",
+            pseudos,
+            reals,
+            wl2,
+            "geo",
+            list(pseudos.keys()),
+            list(reals.keys()),
+            wavelength_units=u2,
+        )
+
+    if expect_eq:
+        assert r1 == r2
+    else:
+        assert not (r1 == r2)
+
+
+@pytest.mark.parametrize(
+    "value,from_u,to_u,context,expected",
+    [
+        (1.0, "angstrom", "nanometer", does_not_raise(), 0.1),
+        (1.0, "nanometer", "angstrom", does_not_raise(), 10.0),
+        (1.0, "not_a_unit", "angstrom", pytest.raises(Exception), None),
+    ],
+)
+def test_convert_units_helper(value, from_u, to_u, context, expected):
+    from ...misc import convert_units
+
+    with context:
+        result = convert_units(value, from_u, to_u)
+        if expected is not None:
+            assert result == pytest.approx(expected)
+
+
+def test_reflections_to_solver_converts_per_reflection_units():
+    """Ensure _reflections_to_solver converts each reflection's wavelength
+    from its own units into the solver internal units."""
+    from ...diffract import creator
+    from ...misc import INTERNAL_LENGTH_UNITS, convert_units
+
+    # create a minimal diffractometer/core to use the conversion helper
+    dif = creator(name="testdif")
+    core = dif.core
+
+    pseudos = {"h": 1}
+    reals = {"x": 0.0}
+
+    # Reflection with 1.0 angstrom
+    rA = Reflection(
+        "ra",
+        pseudos,
+        reals,
+        1.0,
+        "geo",
+        list(pseudos.keys()),
+        list(reals.keys()),
+        wavelength_units="angstrom",
+    )
+    # Reflection with 0.1 nanometer (equal to 1.0 angstrom)
+    rB = Reflection(
+        "rb",
+        pseudos,
+        reals,
+        0.1,
+        "geo",
+        list(pseudos.keys()),
+        list(reals.keys()),
+        wavelength_units="nanometer",
+    )
+
+    out = core._reflections_to_solver([rA, rB])
+    assert len(out) == 2
+    # both wavelengths converted to INTERNAL_LENGTH_UNITS should be equal
+    wl0 = out[0]["wavelength"]
+    wl1 = out[1]["wavelength"]
+    assert wl0 == pytest.approx(wl1)
+    assert wl0 == pytest.approx(
+        convert_units(1.0, "angstrom", INTERNAL_LENGTH_UNITS)
+    )
+
+
+@pytest.mark.parametrize(
+    "explicit_units,beam_units,expect_units",
+    [
+        ("nanometer", None, "nanometer"),
+        (None, "angstrom", "angstrom"),
+    ],
+)
+def test_add_reflection_wavelength_units_preference(
+    explicit_units, beam_units, expect_units
+):
+    """Combined test for explicit wavelength_units preference and beam-unit fallback."""
+    sim = creator()
+    # if a beam unit is provided, set it on the diffractometer
+    if beam_units is not None:
+        sim.beam.wavelength_units.set(beam_units)
+
+    r = sim.core.add_reflection(
+        (1, 0, 0),
+        (0, 0, 0, 0),
+        wavelength=1.0,
+        wavelength_units=explicit_units,
+        name="r_test",
+    )
+    assert r.wavelength_units == expect_units
+
+
+@pytest.mark.parametrize(
+    "r1_kwargs, r2_kwargs, expect_eq, expect_exception",
+    [
+        # Same pseudos, reals, wavelength, units, digits
+        (
+            dict(
+                name="r1",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            dict(
+                name="r2",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            True,
+            None,
+        ),
+        # Same values, different units (convertible)
+        (
+            dict(
+                name="r1",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            dict(
+                name="r2",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=0.1,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="nanometer",
+            ),
+            True,
+            None,
+        ),
+        # Different pseudos
+        (
+            dict(
+                name="r1",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            dict(
+                name="r2",
+                pseudos={"a": 2.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            False,
+            None,
+        ),
+        # Different reals
+        (
+            dict(
+                name="r1",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            dict(
+                name="r2",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 1.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            False,
+            None,
+        ),
+        # Different wavelength (not convertible)
+        (
+            dict(
+                name="r1",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            dict(
+                name="r2",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=2.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            False,
+            None,
+        ),
+        # Exception: wavelength_units not convertible
+        (
+            dict(
+                name="r1",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="angstrom",
+            ),
+            dict(
+                name="r2",
+                pseudos={"a": 1.0, "b": 2.0},
+                reals={"x": 0.0, "y": 0.0},
+                wavelength=1.0,
+                geometry="geo",
+                pseudo_axis_names=["a", "b"],
+                real_axis_names=["x", "y"],
+                digits=4,
+                wavelength_units="not_a_unit",
+            ),
+            False,
+            pytest.raises(Exception),
+        ),
+    ],
+)
+def test_reflection_eq(r1_kwargs, r2_kwargs, expect_eq, expect_exception):
+    r1 = Reflection(**r1_kwargs)
+    if expect_exception is not None:
+        with expect_exception:
+            _ = r1 == Reflection(**r2_kwargs)
+    else:
+        r2 = Reflection(**r2_kwargs)
+        assert (r1 == r2) is expect_eq
+
+
+@pytest.mark.parametrize(
+    "left,right,expected,context",
+    [
+        # Identical reflections, same units
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            True,
+            does_not_raise(),
+        ),
+        # Identical except for wavelength units, convertible
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                None,
+                4,
+                "angstrom",
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                0.1,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                None,
+                4,
+                "nanometer",
+            ],
+            True,
+            does_not_raise(),
+        ),
+        # Different pseudos
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            [
+                "r1",
+                {"a": 2.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            False,
+            does_not_raise(),
+        ),
+        # Different reals
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 1.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            False,
+            does_not_raise(),
+        ),
+        # Different wavelength, same units
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                2.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            False,
+            does_not_raise(),
+        ),
+        # Unconvertible units triggers fallback (should fail)
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                None,
+                4,
+                "not_a_unit",
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                None,
+                4,
+                "angstrom",
+            ],
+            False,
+            does_not_raise(),
+        ),
+    ],
+)
+def test_reflection_eq_deeper_test(left, right, expected, context):
+    # allow for optional wavelength_units and digits in params
+    def make_reflection(params):
+        args = params[:7]
+        kwargs = {}
+        if len(params) > 7:
+            if params[7] is not None:
+                kwargs["core"] = params[7]
+        if len(params) > 8:
+            if params[8] is not None:
+                kwargs["digits"] = params[8]
+        if len(params) > 9:
+            if params[9] is not None:
+                kwargs["wavelength_units"] = params[9]
+        return Reflection(*args, **kwargs)
+
+    with context:
+        r1 = make_reflection(left)
+        r2 = make_reflection(right)
+        assert (r1 == r2) is expected
+
+
+def test_reflection_eq_fallback_raw_comparison(monkeypatch):
+    # Simulate convert_units raising Exception to trigger fallback
+    r1 = Reflection(
+        "r1",
+        {"a": 1.0},
+        {"x": 0.0},
+        1.0,
+        "geo",
+        ["a"],
+        ["x"],
+        wavelength_units="angstrom",
+    )
+    r2 = Reflection(
+        "r1",
+        {"a": 1.0},
+        {"x": 0.0},
+        1.0,
+        "geo",
+        ["a"],
+        ["x"],
+        wavelength_units="angstrom",
+    )
+    import hklpy2.blocks.reflection as reflection_mod
+
+    def bad_convert_units(value, from_u, to_u):
+        raise Exception("conversion failed")
+
+    monkeypatch.setattr(reflection_mod, "convert_units", bad_convert_units)
+    # Should fall back to raw comparison, which will succeed here
+    assert r1 == r2
+
+    # Now, make r2 wavelength different, fallback should fail
+    r2b = Reflection(
+        "r1",
+        {"a": 1.0},
+        {"x": 0.0},
+        2.0,
+        "geo",
+        ["a"],
+        ["x"],
+        wavelength_units="angstrom",
+    )
+    assert not (r1 == r2b)

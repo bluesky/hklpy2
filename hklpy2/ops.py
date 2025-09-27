@@ -22,7 +22,7 @@ from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
-from .incident import DEFAULT_WAVELENGTH_UNITS
+from .misc import INTERNAL_LENGTH_UNITS
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import CoreError
@@ -240,6 +240,7 @@ class Core:
         pseudos: AnyAxesType,
         reals: Union[AnyAxesType, None] = None,
         wavelength=None,
+        wavelength_units: str = None,
         name=None,
         replace: bool = False,
     ) -> Reflection:
@@ -253,8 +254,18 @@ class Core:
         reals various:
             Dictionary of real-space axes and values.
         wavelength float:
-            Wavelength of incident radiation.  Units as specified
-            by ``diffractometer.beam.wavelength_units``.
+            Wavelength of incident radiation. The created Reflection will
+            use ``wavelength_units`` from the optional parameter below; if
+            that is ``None``, the diffractometer's current
+            ``beam.wavelength_units`` is used. When preparing data for the
+            solver, Core converts each reflection's wavelength into the
+            solver's internal units (``INTERNAL_LENGTH_UNITS``).
+        wavelength_units str or None:
+            Units for the ``wavelength`` value (e.g. "angstrom"). If
+            provided, this overrides the diffractometer beam units for the
+            new Reflection; otherwise the beam units are used. The
+            Reflection stores this string and Core will convert values for
+            solver consumption.
         name str:
             Reference name for this reflection.  If ``None``, a random name will
             be assigned.
@@ -285,6 +296,13 @@ class Core:
             pnames,
             rnames,
         )
+        # Thread the current beam wavelength units into the new Reflection
+        # prefer an explicit wavelength_units argument; otherwise use beam units
+        wl_units = (
+            wavelength_units
+            if wavelength_units is not None
+            else self.diffractometer.beam.wavelength_units.get()
+        )
         refl = Reflection(
             name or unique_name(),
             pdict,
@@ -293,6 +311,7 @@ class Core:
             self.geometry,
             pnames,
             rnames,
+            wavelength_units=wl_units,
         )
         self.sample.reflections.add(refl, replace=replace)
         return refl
@@ -560,25 +579,38 @@ class Core:
                 # fmt: on
             )
         logger.debug("Refining lattice using reflections %r", rnames)
-        # TODO unit conversions: lattice
+        # TODO 135 unit conversions: lattice
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
-        # TODO unit conversions: lattice
+        # TODO 135 unit conversions: lattice
         return Lattice(**lattice)
 
     def _reflections_to_solver(self, refl_list: list) -> dict:
-        """(internal) Convert units in list of reflections to be sent to a solver."""
+        """(internal) Convert list of reflections to solver-ready dictionaries.
+
+        Each :class:`~hklpy2.blocks.reflection.Reflection` may carry its own
+        ``wavelength_units``.  This method converts each reflection's
+        ``wavelength`` from the reflection-level units (falling back to the
+        diffractometer beam units if needed) into the solver's internal
+        wavelength units (``INTERNAL_LENGTH_UNITS``) before returning the
+        list of dicts to be consumed by solver backends.
+        """
         k = "wavelength"
-        wl_units = self.diffractometer.beam.wavelength_units.get()
-        wl_units_solver = DEFAULT_WAVELENGTH_UNITS
+        wl_units_solver = INTERNAL_LENGTH_UNITS
         reflections = []
         for refl in refl_list:
             if isinstance(refl, str):
                 refl = self.sample.reflections[refl]
             refl = refl._asdict()
-            refl[k] = convert_units(refl[k], wl_units, wl_units_solver)
+            # determine the original units: reflection-level, else beam-level
+            refl_wl_units = (
+                refl.get("wavelength_units")
+                or self.diffractometer.beam.wavelength_units.get()
+            )
+            # If wavelength key missing or None, leave as-is (solver may handle)
+            if k in refl and refl[k] is not None:
+                refl[k] = convert_units(refl[k], refl_wl_units, wl_units_solver)
             reflections.append(refl)
-        # TODO reals (angle) could have units, assume in degrees now
-        # TODO reflection wavelength should have its own units
+        # TODO 136 reals (angle) could have units, assume in degrees now
         return reflections
 
     def remove_sample(self, name):
@@ -739,12 +771,12 @@ class Core:
 
     def to_solver_units(self, wavelength: float = None) -> dict:
         """Convert quantities from diffractometer units to solver units."""
-        # TODO Lattice should have its own units
-        uc_units = DEFAULT_WAVELENGTH_UNITS  # uc: Unit Cell length
-        uc_units_solver = DEFAULT_WAVELENGTH_UNITS
-        # Lattice angles are degrees
+        # TODO 135 Lattice should have its own units
+        uc_units = INTERNAL_LENGTH_UNITS  # uc: Unit Cell length
+        uc_units_solver = INTERNAL_LENGTH_UNITS
+        # TODO 136 Lattice angles are degrees
         wl_units = self.diffractometer.beam.wavelength_units.get()
-        wl_units_solver = DEFAULT_WAVELENGTH_UNITS
+        wl_units_solver = INTERNAL_LENGTH_UNITS
 
         lattice = self.sample.lattice._asdict()
         for k in "a b c".split():
