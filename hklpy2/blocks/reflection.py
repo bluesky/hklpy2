@@ -150,7 +150,6 @@ class Reflection:
         Precision is controlled by rounding to smallest number of digits
         between the reflections.
         """
-        from ..misc import convert_units
 
         digits = min(self.digits, r2.digits)
         pseudos_ok = compare_float_dicts(self.pseudos, r2.pseudos, digits)

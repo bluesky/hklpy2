@@ -87,7 +87,7 @@ class Lattice:
         # FIXME 136  lattice should define its angle units
         angle_units: Optional[str] = None,
         digits: Optional[int] = None,
-        ):
+    ):
         """Initialize lattice parameters.
 
         Parameters
@@ -112,7 +112,7 @@ class Lattice:
         self.length_units = length_units or INTERNAL_LENGTH_UNITS
         self.angle_units = angle_units or INTERNAL_ANGLE_UNITS  # FIXME 136
         self.digits = digits or DEFAULT_LATTICE_DIGITS
-        
+
     def __eq__(self, latt):
         """
         Compare two lattices for equality.

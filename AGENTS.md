@@ -13,7 +13,7 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 - style information described in pyproject.toml
 - `pre-commit run --all-files`
 
- 
+
 ## Agent pytest style (for automated agents)
 
 ---

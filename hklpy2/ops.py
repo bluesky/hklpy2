@@ -779,10 +779,14 @@ class Core:
         # angle_units_solver = INTERNAL_ANGLE_UNITS  # TODO 139 solver could define its internal units
         # 'lattice' is a dict (from _asdict()); get units from the Lattice object
         length_units_uc = self.sample.lattice.length_units
-        length_units_solver = INTERNAL_LENGTH_UNITS  # TODO 139 solver could define its internal units
+        length_units_solver = (
+            INTERNAL_LENGTH_UNITS  # TODO 139 solver could define its internal units
+        )
         for k in "a b c  alpha beta gamma".split():
             if k in "a b c".split():
-                lattice[k] = convert_units(lattice[k], length_units_uc, length_units_solver)
+                lattice[k] = convert_units(
+                    lattice[k], length_units_uc, length_units_solver
+                )
             # else:  # TODO 136
             #     lattice[k] = convert_units(lattice[k], angle_units_uc, angle_units_solver)
 

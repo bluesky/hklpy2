@@ -101,9 +101,7 @@ class _WavelengthBase(Device):
     """
     wavelength = Component(SignalRO, value=DEFAULT_WAVELENGTH, kind="hinted")
     """Constant wavelength (:math:`\\lambda`) of incident monochromatic beam."""
-    wavelength_units = Component(
-        SignalRO, value=INTERNAL_LENGTH_UNITS, kind="config"
-    )
+    wavelength_units = Component(SignalRO, value=INTERNAL_LENGTH_UNITS, kind="config")
     """Constant engineering units of wavelength. (Same units as unit cell lengths.)"""
 
     wavelength_deadband = Component(
@@ -312,9 +310,7 @@ class EpicsWavelengthRO(_WavelengthBase):
     """Monochromatic wavelength (:math:`\\lambda`) from an EPICS PV."""
 
     wavelength = FC(EpicsSignalRO, "{prefix}{_pv_wavelength}", kind="hinted")
-    wavelength_units = Component(
-        SignalRO, value=INTERNAL_LENGTH_UNITS, kind="config"
-    )
+    wavelength_units = Component(SignalRO, value=INTERNAL_LENGTH_UNITS, kind="config")
 
     def __init__(
         self,

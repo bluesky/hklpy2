@@ -855,9 +855,7 @@ def test_reflections_to_solver_converts_per_reflection_units():
     wl0 = out[0]["wavelength"]
     wl1 = out[1]["wavelength"]
     assert wl0 == pytest.approx(wl1)
-    assert wl0 == pytest.approx(
-        convert_units(1.0, "angstrom", INTERNAL_LENGTH_UNITS)
-    )
+    assert wl0 == pytest.approx(convert_units(1.0, "angstrom", INTERNAL_LENGTH_UNITS))
 
 
 @pytest.mark.parametrize(
