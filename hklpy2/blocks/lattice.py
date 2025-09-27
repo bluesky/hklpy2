@@ -20,6 +20,7 @@ from ..misc import INTERNAL_ANGLE_UNITS
 from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import LatticeError
 from ..misc import compare_float_dicts
+from ..misc import convert_units
 
 logger = logging.getLogger(__name__)
 
@@ -115,6 +116,12 @@ class Lattice:
         """
         Compare two lattices for equality.
 
+        Equality is defined by the six canonical lattice parameters
+        (a, b, c, alpha, beta, gamma).  This method attempts to convert
+        lengths and angles to the internal units before comparison.  If
+        conversion fails for any reason, it falls back to a raw numeric
+        comparison of the parameters.
+
         EXAMPLE::
 
             lattice1 == lattice2
@@ -122,9 +129,35 @@ class Lattice:
         if not isinstance(latt, self.__class__):
             return False
         digits = min(self.digits, latt.digits)
-        return compare_float_dicts(
-            self._asdict(), latt._asdict(), min(self.digits, digits)
-        )
+
+        keys = "a b c alpha beta gamma".split()
+        # Prepare dicts of values for conversion
+        vals_self = {k: getattr(self, k) for k in keys}
+        vals_other = {k: getattr(latt, k) for k in keys}
+
+        try:
+            # Convert lengths to internal length units
+            for k in ("a", "b", "c"):
+                vals_self[k] = convert_units(
+                    vals_self[k], self.length_units, INTERNAL_LENGTH_UNITS
+                )
+                vals_other[k] = convert_units(
+                    vals_other[k], latt.length_units, INTERNAL_LENGTH_UNITS
+                )
+            # Convert angles to internal angle units
+            for k in ("alpha", "beta", "gamma"):
+                vals_self[k] = convert_units(
+                    vals_self[k], self.angle_units, INTERNAL_ANGLE_UNITS
+                )
+                vals_other[k] = convert_units(
+                    vals_other[k], latt.angle_units, INTERNAL_ANGLE_UNITS
+                )
+        except Exception:
+            # Fallback: use raw attribute values (no unit conversion)
+            vals_self = {k: getattr(self, k) for k in keys}
+            vals_other = {k: getattr(latt, k) for k in keys}
+
+        return compare_float_dicts(vals_self, vals_other, digits)
 
     def __repr__(self):
         """
@@ -150,12 +183,15 @@ class Lattice:
             "alpha": self.alpha,
             "beta": self.beta,
             "gamma": self.gamma,
-            # "digits": self.digits,
+            "digits": self.digits,
+            "angle_units": self.angle_units,
+            "length_units": self.length_units,
         }
 
     def _fromdict(self, config):
         """Redefine lattice from a (configuration) dictionary."""
         for k in "a b c alpha beta gamma".split():
+            # TODO 135: digits, angle_units, length_units
             setattr(self, k, config[k])
 
     def system_parameter_names(self, system: str):

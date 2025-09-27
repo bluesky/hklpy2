@@ -66,7 +66,10 @@ def test_crystal_classes(args, kwargs, expected):
     assert isinstance(expected, (list, tuple))
     latt = Lattice(*args, **kwargs)
     assert isinstance(latt, Lattice)
-    assert list(latt._asdict().values()) == list(expected), f"{latt=}"
+    # Compare only the canonical six lattice parameters (a,b,c,alpha,beta,gamma).
+    d = latt._asdict()
+    canonical = tuple(d[k] for k in ("a", "b", "c", "alpha", "beta", "gamma"))
+    assert list(canonical) == list(expected), f"{latt=!r} {canonical=!r}"
 
 
 def test_equal():

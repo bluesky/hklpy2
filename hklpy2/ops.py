@@ -22,6 +22,7 @@ from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
+from .misc import INTERNAL_ANGLE_UNITS
 from .misc import INTERNAL_LENGTH_UNITS
 from .misc import AnyAxesType
 from .misc import AxesDict
@@ -773,22 +774,21 @@ class Core:
     def to_solver_units(self, wavelength: float = None) -> dict:
         """Convert quantities from diffractometer units to solver units."""
         lattice = self.sample.lattice._asdict()
-        # TODO: Could length_units be added to the dict without adverse consequence?
 
-        # angle_units_uc = lattice.angle_units    # FIXME 136  lattice could define its angle units
-        # angle_units_solver = INTERNAL_ANGLE_UNITS  # TODO 139 solver could define its internal units
-        # 'lattice' is a dict (from _asdict()); get units from the Lattice object
-        length_units_uc = self.sample.lattice.length_units
-        length_units_solver = (
-            INTERNAL_LENGTH_UNITS  # TODO 139 solver could define its internal units
-        )
+        # TODO 139 solver could define its internal units
+        angle_units_uc = lattice["angle_units"]
+        angle_units_solver = INTERNAL_ANGLE_UNITS
+        length_units_uc = lattice["length_units"]
+        length_units_solver = INTERNAL_LENGTH_UNITS
         for k in "a b c  alpha beta gamma".split():
             if k in "a b c".split():
                 lattice[k] = convert_units(
                     lattice[k], length_units_uc, length_units_solver
                 )
-            # else:  # TODO 136
-            #     lattice[k] = convert_units(lattice[k], angle_units_uc, angle_units_solver)
+            else:
+                lattice[k] = convert_units(
+                    lattice[k], angle_units_uc, angle_units_solver
+                )
 
         reflections = self._reflections_to_solver(self.sample.reflections)
         wavelength = wavelength or self.diffractometer.beam.wavelength.get()
