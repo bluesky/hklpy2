@@ -883,3 +883,178 @@ def test_add_reflection_wavelength_units_preference(
         name="r_test",
     )
     assert r.wavelength_units == expect_units
+    @pytest.mark.parametrize(
+        "r1_kwargs, r2_kwargs, expect_eq, expect_exception",
+        [
+            # Same pseudos, reals, wavelength, units, digits
+            (
+                dict(
+                    name="r1",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                dict(
+                    name="r2",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                True,
+                None,
+            ),
+            # Same values, different units (convertible)
+            (
+                dict(
+                    name="r1",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                dict(
+                    name="r2",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=0.1,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="nanometer",
+                ),
+                True,
+                None,
+            ),
+            # Different pseudos
+            (
+                dict(
+                    name="r1",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                dict(
+                    name="r2",
+                    pseudos={"a": 2.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                False,
+                None,
+            ),
+            # Different reals
+            (
+                dict(
+                    name="r1",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                dict(
+                    name="r2",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 1.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                False,
+                None,
+            ),
+            # Different wavelength (not convertible)
+            (
+                dict(
+                    name="r1",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                dict(
+                    name="r2",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=2.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                False,
+                None,
+            ),
+            # Exception: wavelength_units not convertible
+            (
+                dict(
+                    name="r1",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="angstrom",
+                ),
+                dict(
+                    name="r2",
+                    pseudos={"a": 1.0, "b": 2.0},
+                    reals={"x": 0.0, "y": 0.0},
+                    wavelength=1.0,
+                    geometry="geo",
+                    pseudo_axis_names=["a", "b"],
+                    real_axis_names=["x", "y"],
+                    digits=4,
+                    wavelength_units="not_a_unit",
+                ),
+                False,
+                pytest.raises(Exception),
+            ),
+        ],
+    )
+    def test_reflection_eq(r1_kwargs, r2_kwargs, expect_eq, expect_exception):
+        r1 = Reflection(**r1_kwargs)
+        if expect_exception is not None:
+            with expect_exception:
+                _ = r1 == Reflection(**r2_kwargs)
+        else:
+            r2 = Reflection(**r2_kwargs)
+            assert (r1 == r2) is expect_eq
