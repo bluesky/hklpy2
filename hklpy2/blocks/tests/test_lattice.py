@@ -165,3 +165,22 @@ def test_length_units_property_and_validation(set_value, context, expected):
 
     if expected is not None:
         assert lat.length_units == expected
+
+
+@pytest.mark.parametrize(
+    "set_value, context, expected",
+    [
+        ("degrees", does_not_raise(), "degrees"),
+        ("not_a_unit", pytest.raises(Exception), None),
+    ],
+)
+def test_angle_units_property_and_validation(set_value, context, expected):
+    # Create and set inside the context so exceptions from construction or
+    # assignment are captured by the parametrized context manager.
+    with context:
+        lat = Lattice(3.0)
+        assert hasattr(lat, "angle_units")
+        lat.angle_units = set_value
+
+    if expected is not None:
+        assert lat.angle_units == expected

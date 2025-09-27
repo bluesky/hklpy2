@@ -82,11 +82,7 @@ class Lattice:
         beta: float = None,  # degrees
         gamma: float = None,  # degrees
         *,
-        # TODO: Review and update support for length_units throughout entire project.
-        # TODO: Add getter/setter property methods here for length_units
-        # TODO: Add pytests for length_units.
         length_units: Optional[str] = None,
-        # FIXME 136  lattice should define its angle units
         angle_units: Optional[str] = None,
         digits: Optional[int] = None,
     ):
@@ -112,7 +108,7 @@ class Lattice:
         self.beta = beta or alpha
         self.gamma = gamma or alpha
         self.length_units = length_units or INTERNAL_LENGTH_UNITS
-        self.angle_units = angle_units or INTERNAL_ANGLE_UNITS  # FIXME 136
+        self.angle_units = angle_units or INTERNAL_ANGLE_UNITS
         self.digits = digits or DEFAULT_LATTICE_DIGITS
 
     def __eq__(self, latt):
@@ -176,6 +172,18 @@ class Lattice:
         }.get(system, all)
 
     # ---- get/set properties
+
+    @property
+    def angle_units(self) -> str:
+        """Units for lattice angles (e.g. 'degrees')."""
+        return self._angle_units
+
+    @angle_units.setter
+    def angle_units(self, value: str) -> None:
+        # Ensure that new value is convertible to the internal angle units.
+        # Use pint to validate units; an exception will be raised for invalid units.
+        assert pint.UnitRegistry().convert(1, value, INTERNAL_ANGLE_UNITS)
+        self._angle_units = value
 
     @property
     def crystal_system(self):
