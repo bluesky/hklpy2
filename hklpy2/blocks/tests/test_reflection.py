@@ -810,3 +810,76 @@ def test_convert_units_helper(value, from_u, to_u, context, expected):
         result = convert_units(value, from_u, to_u)
         if expected is not None:
             assert result == pytest.approx(expected)
+
+
+def test_reflections_to_solver_converts_per_reflection_units():
+    """Ensure _reflections_to_solver converts each reflection's wavelength
+    from its own units into the solver internal units."""
+    from ...diffract import creator
+    from ...misc import INTERNAL_WAVELENGTH_UNITS, convert_units
+
+    # create a minimal diffractometer/core to use the conversion helper
+    dif = creator(name="testdif")
+    core = dif.core
+
+    pseudos = {"h": 1}
+    reals = {"x": 0.0}
+
+    # Reflection with 1.0 angstrom
+    rA = Reflection(
+        "ra",
+        pseudos,
+        reals,
+        1.0,
+        "geo",
+        list(pseudos.keys()),
+        list(reals.keys()),
+        wavelength_units="angstrom",
+    )
+    # Reflection with 0.1 nanometer (equal to 1.0 angstrom)
+    rB = Reflection(
+        "rb",
+        pseudos,
+        reals,
+        0.1,
+        "geo",
+        list(pseudos.keys()),
+        list(reals.keys()),
+        wavelength_units="nanometer",
+    )
+
+    out = core._reflections_to_solver([rA, rB])
+    assert len(out) == 2
+    # both wavelengths converted to INTERNAL_WAVELENGTH_UNITS should be equal
+    wl0 = out[0]["wavelength"]
+    wl1 = out[1]["wavelength"]
+    assert wl0 == pytest.approx(wl1)
+    assert wl0 == pytest.approx(
+        convert_units(1.0, "angstrom", INTERNAL_WAVELENGTH_UNITS)
+    )
+
+
+@pytest.mark.parametrize(
+    "explicit_units,beam_units,expect_units",
+    [
+        ("nanometer", None, "nanometer"),
+        (None, "angstrom", "angstrom"),
+    ],
+)
+def test_add_reflection_wavelength_units_preference(
+    explicit_units, beam_units, expect_units
+):
+    """Combined test for explicit wavelength_units preference and beam-unit fallback."""
+    sim = creator()
+    # if a beam unit is provided, set it on the diffractometer
+    if beam_units is not None:
+        sim.beam.wavelength_units.set(beam_units)
+
+    r = sim.core.add_reflection(
+        (1, 0, 0),
+        (0, 0, 0, 0),
+        wavelength=1.0,
+        wavelength_units=explicit_units,
+        name="r_test",
+    )
+    assert r.wavelength_units == expect_units

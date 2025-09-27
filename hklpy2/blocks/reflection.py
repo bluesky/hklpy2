@@ -162,7 +162,9 @@ class Reflection:
         except Exception:
             # If conversion fails, fall back to raw comparison (will likely fail)
             r2_wl_in_self_units = r2.wavelength
-        wavelength_ok = round(self.wavelength, digits) == round(r2_wl_in_self_units, digits)
+        wavelength_ok = round(self.wavelength, digits) == round(
+            r2_wl_in_self_units, digits
+        )
         return pseudos_ok and reals_ok and wavelength_ok
 
     def __repr__(self):
@@ -372,8 +374,6 @@ class ReflectionsDict(dict):
         ~swap
     """
 
-    # TODO 137 wavelength_units
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._order = []
@@ -408,9 +408,9 @@ class ReflectionsDict(dict):
             reflection = Reflection(
                 refl_config["name"],
                 refl_config["pseudos"],
-                    refl_config["reals"],
-                    wavelength=refl_config["wavelength"],
-                    wavelength_units=refl_config.get("wavelength_units"),
+                refl_config["reals"],
+                wavelength=refl_config["wavelength"],
+                wavelength_units=refl_config.get("wavelength_units"),
                 geometry=refl_config["geometry"],
                 pseudo_axis_names=list(refl_config["pseudos"]),
                 real_axis_names=list(refl_config["reals"]),

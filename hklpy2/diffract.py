@@ -203,6 +203,7 @@ class DiffractometerBase(PseudoPositioner):
         pseudos,
         reals=None,
         wavelength: float = None,
+        wavelength_units: str = None,
         name: str = None,
         replace: bool = False,
     ) -> Reflection:
@@ -218,6 +219,9 @@ class DiffractometerBase(PseudoPositioner):
         wavelength float:
             Wavelength of incident radiation. If ``None``, diffractometer's
             current wavelength will be assigned.
+        wavelength_units str:
+            Optional units for the supplied ``wavelength`` (e.g. "angstrom").
+            If ``None``, the diffractometer's current beam units are used.
         name str:
             Reference name for this reflection.
             If ``None``, a random name will be assigned.
@@ -229,8 +233,9 @@ class DiffractometerBase(PseudoPositioner):
             pseudos,
             reals,
             wavelength or self.beam.wavelength.get(),
-            name,
-            replace,
+            wavelength_units=wavelength_units,
+            name=name,
+            replace=replace,
         )
 
     def add_sample(
@@ -641,7 +646,6 @@ class DiffractometerBase(PseudoPositioner):
         """Concise report of the current diffractometer positions."""
         # TODO 135 lattice length units
         # TODO 136 angle units
-        # TODO 137 wavelength_units
 
         if not self.connected:
             raise DiffractometerError(f"Diffractometer {self.name!r} is not connected.")
