@@ -884,6 +884,7 @@ def test_add_reflection_wavelength_units_preference(
     )
     assert r.wavelength_units == expect_units
 
+
 @pytest.mark.parametrize(
     "r1_kwargs, r2_kwargs, expect_eq, expect_exception",
     [
@@ -1059,3 +1060,225 @@ def test_reflection_eq(r1_kwargs, r2_kwargs, expect_eq, expect_exception):
     else:
         r2 = Reflection(**r2_kwargs)
         assert (r1 == r2) is expect_eq
+
+
+@pytest.mark.parametrize(
+    "left,right,expected,context",
+    [
+        # Identical reflections, same units
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            True,
+            does_not_raise(),
+        ),
+        # Identical except for wavelength units, convertible
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                None,
+                4,
+                "angstrom",
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                0.1,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                None,
+                4,
+                "nanometer",
+            ],
+            True,
+            does_not_raise(),
+        ),
+        # Different pseudos
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            [
+                "r1",
+                {"a": 2.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            False,
+            does_not_raise(),
+        ),
+        # Different reals
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 1.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            False,
+            does_not_raise(),
+        ),
+        # Different wavelength, same units
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                2.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+            ],
+            False,
+            does_not_raise(),
+        ),
+        # Unconvertible units triggers fallback (should fail)
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                None,
+                4,
+                "not_a_unit",
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                None,
+                4,
+                "angstrom",
+            ],
+            False,
+            does_not_raise(),
+        ),
+    ],
+)
+def test_reflection_eq_deeper_test(left, right, expected, context):
+    # allow for optional wavelength_units and digits in params
+    def make_reflection(params):
+        args = params[:7]
+        kwargs = {}
+        if len(params) > 7:
+            if params[7] is not None:
+                kwargs["core"] = params[7]
+        if len(params) > 8:
+            if params[8] is not None:
+                kwargs["digits"] = params[8]
+        if len(params) > 9:
+            if params[9] is not None:
+                kwargs["wavelength_units"] = params[9]
+        return Reflection(*args, **kwargs)
+
+    with context:
+        r1 = make_reflection(left)
+        r2 = make_reflection(right)
+        assert (r1 == r2) is expected
+
+
+def test_reflection_eq_fallback_raw_comparison(monkeypatch):
+    # Simulate convert_units raising Exception to trigger fallback
+    r1 = Reflection(
+        "r1",
+        {"a": 1.0},
+        {"x": 0.0},
+        1.0,
+        "geo",
+        ["a"],
+        ["x"],
+        wavelength_units="angstrom",
+    )
+    r2 = Reflection(
+        "r1",
+        {"a": 1.0},
+        {"x": 0.0},
+        1.0,
+        "geo",
+        ["a"],
+        ["x"],
+        wavelength_units="angstrom",
+    )
+    import hklpy2.blocks.reflection as reflection_mod
+
+    def bad_convert_units(value, from_u, to_u):
+        raise Exception("conversion failed")
+
+    monkeypatch.setattr(reflection_mod, "convert_units", bad_convert_units)
+    # Should fall back to raw comparison, which will succeed here
+    assert r1 == r2
+
+    # Now, make r2 wavelength different, fallback should fail
+    r2b = Reflection(
+        "r1",
+        {"a": 1.0},
+        {"x": 0.0},
+        2.0,
+        "geo",
+        ["a"],
+        ["x"],
+        wavelength_units="angstrom",
+    )
+    assert not (r1 == r2b)
