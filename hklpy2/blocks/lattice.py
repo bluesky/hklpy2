@@ -16,7 +16,9 @@ from typing import Optional
 
 import pint
 
-from ..misc import INTERNAL_ANGLE_UNITS, INTERNAL_LENGTH_UNITS, LatticeError
+from ..misc import INTERNAL_ANGLE_UNITS
+from ..misc import INTERNAL_LENGTH_UNITS
+from ..misc import LatticeError
 from ..misc import compare_float_dicts
 
 logger = logging.getLogger(__name__)

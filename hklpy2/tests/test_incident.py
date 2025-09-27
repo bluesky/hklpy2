@@ -17,8 +17,8 @@ from ..incident import EpicsWavelengthRO
 from ..incident import Wavelength
 from ..incident import WavelengthXray
 from ..incident import _WavelengthBase
-from ..misc import INTERNAL_XRAY_ENERGY_UNITS
 from ..misc import INTERNAL_LENGTH_UNITS
+from ..misc import INTERNAL_XRAY_ENERGY_UNITS
 from .common import PV_WAVELENGTH
 from .common import assert_context_result
 

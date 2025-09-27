@@ -55,8 +55,8 @@ from ophyd import Signal
 from ophyd import SignalRO
 from ophyd.signal import AttributeSignal
 
-from .misc import INTERNAL_XRAY_ENERGY_UNITS
 from .misc import INTERNAL_LENGTH_UNITS
+from .misc import INTERNAL_XRAY_ENERGY_UNITS
 
 logger = logging.getLogger(__name__)
 DEFAULT_SOURCE_TYPE = "Synchrotron X-ray Source"

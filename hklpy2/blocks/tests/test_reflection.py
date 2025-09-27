@@ -1,7 +1,7 @@
 from contextlib import nullcontext as does_not_raise
 
-import pytest
 import pint
+import pytest
 
 from ...diffract import creator
 from ...misc import INTERNAL_LENGTH_UNITS
@@ -817,7 +817,8 @@ def test_reflections_to_solver_converts_per_reflection_units():
     """Ensure _reflections_to_solver converts each reflection's wavelength
     from its own units into the solver internal units."""
     from ...diffract import creator
-    from ...misc import INTERNAL_LENGTH_UNITS, convert_units
+    from ...misc import INTERNAL_LENGTH_UNITS
+    from ...misc import convert_units
 
     # create a minimal diffractometer/core to use the conversion helper
     dif = creator(name="testdif")
