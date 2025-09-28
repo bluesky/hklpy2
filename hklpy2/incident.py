@@ -57,6 +57,7 @@ from ophyd.signal import AttributeSignal
 
 from .misc import INTERNAL_LENGTH_UNITS
 from .misc import INTERNAL_XRAY_ENERGY_UNITS
+from .misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 DEFAULT_SOURCE_TYPE = "Synchrotron X-ray Source"
@@ -125,9 +126,9 @@ class _WavelengthBase(Device):
             for attr, value in info.items():
                 # Check first for incompatible units, before any signal.put() operations.
                 if attr == "energy_units" and value is not None:
-                    pint.UnitRegistry().convert(1, value, INTERNAL_XRAY_ENERGY_UNITS)
+                    validate_and_canonical_unit(value, INTERNAL_XRAY_ENERGY_UNITS)
                 elif attr == "wavelength_units" and value is not None:
-                    pint.UnitRegistry().convert(1, value, INTERNAL_LENGTH_UNITS)
+                    validate_and_canonical_unit(value, INTERNAL_LENGTH_UNITS)
 
             for attr in self._keyset:
                 value = info.get(attr)
@@ -154,9 +155,9 @@ class _WavelengthBase(Device):
             self.source_type._readback = source_type
 
         if wavelength_units is not None:
-            # validate first
-            pint.UnitRegistry().convert(1, wavelength_units, INTERNAL_LENGTH_UNITS)
-            self.wavelength_units.put(wavelength_units)
+            # validate and canonicalize first
+            canon = validate_and_canonical_unit(wavelength_units, INTERNAL_LENGTH_UNITS)
+            self.wavelength_units.put(canon)
 
         if wavelength is not None:
             self.wavelength.wait_for_connection(timeout=connection_timeout)

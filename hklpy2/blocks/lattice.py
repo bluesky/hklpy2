@@ -14,13 +14,13 @@ import logging
 import math
 from typing import Optional
 
-import pint
 
 from ..misc import INTERNAL_ANGLE_UNITS
 from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import LatticeError
 from ..misc import compare_float_dicts
 from ..misc import convert_units
+from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
@@ -191,8 +191,15 @@ class Lattice:
     def _fromdict(self, config):
         """Redefine lattice from a (configuration) dictionary."""
         for k in "a b c alpha beta gamma".split():
-            # TODO 135: digits, angle_units, length_units
             setattr(self, k, config[k])
+
+        # Restore optional properties if present
+        if "digits" in config:
+            self.digits = config["digits"]
+        if "length_units" in config:
+            self.length_units = config["length_units"]
+        if "angle_units" in config:
+            self.angle_units = config["angle_units"]
 
     def system_parameter_names(self, system: str):
         """Return list of lattice parameter names for this crystal system."""
@@ -216,10 +223,9 @@ class Lattice:
 
     @angle_units.setter
     def angle_units(self, value: str) -> None:
-        # Ensure that new value is convertible to the internal angle units.
-        # Use pint to validate units; an exception will be raised for invalid units.
-        assert pint.UnitRegistry().convert(1, value, INTERNAL_ANGLE_UNITS)
-        self._angle_units = value
+        # Validate and canonicalize units using project's helper (raises ValueError)
+        canon = validate_and_canonical_unit(value, INTERNAL_ANGLE_UNITS)
+        self._angle_units = canon
 
     @property
     def crystal_system(self):
@@ -305,7 +311,6 @@ class Lattice:
 
     @length_units.setter
     def length_units(self, value: str) -> None:
-        # Ensure that new value is convertible to the internal length units.
-        # Use pint to validate units; an exception will be raised for invalid units.
-        assert pint.UnitRegistry().convert(1, value, INTERNAL_LENGTH_UNITS)
-        self._length_units = value
+        # Validate and canonicalize units using project's helper (raises ValueError)
+        canon = validate_and_canonical_unit(value, INTERNAL_LENGTH_UNITS)
+        self._length_units = canon

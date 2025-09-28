@@ -105,6 +105,26 @@ INTERNAL_ANGLE_UNITS = "degrees"
 INTERNAL_LENGTH_UNITS = "angstrom"
 INTERNAL_XRAY_ENERGY_UNITS = "keV"
 
+# Shared pint UnitRegistry to avoid recreating it repeatedly.
+# Agents and hot paths should use this registry via helper functions below.
+UREG = pint.UnitRegistry()
+
+
+def validate_and_canonical_unit(value: str, target_units: str) -> str:
+    """Validate that *value* is a unit convertible to *target_units*.
+
+    Returns a canonical string representation of the unit (via UREG).
+    Raises ValueError on failure.
+    """
+    try:
+        # Attempt to construct a Unit and convert a quantity of 1 to the target.
+        unit = UREG.Unit(value)
+        UREG.Quantity(1, unit).to(target_units)
+        # Return the canonical string for storage (e.g. 'angstrom').
+        return str(unit)
+    except Exception as exc:  # noqa: BLE001 - re-raise as ValueError for callers
+        raise ValueError(f"Invalid unit {value!r}; must be convertible to {target_units!r}") from exc
+
 # Custom data types
 
 AxesArray = numpy.typing.NDArray[numpy.floating]
@@ -400,7 +420,7 @@ class ConfigurationRunWrapper:
         self.devices = list(devices)
 
     @property
-    def device_names(self) -> [str]:
+    def device_names(self) -> list[str]:
         """Return list of configured device names."""
         return [dev.name for dev in self.devices]
 
@@ -548,7 +568,7 @@ def compare_float_dicts(a1, a2, tol=1e-4):
 
 def convert_units(value: float, old_units: str, new_units: str) -> float:
     """Convert 'value' from old units to new."""
-    return pint.Quantity(value, old_units).to(new_units).magnitude
+    return UREG.Quantity(value, old_units).to(new_units).magnitude
 
 
 def dict_device_factory(data: dict, **kwargs):
