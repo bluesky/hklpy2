@@ -124,6 +124,7 @@ def validate_and_canonical_unit(value: str, target_units: str) -> str:
     # (and tests) see the same spelling/casing that was provided.
     return value
 
+
 # Custom data types
 
 AxesArray = numpy.typing.NDArray[numpy.floating]
