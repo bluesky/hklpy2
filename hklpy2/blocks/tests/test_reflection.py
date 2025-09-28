@@ -1282,3 +1282,18 @@ def test_reflection_eq_fallback_raw_comparison(monkeypatch):
         wavelength_units="angstrom",
     )
     assert not (r1 == r2b)
+
+
+def test_reflection_repr_paren():
+    """Simple sanity check: repr(Reflection) ends with a closing parenthesis."""
+    r = Reflection(
+        "r_repr",
+        {"h": 1.0},
+        {"x": 0.0},
+        1.0,
+        "geo",
+        ["h"],
+        ["x"],
+    )
+    text = repr(r)
+    assert text.endswith(")")

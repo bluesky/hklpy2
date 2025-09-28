@@ -187,3 +187,23 @@ def test_angle_units_property_and_validation(set_value, context, expected):
 
     if expected is not None:
         assert lat.angle_units == expected
+
+
+def test_lattice_eq_fallback_raw_comparison(monkeypatch):
+    """Force convert_units to raise and ensure equality falls back to raw values."""
+    import hklpy2.blocks.lattice as lattice_mod
+
+    def bad_convert_units(value, from_u, to_u):
+        raise Exception("conversion failed")
+
+    monkeypatch.setattr(lattice_mod, "convert_units", bad_convert_units)
+
+    l1 = Lattice(4.0, length_units="angstrom", angle_units="degrees")
+    l2 = Lattice(4.0, length_units="angstrom", angle_units="degrees")
+
+    # Should fall back to raw comparison and succeed
+    assert l1 == l2
+
+    # Now make a different lattice; fallback comparison should detect inequality
+    l2b = Lattice(5.0, length_units="angstrom", angle_units="degrees")
+    assert not (l1 == l2b)
