@@ -1224,7 +1224,7 @@ def test_reflection_eq_deeper_test(left, right, expected, context):
         kwargs = {}
         if len(params) > 7:
             if params[7] is not None:
-                kwargs["core"] = params[7]
+                kwargs["core"] = params[7]  # TODO coverage reports this line missed
         if len(params) > 8:
             if params[8] is not None:
                 kwargs["digits"] = params[8]

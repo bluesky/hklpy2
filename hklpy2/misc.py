@@ -132,13 +132,13 @@ def validate_and_canonical_unit(value: str, target_units: str) -> str:
 AxesArray = numpy.typing.NDArray[numpy.floating]
 """Numpy array of axes values."""
 
-AxesDict = dict[str, float]
+AxesDict = dict[str, Union[float, int]]
 """Dictionary of axes names and values."""
 
-AxesList = list[float]
+AxesList = list[Union[float, int]]
 """List of axes values."""
 
-AxesTuple = tuple[float, ...]
+AxesTuple = tuple[Union[float, int], ...]
 """Tuple of axes values."""
 
 AnyAxesType = Union[AxesArray, AxesDict, AxesList, AxesTuple]
@@ -528,8 +528,7 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
     elif istype(input, AxesArray) or isinstance(input, numpy.ndarray):
         # Accept numpy arrays (ndarray) of numeric values as an AxesArray.
         for name, value in zip(names, input):
-            # TODO need unit tests to cover the next line
-            axes[name] = value
+            axes[name] = value  # TODO coverage reports this line missed
 
     else:
         raise TypeError(f"Unexpected type: {input!r}.  Expected 'AnyAxesType'.")
