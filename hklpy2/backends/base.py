@@ -14,9 +14,10 @@ from typing import Dict
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
-from ..misc import istype
 from ..misc import INTERNAL_ANGLE_UNITS
-from ..misc import INTERNAL_LENGTH_UNITS, validate_and_canonical_unit
+from ..misc import INTERNAL_LENGTH_UNITS
+from ..misc import istype
+from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
