@@ -748,6 +748,7 @@ def test_virtual_axis_finish_setup_trigger():
 
 # === Additional tests to cover lines missed by previous tests ===
 
+
 def test_get_solver_raises_for_unknown():
     """Ensure get_solver raises SolverError for unknown solver name."""
     with pytest.raises(SolverError):
@@ -760,6 +761,7 @@ def test_get_run_orientation_basic():
     - If name is None, returns the top-level dict for the start_key
     - If name is provided, returns the nested dict or empty dict
     """
+
     class DummyRun:
         def __init__(self, md):
             self.metadata = {"start": {"diffractometers": md}}
