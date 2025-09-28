@@ -116,14 +116,13 @@ def validate_and_canonical_unit(value: str, target_units: str) -> str:
     Returns a canonical string representation of the unit (via UREG).
     Raises ValueError on failure.
     """
-    try:
-        # Attempt to construct a Unit and convert a quantity of 1 to the target.
-        unit = UREG.Unit(value)
-        UREG.Quantity(1, unit).to(target_units)
-        # Return the canonical string for storage (e.g. 'angstrom').
-        return str(unit)
-    except Exception as exc:  # noqa: BLE001 - re-raise as ValueError for callers
-        raise ValueError(f"Invalid unit {value!r}; must be convertible to {target_units!r}") from exc
+    # Constructing the Unit will raise pint.UndefinedUnitError if unknown.
+    unit = UREG.Unit(value)
+    # Attempt a dimensional conversion; will raise pint.DimensionalityError if incompatible.
+    UREG.Quantity(1, unit).to(target_units)
+    # On success, preserve and return the original user-provided unit string so callers
+    # (and tests) see the same spelling/casing that was provided.
+    return value
 
 # Custom data types
 
