@@ -32,7 +32,6 @@ from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .incident import WavelengthXray
 from .misc import INTERNAL_ANGLE_UNITS
-from .misc import PINT_ERRORS
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import DiffractometerError
