@@ -937,6 +937,7 @@ def test_restore(input, ref, context, expected):
 
 
 def test_failed_restore():
+    from ..diffract import creator
     from ..misc import load_yaml_file
 
     config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
@@ -1030,3 +1031,33 @@ def test_TypeError_issue_120(specs, context, expected):
         gonio = creator(**specs)
         gonio.wh()
     assert_context_result(expected, reason)
+
+
+@pytest.mark.parametrize(
+    "set_value, context, expected",
+    [
+        ("degree", does_not_raise(), None),
+        ("radian", does_not_raise(), None),
+        ("not_a_unit", pytest.raises(Exception), "Invalid"),
+    ],
+)
+def test_reals_units_property_and_validation(set_value, context, expected):
+    from ..diffract import creator
+    from ..misc import INTERNAL_ANGLE_UNITS
+
+    with context as reason:
+        sim = creator()
+        # The default getter must return the internal canonical units.
+        assert sim.reals_units == INTERNAL_ANGLE_UNITS
+        # Setting a value that validates should not raise; invalid values should.
+        sim.reals_units = set_value
+
+    # Check whether the operation raised as expected.
+    assert_context_result(expected, reason)
+
+    # For successful sets, the public getter must still be present and return a string.
+    if context is does_not_raise():
+        assert isinstance(sim.reals_units, str)
+        # The current implementation stores the canonical internal units on init.
+        # Ensure the getter returns a recognizable units string (not None/empty).
+        assert sim.reals_units != "" and sim.reals_units is not None
