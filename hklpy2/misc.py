@@ -29,6 +29,7 @@ Miscellaneous Support.
     ~solver_factory
     ~solvers
     ~unique_name
+    ~validate_and_canonical_unit
 
 .. rubric: Symbols
 .. autosummary::
@@ -67,6 +68,7 @@ Miscellaneous Support.
 
 import logging
 import math
+import numbers
 import pathlib
 import sys
 import time
@@ -130,13 +132,13 @@ def validate_and_canonical_unit(value: str, target_units: str) -> str:
 AxesArray = numpy.typing.NDArray[numpy.floating]
 """Numpy array of axes values."""
 
-AxesDict = dict[str, float]
+AxesDict = dict[str, Union[float, int]]
 """Dictionary of axes names and values."""
 
-AxesList = list[float]
+AxesList = list[Union[float, int]]
 """List of axes values."""
 
-AxesTuple = tuple[float, ...]
+AxesTuple = tuple[Union[float, int], ...]
 """Tuple of axes values."""
 
 AnyAxesType = Union[AxesArray, AxesDict, AxesList, AxesTuple]
@@ -523,11 +525,18 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
         for name, value in zip(names, input):
             axes[name] = value
 
-    else:  # TODO: #57 generic test is Iterable? AxesArray
+    elif istype(input, AxesArray) or isinstance(input, numpy.ndarray):
+        # Accept numpy arrays (ndarray) of numeric values as an AxesArray.
+        for name, value in zip(names, input):
+            axes[name] = value  # TODO coverage reports this line missed
+
+    else:
         raise TypeError(f"Unexpected type: {input!r}.  Expected 'AnyAxesType'.")
 
     for name, value in axes.items():
-        if not isinstance(value, (int, float)):
+        # Accept Python ints/floats and numpy numeric scalar types (e.g. np.int64,
+        # np.float64) by checking against numbers.Real.
+        if not isinstance(value, numbers.Real):
             raise TypeError(f"Expected a number. Received: {value!r}.")
 
     return axes
@@ -672,14 +681,12 @@ def get_solver(solver_name):
         libhkl_solver = SolverClass()
     """
     if solver_name not in solvers():
-        raise SolverError(
-            f"{solver_name=!r} unknown.  Pick one of: {solvers()!r}"
-        )  # TODO needs test
+        raise SolverError(f"{solver_name=!r} unknown.  Pick one of: {solvers()!r}")
     entries = entry_points(group=SOLVER_ENTRYPOINT_GROUP)
     return entries[solver_name].load()
 
 
-def get_run_orientation(run, name=None, start_key=DEFAULT_START_KEY):  # TODO needs test
+def get_run_orientation(run, name=None, start_key=DEFAULT_START_KEY):
     """
     Return the orientation information dictionary from a run.
 
@@ -760,7 +767,7 @@ def get_run_orientation(run, name=None, start_key=DEFAULT_START_KEY):  # TODO ne
     return info
 
 
-def istype(value: Any, annotation: Type) -> bool:  # TODO needs test
+def istype(value: Any, annotation: Type) -> bool:
     """
     Check if 'value' matches the type 'annotation'.
 

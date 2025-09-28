@@ -22,8 +22,6 @@ from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
-from .misc import INTERNAL_ANGLE_UNITS
-from .misc import INTERNAL_LENGTH_UNITS
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import CoreError
@@ -580,9 +578,9 @@ class Core:
                 # fmt: on
             )
         logger.debug("Refining lattice using reflections %r", rnames)
-        # TODO 135 lattice length units
-        # TODO 136 angle units
+        # TODO apply unit conversions lattice to solver before refineLattice
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
+        # TODO apply unit conversions solver to lattice after refineLattice
         return Lattice(**lattice)
 
     def _reflections_to_solver(self, refl_list: list) -> dict:
@@ -596,9 +594,8 @@ class Core:
         list of dicts to be consumed by solver backends.
         """
         k = "wavelength"
-        wl_units_solver = INTERNAL_LENGTH_UNITS  # TODO 139 use solver internal units
+        wl_units_solver = self.solver.LENGTH_UNITS
         reflections = []
-        # TODO 136 angle units lattice
         for refl in refl_list:
             if isinstance(refl, str):
                 refl = self.sample.reflections[refl]
@@ -775,11 +772,10 @@ class Core:
         """Convert quantities from diffractometer units to solver units."""
         lattice = self.sample.lattice._asdict()
 
-        # TODO 139 solver could define its internal units
         angle_units_uc = lattice["angle_units"]
-        angle_units_solver = INTERNAL_ANGLE_UNITS
+        angle_units_solver = self.solver.ANGLE_UNITS
         length_units_uc = lattice["length_units"]
-        length_units_solver = INTERNAL_LENGTH_UNITS
+        length_units_solver = self.solver.LENGTH_UNITS
         for k in "a b c  alpha beta gamma".split():
             if k in "a b c".split():
                 lattice[k] = convert_units(
@@ -794,7 +790,7 @@ class Core:
         wavelength = wavelength or self.diffractometer.beam.wavelength.get()
 
         wl_units = self.diffractometer.beam.wavelength_units.get()
-        wl_units_solver = INTERNAL_LENGTH_UNITS
+        wl_units_solver = self.solver.LENGTH_UNITS
         return dict(
             sample=dict(
                 name=self.sample.name,

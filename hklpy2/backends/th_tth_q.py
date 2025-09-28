@@ -145,7 +145,6 @@ class ThTthSolver(SolverBase):
     @property
     def modes(self):
         if self.geometry == TH_TTH_Q_GEOMETRY:
-            # TODO: use a symbol, change spelling to match E4CV: bissector
             return [BISECTOR_MODE]
 
     @property
@@ -164,7 +163,7 @@ class ThTthSolver(SolverBase):
 
     def removeAllReflections(self):
         """Remove all reflections."""
-        raise NotImplementedError()  # TODO: remove all reflections
+        raise NotImplementedError()  # TODO: implement this method
 
     @property
     def wavelength(self):

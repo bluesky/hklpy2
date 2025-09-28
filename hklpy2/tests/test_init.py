@@ -15,7 +15,7 @@ class TestException: ...
     "version, exception",
     [
         ["111.111.111", None],
-        # TODO: How to trigger the Exception handling in hklpy2._get_version()?
+        # TODO: How to trigger the Exception handling in hklpy2._get_version()?  See GH prjemian/Chewacla repo.
         ["222.222.222", LookupError],
         ["333.333.333", TestException],
     ],

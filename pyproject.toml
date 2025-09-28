@@ -46,7 +46,9 @@ dependencies = [
 
 [project.entry-points."hklpy2.solver"]
 no_op = "hklpy2.backends.no_op:NoOpSolver"
-hkl_soleil = "hklpy2.backends.hkl_soleil:HklSolver" # TODO: #3 mark as linux-only
+# HklSolver relies on the 'hkl' package.
+# If that package cannot be imported, then solver states it is not available.
+hkl_soleil = "hklpy2.backends.hkl_soleil:HklSolver"
 th_tth = "hklpy2.backends.th_tth_q:ThTthSolver"
 
 [project.optional-dependencies]
@@ -125,9 +127,8 @@ extend-ignore = ["E501"]
 
 [tool.isort]
 profile = "black"
-force_single_line = "True"
+force_single_line = true
 line_length = 115
-multi_line_output = "NOQA"
 src_paths = ["."]
 
 [tool.pytest.ini_options]

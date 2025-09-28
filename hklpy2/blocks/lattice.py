@@ -14,7 +14,6 @@ import logging
 import math
 from typing import Optional
 
-
 from ..misc import INTERNAL_ANGLE_UNITS
 from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import LatticeError

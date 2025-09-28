@@ -14,7 +14,10 @@ from typing import Dict
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
+from ..misc import INTERNAL_ANGLE_UNITS
+from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import istype
+from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +95,22 @@ class SolverBase(ABC):
     version = __version__
     """Version of this Solver."""
 
+    ANGLE_UNITS = "degrees"
+    """
+    Angle units used by this solver for unit cell and real axis rotations.
+
+    Solver can override this **constant**.  Must be convertible to
+    ``INTERNAL_ANGLE_UNITS``.
+    """
+
+    LENGTH_UNITS = "angstrom"
+    """
+    Length units used by this solver for unit cell and wavelength.
+
+    Solver can override this **constant**.  Must be convertible to
+    ``INTERNAL_LENGTH_UNITS``.
+    """
+
     def __init__(
         self,
         geometry: str,
@@ -103,6 +122,9 @@ class SolverBase(ABC):
         self.mode = mode
         self._all_extra_axis_names = None
         self._sample = None
+
+        validate_and_canonical_unit(self.ANGLE_UNITS, INTERNAL_ANGLE_UNITS)
+        validate_and_canonical_unit(self.LENGTH_UNITS, INTERNAL_LENGTH_UNITS)
 
         logger.debug("geometry=%s, kwargs=%s", repr(geometry), repr(kwargs))
 

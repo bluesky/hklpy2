@@ -43,7 +43,7 @@ def test_solvers(solver_name, geometry):
     from importlib.metadata import entry_points
 
     solvers = entry_points(group="hklpy2.solver")
-    assert len(solvers) > 0  # TODO needs tests here to line 61
+    assert len(solvers) > 0
     assert solver_name in solvers.names, f"{solver_name=}"
 
     entrypoint = solvers[solver_name]

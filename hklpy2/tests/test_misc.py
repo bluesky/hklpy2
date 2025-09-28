@@ -744,3 +744,55 @@ def test_virtual_axis_finish_setup_trigger():
     assert not multi.virtual._setup_finished
     multi.virtual.position
     assert multi.virtual._setup_finished
+
+
+# === Additional tests to cover lines missed by previous tests ===
+
+
+def test_get_solver_raises_for_unknown():
+    """Ensure get_solver raises SolverError for unknown solver name."""
+    with pytest.raises(SolverError):
+        get_solver("this_solver_does_not_exist_12345")
+
+
+def test_get_run_orientation_basic():
+    """Basic behavior of get_run_orientation for start metadata.
+
+    - If name is None, returns the top-level dict for the start_key
+    - If name is provided, returns the nested dict or empty dict
+    """
+
+    class DummyRun:
+        def __init__(self, md):
+            self.metadata = {"start": {"diffractometers": md}}
+
+    md = {"devA": {"k": 1}, "devB": {"k": 2}}
+    run = DummyRun(md)
+
+    # no name -> full dict
+    full = get_run_orientation(run)
+    assert isinstance(full, dict)
+    assert "devA" in full and "devB" in full
+
+    # specific name -> nested dict
+    a = get_run_orientation(run, name="devA")
+    assert isinstance(a, dict)
+    assert a == {"k": 1}
+
+    # missing name returns empty dict
+    missing = get_run_orientation(run, name="no_device_here")
+    assert missing == {}
+
+
+def test_istype_with_numpy_scalar_and_none():
+    """Ensure istype handles numpy scalars and None appropriately."""
+    import numpy as np
+
+    # numpy scalar should not match AxesArray (ndarray) annotation
+    assert not istype(np.int64(1), AxesArray)
+
+    # numpy array should match AxesArray
+    assert istype(np.array([1, 2, 3]), AxesArray)
+
+    # None against Optional/Union types: already covered elsewhere, but sanity-check
+    assert istype(None, Union[AxesArray, None])
