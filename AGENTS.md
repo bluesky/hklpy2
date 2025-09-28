@@ -13,6 +13,41 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 - style information described in pyproject.toml
 - `pre-commit run --all-files`
 
+
+## Agent pytest style (for automated agents)
+
+---
+
+- Agents must write tests using parametrized pytest patterns and explicit context managers for expected success/failure.
+- Prefer more parameter sets to minimize the number of test functions.
+- Use `from contextlib import nullcontext as does_not_raise` for success cases and `pytest.raises(...)` for expected exceptions.
+- Construct objects and perform assignments that may raise inside the `with context:` block. Place assertions about object state after the `with` when the case expects success.
+- Use the project's helper `assert_context_result(expected, reason)` where available to standardize result checks.
+- Example pattern (brief):
+
+```py
+@pytest.mark.parametrize(
+  "set_value, context, expected",
+  [
+    ("angstrom", does_not_raise(), "angstrom"),
+    ("not_a_unit", pytest.raises(Exception), None),
+  ],
+)
+def test_length_units_property_and_validation(set_value, context, expected):
+  with context:
+    lat = Lattice(3.0)
+    lat.length_units = set_value
+
+  if expected is not None:
+    assert lat.length_units == expected
+```
+
+This makes tests explicit and machine-friendly for automated agents.
+
+## Enforcement
+
+PRs opened or modified by automated agents must follow the "Agent pytest style" described above. Reviewers and CI will check for this pattern (test parametrization, use of context managers for expected outcomes, and the `assert_context_result` helper). Changes from agents that do not comply may be requested for revision or reverted.
+
 ## Agent behavior rules
 
 - Always follow the project's formatting, linting, and typing configs.
@@ -22,13 +57,10 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 - If uncertain about design, open an issue instead of making large changes.
 - Respect branch protection: push to feature branches and create PRs.
 
-# Test style
+## Test style
 
 - use parametrized pytests
 - all tests run code within context
-- test for success use does_not_raise() in a context
-  - from contextlib import nullcontext as does_not_raise
-- tests for exceptions use pytest.raise(exception class) in a context
 - do not separate success and errors tests into different test functions
 - Store test code modules in submodule/tests/ directory
 - maximize code coverage

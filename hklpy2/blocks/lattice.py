@@ -3,6 +3,7 @@ Lattice parameters for a single crystal.
 
 .. autosummary::
 
+    ~DEFAULT_LATTICE_DIGITS
     ~Lattice
     ~SI_LATTICE_PARAMETER
     ~SI_LATTICE_PARAMETER_UNCERTAINTY
@@ -11,11 +12,20 @@ Lattice parameters for a single crystal.
 import enum
 import logging
 import math
+from typing import Optional
 
+
+from ..misc import INTERNAL_ANGLE_UNITS
+from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import LatticeError
 from ..misc import compare_float_dicts
+from ..misc import convert_units
+from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_LATTICE_DIGITS = 4
+"""Default number of digits to display for lattice parameters."""
 
 SI_LATTICE_PARAMETER = 5.431020511
 """
@@ -72,19 +82,45 @@ class Lattice:
         alpha: float = 90.0,  # degrees
         beta: float = None,  # degrees
         gamma: float = None,  # degrees
-        digits: int = 4,
+        *,
+        length_units: Optional[str] = None,
+        angle_units: Optional[str] = None,
+        digits: Optional[int] = None,
     ):
+        """Initialize lattice parameters.
+
+        Parameters
+        ----------
+        a, b, c : float
+            Unit cell edge lengths (default units: Angstrom unless length_units specified)
+        alpha, beta, gamma : float
+            Unit cell angles (default units: degrees unless angle_units specified)
+        length_units : str, optional
+            Units for lattice lengths (e.g., 'angstrom', 'nm', 'pm')
+        angle_units : str, optional
+            Units for lattice angles (not yet implemented)
+        digits : int, optional
+            Number of digits to display.  (default: 4)
+        """
         self.a = a
         self.b = b or a
         self.c = c or a
         self.alpha = alpha
         self.beta = beta or alpha
         self.gamma = gamma or alpha
-        self.digits = digits
+        self.length_units = length_units or INTERNAL_LENGTH_UNITS
+        self.angle_units = angle_units or INTERNAL_ANGLE_UNITS
+        self.digits = digits or DEFAULT_LATTICE_DIGITS
 
     def __eq__(self, latt):
         """
         Compare two lattices for equality.
+
+        Equality is defined by the six canonical lattice parameters
+        (a, b, c, alpha, beta, gamma).  This method attempts to convert
+        lengths and angles to the internal units before comparison.  If
+        conversion fails for any reason, it falls back to a raw numeric
+        comparison of the parameters.
 
         EXAMPLE::
 
@@ -93,9 +129,35 @@ class Lattice:
         if not isinstance(latt, self.__class__):
             return False
         digits = min(self.digits, latt.digits)
-        return compare_float_dicts(
-            self._asdict(), latt._asdict(), min(self.digits, digits)
-        )
+
+        keys = "a b c alpha beta gamma".split()
+        # Prepare dicts of values for conversion
+        vals_self = {k: getattr(self, k) for k in keys}
+        vals_other = {k: getattr(latt, k) for k in keys}
+
+        try:
+            # Convert lengths to internal length units
+            for k in ("a", "b", "c"):
+                vals_self[k] = convert_units(
+                    vals_self[k], self.length_units, INTERNAL_LENGTH_UNITS
+                )
+                vals_other[k] = convert_units(
+                    vals_other[k], latt.length_units, INTERNAL_LENGTH_UNITS
+                )
+            # Convert angles to internal angle units
+            for k in ("alpha", "beta", "gamma"):
+                vals_self[k] = convert_units(
+                    vals_self[k], self.angle_units, INTERNAL_ANGLE_UNITS
+                )
+                vals_other[k] = convert_units(
+                    vals_other[k], latt.angle_units, INTERNAL_ANGLE_UNITS
+                )
+        except Exception:
+            # Fallback: use raw attribute values (no unit conversion)
+            vals_self = {k: getattr(self, k) for k in keys}
+            vals_other = {k: getattr(latt, k) for k in keys}
+
+        return compare_float_dicts(vals_self, vals_other, digits)
 
     def __repr__(self):
         """
@@ -121,13 +183,23 @@ class Lattice:
             "alpha": self.alpha,
             "beta": self.beta,
             "gamma": self.gamma,
-            # "digits": self.digits,
+            "digits": self.digits,
+            "angle_units": self.angle_units,
+            "length_units": self.length_units,
         }
 
     def _fromdict(self, config):
         """Redefine lattice from a (configuration) dictionary."""
         for k in "a b c alpha beta gamma".split():
             setattr(self, k, config[k])
+
+        # Restore optional properties if present
+        if "digits" in config:
+            self.digits = config["digits"]
+        if "length_units" in config:
+            self.length_units = config["length_units"]
+        if "angle_units" in config:
+            self.angle_units = config["angle_units"]
 
     def system_parameter_names(self, system: str):
         """Return list of lattice parameter names for this crystal system."""
@@ -143,6 +215,17 @@ class Lattice:
         }.get(system, all)
 
     # ---- get/set properties
+
+    @property
+    def angle_units(self) -> str:
+        """Units for lattice angles (e.g. 'degrees')."""
+        return self._angle_units
+
+    @angle_units.setter
+    def angle_units(self, value: str) -> None:
+        # Validate and canonicalize units using project's helper (raises ValueError)
+        canon = validate_and_canonical_unit(value, INTERNAL_ANGLE_UNITS)
+        self._angle_units = canon
 
     @property
     def crystal_system(self):
@@ -220,3 +303,14 @@ class Lattice:
     @digits.setter
     def digits(self, value: int):
         self._digits = value
+
+    @property
+    def length_units(self) -> str:
+        """Units for lattice lengths (e.g. 'angstrom')."""
+        return self._length_units
+
+    @length_units.setter
+    def length_units(self, value: str) -> None:
+        # Validate and canonicalize units using project's helper (raises ValueError)
+        canon = validate_and_canonical_unit(value, INTERNAL_LENGTH_UNITS)
+        self._length_units = canon

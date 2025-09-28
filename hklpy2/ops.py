@@ -22,6 +22,7 @@ from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
+from .misc import INTERNAL_ANGLE_UNITS
 from .misc import INTERNAL_LENGTH_UNITS
 from .misc import AnyAxesType
 from .misc import AxesDict
@@ -332,7 +333,7 @@ class Core:
         if name in self.samples:
             if not replace:
                 raise CoreError(f"Sample {name=!r} already defined.")
-        lattice = Lattice(a, b, c, alpha, beta, gamma, digits)
+        lattice = Lattice(a, b, c, alpha, beta, gamma, digits=digits)
         self._samples[name] = Sample(self, name, lattice)
         self.sample = name
         self.request_solver_update(True)  # 58  test_diffract line 410: 2 pi a
@@ -579,9 +580,9 @@ class Core:
                 # fmt: on
             )
         logger.debug("Refining lattice using reflections %r", rnames)
-        # TODO 135 unit conversions: lattice
+        # TODO 135 lattice length units
+        # TODO 136 angle units
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
-        # TODO 135 unit conversions: lattice
         return Lattice(**lattice)
 
     def _reflections_to_solver(self, refl_list: list) -> dict:
@@ -595,8 +596,9 @@ class Core:
         list of dicts to be consumed by solver backends.
         """
         k = "wavelength"
-        wl_units_solver = INTERNAL_LENGTH_UNITS
+        wl_units_solver = INTERNAL_LENGTH_UNITS  # TODO 139 use solver internal units
         reflections = []
+        # TODO 136 angle units lattice
         for refl in refl_list:
             if isinstance(refl, str):
                 refl = self.sample.reflections[refl]
@@ -771,20 +773,28 @@ class Core:
 
     def to_solver_units(self, wavelength: float = None) -> dict:
         """Convert quantities from diffractometer units to solver units."""
-        # TODO 135 Lattice should have its own units
-        uc_units = INTERNAL_LENGTH_UNITS  # uc: Unit Cell length
-        uc_units_solver = INTERNAL_LENGTH_UNITS
-        # TODO 136 Lattice angles are degrees
-        wl_units = self.diffractometer.beam.wavelength_units.get()
-        wl_units_solver = INTERNAL_LENGTH_UNITS
-
         lattice = self.sample.lattice._asdict()
-        for k in "a b c".split():
-            lattice[k] = convert_units(lattice[k], uc_units, uc_units_solver)
+
+        # TODO 139 solver could define its internal units
+        angle_units_uc = lattice["angle_units"]
+        angle_units_solver = INTERNAL_ANGLE_UNITS
+        length_units_uc = lattice["length_units"]
+        length_units_solver = INTERNAL_LENGTH_UNITS
+        for k in "a b c  alpha beta gamma".split():
+            if k in "a b c".split():
+                lattice[k] = convert_units(
+                    lattice[k], length_units_uc, length_units_solver
+                )
+            else:
+                lattice[k] = convert_units(
+                    lattice[k], angle_units_uc, angle_units_solver
+                )
 
         reflections = self._reflections_to_solver(self.sample.reflections)
         wavelength = wavelength or self.diffractometer.beam.wavelength.get()
 
+        wl_units = self.diffractometer.beam.wavelength_units.get()
+        wl_units_solver = INTERNAL_LENGTH_UNITS
         return dict(
             sample=dict(
                 name=self.sample.name,

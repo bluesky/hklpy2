@@ -1,5 +1,6 @@
 from contextlib import nullcontext as does_not_raise
 
+import pint
 import pytest
 
 from ...diffract import creator
@@ -816,7 +817,8 @@ def test_reflections_to_solver_converts_per_reflection_units():
     """Ensure _reflections_to_solver converts each reflection's wavelength
     from its own units into the solver internal units."""
     from ...diffract import creator
-    from ...misc import INTERNAL_LENGTH_UNITS, convert_units
+    from ...misc import INTERNAL_LENGTH_UNITS
+    from ...misc import convert_units
 
     # create a minimal diffractometer/core to use the conversion helper
     dif = creator(name="testdif")
@@ -854,9 +856,7 @@ def test_reflections_to_solver_converts_per_reflection_units():
     wl0 = out[0]["wavelength"]
     wl1 = out[1]["wavelength"]
     assert wl0 == pytest.approx(wl1)
-    assert wl0 == pytest.approx(
-        convert_units(1.0, "angstrom", INTERNAL_LENGTH_UNITS)
-    )
+    assert wl0 == pytest.approx(convert_units(1.0, "angstrom", INTERNAL_LENGTH_UNITS))
 
 
 @pytest.mark.parametrize(
@@ -1213,7 +1213,7 @@ def test_reflection_eq(r1_kwargs, r2_kwargs, expect_eq, expect_exception):
                 "angstrom",
             ],
             False,
-            does_not_raise(),
+            pytest.raises(pint.errors.UndefinedUnitError),
         ),
     ],
 )

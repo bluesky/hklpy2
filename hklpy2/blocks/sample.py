@@ -81,6 +81,7 @@ class Sample:
             "U": self.U,
             "UB": self.UB,
             "digits": self.digits,
+            # TODO: Could length_units be added to the dict without adverse consequence?
         }
 
     def _fromdict(self, config, core=None):
