@@ -29,6 +29,7 @@ Miscellaneous Support.
     ~solver_factory
     ~solvers
     ~unique_name
+    ~validate_and_canonical_unit
 
 .. rubric: Symbols
 .. autosummary::
