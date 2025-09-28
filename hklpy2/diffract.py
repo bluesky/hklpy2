@@ -31,12 +31,15 @@ from ophyd.pseudopos import real_position_argument
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .incident import WavelengthXray
+from .misc import INTERNAL_ANGLE_UNITS
+from .misc import PINT_ERRORS
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import DiffractometerError
 from .misc import load_yaml_file
 from .misc import pick_first_solution
 from .misc import roundoff
+from .misc import validate_and_canonical_unit
 
 __all__ = """
     DiffractometerBase
@@ -136,6 +139,7 @@ class DiffractometerBase(PseudoPositioner):
         ~configuration
         ~pseudo_axis_names
         ~real_axis_names
+        ~reals_units
         ~sample
         ~samples
     """
@@ -177,6 +181,11 @@ class DiffractometerBase(PseudoPositioner):
         self._backend = None
         self._forward_solution = forward_solution_function or pick_first_solution
         self.core = Core(self)
+
+        try:
+            validate_and_canonical_unit(self.reals_units, INTERNAL_ANGLE_UNITS)
+        except PINT_ERRORS as exinfo:
+            raise ValueError(f"Invalid angle units {self.reals_units=}: {exinfo}")
 
         super().__init__(prefix, **kwargs)
 
@@ -623,6 +632,21 @@ class DiffractometerBase(PseudoPositioner):
             ['omega', 'chi, 'phi', 'tth']
         """
         return [o.attr_name for o in self.real_positioners]
+
+    @property
+    def reals_units(self) -> str:
+        """Engineering units for the reals (rotational) axes"""
+        # TODO: This code not covered by unit tests
+        if not hasattr(self, "_real_units"):
+            self._real_units = INTERNAL_ANGLE_UNITS
+        return self._real_units
+
+    @reals_units.setter
+    def reals_units(self, value: str) -> None:
+        """Units must be convertible to internal angle units."""
+        # TODO: This code not covered by unit tests
+        validate_and_canonical_unit(value, INTERNAL_ANGLE_UNITS)
+        self._reals_units = value
 
     @property
     def samples(self):

@@ -111,6 +111,9 @@ INTERNAL_XRAY_ENERGY_UNITS = "keV"
 # Agents and hot paths should use this registry via helper functions below.
 UREG = pint.UnitRegistry()
 
+PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
+"""Exception from pint that we are trapping here."""
+
 
 def validate_and_canonical_unit(value: str, target_units: str) -> str:
     """Validate that *value* is a unit convertible to *target_units*.

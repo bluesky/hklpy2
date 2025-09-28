@@ -459,6 +459,7 @@ class Core:
         solutions = []
         try:
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
+                # TODO 136 convert reals from solver to diffractometer units
                 reals.update(self._axes_names_s2d(solution))  # Update with new values.
                 if self.constraints.valid(**reals):
                     solutions.append(self.diffractometer.RealPosition(**reals))
@@ -500,6 +501,7 @@ class Core:
         # Just the reals expected by the solver.
         # Dictionary in order expected by the solver.
         reals: AxesDict = self.standardize_reals(reals)
+        # TODO 136 convert reals from diffractometer to solver units
 
         self.update_solver(wavelength=wavelength)
 
@@ -609,7 +611,7 @@ class Core:
             if k in refl and refl[k] is not None:
                 refl[k] = convert_units(refl[k], refl_wl_units, wl_units_solver)
             reflections.append(refl)
-        # TODO 136 reals (angle) could have units, assume in degrees now
+        # TODO 136 convert reals (angles) units from internal to solver
         return reflections
 
     def remove_sample(self, name):
