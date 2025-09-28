@@ -636,7 +636,6 @@ class DiffractometerBase(PseudoPositioner):
     @property
     def reals_units(self) -> str:
         """Engineering units for the reals (rotational) axes"""
-        # TODO: This code not covered by unit tests
         if not hasattr(self, "_real_units"):
             self._real_units = INTERNAL_ANGLE_UNITS
         return self._real_units
@@ -644,7 +643,6 @@ class DiffractometerBase(PseudoPositioner):
     @reals_units.setter
     def reals_units(self, value: str) -> None:
         """Units must be convertible to internal angle units."""
-        # TODO: This code not covered by unit tests
         validate_and_canonical_unit(value, INTERNAL_ANGLE_UNITS)
         self._reals_units = value
 
@@ -701,7 +699,7 @@ class DiffractometerBase(PseudoPositioner):
             return np.vectorize(each)(np.array(array)).tolist()
 
         if full:
-            # TODO: Include the engineering units (for lattice, reflections, and wavelength).  Adjust parameter sets of test_diffractometer_wh() as necessary.
+            # TODO 136: Include the engineering units (for reals, lattice, reflections, and wavelength).  Adjust parameter sets of test_diffractometer_wh() as necessary.
             print(f"diffractometer={self.name!r}")
             print(f"{self.core.solver}")
             print(f"{self.sample!r}")
