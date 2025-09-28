@@ -104,6 +104,8 @@ class DiffractometerBase(PseudoPositioner):
         Function to pick one solution from list of possibilities.
         Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.
         (default: :func:`~hklpy2.misc.pick_first_solution`)
+    reals_units : str
+        The units for the real axes. (default: "degrees")
 
     .. rubric:: (ophyd) Components
 

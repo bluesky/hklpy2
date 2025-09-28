@@ -52,6 +52,7 @@ class Reflection:
     * ``geometry`` (str): Geometry name for this reflection.
     * ``pseudo_names`` ([str]): Ordered list of pseudo names for this geometry.
     * ``rnames`` ([str]): Ordered list of real names for this geometry.
+    * ``wavelength_units`` (str): Engineering units of wavelength.
 
     Optional items (such as 'azimuth', 'h1', 'h2', zones, ...) are not
     part of a "reflection".
@@ -108,6 +109,7 @@ class Reflection:
         # property setters
         self.pseudos = pseudos
         self.reals = reals
+        # TODO 136 reals_units (needs kwarg & getter/setter property methods, also _asdict/_fromdict)
         self.wavelength = wavelength
         self.wavelength_units = wavelength_units or INTERNAL_LENGTH_UNITS
 
