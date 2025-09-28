@@ -173,6 +173,7 @@ class DiffractometerBase(PseudoPositioner):
         solver_kwargs: dict = {},
         pseudos: list[str] = [],
         reals: list[str] = [],
+        reals_units: Optional[str] = None,
         forward_solution_function: Optional[Callable] = None,
         **kwargs,
     ):
@@ -180,12 +181,9 @@ class DiffractometerBase(PseudoPositioner):
 
         self._backend = None
         self._forward_solution = forward_solution_function or pick_first_solution
-        self.core = Core(self)
+        self.reals_units = reals_units or INTERNAL_ANGLE_UNITS
 
-        try:
-            validate_and_canonical_unit(self.reals_units, INTERNAL_ANGLE_UNITS)
-        except PINT_ERRORS as exinfo:
-            raise ValueError(f"Invalid angle units {self.reals_units=}: {exinfo}")
+        self.core = Core(self)
 
         super().__init__(prefix, **kwargs)
 
