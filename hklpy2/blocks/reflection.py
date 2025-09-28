@@ -16,14 +16,13 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 import logging
 from typing import Optional
 
-import pint
-
 from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import ConfigurationError
 from ..misc import ReflectionError
 from ..misc import check_value_in_list
 from ..misc import compare_float_dicts
 from ..misc import convert_units
+from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
@@ -353,7 +352,7 @@ class Reflection:
     @wavelength_units.setter
     def wavelength_units(self, value: str) -> None:
         # Ensure that new value is convertible to the internal wavelength units.
-        assert pint.UnitRegistry().convert(1, value, INTERNAL_LENGTH_UNITS)
+        validate_and_canonical_unit(value, INTERNAL_LENGTH_UNITS)
         self._wavelength_units = value
 
 
