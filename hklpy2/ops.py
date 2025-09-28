@@ -578,9 +578,9 @@ class Core:
                 # fmt: on
             )
         logger.debug("Refining lattice using reflections %r", rnames)
-        # TODO 135 lattice length units
-        # TODO 136 angle units
+        # TODO apply unit conversions lattice to solver before refineLattice
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
+        # TODO apply unit conversions solver to lattice after refineLattice
         return Lattice(**lattice)
 
     def _reflections_to_solver(self, refl_list: list) -> dict:

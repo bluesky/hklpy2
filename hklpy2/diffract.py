@@ -644,8 +644,6 @@ class DiffractometerBase(PseudoPositioner):
 
     def wh(self, digits=4, full=False):
         """Concise report of the current diffractometer positions."""
-        # TODO 135 lattice length units
-        # TODO 136 angle units
 
         if not self.connected:
             raise DiffractometerError(f"Diffractometer {self.name!r} is not connected.")
@@ -679,6 +677,7 @@ class DiffractometerBase(PseudoPositioner):
             return np.vectorize(each)(np.array(array)).tolist()
 
         if full:
+            # TODO: Include the engineering units (for lattice, reflections, and wavelength).  Adjust parameter sets of test_diffractometer_wh() as necessary.
             print(f"diffractometer={self.name!r}")
             print(f"{self.core.solver}")
             print(f"{self.sample!r}")
