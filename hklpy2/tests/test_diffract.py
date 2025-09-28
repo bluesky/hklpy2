@@ -1038,7 +1038,7 @@ def test_TypeError_issue_120(specs, context, expected):
     [
         ("degree", does_not_raise(), None),
         ("radian", does_not_raise(), None),
-        ("not_a_unit", pytest.raises(Exception), "Invalid"),
+        ("not_a_unit", pytest.raises(Exception), "not_a_unit"),
     ],
 )
 def test_reals_units_property_and_validation(set_value, context, expected):
