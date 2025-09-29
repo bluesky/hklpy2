@@ -1,8 +1,9 @@
 """Test the package constructor."""
 
-import pytest
-import runpy
 import importlib
+import runpy
+
+import pytest
 
 from .. import _get_version
 
