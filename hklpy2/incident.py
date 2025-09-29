@@ -46,7 +46,6 @@ import atexit
 import logging
 import weakref
 
-import pint
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignalRO
@@ -267,7 +266,7 @@ class WavelengthXray(Wavelength):
         super().__init__(prefix, **kwargs)
         if energy_units is not None:
             # validate first
-            pint.UnitRegistry().convert(1, energy_units, INTERNAL_XRAY_ENERGY_UNITS)
+            validate_and_canonical_unit(energy_units, INTERNAL_XRAY_ENERGY_UNITS)
             self.energy_units.put(energy_units)
         if energy is not None:
             self.energy.put(energy)

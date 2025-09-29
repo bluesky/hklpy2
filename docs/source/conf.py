@@ -126,11 +126,16 @@ autodoc_default_options = {
 }
 autodoc_mock_imports = """
     bluesky
+    coverage
+    dask
     databroker
     gi
+    numba
+    numba_backend
     ophyd
     pandas
     pint
+    sparse
     tqdm
 """.split()
 

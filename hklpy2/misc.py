@@ -54,11 +54,11 @@ Miscellaneous Support.
 .. rubric: Custom Exceptions
 .. autosummary::
 
+    ~Hklpy2Error
     ~ConfigurationError
     ~ConstraintsError
     ~CoreError
     ~DiffractometerError
-    ~Hklpy2Error
     ~LatticeError
     ~NoForwardSolutions
     ~ReflectionError
@@ -110,6 +110,9 @@ INTERNAL_XRAY_ENERGY_UNITS = "keV"
 # Shared pint UnitRegistry to avoid recreating it repeatedly.
 # Agents and hot paths should use this registry via helper functions below.
 UREG = pint.UnitRegistry()
+
+PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
+"""Exception from pint that we are trapping here."""
 
 
 def validate_and_canonical_unit(value: str, target_units: str) -> str:
@@ -170,20 +173,20 @@ class ConstraintsError(Hklpy2Error):
     """Custom exceptions from :mod:`hklpy2.blocks.constraints`."""
 
 
+class CoreError(Hklpy2Error):
+    """Custom exceptions from :class:`hklpy2.ops.Core`."""
+
+
 class DiffractometerError(Hklpy2Error):
-    """Custom exceptions from :class:`~DiffractometerBase`."""
+    """Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`."""
 
 
 class LatticeError(Hklpy2Error):
     """Custom exceptions from :mod:`hklpy2.blocks.lattice`."""
 
 
-class CoreError(Hklpy2Error):
-    """Custom exceptions from :class:`~Core`."""
-
-
 class NoForwardSolutions(Hklpy2Error):
-    """A solver did not find any 'forward()' solutions."""
+    """A solver did not find any ``forward()`` solutions."""
 
 
 class ReflectionError(Hklpy2Error):

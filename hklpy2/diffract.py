@@ -31,12 +31,14 @@ from ophyd.pseudopos import real_position_argument
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .incident import WavelengthXray
+from .misc import INTERNAL_ANGLE_UNITS
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import DiffractometerError
 from .misc import load_yaml_file
 from .misc import pick_first_solution
 from .misc import roundoff
+from .misc import validate_and_canonical_unit
 
 __all__ = """
     DiffractometerBase
@@ -102,6 +104,8 @@ class DiffractometerBase(PseudoPositioner):
         Function to pick one solution from list of possibilities.
         Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.
         (default: :func:`~hklpy2.misc.pick_first_solution`)
+    reals_units : str
+        The units for the real axes. (default: "degrees")
 
     .. rubric:: (ophyd) Components
 
@@ -136,6 +140,7 @@ class DiffractometerBase(PseudoPositioner):
         ~configuration
         ~pseudo_axis_names
         ~real_axis_names
+        ~reals_units
         ~sample
         ~samples
     """
@@ -169,6 +174,7 @@ class DiffractometerBase(PseudoPositioner):
         solver_kwargs: dict = {},
         pseudos: list[str] = [],
         reals: list[str] = [],
+        reals_units: Optional[str] = None,
         forward_solution_function: Optional[Callable] = None,
         **kwargs,
     ):
@@ -176,6 +182,8 @@ class DiffractometerBase(PseudoPositioner):
 
         self._backend = None
         self._forward_solution = forward_solution_function or pick_first_solution
+        self.reals_units = reals_units or INTERNAL_ANGLE_UNITS
+
         self.core = Core(self)
 
         super().__init__(prefix, **kwargs)
@@ -625,6 +633,19 @@ class DiffractometerBase(PseudoPositioner):
         return [o.attr_name for o in self.real_positioners]
 
     @property
+    def reals_units(self) -> str:
+        """Engineering units for the reals (rotational) axes"""
+        if not hasattr(self, "_real_units"):
+            self._real_units = INTERNAL_ANGLE_UNITS
+        return self._real_units
+
+    @reals_units.setter
+    def reals_units(self, value: str) -> None:
+        """Units must be convertible to internal angle units."""
+        validate_and_canonical_unit(value, INTERNAL_ANGLE_UNITS)
+        self._reals_units = value
+
+    @property
     def samples(self):
         """Dictionary of samples."""
         if self.core is None:
@@ -677,7 +698,6 @@ class DiffractometerBase(PseudoPositioner):
             return np.vectorize(each)(np.array(array)).tolist()
 
         if full:
-            # TODO: Include the engineering units (for lattice, reflections, and wavelength).  Adjust parameter sets of test_diffractometer_wh() as necessary.
             print(f"diffractometer={self.name!r}")
             print(f"{self.core.solver}")
             print(f"{self.sample!r}")

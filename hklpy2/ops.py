@@ -459,7 +459,15 @@ class Core:
         solutions = []
         try:
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
-                reals.update(self._axes_names_s2d(solution))  # Update with new values.
+                new_reals = self._axes_names_s2d(solution)
+                for axis, value in new_reals.items():
+                    # Unit conversions only for new values.
+                    angle_units_solver = self.solver.ANGLE_UNITS
+                    angle_units_uc = self.diffractometer.reals_units
+                    # Update with converted new value.
+                    reals[axis] = convert_units(
+                        value, angle_units_solver, angle_units_uc
+                    )
                 if self.constraints.valid(**reals):
                     solutions.append(self.diffractometer.RealPosition(**reals))
         except NoForwardSolutions:
@@ -500,6 +508,10 @@ class Core:
         # Just the reals expected by the solver.
         # Dictionary in order expected by the solver.
         reals: AxesDict = self.standardize_reals(reals)
+        for axis, value in reals.items():
+            angle_units_uc = self.diffractometer.reals_units
+            angle_units_solver = self.solver.ANGLE_UNITS
+            reals[axis] = convert_units(value, angle_units_uc, angle_units_solver)
 
         self.update_solver(wavelength=wavelength)
 
@@ -577,21 +589,31 @@ class Core:
                 f" Known reflections: {rnames}"
                 # fmt: on
             )
+
         logger.debug("Refining lattice using reflections %r", rnames)
-        # TODO apply unit conversions lattice to solver before refineLattice
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
-        # TODO apply unit conversions solver to lattice after refineLattice
+
+        # apply unit conversions solver to lattice after refineLattice
+        angle_units_solver = self.solver.ANGLE_UNITS
+        angle_units_uc = self.sample.lattice.angle_units
+        length_units_solver = self.solver.LENGTH_UNITS
+        length_units_uc = self.sample.lattice.length_units
+        for parm, value in lattice.items():
+            if parm in "a b c".split():
+                lattice[parm] = convert_units(
+                    value, length_units_solver, length_units_uc
+                )
+            elif parm in "alpha beta gamma".split():
+                lattice[parm] = convert_units(value, angle_units_solver, angle_units_uc)
+
         return Lattice(**lattice)
 
     def _reflections_to_solver(self, refl_list: list) -> dict:
-        """(internal) Convert list of reflections to solver-ready dictionaries.
+        """(internal) Convert list of reflections to dict for solver.
 
-        Each :class:`~hklpy2.blocks.reflection.Reflection` may carry its own
-        ``wavelength_units``.  This method converts each reflection's
-        ``wavelength`` from the reflection-level units (falling back to the
-        diffractometer beam units if needed) into the solver's internal
-        wavelength units (``INTERNAL_LENGTH_UNITS``) before returning the
-        list of dicts to be consumed by solver backends.
+        Each :class:`~hklpy2.blocks.reflection.Reflection` carries its
+        own units for real axis angles and wavelength.  Convert these to
+        the solver's internal units.
         """
         k = "wavelength"
         wl_units_solver = self.solver.LENGTH_UNITS
@@ -600,16 +622,22 @@ class Core:
             if isinstance(refl, str):
                 refl = self.sample.reflections[refl]
             refl = refl._asdict()
-            # determine the original units: reflection-level, else beam-level
+
+            for axis, value in refl["reals"].items():
+                angle_units_uc = self.diffractometer.reals_units
+                angle_units_solver = self.solver.ANGLE_UNITS
+                refl["reals"][axis] = convert_units(
+                    value, angle_units_uc, angle_units_solver
+                )
+
+            # determine the original wavelength_units: reflection-level, else beam-level
             refl_wl_units = (
                 refl.get("wavelength_units")
                 or self.diffractometer.beam.wavelength_units.get()
             )
-            # If wavelength key missing or None, leave as-is (solver may handle)
-            if k in refl and refl[k] is not None:
-                refl[k] = convert_units(refl[k], refl_wl_units, wl_units_solver)
+            refl[k] = convert_units(refl[k], refl_wl_units, wl_units_solver)
+
             reflections.append(refl)
-        # TODO 136 reals (angle) could have units, assume in degrees now
         return reflections
 
     def remove_sample(self, name):

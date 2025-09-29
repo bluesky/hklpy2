@@ -57,11 +57,29 @@ class Lattice:
     """
     Crystal lattice parameters.
 
+    If only the parameter ``a`` is given, the cell is treated as cubic: ``b``
+    and ``c`` are set equal to ``a``, and α, β, γ are 90°. Supplying the
+    nonredundant parameters for another crystal system (for example, the
+    hexagonal case below) defines that lattice.
+
     EXAMPLE::
 
         >>> from hklpy2.blocks.lattice import Lattice
         >>> Lattice(4.74, c=9.515, gamma=120)
         Lattice(a=4.74, c=9.515, gamma=120, system='hexagonal')
+
+    PARAMETERS
+
+    a, b, c : float
+        Unit cell edge lengths (default units: Angstrom unless length_units specified)
+    alpha, beta, gamma : float
+        Unit cell angles (default units: degrees unless angle_units specified)
+    length_units : str, optional
+        Units for unit cell lengths (e.g., 'angstrom', 'nm', 'pm')
+    angle_units : str, optional
+        Units for unit cell angles (e.g., 'degrees', 'radians')
+    digits : int, optional
+        Number of digits to display.  (default: 4)
 
     .. autosummary::
 

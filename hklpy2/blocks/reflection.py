@@ -8,7 +8,6 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 .. autosummary::
 
     ~Reflection
-    ~ReflectionError
     ~ReflectionsDict
     ~UNUSED_REFLECTION
 """
@@ -16,14 +15,13 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 import logging
 from typing import Optional
 
-import pint
-
 from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import ConfigurationError
 from ..misc import ReflectionError
 from ..misc import check_value_in_list
 from ..misc import compare_float_dicts
 from ..misc import convert_units
+from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +51,7 @@ class Reflection:
     * ``geometry`` (str): Geometry name for this reflection.
     * ``pseudo_names`` ([str]): Ordered list of pseudo names for this geometry.
     * ``rnames`` ([str]): Ordered list of real names for this geometry.
+    * ``wavelength_units`` (str): Engineering units of wavelength.
 
     Optional items (such as 'azimuth', 'h1', 'h2', zones, ...) are not
     part of a "reflection".
@@ -84,6 +83,7 @@ class Reflection:
         *,
         core: Optional[object] = None,
         digits: Optional[int] = None,
+        reals_units: Optional[str] = None,
         wavelength_units: str = None,
     ) -> None:
         from ..ops import Core
@@ -109,6 +109,7 @@ class Reflection:
         # property setters
         self.pseudos = pseudos
         self.reals = reals
+        self.reals_units = reals_units or INTERNAL_LENGTH_UNITS
         self.wavelength = wavelength
         self.wavelength_units = wavelength_units or INTERNAL_LENGTH_UNITS
 
@@ -217,6 +218,7 @@ class Reflection:
             "geometry": self.geometry,
             "pseudos": self.pseudos,
             "reals": self.reals,
+            "reals_units": self.reals_units,
             "wavelength": self.wavelength,
             "wavelength_units": self.wavelength_units,
             "digits": self.digits,
@@ -250,12 +252,11 @@ class Reflection:
             )
 
         self.digits = config.get("digits", self.digits)
-        # accept explicit wavelength_units if present
-        if "wavelength_units" in config:
-            self.wavelength_units = config.get("wavelength_units")
-        self.wavelength = config.get("wavelength", self.wavelength)
         self.pseudos = config["pseudos"]
+        self.reals_units = config.get("reals_units", self.reals_units)
         self.reals = config["reals"]
+        self.wavelength_units = config.get("wavelength_units", self.wavelength_units)
+        self.wavelength = config.get("wavelength", self.wavelength)
 
     def _validate_pseudos(self, value):
         """Raise Exception if pseudos do not match expectations."""
@@ -336,6 +337,16 @@ class Reflection:
         self._reals = values
 
     @property
+    def reals_units(self) -> str:
+        """Engineering units of this reflection's real-space axes."""
+        return self._reals_units
+
+    @reals_units.setter
+    def reals_units(self, value: str) -> None:
+        validate_and_canonical_unit(value, INTERNAL_LENGTH_UNITS)
+        self._reals_units = value
+
+    @property
     def wavelength(self):
         """Wavelength of reflection."""
         return self._wavelength
@@ -353,7 +364,7 @@ class Reflection:
     @wavelength_units.setter
     def wavelength_units(self, value: str) -> None:
         # Ensure that new value is convertible to the internal wavelength units.
-        assert pint.UnitRegistry().convert(1, value, INTERNAL_LENGTH_UNITS)
+        validate_and_canonical_unit(value, INTERNAL_LENGTH_UNITS)
         self._wavelength_units = value
 
 
