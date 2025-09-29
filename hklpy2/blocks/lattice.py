@@ -57,11 +57,10 @@ class Lattice:
     """
     Crystal lattice parameters.
 
-    If only the ``a`` parameter  is provided, a cubic lattice is
-    assumed``b`` and ``c`` default to ``a``, and ``alpha``, ``beta``,
-    and ``gamma`` default to 90 degrees.  Other lattices are defined by
-    supplying the non-redundant parameters particular to that crystal
-    system, such as the hexagonal example below.
+    If only the parameter ``a`` is given, the cell is treated as cubic: ``b``
+    and ``c`` are set equal to ``a``, and α, β, γ are 90°. Supplying the
+    nonredundant parameters for another crystal system (for example, the
+    hexagonal case below) defines that lattice.
 
     EXAMPLE::
 
@@ -76,9 +75,9 @@ class Lattice:
     alpha, beta, gamma : float
         Unit cell angles (default units: degrees unless angle_units specified)
     length_units : str, optional
-        Units for lattice lengths (e.g., 'angstrom', 'nm', 'pm')
+        Units for unit cell lengths (e.g., 'angstrom', 'nm', 'pm')
     angle_units : str, optional
-        Units for lattice angles (e.g., 'degrees', 'radians')
+        Units for unit cell angles (e.g., 'degrees', 'radians')
     digits : int, optional
         Number of digits to display.  (default: 4)
 
