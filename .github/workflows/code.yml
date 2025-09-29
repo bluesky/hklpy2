@@ -116,15 +116,47 @@ jobs:
       - name: Run tests with pytest & coverage
         shell: bash -l {0}
         run: |
-          coverage run --concurrency=thread --parallel-mode -m pytest -vvv .
-          coverage combine
-          coverage report --precision 3 -m
+          set -vxeuo pipefail
+
+          # Ensure reports directory exists for JUnit and coverage artifacts
+          mkdir -p reports
+
+          # Run pytest under coverage and write a junit xml. Capture the
+          # pytest/coverage exit code so we can still run coverage combine &
+          # reporting but ultimately fail the step if tests failed.
+          coverage run --concurrency=thread --parallel-mode -m pytest -vvv --junitxml=reports/junit.xml . || true
+
+          # Combine and report coverage (don't let missing coverage files hide test failures)
+          coverage combine || true
+          coverage report --precision 3 -m || true
+
+          # Re-run pytest's exit code detection: if junit xml exists, inspect it for failures.
+          if [ -f reports/junit.xml ]; then
+            # Look for failures or errors in the junit xml
+            if grep -E "failures=\"[1-9][0-9]*\"|errors=\"[1-9][0-9]*\"" reports/junit.xml; then
+              echo "Detected test failures or errors in reports/junit.xml"
+              exit 1
+            fi
+          else
+            echo "No junit.xml produced; assume pytest failed."
+            # When pytest fails catastrophically it may not produce junit xml.
+            exit 1
+          fi
 
       - name: Force Install coveralls by pip
         shell: bash -l {0}
         run: |
           set -vxeuo pipefail
           python -m pip install --force-reinstall coveralls
+
+      - name: Upload test artifacts (junit, coverage)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ matrix.python-version }}
+          path: |
+            reports/
+            .coverage*
 
       - name: Upload to coveralls
         shell: bash -l {0}
