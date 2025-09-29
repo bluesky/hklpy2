@@ -698,7 +698,6 @@ class DiffractometerBase(PseudoPositioner):
             return np.vectorize(each)(np.array(array)).tolist()
 
         if full:
-            # TODO 136: Include the engineering units (for reals, lattice, reflections, and wavelength).  Adjust parameter sets of test_diffractometer_wh() as necessary.
             print(f"diffractometer={self.name!r}")
             print(f"{self.core.solver}")
             print(f"{self.sample!r}")
@@ -717,6 +716,7 @@ class DiffractometerBase(PseudoPositioner):
             print(f"beam={beam}")
         else:
             print(f"wavelength={roundoff(self.beam.wavelength.get(), digits)}")
+            print(f"wavelength_units={self.beam.wavelength_units!r}")
 
         print_axes(self.pseudo_axis_names, preface="pseudos: ")
         print_axes(self.real_axis_names, preface="reals: ")

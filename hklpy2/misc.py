@@ -54,11 +54,11 @@ Miscellaneous Support.
 .. rubric: Custom Exceptions
 .. autosummary::
 
+    ~Hklpy2Error
     ~ConfigurationError
     ~ConstraintsError
     ~CoreError
     ~DiffractometerError
-    ~Hklpy2Error
     ~LatticeError
     ~NoForwardSolutions
     ~ReflectionError
@@ -173,20 +173,20 @@ class ConstraintsError(Hklpy2Error):
     """Custom exceptions from :mod:`hklpy2.blocks.constraints`."""
 
 
+class CoreError(Hklpy2Error):
+    """Custom exceptions from :class:`hklpy2.ops.Core`."""
+
+
 class DiffractometerError(Hklpy2Error):
-    """Custom exceptions from :class:`~DiffractometerBase`."""
+    """Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`."""
 
 
 class LatticeError(Hklpy2Error):
     """Custom exceptions from :mod:`hklpy2.blocks.lattice`."""
 
 
-class CoreError(Hklpy2Error):
-    """Custom exceptions from :class:`~Core`."""
-
-
 class NoForwardSolutions(Hklpy2Error):
-    """A solver did not find any 'forward()' solutions."""
+    """A solver did not find any ``forward()`` solutions."""
 
 
 class ReflectionError(Hklpy2Error):

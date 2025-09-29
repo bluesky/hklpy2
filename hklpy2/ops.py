@@ -589,10 +589,23 @@ class Core:
                 f" Known reflections: {rnames}"
                 # fmt: on
             )
+
         logger.debug("Refining lattice using reflections %r", rnames)
-        # TODO apply unit conversions lattice to solver before refineLattice
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
-        # TODO apply unit conversions solver to lattice after refineLattice
+
+        # apply unit conversions solver to lattice after refineLattice
+        angle_units_solver = self.solver.ANGLE_UNITS
+        angle_units_uc = self.sample.lattice.angle_units
+        length_units_solver = self.solver.LENGTH_UNITS
+        length_units_uc = self.sample.lattice.length_units
+        for parm, value in lattice.items():
+            if parm in "a b c".split():
+                lattice[parm] = convert_units(
+                    value, length_units_solver, length_units_uc
+                )
+            elif parm in "alpha beta gamma".split():
+                lattice[parm] = convert_units(value, angle_units_solver, angle_units_uc)
+
         return Lattice(**lattice)
 
     def _reflections_to_solver(self, refl_list: list) -> dict:
