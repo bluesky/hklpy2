@@ -183,11 +183,8 @@ jobs:
           COVERALLS_PARALLEL: true
         run: |
           set -euo pipefail
+          coveralls debug || true
           coveralls --service=github || true
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel: true
-          path-to-lcov: .coverage
 
   coveralls:
     name: Report unit test coverage to coveralls
