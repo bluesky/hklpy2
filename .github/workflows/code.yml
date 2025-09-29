@@ -119,14 +119,15 @@ jobs:
           set -euo pipefail
           echo "info hklpy2:wavelength = $(cainfo hklpy2:wavelength)"
           caget hklpy2:BaseVersion
-          caget -t hklpy2:energy.{NAME,VAL,EGU,DESC}
-          caget -t hklpy2:wavelength.{NAME,VAL,EGU,DESC}
+          caget hklpy2:energy.{NAME,VAL,EGU,DESC}
+          caget hklpy2:wavelength.{NAME,VAL,EGU,DESC}
 
       - name: Run tests with pytest & coverage
         shell: bash -l {0}
         run: |
           set -vxeuo pipefail
           mkdir -p reports
+          pip install -U coverage
 
           # run tests under coverage; keep exit code handling so we can still gather reports
           coverage run --concurrency=thread --parallel-mode -m pytest -q --junitxml=reports/junit.xml . || true
