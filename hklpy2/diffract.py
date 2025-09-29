@@ -714,7 +714,6 @@ class DiffractometerBase(PseudoPositioner):
                 if key in beam:
                     beam[key] = roundoff(beam[key], digits)
             print(f"beam={beam}")
-            print(f"wavelength_units={self.beam.wavelength_units!r}")
         else:
             print(f"wavelength={roundoff(self.beam.wavelength.get(), digits)}")
 
