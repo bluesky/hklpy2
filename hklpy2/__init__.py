@@ -62,6 +62,4 @@ from .misc import solver_factory  # noqa: E402, F401
 from .misc import solvers  # noqa: E402, F401
 
 if __name__ == "__main__":
-    print(
-        f"Package version: {__version__}"
-    )  # TODO coverage reports this line was missed
+    print(f"Package version: {__version__}")
