@@ -175,9 +175,15 @@ jobs:
             reports/
             .coverage*
 
-      - name: Upload to Coveralls (action)
+      - name: Upload to Coveralls (best-effort)
         if: always()
-        uses: coverallsapp/github-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: ${{ matrix.test-name }}
+          COVERALLS_PARALLEL: true
+        run: |
+          set -euo pipefail
+          coveralls --service=github || true
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel: true
