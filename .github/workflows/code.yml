@@ -129,14 +129,23 @@ jobs:
         run: |
           set -vxeuo pipefail
           mkdir -p reports
-          pip install -U coverage
+
+          # ensure correct coverage
+          python -m pip install --upgrade --force-reinstall coverage
 
           # run tests under coverage; keep exit code handling so we can still gather reports
-          coverage run --concurrency=thread --parallel-mode -m pytest -q --junitxml=reports/junit.xml . || true
+          python -m coverage \
+            run \
+            --concurrency=thread \
+            --parallel-mode \
+            -m pytest \
+              -q \
+              --junitxml=reports/junit.xml .
 
           # combine and report
-          coverage combine || true
-          coverage report --precision 3 -m || true
+          python -m coverage combine || true
+          python -m coverage xml -i -o coverage.xml || true
+          python -m coverage report --precision 3 -m || true
 
           # check junit for failures
           if [ -f reports/junit.xml ]; then
@@ -148,6 +157,11 @@ jobs:
             echo "No junit.xml produced; assume pytest failed."
             exit 1
           fi
+
+      - name: Coverage debug
+        if: failure() || always()
+        run: |
+          python -c "import coverage, sys; print('coverage:', getattr(coverage, '__file__', 'no-file'), getattr(coverage, '__version__', 'no-version'))"
 
       - name: Install (force reinstall) coveralls
         run: python -m pip install --upgrade --force-reinstall coveralls
@@ -161,17 +175,13 @@ jobs:
             reports/
             .coverage*
 
-      - name: Upload to Coveralls (best-effort)
+      - name: Upload to Coveralls (action)
         if: always()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: ${{ matrix.test-name }}
-          COVERALLS_PARALLEL: true
-        run: |
-          set -euo pipefail
-          which coveralls || true
-          coveralls debug || true
-          coveralls --service=github || true
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel: true
+          path-to-lcov: .coverage
 
   coveralls:
     name: Report unit test coverage to coveralls
@@ -190,4 +200,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          coveralls --service=github --finish --retry 3
+          coveralls --service=github --finish
