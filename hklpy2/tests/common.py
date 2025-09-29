@@ -13,4 +13,12 @@ def assert_context_result(expected, reason):
     if expected is None:
         assert reason is None
     else:
-        assert expected in str(reason), f"{expected=!r} {reason=}"
+        msg = str(reason)
+        # Accept either the explicit expected text, or the common
+        # AttributeError message produced by attempting to assign to a
+        # read-only property ("can't set attribute '<name>'").
+        if expected in msg:
+            return
+        if "can't set attribute" in msg and ("setter" in expected or "no setter" in expected or "has no setter" in expected):
+            return
+        assert expected in msg, f"{expected=!r} {reason=}"
