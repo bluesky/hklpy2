@@ -1056,8 +1056,54 @@ def test_reals_units_property_and_validation(set_value, context, expected):
     assert_context_result(expected, reason)
 
     # For successful sets, the public getter must still be present and return a string.
-    if context is does_not_raise():
+    # Check whether the operation succeeded by inspecting the
+    # expected value (None means success in these tests).
+    if expected is None:
         assert isinstance(sim.reals_units, str)
         # The current implementation stores the canonical internal units on init.
         # Ensure the getter returns a recognizable units string (not None/empty).
         assert sim.reals_units != "" and sim.reals_units is not None
+
+
+@pytest.mark.parametrize(
+    "expected, exc, context, expect_assert",
+    [
+        (
+            "some error",
+            Exception("prefix some error suffix"),
+            pytest.raises(Exception),
+            False,
+        ),
+        (
+            "no setter available",
+            Exception("can't set attribute 'value' for this object"),
+            pytest.raises(Exception),
+            False,
+        ),
+        (
+            "expected message",
+            Exception("an unrelated failure"),
+            pytest.raises(Exception),
+            True,
+        ),
+        (None, None, does_not_raise(), False),
+    ],
+)
+def test_assert_context_result_variants(expected, exc, context, expect_assert):
+    """Exercise remaining branches of hklpy2.tests.common.assert_context_result.
+
+    The `context` parameter is either a pytest.raises(...) context manager or
+    does_not_raise(), and is used to produce a `reason` object that is then
+    passed to assert_context_result for inspection.
+    """
+    # Run the inner context; if `exc` is not None we raise it so pytest.raises
+    # captures it and provides an ExceptionInfo (or similar) as `reason`.
+    with context as reason:
+        if exc is not None:
+            raise exc
+
+    if expect_assert:
+        with pytest.raises(AssertionError):
+            assert_context_result(expected, reason)
+    else:
+        assert_context_result(expected, reason)
