@@ -531,7 +531,7 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
     elif istype(input, AxesArray) or isinstance(input, numpy.ndarray):
         # Accept numpy arrays (ndarray) of numeric values as an AxesArray.
         for name, value in zip(names, input):
-            axes[name] = value  # TODO coverage reports this line missed
+            axes[name] = value
 
     else:
         raise TypeError(f"Unexpected type: {input!r}.  Expected 'AnyAxesType'.")

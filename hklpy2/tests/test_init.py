@@ -1,27 +1,55 @@
 """Test the package constructor."""
 
-from unittest.mock import Mock
+import importlib
+import runpy
 
 import pytest
-import setuptools_scm
 
-import hklpy2
-
-
-class TestException: ...
+from .. import _get_version
 
 
 @pytest.mark.parametrize(
-    "version, exception",
+    "version_module, expected_version",
     [
-        ["111.111.111", None],
-        # TODO: How to trigger the Exception handling in hklpy2._get_version()?  See GH prjemian/Chewacla repo.
-        ["222.222.222", LookupError],
-        ["333.333.333", TestException],
+        ({"version": "1.0.0"}, "1.0.0"),  # Test with a valid version module
+        (None, "2.0.0"),  # Test with importlib.metadata returning a version
     ],
 )
-def test_get_version(version, exception):
-    hklpy2._get_version = Mock(return_value=version)
-    if exception is not None:
-        setuptools_scm.get_version = exception
-    assert hklpy2._get_version() == version
+def test_get_version_with_version_module(mocker, version_module, expected_version):
+    if version_module is not None:
+        mock_version_module = mocker.Mock()
+        mock_version_module.version = version_module["version"]
+        version = _get_version(version_module=mock_version_module)
+    else:
+        # Mock importlib.metadata.version to return the expected version
+        mocker.patch("importlib.metadata.version", return_value=expected_version)
+        version = _get_version()
+
+    assert version == expected_version
+
+
+@pytest.mark.parametrize(
+    "side_effect, expected_version",
+    [
+        (Exception("Not found"), "0+unknown"),  # Test fallback scenario
+    ],
+)
+def test_get_version_fallback(mocker, side_effect, expected_version):
+    # Mock importlib.metadata.version to raise an exception
+    mocker.patch("importlib.metadata.version", side_effect=side_effect)
+
+    version = _get_version()
+    assert version == expected_version
+
+
+def test_prints_version_when_run_as_main(capsys):
+    """
+    Running the package as a script (so __name__ == "__main__") should
+    execute the print(...) in hklpy2.__init__ and emit the package version.
+    """
+    pkg = importlib.import_module("hklpy2")
+
+    # Execute the package __init__ as __main__ to trigger the guarded print.
+    runpy.run_module("hklpy2.__init__", run_name="__main__")
+    captured = capsys.readouterr()
+    assert f"Package version: {pkg.__version__}" in captured.out

@@ -112,6 +112,7 @@ autodoc_exclude_members = ",".join(
     _sub_devices
     calc_class
     component_names
+    logger
     """.split()
 )
 autodoc_default_options = {

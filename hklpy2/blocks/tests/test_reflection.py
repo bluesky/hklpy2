@@ -1088,6 +1088,32 @@ def test_reflection_eq(r1_kwargs, r2_kwargs, expect_eq, expect_exception):
             True,
             does_not_raise(),
         ),
+        # Identical reflections, same units, but supply a non-Core 'core' kwarg
+        # to exercise the make_reflection helper branch that assigns kwargs['core'].
+        (
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                "SOME_CORE",
+            ],
+            [
+                "r1",
+                {"a": 1.0, "b": 2.0},
+                {"x": 0.0, "y": 0.0},
+                1.0,
+                "geo",
+                ["a", "b"],
+                ["x", "y"],
+                "SOME_CORE",
+            ],
+            True,
+            does_not_raise(),
+        ),
         # Identical except for wavelength units, convertible
         (
             [
@@ -1224,7 +1250,7 @@ def test_reflection_eq_deeper_test(left, right, expected, context):
         kwargs = {}
         if len(params) > 7:
             if params[7] is not None:
-                kwargs["core"] = params[7]  # TODO coverage reports this line missed
+                kwargs["core"] = params[7]
         if len(params) > 8:
             if params[8] is not None:
                 kwargs["digits"] = params[8]

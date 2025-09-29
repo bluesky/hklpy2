@@ -1,6 +1,7 @@
 """Test code in the 'misc' module."""
 
 import math
+import numbers
 import pathlib
 import types
 from collections import namedtuple
@@ -103,6 +104,7 @@ def RE(cat):
             does_not_raise(),
             None,
         ],
+        [numpy.array([0, 1, -1]), "h k l".split(), does_not_raise(), None],
         ["123", "h k l".split(), pytest.raises(TypeError), "Unexpected type"],
         [
             (1, 2),
@@ -142,7 +144,8 @@ def test_axes_to_dict(input, names, context, expected):
         axes = axes_to_dict(input, names)
         assert isinstance(axes, dict)
         for name in names:
-            assert isinstance(axes.get(name), (float, int))
+            for name in names:
+                assert isinstance(axes.get(name), numbers.Real)
 
     assert_context_result(expected, reason)
 
