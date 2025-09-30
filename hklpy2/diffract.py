@@ -31,6 +31,7 @@ from ophyd.pseudopos import real_position_argument
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .incident import WavelengthXray
+from .misc import DEFAULT_DIGITS
 from .misc import INTERNAL_ANGLE_UNITS
 from .misc import AnyAxesType
 from .misc import AxesDict
@@ -187,6 +188,9 @@ class DiffractometerBase(PseudoPositioner):
         self.core = Core(self)
 
         super().__init__(prefix, **kwargs)
+
+        # Instance-level attribute (default from class attribute)
+        self.position_display_digits = DEFAULT_DIGITS
 
         # After __init__, Core syncs solver with the diffractometer wavelength.
         if isinstance(solver, str) and isinstance(geometry, str):
@@ -584,6 +588,54 @@ class DiffractometerBase(PseudoPositioner):
 
         return (yield from _inner())
 
+    @staticmethod
+    def _format_value_for_repr(x, digits):
+        """Format numeric values for display without changing them.
+
+        - Floats: fixed-point with `digits` decimals, trailing zeros
+          removed but at least one decimal retained (e.g. 4 -> 4.0).
+        - Other types: fall back to built-in repr.
+        """
+        if isinstance(x, float) or isinstance(x, np.floating):
+            s = f"{x:.{digits}f}"
+            if "." in s:
+                s = s.rstrip("0").rstrip(".")
+                if "." not in s:
+                    s = s + ".0"
+            return s
+        return repr(x)
+
+    @classmethod
+    def _make_wrapped_namedtuple_class(cls, orig_cls, digits):
+        """Return a lightweight subclass of ``orig_cls`` with concise repr.
+
+        Avoid re-wrapping when the same digit count is already applied.
+        Supports control of displayed numerical precision in position tuples.
+        """
+        if orig_cls is None:
+            return None
+
+        existing_digits = getattr(orig_cls, "_hklpy2_wrapped_digits", None)
+        if getattr(orig_cls, "_hklpy2_wrapped", False) and existing_digits == digits:
+            return orig_cls
+
+        def __repr__(self):
+            pairs = []
+            for name in getattr(self, "_fields", ()):  # namedtuple fields
+                val = getattr(self, name)
+                pairs.append(f"{name}={cls._format_value_for_repr(val, digits)}")
+            return f"{orig_cls.__name__}({', '.join(pairs)})"
+
+        def __str__(self):
+            return self.__repr__()
+
+        new_cls = type(
+            orig_cls.__name__, (orig_cls,), {"__repr__": __repr__, "__str__": __str__}
+        )
+        setattr(new_cls, "_hklpy2_wrapped", True)
+        setattr(new_cls, "_hklpy2_wrapped_digits", digits)
+        return new_cls
+
     # ---- get/set properties
 
     @property
@@ -607,6 +659,34 @@ class DiffractometerBase(PseudoPositioner):
             if attr not in pseudos_and_reals
             if isinstance(getattr(self, attr), PositionerBase)
         ]
+
+    @property
+    def position_display_digits(self) -> int:
+        """Number of decimal digits used when rendering position tuples.
+
+        This is a per-instance property. Reading returns the instance value if
+        set, otherwise the class default. Setting updates the instance value
+        and re-wraps the instance's PseudoPosition/RealPosition classes so the
+        new digit count is used for their string representations.
+        """
+        return self._position_repr_digits
+
+    @position_display_digits.setter
+    def position_display_digits(self, digits: int):
+        if not isinstance(digits, int) or digits < 0:
+            raise ValueError(
+                f"Digits must be a non-negative integer, received {digits}."
+            )
+        self._position_repr_digits = digits
+
+        if hasattr(self, "PseudoPosition"):
+            self.PseudoPosition = self._make_wrapped_namedtuple_class(
+                self.PseudoPosition, digits
+            )
+        if hasattr(self, "RealPosition"):
+            self.RealPosition = self._make_wrapped_namedtuple_class(
+                self.RealPosition, digits
+            )
 
     @property
     def pseudo_axis_names(self):
