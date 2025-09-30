@@ -101,6 +101,7 @@ IDENTITY_MATRIX_3X3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 SOLVER_ENTRYPOINT_GROUP = "hklpy2.solver"
 """Name by which |hklpy2| backend |solver| classes are grouped."""
 
+DEFAULT_DIGITS = 4
 DEFAULT_START_KEY = "diffractometers"
 
 INTERNAL_ANGLE_UNITS = "degrees"
