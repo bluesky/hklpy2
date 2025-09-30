@@ -169,26 +169,64 @@ def test_unknown_reflection():
     [
         [
             "h k l".split(),
-            dict(a=1, b=2, c=3, d=4),
-            "h b c d".split(),
+            dict(a=1, b=2, c=3, d=4),  # cannot use number as value
+            "h b c d".split(),  # duplicate name is pseudos and reals
+            pytest.raises(TypeError),
+            "Incorrect type 'int' for pv=",
+        ],
+        [
+            "h k l".split(),
+            dict(a=None, b="m5", c=None, d=None),
+            "h b c d".split(),  # same name used in both pseudos and reals
             pytest.raises(ValueError),
             "Axis name cannot be in more than list.",
         ],
         [
             "h k l".split(),
-            dict(a=1, b=2, c=3, d=4),
-            "x y z".split(),
+            dict(a=None, b="m5", c=None, d=None),
+            "x y z".split(),  # unknown names
             pytest.raises(KeyError),
-            "Unknown",
+            "Unknown real='x'.",
+        ],
+        [
+            "h k l".split(),
+            dict(a=None, b="m5", c=None, d=None),
+            "b a d c".split(),  # known names, specify in different order
+            does_not_raise(),
+            None,
+        ],
+        [
+            "h k l".split(),
+            dict(
+                a=None,
+                b="m5",
+                c=None,
+                d={"prefix": "m6"},
+            ),
+            "a b c d".split(),  # standard order
+            pytest.raises(KeyError),
+            "Expected 'class' key in motor specification",
+        ],
+        [
+            "h k l".split(),
+            dict(
+                a=None,
+                b="m5",
+                c={"class": "ophyd.SoftPositioner", "init_pos": 10, "limits": (0, 50)},
+                d={"class": "ophyd.EpicsMotor", "prefix": "m6", "labels": ["test"]},
+            ),
+            "a b c d".split(),  # standard order
+            does_not_raise(),
+            None,
         ],
     ],
 )
-def test_assign_axes_error(pseudos, reals, assign, context, expected):
-    flaky = creator(name="flaky", pseudos=pseudos, reals=reals)
-    assert flaky.pseudo_axis_names == pseudos
-    assert flaky.real_axis_names == list(reals)
+def test_assign_axes(pseudos, reals, assign, context, expected):
     with context as reason:
-        flaky.core.assign_axes("h k l".split(), assign)
+        geom = creator(name="flaky", pseudos=pseudos, reals=reals)
+        assert geom.pseudo_axis_names == pseudos
+        assert geom.real_axis_names == list(reals)
+        geom.core.assign_axes("h k l".split(), assign)
     assert_context_result(expected, reason)
 
 

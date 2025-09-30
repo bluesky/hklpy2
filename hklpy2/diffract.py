@@ -735,7 +735,7 @@ def creator(
     beam_kwargs: dict[str, object] = {},
     solver_kwargs: dict[str, object] = {},
     pseudos: list = [],
-    reals: list[str] | dict[str, str | None] = {},
+    reals: list[str] | dict[str, str | None] = {},  # TODO: or kwargs dict for each axis
     aliases: dict[str, list[str]] = {},
     motor_labels: list = ["motors"],
     labels: list = ["diffractometer"],
@@ -885,18 +885,27 @@ def diffractometer_class_factory(
         in addition to the ones provided by the solver.
 
         (default: '[]' which means no additional pseudo axes)
-    reals : dict
-        Specification of the real axis motors.  Dictionary keys are the motor
-        names, values are the EPICS motor PV for that axis.  If the PV is
-        'None', use a simulated positioner.
+    reals : dict or list or ``None``
+        Specification of the real axis motors.
 
-        The dictionary can be empty or must have at least the canonical number of
-        real axes.  The order of the axes is important.  The names provided will
-        be mapped to the canonical order defined by the solver.  Components will
-        be created for any extra *reals*.
+        None or empty means use the canonical names for the real axes and use
+        simulated positioners (``ophyd.SoftPositioner``) for each.  Otherwise,
+        you must specify at least the number of real axes expected by the solver
+        geometry.
 
-        (default: '{}' which means use the canonical names for the real axes and
-        use simulated positioners)
+        list:
+            Specify the names of the real axis motors.  The names will be
+            matched, in order, to the names used by the solver.
+            The default class will be ``ophyd.SoftPositioner``.
+        dict:
+            Keys: The names of the real axis motors.  The names will be
+                matched, in order, to the names used by the solver.
+            Values:
+                * A string representing the EPICS motor PV.
+                * ``None`` for a simulated positioner using ``ophyd.SoftPositioner``.
+                * A dictionary with additional specifications for the motor constructor.
+                  Use this case for any case where either a string or ``None``
+                  are insufficient to specify all necessary parameters.
     motor_labels : list
         Ophyd object labels for each real positioner. (default: '["motors"]')
     class_name : str
@@ -943,8 +952,25 @@ def diffractometer_class_factory(
                     kind=H_OR_N,
                     labels=motor_labels,
                 )
-            else:
+            elif isinstance(pv, str):
                 return Cpt(EpicsMotor, pv, kind=H_OR_N, labels=motor_labels)
+            elif isinstance(pv, dict):
+                motor_class = pv.get("class")
+                if motor_class is None:
+                    raise KeyError(
+                        "Expected 'class' key in motor specification ({pv=})."
+                    )
+                motor_class = dynamic_import(motor_class)
+                kwargs = dict(kind=H_OR_N, labels=motor_labels)
+                kwargs.update({key: pv[key] for key in pv if key != "class"})
+                return Cpt(motor_class, **kwargs)
+            else:
+                raise TypeError(
+                    f"Incorrect type '{type(pv).__name__}' for {pv=!r}."
+                    #
+                    " Expected 'None', a PV name (str), or a dictionary specifying"
+                    " a custom configuration."
+                )
 
     factory_class_attributes = {}  # Set defaults for this custom class.
     aliases = {}
@@ -970,7 +996,8 @@ def diffractometer_class_factory(
             all_axes = pseudos if len(pseudos) > 0 else solver_axes
             for axis in all_axes:
                 factory_class_attributes[axis] = make_component_axis(singular)
-        else:
+
+        else:  # reals
             solver_axes = solver_object.real_axis_names
             all_axes = list(reals) if len(reals) > 0 else solver_axes
             for axis in all_axes:
