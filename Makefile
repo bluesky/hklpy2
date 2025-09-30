@@ -9,6 +9,7 @@ coverage:
 	coverage run --concurrency=thread --parallel-mode -m pytest ./hklpy2
 	coverage combine
 	coverage report --precision 3 -m
+	coverage html
 
 docs ::
 	make -C docs html
