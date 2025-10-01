@@ -63,7 +63,7 @@ class Sample:
         self.core = core
         self.lattice = lattice
         self.U = IDENTITY_MATRIX_3X3
-        # FIXME: 66: UB = self.U @ self.lattice.B
+        # Consider: UB = self.U @ self.lattice.B
         self.UB = ((2 * math.pi / self.lattice.a) * np.array(self.U)).tolist()
         self.reflections = ReflectionsDict()
 
