@@ -43,6 +43,7 @@ Released TBA.
 New Features
 -----------
 
+* Compute lattice B matrix.
 * '@crw_decorator()':  Decorator for the ConfigurationRunWrapper
 
 Fixes
