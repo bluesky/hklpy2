@@ -1135,21 +1135,21 @@ def test_make_wrapped_namedtuple_class_none_and_marked():
         (2.5, pytest.raises(ValueError)),
     ],
 )
-def test_position_display_digits_property_behavior(value, context):
-    """Test the position_display_digits property getter/setter and validation."""
+def test_digits_property(value, context):
+    """Test the digits property getter/setter and validation."""
     d = creator(name="test_position_repr_property2")
     try:
         # Ensure getter works and default is an int
-        assert isinstance(d.position_display_digits, int)
+        assert isinstance(d.digits, int)
 
         with context:
-            d.position_display_digits = value
+            d.digits = value
 
         if isinstance(value, int) and value >= 0:
-            assert d.position_display_digits == value
+            assert d.digits == value
             # Changing digits should update the wrapped namedtuple classes
             other = 2 if value != 2 else 6
-            d.position_display_digits = other
+            d.digits = other
             # Verify the instance-level namedtuple classes were re-wrapped
             if hasattr(d, "PseudoPosition"):
                 assert (

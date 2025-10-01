@@ -130,6 +130,7 @@ class Core:
                 "axes_xref": self.axes_xref,
                 "extra_axes": self.all_extras,
             },
+            "digits": self.diffractometer.digits,
             "sample_name": self.sample.name,
             "samples": {k: v._asdict() for k, v in self._samples.items()},
             "constraints": self.constraints._asdict(),
@@ -157,6 +158,10 @@ class Core:
         extras = self._validate_extras(config["axes"]["extra_axes"], self.all_extras)
         if len(extras) > 0:
             self._extras.update(extras)
+
+        digits = config.get("digits")
+        if isinstance(digits, int) and 0 <= digits:
+            self.diffractometer.digits = digits
 
         for key, sample in config["samples"].items():
             sample_object = self.add_sample(key, 1, replace=True)
