@@ -63,7 +63,7 @@ Maintenance
 * Add virtual axes.
 * Complete 'refineLattice()' for Core and Sample.
 * Compute B from sample lattice.
-* Control displayed precision of position tuples using 'position_display_digits'.
+* Control displayed precision of position tuples using 'DIFFRACTOMETER.digits' property.
 * Consistent response when no forward solutions are found.
 * Engineering units throughout
     * Solver defines the units it uses.

@@ -190,7 +190,7 @@ class DiffractometerBase(PseudoPositioner):
         super().__init__(prefix, **kwargs)
 
         # Instance-level attribute (default from class attribute)
-        self.position_display_digits = DEFAULT_DIGITS
+        self.digits = DEFAULT_DIGITS
 
         # After __init__, Core syncs solver with the diffractometer wavelength.
         if isinstance(solver, str) and isinstance(geometry, str):
@@ -661,7 +661,7 @@ class DiffractometerBase(PseudoPositioner):
         ]
 
     @property
-    def position_display_digits(self) -> int:
+    def digits(self) -> int:
         """Number of decimal digits used when rendering position tuples.
 
         This is a per-instance property. Reading returns the instance value if
@@ -671,8 +671,8 @@ class DiffractometerBase(PseudoPositioner):
         """
         return self._position_repr_digits
 
-    @position_display_digits.setter
-    def position_display_digits(self, digits: int):
+    @digits.setter
+    def digits(self, digits: int):
         if not isinstance(digits, int) or digits < 0:
             raise ValueError(
                 f"Digits must be a non-negative integer, received {digits}."
