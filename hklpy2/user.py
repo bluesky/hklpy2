@@ -14,6 +14,7 @@ Simplified interface for |hklpy2| diffractometer users.
     ~remove_reflection
     ~pa
     ~remove_sample
+    ~scan_extra
     ~set_diffractometer
     ~set_lattice
     ~set_wavelength
@@ -481,6 +482,15 @@ def remove_sample(name: str, error: bool = True) -> None:
     except (KeyError, CoreError) as exinfo:
         if error:
             raise exinfo
+
+
+def scan_extra(*args, **kwargs):  # TODO: copy param list for queueserver
+    """
+    Scan extra axis/axes at constant pseudos or reals.
+
+    Parameters
+    """
+    yield from get_diffractometer().scan_extra(*args, **kwargs)
 
 
 def set_diffractometer(diffractometer: DiffractometerBase = None) -> None:
