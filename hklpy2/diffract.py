@@ -487,7 +487,7 @@ class DiffractometerBase(PseudoPositioner):
         md: Optional[dict] = None,
     ):
         """
-        Scan one extra diffractometer parameter, such as 'psi'.
+        Scan extra diffractometer parameter(s), such as 'psi'.
 
         * iterate extra positions as described:
             * set extras
@@ -498,7 +498,6 @@ class DiffractometerBase(PseudoPositioner):
 
         Parameters
 
-        self : DiffractometerBase
         detectors: Iterable[Readable]
             List of readable objects.
         *args:
@@ -516,7 +515,6 @@ class DiffractometerBase(PseudoPositioner):
 
             Axis is any extra axis name supported by the current diffractometer
             geometry and mode.
-
         num: int
             Number of points.
         pseudos: dict
@@ -560,7 +558,7 @@ class DiffractometerBase(PseudoPositioner):
                 finish=finish,
                 signal=Signal(
                     value=start, kind="hinted", name=f"{self.name}_extras_{axis}"
-                ),  # TODO: value=?start
+                ),
             )
             extras[axis] = start
 
@@ -585,7 +583,7 @@ class DiffractometerBase(PseudoPositioner):
         }.update(md or {})
 
         all_controls = detectors
-        all_controls.extend([movers[axis]["signal"] for axis in movers])  # TODO 107
+        all_controls.extend([movers[axis]["signal"] for axis in movers])
         all_controls = list(set(all_controls))
 
         @bpp.stage_decorator(detectors)

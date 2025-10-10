@@ -26,8 +26,13 @@ Simplified interface for |hklpy2| diffractometer users.
 """
 
 import uuid
+from collections.abc import Iterable
+from typing import Any
+from typing import Optional
 from typing import Union
 
+from bluesky.protocols import Movable
+from bluesky.protocols import Readable
 from pyRestTable import Table
 
 from .blocks.lattice import Lattice
@@ -484,13 +489,85 @@ def remove_sample(name: str, error: bool = True) -> None:
             raise exinfo
 
 
-def scan_extra(*args, **kwargs):  # TODO: copy param list for queueserver
+def scan_extra(
+    detectors: Iterable[Readable],
+    *args: Union[Movable, Any],  # axis, start, finish, [...]
+    num: Optional[int] = 2,
+    pseudos: Optional[dict] = None,  # h, k, l
+    reals: Optional[dict] = None,  # angles
+    extras: Optional[dict] = {},
+    fail_on_exception: Optional[bool] = False,
+    md: Optional[dict] = None,
+):
     """
-    Scan extra axis/axes at constant pseudos or reals.
+    Scan diffractometer parameter(s) at constant pseudos or reals.
+
+    Uses selected diffractometer.
+
+    Example
+
+    .. code-block:: python
+        :linenos:
+
+        >>> import hklpy2
+        >>> from hklpy2.user import *
+        >>> e6c = hklpy2.creator(name="e6c", geometry="e6c")
+        >>> set_diffractometer(e6c)
+        >>> e6c.core.mode = "psi_constant_vertical"
+        >>> RE(
+            scan_extra(
+                [noisy_det, e6c],
+                "psi", 0, 150,
+                num=15,
+                pseudos=dict(h=0, k=0, l=2),
+                extras=dict(h2=1, k2=2, l2=0)
+            )
+        )
 
     Parameters
+
+    detectors: Iterable[Readable]
+        List of readable objects.
+    *args:
+        Specification of scan axes.  The specification is a repeating
+        pattern of axis (str), start (float), stop (float).
+
+        In general:
+
+        .. code-block:: python
+
+            axis1, start1, stop1,
+            axis2, start2, stop2,
+            ...,
+            axisN, startN, stopN
+
+        Axis is any extra axis name supported by the current diffractometer
+        geometry and mode.
+    num: int
+        Number of points.
+    pseudos: dict
+        Dictionary of pseudo axes positions to be held constant during the scan.
+    reals: dict
+        Dictionary of real axes positions to be held constant during the scan.
+    extras: dict
+        Dictionary of extra axes positions to be held constant during the scan.
+    fail_on_exception: bool
+        When True (deafult: False), scan will raise any exceptions.
+        When False, all exceptions during the scan will be printed to console.
+    md: dict
+        Dictionary of user-supplied metadata.
+
     """
-    yield from get_diffractometer().scan_extra(*args, **kwargs)
+    yield from get_diffractometer().scan_extra(
+        detectors,
+        *args,
+        num=num,
+        psuedos=pseudos,
+        reals=reals,
+        extras=extras,
+        fail_on_exception=fail_on_exception,
+        md=md,
+    )
 
 
 def set_diffractometer(diffractometer: DiffractometerBase = None) -> None:
