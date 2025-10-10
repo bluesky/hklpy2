@@ -625,14 +625,11 @@ def test_repeated_reflections(
 
 
 @pytest.mark.parametrize(
-    "scan_kwargs, mode, context, expected",
+    "scan_args, scan_kwargs, mode, context, expected",
     [
         [
+            [[noisy_det], "psi", 5, 10],
             dict(
-                detectors=[noisy_det],
-                axis="psi",
-                start=5,
-                finish=10,
                 num=3,
                 pseudos=dict(h=1, k=1, l=0),
                 reals=None,
@@ -644,11 +641,8 @@ def test_repeated_reflections(
             None,
         ],
         [
+            [[noisy_det], "psi", 5, 10],
             dict(
-                detectors=[noisy_det],
-                axis="psi",
-                start=5,
-                finish=10,
                 num=3,
                 pseudos=dict(h=2, k=-1, l=100),  # l=100 is unreachable
                 reals=None,
@@ -660,11 +654,8 @@ def test_repeated_reflections(
             "No solutions.",
         ],
         [
+            [[noisy_det], "psi", 5, 10],
             dict(
-                detectors=[noisy_det],
-                axis="psi",
-                start=5,
-                finish=10,
                 num=3,
                 pseudos=dict(h=2, k=-1, l=0),
                 reals=None,
@@ -676,11 +667,8 @@ def test_repeated_reflections(
             None,
         ],
         [
+            [[noisy_det], "psi", 5, 10],
             dict(
-                detectors=[noisy_det],
-                axis="psi",
-                start=5,
-                finish=10,
                 num=3,
                 pseudos=None,
                 reals=dict(omega=1, chi=2, phi=3, tth=4),
@@ -692,37 +680,36 @@ def test_repeated_reflections(
             None,
         ],
         [
-            dict(
-                detectors=noisy_det,
-            ),
+            [noisy_det],
+            {},
             "psi_constant",
-            pytest.raises(KeyError),
-            "None not in ['h2', 'k2', 'l2', 'psi']",
+            pytest.raises(ValueError),
+            "Must specify scan axes in groups of 3, received ()",
         ],
         [
-            dict(
-                detectors=[noisy_det],
-                axis="oddball",
-            ),
+            [[noisy_det], "oddball"],
+            {},
             "psi_constant",
-            pytest.raises(KeyError),
-            "'oddball' not in ",
+            pytest.raises(ValueError),
+            "Must specify scan axes in groups of 3, received ('oddball',)",
         ],
         [
-            dict(
-                detectors=[noisy_det],
-                axis="psi",
-                pseudos=None,
-                reals=None,
-            ),
+            [[noisy_det], "psi"],
+            dict(pseudos=None, reals=None),
+            "psi_constant",
+            pytest.raises(ValueError),
+            "Must specify scan axes in groups of 3, received ('psi',)",
+        ],
+        [
+            [[noisy_det], "psi", 0, 1],
+            dict(pseudos=None, reals=None),
             "psi_constant",
             pytest.raises(ValueError),
             "Must define either pseudos or reals.",
         ],
         [
+            [[noisy_det], "psi", 0, 1],
             dict(
-                detectors=[noisy_det],
-                axis="psi",
                 pseudos=dict(h=2, k=-1, l=0),
                 reals=dict(omega=1, chi=2, phi=3, tth=4),
             ),
@@ -732,31 +719,27 @@ def test_repeated_reflections(
         ],
     ],
 )
-def test_scan_extra(scan_kwargs, mode, context, expected):
+def test_scan_extra(scan_args, scan_kwargs, mode, context, expected):
     from ..diffract import creator
 
-    fourc = creator()
-    fourc.restore(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
-    fourc.core.mode = mode
-    assert fourc.core.mode == mode
-
-    RE = bluesky.RunEngine()
-
     with context as reason:
-        RE(fourc.scan_extra(**scan_kwargs))
+        fourc = creator()
+        fourc.restore(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
+        fourc.core.mode = mode
+        assert fourc.core.mode == mode
+
+        RE = bluesky.RunEngine()
+        RE(fourc.scan_extra(*scan_args, **scan_kwargs))
 
     assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
-    "scan_kwargs, mode, context, expected",
+    "scan_args, scan_kwargs, mode, context, expected",
     [
         [
+            [[noisy_det], "psi", -5, 555],  # expect to fail at psi=0
             dict(
-                detectors=[noisy_det],
-                axis="psi",
-                start=-5,  # expect to fail at psi=0
-                finish=555,
                 num=2,
                 pseudos=dict(h=2, k=-1, l=0),
                 reals=None,
@@ -769,7 +752,7 @@ def test_scan_extra(scan_kwargs, mode, context, expected):
         ],
     ],
 )
-def test_scan_extra_print_fail(scan_kwargs, mode, context, expected, capsys):
+def test_scan_extra_print_fail(scan_args, scan_kwargs, mode, context, expected, capsys):
     from ..diffract import creator
 
     fourc = creator()
@@ -780,7 +763,7 @@ def test_scan_extra_print_fail(scan_kwargs, mode, context, expected, capsys):
     RE = bluesky.RunEngine()
 
     with context as reason:
-        RE(fourc.scan_extra(**scan_kwargs))
+        RE(fourc.scan_extra(*scan_args, **scan_kwargs))
 
     assert_context_result(expected, reason)
 

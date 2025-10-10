@@ -12,11 +12,15 @@ Base class for all diffractometers
 import logging
 import pathlib
 from collections.abc import Iterable
+from typing import Any
 from typing import Callable
 from typing import Optional
+from typing import Union
 
 import numpy as np
 import yaml
+from bluesky.protocols import Movable
+from bluesky.protocols import Readable
 from ophyd import Component as Cpt
 from ophyd import EpicsMotor
 from ophyd import Kind
@@ -471,12 +475,13 @@ class DiffractometerBase(PseudoPositioner):
 
     def scan_extra(
         self,
-        detectors: Iterable,
-        axis: Optional[str] = None,  # name of extra parameter to be scanned
-        start: Optional[float] = None,
-        finish: Optional[float] = None,
+        detectors: Iterable[Readable],
+        *args: Union[Movable, Any],  # axis, start, finish, [...]
+        # axis: Optional[str] = None,  # name of extra parameter to be scanned
+        # start: Optional[float] = None,
+        # finish: Optional[float] = None,
+        # *,
         num: Optional[int] = 2,
-        *,
         pseudos: Optional[dict] = None,  # h, k, l
         reals: Optional[dict] = None,  # angles
         extras: Optional[
@@ -488,14 +493,46 @@ class DiffractometerBase(PseudoPositioner):
         """
         Scan one extra diffractometer parameter, such as 'psi'.
 
-        * TODO: #107 one **or more** (such as bp.scan)
-
         * iterate extra positions as described:
             * set extras
             * solution = forward(pseudos)
             * move to solution
             * acquire (trigger) all controls
             * read and record all controls
+
+        Parameters
+
+        self : DiffractometerBase
+        detectors: Iterable[Readable]
+            List of readable objects.
+        *args:
+            Specification of scan axes.
+
+            In general:
+
+            .. code-block:: python
+
+                axis1, start1, stop1,
+                axis2, start2, stop2,
+                ...,
+                axisN, startN, stopN
+
+            Axis is any extra axis name supported by the current diffractometer
+            geometry and mode.
+
+        num: int
+            Number of points.
+        pseudos: dict
+            Dictionary of pseudo axes positions to be held constant during the scan.
+        reals: dict
+            Dictionary of real axes positions to be held constant during the scan.
+        extras: dict
+            Dictionary of extra axes positions to be held constant during the scan.
+        fail_on_exception: bool
+            When True (deafult: False), scan will raise any exceptions.
+            When False, all exceptions during the scan will be printed to console.
+        md: dict
+            Dictionary of user-supplied metadata.
         """
         import numpy
         from bluesky import plan_stubs as bps
@@ -506,6 +543,9 @@ class DiffractometerBase(PseudoPositioner):
         self.core.update_solver()
 
         # validate
+        if len(args) == 0 or len(args) % 3:
+            raise ValueError(f"Must specify scan axes in groups of 3, received {args}.")
+        axis, start, finish = args  # TODO 107
         if axis not in self.core.solver_extra_axis_names:
             raise KeyError(f"{axis!r} not in {self.core.solver_extra_axis_names}")
         if pseudos is None and reals is None:
