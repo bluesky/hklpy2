@@ -528,7 +528,7 @@ def scan_extra(
 
     detectors: Iterable[Readable]
         List of readable objects.
-    *args:
+    args: Any
         Specification of scan axes.  The specification is a repeating
         pattern of axis (str), start (float), stop (float).
 

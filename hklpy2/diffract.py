@@ -157,8 +157,7 @@ class DiffractometerBase(PseudoPositioner):
 
     _forward_solution: Callable = pick_first_solution
     """
-    Pick a solution from the solution(s) return from
-    :meth:`~hklpy2.ops.Core.forward`.
+    Pick a solution from solution(s) of  :meth:`~hklpy2.ops.Core.forward`.
 
     Choices include:
 
@@ -342,10 +341,10 @@ class DiffractometerBase(PseudoPositioner):
 
         PARAMETERS
 
-        config *dict*, *str*, or *pathlib.Path* object:
+        config : dict, str, or pathlib object
             Dictionary with configuration, or name (str or pathlib object) of
             diffractometer configuration YAML file.
-        clear *bool*:
+        clear : bool
             If ``True`` (default), remove any previous configuration of the
             diffractometer and reset it to default values before restoring the
             configuration.
@@ -354,9 +353,9 @@ class DiffractometerBase(PseudoPositioner):
             included in the configuration data for that sample.  Existing
             reflections will not be changed.  The user may need to edit the
             list of reflections after ``restore(clear=False)``.
-        restore_constraints *bool*:
+        restore_constraints : bool
             If ``True`` (default), restore any constraints provided.
-        restore_wavelength *bool*:
+        restore_wavelength : bool
             If ``True`` (default), restore wavelength.
 
         Note: Can't name this method "import", it's a reserved Python word.
@@ -500,32 +499,35 @@ class DiffractometerBase(PseudoPositioner):
 
         detectors: Iterable[Readable]
             List of readable objects.
-        *args:
-            Specification of scan axes.  The specification is a repeating
-            pattern of axis (str), start (float), stop (float).
+        args: Any
+            Specification of scan axes.
+            
+            The 'args' specification is a repeating pattern of axis (str), start 
+            (float), stop (float).
 
             In general:
 
             .. code-block:: python
 
-                axis1, start1, stop1,
-                axis2, start2, stop2,
-                ...,
-                axisN, startN, stopN
+                axis1, start1, stop1, axis2, start2, stop2, ..., axisN, startN,
+                stopN
 
             Axis is any extra axis name supported by the current diffractometer
             geometry and mode.
         num: int
             Number of points.
         pseudos: dict
-            Dictionary of pseudo axes positions to be held constant during the scan.
+            Dictionary of pseudo axes positions to be held constant during the
+            scan.
         reals: dict
-            Dictionary of real axes positions to be held constant during the scan.
+            Dictionary of real axes positions to be held constant during the
+            scan.
         extras: dict
-            Dictionary of extra axes positions to be held constant during the scan.
+            Dictionary of extra axes positions to be held constant during the
+            scan.
         fail_on_exception: bool
-            When True (deafult: False), scan will raise any exceptions.
-            When False, all exceptions during the scan will be printed to console.
+            When True (deafult: False), scan will raise any exceptions. When
+            False, all exceptions during the scan will be printed to console.
         md: dict
             Dictionary of user-supplied metadata.
         """
@@ -955,7 +957,6 @@ def creator(
         Additional keyword arguments will be added when constructing
         the new diffractometer object.
     """
-    # print(f"creator({solver=!r}, {geometry=!r})")
     DiffractometerClass = diffractometer_class_factory(
         solver=solver,
         geometry=geometry,
@@ -1007,7 +1008,7 @@ def diffractometer_class_factory(
         in addition to the ones provided by the solver.
 
         (default: '[]' which means no additional pseudo axes)
-    reals : dict or list or ``None``
+    reals : dict or list or None
         Specification of the real axis motors.
 
         None or empty means use the canonical names for the real axes and use

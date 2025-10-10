@@ -35,11 +35,6 @@ describe future plans.
 
     Release expected 2025-H2.
 
-    Breaking Changes
-    ----------------
-
-    * Plan 'diffract.DiffractometerBase.scan_extra' relocated to 'user.scan_extra'.
-
     New Features
     -----------
 
