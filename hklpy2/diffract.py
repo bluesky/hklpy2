@@ -501,8 +501,8 @@ class DiffractometerBase(PseudoPositioner):
             List of readable objects.
         args: Any
             Specification of scan axes.
-            
-            The 'args' specification is a repeating pattern of axis (str), start 
+
+            The 'args' specification is a repeating pattern of axis (str), start
             (float), stop (float).
 
             In general:
