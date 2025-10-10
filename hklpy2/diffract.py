@@ -12,17 +12,23 @@ Base class for all diffractometers
 import logging
 import pathlib
 from collections.abc import Iterable
+from typing import Any
 from typing import Callable
 from typing import Optional
+from typing import Union
 
 import numpy as np
 import yaml
+from bluesky.protocols import Movable
+from bluesky.protocols import Readable
+from cytoolz import partition
 from ophyd import Component as Cpt
 from ophyd import EpicsMotor
 from ophyd import Kind
 from ophyd import PositionerBase
 from ophyd import PseudoPositioner
 from ophyd import PseudoSingle
+from ophyd import Signal
 from ophyd import SoftPositioner
 from ophyd.device import required_for_connection
 from ophyd.pseudopos import pseudo_position_argument
@@ -151,8 +157,7 @@ class DiffractometerBase(PseudoPositioner):
 
     _forward_solution: Callable = pick_first_solution
     """
-    Pick a solution from the solution(s) return from
-    :meth:`~hklpy2.ops.Core.forward`.
+    Pick a solution from solution(s) of  :meth:`~hklpy2.ops.Core.forward`.
 
     Choices include:
 
@@ -336,10 +341,10 @@ class DiffractometerBase(PseudoPositioner):
 
         PARAMETERS
 
-        config *dict*, *str*, or *pathlib.Path* object:
+        config : dict, str, or pathlib object
             Dictionary with configuration, or name (str or pathlib object) of
             diffractometer configuration YAML file.
-        clear *bool*:
+        clear : bool
             If ``True`` (default), remove any previous configuration of the
             diffractometer and reset it to default values before restoring the
             configuration.
@@ -348,9 +353,9 @@ class DiffractometerBase(PseudoPositioner):
             included in the configuration data for that sample.  Existing
             reflections will not be changed.  The user may need to edit the
             list of reflections after ``restore(clear=False)``.
-        restore_constraints *bool*:
+        restore_constraints : bool
             If ``True`` (default), restore any constraints provided.
-        restore_wavelength *bool*:
+        restore_wavelength : bool
             If ``True`` (default), restore wavelength.
 
         Note: Can't name this method "import", it's a reserved Python word.
@@ -471,24 +476,17 @@ class DiffractometerBase(PseudoPositioner):
 
     def scan_extra(
         self,
-        detectors: Iterable,
-        axis: Optional[str] = None,  # name of extra parameter to be scanned
-        start: Optional[float] = None,
-        finish: Optional[float] = None,
+        detectors: Iterable[Readable],
+        *args: Union[Movable, Any],  # axis, start, finish, [...]
         num: Optional[int] = 2,
-        *,
         pseudos: Optional[dict] = None,  # h, k, l
         reals: Optional[dict] = None,  # angles
-        extras: Optional[
-            dict
-        ] = {},  # define all but the 'axis', these will remain constant
+        extras: Optional[dict] = {},
         fail_on_exception: Optional[bool] = False,
         md: Optional[dict] = None,
     ):
         """
-        Scan one extra diffractometer parameter, such as 'psi'.
-
-        * TODO: #107 one **or more** (such as bp.scan)
+        Scan extra diffractometer parameter(s), such as 'psi'.
 
         * iterate extra positions as described:
             * set extras
@@ -496,22 +494,75 @@ class DiffractometerBase(PseudoPositioner):
             * move to solution
             * acquire (trigger) all controls
             * read and record all controls
+
+        Parameters
+
+        detectors: Iterable[Readable]
+            List of readable objects.
+        args: Any
+            Specification of scan axes.
+
+            The 'args' specification is a repeating pattern of axis (str), start
+            (float), stop (float).
+
+            In general:
+
+            .. code-block:: python
+
+                axis1, start1, stop1, axis2, start2, stop2, ..., axisN, startN,
+                stopN
+
+            Axis is any extra axis name supported by the current diffractometer
+            geometry and mode.
+        num: int
+            Number of points.
+        pseudos: dict
+            Dictionary of pseudo axes positions to be held constant during the
+            scan.
+        reals: dict
+            Dictionary of real axes positions to be held constant during the
+            scan.
+        extras: dict
+            Dictionary of extra axes positions to be held constant during the
+            scan.
+        fail_on_exception: bool
+            When True (deafult: False), scan will raise any exceptions. When
+            False, all exceptions during the scan will be printed to console.
+        md: dict
+            Dictionary of user-supplied metadata.
         """
         import numpy
         from bluesky import plan_stubs as bps
         from bluesky import preprocessors as bpp
 
-        from .misc import dict_device_factory
+        def position_series(start, finish, num):
+            yield from numpy.linspace(start, finish, num=num)
 
         self.core.update_solver()
 
         # validate
-        if axis not in self.core.solver_extra_axis_names:
-            raise KeyError(f"{axis!r} not in {self.core.solver_extra_axis_names}")
-        if pseudos is None and reals is None:
-            raise ValueError("Must define either pseudos or reals.")
-        if pseudos is not None and reals is not None:
-            raise ValueError("Cannot define both pseudos and reals.")
+        if len(args) == 0 or len(args) % 3:
+            raise ValueError(f"Must specify scan axes in groups of 3, received {args}.")
+
+        movers = {}
+        for axis, start, finish in partition(3, args):
+            if axis not in self.core.solver_extra_axis_names:
+                raise KeyError(f"{axis!r} not in {self.core.solver_extra_axis_names}")
+            if axis in movers:
+                raise KeyError(f"Extra axis may only be used once, received {args}.")
+            if pseudos is None and reals is None:
+                raise ValueError("Must define either pseudos or reals.")
+            if pseudos is not None and reals is not None:
+                raise ValueError("Cannot define both pseudos and reals.")
+            movers[axis] = dict(
+                series=position_series(start, finish, num),
+                start=start,
+                finish=finish,
+                signal=Signal(
+                    value=start, kind="hinted", name=f"{self.name}_extras_{axis}"
+                ),
+            )
+            extras[axis] = start
 
         _md = {
             "diffractometer": {
@@ -521,9 +572,11 @@ class DiffractometerBase(PseudoPositioner):
                 "mode": self.core.mode,
                 "extra_axes": self.core.solver_extra_axis_names,
             },
-            "axis": axis,
-            "start": start,
-            "finish": finish,
+            "axes": {
+                axis: dict(start=start, finish=finish)
+                #
+                for axis, start, finish in partition(3, args)
+            },
             "num": num,
             "pseudos": pseudos,
             "reals": reals,
@@ -531,25 +584,14 @@ class DiffractometerBase(PseudoPositioner):
             "transformation": "forward" if reals is None else "inverse",
         }.update(md or {})
 
-        extras[axis] = start
-        extras_class = dict_device_factory(extras)
-        extras_device = extras_class("", name=f"{self.name}_extras", kind="hinted")
-
         all_controls = detectors
-        all_controls.append(extras_device)
+        all_controls.extend([movers[axis]["signal"] for axis in movers])
         all_controls = list(set(all_controls))
-
-        signal = getattr(extras_device, axis)  # Pick the 'axis' Component.
-        signal.kind = "hinted"
-
-        def position_series(start, finish, num):
-            for value in numpy.linspace(start, finish, num=num):
-                yield value
 
         @bpp.stage_decorator(detectors)
         @bpp.run_decorator(md=_md)
         def _inner():
-            for value in position_series(start, finish, num):
+            for positions in zip(*(m["series"] for m in movers.values())):
 
                 def move_axes(pseudos, reals, extras):
                     """Move extras, then reals or pseudos, move to the solution."""
@@ -572,9 +614,11 @@ class DiffractometerBase(PseudoPositioner):
                         yield from bps.read(item)
                     yield from bps.save()
 
-                # note the new axis position, will report later
-                extras.update({axis: value})
-                yield from bps.mv(signal, value)
+                # update with new position(s), will report later
+                for axis, value in zip(movers.keys(), positions):
+                    extras[axis] = float(value)
+                    yield from bps.mv(movers[axis]["signal"], value)
+
                 try:
                     yield from move_axes(pseudos, reals, extras)
                     yield from acquire(all_controls)
@@ -913,7 +957,6 @@ def creator(
         Additional keyword arguments will be added when constructing
         the new diffractometer object.
     """
-    # print(f"creator({solver=!r}, {geometry=!r})")
     DiffractometerClass = diffractometer_class_factory(
         solver=solver,
         geometry=geometry,
@@ -965,7 +1008,7 @@ def diffractometer_class_factory(
         in addition to the ones provided by the solver.
 
         (default: '[]' which means no additional pseudo axes)
-    reals : dict or list or ``None``
+    reals : dict or list or None
         Specification of the real axis motors.
 
         None or empty means use the canonical names for the real axes and use
