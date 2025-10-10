@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hklpy2.user &#8212; hklpy2 0.1</title>
+    <title>hklpy2.user &#8212; hklpy2 0.2</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=5b101d3a"></script>
+    <script src="../../_static/documentation_options.js?v=938c9ccc"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -50,7 +50,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="0.2" />
   </head>
   
   
@@ -112,7 +112,7 @@
   
   
   
-    <p class="title logo__title">hklpy2 0.1</p>
+    <p class="title logo__title">hklpy2 0.2</p>
   
 </a></div>
     
@@ -380,6 +380,7 @@
 <span class="sd">    ~remove_reflection</span>
 <span class="sd">    ~pa</span>
 <span class="sd">    ~remove_sample</span>
+<span class="sd">    ~scan_extra</span>
 <span class="sd">    ~set_diffractometer</span>
 <span class="sd">    ~set_lattice</span>
 <span class="sd">    ~set_wavelength</span>
@@ -391,8 +392,13 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Movable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Readable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyRestTable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span>
@@ -897,6 +903,90 @@
     <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">CoreError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exinfo</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exinfo</span></div>
+
+
+
+<div class="viewcode-block" id="scan_extra">
+<a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.scan_extra">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">scan_extra</span><span class="p">(</span>
+    <span class="n">detectors</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Readable</span><span class="p">],</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Movable</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>  <span class="c1"># axis, start, finish, [...]</span>
+    <span class="n">num</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># h, k, l</span>
+    <span class="n">reals</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># angles</span>
+    <span class="n">extras</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">fail_on_exception</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">md</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Scan diffractometer parameter(s) at constant pseudos or reals.</span>
+
+<span class="sd">    Uses selected diffractometer.</span>
+
+<span class="sd">    Example</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        &gt;&gt;&gt; import hklpy2</span>
+<span class="sd">        &gt;&gt;&gt; from hklpy2.user import *</span>
+<span class="sd">        &gt;&gt;&gt; e6c = hklpy2.creator(name=&quot;e6c&quot;, geometry=&quot;e6c&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; set_diffractometer(e6c)</span>
+<span class="sd">        &gt;&gt;&gt; e6c.core.mode = &quot;psi_constant_vertical&quot;</span>
+<span class="sd">        &gt;&gt;&gt; RE(</span>
+<span class="sd">            scan_extra(</span>
+<span class="sd">                [noisy_det, e6c],</span>
+<span class="sd">                &quot;psi&quot;, 0, 150,</span>
+<span class="sd">                num=15,</span>
+<span class="sd">                pseudos=dict(h=0, k=0, l=2),</span>
+<span class="sd">                extras=dict(h2=1, k2=2, l2=0)</span>
+<span class="sd">            )</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Parameters</span>
+
+<span class="sd">    detectors: Iterable[Readable]</span>
+<span class="sd">        List of readable objects.</span>
+<span class="sd">    args: Any</span>
+<span class="sd">        Specification of scan axes.  The specification is a repeating</span>
+<span class="sd">        pattern of axis (str), start (float), stop (float).</span>
+
+<span class="sd">        In general:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            axis1, start1, stop1,</span>
+<span class="sd">            axis2, start2, stop2,</span>
+<span class="sd">            ...,</span>
+<span class="sd">            axisN, startN, stopN</span>
+
+<span class="sd">        Axis is any extra axis name supported by the current diffractometer</span>
+<span class="sd">        geometry and mode.</span>
+<span class="sd">    num: int</span>
+<span class="sd">        Number of points.</span>
+<span class="sd">    pseudos: dict</span>
+<span class="sd">        Dictionary of pseudo axes positions to be held constant during the scan.</span>
+<span class="sd">    reals: dict</span>
+<span class="sd">        Dictionary of real axes positions to be held constant during the scan.</span>
+<span class="sd">    extras: dict</span>
+<span class="sd">        Dictionary of extra axes positions to be held constant during the scan.</span>
+<span class="sd">    fail_on_exception: bool</span>
+<span class="sd">        When True (deafult: False), scan will raise any exceptions.</span>
+<span class="sd">        When False, all exceptions during the scan will be printed to console.</span>
+<span class="sd">    md: dict</span>
+<span class="sd">        Dictionary of user-supplied metadata.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">yield from</span> <span class="n">get_diffractometer</span><span class="p">()</span><span class="o">.</span><span class="n">scan_extra</span><span class="p">(</span>
+        <span class="n">detectors</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span>
+        <span class="n">psuedos</span><span class="o">=</span><span class="n">pseudos</span><span class="p">,</span>
+        <span class="n">reals</span><span class="o">=</span><span class="n">reals</span><span class="p">,</span>
+        <span class="n">extras</span><span class="o">=</span><span class="n">extras</span><span class="p">,</span>
+        <span class="n">fail_on_exception</span><span class="o">=</span><span class="n">fail_on_exception</span><span class="p">,</span>
+        <span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 

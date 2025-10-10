@@ -81,7 +81,7 @@ Module Contents
 
 
 
-.. py:class:: DiffractometerBase(prefix: str = '', *, solver: str = None, geometry: str = None, solver_kwargs: dict = {}, pseudos: list[str] = [], reals: list[str] = [], forward_solution_function: Optional[Callable] = None, **kwargs)
+.. py:class:: DiffractometerBase(prefix: str = '', *, solver: str = None, geometry: str = None, solver_kwargs: dict = {}, pseudos: list[str] = [], reals: list[str] = [], reals_units: Optional[str] = None, forward_solution_function: Optional[Callable] = None, **kwargs)
 
    Bases: :py:obj:`ophyd.PseudoPositioner`
 
@@ -109,6 +109,8 @@ Module Contents
        Function to pick one solution from list of possibilities.
        Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.
        (default: :func:`~hklpy2.misc.pick_first_solution`)
+   reals_units : str
+       The units for the real axes. (default: "degrees")
 
    .. rubric:: (ophyd) Components
 
@@ -143,6 +145,7 @@ Module Contents
        ~configuration
        ~pseudo_axis_names
        ~real_axis_names
+       ~reals_units
        ~sample
        ~samples
 
@@ -155,8 +158,7 @@ Module Contents
    .. py:attribute:: _forward_solution
       :type:  Callable
 
-      Pick a solution from the solution(s) return from
-      :meth:`~hklpy2.ops.Core.forward`.
+      Pick a solution from solution(s) of  :meth:`~hklpy2.ops.Core.forward`.
 
       Choices include:
 
@@ -174,10 +176,29 @@ Module Contents
 
 
 
+   .. py:property:: reals_units
+      :type: str
+
+
+      Engineering units for the reals (rotational) axes
+
+
    .. py:attribute:: core
 
 
-   .. py:method:: add_reflection(pseudos, reals=None, wavelength: float = None, name: str = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
+   .. py:property:: digits
+      :type: int
+
+
+      Number of decimal digits used when rendering position tuples.
+
+      This is a per-instance property. Reading returns the instance value if
+      set, otherwise the class default. Setting updates the instance value
+      and re-wraps the instance's PseudoPosition/RealPosition classes so the
+      new digit count is used for their string representations.
+
+
+   .. py:method:: add_reflection(pseudos, reals=None, wavelength: float = None, wavelength_units: str = None, name: str = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
 
       Add a new reflection with this geometry to the selected sample.
 
@@ -190,6 +211,9 @@ Module Contents
       wavelength float:
           Wavelength of incident radiation. If ``None``, diffractometer's
           current wavelength will be assigned.
+      wavelength_units str:
+          Optional units for the supplied ``wavelength`` (e.g. "angstrom").
+          If ``None``, the diffractometer's current beam units are used.
       name str:
           Reference name for this reflection.
           If ``None``, a random name will be assigned.
@@ -238,10 +262,10 @@ Module Contents
 
       PARAMETERS
 
-      config *dict*, *str*, or *pathlib.Path* object:
+      config : dict, str, or pathlib object
           Dictionary with configuration, or name (str or pathlib object) of
           diffractometer configuration YAML file.
-      clear *bool*:
+      clear : bool
           If ``True`` (default), remove any previous configuration of the
           diffractometer and reset it to default values before restoring the
           configuration.
@@ -250,9 +274,9 @@ Module Contents
           included in the configuration data for that sample.  Existing
           reflections will not be changed.  The user may need to edit the
           list of reflections after ``restore(clear=False)``.
-      restore_constraints *bool*:
+      restore_constraints : bool
           If ``True`` (default), restore any constraints provided.
-      restore_wavelength *bool*:
+      restore_wavelength : bool
           If ``True`` (default), restore wavelength.
 
       Note: Can't name this method "import", it's a reserved Python word.
@@ -321,11 +345,9 @@ Module Contents
 
 
 
-   .. py:method:: scan_extra(detectors: collections.abc.Iterable, axis: Optional[str] = None, start: Optional[float] = None, finish: Optional[float] = None, num: Optional[int] = 2, *, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None)
+   .. py:method:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None)
 
-      Scan one extra diffractometer parameter, such as 'psi'.
-
-      * TODO: #107 one **or more** (such as bp.scan)
+      Scan extra diffractometer parameter(s), such as 'psi'.
 
       * iterate extra positions as described:
           * set extras
@@ -333,6 +355,65 @@ Module Contents
           * move to solution
           * acquire (trigger) all controls
           * read and record all controls
+
+      Parameters
+
+      detectors: Iterable[Readable]
+          List of readable objects.
+      args: Any
+          Specification of scan axes.
+
+          The 'args' specification is a repeating pattern of axis (str), start
+          (float), stop (float).
+
+          In general:
+
+          .. code-block:: python
+
+              axis1, start1, stop1, axis2, start2, stop2, ..., axisN, startN,
+              stopN
+
+          Axis is any extra axis name supported by the current diffractometer
+          geometry and mode.
+      num: int
+          Number of points.
+      pseudos: dict
+          Dictionary of pseudo axes positions to be held constant during the
+          scan.
+      reals: dict
+          Dictionary of real axes positions to be held constant during the
+          scan.
+      extras: dict
+          Dictionary of extra axes positions to be held constant during the
+          scan.
+      fail_on_exception: bool
+          When True (deafult: False), scan will raise any exceptions. When
+          False, all exceptions during the scan will be printed to console.
+      md: dict
+          Dictionary of user-supplied metadata.
+
+
+
+   .. py:method:: _format_value_for_repr(x, digits)
+      :staticmethod:
+
+
+      Format numeric values for display without changing them.
+
+      - Floats: fixed-point with `digits` decimals, trailing zeros
+        removed but at least one decimal retained (e.g. 4 -> 4.0).
+      - Other types: fall back to built-in repr.
+
+
+
+   .. py:method:: _make_wrapped_namedtuple_class(orig_cls, digits)
+      :classmethod:
+
+
+      Return a lightweight subclass of ``orig_cls`` with concise repr.
+
+      Avoid re-wrapping when the same digit count is already applied.
+      Supports control of displayed numerical precision in position tuples.
 
 
 
@@ -498,18 +579,27 @@ Module Contents
        in addition to the ones provided by the solver.
 
        (default: '[]' which means no additional pseudo axes)
-   reals : dict
-       Specification of the real axis motors.  Dictionary keys are the motor
-       names, values are the EPICS motor PV for that axis.  If the PV is
-       'None', use a simulated positioner.
+   reals : dict or list or None
+       Specification of the real axis motors.
 
-       The dictionary can be empty or must have at least the canonical number of
-       real axes.  The order of the axes is important.  The names provided will
-       be mapped to the canonical order defined by the solver.  Components will
-       be created for any extra *reals*.
+       None or empty means use the canonical names for the real axes and use
+       simulated positioners (``ophyd.SoftPositioner``) for each.  Otherwise,
+       you must specify at least the number of real axes expected by the solver
+       geometry.
 
-       (default: '{}' which means use the canonical names for the real axes and
-       use simulated positioners)
+       list:
+           Specify the names of the real axis motors.  The names will be
+           matched, in order, to the names used by the solver.
+           The default class will be ``ophyd.SoftPositioner``.
+       dict:
+           Keys: The names of the real axis motors.  The names will be
+               matched, in order, to the names used by the solver.
+           Values:
+               * A string representing the EPICS motor PV.
+               * ``None`` for a simulated positioner using ``ophyd.SoftPositioner``.
+               * A dictionary with additional specifications for the motor constructor.
+                 Use this case for any case where either a string or ``None``
+                 are insufficient to specify all necessary parameters.
    motor_labels : list
        Ophyd object labels for each real positioner. (default: '["motors"]')
    class_name : str

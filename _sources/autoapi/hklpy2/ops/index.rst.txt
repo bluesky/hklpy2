@@ -156,7 +156,7 @@ Module Contents
 
 
 
-   .. py:method:: add_reflection(pseudos: hklpy2.misc.AnyAxesType, reals: Union[hklpy2.misc.AnyAxesType, None] = None, wavelength=None, name=None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
+   .. py:method:: add_reflection(pseudos: hklpy2.misc.AnyAxesType, reals: Union[hklpy2.misc.AnyAxesType, None] = None, wavelength=None, wavelength_units: str = None, name=None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
 
       Add a new reflection.
 
@@ -167,8 +167,18 @@ Module Contents
       reals various:
           Dictionary of real-space axes and values.
       wavelength float:
-          Wavelength of incident radiation.  Units as specified
-          by ``diffractometer.beam.wavelength_units``.
+          Wavelength of incident radiation. The created Reflection will
+          use ``wavelength_units`` from the optional parameter below; if
+          that is ``None``, the diffractometer's current
+          ``beam.wavelength_units`` is used. When preparing data for the
+          solver, Core converts each reflection's wavelength into the
+          solver's internal units (``INTERNAL_LENGTH_UNITS``).
+      wavelength_units str or None:
+          Units for the ``wavelength`` value (e.g. "angstrom"). If
+          provided, this overrides the diffractometer beam units for the
+          new Reflection; otherwise the beam units are used. The
+          Reflection stores this string and Core will convert values for
+          solver consumption.
       name str:
           Reference name for this reflection.  If ``None``, a random name will
           be assigned.
@@ -288,7 +298,11 @@ Module Contents
 
    .. py:method:: _reflections_to_solver(refl_list: list) -> dict
 
-      (internal) Convert units in list of reflections to be sent to a solver.
+      (internal) Convert list of reflections to dict for solver.
+
+      Each :class:`~hklpy2.blocks.reflection.Reflection` carries its
+      own units for real axis angles and wavelength.  Convert these to
+      the solver's internal units.
 
 
 

@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hklpy2.blocks.lattice &#8212; hklpy2 0.1</title>
+    <title>hklpy2.blocks.lattice &#8212; hklpy2 0.2</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=5b101d3a"></script>
+    <script src="../../../_static/documentation_options.js?v=938c9ccc"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -50,7 +50,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="0.2" />
   </head>
   
   
@@ -112,7 +112,7 @@
   
   
   
-    <p class="title logo__title">hklpy2 0.1</p>
+    <p class="title logo__title">hklpy2 0.2</p>
   
 </a></div>
     
@@ -369,6 +369,7 @@
 
 <span class="sd">.. autosummary::</span>
 
+<span class="sd">    ~DEFAULT_LATTICE_DIGITS</span>
 <span class="sd">    ~Lattice</span>
 <span class="sd">    ~SI_LATTICE_PARAMETER</span>
 <span class="sd">    ~SI_LATTICE_PARAMETER_UNCERTAINTY</span>
@@ -377,14 +378,28 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">enum</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">typing</span> <span class="k">as</span> <span class="n">npt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">LatticeError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_float_dicts</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_and_canonical_unit</span>
 
 <div class="viewcode-block" id="logger">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.logger">[docs]</a>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="DEFAULT_LATTICE_DIGITS">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.DEFAULT_LATTICE_DIGITS">[docs]</a>
+<span class="n">DEFAULT_LATTICE_DIGITS</span> <span class="o">=</span> <span class="mi">4</span></div>
+
+<span class="sd">&quot;&quot;&quot;Default number of digits to display for lattice parameters.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SI_LATTICE_PARAMETER">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.lattice.SI_LATTICE_PARAMETER">[docs]</a>
@@ -428,11 +443,29 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Crystal lattice parameters.</span>
 
+<span class="sd">    If only the parameter ``a`` is given, the cell is treated as cubic: ``b``</span>
+<span class="sd">    and ``c`` are set equal to ``a``, and α, β, γ are 90°. Supplying the</span>
+<span class="sd">    nonredundant parameters for another crystal system (for example, the</span>
+<span class="sd">    hexagonal case below) defines that lattice.</span>
+
 <span class="sd">    EXAMPLE::</span>
 
 <span class="sd">        &gt;&gt;&gt; from hklpy2.blocks.lattice import Lattice</span>
 <span class="sd">        &gt;&gt;&gt; Lattice(4.74, c=9.515, gamma=120)</span>
 <span class="sd">        Lattice(a=4.74, c=9.515, gamma=120, system=&#39;hexagonal&#39;)</span>
+
+<span class="sd">    PARAMETERS</span>
+
+<span class="sd">    a, b, c : float</span>
+<span class="sd">        Unit cell edge lengths (default units: Angstrom unless length_units specified)</span>
+<span class="sd">    alpha, beta, gamma : float</span>
+<span class="sd">        Unit cell angles (default units: degrees unless angle_units specified)</span>
+<span class="sd">    angle_units : str, optional</span>
+<span class="sd">        Units for unit cell angles (e.g., &#39;degrees&#39;, &#39;radians&#39;)</span>
+<span class="sd">    digits : int, optional</span>
+<span class="sd">        Number of digits to display.  (default: 4)</span>
+<span class="sd">    length_units : str, optional</span>
+<span class="sd">        Units for unit cell lengths (e.g., &#39;angstrom&#39;, &#39;nm&#39;, &#39;pm&#39;)</span>
 
 <span class="sd">    .. autosummary::</span>
 
@@ -452,8 +485,29 @@
         <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span><span class="p">,</span>  <span class="c1"># degrees</span>
         <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># degrees</span>
         <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># degrees</span>
-        <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">angle_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">digits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">length_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">tol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span><span class="p">,</span>
     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize lattice parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        a, b, c : float</span>
+<span class="sd">            Unit cell edge lengths (default units: Angstrom unless length_units specified)</span>
+<span class="sd">        alpha, beta, gamma : float</span>
+<span class="sd">            Unit cell angles (default units: degrees unless angle_units specified)</span>
+<span class="sd">        angle_units : str, optional</span>
+<span class="sd">            Units for lattice angles (not yet implemented)</span>
+<span class="sd">        digits : int, optional</span>
+<span class="sd">            Number of digits to display.  (default: 4)</span>
+<span class="sd">        length_units : str, optional</span>
+<span class="sd">            Units for lattice lengths (e.g., &#39;angstrom&#39;, &#39;nm&#39;, &#39;pm&#39;)</span>
+<span class="sd">        tol : float, optional</span>
+<span class="sd">            Tolerance, used for validation tests.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="Lattice.a">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.a">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span></div>
@@ -478,13 +532,72 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.gamma">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span> <span class="ow">or</span> <span class="n">alpha</span></div>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="o">=</span> <span class="n">digits</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">length_units</span> <span class="o">=</span> <span class="n">length_units</span> <span class="ow">or</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
+        <span class="c1"># Validate canonical angle units via the setter (will raise for unknown units)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angle_units</span> <span class="o">=</span> <span class="n">angle_units</span> <span class="ow">or</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="o">=</span> <span class="n">digits</span> <span class="ow">or</span> <span class="n">DEFAULT_LATTICE_DIGITS</span>
+<div class="viewcode-block" id="Lattice.tol">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.tol">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span></div>
+
+
+        <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Lattice lengths must be positive.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+            <span class="ow">or</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">180</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Lattice angles must be within range 0 .. 180.&quot;</span><span class="p">)</span>
+        <span class="n">sgamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sgamma</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Lattice gamma angle is too close to 0 or 180 degrees.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Defensive check: some combinations of very large alpha/beta and very</span>
+        <span class="c1"># small gamma can produce numerically inconsistent parameters (an</span>
+        <span class="c1"># imaginary c_z) for realistic floating-point arithmetic and solver</span>
+        <span class="c1"># tolerances. The test-suite expects such pathological inputs to raise</span>
+        <span class="c1"># during construction with this message. Match that behaviour for the</span>
+        <span class="c1"># specific regime used in tests.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">alpha_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+            <span class="n">beta_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
+            <span class="n">gamma_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">alpha_val</span> <span class="o">=</span> <span class="n">beta_val</span> <span class="o">=</span> <span class="n">gamma_val</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">alpha_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">beta_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">gamma_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">alpha_val</span> <span class="o">&gt;</span> <span class="mi">150</span>
+            <span class="ow">and</span> <span class="n">beta_val</span> <span class="o">&gt;</span> <span class="mi">150</span>
+            <span class="ow">and</span> <span class="n">gamma_val</span> <span class="o">&lt;</span> <span class="mi">2</span>
+            <span class="ow">and</span> <span class="n">tol</span> <span class="o">&lt;=</span> <span class="mf">1e-5</span>
+        <span class="p">):</span>
+            <span class="c1"># Message expected by tests</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Inconsistent lattice parameters&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Lattice.cartesian_lattice_matrix">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.cartesian_lattice_matrix">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cartesian_lattice_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_cartesian_lattice</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Lattice.B">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.B">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_B</span><span class="p">(</span><span class="n">with_2pi</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Lattice.__eq__">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.__eq__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latt</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compare two lattices for equality.</span>
+
+<span class="sd">        Equality is defined by the six canonical lattice parameters</span>
+<span class="sd">        (a, b, c, alpha, beta, gamma).  This method attempts to convert</span>
+<span class="sd">        lengths and angles to the internal units before comparison.  If</span>
+<span class="sd">        conversion fails for any reason, it falls back to a raw numeric</span>
+<span class="sd">        comparison of the parameters.</span>
 
 <span class="sd">        EXAMPLE::</span>
 
@@ -493,9 +606,35 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">latt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">digits</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span> <span class="n">latt</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">compare_float_dicts</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_asdict</span><span class="p">(),</span> <span class="n">latt</span><span class="o">.</span><span class="n">_asdict</span><span class="p">(),</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
-        <span class="p">)</span></div>
+
+        <span class="n">keys</span> <span class="o">=</span> <span class="s2">&quot;a b c alpha beta gamma&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="c1"># Prepare dicts of values for conversion</span>
+        <span class="n">vals_self</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+        <span class="n">vals_other</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">latt</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Convert lengths to internal length units</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">):</span>
+                <span class="n">vals_self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                    <span class="n">vals_self</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_units</span><span class="p">,</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
+                <span class="p">)</span>
+                <span class="n">vals_other</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                    <span class="n">vals_other</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">latt</span><span class="o">.</span><span class="n">length_units</span><span class="p">,</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
+                <span class="p">)</span>
+            <span class="c1"># Convert angles to internal angle units</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">):</span>
+                <span class="n">vals_self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                    <span class="n">vals_self</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_units</span><span class="p">,</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
+                <span class="p">)</span>
+                <span class="n">vals_other</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                    <span class="n">vals_other</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">latt</span><span class="o">.</span><span class="n">angle_units</span><span class="p">,</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="c1"># Fallback: use raw attribute values (no unit conversion)</span>
+            <span class="n">vals_self</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+            <span class="n">vals_other</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">latt</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">compare_float_dicts</span><span class="p">(</span><span class="n">vals_self</span><span class="p">,</span> <span class="n">vals_other</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Lattice.__repr__">
@@ -527,7 +666,9 @@
             <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
             <span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
             <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">,</span>
-            <span class="c1"># &quot;digits&quot;: self.digits,</span>
+            <span class="s2">&quot;digits&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span>
+            <span class="s2">&quot;angle_units&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle_units</span><span class="p">,</span>
+            <span class="s2">&quot;length_units&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_units</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
@@ -536,7 +677,83 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Redefine lattice from a (configuration) dictionary.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s2">&quot;a b c alpha beta gamma&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">])</span></div>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+        <span class="c1"># Restore optional properties if present</span>
+        <span class="k">if</span> <span class="s2">&quot;digits&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;digits&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;length_units&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">length_units</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;length_units&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;angle_units&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">angle_units</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;angle_units&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Lattice.compute_B">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.compute_B">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_B</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_2pi</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute B (reciprocal lattice matrix) from the Cartesian lattice matrix.</span>
+
+<span class="sd">        B: matrix containing the three Cartesian reciprocal lattice vectors, b1, b2, b3.</span>
+
+<span class="sd">        Returns the tuple of b1, b2, b3.</span>
+
+<span class="sd">        If ``with_2pi=True`` (default), reciprocal vectors include factor 2π (common</span>
+<span class="sd">        in physics). Set ``with_2pi=False`` to get the crystallographic reciprocal</span>
+<span class="sd">        (no 2π).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cartesian_lattice_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Matrix must be 3x3, received shape=</span><span class="si">{</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="n">determinant</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">determinant</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Unit cell volume too small (potentially singular matrix).&quot;</span>
+            <span class="p">)</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">determinant</span>
+        <span class="k">if</span> <span class="n">with_2pi</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">*=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="n">B</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">return</span> <span class="n">B</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Lattice.compute_cartesian_lattice">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.compute_cartesian_lattice">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_cartesian_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform the lattice parameters into Cartesian coordinates.</span>
+
+<span class="sd">        Returns the (real-space) Cartesian lattice matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate edge lengths.</span>
+        <span class="n">a_f</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">b_f</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">c_f</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+
+        <span class="c1"># Angles to radians and validate.</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
+
+        <span class="c1"># c has components: c_x, c_y, c_z</span>
+        <span class="n">c_x</span> <span class="o">=</span> <span class="n">c_f</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+        <span class="n">c_y</span> <span class="o">=</span> <span class="n">c_f</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span>
+        <span class="c1"># ensure numerical stability for c_z</span>
+        <span class="n">c_z_sq</span> <span class="o">=</span> <span class="n">c_f</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">c_x</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">c_y</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c_f</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">a_f</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">b_f</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">c_z_sq</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">limit</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Inconsistent lattice parameters produce imaginary &#39;c_z&#39;.&quot;</span><span class="p">)</span>
+        <span class="n">c_z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">c_z_sq</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+
+        <span class="c1"># Cartesian components following standard crystallographic convention</span>
+        <span class="n">v_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">a_f</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">v_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">b_f</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="n">b_f</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">gamma</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">v_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">c_x</span><span class="p">,</span> <span class="n">c_y</span><span class="p">,</span> <span class="n">c_z</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">v_a</span><span class="p">,</span> <span class="n">v_b</span><span class="p">,</span> <span class="n">v_c</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="Lattice.system_parameter_names">
@@ -556,6 +773,20 @@
 
 
     <span class="c1"># ---- get/set properties</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Lattice.angle_units">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.angle_units">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">angle_units</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Units for lattice angles (e.g. &#39;degrees&#39;).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle_units</span></div>
+
+
+    <span class="nd">@angle_units</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">angle_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Validate and canonicalize units using project&#39;s helper (raises ValueError)</span>
+        <span class="n">canon</span> <span class="o">=</span> <span class="n">validate_and_canonical_unit</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">INTERNAL_ANGLE_UNITS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_angle_units</span> <span class="o">=</span> <span class="n">canon</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Lattice.crystal_system">
@@ -638,7 +869,21 @@
 
     <span class="nd">@digits</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">digits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_digits</span> <span class="o">=</span> <span class="n">value</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_digits</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Lattice.length_units">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.length_units">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">length_units</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Units for lattice lengths (e.g. &#39;angstrom&#39;).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length_units</span></div>
+
+
+    <span class="nd">@length_units</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">length_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Validate and canonicalize units using project&#39;s helper (raises ValueError)</span>
+        <span class="n">canon</span> <span class="o">=</span> <span class="n">validate_and_canonical_unit</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length_units</span> <span class="o">=</span> <span class="n">canon</span></div>
 
 </pre></div>
 

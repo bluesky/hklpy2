@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hklpy2.misc &#8212; hklpy2 0.1</title>
+    <title>hklpy2.misc &#8212; hklpy2 0.2</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=5b101d3a"></script>
+    <script src="../../_static/documentation_options.js?v=938c9ccc"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -50,7 +50,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="0.2" />
   </head>
   
   
@@ -112,7 +112,7 @@
   
   
   
-    <p class="title logo__title">hklpy2 0.1</p>
+    <p class="title logo__title">hklpy2 0.2</p>
   
 </a></div>
     
@@ -395,6 +395,7 @@
 <span class="sd">    ~solver_factory</span>
 <span class="sd">    ~solvers</span>
 <span class="sd">    ~unique_name</span>
+<span class="sd">    ~validate_and_canonical_unit</span>
 
 <span class="sd">.. rubric: Symbols</span>
 <span class="sd">.. autosummary::</span>
@@ -419,11 +420,11 @@
 <span class="sd">.. rubric: Custom Exceptions</span>
 <span class="sd">.. autosummary::</span>
 
+<span class="sd">    ~Hklpy2Error</span>
 <span class="sd">    ~ConfigurationError</span>
 <span class="sd">    ~ConstraintsError</span>
 <span class="sd">    ~CoreError</span>
 <span class="sd">    ~DiffractometerError</span>
-<span class="sd">    ~Hklpy2Error</span>
 <span class="sd">    ~LatticeError</span>
 <span class="sd">    ~NoForwardSolutions</span>
 <span class="sd">    ~ReflectionError</span>
@@ -433,6 +434,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numbers</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
@@ -474,34 +476,83 @@
 
 <span class="sd">&quot;&quot;&quot;Name by which |hklpy2| backend |solver| classes are grouped.&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="DEFAULT_DIGITS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.DEFAULT_DIGITS">[docs]</a>
+<span class="n">DEFAULT_DIGITS</span> <span class="o">=</span> <span class="mi">4</span></div>
+
 <div class="viewcode-block" id="DEFAULT_START_KEY">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.DEFAULT_START_KEY">[docs]</a>
 <span class="n">DEFAULT_START_KEY</span> <span class="o">=</span> <span class="s2">&quot;diffractometers&quot;</span></div>
+
+
+<div class="viewcode-block" id="INTERNAL_ANGLE_UNITS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INTERNAL_ANGLE_UNITS">[docs]</a>
+<span class="n">INTERNAL_ANGLE_UNITS</span> <span class="o">=</span> <span class="s2">&quot;degrees&quot;</span></div>
+
+<div class="viewcode-block" id="INTERNAL_LENGTH_UNITS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INTERNAL_LENGTH_UNITS">[docs]</a>
+<span class="n">INTERNAL_LENGTH_UNITS</span> <span class="o">=</span> <span class="s2">&quot;angstrom&quot;</span></div>
+
+<div class="viewcode-block" id="INTERNAL_XRAY_ENERGY_UNITS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INTERNAL_XRAY_ENERGY_UNITS">[docs]</a>
+<span class="n">INTERNAL_XRAY_ENERGY_UNITS</span> <span class="o">=</span> <span class="s2">&quot;keV&quot;</span></div>
+
+
+<span class="c1"># Shared pint UnitRegistry to avoid recreating it repeatedly.</span>
+<span class="c1"># Agents and hot paths should use this registry via helper functions below.</span>
+<div class="viewcode-block" id="UREG">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.UREG">[docs]</a>
+<span class="n">UREG</span> <span class="o">=</span> <span class="n">pint</span><span class="o">.</span><span class="n">UnitRegistry</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PINT_ERRORS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.PINT_ERRORS">[docs]</a>
+<span class="n">PINT_ERRORS</span> <span class="o">=</span> <span class="p">(</span><span class="n">pint</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">)</span></div>
+
+<span class="sd">&quot;&quot;&quot;Exception from pint that we are trapping here.&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="validate_and_canonical_unit">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.validate_and_canonical_unit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_and_canonical_unit</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_units</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate that *value* is a unit convertible to *target_units*.</span>
+
+<span class="sd">    Returns a canonical string representation of the unit (via UREG).</span>
+<span class="sd">    Raises ValueError on failure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Constructing the Unit will raise pint.UndefinedUnitError if unknown.</span>
+    <span class="n">unit</span> <span class="o">=</span> <span class="n">UREG</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="c1"># Attempt a dimensional conversion; will raise pint.DimensionalityError if incompatible.</span>
+    <span class="n">UREG</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">target_units</span><span class="p">)</span>
+    <span class="c1"># On success, preserve and return the original user-provided unit string so callers</span>
+    <span class="c1"># (and tests) see the same spelling/casing that was provided.</span>
+    <span class="k">return</span> <span class="n">value</span></div>
+
 
 
 <span class="c1"># Custom data types</span>
 
 <div class="viewcode-block" id="AxesArray">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesArray">[docs]</a>
-<span class="n">AxesArray</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span></div>
+<span class="n">AxesArray</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">floating</span><span class="p">]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Numpy array of axes values.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AxesDict">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesDict">[docs]</a>
-<span class="n">AxesDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span></div>
+<span class="n">AxesDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Dictionary of axes names and values.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AxesList">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesList">[docs]</a>
-<span class="n">AxesList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
+<span class="n">AxesList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></div>
 
 <span class="sd">&quot;&quot;&quot;List of axes values.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AxesTuple">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesTuple">[docs]</a>
-<span class="n">AxesTuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
+<span class="n">AxesTuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Tuple of axes values.&quot;&quot;&quot;</span>
 
@@ -546,10 +597,17 @@
 
 
 
+<div class="viewcode-block" id="CoreError">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.CoreError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CoreError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :class:`hklpy2.ops.Core`.&quot;&quot;&quot;</span></div>
+
+
+
 <div class="viewcode-block" id="DiffractometerError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.DiffractometerError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiffractometerError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :class:`~DiffractometerBase`.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`.&quot;&quot;&quot;</span></div>
 
 
 
@@ -560,17 +618,10 @@
 
 
 
-<div class="viewcode-block" id="CoreError">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.CoreError">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">CoreError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :class:`~Core`.&quot;&quot;&quot;</span></div>
-
-
-
 <div class="viewcode-block" id="NoForwardSolutions">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.NoForwardSolutions">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoForwardSolutions</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A solver did not find any &#39;forward()&#39; solutions.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A solver did not find any ``forward()`` solutions.&quot;&quot;&quot;</span></div>
 
 
 
@@ -862,7 +913,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ConfigurationRunWrapper.device_names">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.ConfigurationRunWrapper.device_names">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">device_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">device_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of configured device names.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">dev</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">dev</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="p">]</span></div>
 
@@ -978,11 +1029,18 @@
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
             <span class="n">axes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># TODO: #57 generic test is Iterable? AxesArray</span>
+    <span class="k">elif</span> <span class="n">istype</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">AxesArray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="c1"># Accept numpy arrays (ndarray) of numeric values as an AxesArray.</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+            <span class="n">axes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected type: </span><span class="si">{</span><span class="nb">input</span><span class="si">!r}</span><span class="s2">.  Expected &#39;AnyAxesType&#39;.&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">axes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="c1"># Accept Python ints/floats and numpy numeric scalar types (e.g. np.int64,</span>
+        <span class="c1"># np.float64) by checking against numbers.Real.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected a number. Received: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">axes</span></div>
@@ -1032,7 +1090,7 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.convert_units">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">convert_units</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">old_units</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_units</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert &#39;value&#39; from old units to new.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">pint</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">old_units</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">new_units</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span></div>
+    <span class="k">return</span> <span class="n">UREG</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">old_units</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">new_units</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span></div>
 
 
 

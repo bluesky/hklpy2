@@ -35,6 +35,7 @@ hklpy2.misc
        ~solver_factory
        ~solvers
        ~unique_name
+       ~validate_and_canonical_unit
 
    .. rubric: Symbols
    .. autosummary::
@@ -59,11 +60,11 @@ hklpy2.misc
    .. rubric: Custom Exceptions
    .. autosummary::
 
+       ~Hklpy2Error
        ~ConfigurationError
        ~ConstraintsError
        ~CoreError
        ~DiffractometerError
-       ~Hklpy2Error
        ~LatticeError
        ~NoForwardSolutions
        ~ReflectionError
@@ -80,7 +81,13 @@ Attributes
    hklpy2.misc.logger
    hklpy2.misc.IDENTITY_MATRIX_3X3
    hklpy2.misc.SOLVER_ENTRYPOINT_GROUP
+   hklpy2.misc.DEFAULT_DIGITS
    hklpy2.misc.DEFAULT_START_KEY
+   hklpy2.misc.INTERNAL_ANGLE_UNITS
+   hklpy2.misc.INTERNAL_LENGTH_UNITS
+   hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS
+   hklpy2.misc.UREG
+   hklpy2.misc.PINT_ERRORS
    hklpy2.misc.AxesArray
    hklpy2.misc.AxesDict
    hklpy2.misc.AxesList
@@ -96,9 +103,9 @@ Exceptions
    hklpy2.misc.Hklpy2Error
    hklpy2.misc.ConfigurationError
    hklpy2.misc.ConstraintsError
+   hklpy2.misc.CoreError
    hklpy2.misc.DiffractometerError
    hklpy2.misc.LatticeError
-   hklpy2.misc.CoreError
    hklpy2.misc.NoForwardSolutions
    hklpy2.misc.ReflectionError
    hklpy2.misc.SampleError
@@ -119,6 +126,7 @@ Functions
 
 .. autoapisummary::
 
+   hklpy2.misc.validate_and_canonical_unit
    hklpy2.misc.axes_to_dict
    hklpy2.misc.check_value_in_list
    hklpy2.misc.compare_float_dicts
@@ -158,8 +166,38 @@ Module Contents
 
    Name by which |hklpy2| backend |solver| classes are grouped.
 
+.. py:data:: DEFAULT_DIGITS
+   :value: 4
+
+
 .. py:data:: DEFAULT_START_KEY
    :value: 'diffractometers'
+
+
+.. py:data:: INTERNAL_ANGLE_UNITS
+   :value: 'degrees'
+
+
+.. py:data:: INTERNAL_LENGTH_UNITS
+   :value: 'angstrom'
+
+
+.. py:data:: INTERNAL_XRAY_ENERGY_UNITS
+   :value: 'keV'
+
+
+.. py:data:: UREG
+
+.. py:data:: PINT_ERRORS
+
+   Exception from pint that we are trapping here.
+
+.. py:function:: validate_and_canonical_unit(value: str, target_units: str) -> str
+
+   Validate that *value* is a unit convertible to *target_units*.
+
+   Returns a canonical string representation of the unit (via UREG).
+   Raises ValueError on failure.
 
 
 .. py:data:: AxesArray
@@ -216,12 +254,20 @@ Module Contents
    Custom exceptions from :mod:`hklpy2.blocks.constraints`.
 
 
+.. py:exception:: CoreError
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   Custom exceptions from :class:`hklpy2.ops.Core`.
+
+
 .. py:exception:: DiffractometerError
 
    Bases: :py:obj:`Hklpy2Error`
 
 
-   Custom exceptions from :class:`~DiffractometerBase`.
+   Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`.
 
 
 .. py:exception:: LatticeError
@@ -232,20 +278,12 @@ Module Contents
    Custom exceptions from :mod:`hklpy2.blocks.lattice`.
 
 
-.. py:exception:: CoreError
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :class:`~Core`.
-
-
 .. py:exception:: NoForwardSolutions
 
    Bases: :py:obj:`Hklpy2Error`
 
 
-   A solver did not find any 'forward()' solutions.
+   A solver did not find any ``forward()`` solutions.
 
 
 .. py:exception:: ReflectionError
@@ -431,7 +469,7 @@ Module Contents
 
 
    .. py:property:: device_names
-      :type: [str]
+      :type: list[str]
 
 
       Return list of configured device names.

@@ -13,7 +13,6 @@ hklpy2.blocks.reflection
    .. autosummary::
 
        ~Reflection
-       ~ReflectionError
        ~ReflectionsDict
        ~UNUSED_REFLECTION
 
@@ -25,6 +24,7 @@ Attributes
 .. autoapisummary::
 
    hklpy2.blocks.reflection.logger
+   hklpy2.blocks.reflection.DEFAULT_REFLECTION_DIGITS
    hklpy2.blocks.reflection.UNUSED_REFLECTION
 
 
@@ -42,15 +42,21 @@ Module Contents
 
 .. py:data:: logger
 
+.. py:data:: DEFAULT_REFLECTION_DIGITS
+   :value: 4
+
+
 .. py:data:: UNUSED_REFLECTION
    :value: 'unused'
 
 
    Identifies an unused reflection in the ReflectionsDict.
 
-.. py:class:: Reflection(name: str, pseudos: dict, reals: dict, wavelength: float, geometry: str, pseudo_axis_names: list, real_axis_names: list, digits: int = 4, core: object = None)
+.. py:class:: Reflection(name: str, pseudos: dict, reals: dict, wavelength: float, geometry: str, pseudo_axis_names: list, real_axis_names: list, *, core: Optional[object] = None, digits: Optional[int] = None, reals_units: Optional[str] = None, wavelength_units: str = None)
 
    Coordinates real and pseudo axes.
+
+   Two reflections can be added, subtracted, or compared for equality.
 
    .. note:: Internal use only.
 
@@ -66,13 +72,16 @@ Module Contents
    * ``geometry`` (str): Geometry name for this reflection.
    * ``pseudo_names`` ([str]): Ordered list of pseudo names for this geometry.
    * ``rnames`` ([str]): Ordered list of real names for this geometry.
+   * ``wavelength_units`` (str): Engineering units of wavelength.
 
    Optional items (such as 'azimuth', 'h1', 'h2', zones, ...) are not
    part of a "reflection".
 
    .. autosummary::
 
+       ~__add__
        ~__eq__
+       ~__sub__
        ~_asdict
        ~_fromdict
        ~_validate_pseudos
@@ -116,9 +125,54 @@ Module Contents
       Dictionary keys are the axis names, as defined by the diffractometer.
 
 
+   .. py:property:: reals_units
+      :type: str
+
+
+      Engineering units of this reflection's real-space axes.
+
+
    .. py:property:: wavelength
 
       Wavelength of reflection.
+
+
+   .. py:property:: wavelength_units
+      :type: str
+
+
+      Engineering units of this reflection's wavelength.
+
+
+   .. py:method:: __add__(other)
+
+      Add a Reflection object to this one and return as a new Reflection.
+
+      Combines the pseudos and reals of self and other.
+
+
+
+   .. py:method:: __eq__(r2)
+
+      Compare this reflection with another for equality.
+
+      Precision is controlled by rounding to smallest number of digits
+      between the reflections.
+
+
+
+   .. py:method:: __repr__()
+
+      Standard brief representation of reflection.
+
+
+
+   .. py:method:: __sub__(other)
+
+      Subtract another Reflection from this one and return as a new Reflection.
+
+      Subtracts the pseudos and reals of other from self.
+
 
 
    .. py:method:: _asdict()
@@ -130,21 +184,6 @@ Module Contents
    .. py:method:: _fromdict(config)
 
       Redefine this reflection from a (configuration) dictionary.
-
-
-
-   .. py:method:: __repr__()
-
-      Standard brief representation of reflection.
-
-
-
-   .. py:method:: __eq__(r2)
-
-      Compare this reflection with another for equality.
-
-      Precision is controlled by rounding to smallest number of digits
-      between the reflections.
 
 
 

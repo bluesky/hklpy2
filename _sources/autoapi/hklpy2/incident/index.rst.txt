@@ -55,11 +55,9 @@ Attributes
 .. autoapisummary::
 
    hklpy2.incident.logger
-   hklpy2.incident.DEFAULT_ENERGY_UNITS
    hklpy2.incident.DEFAULT_SOURCE_TYPE
    hklpy2.incident.DEFAULT_WAVELENGTH
    hklpy2.incident.DEFAULT_WAVELENGTH_DEADBAND
-   hklpy2.incident.DEFAULT_WAVELENGTH_UNITS
    hklpy2.incident.XRAY_ENERGY_EQUIVALENT_
    hklpy2.incident.A_KEV
 
@@ -81,10 +79,6 @@ Module Contents
 
 .. py:data:: logger
 
-.. py:data:: DEFAULT_ENERGY_UNITS
-   :value: 'keV'
-
-
 .. py:data:: DEFAULT_SOURCE_TYPE
    :value: 'Synchrotron X-ray Source'
 
@@ -95,10 +89,6 @@ Module Contents
 
 .. py:data:: DEFAULT_WAVELENGTH_DEADBAND
    :value: 0.0001
-
-
-.. py:data:: DEFAULT_WAVELENGTH_UNITS
-   :value: 'angstrom'
 
 
 .. py:data:: XRAY_ENERGY_EQUIVALENT_
@@ -277,7 +267,7 @@ Module Contents
       Return the energy, computed from wavelength, in the current units.
 
 
-.. py:class:: EpicsWavelengthRO(prefix: str = '', *, pv_wavelength: str = '', wavelength_units: str = DEFAULT_WAVELENGTH_UNITS, **kwargs)
+.. py:class:: EpicsWavelengthRO(prefix: str = '', *, pv_wavelength: str = '', wavelength_units: str = INTERNAL_LENGTH_UNITS, **kwargs)
 
    Bases: :py:obj:`_WavelengthBase`
 
@@ -306,7 +296,7 @@ Module Contents
 
 
 
-.. py:class:: EpicsMonochromatorRO(prefix: str = '', *, pv_energy: str = '', energy_units: str = DEFAULT_ENERGY_UNITS, **kwargs)
+.. py:class:: EpicsMonochromatorRO(prefix: str = '', *, pv_energy: str = '', energy_units: str = INTERNAL_XRAY_ENERGY_UNITS, **kwargs)
 
    Bases: :py:obj:`EpicsWavelengthRO`
 

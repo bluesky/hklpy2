@@ -20,6 +20,7 @@ hklpy2.user
        ~remove_reflection
        ~pa
        ~remove_sample
+       ~scan_extra
        ~set_diffractometer
        ~set_lattice
        ~set_wavelength
@@ -66,6 +67,7 @@ Functions
    hklpy2.user.pa
    hklpy2.user.remove_reflection
    hklpy2.user.remove_sample
+   hklpy2.user.scan_extra
    hklpy2.user.set_diffractometer
    hklpy2.user.set_wavelength
    hklpy2.user.set_lattice
@@ -369,6 +371,67 @@ Module Contents
        Provide ``error=False`` to avoid raising an exception.
 
    .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.list_samples`
+
+
+.. py:function:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None)
+
+   Scan diffractometer parameter(s) at constant pseudos or reals.
+
+   Uses selected diffractometer.
+
+   Example
+
+   .. code-block:: python
+       :linenos:
+
+       >>> import hklpy2
+       >>> from hklpy2.user import *
+       >>> e6c = hklpy2.creator(name="e6c", geometry="e6c")
+       >>> set_diffractometer(e6c)
+       >>> e6c.core.mode = "psi_constant_vertical"
+       >>> RE(
+           scan_extra(
+               [noisy_det, e6c],
+               "psi", 0, 150,
+               num=15,
+               pseudos=dict(h=0, k=0, l=2),
+               extras=dict(h2=1, k2=2, l2=0)
+           )
+       )
+
+   Parameters
+
+   detectors: Iterable[Readable]
+       List of readable objects.
+   args: Any
+       Specification of scan axes.  The specification is a repeating
+       pattern of axis (str), start (float), stop (float).
+
+       In general:
+
+       .. code-block:: python
+
+           axis1, start1, stop1,
+           axis2, start2, stop2,
+           ...,
+           axisN, startN, stopN
+
+       Axis is any extra axis name supported by the current diffractometer
+       geometry and mode.
+   num: int
+       Number of points.
+   pseudos: dict
+       Dictionary of pseudo axes positions to be held constant during the scan.
+   reals: dict
+       Dictionary of real axes positions to be held constant during the scan.
+   extras: dict
+       Dictionary of extra axes positions to be held constant during the scan.
+   fail_on_exception: bool
+       When True (deafult: False), scan will raise any exceptions.
+       When False, all exceptions during the scan will be printed to console.
+   md: dict
+       Dictionary of user-supplied metadata.
+
 
 
 .. py:function:: set_diffractometer(diffractometer: hklpy2.diffract.DiffractometerBase = None) -> None
