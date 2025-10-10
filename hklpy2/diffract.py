@@ -559,7 +559,7 @@ class DiffractometerBase(PseudoPositioner):
                 start=start,
                 finish=finish,
                 signal=Signal(
-                    value=start, kind="hinted", name=axis
+                    value=start, kind="hinted", name=f"{self.name}_extras_{axis}"
                 ),  # TODO: value=?start
             )
             extras[axis] = start
@@ -616,7 +616,7 @@ class DiffractometerBase(PseudoPositioner):
 
                 # update with new position(s), will report later
                 for axis, value in zip(movers.keys(), positions):
-                    extras[axis] = value
+                    extras[axis] = float(value)
                     yield from bps.mv(movers[axis]["signal"], value)
 
                 try:
