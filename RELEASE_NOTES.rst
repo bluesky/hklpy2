@@ -36,7 +36,7 @@ describe future plans.
 Released 2025-10-10.
 
 New Features
------------
+------------
 
 * Compute lattice B matrix.
 * '@crw_decorator()':  Decorator for the ConfigurationRunWrapper
