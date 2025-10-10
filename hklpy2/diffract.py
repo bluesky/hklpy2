@@ -21,12 +21,14 @@ import numpy as np
 import yaml
 from bluesky.protocols import Movable
 from bluesky.protocols import Readable
+from cytoolz import partition
 from ophyd import Component as Cpt
 from ophyd import EpicsMotor
 from ophyd import Kind
 from ophyd import PositionerBase
 from ophyd import PseudoPositioner
 from ophyd import PseudoSingle
+from ophyd import Signal
 from ophyd import SoftPositioner
 from ophyd.device import required_for_connection
 from ophyd.pseudopos import pseudo_position_argument
@@ -477,16 +479,10 @@ class DiffractometerBase(PseudoPositioner):
         self,
         detectors: Iterable[Readable],
         *args: Union[Movable, Any],  # axis, start, finish, [...]
-        # axis: Optional[str] = None,  # name of extra parameter to be scanned
-        # start: Optional[float] = None,
-        # finish: Optional[float] = None,
-        # *,
         num: Optional[int] = 2,
         pseudos: Optional[dict] = None,  # h, k, l
         reals: Optional[dict] = None,  # angles
-        extras: Optional[
-            dict
-        ] = {},  # define all but the 'axis', these will remain constant
+        extras: Optional[dict] = {},
         fail_on_exception: Optional[bool] = False,
         md: Optional[dict] = None,
     ):
@@ -506,7 +502,8 @@ class DiffractometerBase(PseudoPositioner):
         detectors: Iterable[Readable]
             List of readable objects.
         *args:
-            Specification of scan axes.
+            Specification of scan axes.  The specification is a repeating
+            pattern of axis (str), start (float), stop (float).
 
             In general:
 
@@ -538,20 +535,34 @@ class DiffractometerBase(PseudoPositioner):
         from bluesky import plan_stubs as bps
         from bluesky import preprocessors as bpp
 
-        from .misc import dict_device_factory
+        def position_series(start, finish, num):
+            yield from numpy.linspace(start, finish, num=num)
 
         self.core.update_solver()
 
         # validate
         if len(args) == 0 or len(args) % 3:
             raise ValueError(f"Must specify scan axes in groups of 3, received {args}.")
-        axis, start, finish = args  # TODO 107
-        if axis not in self.core.solver_extra_axis_names:
-            raise KeyError(f"{axis!r} not in {self.core.solver_extra_axis_names}")
-        if pseudos is None and reals is None:
-            raise ValueError("Must define either pseudos or reals.")
-        if pseudos is not None and reals is not None:
-            raise ValueError("Cannot define both pseudos and reals.")
+
+        movers = {}
+        for axis, start, finish in partition(3, args):
+            if axis not in self.core.solver_extra_axis_names:
+                raise KeyError(f"{axis!r} not in {self.core.solver_extra_axis_names}")
+            if axis in movers:
+                raise KeyError(f"Extra axis may only be used once, received {args}.")
+            if pseudos is None and reals is None:
+                raise ValueError("Must define either pseudos or reals.")
+            if pseudos is not None and reals is not None:
+                raise ValueError("Cannot define both pseudos and reals.")
+            movers[axis] = dict(
+                series=position_series(start, finish, num),
+                start=start,
+                finish=finish,
+                signal=Signal(
+                    value=start, kind="hinted", name=axis
+                ),  # TODO: value=?start
+            )
+            extras[axis] = start
 
         _md = {
             "diffractometer": {
@@ -561,9 +572,11 @@ class DiffractometerBase(PseudoPositioner):
                 "mode": self.core.mode,
                 "extra_axes": self.core.solver_extra_axis_names,
             },
-            "axis": axis,
-            "start": start,
-            "finish": finish,
+            "axes": {
+                axis: dict(start=start, finish=finish)
+                #
+                for axis, start, finish in partition(3, args)
+            },
             "num": num,
             "pseudos": pseudos,
             "reals": reals,
@@ -571,25 +584,14 @@ class DiffractometerBase(PseudoPositioner):
             "transformation": "forward" if reals is None else "inverse",
         }.update(md or {})
 
-        extras[axis] = start
-        extras_class = dict_device_factory(extras)
-        extras_device = extras_class("", name=f"{self.name}_extras", kind="hinted")
-
         all_controls = detectors
-        all_controls.append(extras_device)
+        all_controls.extend([movers[axis]["signal"] for axis in movers])  # TODO 107
         all_controls = list(set(all_controls))
-
-        signal = getattr(extras_device, axis)  # Pick the 'axis' Component.
-        signal.kind = "hinted"
-
-        def position_series(start, finish, num):
-            for value in numpy.linspace(start, finish, num=num):
-                yield value
 
         @bpp.stage_decorator(detectors)
         @bpp.run_decorator(md=_md)
         def _inner():
-            for value in position_series(start, finish, num):
+            for positions in zip(*(m["series"] for m in movers.values())):
 
                 def move_axes(pseudos, reals, extras):
                     """Move extras, then reals or pseudos, move to the solution."""
@@ -612,9 +614,11 @@ class DiffractometerBase(PseudoPositioner):
                         yield from bps.read(item)
                     yield from bps.save()
 
-                # note the new axis position, will report later
-                extras.update({axis: value})
-                yield from bps.mv(signal, value)
+                # update with new position(s), will report later
+                for axis, value in zip(movers.keys(), positions):
+                    extras[axis] = value
+                    yield from bps.mv(movers[axis]["signal"], value)
+
                 try:
                     yield from move_axes(pseudos, reals, extras)
                     yield from acquire(all_controls)

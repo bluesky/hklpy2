@@ -717,6 +717,28 @@ def test_repeated_reflections(
             pytest.raises(ValueError),
             "Cannot define both pseudos and reals.",
         ],
+        [
+            [[noisy_det], "psi", 0, 1, "psi", 1, 2],
+            dict(
+                pseudos=dict(h=2, k=-1, l=0),
+            ),
+            "psi_constant",
+            pytest.raises(KeyError),
+            "Extra axis may only be used once,",
+        ],
+        [
+            [[noisy_det], "h2", 1.9, 2.1, "k2", 1.9, 2.1],
+            dict(
+                num=3,
+                pseudos=None,
+                reals=dict(omega=1, chi=2, phi=3, tth=4),
+                extras=dict(h2=2, k2=2, l2=0, psi=5),
+                fail_on_exception=True,
+            ),
+            "psi_constant",
+            does_not_raise(),
+            None,
+        ],
     ],
 )
 def test_scan_extra(scan_args, scan_kwargs, mode, context, expected):
