@@ -126,11 +126,14 @@ class Lattice:
             Tolerance, used for validation tests.
         """
         self.a = a
-        self.b = b or a
-        self.c = c or a
+        # treat 0.0 as an explicit value; only use 'a' when b/c is None
+        self.b = a if b is None else b
+        self.c = a if c is None else c
+
         self.alpha = alpha
-        self.beta = beta or alpha
-        self.gamma = gamma or alpha
+        # treat 0.0 as explicit; only use alpha when beta/gamma is None
+        self.beta = alpha if beta is None else beta
+        self.gamma = alpha if gamma is None else gamma
 
         self.length_units = length_units or INTERNAL_LENGTH_UNITS
         # Validate canonical angle units via the setter (will raise for unknown units)
