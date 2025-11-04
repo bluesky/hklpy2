@@ -117,12 +117,13 @@ def to_numpy(mat):
     if isinstance(mat, np.ndarray):
         return mat
 
-    ret = np.zeros((3, 3))
-    for i in range(3):
-        for j in range(3):
-            ret[i, j] = mat.get(i, j)
+    ret = [
+        [mat.get(i, j) for j in range(3)]
+        # .
+        for i in range(3)
+    ]
 
-    return ret
+    return np.array(ret, dtype=float)
 
 
 class HklSolver(SolverBase):
@@ -209,27 +210,20 @@ class HklSolver(SolverBase):
         # Preface libhkl object names with "_hkl".
         # Note: must keep the '_hkl_engine_list' object as class attribute or
         # random core dumps, usually when accessing 'engine.name_get()'.
-        self._hkl_detector = libhkl.Detector.factory_new(
-            libhkl.DetectorType(LIBHKL_DETECTOR_TYPE)
-        )
+        self._hkl_detector = libhkl.Detector.factory_new(libhkl.DetectorType(LIBHKL_DETECTOR_TYPE))
         self._hkl_factory = libhkl.factories()[geometry]
         self._hkl_engine_list = self._hkl_factory.create_new_engine_list()  # note!
         self._hkl_engine = self._hkl_engine_list.engine_get_by_name(engine)
         self._hkl_geometry = self._hkl_factory.create_new_geometry()
 
     def __repr__(self) -> str:
-        args = [
-            f"{s}={getattr(self, s)!r}"
-            for s in "name version geometry engine_name mode".split()
-        ]
+        args = [f"{s}={getattr(self, s)!r}" for s in "name version geometry engine_name mode".split()]
         return f"{self.__class__.__name__}({', '.join(args)})"
 
     def addReflection(self, reflection: Reflection) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
         if not istype(reflection, Reflection):
-            raise TypeError(
-                f"Must supply {Reflection!r} object, received {reflection!r}"
-            )
+            raise TypeError(f"Must supply {Reflection!r} object, received {reflection!r}")
 
         logger.debug("reflection: %r", reflection)
         pseudos = list(reflection["pseudos"].values())
@@ -328,8 +322,7 @@ class HklSolver(SolverBase):
         for k in values.keys():
             if k not in known_names:
                 raise KeyError(
-                    f"Unexpected dictionary key received: {k!r}"
-                    f" Expected one of these: {known_names!r}"
+                    f"Unexpected dictionary key received: {k!r}" f" Expected one of these: {known_names!r}"
                 )
         logger.debug("extras.setter(): values=%s", values)
         for k, v in values.items():
@@ -344,24 +337,29 @@ class HklSolver(SolverBase):
         logger.debug("(%r) forward(%r)", __name__, pseudos)
 
         try:
-            raw_solutions = self.engine.pseudo_axis_values_set(
-                list(pseudos.values()),
-                LIBHKL_USER_UNITS,
+            # Hkl.GeometryList is not a dict.
+            # Still, it has a .items() method.
+            raw = list(
+                self.engine.pseudo_axis_values_set(
+                    list(pseudos.values()),
+                    LIBHKL_USER_UNITS,
+                ).items()
             )
+
+            solutions = []
+            for glist_item in raw:
+                geo = glist_item.geometry_get()
+                sol = dict(
+                    zip(
+                        geo.axis_names_get(),
+                        roundoff_list(geo.axis_values_get(LIBHKL_USER_UNITS)),
+                    )
+                )
+                solutions.append(sol)
+            return solutions
+
         except GLib.GError as exc:
             raise NoForwardSolutions("No forward solutions found.") from exc
-
-        solutions = []
-        for glist_item in raw_solutions.items():
-            geo = glist_item.geometry_get()
-            sol = dict(
-                zip(
-                    geo.axis_names_get(),
-                    roundoff_list(geo.axis_values_get(LIBHKL_USER_UNITS)),
-                )
-            )
-            solutions.append(sol)
-        return solutions
 
     @classmethod
     def geometries(cls) -> list[str]:
@@ -393,8 +391,7 @@ class HklSolver(SolverBase):
         logger.debug("{__name__=} inverse(reals=%r)", reals)
         if list(reals) != self.real_axis_names:
             raise ValueError(
-                f"Wrong dictionary keys received: {list(reals)!r}"
-                f" Expected: {self.real_axis_names!r}"
+                f"Wrong dictionary keys received: {list(reals)!r}" f" Expected: {self.real_axis_names!r}"
             )
         if False in [isinstance(v, (float, int)) for v in reals.values()]:
             # fmt: off

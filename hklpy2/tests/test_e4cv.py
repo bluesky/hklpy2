@@ -34,8 +34,8 @@ sim4c = creator(name="sim4c")
 )
 def test_pseudos_move(start, h, k, l, digits, context, expected):  # noqa: E741
     with context as reason:
-        e4cv = creator(name="e4cv")
         assert len(start) == 3
+        e4cv = creator(name="e4cv")
         e4cv.move(start)
         ppos = e4cv.position._asdict()
         assert isinstance(ppos, dict)
