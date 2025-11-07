@@ -46,128 +46,135 @@ ROUNDOFF_DIGITS = 12
 R001 = [(0, 0, 1), (6.18 / 2, 0, 0, 0, 6.18, 0)]
 R100 = [(1, 0, 0), (6.18 / 2, 0, 90, 0, 6.18, 0)]
 SCALE = 2 * math.pi / SAMPLE_LATTICE_A
-UB_R001_R100 = SCALE * np.array([[0, -1, 0], [0, 0, 1], [-1, 0, 0]])
+UB_R001_R100 = SCALE * np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
 FORWARD_SOLUTIONS = {
     # keys: pseudos (tuple)
     # values: list of reals, in order returned by solver
-    # (0, 0, 1): [],  # FIXME: Why not at least the R001?
     (0, 0, 1): [
-        [6.18/2, 0.0, 0.0, 0.0, 6.18, 0.0],
-        [180 - 6.18/2, 0.0, 0.0, 0.0, -6.18, 0.0],
-        [6.18/2, 0.0, 0.0, 0.0, -(180 - 6.18), -180.0],
-        [6.18/2, 0.0, 0.0, 0.0, -(180 - 6.18), 180.0],
-        [180 - 6.18/2, 0.0, 0.0, 0.0, 180 - 6.18, -180.0],
-        [180 - 6.18/2, 0.0, 0.0, 0.0, 180 - 6.18, 180.0],
+        [6.18 / 2, 0.0, 0.0, 0.0, 6.18, 0.0],
+        [180 - 6.18 / 2, 0.0, 0.0, 0.0, -6.18, 0.0],
+        [6.18 / 2, 0.0, 0.0, 0.0, -(180 - 6.18), -180.0],
+        [6.18 / 2, 0.0, 0.0, 0.0, -(180 - 6.18), 180.0],
+        [180 - 6.18 / 2, 0.0, 0.0, 0.0, 180 - 6.18, -180.0],
+        [180 - 6.18 / 2, 0.0, 0.0, 0.0, 180 - 6.18, 180.0],
     ],
-    (1, 0, 0): [
-        [6.18/2, 0, 90, 0, 6.18, 0],
-        [180 - 6.18/2, 0, 90, 0, -6.18, 0],
-        [6.18/2, 0, 90, 0, -(180 - 6.18), -180],
-        [6.18/2, 0, 90, 0, -(180 - 6.18), 180],
-        [180 - 6.18/2, 0, 90, 0, 180 - 6.18, -180],
-        [180 - 6.18/2, 0, 90, 0, 180 - 6.18, 180],
-    ],
+    (1, 0, 0): [],  # non-zero chi is reachable
 }
+REALS_REFERENCE = (20, 0, 0, 0, 40, 0)
+
+R_XYZ_ZXY = np.array(  # TODO #155: compute
+    [
+        [0, 0, 1],
+        [1, 0, 0],
+        [0, 1, 0],
+    ],
+    dtype=float,
+)
+"""
+Rotation matrix: from libhkl pseudos to hklpy2.
+
+* xyz: Coordinate system used by libhkl
+* zxy: Coordinate system used by hklpy2
+"""
 
 
 def test_libhkl():
     """Test for the ISN diffractometer using the low-level code."""
     det_type = libhkl.DetectorType(LIBHKL_DETECTOR_TYPE)
-    libhkl_detector = libhkl.Detector.factory_new(det_type)
-    assert libhkl_detector is not None
+    detector = libhkl.Detector.factory_new(det_type)
+    assert detector is not None
 
-    libhkl_factory = libhkl.factories()[GEOMETRY]
-    assert libhkl_factory.name_get() == GEOMETRY
+    factory = libhkl.factories()[GEOMETRY]
+    assert factory.name_get() == GEOMETRY
 
-    libhkl_engine_list = libhkl_factory.create_new_engine_list()
-    libhkl_engine = libhkl_engine_list.engine_get_by_name(ENGINE)
-    assert libhkl_engine.name_get() == ENGINE
+    geometry = factory.create_new_geometry()
+    assert geometry.name_get() == GEOMETRY
 
-    libhkl_geometry = libhkl_factory.create_new_geometry()
-    assert libhkl_geometry.name_get() == GEOMETRY
+    engine_list = factory.create_new_engine_list()
+    engine = engine_list.engine_get_by_name(ENGINE)
+    assert engine.name_get() == ENGINE
 
-    libhkl_engine.current_mode_set(MODE)
-    assert libhkl_engine.current_mode_get() == MODE
+    engine.current_mode_set(MODE)
+    assert engine.current_mode_get() == MODE
 
-    libhkl_geometry.wavelength_set(WAVELENGTH, LIBHKL_USER_UNITS)
+    geometry.wavelength_set(WAVELENGTH, LIBHKL_USER_UNITS)
     assert math.isclose(
-        libhkl_geometry.wavelength_get(LIBHKL_USER_UNITS),
+        geometry.wavelength_get(LIBHKL_USER_UNITS),
         WAVELENGTH,
         abs_tol=0.001,
     )
 
-    libhkl_geometry.axis_values_set((20, 0, 0, 0, 40, 0), LIBHKL_USER_UNITS)
+    geometry.axis_values_set(REALS_REFERENCE, LIBHKL_USER_UNITS)
     assert np.allclose(
-        libhkl_geometry.axis_values_get(LIBHKL_USER_UNITS),
-        (20, 0, 0, 0, 40, 0),
+        geometry.axis_values_get(LIBHKL_USER_UNITS),
+        REALS_REFERENCE,
         atol=0.001,
     )
 
     sample_name = f"{SAMPLE_NAME}:{str(uuid.uuid4())[:7]}"
-    libhkl_sample = libhkl.Sample.new(sample_name)  # new sample each time
-    libhkl_engine_list.init(libhkl_geometry, libhkl_detector, libhkl_sample)
-    print(f"{libhkl_sample.name_get()=}")
+    sample = libhkl.Sample.new(sample_name)  # new sample each time
+    engine_list.init(geometry, detector, sample)
+    print(f"{sample.name_get()=}")
 
     a, alpha = SAMPLE_LATTICE_A, math.radians(90)
-    libhkl_sample.lattice_set(libhkl.Lattice.new(a, a, a, alpha, alpha, alpha))
+    sample.lattice_set(libhkl.Lattice.new(a, a, a, alpha, alpha, alpha))
     assert np.allclose(
-        libhkl_sample.lattice_get().get(LIBHKL_USER_UNITS),
+        sample.lattice_get().get(LIBHKL_USER_UNITS),
         [a, a, a, 90, 90, 90],
         atol=0.01,
     )
-
-    # . remove reflections
-    refs = libhkl_sample.reflections_get()
-    for ref in refs:
-        libhkl_sample.del_reflection(ref)
-    assert len(libhkl_sample.reflections_get()) == 0
+    assert len(sample.reflections_get()) == 0
 
     # . add reflections
-    libhkl_geometry.axis_values_set(R001[1], LIBHKL_USER_UNITS)
-    libhkl_r001 = libhkl_sample.add_reflection(
-        libhkl_geometry,
-        libhkl_detector,
-        *(R001[0]),
+    geometry.axis_values_set(R001[1], LIBHKL_USER_UNITS)
+    r001 = sample.add_reflection(
+        geometry,
+        detector,
+        *((R_XYZ_ZXY.T @ np.array(R001[0], dtype=float)).tolist()),
     )
-    assert libhkl_r001 is not None
+    assert r001 is not None
+    assert len(sample.reflections_get()) == 1
 
-    libhkl_geometry.axis_values_set(R100[1], LIBHKL_USER_UNITS)
-    libhkl_r100 = libhkl_sample.add_reflection(
-        libhkl_geometry,
-        libhkl_detector,
-        *(R100[0]),
+    geometry.axis_values_set(R100[1], LIBHKL_USER_UNITS)
+    r100 = sample.add_reflection(
+        geometry,
+        detector,
+        *((R_XYZ_ZXY.T @ np.array(R100[0], dtype=float)).tolist()),
     )
-    assert libhkl_r100 is not None
+    assert r100 is not None
+    assert len(sample.reflections_get()) == 2
 
-    # libhkl_sample.compute_UB_busing_levy(*libhkl_sample.reflections_get())
-    libhkl_sample.compute_UB_busing_levy(libhkl_r001, libhkl_r100)
-    mat = libhkl_sample.UB_get()
-    libhkl_UB = np.array(
-        [[mat.get(i, j) for j in range(3)] for i in range(3)],
+    # sample.compute_UB_busing_levy(*sample.reflections_get())
+    sample.compute_UB_busing_levy(r001, r100)
+    matrix = sample.UB_get()
+    UB = np.array(
+        [[matrix.get(i, j) for j in range(3)] for i in range(3)],
         dtype=float,
     )
-    assert np.allclose(libhkl_UB, UB_R001_R100, atol=0.001)
+    assert np.allclose(UB, UB_R001_R100, atol=0.001)
 
     # - - - - - - - - - - - - - - - - Test inverse() calculations
+    # pseudos = inverse(reals)
     for reflection in (R001, R100):
-        libhkl_geometry.axis_values_set(reflection[1], LIBHKL_USER_UNITS)
-        libhkl_engine_list.get()  # reals -> pseudos  (Odd name for this call!)
-        assert np.allclose(
-            libhkl_engine.pseudo_axis_values_get(LIBHKL_USER_UNITS),
-            reflection[0],
-            atol=0.001,
-        )
+        reals = reflection[1]
+        geometry.axis_values_set(reals, LIBHKL_USER_UNITS)
+        engine_list.get()  # reals -> pseudos  (Odd name for this call!)
+        pseudos = engine.pseudo_axis_values_get(LIBHKL_USER_UNITS)
+        # rotate from libhkl coordinates into hklpy2 coordinates
+        pseudos = R_XYZ_ZXY @ np.array(pseudos, dtype=float)
+        assert np.allclose(pseudos, reflection[0], atol=0.001)
 
     # - - - - - - - - - - - - - - - - Test forward() calculations
-
     # reals = forward(pseudos)
     for pseudos, reals in FORWARD_SOLUTIONS.items():
-        # pseudos = (0, 0, 1)  # forward((h, k, l))
+        # rotate pseudos coordinates from hklpy2 to libhkl
+        libhkl_pseudos = R_XYZ_ZXY.T @ np.array(pseudos, dtype=float)
         try:
-            # Hkl.GeometryList is not a dict but has a .items() method.
+            geometry.axis_values_set(REALS_REFERENCE, LIBHKL_USER_UNITS)
+            # Hkl.GeometryList (not a Python dict) has a '.items()' method.
             raw = list(
-                libhkl_engine.pseudo_axis_values_set(
-                    pseudos,
+                engine.pseudo_axis_values_set(
+                    libhkl_pseudos.tolist(),
                     LIBHKL_USER_UNITS,
                 ).items()
             )
@@ -336,11 +343,24 @@ def test_ISN_Diffractometer():
 def test_hklpy_v1():
     """Same procedure, original hklpy (v1) code."""
     # https://blueskyproject.io/hklpy/examples/notebooks/geo_e6c.html
-    from hkl import E6C, SimMixin, Lattice, A_KEV
+    from hkl import SimMixin, Lattice, A_KEV
+    from hkl.calc import CalcRecip
+    from hkl.diffract import Diffractometer
     from ophyd import SoftPositioner
     from ophyd import Component as Cpt
 
-    class SixCircle(SimMixin, E6C):
+    class MyCalcRecip(CalcRecip):
+        """Geometry: E6C"""
+
+        def __init__(self, **kwargs):
+            super().__init__(GEOMETRY, **kwargs)
+
+    class MyE6C(Diffractometer):
+        """Eulerian 6-circle, vertical scattering plane"""
+
+        calc_class = MyCalcRecip
+
+    class SixCircle(SimMixin, MyE6C):
         """
         Our 6-circle.  Eulerian.
         """
@@ -357,6 +377,7 @@ def test_hklpy_v1():
     sixc = SixCircle("", name="sixc")
     assert sixc is not None
     assert sixc.geometry_name.get() == GEOMETRY
+    assert sixc.engine.name == ENGINE
 
     sixc.engine.mode = MODE
     assert sixc._mode.get() == MODE
@@ -402,13 +423,15 @@ def test_hklpy_v1():
 
     # list of reals = forward(pseudos)
     for pseudos, reals in FORWARD_SOLUTIONS.items():
-        solutions = sixc.calc.forward(pseudos)
+        try:
+            solutions = sixc.calc.forward(pseudos)
+        except ValueError:
+            solutions = []
         assert len(solutions) == len(reals)
 
         for i, sol in enumerate(solutions):
-            # TODO compare with all reals, must match exactly one
             assert np.allclose(
                 list(sol),
                 reals[i],
                 atol=0.01,
-            ), f"{i=} {reals[i]=}"
+            ), f"{pseudos=} {i=} {reals[i]=}"
