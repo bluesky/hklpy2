@@ -27,7 +27,7 @@ Simplified interface for |hklpy2| diffractometer users.
 
 import uuid
 from collections.abc import Iterable
-from typing import Any
+from typing import Any, Dict, List
 from typing import Optional
 from typing import Union
 
@@ -67,6 +67,8 @@ __all__ = """
 import logging
 
 logger = logging.getLogger(__name__)
+
+Number = Union[int, float]
 
 
 class _SelectedDiffractometer:
@@ -221,8 +223,23 @@ def cahkl_table(*reflections: list[AxesTuple], digits=4):
         value.  Default is 5.
     """
 
-    def brief(input: dict[str, (float | int)]) -> list[(float | int)]:
-        return [round(v, digits) for v in input.values()]
+    def brief(data: Dict[str, Number]) -> List[str]:
+        def fmt(v: Number) -> str:
+            if isinstance(v, int):
+                return str(v)
+            fv = round(float(v), digits)
+            if fv == 0.0:
+                return "0"
+            # remove trailing ".0" for whole numbers
+            s = f"{fv:.{digits}f}"
+            if "." in s:
+                s = s.rstrip("0").rstrip(".")
+            return s
+
+        return [fmt(v) for v in data.values()]
+
+    # def brief(input: dict[str, (float | int)]) -> list[(float | int)]:
+    #     return [round(v, digits) for v in input.values()]
 
     core = get_diffractometer().core
     reals = get_diffractometer().real_axis_names
