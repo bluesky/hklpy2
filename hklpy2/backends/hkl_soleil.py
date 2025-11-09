@@ -26,8 +26,8 @@ Example::
 
 .. autosummary::
 
-    ~COORDINATES_LIBHKL
     ~HklSolver
+    ~LIBHKL_COORDINATES
     ~R_LIBHKL_HKLPY2
 """
 
@@ -46,8 +46,8 @@ import numpy as np
 from pyRestTable import Table
 
 from ..misc import ANTIGRAVITY_DIRECTION
-from ..misc import COORDINATES_HKLPY2
 from ..misc import FORWARD_DIRECTION
+from ..misc import HKLPY2_COORDINATES
 from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import CoordinateSystem
 from ..misc import NoForwardSolutions
@@ -74,14 +74,14 @@ LIBHKL_UNITS = {
 LIBHKL_USER_UNITS = LIBHKL_UNITS["user"]
 ROUNDOFF_DIGITS = 12
 
-COORDINATES_LIBHKL = CoordinateSystem(
+LIBHKL_COORDINATES = CoordinateSystem(
     vx=FORWARD_DIRECTION,
     vy=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
     vz=ANTIGRAVITY_DIRECTION,
 )
 """Coordinate system in hklpy2."""
 
-R_LIBHKL_HKLPY2 = COORDINATES_LIBHKL.frame.T @ COORDINATES_HKLPY2.frame
+R_LIBHKL_HKLPY2 = LIBHKL_COORDINATES.frame.T @ HKLPY2_COORDINATES.frame
 """Rotation matrix from libhkl to hklpy2."""
 
 

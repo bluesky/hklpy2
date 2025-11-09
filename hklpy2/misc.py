@@ -36,12 +36,12 @@ Miscellaneous Support.
 .. autosummary::
 
     ~ANTIGRAVITY_DIRECTION
-    ~COORDINATES_HKLPY2
     ~FORWARD_DIRECTION
     ~GRAVITY_DIRECTION
     ~HAT_X
     ~HAT_Y
     ~HAT_Z
+    ~HKLPY2
     ~IDENTITY_MATRIX_3X3
     ~REFERENCE_FRAME
     ~SOLVER_ENTRYPOINT_GROUP
@@ -155,11 +155,15 @@ class CoordinateSystem:
 
     Examples:
 
-    Rotate vector 'v_ref' to local frame::
+    Rotation matrix from reference frame to this one::
+
+        rotation_matrix = REFERENCE_FRAME.T @ self.frame
+
+    Rotate vector 'v_ref' to 'v_local'::
 
         v_local = rotation_matrix @ np.asarray(v_ref, dtype=float)
 
-    Rotate vector 'v_local' to reference frame::
+    Rotate vector 'v_local' to 'v_ref'::
 
         v_ref = rotation_matrix.T @ np.asarray(v_local, dtype=float)
 
@@ -180,11 +184,12 @@ class CoordinateSystem:
                 raise ValueError("zero or invalid vector")
             return v / n
 
+        # TODO: Verify vx, vy, & vz are othornormal
         self.frame = np.column_stack((norm(vx), norm(vy), norm(vz)))
-        self.rotation_matrix = REFERENCE_FRAME.T @ self.frame
+        # self.rotation_matrix = REFERENCE_FRAME.T @ self.frame
 
 
-COORDINATES_HKLPY2 = CoordinateSystem(
+HKLPY2_COORDINATES = CoordinateSystem(
     vx=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
     vy=ANTIGRAVITY_DIRECTION,
     vz=FORWARD_DIRECTION,
