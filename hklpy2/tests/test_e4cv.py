@@ -56,13 +56,13 @@ def test_pseudos_move(start, h, k, l, digits, context, expected):  # noqa: E741
     "ppos, rpos, context, expected",
     [
         [
-            dict(h=0, k=0, l=0.3473),
+            dict(h=0.3473, k=0, l=0),
             dict(omega=10, chi=0, phi=0, tth=20),
             does_not_raise(),
             None,
         ],
         [
-            dict(h=-0.6260, k=0.3808, l=1.5694),
+            dict(h=1.5694, k=-0.6260, l=0.3808),
             dict(omega=10, chi=20, phi=30, tth=120),
             does_not_raise(),
             None,
@@ -74,6 +74,11 @@ def test_inverse(ppos, rpos, context, expected):
         e4cv = creator(name="e4cv")
         pseudos = e4cv.inverse(rpos)._asdict()
         assert isinstance(pseudos, dict)
+        assert np.allclose(
+            list(pseudos.values()),
+            list(ppos.values()),
+            atol=0.001,
+        )
         for axis, value in ppos.items():
             assert_almost_equal(pseudos[axis], value, decimal=3), f"{axis=}"
         # assert pseudos == ppos

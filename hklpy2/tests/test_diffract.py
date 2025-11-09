@@ -7,6 +7,7 @@ from contextlib import nullcontext as does_not_raise
 
 import bluesky
 import pytest
+import numpy as np
 from numpy.testing import assert_almost_equal
 from ophyd import Component
 from ophyd import EpicsMotor
@@ -492,9 +493,9 @@ def test_orientation():
     fourc = creator()
     fourc.add_sample("silicon", SI_LATTICE_PARAMETER)
     fourc.beam.wavelength.put(1.0)
-    assert math.isclose(
-        fourc.beam.wavelength.get(), 1.0, abs_tol=0.01
-    ), f"{fourc.beam.wavelength.get()=!r}"
+    assert math.isclose(fourc.beam.wavelength.get(), 1.0, abs_tol=0.01), (
+        f"{fourc.beam.wavelength.get()=!r}"
+    )
 
     fourc.add_reflection(
         (4, 0, 0),
@@ -509,9 +510,9 @@ def test_orientation():
         name="(040)",
     )
 
-    assert math.isclose(
-        fourc.beam.wavelength.get(), 1.0, abs_tol=0.01
-    ), f"{fourc.beam.wavelength.get()=!r}"
+    assert math.isclose(fourc.beam.wavelength.get(), 1.0, abs_tol=0.01), (
+        f"{fourc.beam.wavelength.get()=!r}"
+    )
     assert fourc.sample.reflections.order == "(400) (040)".split()
 
     result = fourc.core.calc_UB(*fourc.sample.reflections.order)
@@ -522,17 +523,22 @@ def test_orientation():
     UB = fourc.sample.UB
     assert len(UB) == 3
 
-    e = -1.157
-    UBe = [[0, 0, e], [0, e, 0], [e, 0, 0]]
-    assert_almost_equal(UB, UBe, 3)
+    e = 1.1569
+    UBe = [[0, -e, 0], [-e, 0, 0], [0, 0, -e]]
+    assert np.allclose(UB, UBe, atol=0.001)
 
-    result = fourc.forward(4, 0, 0, wavelength=1.54)
-    reals = [-145.4509, 0, 0, 69.0982]  # at wavelength = 1.54
-    assert_almost_equal(list(result._asdict().values()), reals, 3)
+    # at wavelength = 1.54
+    assert np.allclose(
+        list(fourc.forward(4, 0, 0, wavelength=1.54)),
+        [-34.5491, 0.0, 0.0007, -69.0982],
+        atol=0.001,
+    )
 
-    result = fourc.forward(4, 0, 0, wavelength=1)
-    reals = [-158.3920, 0, 0, 43.2161]
-    assert_almost_equal(list(result._asdict().values()), reals, 3)
+    assert np.allclose(
+        list(fourc.forward(4, 0, 0, wavelength=1)._asdict().values()),
+        [-21.6080, 0, 0.0007, -43.2161],
+        atol=0.001,
+    )
 
     assert math.isclose(  # still did not change the diffractometer wavelength
         fourc.beam.wavelength.get(), 1.0, abs_tol=0.01
@@ -814,10 +820,8 @@ def test_set_UB():
 
     reals = dict(omega=130, chi=0, phi=90, tth=-100)
     result = fourc.inverse(reals, wavelength=1.54)
-    assert math.isclose(result.h, 1.0, abs_tol=0.001), f"{result=!r}"
-    assert math.isclose(result.k, 0, abs_tol=0.001), f"{result=!r}"
-    assert math.isclose(result.l, 0, abs_tol=0.001), f"{result=!r}"
-    assert_almost_equal(fourc.sample.UB, UBe, 3)
+    assert np.allclose(result, (0, 1, 0), atol=0.001)
+    assert np.allclose(fourc.sample.UB, UBe, atol=0.001)
 
 
 def test_e4cv_constant_phi():
