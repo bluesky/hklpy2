@@ -6,7 +6,8 @@ Levels
 * [x] test_libhkl: direct calls to gobject-introspection interface
 * [x] test_HklSolver: direct calls to the HklSolver class
 * [x] test_hklpy2: use the hklpy2.creator
-* [ ] custom: use the custom Diffractometer class from ISN
+* [x] test_ISN_Diffractometer: use the custom Diffractometer class from ISN
+* [x] test_hklpy_v1: test hklpy v1, with local fixes applied
 
 Procedure
 
@@ -336,7 +337,100 @@ def test_hklpy2():
 
 
 def test_ISN_Diffractometer():
-    pass
+    from ophyd import Component
+    from ophyd import SoftPositioner
+
+    from hklpy2 import DiffractometerBase
+    from hklpy2.diffract import Hklpy2PseudoAxis
+
+    class Diffractometer(DiffractometerBase):
+        """Example custom diffractometer"""
+
+        _real = "mu eta chi phi pitch yaw".split()
+
+        h = Component(Hklpy2PseudoAxis, "", kind="hinted")
+        k = Component(Hklpy2PseudoAxis, "", kind="hinted")
+        l = Component(Hklpy2PseudoAxis, "", kind="hinted")  # noqa E741
+
+        mu = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
+        eta = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
+        chi = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
+        phi = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
+        pitch = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
+        yaw = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
+        radius = Component(
+            SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted"
+        )
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(
+                *args,
+                solver=SOLVER,
+                geometry=GEOMETRY,
+                **kwargs,
+            )
+
+    psic = Diffractometer("", name="psic")
+    assert psic.connected
+    assert "eta" in psic.real_axis_names
+    assert "radius" not in psic.real_axis_names
+
+    psic.radius._limits = 0, 1000
+    psic.radius.move(800)
+    psic.yaw.move(40)
+    psic.pitch.move(psic.yaw.position / 2)
+    psic.core.mode = MODE
+    psic.beam.wavelength.put(WAVELENGTH)
+
+    psic.core.add_sample(SAMPLE_NAME, SAMPLE_LATTICE_A)
+
+    r001 = psic.core.add_reflection(*R001, name="r001")
+    r100 = psic.core.add_reflection(*R100, name="r100")
+    assert len(psic.core.sample.reflections) == 2
+    assert np.allclose(
+        psic.core.calc_UB(r001, r100),
+        UB_R001_R100,
+        atol=0.001,
+    )
+
+    # - - - - - - - - - - - - - - - - Test inverse() calculations
+    # pseudos = inverse(reals)
+    for reflection in (r001, r100):
+        pseudos = psic.core.inverse(reflection.reals)
+        assert np.allclose(
+            list(pseudos.values()),
+            list(reflection.pseudos.values()),
+            atol=0.001,
+        )
+
+    # - - - - - - - - - - - - - - - - Test forward() calculations
+    # Bump the constraints out just a bit so roundoff or
+    # truncation does not cause any solutions to be dropped.
+    for axis in psic.real_axis_names:
+        psic.core.constraints[axis].limits = -180.01, 180.01
+
+    # list of reals = forward(pseudos)
+    for pseudos, reals in FORWARD_SOLUTIONS.items():
+        solutions = psic.core.forward(
+            dict(
+                zip(
+                    psic.pseudo_axis_names,
+                    pseudos,
+                )
+            )
+        )
+        assert len(solutions) == len(reals)
+
+        if len(solutions):
+            assessments = [
+                np.allclose(
+                    list(sol),
+                    reals[i],
+                    atol=0.01,
+                )
+                for i, sol in enumerate(solutions)
+            ]
+            assert True in assessments, f"{solutions=} {reals=}"
 
 
 def test_hklpy_v1():
