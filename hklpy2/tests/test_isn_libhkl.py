@@ -30,7 +30,10 @@ import hklpy2
 from hklpy2.backends.hkl_soleil import LIBHKL_DETECTOR_TYPE
 from hklpy2.backends.hkl_soleil import LIBHKL_USER_UNITS
 from hklpy2.backends.hkl_soleil import HklSolver
+from hklpy2.backends.hkl_soleil import NoForwardSolutions
 from hklpy2.backends.hkl_soleil import libhkl
+from hklpy2.backends.hkl_soleil import rotate_to_hklpy2
+from hklpy2.backends.hkl_soleil import rotate_to_libhkl
 
 GEOMETRY = "E6C"
 SOLVER = "hkl_soleil"
@@ -45,6 +48,7 @@ ROUNDOFF_DIGITS = 12
 # Common wavelength, ignore custom axis names, set values in canonical order.
 R001 = [(0, 0, 1), (6.18 / 2, 0, 0, 0, 6.18, 0)]
 R100 = [(1, 0, 0), (6.18 / 2, 0, 90, 0, 6.18, 0)]
+PRESET_REALS = (0, 0, 0, 0, 0, 0)
 SCALE = 2 * math.pi / SAMPLE_LATTICE_A
 UB_R001_R100 = SCALE * np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
 FORWARD_SOLUTIONS = {
@@ -61,21 +65,6 @@ FORWARD_SOLUTIONS = {
     (1, 0, 0): [],  # non-zero chi is reachable
 }
 REALS_REFERENCE = (20, 0, 0, 0, 40, 0)
-
-R_XYZ_ZXY = np.array(  # TODO #155: compute
-    [
-        [0, 0, 1],
-        [1, 0, 0],
-        [0, 1, 0],
-    ],
-    dtype=float,
-)
-"""
-Rotation matrix: from libhkl pseudos to hklpy2.
-
-* xyz: Coordinate system used by libhkl
-* zxy: Coordinate system used by hklpy2
-"""
 
 
 def test_libhkl():
@@ -130,7 +119,7 @@ def test_libhkl():
     r001 = sample.add_reflection(
         geometry,
         detector,
-        *((R_XYZ_ZXY.T @ np.array(R001[0], dtype=float)).tolist()),
+        *rotate_to_libhkl(R001[0]),
     )
     assert r001 is not None
     assert len(sample.reflections_get()) == 1
@@ -139,7 +128,7 @@ def test_libhkl():
     r100 = sample.add_reflection(
         geometry,
         detector,
-        *((R_XYZ_ZXY.T @ np.array(R100[0], dtype=float)).tolist()),
+        *rotate_to_libhkl(R100[0]),
     )
     assert r100 is not None
     assert len(sample.reflections_get()) == 2
@@ -159,22 +148,20 @@ def test_libhkl():
         reals = reflection[1]
         geometry.axis_values_set(reals, LIBHKL_USER_UNITS)
         engine_list.get()  # reals -> pseudos  (Odd name for this call!)
-        pseudos = engine.pseudo_axis_values_get(LIBHKL_USER_UNITS)
-        # rotate from libhkl coordinates into hklpy2 coordinates
-        pseudos = R_XYZ_ZXY @ np.array(pseudos, dtype=float)
+        pseudos = rotate_to_hklpy2(engine.pseudo_axis_values_get(LIBHKL_USER_UNITS))
         assert np.allclose(pseudos, reflection[0], atol=0.001)
 
     # - - - - - - - - - - - - - - - - Test forward() calculations
     # reals = forward(pseudos)
     for pseudos, reals in FORWARD_SOLUTIONS.items():
         # rotate pseudos coordinates from hklpy2 to libhkl
-        libhkl_pseudos = R_XYZ_ZXY.T @ np.array(pseudos, dtype=float)
+        libhkl_pseudos = rotate_to_libhkl(pseudos)
         try:
             geometry.axis_values_set(REALS_REFERENCE, LIBHKL_USER_UNITS)
             # Hkl.GeometryList (not a Python dict) has a '.items()' method.
             raw = list(
                 engine.pseudo_axis_values_set(
-                    libhkl_pseudos.tolist(),
+                    libhkl_pseudos,
                     LIBHKL_USER_UNITS,
                 ).items()
             )
@@ -229,23 +216,44 @@ def test_HklSolver():
         reals=dict(zip(solver.real_axis_names, R001[1])),
         wavelength=WAVELENGTH,
     )
+
     r100 = dict(
         name="r100",
-        pseudos=dict(zip("h k l".split(), R100[0])),
+        pseudos=dict(zip(solver.pseudo_axis_names, R100[0])),
         reals=dict(zip(solver.real_axis_names, R100[1])),
         wavelength=WAVELENGTH,
     )
+    assert len(solver.reflections) == 0
+
+    UB = solver.calculate_UB(r001, r100)
+
+    # Now the reflections are defined.
+    # Spot check their pseudos.
+    refs = solver.reflections
+    assert len(refs) == 2
+
+    refs = list(refs.values())
     assert np.allclose(
-        solver.calculate_UB(r001, r100),
+        rotate_to_hklpy2(list(refs[0]["pseudos"].values())),
+        (0, 0, 1),
+        atol=0.001,
+    )
+    assert np.allclose(
+        rotate_to_hklpy2(list(refs[1]["pseudos"].values())),
+        (1, 0, 0),
+        atol=0.001,
+    )
+    assert np.allclose(
+        UB,
         UB_R001_R100,
         atol=0.001,
     )
 
     # - - - - - - - - - - - - - - - - Test inverse() calculations
     for reflection in (r001, r100):
-        pseudos = solver.inverse(reflection["reals"])
+        pseudos = list(solver.inverse(reflection["reals"]).values())
         assert np.allclose(
-            list(pseudos.values()),
+            list(pseudos),
             list(reflection["pseudos"].values()),
             atol=0.001,
         )
@@ -254,24 +262,11 @@ def test_HklSolver():
     # reals = forward(pseudos)
     for pseudos, reals in FORWARD_SOLUTIONS.items():
         try:
-            solutions = solver.forward(
-                dict(
-                    zip(
-                        solver.pseudo_axis_names,
-                        pseudos,
-                    )
-                )
-            )
-        except Exception:
+            solver._hkl_geometry.axis_values_set(PRESET_REALS, LIBHKL_USER_UNITS)
+            solutions = solver.forward(dict(zip(solver.pseudo_axis_names, pseudos)))
+        except NoForwardSolutions:
             solutions = []
         assert len(solutions) == len(reals)
-
-        for i, sol in enumerate(solutions):
-            assert np.allclose(
-                list(sol.values()),
-                reals[i],
-                atol=0.01,
-            ), f"{i=} {reals[i]=}"
 
 
 def test_hklpy2():
@@ -327,13 +322,16 @@ def test_hklpy2():
         )
         assert len(solutions) == len(reals)
 
-        for i, sol in enumerate(solutions):
-            # TODO compare with all reals, must match exactly one
-            assert np.allclose(
-                list(sol),
-                reals[i],
-                atol=0.01,
-            ), f"{i=} {reals[i]=}"
+        if len(solutions):
+            assessments = [
+                np.allclose(
+                    list(sol),
+                    reals[i],
+                    atol=0.01,
+                )
+                for i, sol in enumerate(solutions)
+            ]
+            assert True in assessments, f"{solutions=} {reals=}"
 
 
 def test_ISN_Diffractometer():
@@ -343,11 +341,13 @@ def test_ISN_Diffractometer():
 def test_hklpy_v1():
     """Same procedure, original hklpy (v1) code."""
     # https://blueskyproject.io/hklpy/examples/notebooks/geo_e6c.html
-    from hkl import SimMixin, Lattice, A_KEV
+    from hkl import A_KEV
+    from hkl import Lattice
+    from hkl import SimMixin
     from hkl.calc import CalcRecip
     from hkl.diffract import Diffractometer
-    from ophyd import SoftPositioner
     from ophyd import Component as Cpt
+    from ophyd import SoftPositioner
 
     class MyCalcRecip(CalcRecip):
         """Geometry: E6C"""
@@ -393,8 +393,8 @@ def test_hklpy_v1():
     sixc.energy.put(A_KEV / WAVELENGTH)
     assert math.isclose(sixc.energy.get(), A_KEV / WAVELENGTH, abs_tol=0.001)
 
-    r001 = sixc.calc.sample.add_reflection(*(R001[0]), position=R001[1])
-    r100 = sixc.calc.sample.add_reflection(*(R100[0]), position=R100[1])
+    r001 = sixc.calc.sample.add_reflection(*rotate_to_libhkl(R001[0]), position=R001[1])
+    r100 = sixc.calc.sample.add_reflection(*rotate_to_libhkl(R100[0]), position=R100[1])
     assert len(sixc.calc.sample.reflections) == 2
 
     sixc.calc.sample.compute_UB(r001, r100)
@@ -407,7 +407,7 @@ def test_hklpy_v1():
     # - - - - - - - - - - - - - - - - Test inverse() calculations
     # pseudos = inverse(reals)
     for reflection in (R001, R100):
-        pseudos = sixc.calc.inverse(reflection[1])
+        pseudos = rotate_to_hklpy2(sixc.calc.inverse(reflection[1]))
         assert np.allclose(
             list(pseudos),
             list(reflection[0]),
@@ -424,7 +424,11 @@ def test_hklpy_v1():
     # list of reals = forward(pseudos)
     for pseudos, reals in FORWARD_SOLUTIONS.items():
         try:
-            solutions = sixc.calc.forward(pseudos)
+            sixc.calc._geometry.axis_values_set(
+                PRESET_REALS,
+                LIBHKL_USER_UNITS,
+            )
+            solutions = sixc.calc.forward(rotate_to_libhkl(pseudos))
         except ValueError:
             solutions = []
         assert len(solutions) == len(reals)

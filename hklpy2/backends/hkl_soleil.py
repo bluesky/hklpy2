@@ -26,7 +26,9 @@ Example::
 
 .. autosummary::
 
+    ~COORDINATES_LIBHKL
     ~HklSolver
+    ~R_LIBHKL_HKLPY2
 """
 
 # Notes:
@@ -40,9 +42,14 @@ import logging
 import math
 import platform
 
+import numpy as np
 from pyRestTable import Table
 
+from ..misc import ANTIGRAVITY_DIRECTION
+from ..misc import COORDINATES_HKLPY2
+from ..misc import FORWARD_DIRECTION
 from ..misc import IDENTITY_MATRIX_3X3
+from ..misc import CoordinateSystem
 from ..misc import NoForwardSolutions
 from ..misc import check_value_in_list
 from ..misc import istype
@@ -67,6 +74,26 @@ LIBHKL_UNITS = {
 LIBHKL_USER_UNITS = LIBHKL_UNITS["user"]
 ROUNDOFF_DIGITS = 12
 
+COORDINATES_LIBHKL = CoordinateSystem(
+    vx=FORWARD_DIRECTION,
+    vy=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
+    vz=ANTIGRAVITY_DIRECTION,
+)
+"""Coordinate system in hklpy2."""
+
+R_LIBHKL_HKLPY2 = COORDINATES_LIBHKL.frame.T @ COORDINATES_HKLPY2.frame
+"""Rotation matrix from libhkl to hklpy2."""
+
+
+def rotate_to_hklpy2(pseudos):
+    """Rotate pseudos from libhkl to hklpy2 coordinates."""
+    return (R_LIBHKL_HKLPY2 @ np.asarray(pseudos, dtype=float)).tolist()
+
+
+def rotate_to_libhkl(pseudos):
+    """Rotate pseudos from hklpy2 to libhkl coordinates."""
+    return (R_LIBHKL_HKLPY2.T @ np.asarray(pseudos, dtype=float)).tolist()
+
 
 def roundoff_list(values, digits=ROUNDOFF_DIGITS):
     """Prevent underflows and '-0' for all numbers in a list."""
@@ -78,7 +105,7 @@ def hkl_euler_matrix(euler_x, euler_y, euler_z):
     return libhkl.Matrix.new_euler(euler_x, euler_y, euler_z)
 
 
-def to_hkl(arr):
+def to_hkl_matrix(arr):
     """Convert a numpy ndarray to an hkl ``Matrix``
 
     Parameters
@@ -101,7 +128,7 @@ def to_hkl(arr):
     return hklm
 
 
-def to_numpy(mat):
+def to_numpy_matrix(mat):
     """Convert an hkl ``Matrix`` to a numpy ndarray
 
     Parameters
@@ -238,7 +265,11 @@ class HklSolver(SolverBase):
         w0 = self.wavelength
         self.wavelength = reflection["wavelength"]
         self._hkl_geometry.axis_values_set(reals, LIBHKL_USER_UNITS)
-        self._sample.add_reflection(self._hkl_geometry, self._hkl_detector, *pseudos)
+        self._sample.add_reflection(
+            self._hkl_geometry,
+            self._hkl_detector,
+            *rotate_to_libhkl(pseudos),
+        )
         self.wavelength = w0
 
     @property
@@ -345,13 +376,11 @@ class HklSolver(SolverBase):
         logger.debug("(%r) forward(%r)", __name__, pseudos)
 
         try:
-            # FIXME #155: preset reals
             # Hkl.GeometryList is not a dict.
             # Still, it has a .items() method.
-            # FIXME #155: coordinate transformation
             raw = list(
                 self.engine.pseudo_axis_values_set(
-                    list(pseudos.values()),
+                    rotate_to_libhkl(list(pseudos.values())),
                     LIBHKL_USER_UNITS,
                 ).items()
             )
@@ -417,10 +446,15 @@ class HklSolver(SolverBase):
 
         self._hkl_engine_list.get()  # reals -> pseudos  (Odd name for this call!)
 
+        # Assemble the dictionary
         pdict = dict(
             zip(
                 self.engine.pseudo_axis_names_get(),
-                roundoff_list(self.engine.pseudo_axis_values_get(LIBHKL_USER_UNITS)),
+                roundoff_list(
+                    rotate_to_hklpy2(
+                        self.engine.pseudo_axis_values_get(LIBHKL_USER_UNITS),
+                    )
+                ),
             )
         )
         return pdict
@@ -484,6 +518,13 @@ class HklSolver(SolverBase):
     def real_axis_names(self) -> list[str]:
         """Ordered list of the real axis names (such as th, tth)."""
         return self._hkl_geometry.axis_names_get()  # Do NOT sort.
+
+    def set_reals(self, reals: dict) -> None:
+        """Set the values of all the real axes."""
+        self._hkl_geometry.axis_values_set(
+            (list(reals.values())),
+            LIBHKL_USER_UNITS,
+        )
 
     @property
     def reflections(self) -> dict:
@@ -645,28 +686,28 @@ class HklSolver(SolverBase):
         """
         if self._sample is None:
             return IDENTITY_MATRIX_3X3
-        matrix = to_numpy(self._sample.U_get())
+        matrix = to_numpy_matrix(self._sample.U_get())
         return matrix.round(decimals=ROUNDOFF_DIGITS).tolist()
 
     @U.setter
     def U(self, value: list[list[float]]) -> None:
         if self._sample is not None:
             logger.debug("U.setter(): value=%s", value)
-            self._sample.U_set(to_hkl(value))
+            self._sample.U_set(to_hkl_matrix(value))
 
     @property
     def UB(self) -> list[list[float]]:
         """Orientation matrix (3x3)."""
         if self._sample is None:
             return IDENTITY_MATRIX_3X3
-        matrix = to_numpy(self._sample.UB_get())
+        matrix = to_numpy_matrix(self._sample.UB_get())
         return matrix.round(decimals=ROUNDOFF_DIGITS).tolist()
 
     @UB.setter
     def UB(self, value: list[list[float]]) -> None:
         if self._sample is not None:
             logger.debug("UB.setter(): value=%s", value)
-            self._sample.UB_set(to_hkl(value))
+            self._sample.UB_set(to_hkl_matrix(value))
 
     @property
     def wavelength(self) -> float:
