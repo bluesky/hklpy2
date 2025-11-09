@@ -350,6 +350,16 @@ def test_set_lattice(fourc):
             pytest.raises(TypeError),
             "'set_wavelength()' not supported",
         ],
+        [
+            {
+                "class": "hklpy2.incident.EpicsWavelengthRO",
+                "pv_wavelength": "skip_test:no_such_pv:cannot_connect",
+            },
+            None,
+            None,
+            does_not_raise(),
+            None,
+        ],
     ],
 )
 def test_set_wavelength(beam_kwargs, wavelength, units, context, expected):
