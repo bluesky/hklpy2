@@ -27,7 +27,9 @@ Simplified interface for |hklpy2| diffractometer users.
 
 import uuid
 from collections.abc import Iterable
-from typing import Any, Dict, List
+from typing import Any
+from typing import Dict
+from typing import List
 from typing import Optional
 from typing import Union
 
