@@ -3,14 +3,6 @@ Abstract base class for all solvers.
 
 .. autosummary::
 
-    ~ANTIGRAVITY_DIRECTION
-    ~CoordinateSystem
-    ~COORDINATESYSTEM_HKLPY2
-    ~FORWARD_DIRECTION
-    ~GRAVITY_DIRECTION
-    ~HAT_X
-    ~HAT_Y
-    ~HAT_Z
     ~SolverBase
 """
 
@@ -18,9 +10,7 @@ import logging
 from abc import ABC
 from abc import abstractmethod
 from typing import Dict
-from typing import Sequence, Union
 
-import numpy as np
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
@@ -34,76 +24,6 @@ logger = logging.getLogger(__name__)
 Lattice = Dict[str, float]
 Reflection = Dict[str, object]
 Sample = Dict[str, object]
-
-
-HAT_X = np.array((1, 0, 0), dtype=float)
-"""X axis basis vector in reference coordinate system."""
-
-HAT_Y = np.array((0, 1, 0), dtype=float)
-"""Y axis basis vector in reference coordinate system."""
-
-HAT_Z = np.array((0, 0, 1), dtype=float)
-"""Z axis basis vector in reference coordinate system."""
-
-FORWARD_DIRECTION = HAT_X
-"""Forward direction in reference coordinate system."""
-
-GRAVITY_DIRECTION = -HAT_Z
-"""Direction of gravity in reference coordinate system."""
-
-ANTIGRAVITY_DIRECTION = -GRAVITY_DIRECTION
-"""Opposite of 'GRAVITY_DIRECTION'."""
-
-C_REFERENCE = np.column_stack((HAT_X, HAT_Y, HAT_Z))
-"""Reference coordinate system, a 3x3 matrix."""
-
-
-class CoordinateSystem:
-    """
-    Coordinate system, defined in terms of a reference system.
-
-    3-D orthonormal (Cartesian) coordinate system.
-
-    .. autosummary::
-
-        ~v_local
-        ~v_ref
-    """
-
-    def __init__(
-        self,
-        vx: Sequence[float],
-        vy: Sequence[float],
-        vz: Sequence[float],
-        *,
-        tol: float = 1e-8,
-    ) -> None:
-        def norm(vec):
-            """Convert to unit vector."""
-            v = np.asarray(vec, dtype=float)
-            n = np.linalg.norm(v)
-            if n == 0.0 or not np.isfinite(n):
-                raise ValueError("zero or invalid vector")
-            return v / n
-
-        self.system = np.column_stack((norm(vx), norm(vy), norm(vz)))
-        self.rotation_matrix = C_REFERENCE.T @ self.system
-
-    def v_local(self, v_ref: Union[np.ndarray, Sequence[float]]) -> np.ndarray:
-        """Rotate vector 'v_ref' to local coordinates."""
-        return self.rotation_matrix @ np.asarray(v_ref, dtype=float)
-
-    def v_ref(self, v_local: Union[np.ndarray, Sequence[float]]) -> np.ndarray:
-        """Rotate vector 'v_local' to reference coordinates."""
-        return self.rotation_matrix.T @ np.asarray(v_local, dtype=float)
-
-
-COORDINATESYSTEM_HKLPY2 = CoordinateSystem(
-    np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
-    ANTIGRAVITY_DIRECTION,
-    FORWARD_DIRECTION,
-)
-"""Coordinate system in hklpy2."""
 
 
 class SolverBase(ABC):

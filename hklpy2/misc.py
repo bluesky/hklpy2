@@ -4,6 +4,7 @@ Miscellaneous Support.
 .. rubric: Base classes
 .. autosummary::
 
+    ~CoordinateSystem
     ~VirtualPositionerBase
 
 .. rubric: Functions
@@ -34,7 +35,15 @@ Miscellaneous Support.
 .. rubric: Symbols
 .. autosummary::
 
+    ~ANTIGRAVITY_DIRECTION
+    ~COORDINATES_HKLPY2
+    ~FORWARD_DIRECTION
+    ~GRAVITY_DIRECTION
+    ~HAT_X
+    ~HAT_Y
+    ~HAT_Z
     ~IDENTITY_MATRIX_3X3
+    ~REFERENCE_FRAME
     ~SOLVER_ENTRYPOINT_GROUP
 
 .. rubric: Custom Data Types
@@ -78,10 +87,11 @@ from collections.abc import Iterable
 from importlib.metadata import entry_points
 from typing import Any
 from typing import NamedTuple
+from typing import Sequence
 from typing import Type
 from typing import Union
 
-import numpy
+import numpy as np
 import numpy.typing
 import pandas as pd
 import pint
@@ -115,6 +125,74 @@ UREG = pint.UnitRegistry()
 PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
 """Exception from pint that we are trapping here."""
 
+HAT_X = np.array((1, 0, 0), dtype=float)
+"""X axis basis vector in reference coordinate system."""
+
+HAT_Y = np.array((0, 1, 0), dtype=float)
+"""Y axis basis vector in reference coordinate system."""
+
+HAT_Z = np.array((0, 0, 1), dtype=float)
+"""Z axis basis vector in reference coordinate system."""
+
+FORWARD_DIRECTION = HAT_X
+"""Forward direction in reference coordinate system."""
+
+GRAVITY_DIRECTION = -HAT_Z
+"""Direction of gravity in reference coordinate system."""
+
+ANTIGRAVITY_DIRECTION = -GRAVITY_DIRECTION
+"""Opposite of 'GRAVITY_DIRECTION'."""
+
+REFERENCE_FRAME = np.column_stack((HAT_X, HAT_Y, HAT_Z))
+"""Coordinate system reference frame, a 3x3 matrix."""
+
+
+class CoordinateSystem:
+    """
+    Coordinate frame (system), defined in terms of a reference system.
+
+    3-D orthonormal (Cartesian) coordinate system.
+
+    .. autosummary::
+
+        ~v_local
+        ~v_ref
+    """
+
+    def __init__(
+        self,
+        *,
+        vx: Sequence[float],
+        vy: Sequence[float],
+        vz: Sequence[float],
+    ) -> None:
+        def norm(vec):
+            """Convert to unit vector."""
+            v = np.asarray(vec, dtype=float)
+            n = np.linalg.norm(v)
+            if n == 0.0 or not np.isfinite(n):
+                raise ValueError("zero or invalid vector")
+            return v / n
+
+        self.frame = np.column_stack((norm(vx), norm(vy), norm(vz)))
+        self.rotation_matrix = REFERENCE_FRAME.T @ self.frame
+
+    def v_local(self, v_ref: Union[np.ndarray, Sequence[float]]) -> np.ndarray:
+        """Rotate vector 'v_ref' to local coordinates."""
+        return self.rotation_matrix @ np.asarray(v_ref, dtype=float)
+
+    def v_ref(self, v_local: Union[np.ndarray, Sequence[float]]) -> np.ndarray:
+        """Rotate vector 'v_local' to reference coordinates."""
+        return self.rotation_matrix.T @ np.asarray(v_local, dtype=float)
+
+
+COORDINATES_HKLPY2 = CoordinateSystem(
+    vx=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
+    vy=ANTIGRAVITY_DIRECTION,
+    vz=FORWARD_DIRECTION,
+)
+"""Coordinate system in hklpy2."""
+
 
 def validate_and_canonical_unit(value: str, target_units: str) -> str:
     """Validate that *value* is a unit convertible to *target_units*.
@@ -133,7 +211,7 @@ def validate_and_canonical_unit(value: str, target_units: str) -> str:
 
 # Custom data types
 
-AxesArray = numpy.typing.NDArray[numpy.floating]
+AxesArray = numpy.typing.NDArray[np.floating]
 """Numpy array of axes values."""
 
 AxesDict = dict[str, Union[float, int]]
@@ -529,7 +607,7 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
         for name, value in zip(names, input):
             axes[name] = value
 
-    elif istype(input, AxesArray) or isinstance(input, numpy.ndarray):
+    elif istype(input, AxesArray) or isinstance(input, np.ndarray):
         # Accept numpy arrays (ndarray) of numeric values as an AxesArray.
         for name, value in zip(names, input):
             axes[name] = value
