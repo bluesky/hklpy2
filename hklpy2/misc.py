@@ -157,6 +157,17 @@ class CoordinateSystem:
 
         ~v_local
         ~v_ref
+
+    Examples:
+
+    Rotate vector 'v_ref' to local frame::
+
+        v_local = rotation_matrix @ np.asarray(v_ref, dtype=float)
+
+    Rotate vector 'v_local' to reference frame::
+
+        v_ref = rotation_matrix.T @ np.asarray(v_local, dtype=float)
+
     """
 
     def __init__(
@@ -176,14 +187,6 @@ class CoordinateSystem:
 
         self.frame = np.column_stack((norm(vx), norm(vy), norm(vz)))
         self.rotation_matrix = REFERENCE_FRAME.T @ self.frame
-
-    def v_local(self, v_ref: Union[np.ndarray, Sequence[float]]) -> np.ndarray:
-        """Rotate vector 'v_ref' to local coordinates."""
-        return self.rotation_matrix @ np.asarray(v_ref, dtype=float)
-
-    def v_ref(self, v_local: Union[np.ndarray, Sequence[float]]) -> np.ndarray:
-        """Rotate vector 'v_local' to reference coordinates."""
-        return self.rotation_matrix.T @ np.asarray(v_local, dtype=float)
 
 
 COORDINATES_HKLPY2 = CoordinateSystem(
