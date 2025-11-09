@@ -228,15 +228,14 @@ def test__fromdict(Klass, input, context, expected):
         ],
     ],
 )
-def test_EpicsClasses(Klass, input, ref, context, expected, softioc):
+def test_EpicsClasses(Klass, input, ref, context, expected):
     with context as reason:
-        assert isinstance(softioc, dict)
-
         wl = Klass(name="wl", **input)
         try:
             wl.wait_for_connection(timeout=2)
         except TimeoutError as exinfo:
-            pytest.skip(f"{exinfo}", allow_module_level=True)
+            if input["pv_wavelength"] != "wrong_pv":
+                pytest.skip(f"{exinfo}", allow_module_level=True)
         check_keys(wl, ref)
 
     assert_context_result(expected, reason)

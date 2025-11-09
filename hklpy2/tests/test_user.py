@@ -352,10 +352,8 @@ def test_set_lattice(fourc):
         ],
     ],
 )
-def test_set_wavelength(beam_kwargs, wavelength, units, context, expected, softioc):
+def test_set_wavelength(beam_kwargs, wavelength, units, context, expected):
     with context as reason:
-        assert isinstance(softioc, dict)
-
         try:
             set_diffractometer(creator(beam_kwargs=beam_kwargs))
         except TimeoutError as exinfo:
