@@ -5,7 +5,7 @@ Levels
 
 * [x] test_libhkl: direct calls to gobject-introspection interface
 * [x] test_HklSolver: direct calls to the HklSolver class
-* [ ] test_hklpy2: use the hklpy2.creator
+* [x] test_hklpy2: use the hklpy2.creator
 * [ ] custom: use the custom Diffractometer class from ISN
 
 Procedure
@@ -25,6 +25,7 @@ import math
 import uuid
 
 import numpy as np
+import pytest
 
 import hklpy2
 from hklpy2.backends.hkl_soleil import LIBHKL_DETECTOR_TYPE
@@ -340,10 +341,8 @@ def test_ISN_Diffractometer():
 
 def test_hklpy_v1():
     """Same procedure, original hklpy (v1) code."""
+    hkl = pytest.importorskip("hkl")  # skips if not installed
     # https://blueskyproject.io/hklpy/examples/notebooks/geo_e6c.html
-    from hkl import A_KEV
-    from hkl import Lattice
-    from hkl import SimMixin
     from hkl.calc import CalcRecip
     from hkl.diffract import Diffractometer
     from ophyd import Component as Cpt
@@ -360,7 +359,7 @@ def test_hklpy_v1():
 
         calc_class = MyCalcRecip
 
-    class SixCircle(SimMixin, MyE6C):
+    class SixCircle(hkl.SimMixin, MyE6C):
         """
         Our 6-circle.  Eulerian.
         """
@@ -385,13 +384,13 @@ def test_hklpy_v1():
     a0 = SAMPLE_LATTICE_A
     sixc.calc.new_sample(
         SAMPLE_NAME,
-        lattice=Lattice(a=a0, b=a0, c=a0, alpha=90, beta=90, gamma=90),
+        lattice=hkl.Lattice(a=a0, b=a0, c=a0, alpha=90, beta=90, gamma=90),
     )
     assert sixc.sample_name.get() == SAMPLE_NAME
     assert math.isclose(sixc.calc.sample.lattice.a, SAMPLE_LATTICE_A, abs_tol=0.001)
 
-    sixc.energy.put(A_KEV / WAVELENGTH)
-    assert math.isclose(sixc.energy.get(), A_KEV / WAVELENGTH, abs_tol=0.001)
+    sixc.energy.put(hkl.A_KEV / WAVELENGTH)
+    assert math.isclose(sixc.energy.get(), hkl.A_KEV / WAVELENGTH, abs_tol=0.001)
 
     r001 = sixc.calc.sample.add_reflection(*rotate_to_libhkl(R001[0]), position=R001[1])
     r100 = sixc.calc.sample.add_reflection(*rotate_to_libhkl(R100[0]), position=R100[1])

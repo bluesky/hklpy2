@@ -19,11 +19,10 @@ from ..incident import WavelengthXray
 from ..incident import _WavelengthBase
 from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import INTERNAL_XRAY_ENERGY_UNITS
-from .common import PV_WAVELENGTH
+from .common import IOC_PREFIX
 from .common import assert_context_result
 
 logger = logging.getLogger(__name__)
-IOC_PREFIX = PV_WAVELENGTH.split(":")[0] + ":"
 
 
 def check_keys(wl, ref, tol=0.001):
@@ -229,10 +228,15 @@ def test__fromdict(Klass, input, context, expected):
         ],
     ],
 )
-def test_EpicsClasses(Klass, input, ref, context, expected):
+def test_EpicsClasses(Klass, input, ref, context, expected, softioc):
     with context as reason:
+        assert isinstance(softioc, dict)
+
         wl = Klass(name="wl", **input)
-        wl.wait_for_connection(timeout=0.25)
+        try:
+            wl.wait_for_connection(timeout=2)
+        except TimeoutError as exinfo:
+            pytest.skip(f"{exinfo}", allow_module_level=True)
         check_keys(wl, ref)
 
     assert_context_result(expected, reason)
