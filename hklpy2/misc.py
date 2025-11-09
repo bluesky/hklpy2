@@ -153,11 +153,6 @@ class CoordinateSystem:
 
     3-D orthonormal (Cartesian) coordinate system.
 
-    .. autosummary::
-
-        ~v_local
-        ~v_ref
-
     Examples:
 
     Rotate vector 'v_ref' to local frame::
