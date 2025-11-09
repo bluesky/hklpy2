@@ -44,10 +44,10 @@ def kryptonite():
 
 def test_hkl_soleil():
     arr = hkl_soleil.libhkl.Matrix.new_euler(0, 0, 0)
-    assert hkl_soleil.to_hkl(arr) == arr
+    assert hkl_soleil.to_hkl_matrix(arr) == arr
 
     arr = np.array([1, 2, 3])
-    np.testing.assert_array_equal(hkl_soleil.to_numpy(arr), arr)
+    np.testing.assert_array_equal(hkl_soleil.to_numpy_matrix(arr), arr)
 
 
 def test_HklSolver():

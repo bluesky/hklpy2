@@ -57,7 +57,7 @@ geometry                        :doc:`/examples/hkl_soleil-k4cv`
 solver                          :doc:`/examples/_api_demo`
 engine (via ``solver_kwargs``)  :doc:`/guides/var_engines`
 EPICS PVs                       :doc:`/examples/hkl_soleil-e4cv+epics`
-renamed axes                    :doc:`/examples/nslsii-tardis`
+renamed axes                    :doc:`/examples/tst_e4cv_fourc`
 additional reals                :doc:`/examples/hkl_soleil-e6c-psi`
 auto assign                     tbd
 reals out of order              tbd

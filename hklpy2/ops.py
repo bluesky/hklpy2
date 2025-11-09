@@ -463,6 +463,8 @@ class Core:
         # Filter just the solutions that fit the constraints.
         solutions = []
         try:
+            # TODO #155: UNIT conversions?
+            self.solver.set_reals(reals)  # preset reals (issue #155)
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
                 new_reals = self._axes_names_s2d(solution)
                 for axis, value in new_reals.items():
