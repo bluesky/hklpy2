@@ -3,6 +3,7 @@ import math
 from collections import namedtuple
 from contextlib import nullcontext as does_not_raise
 
+import numpy as np
 import numpy.testing
 import pytest
 from pyRestTable import Table
@@ -104,8 +105,8 @@ def test_cahkl(fourc):
         numpy.testing.assert_approx_equal(axis.position, 0)
 
     # use the default "main" sample and UB matrix
-    for position, expected in zip(cahkl(1, 0, 0), (30, 0, 90, 60)):
-        assert round(position) == expected
+    assert np.allclose(cahkl(1, 0, 0), (30, 0, 90, 60), atol=0.001)
+    assert np.allclose(cahkl(0, 0, 1), (30, 0, 0, 60), atol=0.001)
 
 
 def test_cahkl_table(fourc, capsys):
@@ -115,22 +116,22 @@ def test_cahkl_table(fourc, capsys):
     # use the default "main" sample and UB matrix
     PseudoTuple = namedtuple("PseudoTuple", "h k l".split())
     rlist = [PseudoTuple(1, 0, 0), PseudoTuple(0, 1, 0)]
-    cahkl_table(*rlist, digits=0)
+    cahkl_table(*rlist, digits=1)
     out, err = capsys.readouterr()
     assert len(err) == 0
 
     expected = "\n".join(
         [
-            "======= = ====== ====== ===== ====",
-            "(hkl)   # omega  chi    phi   tth ",
-            "======= = ====== ====== ===== ====",
-            "(1 0 0) 1 30.0   0.0    90.0  60.0",
-            "(1 0 0) 2 -150.0 -0.0   -90.0 60.0",
-            "(1 0 0) 3 30.0   180.0  -90.0 60.0",
-            "(1 0 0) 4 -150.0 -180.0 90.0  60.0",
-            "(0 1 0) 1 30.0   90.0   0     60.0",
-            "(0 1 0) 2 -150.0 -90.0  0     60.0",
-            "======= = ====== ====== ===== ====",
+            "======= = ===== ==== === ===",
+            "(hkl)   # omega chi  phi tth",
+            "======= = ===== ==== === ===",
+            "(1 0 0) 1 30    0    90  60 ",
+            "(1 0 0) 2 -150  0    -90 60 ",
+            "(1 0 0) 3 30    180  -90 60 ",
+            "(1 0 0) 4 -150  -180 90  60 ",
+            "(0 1 0) 1 30    90   0   60 ",
+            "(0 1 0) 2 -150  -90  0   60 ",
+            "======= = ===== ==== === ===",
         ]
     )
     assert expected == out.strip(), f"{out.strip()}"
@@ -147,7 +148,7 @@ def test_calc_UB(fourc):
     r2 = setor(0, 4, 0)
 
     ub = calc_UB(r1, r2)
-    assert isinstance(ub, (list, numpy.ndarray))
+    assert isinstance(ub, (list, np.ndarray))
 
 
 def test_list_samples(fourc, capsys):
@@ -345,12 +346,27 @@ def test_set_lattice(fourc):
             pytest.raises(TypeError),
             "'set_wavelength()' not supported",
         ],
+        [
+            {
+                "class": "hklpy2.incident.EpicsWavelengthRO",
+                "pv_wavelength": "skip_test:no_such_pv:cannot_connect",
+            },
+            None,
+            None,
+            does_not_raise(),
+            None,
+        ],
     ],
 )
 def test_set_wavelength(beam_kwargs, wavelength, units, context, expected):
     with context as reason:
-        set_diffractometer(creator(beam_kwargs=beam_kwargs))
+        try:
+            set_diffractometer(creator(beam_kwargs=beam_kwargs))
+        except TimeoutError as exinfo:
+            pytest.skip(f"{exinfo}", allow_module_level=True)
+
         beam = get_diffractometer().beam
+        assert beam.wavelength.connected
 
         set_wavelength(wavelength, units=units)
         assert beam.wavelength_units.get() == units

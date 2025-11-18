@@ -34,11 +34,13 @@ sim4c = creator(name="sim4c")
 )
 def test_pseudos_move(start, h, k, l, digits, context, expected):  # noqa: E741
     with context as reason:
-        e4cv = creator(name="e4cv")
         assert len(start) == 3
+
+        e4cv = creator(name="e4cv")
         e4cv.move(start)
         ppos = e4cv.position._asdict()
         assert isinstance(ppos, dict)
+
         for axis in "h k l".split():
             (
                 assert_almost_equal(
@@ -74,6 +76,11 @@ def test_inverse(ppos, rpos, context, expected):
         e4cv = creator(name="e4cv")
         pseudos = e4cv.inverse(rpos)._asdict()
         assert isinstance(pseudos, dict)
+        assert np.allclose(
+            list(pseudos.values()),
+            list(ppos.values()),
+            atol=0.001,
+        )
         for axis, value in ppos.items():
             assert_almost_equal(pseudos[axis], value, decimal=3), f"{axis=}"
         # assert pseudos == ppos

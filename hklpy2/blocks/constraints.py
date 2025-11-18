@@ -138,11 +138,9 @@ class LimitsConstraint(ConstraintBase):
         if high_limit is None:
             high_limit = 180
 
-        # fmt: off
         self.low_limit, self.high_limit = sorted(
-            map(float, [low_limit, high_limit])
+            map(float, [low_limit, high_limit]),
         )
-        # fmt: on
 
     def __repr__(self) -> str:
         """Return a nicely-formatted string."""
@@ -174,6 +172,7 @@ class LimitsConstraint(ConstraintBase):
                 f" constraint's label {self.label!r}."
             )
 
+        # FIXME #155 : avoid precision problems
         return self.low_limit <= values[self.label] <= self.high_limit
 
 
