@@ -527,7 +527,7 @@ def scan_extra(
 
         >>> import hklpy2
         >>> from hklpy2.user import *
-        >>> e6c = hklpy2.creator(name="e6c", geometry="e6c")
+        >>> e6c = hklpy2.creator(name="e6c", geometry="E6C")
         >>> set_diffractometer(e6c)
         >>> e6c.core.mode = "psi_constant_vertical"
         >>> RE(
@@ -578,7 +578,7 @@ def scan_extra(
         detectors,
         *args,
         num=num,
-        psuedos=pseudos,
+        pseudos=pseudos,
         reals=reals,
         extras=extras,
         fail_on_exception=fail_on_exception,
