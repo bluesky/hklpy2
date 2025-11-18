@@ -32,6 +32,7 @@ from typing import Union
 from ..misc import ConfigurationError
 from ..misc import ConstraintsError
 
+ENDPOINT_TOLERANCE = 1e-7  # for comparisons, less than motion step size
 NUMERIC = Union[int, float]
 UNDEFINED_LABEL = "undefined"
 
@@ -172,8 +173,13 @@ class LimitsConstraint(ConstraintBase):
                 f" constraint's label {self.label!r}."
             )
 
-        # FIXME #155 : avoid precision problems
-        return self.low_limit <= values[self.label] <= self.high_limit
+        value = values[self.label]
+        # return self.low_limit <= values[self.label] <= self.high_limit
+        return (
+            (value + ENDPOINT_TOLERANCE) >= self.low_limit
+            # .
+            and (value - ENDPOINT_TOLERANCE) <= self.high_limit
+        )
 
 
 class RealAxisConstraints(dict):
