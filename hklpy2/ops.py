@@ -475,7 +475,7 @@ class Core:
                 )
                 for axis, value in reals.items()
             }
-            self.solver.set_reals(presets)  # preset reals (issue #155)
+            self.solver.set_reals(presets)
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
                 new_reals = self._axes_names_s2d(solution)
                 for axis, value in new_reals.items():
