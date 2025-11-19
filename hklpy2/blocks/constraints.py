@@ -32,6 +32,7 @@ from typing import Union
 from ..misc import ConfigurationError
 from ..misc import ConstraintsError
 
+ENDPOINT_TOLERANCE = 1e-7  # for comparisons, less than motion step size
 NUMERIC = Union[int, float]
 UNDEFINED_LABEL = "undefined"
 
@@ -138,11 +139,9 @@ class LimitsConstraint(ConstraintBase):
         if high_limit is None:
             high_limit = 180
 
-        # fmt: off
         self.low_limit, self.high_limit = sorted(
-            map(float, [low_limit, high_limit])
+            map(float, [low_limit, high_limit]),
         )
-        # fmt: on
 
     def __repr__(self) -> str:
         """Return a nicely-formatted string."""
@@ -174,7 +173,13 @@ class LimitsConstraint(ConstraintBase):
                 f" constraint's label {self.label!r}."
             )
 
-        return self.low_limit <= values[self.label] <= self.high_limit
+        value = values[self.label]
+        # return self.low_limit <= values[self.label] <= self.high_limit
+        return (
+            (value + ENDPOINT_TOLERANCE) >= self.low_limit
+            # .
+            and (value - ENDPOINT_TOLERANCE) <= self.high_limit
+        )
 
 
 class RealAxisConstraints(dict):

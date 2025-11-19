@@ -28,6 +28,8 @@ Simplified interface for |hklpy2| diffractometer users.
 import uuid
 from collections.abc import Iterable
 from typing import Any
+from typing import Dict
+from typing import List
 from typing import Optional
 from typing import Union
 
@@ -67,6 +69,8 @@ __all__ = """
 import logging
 
 logger = logging.getLogger(__name__)
+
+Number = Union[int, float]
 
 
 class _SelectedDiffractometer:
@@ -221,8 +225,20 @@ def cahkl_table(*reflections: list[AxesTuple], digits=4):
         value.  Default is 5.
     """
 
-    def brief(input: dict[str, (float | int)]) -> list[(float | int)]:
-        return [round(v, digits) for v in input.values()]
+    def brief(data: Dict[str, Number]) -> List[str]:
+        def fmt(v: Number) -> str:
+            if isinstance(v, int):
+                return str(v)
+            fv = round(float(v), digits)
+            if fv == 0.0:
+                return "0"
+            # remove trailing ".0" for whole numbers
+            s = f"{fv:.{digits}f}"
+            if "." in s:
+                s = s.rstrip("0").rstrip(".")
+            return s
+
+        return [fmt(v) for v in data.values()]
 
     core = get_diffractometer().core
     reals = get_diffractometer().real_axis_names
@@ -511,7 +527,7 @@ def scan_extra(
 
         >>> import hklpy2
         >>> from hklpy2.user import *
-        >>> e6c = hklpy2.creator(name="e6c", geometry="e6c")
+        >>> e6c = hklpy2.creator(name="e6c", geometry="E6C")
         >>> set_diffractometer(e6c)
         >>> e6c.core.mode = "psi_constant_vertical"
         >>> RE(
@@ -562,7 +578,7 @@ def scan_extra(
         detectors,
         *args,
         num=num,
-        psuedos=pseudos,
+        pseudos=pseudos,
         reals=reals,
         extras=extras,
         fail_on_exception=fail_on_exception,

@@ -9,7 +9,7 @@ from contextlib import nullcontext as does_not_raise
 from typing import Union
 
 import databroker
-import numpy
+import numpy as np
 import pint
 import pytest
 from bluesky import RunEngine
@@ -104,7 +104,7 @@ def RE(cat):
             does_not_raise(),
             None,
         ],
-        [numpy.array([0, 1, -1]), "h k l".split(), does_not_raise(), None],
+        [np.array([0, 1, -1]), "h k l".split(), does_not_raise(), None],
         ["123", "h k l".split(), pytest.raises(TypeError), "Unexpected type"],
         [
             (1, 2),
@@ -413,7 +413,7 @@ def test_list_orientation_runs(devices, cat, RE):
         ],
         [[1, 2, 3], AxesList, does_not_raise(), None],
         [(1, 2, 3), AxesTuple, does_not_raise(), None],
-        [numpy.array((1, 2, 3, 4, 5)), AxesArray, does_not_raise(), None],
+        [np.array((1, 2, 3, 4, 5)), AxesArray, does_not_raise(), None],
         [{"h": 1.2, "k": 1, "l": -1}, AnyAxesType, does_not_raise(), None],
         [
             namedtuple("Position", "a b c d".split())(1, 2, 3, 4),
@@ -423,7 +423,7 @@ def test_list_orientation_runs(devices, cat, RE):
         ],
         [[1, 2, 3], AnyAxesType, does_not_raise(), None],
         [(1, 2, 3), AnyAxesType, does_not_raise(), None],
-        [numpy.array((1, 2, 3, 4, 5)), AnyAxesType, does_not_raise(), None],
+        [np.array((1, 2, 3, 4, 5)), AnyAxesType, does_not_raise(), None],
         [None, Union[AnyAxesType, None], does_not_raise(), None],
         [None, AnyAxesType, pytest.raises(AssertionError), "False"],
         [1.234, AnyAxesType, pytest.raises(AssertionError), "False"],
@@ -663,13 +663,15 @@ def test_virtual_axis(specs, context, expected):
         gonio.add_sample("vibranium", 2 * math.pi)
         gonio.wh()
 
-        assert gonio.l.position == 0
+        assert np.allclose(list(gonio.position), (0, 0, 0), atol=0.001)
+        assert np.allclose(list(gonio.real_position), (0, 0, 0, 0), atol=0.001)
         assert gonio.linear.position == 0
-        assert gonio.tth.position == 0
+
         gonio.linear.move(1)
         assert gonio.linear.position == 1
-        assert gonio.tth.position == 2
+        assert np.allclose(list(gonio.real_position), (0, 0, 0, 2), atol=0.001)
         assert math.isclose(gonio.l.position, 0.22, abs_tol=0.01)
+        assert np.allclose(list(gonio.position), (0, 0, 0.22), atol=0.01)
         assert math.isclose(
             gonio.tth.forward(gonio.tth.inverse(math.pi)),
             math.pi,
@@ -789,8 +791,6 @@ def test_get_run_orientation_basic():
 
 def test_istype_with_numpy_scalar_and_none():
     """Ensure istype handles numpy scalars and None appropriately."""
-    import numpy as np
-
     # numpy scalar should not match AxesArray (ndarray) annotation
     assert not istype(np.int64(1), AxesArray)
 

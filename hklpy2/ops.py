@@ -463,15 +463,27 @@ class Core:
         # Filter just the solutions that fit the constraints.
         solutions = []
         try:
+            # Unit conversions for presets and new values.
+            angle_units_solver = self.solver.ANGLE_UNITS
+            angle_units_core = self.diffractometer.reals_units
+
+            presets = {
+                axis: convert_units(
+                    value,
+                    angle_units_core,
+                    angle_units_solver,
+                )
+                for axis, value in reals.items()
+            }
+            self.solver.set_reals(presets)
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
                 new_reals = self._axes_names_s2d(solution)
                 for axis, value in new_reals.items():
-                    # Unit conversions only for new values.
-                    angle_units_solver = self.solver.ANGLE_UNITS
-                    angle_units_uc = self.diffractometer.reals_units
                     # Update with converted new value.
                     reals[axis] = convert_units(
-                        value, angle_units_solver, angle_units_uc
+                        value,
+                        angle_units_solver,
+                        angle_units_core,
                     )
                 if self.constraints.valid(**reals):
                     solutions.append(self.diffractometer.RealPosition(**reals))
