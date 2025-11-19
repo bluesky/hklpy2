@@ -344,7 +344,7 @@ def test_ISN_Diffractometer():
     class Diffractometer(DiffractometerBase):
         """Example custom diffractometer"""
 
-        _real = "mu eta chi phi pitch yaw".split()
+        _real = "mu eta chi phi yaw pitch".split()
 
         h = Component(Hklpy2PseudoAxis, "", kind="hinted")
         k = Component(Hklpy2PseudoAxis, "", kind="hinted")
@@ -376,7 +376,7 @@ def test_ISN_Diffractometer():
     psic.radius._limits = 0, 1000
     psic.radius.move(800)
     psic.yaw.move(40)
-    psic.pitch.move(psic.yaw.position / 2)
+    psic.mu.move(psic.yaw.position / 2)
     psic.core.mode = MODE
     psic.beam.wavelength.put(WAVELENGTH)
 
