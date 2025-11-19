@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=c195e955"></script>
+    <script src="../../_static/documentation_options.js?v=1a2306b0"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -899,15 +899,27 @@
         <span class="c1"># Filter just the solutions that fit the constraints.</span>
         <span class="n">solutions</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Unit conversions for presets and new values.</span>
+            <span class="n">angle_units_solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ANGLE_UNITS</span>
+            <span class="n">angle_units_core</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">reals_units</span>
+
+            <span class="n">presets</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">axis</span><span class="p">:</span> <span class="n">convert_units</span><span class="p">(</span>
+                    <span class="n">value</span><span class="p">,</span>
+                    <span class="n">angle_units_core</span><span class="p">,</span>
+                    <span class="n">angle_units_solver</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reals</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">set_reals</span><span class="p">(</span><span class="n">presets</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_d2s</span><span class="p">(</span><span class="n">pdict</span><span class="p">)):</span>
                 <span class="n">new_reals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_s2d</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">new_reals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="c1"># Unit conversions only for new values.</span>
-                    <span class="n">angle_units_solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ANGLE_UNITS</span>
-                    <span class="n">angle_units_uc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">reals_units</span>
                     <span class="c1"># Update with converted new value.</span>
                     <span class="n">reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
-                        <span class="n">value</span><span class="p">,</span> <span class="n">angle_units_solver</span><span class="p">,</span> <span class="n">angle_units_uc</span>
+                        <span class="n">value</span><span class="p">,</span>
+                        <span class="n">angle_units_solver</span><span class="p">,</span>
+                        <span class="n">angle_units_core</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="o">**</span><span class="n">reals</span><span class="p">):</span>
                     <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">RealPosition</span><span class="p">(</span><span class="o">**</span><span class="n">reals</span><span class="p">))</span>

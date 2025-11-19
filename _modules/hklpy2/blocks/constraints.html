@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=c195e955"></script>
+    <script src="../../../_static/documentation_options.js?v=1a2306b0"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -398,6 +398,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConstraintsError</span>
 
+<div class="viewcode-block" id="ENDPOINT_TOLERANCE">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ENDPOINT_TOLERANCE">[docs]</a>
+<span class="n">ENDPOINT_TOLERANCE</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># for comparisons, less than motion step size</span></div>
+
 <div class="viewcode-block" id="NUMERIC">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.NUMERIC">[docs]</a>
 <span class="n">NUMERIC</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span></div>
@@ -539,11 +543,9 @@
         <span class="k">if</span> <span class="n">high_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">high_limit</span> <span class="o">=</span> <span class="mi">180</span>
 
-        <span class="c1"># fmt: off</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">low_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_limit</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
-            <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">low_limit</span><span class="p">,</span> <span class="n">high_limit</span><span class="p">])</span>
+            <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="p">[</span><span class="n">low_limit</span><span class="p">,</span> <span class="n">high_limit</span><span class="p">]),</span>
         <span class="p">)</span>
-        <span class="c1"># fmt: on</span>
 
 <div class="viewcode-block" id="LimitsConstraint.__repr__">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.__repr__">[docs]</a>
@@ -583,7 +585,13 @@
                 <span class="sa">f</span><span class="s2">&quot; constraint&#39;s label </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">!r}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_limit</span> <span class="o">&lt;=</span> <span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_limit</span></div>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>
+        <span class="c1"># return self.low_limit &lt;= values[self.label] &lt;= self.high_limit</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">value</span> <span class="o">+</span> <span class="n">ENDPOINT_TOLERANCE</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_limit</span>
+            <span class="c1"># .</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">ENDPOINT_TOLERANCE</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_limit</span>
+        <span class="p">)</span></div>
 </div>
 
 

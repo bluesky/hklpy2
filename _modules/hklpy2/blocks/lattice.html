@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=c195e955"></script>
+    <script src="../../../_static/documentation_options.js?v=1a2306b0"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -512,25 +512,28 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.a">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span></div>
 
+        <span class="c1"># treat 0.0 as an explicit value; only use &#39;a&#39; when b/c is None</span>
 <div class="viewcode-block" id="Lattice.b">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.b">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span> <span class="ow">or</span> <span class="n">a</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">b</span></div>
 
 <div class="viewcode-block" id="Lattice.c">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.c">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span> <span class="ow">or</span> <span class="n">a</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">c</span></div>
+
 
 <div class="viewcode-block" id="Lattice.alpha">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.alpha">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span></div>
 
+        <span class="c1"># treat 0.0 as explicit; only use alpha when beta/gamma is None</span>
 <div class="viewcode-block" id="Lattice.beta">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.beta">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span> <span class="ow">or</span> <span class="n">alpha</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">alpha</span> <span class="k">if</span> <span class="n">beta</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">beta</span></div>
 
 <div class="viewcode-block" id="Lattice.gamma">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.gamma">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span> <span class="ow">or</span> <span class="n">alpha</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">alpha</span> <span class="k">if</span> <span class="n">gamma</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">gamma</span></div>
 
 
         <span class="bp">self</span><span class="o">.</span><span class="n">length_units</span> <span class="o">=</span> <span class="n">length_units</span> <span class="ow">or</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
