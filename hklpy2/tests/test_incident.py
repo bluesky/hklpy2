@@ -9,7 +9,7 @@ import pytest
 from ophyd.utils import ReadOnlyError
 
 from ..diffract import creator
-from ..incident import DEFAULT_SOURCE_TYPE
+from ..incident import DEFAULT_SOURCE_TYPE, A_KEV
 from ..incident import DEFAULT_WAVELENGTH
 from ..incident import DEFAULT_WAVELENGTH_DEADBAND
 from ..incident import EpicsMonochromatorRO
@@ -317,3 +317,42 @@ def test_cleanup(parms, moves, context, expected):
             assert not sim.core._solver_needs_update, f"{position=}"
 
     assert_context_result(expected, reason)
+
+
+@pytest.mark.parametrize(
+    "parms, target, tol, context",
+    [
+        pytest.param(
+            dict(geometry="TH TTH Q", solver="th_tth"),
+            10,
+            0.001,
+            does_not_raise(),
+            id="10 keV",
+        ),
+        pytest.param(
+            dict(geometry="TH TTH Q", solver="th_tth"),
+            24,
+            0.001,
+            does_not_raise(),
+            id="24 keV",
+        ),
+    ],
+)
+def test_issue_159(parms, target, tol, context):
+    """Reported energy value should agree with wavelength at all times."""
+    with context:
+        sim = creator(**parms)
+        energy = sim.beam.energy
+        wavelength = sim.beam.wavelength
+
+        # This is the initial problem, energy should not be zero
+        assert math.isclose(energy._readback, A_KEV, abs_tol=tol)
+        assert math.isclose(wavelength._readback, 1)
+
+        energy.put(target)
+        assert math.isclose(energy._readback, target, abs_tol=tol)
+        assert math.isclose(wavelength._readback, A_KEV / target)
+
+        wavelength.put(1)
+        assert math.isclose(energy._readback, A_KEV, abs_tol=tol)
+        assert math.isclose(wavelength._readback, 1)
