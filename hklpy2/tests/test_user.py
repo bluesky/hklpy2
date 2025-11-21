@@ -250,8 +250,6 @@ def test_pa(fourc, capsys):
         "pseudos: h=0, k=0, l=0",
         "reals: omega=0, chi=0, phi=0, tth=0",
     ]
-    # assert len(out) == len(expected), f"{out=}"
-    # assert out == expected
     for number, line in enumerate(expected):
         assert line in out, f"{number=} {line=!r}"
 
