@@ -7,7 +7,6 @@ Levels
 * [x] test_HklSolver: direct calls to the HklSolver class
 * [x] test_hklpy2: use the hklpy2.creator
 * [x] test_ISN_Diffractometer: use the custom Diffractometer class from ISN
-* [x] test_hklpy_v1: test hklpy v1, with local fixes applied
 
 Procedure
 

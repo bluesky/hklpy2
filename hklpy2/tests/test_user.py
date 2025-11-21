@@ -512,6 +512,21 @@ def test_cahkl_no_solutions(specs, mode, pseudos, text, context, expected):
             None,
             id="psic example",
         ),
+        pytest.param(
+            dict(name="sim", geometry="E6C"),
+            "double_diffraction_horizontal",
+            [[noisy_det], "h2", 1.9, 2.1, "k2", 1.9, 2.1],
+            dict(
+                num=3,
+                pseudos=None,
+                reals=dict(omega=1, chi=2, phi=3, tth=4),
+                extras=dict(h4=2, k4=2, l4=0),
+                fail_on_exception=True,
+            ),
+            pytest.raises(KeyError),
+            "Unexpected extra axis name",
+            id="no hkl_4 extras",
+        ),
     ],
 )
 def test_scan_extra(specs, mode, scan_args, scan_kwargs, context, expected):

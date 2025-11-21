@@ -226,6 +226,13 @@ def test__fromdict(Klass, input, context, expected):
             pytest.raises(TimeoutError),
             f"{IOC_PREFIX}wrong_pv",
         ],
+        [
+            EpicsWavelengthRO,
+            dict(prefix=IOC_PREFIX, pv_wavelength="force:pytest.skip"),
+            {},
+            does_not_raise(),
+            None,
+        ],
     ],
 )
 def test_EpicsClasses(Klass, input, ref, context, expected):
