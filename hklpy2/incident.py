@@ -167,13 +167,13 @@ class _WavelengthBase(Device):
         self._wavelength_reference = None
         self.wavelength_updated_func = None
 
-        self.wavelength.subscribe(self.cb_wavelength)
+        self.wavelength.subscribe(self._wavelength_changed)
 
         # cancel subscriptions before object is garbage collected
         weakref.finalize(self.wavelength, self.wavelength.unsubscribe_all)
         atexit.register(self.cleanup_subscriptions)
 
-    def cb_wavelength(self, value, **kwargs):
+    def _wavelength_changed(self, value, **kwargs):
         """
         Called when wavelength changes (EPICS CA monitor event) or on-demand.
 
@@ -271,8 +271,8 @@ class WavelengthXray(Wavelength):
         if energy is not None:
             self.energy.put(energy)
 
-        self.energy._readback = self._energy  # initial synchronize
-        self.wavelength.subscribe(self.cb_wavelength)
+        self.wavelength.subscribe(self._wavelength_changed)
+        self._wavelength_changed(self._to_wavelength(self._energy))  # synchronize
 
     @property
     def _energy(self) -> float:
@@ -316,8 +316,9 @@ class WavelengthXray(Wavelength):
         )
         return energy
 
-    def cb_wavelength(self, value: float, **kwargs):
+    def _wavelength_changed(self, value: float, **kwargs):
         """Sync energy with wavelength changes."""
+        super()._wavelength_changed(value, **kwargs)
         self.energy._readback = self._to_energy(value)
 
 
