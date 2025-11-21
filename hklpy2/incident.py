@@ -167,13 +167,13 @@ class _WavelengthBase(Device):
         self._wavelength_reference = None
         self.wavelength_updated_func = None
 
-        self.wavelength.subscribe(self.cb_wavelength)
+        self.wavelength.subscribe(self._wavelength_changed)
 
         # cancel subscriptions before object is garbage collected
         weakref.finalize(self.wavelength, self.wavelength.unsubscribe_all)
         atexit.register(self.cleanup_subscriptions)
 
-    def cb_wavelength(self, value, **kwargs):
+    def _wavelength_changed(self, value, **kwargs):
         """
         Called when wavelength changes (EPICS CA monitor event) or on-demand.
 
@@ -271,25 +271,21 @@ class WavelengthXray(Wavelength):
         if energy is not None:
             self.energy.put(energy)
 
+        self.wavelength.subscribe(self._wavelength_changed)
+        self._wavelength_changed(self._to_wavelength(self._energy))  # synchronize
+
     @property
     def _energy(self) -> float:
         """Return the energy, computed from wavelength, in the current units."""
-        from .misc import convert_units
-
-        wavelength = convert_units(
-            self.wavelength.get(),
-            self.wavelength_units.get(),
-            INTERNAL_LENGTH_UNITS,
-        )
-        return convert_units(
-            A_KEV / wavelength,
-            INTERNAL_XRAY_ENERGY_UNITS,
-            self.energy_units.get(),
-        )
+        return self._to_energy(self.wavelength.get())
 
     @_energy.setter
     def _energy(self, value: float):
         """Given energy, set the wavelength, in the current units."""
+        self.wavelength.put(self._to_wavelength(value))
+
+    def _to_wavelength(self, value: float) -> float:
+        """Convert E to lambda."""
         from .misc import convert_units
 
         energy = convert_units(
@@ -297,13 +293,33 @@ class WavelengthXray(Wavelength):
             self.energy_units.get(),
             INTERNAL_XRAY_ENERGY_UNITS,
         )
-        self.wavelength.put(
-            convert_units(
-                A_KEV / energy,
-                INTERNAL_LENGTH_UNITS,
-                self.wavelength_units.get(),
-            )
+        wavelength = convert_units(
+            A_KEV / energy,
+            INTERNAL_LENGTH_UNITS,
+            self.wavelength_units.get(),
         )
+        return wavelength
+
+    def _to_energy(self, value: float) -> float:
+        """Convert lambda to E."""
+        from .misc import convert_units
+
+        wavelength = convert_units(
+            value,
+            self.wavelength_units.get(),
+            INTERNAL_LENGTH_UNITS,
+        )
+        energy = convert_units(
+            A_KEV / wavelength,
+            INTERNAL_XRAY_ENERGY_UNITS,
+            self.energy_units.get(),
+        )
+        return energy
+
+    def _wavelength_changed(self, value: float, **kwargs):
+        """Sync energy with wavelength changes."""
+        super()._wavelength_changed(value, **kwargs)
+        self.energy._readback = self._to_energy(value)
 
 
 class EpicsWavelengthRO(_WavelengthBase):
