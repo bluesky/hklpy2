@@ -748,6 +748,16 @@ def test_repeated_reflections(
             does_not_raise(),
             None,
         ],
+        pytest.param(
+            [[noisy_det], "PROBLEM", 1.9, 2.1],
+            dict(
+                pseudos=dict(h=2, k2=-1, l2=0),
+            ),
+            "psi_constant",
+            pytest.raises(KeyError, match="'PROBLEM' not in "),
+            None,
+            id="KeyError in diffract..scan_extra()",
+        ),
     ],
 )
 def test_scan_extra(scan_args, scan_kwargs, mode, context, expected):
