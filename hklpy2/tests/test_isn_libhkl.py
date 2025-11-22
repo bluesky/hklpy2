@@ -269,52 +269,56 @@ def test_HklSolver():
         assert len(solutions) == len(reals)
 
 
-# @pytest.mark.parametrize(
-#     "parms, context",
-#     [
-#         pytest.param(
-#             dict(geometry=GEOMETRY),
-#             does_not_raise(),
-#             id="no radius axis",
-#         ),
-#         pytest.param(
-#             dict(
-#                 geometry=GEOMETRY,
-#                 reals="mu eta chi phi yaw pitch".split(),
-#             ),
-#             does_not_raise(),
-#             id="only ISN reals",
-#         ),
-#         pytest.param(
-#             dict(
-#                 geometry=GEOMETRY,
-#                 reals="mu eta chi phi yaw pitch radius".split(),
-#             ),
-#             does_not_raise(),
-#             id="all ISN axes",
-#         ),
-#         pytest.param(
-#             dict(
-#                 geometry=GEOMETRY,
-#                 reals="chi eta mu phi pitch radius yaw".split(),
-#                 aliases=dict(reals="mu eta chi phi yaw pitch".split()),
-#             ),
-#             does_not_raise(),
-#             id="sorted ISN axes",
-#         ),
-#         pytest.param(
-#             dict(
-#                 geometry=GEOMETRY,
-#                 reals="aaa bbb ccc ddd eee fff ggg hhh".split(),
-#             ),
-#             does_not_raise(),
-#             id="custom AXES names",
-#         ),
-#     ],
-# )
-def test_hklpy2():  # parms, context
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        (
+            dict(geometry=GEOMETRY),
+            does_not_raise(),
+        ),
+        # pytest.param(
+        #     dict(geometry=GEOMETRY),
+        #     does_not_raise(),
+        #     id="no radius axis",
+        # ),
+        #         pytest.param(
+        #             dict(
+        #                 geometry=GEOMETRY,
+        #                 reals="mu eta chi phi yaw pitch".split(),
+        #             ),
+        #             does_not_raise(),
+        #             id="only ISN reals",
+        #         ),
+        #         pytest.param(
+        #             dict(
+        #                 geometry=GEOMETRY,
+        #                 reals="mu eta chi phi yaw pitch radius".split(),
+        #             ),
+        #             does_not_raise(),
+        #             id="all ISN axes",
+        #         ),
+        #         pytest.param(
+        #             dict(
+        #                 geometry=GEOMETRY,
+        #                 reals="chi eta mu phi pitch radius yaw".split(),
+        #                 aliases=dict(reals="mu eta chi phi yaw pitch".split()),
+        #             ),
+        #             does_not_raise(),
+        #             id="sorted ISN axes",
+        #         ),
+        #         pytest.param(
+        #             dict(
+        #                 geometry=GEOMETRY,
+        #                 reals="aaa bbb ccc ddd eee fff ggg hhh".split(),
+        #             ),
+        #             does_not_raise(),
+        #             id="custom AXES names",
+        #         ),
+    ],
+)
+def test_hklpy2(parms, context):
     """Verify the ISN geometry work as expected."""
-    parms = dict(geometry=GEOMETRY)
+    # parms = dict(geometry=GEOMETRY)
     with does_not_raise():
         psic = hklpy2.creator(**parms)
         assert psic.core.solver.name == SOLVER
