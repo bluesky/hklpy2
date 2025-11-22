@@ -23,8 +23,10 @@ Procedure
 
 import math
 import uuid
+from contextlib import nullcontext as does_not_raise
 
 import numpy as np
+import pytest
 
 import hklpy2
 from hklpy2.backends.hkl_soleil import LIBHKL_DETECTOR_TYPE
@@ -267,69 +269,114 @@ def test_HklSolver():
         assert len(solutions) == len(reals)
 
 
-def test_hklpy2():
-    psic = hklpy2.creator(geometry=GEOMETRY)
-    assert psic.core.solver.name == SOLVER
-    assert psic.core.solver.engine_name == ENGINE
-    assert psic.core.geometry == GEOMETRY
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry=GEOMETRY),
+            does_not_raise(),
+            id="no radius axis",
+        ),
+        pytest.param(
+            dict(
+                geometry=GEOMETRY,
+                reals="mu eta chi phi yaw pitch".split(),
+            ),
+            does_not_raise(),
+            id="only ISN reals",
+        ),
+        pytest.param(
+            dict(
+                geometry=GEOMETRY,
+                reals="mu eta chi phi yaw pitch radius".split(),
+            ),
+            does_not_raise(),
+            id="all ISN axes",
+        ),
+        pytest.param(
+            dict(
+                geometry=GEOMETRY,
+                reals="chi eta mu phi pitch radius yaw".split(),
+                aliases=dict(reals="mu eta chi phi yaw pitch".split()),
+            ),
+            does_not_raise(),
+            id="sorted ISN axes",
+        ),
+        pytest.param(
+            dict(
+                geometry=GEOMETRY,
+                reals="aaa bbb ccc ddd eee fff ggg hhh".split(),
+            ),
+            does_not_raise(),
+            id="custom AXES names",
+        ),
+    ],
+)
+def test_hklpy2(parms, context):
+    """Verify the ISN geometry work as expected."""
+    with context:
+        psic = hklpy2.creator(**parms)
+        assert psic.core.solver.name == SOLVER
+        assert psic.core.solver.engine_name == ENGINE
+        assert psic.core.geometry == GEOMETRY
 
-    psic.core.mode = MODE
-    assert psic.core.mode == MODE
+        psic.core.mode = MODE
+        assert psic.core.mode == MODE
 
-    psic.beam.wavelength.put(WAVELENGTH)
-    assert math.isclose(psic.beam.wavelength.get(), WAVELENGTH, abs_tol=0.001)
+        psic.beam.wavelength.put(WAVELENGTH)
+        assert math.isclose(psic.beam.wavelength.get(), WAVELENGTH, abs_tol=0.001)
 
-    psic.core.add_sample(SAMPLE_NAME, SAMPLE_LATTICE_A)
-    assert psic.core.sample.name == SAMPLE_NAME
-    assert f"a={SAMPLE_LATTICE_A}" in str(psic.core.sample)
+        psic.core.add_sample(SAMPLE_NAME, SAMPLE_LATTICE_A)
+        assert psic.core.sample.name == SAMPLE_NAME
+        assert f"a={SAMPLE_LATTICE_A}" in str(psic.core.sample)
 
-    r001 = psic.core.add_reflection(*R001, name="r001")
-    r100 = psic.core.add_reflection(*R100, name="r100")
-    assert len(psic.core.sample.reflections) == 2
-    assert np.allclose(
-        psic.core.calc_UB(r001, r100),
-        UB_R001_R100,
-        atol=0.001,
-    )
-
-    # - - - - - - - - - - - - - - - - Test inverse() calculations
-    # pseudos = inverse(reals)
-    for reflection in (r001, r100):
-        pseudos = psic.core.inverse(reflection.reals)
+        r001 = psic.core.add_reflection(*R001, name="r001")
+        r100 = psic.core.add_reflection(*R100, name="r100")
+        assert len(psic.core.sample.reflections) == 2
         assert np.allclose(
-            list(pseudos.values()),
-            list(reflection.pseudos.values()),
+            psic.core.calc_UB(r001, r100),
+            UB_R001_R100,
             atol=0.001,
         )
 
-    # - - - - - - - - - - - - - - - - Test forward() calculations
-    # Bump the constraints out just a bit so roundoff or
-    # truncation does not cause any solutions to be dropped.
-    for axis in psic.real_axis_names:
-        psic.core.constraints[axis].limits = -180.01, 180.01
+        # - - - - - - - - - - - - - - - - Test inverse() calculations
+        # pseudos = inverse(reals)
+        for reflection in (r001, r100):
+            pseudos = psic.core.inverse(reflection.reals)
+            assert np.allclose(
+                list(pseudos.values()),
+                list(reflection.pseudos.values()),
+                atol=0.001,
+            )
 
-    # list of reals = forward(pseudos)
-    for pseudos, reals in FORWARD_SOLUTIONS.items():
-        solutions = psic.core.forward(
-            dict(
-                zip(
-                    psic.pseudo_axis_names,
-                    pseudos,
+        # - - - - - - - - - - - - - - - - Test forward() calculations
+        # Bump the constraints out just a bit so roundoff or
+        # truncation does not cause any solutions to be dropped.
+        for axis in psic.real_axis_names:
+            psic.core.constraints[axis].limits = -180.01, 180.01
+
+        # list of reals = forward(pseudos)
+        for pseudos, reals in FORWARD_SOLUTIONS.items():
+            solutions = psic.core.forward(
+                dict(
+                    zip(
+                        psic.pseudo_axis_names,
+                        pseudos,
+                    )
                 )
             )
-        )
-        assert len(solutions) == len(reals)
+            assert len(solutions) == len(reals)
 
-        if len(solutions):
-            assessments = [
-                np.allclose(
-                    list(sol),
-                    reals[i],
-                    atol=0.01,
-                )
-                for i, sol in enumerate(solutions)
-            ]
-            assert True in assessments, f"{solutions=} {reals=}"
+            if len(solutions):
+                assessments = [
+                    np.allclose(
+                        list(sol),
+                        reals[i],
+                        atol=0.01,
+                    )
+                    for i, sol in enumerate(solutions)
+                ]
+                assert True in assessments, f"{solutions=} {reals=}"
 
 
 def test_ISN_Diffractometer():
@@ -342,7 +389,7 @@ def test_ISN_Diffractometer():
     class Diffractometer(DiffractometerBase):
         """Example custom diffractometer"""
 
-        _real = "mu eta chi phi pitch yaw".split()
+        _real = "mu eta chi phi yaw pitch".split()
 
         h = Component(Hklpy2PseudoAxis, "", kind="hinted")
         k = Component(Hklpy2PseudoAxis, "", kind="hinted")
@@ -374,7 +421,7 @@ def test_ISN_Diffractometer():
     psic.radius._limits = 0, 1000
     psic.radius.move(800)
     psic.yaw.move(40)
-    psic.pitch.move(psic.yaw.position / 2)
+    psic.mu.move(psic.yaw.position / 2)
     psic.core.mode = MODE
     psic.beam.wavelength.put(WAVELENGTH)
 

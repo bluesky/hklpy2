@@ -9,7 +9,8 @@ import pytest
 from ophyd.utils import ReadOnlyError
 
 from ..diffract import creator
-from ..incident import DEFAULT_SOURCE_TYPE, A_KEV
+from ..incident import A_KEV
+from ..incident import DEFAULT_SOURCE_TYPE
 from ..incident import DEFAULT_WAVELENGTH
 from ..incident import DEFAULT_WAVELENGTH_DEADBAND
 from ..incident import EpicsMonochromatorRO
