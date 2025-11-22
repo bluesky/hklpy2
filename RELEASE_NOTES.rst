@@ -30,6 +30,24 @@ describe future plans.
 
     Release expected 2026-H1.
 
+0.2.1
+#####
+
+Released 2025-11-22.
+
+Fixes
+-----------
+
+* Resolve inconsistent forward() results.
+* WavelengthXray: Synchronize & initialize energy when wavelength changes.
+
+Maintenance
+-----------
+
+* Add APS ISN diffractometer notebook.
+* Lattice: 0.0 and None are different.
+* Remove unit tests for tardis diffractometer.
+
 0.2.0
 #####
 
