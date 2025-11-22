@@ -277,39 +277,39 @@ def test_HklSolver():
             does_not_raise(),
             id="no radius axis",
         ),
-        #         pytest.param(
-        #             dict(
-        #                 geometry=GEOMETRY,
-        #                 reals="mu eta chi phi yaw pitch".split(),
-        #             ),
-        #             does_not_raise(),
-        #             id="only ISN reals",
-        #         ),
-        #         pytest.param(
-        #             dict(
-        #                 geometry=GEOMETRY,
-        #                 reals="mu eta chi phi yaw pitch radius".split(),
-        #             ),
-        #             does_not_raise(),
-        #             id="all ISN axes",
-        #         ),
-        #         pytest.param(
-        #             dict(
-        #                 geometry=GEOMETRY,
-        #                 reals="chi eta mu phi pitch radius yaw".split(),
-        #                 aliases=dict(reals="mu eta chi phi yaw pitch".split()),
-        #             ),
-        #             does_not_raise(),
-        #             id="sorted ISN axes",
-        #         ),
-        #         pytest.param(
-        #             dict(
-        #                 geometry=GEOMETRY,
-        #                 reals="aaa bbb ccc ddd eee fff ggg hhh".split(),
-        #             ),
-        #             does_not_raise(),
-        #             id="custom AXES names",
-        #         ),
+        pytest.param(
+            dict(
+                geometry=GEOMETRY,
+                reals="mu eta chi phi yaw pitch".split(),
+            ),
+            does_not_raise(),
+            id="only ISN reals",
+        ),
+        pytest.param(
+            dict(
+                geometry=GEOMETRY,
+                reals="mu eta chi phi yaw pitch radius".split(),
+            ),
+            does_not_raise(),
+            id="all ISN axes",
+        ),
+        pytest.param(
+            dict(
+                geometry=GEOMETRY,
+                reals="chi eta mu phi pitch radius yaw".split(),
+                aliases=dict(reals="mu eta chi phi yaw pitch".split()),
+            ),
+            does_not_raise(),
+            id="sorted ISN axes",
+        ),
+        pytest.param(
+            dict(
+                geometry=GEOMETRY,
+                reals="aaa bbb ccc ddd eee fff ggg hhh".split(),
+            ),
+            does_not_raise(),
+            id="custom AXES names",
+        ),
     ],
 )
 def test_hklpy2(parms, context):
