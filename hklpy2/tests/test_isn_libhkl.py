@@ -26,6 +26,7 @@ import uuid
 from contextlib import nullcontext as does_not_raise
 
 import numpy as np
+import pytest
 
 import hklpy2
 from hklpy2.backends.hkl_soleil import LIBHKL_DETECTOR_TYPE
