@@ -749,12 +749,12 @@ def test_repeated_reflections(
             None,
         ],
         pytest.param(
-            [[noisy_det], "PROBLEM", 1.9, 2.1],
+            [[noisy_det], "NO_SUCH_SCAN_AXIS", 1.9, 2.1],
             dict(
-                pseudos=dict(h=2, k2=-1, l2=0),
+                pseudos=dict(h2=2, k2=-1, l2=0),
             ),
             "psi_constant",
-            pytest.raises(KeyError, match="'PROBLEM' not in "),
+            pytest.raises(KeyError, match="'NO_SUCH_SCAN_AXIS' not in "),
             None,
             id="KeyError in diffract..scan_extra()",
         ),
