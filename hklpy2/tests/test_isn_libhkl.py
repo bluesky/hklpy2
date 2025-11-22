@@ -314,6 +314,7 @@ def test_HklSolver():
     ],
 )
 def test_hklpy2(parms, context):
+    """Verify the ISN geometry work as expected."""
     with context:
         psic = hklpy2.creator(**parms)
         assert psic.core.solver.name == SOLVER
