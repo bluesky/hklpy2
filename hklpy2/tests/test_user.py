@@ -231,7 +231,8 @@ def test_pa(fourc, capsys):
     twopi = roundoff(2 * math.pi, 4)
     expected = [
         "diffractometer='fourc'",
-        "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
+        # Don't test for version-specific content.
+        # "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
         "Sample(name='sample', lattice=Lattice(a=1, system='cubic'))",
         "Orienting reflections: []",
         "U=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]",
@@ -249,8 +250,8 @@ def test_pa(fourc, capsys):
         "pseudos: h=0, k=0, l=0",
         "reals: omega=0, chi=0, phi=0, tth=0",
     ]
-    assert len(out) == len(expected), f"{out=}"
-    assert out == expected
+    for number, line in enumerate(expected):
+        assert line in out, f"{number=} {line=!r}"
 
 
 @pytest.mark.parametrize(
@@ -510,6 +511,21 @@ def test_cahkl_no_solutions(specs, mode, pseudos, text, context, expected):
             does_not_raise(),
             None,
             id="psic example",
+        ),
+        pytest.param(
+            dict(name="sim", geometry="E6C"),
+            "double_diffraction_horizontal",
+            [[noisy_det], "h2", 1.9, 2.1, "k2", 1.9, 2.1],
+            dict(
+                num=3,
+                pseudos=None,
+                reals=dict(omega=1, chi=2, phi=3, tth=4),
+                extras=dict(h4=2, k4=2, l4=0),
+                fail_on_exception=True,
+            ),
+            pytest.raises(KeyError),
+            "Unexpected extra axis name",
+            id="no hkl_4 extras",
         ),
     ],
 )
