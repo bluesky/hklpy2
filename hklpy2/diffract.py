@@ -981,12 +981,14 @@ def diffractometer_class_factory(
     geometry: str = "E4CV",
     beam_kwargs: dict[str, object] = {},
     solver_kwargs: dict[str, object] = {"engine": "hkl"},
+    _pseudo: Optional[Sequence[str]] = None,
     pseudos: list = [],
+    _real: Optional[Sequence[str]] = None,
     reals: list[str] | dict[str, str | None] = {},
     motor_labels: list = ["motors"],
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],
-    aliases: dict[str, list[str]] = {},
+    aliases: dict[str, list[str]] = {},  # TODO 164 remove
     forward_solution_function: Optional[str] = None,
 ) -> DiffractometerBase:
     """
@@ -1003,11 +1005,15 @@ def diffractometer_class_factory(
         (default: '{"class": "hklpy2.incident.WavelengthXray"}')
     solver_kwargs : str
         Additional configuration for the solver. (default: '{"engine": "hkl"}')
+    _pseudo: list[str]
+        TODO replaces aliases["pseudos"]
     pseudos : list
         Specification of the names of any pseudo axis positioners
         in addition to the ones provided by the solver.
 
         (default: '[]' which means no additional pseudo axes)
+    _real: list[str]
+        TODO replaces aliases["reals"]
     reals : dict or list or None
         Specification of the real axis motors.
 
@@ -1141,8 +1147,19 @@ def diffractometer_class_factory(
                     pv=reals.get(axis, None),
                 )
 
+        # FIXME 164
         defaults = all_axes[: len(solver_axes)]
         factory_class_attributes[f"_{singular}"] = aliases.get(space, defaults)
+
+    # TODO #164 replace the for loop above
+    # _pseudo = list(_pseudo) if _pseudo is not None else []
+    # _real = list(_real) if _real is not None else []
+    # if _pseudo is None or len(_pseudo) == 0:
+    #     _pseudo = []  # TODO #164 set defaults from solver_object.pseudo_axis_names
+    # if _real is None or len(_real) == 0:
+    #     _real = []  # TODO #164 set defaults from solver_object.real_axis_names
+    # factory_class_attributes["_pseudo"] = _pseudo
+    # factory_class_attributes["_real"] = _real
 
     def constructor(
         self,
