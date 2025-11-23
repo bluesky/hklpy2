@@ -14,7 +14,9 @@ import pathlib
 from collections.abc import Iterable
 from typing import Any
 from typing import Callable
+from typing import Mapping
 from typing import Optional
+from typing import Sequence
 from typing import Union
 
 import numpy as np
@@ -1061,10 +1063,16 @@ def diffractometer_class_factory(
     if not isinstance(aliases, dict):
         raise TypeError(f"Expected a dict.  Received {aliases=!r}")
 
-    def make_component_axis(axis_type, labels=[], pv=None):
+    def make_component_axis(
+        axis_type: str,
+        labels: Optional[Sequence[str]] = None,
+        pv: Optional[Union[str, Mapping[str, Any]]] = None,
+    ) -> Cpt:
         """Return a pseudo or real Component from specifications."""
+        labels = list(labels) if labels is not None else []
         _class_name = None
         kwargs = dict(kind=H_OR_N, labels=labels)
+
         if axis_type == "pseudo":
             _class_name = "hklpy2.diffract.Hklpy2PseudoAxis"
             kwargs["prefix"] = ""
