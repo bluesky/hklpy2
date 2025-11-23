@@ -4,59 +4,47 @@ import pytest
 
 import hklpy2
 
-from ..diffract import Hklpy2PseudoAxis
 from ..ops import DEFAULT_SAMPLE_NAME
 from .common import assert_context_result
 
 
 @pytest.fixture
 def fourc():
-    from ophyd import Component as Cpt
-    from ophyd import Kind
-    from ophyd import SoftPositioner
-
-    NORMAL_HINTED = Kind.hinted | Kind.normal
-
-    class Fourc(hklpy2.DiffractometerBase):
-        """Test case."""
-
-        _pseudo = "h k l".split()
-        _real = "theta chi phi ttheta".split()
-
-        # pseudo-space axes, in order expected by hkl_soleil E4CV, engine="hkl"
-        h = Cpt(Hklpy2PseudoAxis, kind=NORMAL_HINTED)  # noqa: E741
-        k = Cpt(Hklpy2PseudoAxis, kind=NORMAL_HINTED)  # noqa: E741
-        l = Cpt(Hklpy2PseudoAxis, kind=NORMAL_HINTED)  # noqa: E741
-
-        # real-space axes, in order expected by hkl_soleil E4CV
-        # using different names
-        theta = Cpt(SoftPositioner, limits=(-180, 180), init_pos=0, kind=NORMAL_HINTED)
-        chi = Cpt(SoftPositioner, limits=(-180, 180), init_pos=0, kind=NORMAL_HINTED)
-        phi = Cpt(SoftPositioner, limits=(-180, 180), init_pos=0, kind=NORMAL_HINTED)
-        ttheta = Cpt(SoftPositioner, limits=(-170, 170), init_pos=0, kind=NORMAL_HINTED)
-
-        # pseudo-space extra axes used in a couple modes
-        h2 = Cpt(Hklpy2PseudoAxis, kind=NORMAL_HINTED)  # noqa: E741
-        k2 = Cpt(Hklpy2PseudoAxis, kind=NORMAL_HINTED)  # noqa: E741
-        l2 = Cpt(Hklpy2PseudoAxis, kind=NORMAL_HINTED)  # noqa: E741
-
-        # real-space extra axis used in a couple modes
-        psi = Cpt(SoftPositioner, limits=(-170, 170), init_pos=0, kind=NORMAL_HINTED)
-
-        # another Component, not used (yet)
-        energy = Cpt(SoftPositioner, limits=(5, 35), init_pos=12.4, kind=NORMAL_HINTED)
-
-        def __init__(self, *args, **kwargs):
-            super().__init__(
-                *args,
-                solver="hkl_soleil",
-                geometry="E4CV",
-                solver_kwargs={"engine": "hkl"},
-                **kwargs,
-            )
-
-    fourc = Fourc(name="fourc")
-    yield fourc
+    sim = hklpy2.creator(
+        aliases=dict(
+            pseudos="h k l".split(),
+            reals="theta chi phi ttheta".split(),
+        ),
+        pseudos="h k l h2 k2 l2".split(),
+        reals=dict(
+            theta=None,
+            chi=None,
+            phi=None,
+            ttheta={
+                "class": "ophyd.SoftPositioner",
+                "limits": (-170, 170),
+                "init_pos": 0,
+                "kind": "hinted",
+            },
+            psi={
+                "class": "ophyd.SoftPositioner",
+                "limits": (-170, 170),
+                "init_pos": 0,
+                "kind": "hinted",
+            },
+            energy={
+                "class": "ophyd.SoftPositioner",
+                "limits": (5, 35),
+                "init_pos": 12.4,
+                "kind": "hinted",
+            },
+        ),
+        solver="hkl_soleil",
+        geometry="E4CV",
+        solver_kwargs={"engine": "hkl"},
+        name="fourc",
+    )
+    yield sim
 
 
 def test_as_in_demo_notebook(fourc):
@@ -80,7 +68,7 @@ def test_as_in_demo_notebook(fourc):
     assert fourc.core.solver_real_axis_names == "omega chi phi tth".split()
     assert fourc.core.solver_extra_axis_names == []
 
-    expected = "{'position': FourcPseudoPos(h=0, k=0, l=0)}"
+    expected = "{'position': Hklpy2DiffractometerPseudoPos(h=0, k=0, l=0)}"
     assert str(fourc.report) == expected, f"{fourc.report=!r}"
 
     assert len(fourc.samples) == 1
