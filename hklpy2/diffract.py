@@ -23,13 +23,11 @@ from bluesky.protocols import Movable
 from bluesky.protocols import Readable
 from cytoolz import partition
 from ophyd import Component as Cpt
-from ophyd import EpicsMotor
 from ophyd import Kind
 from ophyd import PositionerBase
 from ophyd import PseudoPositioner
 from ophyd import PseudoSingle
 from ophyd import Signal
-from ophyd import SoftPositioner
 from ophyd.device import required_for_connection
 from ophyd.pseudopos import pseudo_position_argument
 from ophyd.pseudopos import real_position_argument
@@ -1064,29 +1062,22 @@ def diffractometer_class_factory(
         raise TypeError(f"Expected a dict.  Received {aliases=!r}")
 
     def make_component_axis(axis_type, labels=[], pv=None):
+        """Return a pseudo or real Component from specifications."""
+        _class_name = None
+        kwargs = dict(kind=H_OR_N, labels=labels)
         if axis_type == "pseudo":
-            return Cpt(Hklpy2PseudoAxis, "", kind=H_OR_N)
-        elif axis_type == "real":
+            _class_name = "hklpy2.diffract.Hklpy2PseudoAxis"
+            kwargs["prefix"] = ""
+        else:  # real
             if pv is None:
-                return Cpt(
-                    SoftPositioner,
-                    limits=(-180, 180),
-                    init_pos=0,
-                    kind=H_OR_N,
-                    labels=motor_labels,
-                )
+                _class_name = "ophyd.SoftPositioner"
+                kwargs.update({"limits": (-180, 180), "init_pos": 0})
             elif isinstance(pv, str):
-                return Cpt(EpicsMotor, pv, kind=H_OR_N, labels=motor_labels)
+                _class_name = "ophyd.EpicsMotor"
+                kwargs.update({"prefix": pv})
             elif isinstance(pv, dict):
-                motor_class = pv.get("class")
-                if motor_class is None:
-                    raise KeyError(
-                        "Expected 'class' key in motor specification ({pv=})."
-                    )
-                motor_class = dynamic_import(motor_class)
-                kwargs = dict(kind=H_OR_N, labels=motor_labels)
-                kwargs.update({key: pv[key] for key in pv if key != "class"})
-                return Cpt(motor_class, **kwargs)
+                _class_name = pv.pop("class", None)
+                kwargs.update(pv)
             else:
                 raise TypeError(
                     f"Incorrect type '{type(pv).__name__}' for {pv=!r}."
@@ -1094,8 +1085,20 @@ def diffractometer_class_factory(
                     " Expected 'None', a PV name (str), or a dictionary specifying"
                     " a custom configuration."
                 )
+            for label in motor_labels:
+                if label not in kwargs["labels"]:
+                    kwargs["labels"].append(label)
 
-    factory_class_attributes = {}  # Set defaults for this custom class.
+        if _class_name is None:
+            raise KeyError(
+                f"Expected 'class' key, received {_class_name}:"
+                # .
+                f" {axis_type=}, {pv=}, {labels=!r}: {kwargs}"
+            )
+        _class = dynamic_import(_class_name)
+        return Cpt(_class, **kwargs)
+
+    factory_class_attributes = {}  # Definition of __this__ custom class.
     aliases = {}
 
     beam_class = beam_kwargs.pop("class", "hklpy2.incident.WavelengthXray")
