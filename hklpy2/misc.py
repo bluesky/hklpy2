@@ -13,6 +13,7 @@ Miscellaneous Support.
     ~check_value_in_list
     ~compare_float_dicts
     ~convert_units
+    ~define_real_axis
     ~dict_device_factory
     ~distance_between_pos_tuples
     ~dynamic_import
@@ -23,6 +24,9 @@ Miscellaneous Support.
     ~list_orientation_runs
     ~load_yaml
     ~load_yaml_file
+    ~make_component
+    ~make_dynamic_instance
+    ~parse_factory_axes
     ~pick_closest_solution
     ~pick_first_solution
     ~roundoff
@@ -77,7 +81,9 @@ import warnings
 from collections.abc import Iterable
 from importlib.metadata import entry_points
 from typing import Any
+from typing import Mapping
 from typing import NamedTuple
+from typing import Sequence
 from typing import Type
 from typing import Union
 
@@ -114,6 +120,9 @@ UREG = pint.UnitRegistry()
 
 PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
 """Exception from pint that we are trapping here."""
+
+DEFAULT_MOTOR_LABELS = ["motors"]
+"""Default labels applied to real-axis positioners."""
 
 
 def validate_and_canonical_unit(value: str, target_units: str) -> str:
@@ -584,6 +593,33 @@ def convert_units(value: float, old_units: str, new_units: str) -> float:
     return UREG.Quantity(value, old_units).to(new_units).magnitude
 
 
+def define_real_axis(specs, kwargs):
+    """Return class and kwargs of a real axis from its 'specs'."""
+    kwargs["labels"] += DEFAULT_MOTOR_LABELS
+
+    if specs is None:
+        class_name = "ophyd.SoftPositioner"
+        kwargs.update({"limits": (-180, 180), "init_pos": 0})
+    elif isinstance(specs, str):
+        class_name = "ophyd.EpicsMotor"
+        kwargs.update({"prefix": specs})
+    elif isinstance(specs, dict):
+        class_name = specs.pop("class", None)
+        for label in specs.pop("labels", []):
+            if label not in kwargs["labels"]:
+                kwargs["labels"].append(label)
+        kwargs.update(specs)
+    else:
+        raise TypeError(
+            f"Incorrect type '{type(specs).__name__}' for {specs=!r}."
+            #
+            " Expected 'None', a PV name (str), or a dictionary specifying"
+            " a custom configuration."
+        )
+
+    return class_name, kwargs
+
+
 def dict_device_factory(data: dict, **kwargs):
     """
     Create a ``DictionaryDevice()`` class using the supplied dictionary.
@@ -878,6 +914,87 @@ def load_yaml_file(file):
     if not path.exists():
         raise FileExistsError(f"YAML file '{path}' does not exist.")
     return load_yaml(open(path, "r").read())
+
+
+def make_component(call_name: str, **kwargs: Any) -> Component:
+    """Create an Component for a custom ophyd Device class."""
+    CallableObject = dynamic_import(call_name)
+    return make_dynamic_instance("ophyd.Component", CallableObject, **kwargs)
+
+
+def make_dynamic_instance(call_name: str, *args: Any, **kwargs: Any) -> Any:
+    """Return an instance of the Python 'call_name'."""
+    DynamicCallable = dynamic_import(call_name)
+    if not callable(DynamicCallable):
+        raise TypeError(f"{call_name!r} is not callable")
+    return DynamicCallable(*args, **kwargs)
+
+
+def parse_factory_axes(
+    *,
+    space: str = None,
+    axes: Union[Mapping[str, Any], None, Sequence[str]] = None,
+    order: Sequence[str] = None,
+    canonical: Sequence[str] = None,
+    **_ignored: Any,
+) -> Mapping[str, Union[Component, Sequence[str]]]:
+    """
+    Parse a set of axis specifications, return Device class attributes.
+
+    Called from the diffract.diffractometer_class_factory().
+    """
+    if space not in ("pseudos", "reals"):
+        raise KeyError(
+            f"Unknown {space=!r}."
+            #
+            " Must be either 'pseudos' or 'reals'."
+        )
+
+    if order is not None and len(order) < len(canonical):
+        raise ValueError(f"{len(order)=} must be >= {len(canonical)=}")
+    order = order or []
+    learn_order = len(order) == 0
+
+    _axes = axes
+    if _axes is None:
+        _axes = list(canonical)
+    if len(set(_axes)) < len(_axes):
+        raise ValueError(f"Duplicates in axes={_axes}")
+    if isinstance(_axes, list):  # make axes a dict now
+        _axes = {k: None for k in _axes}
+
+    if not learn_order and len(order) != len(set(order)):
+        raise ValueError(f"Duplicates in {order=}.")
+
+    attributes = {}
+    for i, axis_name in enumerate(_axes):
+        axis = _axes[axis_name]
+        kwargs = dict(kind="hinted", labels=[])
+        class_name = "class_name"
+        if space == "pseudos":
+            class_name = "hklpy2.diffract.Hklpy2PseudoAxis"
+            kwargs["prefix"] = ""
+        elif space == "reals":
+            class_name, kwargs = define_real_axis(axis, kwargs)
+        if learn_order and i < len(canonical):
+            order.append(axis_name)
+
+        attributes[axis_name] = make_component(class_name, **kwargs)
+
+    if len(order) > len(canonical):
+        raise ValueError(
+            f"Too many axes specified in {order=}."
+            #
+            f" Expected {len(canonical)}."
+        )
+    for axis_name in order:
+        if axis_name not in _axes:
+            raise KeyError(f"Unknown {axis_name=!r} in {order=!r}")
+
+    # Define specific axis ordering attribute: '_pseudo' or '_real'
+    attributes["_" + space.rstrip("s")] = order
+
+    return attributes
 
 
 def pick_closest_solution(
