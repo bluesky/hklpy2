@@ -1112,17 +1112,17 @@ def diffractometer_class_factory(
         _class = dynamic_import(_class_name)
         return Cpt(_class, **kwargs)
 
-    factory_class_attributes = {}  # Definition of __this__ custom class.
+    class_attributes = {}  # Definition of __this__ custom class.
     aliases = {}
 
     beam_class = beam_kwargs.pop("class", "hklpy2.incident.WavelengthXray")
     if isinstance(beam_class, str):
         beam_class = dynamic_import(beam_class)
-    factory_class_attributes["beam"] = Cpt(beam_class, **beam_kwargs)
+    class_attributes["beam"] = Cpt(beam_class, **beam_kwargs)
 
     if forward_solution_function is None:
         forward_solution_function = "hklpy2.misc.pick_first_solution"
-    factory_class_attributes["_forward_solution"] = dynamic_import(
+    class_attributes["_forward_solution"] = dynamic_import(
         forward_solution_function,
     )
 
@@ -1135,13 +1135,13 @@ def diffractometer_class_factory(
             solver_axes = solver_object.pseudo_axis_names
             all_axes = pseudos if len(pseudos) > 0 else solver_axes
             for axis in all_axes:
-                factory_class_attributes[axis] = make_component_axis(singular)
+                class_attributes[axis] = make_component_axis(singular)
 
         else:  # reals
             solver_axes = solver_object.real_axis_names
             all_axes = list(reals) if len(reals) > 0 else solver_axes
             for axis in all_axes:
-                factory_class_attributes[axis] = make_component_axis(
+                class_attributes[axis] = make_component_axis(
                     singular,
                     labels=motor_labels,
                     pv=reals.get(axis, None),
@@ -1149,7 +1149,7 @@ def diffractometer_class_factory(
 
         # FIXME 164
         defaults = all_axes[: len(solver_axes)]
-        factory_class_attributes[f"_{singular}"] = aliases.get(space, defaults)
+        class_attributes[f"_{singular}"] = aliases.get(space, defaults)
 
     # TODO #164 replace the for loop above
     # _pseudo = list(_pseudo) if _pseudo is not None else []
@@ -1158,8 +1158,8 @@ def diffractometer_class_factory(
     #     _pseudo = []  # TODO #164 set defaults from solver_object.pseudo_axis_names
     # if _real is None or len(_real) == 0:
     #     _real = []  # TODO #164 set defaults from solver_object.real_axis_names
-    # factory_class_attributes["_pseudo"] = _pseudo
-    # factory_class_attributes["_real"] = _real
+    # class_attributes["_pseudo"] = _pseudo
+    # class_attributes["_real"] = _real
 
     def constructor(
         self,
@@ -1168,8 +1168,8 @@ def diffractometer_class_factory(
         solver: str = solver,
         geometry: str = geometry,
         solver_kwargs: dict = solver_kwargs,
-        pseudos: list[str] = factory_class_attributes["_pseudo"],
-        reals: list[str] = factory_class_attributes["_real"],
+        pseudos: list[str] = class_attributes["_pseudo"],
+        reals: list[str] = class_attributes["_real"],
         **kwargs,
     ):
         DiffractometerBase.__init__(
@@ -1183,5 +1183,5 @@ def diffractometer_class_factory(
             **kwargs,
         )
 
-    factory_class_attributes["__init__"] = constructor
-    return type(class_name, tuple(class_bases), factory_class_attributes)
+    class_attributes["__init__"] = constructor
+    return type(class_name, tuple(class_bases), class_attributes)
