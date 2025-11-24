@@ -205,7 +205,7 @@ def test_unknown_reflection():
             ),
             "a b c d".split(),  # standard order
             pytest.raises(KeyError),
-            "Expected 'class' key in motor specification",
+            "Expected 'class' key, received None",
         ],
         [
             "h k l".split(),
