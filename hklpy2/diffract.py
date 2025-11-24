@@ -14,7 +14,6 @@ import pathlib
 from collections.abc import Iterable
 from typing import Any
 from typing import Callable
-from typing import Mapping
 from typing import Optional
 from typing import Sequence
 from typing import Union
@@ -1055,6 +1054,7 @@ def diffractometer_class_factory(
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     """
     from .misc import dynamic_import
+    from .misc import parse_factory_axes
     from .misc import solver_factory
 
     # print(f"diffractometer_class_factory({solver=!r}, {geometry=!r})")
@@ -1068,49 +1068,6 @@ def diffractometer_class_factory(
             raise TypeError(f"Expected a dict.  Received {reals=!r}")
     if not isinstance(aliases, dict):
         raise TypeError(f"Expected a dict.  Received {aliases=!r}")
-
-    def make_component_axis(
-        axis_type: str,
-        labels: Optional[Sequence[str]] = None,
-        pv: Optional[Union[str, Mapping[str, Any]]] = None,
-    ) -> Cpt:
-        """Return a pseudo or real Component from specifications."""
-        labels = list(labels) if labels is not None else []
-        _class_name = None
-        kwargs = dict(kind=H_OR_N, labels=labels)
-
-        if axis_type == "pseudo":
-            _class_name = "hklpy2.diffract.Hklpy2PseudoAxis"
-            kwargs["prefix"] = ""
-        else:  # real
-            if pv is None:
-                _class_name = "ophyd.SoftPositioner"
-                kwargs.update({"limits": (-180, 180), "init_pos": 0})
-            elif isinstance(pv, str):
-                _class_name = "ophyd.EpicsMotor"
-                kwargs.update({"prefix": pv})
-            elif isinstance(pv, dict):
-                _class_name = pv.pop("class", None)
-                kwargs.update(pv)
-            else:
-                raise TypeError(
-                    f"Incorrect type '{type(pv).__name__}' for {pv=!r}."
-                    #
-                    " Expected 'None', a PV name (str), or a dictionary specifying"
-                    " a custom configuration."
-                )
-            for label in motor_labels:
-                if label not in kwargs["labels"]:
-                    kwargs["labels"].append(label)
-
-        if _class_name is None:
-            raise KeyError(
-                f"Expected 'class' key, received {_class_name}:"
-                # .
-                f" {axis_type=}, {pv=}, {labels=!r}: {kwargs}"
-            )
-        _class = dynamic_import(_class_name)
-        return Cpt(_class, **kwargs)
 
     class_attributes = {}  # Definition of __this__ custom class.
     aliases = {}
@@ -1128,38 +1085,22 @@ def diffractometer_class_factory(
 
     # Find the chosen solver.  It describes its various axes.
     solver_object = solver_factory(solver, geometry, **solver_kwargs)
-
-    for space in "pseudos reals".split():
-        singular = space.rstrip("s")
-        if space == "pseudos":
-            solver_axes = solver_object.pseudo_axis_names
-            all_axes = pseudos if len(pseudos) > 0 else solver_axes
-            for axis in all_axes:
-                class_attributes[axis] = make_component_axis(singular)
-
-        else:  # reals
-            solver_axes = solver_object.real_axis_names
-            all_axes = list(reals) if len(reals) > 0 else solver_axes
-            for axis in all_axes:
-                class_attributes[axis] = make_component_axis(
-                    singular,
-                    labels=motor_labels,
-                    pv=reals.get(axis, None),
-                )
-
-        # FIXME 164
-        defaults = all_axes[: len(solver_axes)]
-        class_attributes[f"_{singular}"] = aliases.get(space, defaults)
-
-    # TODO #164 replace the for loop above
-    # _pseudo = list(_pseudo) if _pseudo is not None else []
-    # _real = list(_real) if _real is not None else []
-    # if _pseudo is None or len(_pseudo) == 0:
-    #     _pseudo = []  # TODO #164 set defaults from solver_object.pseudo_axis_names
-    # if _real is None or len(_real) == 0:
-    #     _real = []  # TODO #164 set defaults from solver_object.real_axis_names
-    # class_attributes["_pseudo"] = _pseudo
-    # class_attributes["_real"] = _real
+    class_attributes.update(
+        parse_factory_axes(
+            space="pseudos",
+            canonical=solver_object.pseudo_axis_names,
+            order=_pseudo,
+            axes=pseudos,
+        )
+    )
+    class_attributes.update(
+        parse_factory_axes(
+            space="reals",
+            canonical=solver_object.real_axis_names,
+            order=_real,
+            axes=reals,
+        )
+    )
 
     def constructor(
         self,

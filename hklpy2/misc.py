@@ -605,6 +605,8 @@ def define_real_axis(specs, kwargs):
         kwargs.update({"prefix": specs})
     elif isinstance(specs, dict):
         class_name = specs.pop("class", None)
+        if class_name is None:
+            raise KeyError("Expected 'class' key, received None")
         for label in specs.pop("labels", []):
             if label not in kwargs["labels"]:
                 kwargs["labels"].append(label)
@@ -955,8 +957,8 @@ def parse_factory_axes(
     order = order or []
     learn_order = len(order) == 0
 
-    _axes = axes
-    if _axes is None:
+    _axes = axes or []
+    if len(_axes) == 0:
         _axes = list(canonical)
     if len(set(_axes)) < len(_axes):
         raise ValueError(f"Duplicates in axes={_axes}")
