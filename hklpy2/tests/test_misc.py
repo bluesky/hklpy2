@@ -939,6 +939,15 @@ def test_istype_with_numpy_scalar_and_none():
             ),
             id="TypeError: Incorrect type 'ndarray' for specs=array([1, 2]).",
         ),
+        pytest.param(
+            dict(
+                space="reals",
+                # axes="m1 m2 m3 m4".split(),
+                canonical="aaa bbb ccc".split(),
+            ),
+            does_not_raise(),
+            id="Ok, minimum spec",
+        ),
     ],
 )
 def test_parse_factory_axes(params, context):

@@ -167,20 +167,22 @@ def test_unknown_reflection():
 @pytest.mark.parametrize(
     "pseudos, reals, assign, context, expected",
     [
-        [
+        pytest.param(
             "h k l".split(),
             dict(a=1, b=2, c=3, d=4),  # cannot use number as value
             "h b c d".split(),  # duplicate name is pseudos and reals
-            pytest.raises(TypeError),
-            "Incorrect type 'int' for pv=",
-        ],
-        [
+            pytest.raises(TypeError, match="Incorrect type 'int' for specs="),
+            "Incorrect type 'int' for specs=",
+            id="Incorrect type 'int' for specs=",
+        ),
+        pytest.param(
             "h k l".split(),
             dict(a=None, b="m5", c=None, d=None),
             "h b c d".split(),  # same name used in both pseudos and reals
-            pytest.raises(ValueError),
+            pytest.raises(ValueError, match="Axis name cannot be in more than list."),
             "Axis name cannot be in more than list.",
-        ],
+            id="Axis name cannot be in more than list.",
+        ),
         [
             "h k l".split(),
             dict(a=None, b="m5", c=None, d=None),
@@ -195,7 +197,7 @@ def test_unknown_reflection():
             does_not_raise(),
             None,
         ],
-        [
+        pytest.param(
             "h k l".split(),
             dict(
                 a=None,
@@ -204,9 +206,13 @@ def test_unknown_reflection():
                 d={"prefix": "m6"},
             ),
             "a b c d".split(),  # standard order
-            pytest.raises(KeyError),
+            pytest.raises(
+                KeyError,
+                match="Expected 'class' key, received None",
+            ),
             "Expected 'class' key, received None",
-        ],
+            id="Expected 'class' key, received None",
+        ),
         [
             "h k l".split(),
             dict(
