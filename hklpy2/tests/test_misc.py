@@ -46,6 +46,7 @@ from ..misc import get_solver
 from ..misc import istype
 from ..misc import list_orientation_runs
 from ..misc import load_yaml_file
+from ..misc import make_dynamic_instance
 from ..misc import parse_factory_axes
 from ..misc import pick_closest_solution
 from ..misc import pick_first_solution
@@ -823,6 +824,30 @@ def test_istype_with_numpy_scalar_and_none():
         pytest.param(
             dict(
                 space="pseudos",
+                order="aa bb cc".split(),
+                canonical="h k l".split(),
+            ),
+            pytest.raises(KeyError, match="Unknown axis_name="),
+            id="KeyError: Unknown axis_name=",
+        ),
+        pytest.param(
+            dict(
+                space="pseudos",
+                axes="h k l".split(),
+                order="h h l".split(),
+                canonical="h k l".split(),
+            ),
+            pytest.raises(ValueError, match="Duplicates in order="),
+            id="ValueError: Duplicates in order=",
+        ),
+        pytest.param(
+            dict(space="not recognized"),
+            pytest.raises(KeyError, match="Unknown space='not recognized'"),
+            id="KeyError: Unknown space='not recognized'",
+        ),
+        pytest.param(
+            dict(
+                space="pseudos",
                 axes="aa bb cc".split(),
                 canonical="h k l".split(),
             ),
@@ -899,8 +924,32 @@ def test_istype_with_numpy_scalar_and_none():
             does_not_raise(),
             id="Ok: default, EPICS, and custom 'axes'",
         ),
+        pytest.param(
+            dict(
+                space="reals",
+                axes=dict(m1=None, m2=None, m3=np.array([1, 2])),
+                canonical="aaa bbb ccc".split(),
+            ),
+            pytest.raises(
+                TypeError,
+                match=re.escape(
+                    #
+                    "Incorrect type 'ndarray' for specs=array([1, 2])."
+                ),
+            ),
+            id="TypeError: Incorrect type 'ndarray' for specs=array([1, 2]).",
+        ),
     ],
 )
 def test_parse_factory_axes(params, context):
     with context:
         parse_factory_axes(**params)
+
+
+def test_make_dynamic_instance_raises():
+    non_callable = "hklpy2.misc.DEFAULT_MOTOR_LABELS"
+    with pytest.raises(
+        TypeError,
+        match=f"{non_callable!r} is not callable",
+    ):
+        make_dynamic_instance(non_callable)
