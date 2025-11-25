@@ -857,9 +857,11 @@ def creator(
     geometry: str = "E4CV",
     beam_kwargs: dict[str, object] = {},
     solver_kwargs: dict[str, object] = {},
+    _pseudo: Optional[Sequence[str]] = None,
     pseudos: list = [],
-    reals: list[str] | dict[str, str | None] = {},  # TODO: or kwargs dict for each axis
-    aliases: dict[str, list[str]] = {},
+    _real: Optional[Sequence[str]] = None,
+    # TODO #164: or kwargs dict for each axis
+    reals: list[str] | dict[str, str | None] = {},
     motor_labels: list = ["motors"],
     labels: list = ["diffractometer"],
     class_name: str = "Hklpy2Diffractometer",
@@ -915,11 +917,15 @@ def creator(
         (default: '{"class": "hklpy2.incident.WavelengthXray"}')
     solver_kwargs : dict[str, object]
         Additional configuration for the solver. (default: '{"engine": "hkl"}')
+    _pseudo: list[str]
+        TODO #164
     pseudos : list
         Specification of the names of any pseudo axis positioners
         in addition to the ones provided by the solver.
 
         (default: '[]' which means no additional pseudo axes)
+    _real: list[str]
+        TODO #164
     reals : dict
         Specification of the real axis motors.  Dictionary keys are the motor
         names, values are the EPICS motor PV for that axis.  If the PV is
@@ -932,10 +938,6 @@ def creator(
 
         (default: '{}' which means use the canonical names for the real axes and
         use simulated positioners)
-    aliases: dict[str, list[str]]
-        Aliases of diffractometer axes for solver's pseudos and reals.
-
-        (default: '{}' which means use the first diffractometer axes from each to match the solver.)
     motor_labels : list
         Ophyd object labels for each real positioner. (default: '["motors"]')
     labels : list
@@ -961,12 +963,13 @@ def creator(
         geometry=geometry,
         beam_kwargs=beam_kwargs,
         solver_kwargs=solver_kwargs,
+        _pseudo=_pseudo,
         pseudos=pseudos,
+        _real=_real,
         reals=reals,
         motor_labels=motor_labels,
         class_name=class_name,
         class_bases=class_bases,
-        aliases=aliases,
         forward_solution_function=forward_solution_function,
     )
     if name == "":
@@ -987,7 +990,6 @@ def diffractometer_class_factory(
     motor_labels: list = ["motors"],
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],
-    aliases: dict[str, list[str]] = {},  # TODO 164 remove
     forward_solution_function: Optional[str] = None,
 ) -> DiffractometerBase:
     """
@@ -1005,14 +1007,14 @@ def diffractometer_class_factory(
     solver_kwargs : str
         Additional configuration for the solver. (default: '{"engine": "hkl"}')
     _pseudo: list[str]
-        TODO replaces aliases["pseudos"]
+        TODO #164
     pseudos : list
         Specification of the names of any pseudo axis positioners
         in addition to the ones provided by the solver.
 
         (default: '[]' which means no additional pseudo axes)
     _real: list[str]
-        TODO replaces aliases["reals"]
+        TODO #164
     reals : dict or list or None
         Specification of the real axis motors.
 
@@ -1042,10 +1044,6 @@ def diffractometer_class_factory(
     class_bases : list
         List of base classes to use for the diffractometer class.
         (default: '[DiffractometerBase]')
-    aliases: dict[str, list[str]]
-        Aliases of diffractometer axes for solver's pseudos and reals.
-
-        (default: '{}' which means use the first diffractometer axes from each to match the solver.)
     forward_solution_function : str
         Name of function to pick one solution from list of possibilities.
         Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.
@@ -1053,12 +1051,10 @@ def diffractometer_class_factory(
 
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     """
-    from .misc import dynamic_import
+    from .misc import dynamic_import, make_component
     from .misc import parse_factory_axes
     from .misc import solver_factory
 
-    # print(f"diffractometer_class_factory({solver=!r}, {geometry=!r})")
-    # Validation.  Fail early, fail hard.
     if not isinstance(pseudos, list):
         raise TypeError(f"Expected a list.  Received {pseudos=!r}")
     if not isinstance(reals, dict):
@@ -1066,16 +1062,10 @@ def diffractometer_class_factory(
             reals = {axis: None for axis in reals}
         else:
             raise TypeError(f"Expected a dict.  Received {reals=!r}")
-    if not isinstance(aliases, dict):
-        raise TypeError(f"Expected a dict.  Received {aliases=!r}")
 
-    class_attributes = {}  # Definition of __this__ custom class.
-    aliases = {}
-
+    # Define Component attributes of __this__ custom class.
     beam_class = beam_kwargs.pop("class", "hklpy2.incident.WavelengthXray")
-    if isinstance(beam_class, str):
-        beam_class = dynamic_import(beam_class)
-    class_attributes["beam"] = Cpt(beam_class, **beam_kwargs)
+    class_attributes = dict(beam=make_component(beam_class, **beam_kwargs))
 
     if forward_solution_function is None:
         forward_solution_function = "hklpy2.misc.pick_first_solution"
@@ -1085,6 +1075,7 @@ def diffractometer_class_factory(
 
     # Find the chosen solver.  It describes its various axes.
     solver_object = solver_factory(solver, geometry, **solver_kwargs)
+    # Add the axes
     class_attributes.update(
         parse_factory_axes(
             space="pseudos",

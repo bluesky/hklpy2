@@ -297,7 +297,7 @@ def test_HklSolver():
             dict(
                 geometry=GEOMETRY,
                 reals="chi eta mu phi pitch radius yaw".split(),
-                aliases=dict(reals="mu eta chi phi yaw pitch".split()),
+                _real="mu eta chi phi yaw pitch".split(),
             ),
             does_not_raise(),
             id="sorted ISN axes",

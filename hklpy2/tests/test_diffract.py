@@ -1002,7 +1002,6 @@ def test_failed_restore():
             None,
         ],
         [{"reals": "axis"}, pytest.raises(TypeError), "Expected a dict"],
-        [{"aliases": "alias"}, pytest.raises(TypeError), "Expected a dict"],
         pytest.param(
             dict(_pseudo="h k l".split()),
             does_not_raise(),
