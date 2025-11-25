@@ -938,6 +938,7 @@ def parse_factory_axes(
     axes: Union[Mapping[str, Any], None, Sequence[str]] = None,
     order: Sequence[str] = None,
     canonical: Sequence[str] = None,
+    labels: Sequence[str] = None,
     **_ignored: Any,
 ) -> Mapping[str, Union[Component, Sequence[str]]]:
     """
@@ -971,7 +972,7 @@ def parse_factory_axes(
     attributes = {}
     for i, axis_name in enumerate(_axes):
         axis = _axes[axis_name]
-        kwargs = dict(kind="hinted", labels=[])
+        kwargs = dict(kind="hinted", labels=labels or [])
         class_name = "class_name"
         if space == "pseudos":
             class_name = "hklpy2.diffract.Hklpy2PseudoAxis"

@@ -862,7 +862,7 @@ def creator(
     pseudos: list = [],
     _real: Optional[Sequence[str]] = None,
     reals: Optional[Union[Sequence[str], Mapping[str, Any]]] = {},
-    motor_labels: list = ["motors"],
+    motor_labels: Optional[Sequence[str]] = ["motors"],  # TODO: Why not None here?
     labels: list = ["diffractometer"],
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],
@@ -1003,7 +1003,7 @@ def diffractometer_class_factory(
     pseudos: list = [],
     _real: Optional[Sequence[str]] = None,
     reals: list[str] | dict[str, str | None] = {},
-    motor_labels: list = ["motors"],  # TODO #164 use this
+    motor_labels: Optional[Sequence[str]] = ["motors"],  # TODO: Why not None here?
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],
     forward_solution_function: Optional[str] = None,
@@ -1073,6 +1073,7 @@ def diffractometer_class_factory(
 
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     """
+    from .misc import DEFAULT_MOTOR_LABELS
     from .misc import dynamic_import
     from .misc import make_component
     from .misc import parse_factory_axes
@@ -1109,12 +1110,14 @@ def diffractometer_class_factory(
             axes=pseudos,
         )
     )
+    motor_labels = motor_labels or DEFAULT_MOTOR_LABELS
     class_attributes.update(
         parse_factory_axes(
             space="reals",
             canonical=solver_object.real_axis_names,
             order=_real,
             axes=reals,
+            labels=motor_labels,
         )
     )
 
