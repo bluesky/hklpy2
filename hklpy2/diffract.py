@@ -14,6 +14,7 @@ import pathlib
 from collections.abc import Iterable
 from typing import Any
 from typing import Callable
+from typing import Mapping
 from typing import Optional
 from typing import Sequence
 from typing import Union
@@ -860,8 +861,7 @@ def creator(
     _pseudo: Optional[Sequence[str]] = None,
     pseudos: list = [],
     _real: Optional[Sequence[str]] = None,
-    # TODO #164: or kwargs dict for each axis
-    reals: list[str] | dict[str, str | None] = {},
+    reals: Optional[Union[Sequence[str], Mapping[str, Any]]] = {},
     motor_labels: list = ["motors"],
     labels: list = ["diffractometer"],
     class_name: str = "Hklpy2Diffractometer",
@@ -883,11 +883,21 @@ def creator(
         )
 
     Four-circle diffractometer, vertical orientation, Eulerian rotations,
-    custom real axis names, simulated positioners::
+    *custom real axis names*, simulated positioners::
 
         sim4c = creator(name="sim4c",
             solver="hkl_soleil", geometry="E4CV",
             reals=dict(uno=None, dos=None, tres=None, cuatro=None),
+        )
+
+    The same ``sim4c```` diffractometer, but the ``reals`` are specified in a
+    different order. In this case, ``_real`` declares the order of these axes as
+    expected by the solver::
+
+        sim4c = creator(name="sim4c",
+            solver="hkl_soleil", geometry="E4CV",
+            reals=dict(cuatro=None, dos=None, tres=None, uno=None),
+            _real=["uno", "dos", "tres", "cuatro"],
         )
 
     (Simplest case to get a simulator.)
@@ -918,14 +928,20 @@ def creator(
     solver_kwargs : dict[str, object]
         Additional configuration for the solver. (default: '{"engine": "hkl"}')
     _pseudo: list[str]
-        TODO #164
+        Names which (and in what order of appearance) any of the 'pseudos' is to
+        be used. The list is necessary when the 'pseudos' are provided in an
+        order different than expected by the solver's 'forward()' and
+        'inverse()' methods.
     pseudos : list
         Specification of the names of any pseudo axis positioners
         in addition to the ones provided by the solver.
 
         (default: '[]' which means no additional pseudo axes)
     _real: list[str]
-        TODO #164
+        Names which (and in what order of appearance) any of the 'reals' is to
+        be used. The list is necessary when the 'reals' are provided in an
+        order different than expected by the solver's 'forward()' and
+        'inverse()' methods.
     reals : dict
         Specification of the real axis motors.  Dictionary keys are the motor
         names, values are the EPICS motor PV for that axis.  If the PV is
@@ -987,7 +1003,7 @@ def diffractometer_class_factory(
     pseudos: list = [],
     _real: Optional[Sequence[str]] = None,
     reals: list[str] | dict[str, str | None] = {},
-    motor_labels: list = ["motors"],
+    motor_labels: list = ["motors"],  # TODO #164 use this
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],
     forward_solution_function: Optional[str] = None,
@@ -1007,14 +1023,20 @@ def diffractometer_class_factory(
     solver_kwargs : str
         Additional configuration for the solver. (default: '{"engine": "hkl"}')
     _pseudo: list[str]
-        TODO #164
+        Names which (and in what order of appearance) any of the 'pseudos' is to
+        be used. The list is necessary when the 'pseudos' are provided in an
+        order different than expected by the solver's 'forward()' and
+        'inverse()' methods.
     pseudos : list
         Specification of the names of any pseudo axis positioners
         in addition to the ones provided by the solver.
 
         (default: '[]' which means no additional pseudo axes)
     _real: list[str]
-        TODO #164
+        Names which (and in what order of appearance) any of the 'reals' is to
+        be used. The list is necessary when the 'reals' are provided in an
+        order different than expected by the solver's 'forward()' and
+        'inverse()' methods.
     reals : dict or list or None
         Specification of the real axis motors.
 
