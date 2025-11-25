@@ -30,6 +30,17 @@ describe future plans.
 
     Release expected 2026-H1.
 
+0.2.2
+#####
+
+Released 2025-11-25.
+
+Maintenance
+-----------
+
+* 'creator()' and 'diffractometer_class_factory()': replace 'aliases' with
+  '_pseudo' and '_real'.
+
 0.2.1
 #####
 
