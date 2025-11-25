@@ -1051,7 +1051,8 @@ def diffractometer_class_factory(
 
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     """
-    from .misc import dynamic_import, make_component
+    from .misc import dynamic_import
+    from .misc import make_component
     from .misc import parse_factory_axes
     from .misc import solver_factory
 
@@ -1064,8 +1065,10 @@ def diffractometer_class_factory(
             raise TypeError(f"Expected a dict.  Received {reals=!r}")
 
     # Define Component attributes of __this__ custom class.
+    class_attributes = {}
     beam_class = beam_kwargs.pop("class", "hklpy2.incident.WavelengthXray")
-    class_attributes = dict(beam=make_component(beam_class, **beam_kwargs))
+    maker = make_component if isinstance(beam_class, str) else Cpt
+    class_attributes["beam"] = maker(beam_class, **beam_kwargs)
 
     if forward_solution_function is None:
         forward_solution_function = "hklpy2.misc.pick_first_solution"
