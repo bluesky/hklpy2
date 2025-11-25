@@ -862,7 +862,7 @@ def creator(
     pseudos: list = [],
     _real: Optional[Sequence[str]] = None,
     reals: Optional[Union[Sequence[str], Mapping[str, Any]]] = {},
-    motor_labels: Optional[Sequence[str]] = ["motors"],  # TODO: Why not None here?
+    motor_labels: Optional[Sequence[str]] = ["motors"],
     labels: list = ["diffractometer"],
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],
@@ -1003,7 +1003,7 @@ def diffractometer_class_factory(
     pseudos: list = [],
     _real: Optional[Sequence[str]] = None,
     reals: list[str] | dict[str, str | None] = {},
-    motor_labels: Optional[Sequence[str]] = ["motors"],  # TODO: Why not None here?
+    motor_labels: Optional[Sequence[str]] = ["motors"],
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],
     forward_solution_function: Optional[str] = None,
@@ -1014,7 +1014,8 @@ def diffractometer_class_factory(
     PARAMETERS
 
     solver : str
-        Name of the backend solver providing the geometry. (default: '"hkl_soleil"')
+        Name of the backend solver providing the geometry.
+        (default: '"hkl_soleil"')
     geometry : str
         Name of the diffractometer geometry. (default: '"E4CV"')
     beam_kwargs : dict[str, object]
