@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=1a2306b0"></script>
+    <script src="../../../_static/documentation_options.js?v=000c92bf"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -620,8 +620,8 @@ radiation such as neutrons.</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="hklpy2.incident._WavelengthBase.cb_wavelength">
-<span class="sig-name descname"><span class="pre">cb_wavelength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/incident.html#_WavelengthBase.cb_wavelength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.incident._WavelengthBase.cb_wavelength" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="hklpy2.incident._WavelengthBase._wavelength_changed">
+<span class="sig-name descname"><span class="pre">_wavelength_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/incident.html#_WavelengthBase._wavelength_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.incident._WavelengthBase._wavelength_changed" title="Link to this definition">#</a></dt>
 <dd><p>Called when wavelength changes (EPICS CA monitor event) or on-demand.</p>
 <p>When wavelength changes more than deadband from reference, call the
 supplied function with a value of <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
@@ -701,6 +701,24 @@ unit string is not recognized.</p>
 <dt class="sig sig-object py" id="hklpy2.incident.WavelengthXray._energy">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_energy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="reference internal" href="../../../_modules/hklpy2/incident.html#WavelengthXray._energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.incident.WavelengthXray._energy" title="Link to this definition">#</a></dt>
 <dd><p>Return the energy, computed from wavelength, in the current units.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.incident.WavelengthXray._to_wavelength">
+<span class="sig-name descname"><span class="pre">_to_wavelength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/incident.html#WavelengthXray._to_wavelength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.incident.WavelengthXray._to_wavelength" title="Link to this definition">#</a></dt>
+<dd><p>Convert E to lambda.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.incident.WavelengthXray._to_energy">
+<span class="sig-name descname"><span class="pre">_to_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/incident.html#WavelengthXray._to_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.incident.WavelengthXray._to_energy" title="Link to this definition">#</a></dt>
+<dd><p>Convert lambda to E.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.incident.WavelengthXray._wavelength_changed">
+<span class="sig-name descname"><span class="pre">_wavelength_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/incident.html#WavelengthXray._wavelength_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.incident.WavelengthXray._wavelength_changed" title="Link to this definition">#</a></dt>
+<dd><p>Sync energy with wavelength changes.</p>
 </dd></dl>
 
 </dd></dl>
@@ -840,7 +858,7 @@ energy and for making changing these values.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident._WavelengthBase._fromdict"><code class="docutils literal notranslate"><span class="pre">_WavelengthBase._fromdict()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident._WavelengthBase._wavelength_reference"><code class="docutils literal notranslate"><span class="pre">_WavelengthBase._wavelength_reference</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident._WavelengthBase.wavelength_updated_func"><code class="docutils literal notranslate"><span class="pre">_WavelengthBase.wavelength_updated_func</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident._WavelengthBase.cb_wavelength"><code class="docutils literal notranslate"><span class="pre">_WavelengthBase.cb_wavelength()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident._WavelengthBase._wavelength_changed"><code class="docutils literal notranslate"><span class="pre">_WavelengthBase._wavelength_changed()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident._WavelengthBase.cleanup_subscriptions"><code class="docutils literal notranslate"><span class="pre">_WavelengthBase.cleanup_subscriptions()</span></code></a></li>
 </ul>
 </li>
@@ -854,6 +872,9 @@ energy and for making changing these values.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident.WavelengthXray.energy_units"><code class="docutils literal notranslate"><span class="pre">WavelengthXray.energy_units</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident.WavelengthXray._keyset"><code class="docutils literal notranslate"><span class="pre">WavelengthXray._keyset</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident.WavelengthXray._energy"><code class="docutils literal notranslate"><span class="pre">WavelengthXray._energy</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident.WavelengthXray._to_wavelength"><code class="docutils literal notranslate"><span class="pre">WavelengthXray._to_wavelength()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident.WavelengthXray._to_energy"><code class="docutils literal notranslate"><span class="pre">WavelengthXray._to_energy()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident.WavelengthXray._wavelength_changed"><code class="docutils literal notranslate"><span class="pre">WavelengthXray._wavelength_changed()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.incident.EpicsWavelengthRO"><code class="docutils literal notranslate"><span class="pre">EpicsWavelengthRO</span></code></a><ul class="nav section-nav flex-column">

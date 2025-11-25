@@ -175,7 +175,7 @@ Module Contents
 
 
 
-   .. py:method:: cb_wavelength(value, **kwargs)
+   .. py:method:: _wavelength_changed(value, **kwargs)
 
       Called when wavelength changes (EPICS CA monitor event) or on-demand.
 
@@ -265,6 +265,24 @@ Module Contents
 
 
       Return the energy, computed from wavelength, in the current units.
+
+
+   .. py:method:: _to_wavelength(value: float) -> float
+
+      Convert E to lambda.
+
+
+
+   .. py:method:: _to_energy(value: float) -> float
+
+      Convert lambda to E.
+
+
+
+   .. py:method:: _wavelength_changed(value: float, **kwargs)
+
+      Sync energy with wavelength changes.
+
 
 
 .. py:class:: EpicsWavelengthRO(prefix: str = '', *, pv_wavelength: str = '', wavelength_units: str = INTERNAL_LENGTH_UNITS, **kwargs)

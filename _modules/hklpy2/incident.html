@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=1a2306b0"></script>
+    <script src="../../_static/documentation_options.js?v=000c92bf"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -580,15 +580,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_updated_func</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cb_wavelength</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_changed</span><span class="p">)</span>
 
         <span class="c1"># cancel subscriptions before object is garbage collected</span>
         <span class="n">weakref</span><span class="o">.</span><span class="n">finalize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">unsubscribe_all</span><span class="p">)</span>
         <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cleanup_subscriptions</span><span class="p">)</span>
 
-<div class="viewcode-block" id="_WavelengthBase.cb_wavelength">
-<a class="viewcode-back" href="../../autoapi/hklpy2/incident/index.html#hklpy2.incident._WavelengthBase.cb_wavelength">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cb_wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="_WavelengthBase._wavelength_changed">
+<a class="viewcode-back" href="../../autoapi/hklpy2/incident/index.html#hklpy2.incident._WavelengthBase._wavelength_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wavelength_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Called when wavelength changes (EPICS CA monitor event) or on-demand.</span>
 
@@ -711,28 +711,26 @@
         <span class="k">if</span> <span class="n">energy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">energy</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_wavelength</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_energy</span><span class="p">))</span>  <span class="c1"># synchronize</span>
+
     <span class="nd">@property</span>
 <div class="viewcode-block" id="WavelengthXray._energy">
 <a class="viewcode-back" href="../../autoapi/hklpy2/incident/index.html#hklpy2.incident.WavelengthXray._energy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the energy, computed from wavelength, in the current units.&quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
-
-        <span class="n">wavelength</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-            <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">convert_units</span><span class="p">(</span>
-            <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">wavelength</span><span class="p">,</span>
-            <span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">energy_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">())</span></div>
 
 
     <span class="nd">@_energy</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Given energy, set the wavelength, in the current units.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_wavelength</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+<div class="viewcode-block" id="WavelengthXray._to_wavelength">
+<a class="viewcode-back" href="../../autoapi/hklpy2/incident/index.html#hklpy2.incident.WavelengthXray._to_wavelength">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert E to lambda.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
 
         <span class="n">energy</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
@@ -740,13 +738,40 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">energy_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
             <span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
-            <span class="n">convert_units</span><span class="p">(</span>
-                <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">energy</span><span class="p">,</span>
-                <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-            <span class="p">)</span>
-        <span class="p">)</span></div>
+        <span class="n">wavelength</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+            <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">energy</span><span class="p">,</span>
+            <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">wavelength</span></div>
+
+
+<div class="viewcode-block" id="WavelengthXray._to_energy">
+<a class="viewcode-back" href="../../autoapi/hklpy2/incident/index.html#hklpy2.incident.WavelengthXray._to_energy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert lambda to E.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
+
+        <span class="n">wavelength</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+            <span class="n">value</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">energy</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+            <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">wavelength</span><span class="p">,</span>
+            <span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">energy_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">energy</span></div>
+
+
+<div class="viewcode-block" id="WavelengthXray._wavelength_changed">
+<a class="viewcode-back" href="../../autoapi/hklpy2/incident/index.html#hklpy2.incident.WavelengthXray._wavelength_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wavelength_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync energy with wavelength changes.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_wavelength_changed</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">energy</span><span class="o">.</span><span class="n">_readback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_energy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+</div>
 
 
 

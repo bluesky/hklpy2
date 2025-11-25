@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=1a2306b0"></script>
+    <script src="../_static/documentation_options.js?v=000c92bf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -535,7 +535,8 @@ th2th.component_names=(&#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;,
 <h2>Can we add other pseudo axes?<a class="headerlink" href="#can-we-add-other-pseudo-axes" title="Link to this heading">#</a></h2>
 <p><strong>Q</strong>: With this capability to add additional real positioners, can we add axes
 to the pseudo positioners?</p>
-<p><strong>A</strong>: Yes. See this example.  It defines two pseudo axes: <code class="docutils literal notranslate"><span class="pre">Q</span></code> and <code class="docutils literal notranslate"><span class="pre">d</span></code>.  As shown in <code class="docutils literal notranslate"><span class="pre">aliases</span></code>, the <code class="docutils literal notranslate"><span class="pre">Q</span></code> axis is mapped to the <a class="reference internal" href="../diffractometers.html#geometries-th-tth-th-tth-q"><span class="std std-ref">solver</span></a> <code class="docutils literal notranslate"><span class="pre">q</span></code> axis.</p>
+<p><strong>A</strong>: Yes. See this example.  It defines two pseudo axes: <code class="docutils literal notranslate"><span class="pre">Q</span></code> and <code class="docutils literal notranslate"><span class="pre">d</span></code>.  The
+<code class="docutils literal notranslate"><span class="pre">_pseudo_</span></code> parameter declares <code class="docutils literal notranslate"><span class="pre">Q</span></code> axis is mapped to the <a class="reference internal" href="../diffractometers.html#geometries-th-tth-th-tth-q"><span class="std std-ref">solver</span></a> <code class="docutils literal notranslate"><span class="pre">q</span></code> axis.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">th2th</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
@@ -544,7 +545,8 @@ to the pseudo positioners?</p>
     <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">,</span>
     <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">],</span>  <span class="c1"># </span>
     <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
-    <span class="n">aliases</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">],</span> <span class="n">reals</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">,</span> <span class="s2">&quot;detector&quot;</span><span class="p">]),</span>
+    <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">],</span>
+    <span class="n">_real</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">,</span> <span class="s2">&quot;detector&quot;</span><span class="p">],</span>
 <span class="p">)</span>
 <span class="n">th2th</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
 </pre></div>

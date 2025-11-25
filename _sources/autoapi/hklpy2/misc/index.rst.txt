@@ -19,6 +19,7 @@ hklpy2.misc
        ~check_value_in_list
        ~compare_float_dicts
        ~convert_units
+       ~define_real_axis
        ~dict_device_factory
        ~distance_between_pos_tuples
        ~dynamic_import
@@ -29,6 +30,9 @@ hklpy2.misc
        ~list_orientation_runs
        ~load_yaml
        ~load_yaml_file
+       ~make_component
+       ~make_dynamic_instance
+       ~parse_factory_axes
        ~pick_closest_solution
        ~pick_first_solution
        ~roundoff
@@ -88,6 +92,7 @@ Attributes
    hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS
    hklpy2.misc.UREG
    hklpy2.misc.PINT_ERRORS
+   hklpy2.misc.DEFAULT_MOTOR_LABELS
    hklpy2.misc.AxesArray
    hklpy2.misc.AxesDict
    hklpy2.misc.AxesList
@@ -131,6 +136,7 @@ Functions
    hklpy2.misc.check_value_in_list
    hklpy2.misc.compare_float_dicts
    hklpy2.misc.convert_units
+   hklpy2.misc.define_real_axis
    hklpy2.misc.dict_device_factory
    hklpy2.misc.distance_between_pos_tuples
    hklpy2.misc.dynamic_import
@@ -141,6 +147,9 @@ Functions
    hklpy2.misc.list_orientation_runs
    hklpy2.misc.load_yaml
    hklpy2.misc.load_yaml_file
+   hklpy2.misc.make_component
+   hklpy2.misc.make_dynamic_instance
+   hklpy2.misc.parse_factory_axes
    hklpy2.misc.pick_closest_solution
    hklpy2.misc.pick_first_solution
    hklpy2.misc.roundoff
@@ -191,6 +200,12 @@ Module Contents
 .. py:data:: PINT_ERRORS
 
    Exception from pint that we are trapping here.
+
+.. py:data:: DEFAULT_MOTOR_LABELS
+   :value: ['motors']
+
+
+   Default labels applied to real-axis positioners.
 
 .. py:function:: validate_and_canonical_unit(value: str, target_units: str) -> str
 
@@ -528,6 +543,11 @@ Module Contents
    Convert 'value' from old units to new.
 
 
+.. py:function:: define_real_axis(specs, kwargs)
+
+   Return class and kwargs of a real axis from its 'specs'.
+
+
 .. py:function:: dict_device_factory(data: dict, **kwargs)
 
    Create a ``DictionaryDevice()`` class using the supplied dictionary.
@@ -699,6 +719,23 @@ Module Contents
 .. py:function:: load_yaml_file(file)
 
    Return contents of a YAML file as a Python object.
+
+
+.. py:function:: make_component(call_name: str, **kwargs: Any) -> ophyd.Component
+
+   Create an Component for a custom ophyd Device class.
+
+
+.. py:function:: make_dynamic_instance(call_name: str, *args: Any, **kwargs: Any) -> Any
+
+   Return an instance of the Python 'call_name'.
+
+
+.. py:function:: parse_factory_axes(*, space: str = None, axes: Union[Mapping[str, Any], None, Sequence[str]] = None, order: Sequence[str] = None, canonical: Sequence[str] = None, labels: Sequence[str] = None, **_ignored: Any) -> Mapping[str, Union[ophyd.Component, Sequence[str]]]
+
+   Parse a set of axis specifications, return Device class attributes.
+
+   Called from the diffract.diffractometer_class_factory().
 
 
 .. py:function:: pick_closest_solution(position: NamedTuple, solutions: list[NamedTuple]) -> NamedTuple
