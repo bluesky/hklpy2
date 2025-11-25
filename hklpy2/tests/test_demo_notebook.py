@@ -11,10 +11,8 @@ from .common import assert_context_result
 @pytest.fixture
 def fourc():
     sim = hklpy2.creator(
-        aliases=dict(
-            pseudos="h k l".split(),
-            reals="theta chi phi ttheta".split(),
-        ),
+        _pseudo="h k l".split(),
+        _real="theta chi phi ttheta".split(),
         pseudos="h k l h2 k2 l2".split(),
         reals=dict(
             theta=None,

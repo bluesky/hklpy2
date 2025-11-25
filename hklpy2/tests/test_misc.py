@@ -3,6 +3,7 @@
 import math
 import numbers
 import pathlib
+import re
 import types
 from collections import namedtuple
 from contextlib import nullcontext as does_not_raise
@@ -45,6 +46,8 @@ from ..misc import get_solver
 from ..misc import istype
 from ..misc import list_orientation_runs
 from ..misc import load_yaml_file
+from ..misc import make_dynamic_instance
+from ..misc import parse_factory_axes
 from ..misc import pick_closest_solution
 from ..misc import pick_first_solution
 from ..misc import roundoff
@@ -751,9 +754,6 @@ def test_virtual_axis_finish_setup_trigger():
     assert multi.virtual._setup_finished
 
 
-# === Additional tests to cover lines missed by previous tests ===
-
-
 def test_get_solver_raises_for_unknown():
     """Ensure get_solver raises SolverError for unknown solver name."""
     with pytest.raises(SolverError):
@@ -799,3 +799,166 @@ def test_istype_with_numpy_scalar_and_none():
 
     # None against Optional/Union types: already covered elsewhere, but sanity-check
     assert istype(None, Union[AxesArray, None])
+
+
+@pytest.mark.parametrize(
+    "params, context",
+    [
+        pytest.param(
+            dict(
+                space="pseudos",
+                canonical="h k l".split(),
+            ),
+            does_not_raise(),
+            id="Ok, default 'axes' & 'order'",
+        ),
+        pytest.param(
+            dict(
+                space="pseudos",
+                order="aa bb cc dd".split(),
+                canonical="h k l".split(),
+            ),
+            pytest.raises(ValueError, match="Too many axes specified"),
+            id="ValueError: \"Too many axes specified in order=['aa', 'bb', 'cc', 'dd']. Expected 3.\"",
+        ),
+        pytest.param(
+            dict(
+                space="pseudos",
+                order="aa bb cc".split(),
+                canonical="h k l".split(),
+            ),
+            pytest.raises(KeyError, match="Unknown axis_name="),
+            id="KeyError: Unknown axis_name=",
+        ),
+        pytest.param(
+            dict(
+                space="pseudos",
+                axes="h k l".split(),
+                order="h h l".split(),
+                canonical="h k l".split(),
+            ),
+            pytest.raises(ValueError, match="Duplicates in order="),
+            id="ValueError: Duplicates in order=",
+        ),
+        pytest.param(
+            dict(space="not recognized"),
+            pytest.raises(KeyError, match="Unknown space='not recognized'"),
+            id="KeyError: Unknown space='not recognized'",
+        ),
+        pytest.param(
+            dict(
+                space="pseudos",
+                axes="aa bb cc".split(),
+                canonical="h k l".split(),
+            ),
+            does_not_raise(),
+            id="Ok, default 'order'",
+        ),
+        pytest.param(
+            dict(
+                space="reals",
+                canonical="aaa bbb ccc".split(),
+            ),
+            does_not_raise(),
+            id="Ok, default 'axes' & 'order'",
+        ),
+        pytest.param(
+            dict(
+                space="reals",
+                order="th tth".split(),
+                canonical="aaa bbb ccc".split(),
+            ),
+            pytest.raises(
+                ValueError, match=re.escape("len(order)=2 must be >= len(canonical)=3")
+            ),
+            id="ValueError: 'len(order)=2 must be >= len(canonical)=3'",
+        ),
+        pytest.param(
+            dict(
+                space="reals",
+                axes="m1 m2 m3 m4".split(),
+                canonical="aaa bbb ccc".split(),
+            ),
+            does_not_raise(),
+            id="Ok, extra 'axes', custom names, default 'order'",
+        ),
+        pytest.param(
+            dict(
+                space="reals",
+                axes="m1 m2 m3 m4 m1".split(),
+                canonical="aaa bbb ccc".split(),
+            ),
+            pytest.raises(
+                ValueError,
+                match=re.escape(
+                    #
+                    "Duplicates in axes=['m1', 'm2', 'm3', 'm4', 'm1']"
+                ),
+            ),
+            id="ValueError: Duplicates in axes=['m1', 'm2', 'm3', 'm4', 'm1']",
+        ),
+        pytest.param(
+            dict(
+                space="reals",
+                axes="m1 m2 m3 m4".split(),
+                order="m2 m4 m1".split(),
+                canonical="aaa bbb ccc".split(),
+            ),
+            does_not_raise(),
+            id="Ok: custom 'axes', custom 'order'.",
+        ),
+        pytest.param(
+            dict(
+                space="reals",
+                axes=dict(
+                    m1=None,  # SoftPositioner
+                    m2="IOC:m2",  # EpicsMotor
+                    m3={  # Custom
+                        "class": "ophyd.EpicsMotor",
+                        "prefix": "IOC:m3",
+                        "labels": "motors reals".split(),
+                    },
+                ),
+                canonical="aaa bbb ccc".split(),
+            ),
+            does_not_raise(),
+            id="Ok: default, EPICS, and custom 'axes'",
+        ),
+        pytest.param(
+            dict(
+                space="reals",
+                axes=dict(m1=None, m2=None, m3=np.array([1, 2])),
+                canonical="aaa bbb ccc".split(),
+            ),
+            pytest.raises(
+                TypeError,
+                match=re.escape(
+                    #
+                    "Incorrect type 'ndarray' for specs=array([1, 2])."
+                ),
+            ),
+            id="TypeError: Incorrect type 'ndarray' for specs=array([1, 2]).",
+        ),
+        pytest.param(
+            dict(
+                space="reals",
+                # axes="m1 m2 m3 m4".split(),
+                canonical="aaa bbb ccc".split(),
+            ),
+            does_not_raise(),
+            id="Ok, minimum spec",
+        ),
+    ],
+)
+def test_parse_factory_axes(params, context):
+    with context:
+        parse_factory_axes(**params)
+
+
+def test_make_dynamic_instance_raises():
+    non_callable = "hklpy2.misc.DEFAULT_MOTOR_LABELS"
+    with pytest.raises(
+        TypeError,
+        match=f"{non_callable!r} is not callable",
+    ):
+        make_dynamic_instance(non_callable)
