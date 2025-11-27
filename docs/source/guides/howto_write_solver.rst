@@ -3,6 +3,9 @@
 How to write a new Solver
 =========================
 
+An |hklpy2| |solver| is an adapter [#adapter_pattern]_ for the backend
+diffractometer computation library it supports.
+
 .. reference:
     https://deepwiki.com/search/describe-the-steps-to-write-a_90411934-3765-4bb8-b4da-bc1672c09b96?mode=fast
 
@@ -193,7 +196,7 @@ class                                                    description
 :class:`~hklpy2.backends.th_tth_q.ThTthSolver`           Minimal pure-Python solver
 :class:`~hklpy2.backends.no_op.NoOpSolver`               No-operation solver for testing
 :class:`~hklpy2.backends.hkl_soleil.HklSolver`           Production solver (Linux x86_64 only)
-:class:`~hklpy2.backends.tests.test_base.TrivialSolver`  basic template (in tests)
+``TrivialSolver()`` [#TrivialSolver]_                    basic template (in tests)
 =======================================================  =====================================
 
 Notes
@@ -210,8 +213,8 @@ Notes
   :class:`~hklpy2.backends.hkl_soleil.HklSolver` which is Linux x86_64
   only).
 * Consider using :class:`~hklpy2.backends.no_op.NoOpSolver` or
-  :class:`~hklpy2.backends.tests.test_base.TrivialSolver` as
-  starting references for testing infrastructure.
+  ``TrivialSolver()`` [#TrivialSolver]_ as starting references for testing
+  infrastructure.
 
 Footnotes
 ^^^^^^^^^
@@ -222,11 +225,16 @@ Footnotes
     <https://docs.python.org/3/library/abc.html#abc.abstractmethod>`_ for more
     details or this `tutorial
     <https://coderivers.org/blog/abstract-method-python/>`_.
+.. [#adapter_pattern] *Adapter pattern* ( or *wrapper*) is a software design pattern.
+    For more details, see this `explanation <https://en.wikipedia.org/wiki/Adapter_pattern>`_.
 .. [#solver_system_analysis] Analysis of |hklpy2| *Solver*
     `backend <https://deepwiki.com/bluesky/hklpy2/3.4-solver-backend-system>`_
-.. [#entry_point] `Python Packaging User Guide: Entry Points
+.. [#entry_point] `Entry Points
     <https://packaging.python.org/en/latest/specifications/entry-points/>`_:
     *Entry points are a way for Python packages to advertise components they
     provide to be discovered and used by other packages at runtime.*
-.. [#new_python_gh_project] *Creating a Python Project on GitHub*:
-    `Guide <https://coderivers.org/blog/github-python-projects/#creating-a-python-project-on-github>`_
+.. [#new_python_gh_project] `Guide
+    <https://coderivers.org/blog/github-python-projects/#creating-a-python-project-on-github>`_
+    to *Create a Python Project on GitHub*.
+.. [#TrivialSolver] ``TrivialSolver()``: Source code in the test `suite
+    <https://github.com/bluesky/hklpy2/blob/main/hklpy2/backends/tests/test_base.py>`_.
