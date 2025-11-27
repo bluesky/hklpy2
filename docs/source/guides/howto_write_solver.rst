@@ -25,9 +25,16 @@ How to write a new Solver
 Steps
 -----
 
-To write a new solver for |hklpy2|, you need to create a class that
-inherits from :class:`~hklpy2.backends.base.SolverBase` and register it
-as an entry point. Here are the essential steps:
+.. sidebar:: Overview
+
+    * Create a new Python package.
+    * Create a Solver class.
+    * Register as Entry Point.
+    * Install and test.
+
+To write a new solver for |hklpy2|, you need to create a Python class
+that inherits from :class:`~hklpy2.backends.base.SolverBase` and
+register it as an entry point. Here are the essential steps:
 
 Step 1. Create a Solver Class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -133,8 +140,8 @@ loads correctly:
     # Create an instance
     solver = SolverClass("MY_GEOMETRY")
 
-Use the factory to create a diffractometer with your solver and its
-default geometry:
+Use the :func:`~hklpy2.diffract.creator()` factory to create a
+diffractometer with your solver and its default geometry:
 
 .. code-block:: Python
     :linenos:
@@ -175,19 +182,19 @@ Example Reference
 
 See these example solver implementation classes:
 
-==============================================================  ========================
-class                                                           description
-==============================================================  ========================
-:class:`~hklpy2.backends.base.th_tth_q.ThTthSolver`             Minimal pure-Python solver
-:class:`~hklpy2.backends.no_op.NoOpSolver`                      No-operation solver for testing
-:class:`~hklpy2.backends.hkl_soleil.HklSolver`                  Production solver (Linux x86_64 only)
-:class:`~hklpy2.backends.base.tests.test_base.TrivialSolver`    basic template (in tests)
-==============================================================  ========================
+=======================================================  =====================================
+class                                                    description
+=======================================================  =====================================
+:class:`~hklpy2.backends.th_tth_q.ThTthSolver`           Minimal pure-Python solver
+:class:`~hklpy2.backends.no_op.NoOpSolver`               No-operation solver for testing
+:class:`~hklpy2.backends.hkl_soleil.HklSolver`           Production solver (Linux x86_64 only)
+:class:`~hklpy2.backends.tests.test_base.TrivialSolver`  basic template (in tests)
+=======================================================  =====================================
 
 Notes
 -----
 
-* The solver system [#backend_analysis]_ uses Python's entry point
+* The solver system [#solver_system_analysis]_ uses Python's *entry point*
   mechanism [#entry_point]_ for runtime discovery.
 * All solvers must inherit from
   :class:`~hklpy2.backends.base.SolverBase` which enforces a consistent
@@ -197,16 +204,21 @@ Notes
 * Solvers can be platform-specific (like
   :class:`~hklpy2.backends.hkl_soleil.HklSolver` which is Linux x86_64
   only).
-* Consider using :class:`~hklpy2.backends.base.no_op.NoOpSolver` or
-  :class:`~hklpy2.backends.base.tests.test_base.TrivialSolver` as
+* Consider using :class:`~hklpy2.backends.no_op.NoOpSolver` or
+  :class:`~hklpy2.backends.tests.test_base.TrivialSolver` as
   starting references for testing infrastructure.
 
 Footnotes
 ^^^^^^^^^
 
-* [#backend_analysis] Analysis of |hklpy| *Solver* `backend
+* [#abstractmethod] The ``@abstractmethod`` decorator is from the
+  :mod:`abc` standard library module which enforces that subclasses
+  implement the decorated methods. See
+  `@abstractmethod <https://docs.python.org/3/library/abc.html#abc.abstractmethod>`_
+  for more details.
+* [#solver_system_analysis] Analysis of |hklpy| *Solver* `backend
   <https://deepwiki.com/bluesky/hklpy2/3.4-solver-backend-system`_
 * [#entry_point] `Python Packaging User Guide: Entry Points
-* <https://packaging.python.org/en/latest/specifications/entry-points/>`_
-   > *Entry points are a way for Python packages to advertise components
-    they provide to be discovered and used by other packages at runtime.*
+  <https://packaging.python.org/en/latest/specifications/entry-points/>`_
+    > *Entry points are a way for Python packages to advertise components
+      they provide to be discovered and used by other packages at runtime.*
