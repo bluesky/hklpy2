@@ -34,14 +34,19 @@ Steps
 
 To write a new solver for |hklpy2|, you need to create a Python class
 that inherits from :class:`~hklpy2.backends.base.SolverBase` and
-register it as an entry point. Here are the essential steps:
+register it as an entry point.
+
+.. tip:: Create a new project [#new_python_gh_project]_ for this work.
+
+Here are the essential steps:
 
 Step 1. Create a Solver Class
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Create a Python class that inherits from
-:class:`~hklpy2.backends.base.SolverBase` and implement all required
-abstract methods (methods marked with decorator ``@abstractmethod``):
+:class:`~hklpy2.backends.base.SolverBase` and implement all required abstract
+methods (methods marked with decorator ``@abstractmethod``
+[#abstractmethod_decorator]_):
 
 .. code-block:: Python
     :linenos:
@@ -53,56 +58,56 @@ abstract methods (methods marked with decorator ``@abstractmethod``):
     class MySolver(SolverBase):
         name = "my_solver"
         version = "1.0.0"
-        
+
         def __init__(self, geometry: str, **kwargs):
             super().__init__(geometry, **kwargs)
-        
+
         # Required abstract methods
         def addReflection(self, reflection: Reflection) -> None:
             """Add coordinates of a diffraction condition."""
             pass
-        
+
         def calculate_UB(self, r1: Reflection, r2: Reflection) -> list[list[float]]:
             """Calculate the UB matrix with two reflections."""
             return []
-        
+
         def forward(self, pseudos: dict) -> list[dict[str, float]]:
             """Compute list of solutions(reals) from pseudos."""
             return [{}]
-        
+
         def inverse(self, reals: dict) -> dict[str, float]:
             """Compute pseudos from reals."""
             return {}
-        
+
         def refineLattice(self, reflections: list[Reflection]) -> Lattice:
             """Refine lattice parameters from reflections."""
             return Lattice(1.0)
-        
+
         def removeAllReflections(self) -> None:
             """Remove all reflections."""
             pass
-        
+
         # Required properties
         @property
         def extra_axis_names(self) -> list[str]:
             """Ordered list of extra axis names."""
             return []
-        
+
         @classmethod
         def geometries(cls) -> list[str]:
             """Supported diffractometer geometries."""
             return ["MY_GEOMETRY"]
-        
+
         @property
         def modes(self) -> list[str]:
             """Available operating modes."""
             return []
-        
+
         @property
         def pseudo_axis_names(self) -> list[str]:
             """Ordered list of pseudo axis names (h, k, l)."""
             return []
-        
+
         @property
         def real_axis_names(self) -> list[str]:
             """Ordered list of real axis names (omega, chi, phi, tth)."""
@@ -165,8 +170,8 @@ method                          description
 ``forward(pseudos)``            Returns ``list[dict]`` of all possible real angle solutions
 ``inverse(reals)``              Returns single ``dict`` of pseudo coordinates
 ``calculate_UB(r1, r2)``        Returns 3×3 UB matrix using Busing & Levy method
-``addReflection(reflection)``   Updates internal state with new reflection
-``removeAllReflections()``      Clears all stored reflections
+``addReflection(reflection)``   Updates (current) sample with new reflection
+``removeAllReflections()``      Clears (current) sample all stored reflections
 =============================   ==================
 
 Engineering Units System
@@ -211,14 +216,17 @@ Notes
 Footnotes
 ^^^^^^^^^
 
-* [#abstractmethod] The ``@abstractmethod`` decorator is from the
-  :mod:`abc` standard library module which enforces that subclasses
-  implement the decorated methods. See
-  `@abstractmethod <https://docs.python.org/3/library/abc.html#abc.abstractmethod>`_
-  for more details.
-* [#solver_system_analysis] Analysis of |hklpy| *Solver* `backend
-  <https://deepwiki.com/bluesky/hklpy2/3.4-solver-backend-system`_
-* [#entry_point] `Python Packaging User Guide: Entry Points
-  <https://packaging.python.org/en/latest/specifications/entry-points/>`_
-    > *Entry points are a way for Python packages to advertise components
-      they provide to be discovered and used by other packages at runtime.*
+.. [#abstractmethod_decorator] The ``@abstractmethod`` decorator, from the
+    Python standard library module  :mod:`abc`, enforces that subclasses
+    implement the decorated methods. See `@abstractmethod
+    <https://docs.python.org/3/library/abc.html#abc.abstractmethod>`_ for more
+    details or this `tutorial
+    <https://coderivers.org/blog/abstract-method-python/>`_.
+.. [#solver_system_analysis] Analysis of |hklpy2| *Solver*
+    `backend <https://deepwiki.com/bluesky/hklpy2/3.4-solver-backend-system>`_
+.. [#entry_point] `Python Packaging User Guide: Entry Points
+    <https://packaging.python.org/en/latest/specifications/entry-points/>`_:
+    *Entry points are a way for Python packages to advertise components they
+    provide to be discovered and used by other packages at runtime.*
+.. [#new_python_gh_project] *Creating a Python Project on GitHub*:
+    `Guide <https://coderivers.org/blog/github-python-projects/#creating-a-python-project-on-github>`_
