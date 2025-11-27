@@ -9,7 +9,9 @@ Abstract base class for all solvers.
 import logging
 from abc import ABC
 from abc import abstractmethod
+from typing import Any
 from typing import Dict
+from typing import List
 
 from pyRestTable import Table
 
@@ -22,8 +24,8 @@ from ..misc import validate_and_canonical_unit
 logger = logging.getLogger(__name__)
 
 Lattice = Dict[str, float]
-Reflection = Dict[str, object]
-Sample = Dict[str, object]
+Reflection = Dict[str, Any]
+Sample = Dict[str, Any]
 
 
 class SolverBase(ABC):
@@ -89,13 +91,13 @@ class SolverBase(ABC):
 
     from .. import __version__
 
-    name = "base"
+    name: str = "base"
     """Name of this Solver."""
 
-    version = __version__
+    version: str = __version__
     """Version of this Solver."""
 
-    ANGLE_UNITS = "degrees"
+    ANGLE_UNITS: str = "degrees"
     """
     Angle units used by this solver for unit cell and real axis rotations.
 
@@ -103,7 +105,7 @@ class SolverBase(ABC):
     ``INTERNAL_ANGLE_UNITS``.
     """
 
-    LENGTH_UNITS = "angstrom"
+    LENGTH_UNITS: str = "angstrom"
     """
     Length units used by this solver for unit cell and wavelength.
 
@@ -116,12 +118,12 @@ class SolverBase(ABC):
         geometry: str,
         *,
         mode: str = "",  # "": accept solver's default mode
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
-        self._gname = geometry
+        self._gname: str = geometry
         self.mode = mode
-        self._all_extra_axis_names = None
-        self._sample = None
+        self._all_extra_axis_names: List[str] | None = None
+        self._sample: Sample | None = None
 
         validate_and_canonical_unit(self.ANGLE_UNITS, INTERNAL_ANGLE_UNITS)
         validate_and_canonical_unit(self.LENGTH_UNITS, INTERNAL_LENGTH_UNITS)
@@ -138,7 +140,7 @@ class SolverBase(ABC):
         return f"{self.__class__.__name__}({', '.join(args)})"
 
     @property
-    def _metadata(self) -> dict:
+    def _metadata(self) -> Dict[str, Any]:
         """Dictionary with this solver's summary metadata."""
         return {
             "name": self.name,
@@ -153,12 +155,12 @@ class SolverBase(ABC):
         """Add coordinates of a diffraction condition (a reflection)."""
 
     @property
-    def all_extra_axis_names(self) -> list[str]:
+    def all_extra_axis_names(self) -> List[str]:
         """Unique, sorted list of extra axis names in all modes for chosen engine."""
         if self._all_extra_axis_names is None:
             # Only collect this once.
             original = self.mode
-            names = []
+            names: List[str] = []
             for mode in self.modes:
                 self.mode = mode
                 names += self.extra_axis_names
@@ -171,7 +173,7 @@ class SolverBase(ABC):
         self,
         r1: Reflection,
         r2: Reflection,
-    ) -> list[list[float]]:
+    ) -> List[List[float]]:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
@@ -181,27 +183,27 @@ class SolverBase(ABC):
 
     @property
     @abstractmethod
-    def extra_axis_names(self) -> list[str]:
+    def extra_axis_names(self) -> List[str]:
         """Ordered list of any extra axis names (such as x, y, z)."""
         # Do NOT sort.
         # return []
 
     @property
-    def extras(self) -> dict:
+    def extras(self) -> Dict[str, Any]:
         """
         Ordered dictionary of any extra parameters.
         """
         return {}
 
     @abstractmethod
-    def forward(self, pseudos: dict) -> list[dict[str, float]]:
+    def forward(self, pseudos: Dict[str, float]) -> List[Dict[str, float]]:
         """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
         # based on geometry and mode
         # return [{}]
 
     @classmethod
     @abstractmethod
-    def geometries(cls) -> list[str]:
+    def geometries(cls) -> List[str]:
         """
         Ordered list of the geometry names.
 
@@ -228,7 +230,7 @@ class SolverBase(ABC):
         return self._gname
 
     @abstractmethod
-    def inverse(self, reals: dict) -> dict[str, float]:
+    def inverse(self, reals: Dict[str, float]) -> Dict[str, float]:
         """Compute dict of pseudos from reals (angles -> hkl)."""
         # return {}
 
@@ -240,7 +242,7 @@ class SolverBase(ABC):
         return self._lattice
 
     @lattice.setter
-    def lattice(self, value: Lattice):
+    def lattice(self, value: Lattice) -> None:
         if not istype(value, Lattice):
             raise TypeError(f"Must supply {Lattice} object, received {value!r}")
         self._lattice = value
@@ -260,7 +262,7 @@ class SolverBase(ABC):
         return self._mode
 
     @mode.setter
-    def mode(self, value: str):
+    def mode(self, value: str) -> None:
         from ..misc import check_value_in_list  # avoid circular import here
 
         check_value_in_list("Mode", value, self.modes, blank_ok=True)
@@ -268,26 +270,26 @@ class SolverBase(ABC):
 
     @property
     @abstractmethod
-    def modes(self) -> list[str]:
+    def modes(self) -> List[str]:
         """List of the geometry operating modes."""
         # return []
 
     @property
     @abstractmethod
-    def pseudo_axis_names(self) -> list[str]:
+    def pseudo_axis_names(self) -> List[str]:
         """Ordered list of the pseudo axis names (such as h, k, l)."""
         # Do NOT sort.
         # return []
 
     @property
     @abstractmethod
-    def real_axis_names(self) -> list[str]:
+    def real_axis_names(self) -> List[str]:
         """Ordered list of the real axis names (such as th, tth)."""
         # Do NOT sort.
         # return []
 
     @abstractmethod
-    def refineLattice(self, reflections: list[Reflection]) -> Lattice:
+    def refineLattice(self, reflections: List[Reflection]) -> Lattice:
         """Refine the lattice parameters from a list of reflections."""
 
     @abstractmethod
@@ -295,23 +297,23 @@ class SolverBase(ABC):
         """Remove all reflections."""
 
     @property
-    def sample(self) -> object:
+    def sample(self) -> Sample | None:
         """
         Crystalline sample.
         """
         return self._sample
 
     @sample.setter
-    def sample(self, value: Sample):
+    def sample(self, value: Sample) -> None:
         if not istype(value, Sample):
             raise TypeError(f"Must supply {Sample} object, received {value!r}")
         self._sample = value
 
     @property
-    def _summary_dict(self):
+    def _summary_dict(self) -> Dict[str, Any]:
         """Return a summary of the geometry (modes, axes)"""
         geometry_name = self.geometry
-        description = {
+        description: Dict[str, Any] = {
             "name": geometry_name,
             "pseudos": self.pseudo_axis_names,
             "reals": self.real_axis_names,
@@ -320,7 +322,7 @@ class SolverBase(ABC):
 
         for mode in self.modes:
             self.mode = mode
-            desc = {
+            desc: Dict[str, Any] = {
                 "extras": [],
                 # the reals to be written in this mode (solver should override)
                 "reals": self.real_axis_names,
@@ -353,6 +355,6 @@ class SolverBase(ABC):
         return table
 
     @property
-    def UB(self):
+    def UB(self) -> List[List[float]]:
         """Orientation matrix (3x3)."""
         return IDENTITY_MATRIX_3X3
