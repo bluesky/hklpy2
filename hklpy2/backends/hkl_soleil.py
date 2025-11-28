@@ -39,7 +39,6 @@ Example::
 import logging
 import math
 import platform
-from typing import Any
 from typing import Dict
 from typing import List
 
@@ -78,18 +77,16 @@ def roundoff_list(values: List[float], digits=ROUNDOFF_DIGITS) -> List[float]:
     return [roundoff(v, digits) for v in values]
 
 
-# TODO: Want to use libhkl.Matrix here instead of Any
 def hkl_euler_matrix(
     euler_x: List[float],
     euler_y: List[float],
     euler_z: List[float],
-) -> Any:
+) -> libhkl.Matrix:  # type: ignore
     """Convert into matrix form."""
     return libhkl.Matrix.new_euler(euler_x, euler_y, euler_z)
 
 
-# TODO: Want to use libhkl.Matrix here instead of Any
-def to_hkl(arr: np.ndarray) -> Any:
+def to_hkl(arr: np.ndarray) -> libhkl.Matrix:  # type: ignore
     """Convert a numpy ndarray to an hkl ``Matrix``
 
     Parameters
@@ -111,8 +108,7 @@ def to_hkl(arr: np.ndarray) -> Any:
     return hklm
 
 
-# TODO: Want to use libhkl.Matrix here instead of Any
-def to_numpy(mat: Any) -> np.ndarray:
+def to_numpy(mat: libhkl.Matrix) -> np.ndarray:  # type: ignore
     """Convert an hkl ``Matrix`` to a numpy ndarray
 
     Parameters
@@ -296,9 +292,8 @@ class HklSolver(SolverBase):
         logger.debug("%r reflections", len(self._sample.reflections_get()))
         return self.UB
 
-    # TODO: Want to use libhkl.Engine here instead of Any
     @property
-    def engine(self) -> Any:
+    def engine(self) -> libhkl.Engine:  # type: ignore
         """Selected computational engine for this geometry."""
         return self._hkl_engine
 
