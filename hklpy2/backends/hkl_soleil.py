@@ -46,14 +46,14 @@ import numpy as np
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
+from ..misc import Matrix3x3
+from ..misc import NamedFloatDict
 from ..misc import NoForwardSolutions
 from ..misc import check_value_in_list
 from ..misc import istype
 from ..misc import roundoff
 from ..misc import unique_name
-from .base import NamedFloatDict
 from .base import SolverBase
-from .base import SolverMatrix3x3
 from .base import SolverReflection
 from .base import SolverSample
 from .hkl_soleil_utils import setup_libhkl
@@ -278,7 +278,7 @@ class HklSolver(SolverBase):
         self,
         r1: SolverReflection,
         r2: SolverReflection,
-    ) -> SolverMatrix3x3:
+    ) -> Matrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
@@ -654,7 +654,7 @@ class HklSolver(SolverBase):
         return table
 
     @property
-    def U(self) -> SolverMatrix3x3:
+    def U(self) -> Matrix3x3:
         """
         Relative orientation of crystal on diffractometer.
 
@@ -666,13 +666,13 @@ class HklSolver(SolverBase):
         return matrix.round(decimals=ROUNDOFF_DIGITS).tolist()
 
     @U.setter
-    def U(self, value: SolverMatrix3x3) -> None:
+    def U(self, value: Matrix3x3) -> None:
         if self._sample is not None:
             logger.debug("U.setter(): value=%s", value)
             self._sample.U_set(to_hkl(value))
 
     @property
-    def UB(self) -> SolverMatrix3x3:
+    def UB(self) -> Matrix3x3:
         """Orientation matrix (3x3)."""
         if self._sample is None:
             return IDENTITY_MATRIX_3X3
@@ -680,7 +680,7 @@ class HklSolver(SolverBase):
         return matrix.round(decimals=ROUNDOFF_DIGITS).tolist()
 
     @UB.setter
-    def UB(self, value: SolverMatrix3x3) -> None:
+    def UB(self, value: Matrix3x3) -> None:
         if self._sample is not None:
             logger.debug("UB.setter(): value=%s", value)
             self._sample.UB_set(to_hkl(value))

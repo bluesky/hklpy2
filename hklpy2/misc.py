@@ -49,6 +49,8 @@ Miscellaneous Support.
     ~AxesDict
     ~AxesList
     ~AxesTuple
+    ~NamedFloatDict
+    ~Matrix3x3
 
 .. rubric: Custom Preprocessors
 .. autosummary::
@@ -81,6 +83,8 @@ import warnings
 from collections.abc import Iterable
 from importlib.metadata import entry_points
 from typing import Any
+from typing import Dict
+from typing import List
 from typing import Mapping
 from typing import NamedTuple
 from typing import Sequence
@@ -125,21 +129,6 @@ DEFAULT_MOTOR_LABELS = ["motors"]
 """Default labels applied to real-axis positioners."""
 
 
-def validate_and_canonical_unit(value: str, target_units: str) -> str:
-    """Validate that *value* is a unit convertible to *target_units*.
-
-    Returns a canonical string representation of the unit (via UREG).
-    Raises ValueError on failure.
-    """
-    # Constructing the Unit will raise pint.UndefinedUnitError if unknown.
-    unit = UREG.Unit(value)
-    # Attempt a dimensional conversion; will raise pint.DimensionalityError if incompatible.
-    UREG.Quantity(1, unit).to(target_units)
-    # On success, preserve and return the original user-provided unit string so callers
-    # (and tests) see the same spelling/casing that was provided.
-    return value
-
-
 # Custom data types
 
 AxesArray = numpy.typing.NDArray[numpy.floating]
@@ -169,8 +158,16 @@ ordered tuple   (0, 1, -1)                  AxesTuple
 =============   =========================   ====================
 """
 
+NamedFloatDict = Dict[str, float]
+"""Python type annotation: dictionary of named floats."""
+
+Matrix3x3 = List[List[float]]
+"""Python type annotation: mutable orientation & rotation matrices."""
+
 
 # Custom exceptions
+
+
 class Hklpy2Error(Exception):
     """Any exception from the |hklpy2| package."""
 
@@ -1098,3 +1095,18 @@ def unique_name(prefix="", length=7):
     Short, unique name, first 7 (at most) characters of a unique, random uuid.
     """
     return prefix + str(uuid.uuid4())[: max(1, min(length, 7))]
+
+
+def validate_and_canonical_unit(value: str, target_units: str) -> str:
+    """Validate that *value* is a unit convertible to *target_units*.
+
+    Returns a canonical string representation of the unit (via UREG).
+    Raises ValueError on failure.
+    """
+    # Constructing the Unit will raise pint.UndefinedUnitError if unknown.
+    unit = UREG.Unit(value)
+    # Attempt a dimensional conversion; will raise pint.DimensionalityError if incompatible.
+    UREG.Quantity(1, unit).to(target_units)
+    # On success, preserve and return the original user-provided unit string so callers
+    # (and tests) see the same spelling/casing that was provided.
+    return value

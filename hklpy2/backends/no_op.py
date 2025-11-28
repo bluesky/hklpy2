@@ -19,9 +19,9 @@ from typing import List
 
 from .. import __version__
 from ..misc import IDENTITY_MATRIX_3X3
-from .base import NamedFloatDict
+from ..misc import Matrix3x3
+from ..misc import NamedFloatDict
 from .base import SolverBase
-from .base import SolverMatrix3x3
 from .base import SolverReflection
 
 logger = logging.getLogger(__name__)
@@ -68,9 +68,7 @@ class NoOpSolver(SolverBase):
     def addReflection(self, reflection: SolverReflection) -> None:
         return None
 
-    def calculate_UB(
-        self, r1: SolverReflection, r2: SolverReflection
-    ) -> SolverMatrix3x3:
+    def calculate_UB(self, r1: SolverReflection, r2: SolverReflection) -> Matrix3x3:
         return IDENTITY_MATRIX_3X3
 
     @property

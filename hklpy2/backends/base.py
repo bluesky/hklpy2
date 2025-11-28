@@ -4,8 +4,6 @@ Abstract base class for all solvers.
 .. autosummary::
 
     ~SolverBase
-    ~NamedFloatDict
-    ~SolverMatrix3x3
     ~SolverReflection
     ~SolverSample
 """
@@ -22,16 +20,12 @@ from pyRestTable import Table
 from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import INTERNAL_ANGLE_UNITS
 from ..misc import INTERNAL_LENGTH_UNITS
+from ..misc import Matrix3x3
+from ..misc import NamedFloatDict
 from ..misc import istype
 from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
-
-NamedFloatDict = Dict[str, float]  # TODO: Hoist to ..misc?
-"""Python type annotation: dictionary of named floats."""
-
-SolverMatrix3x3 = List[List[float]]  # TODO: Hoist (& rename) to ..misc?
-"""Python type annotation: mutable orientation & rotation matrices."""
 
 SolverReflection = Dict[str, Any]
 """Python type annotation: solver reflection."""
@@ -187,7 +181,7 @@ class SolverBase(ABC):
         self,
         r1: SolverReflection,
         r2: SolverReflection,
-    ) -> SolverMatrix3x3:
+    ) -> Matrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
@@ -369,6 +363,6 @@ class SolverBase(ABC):
         return table
 
     @property
-    def UB(self) -> SolverMatrix3x3:
+    def UB(self) -> Matrix3x3:
         """Orientation matrix (3x3)."""
         return IDENTITY_MATRIX_3X3

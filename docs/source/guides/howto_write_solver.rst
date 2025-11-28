@@ -54,12 +54,12 @@ methods (methods marked with decorator ``@abstractmethod``
 .. code-block:: Python
     :linenos:
 
-    from hklpy2.backends.base import NamedFloatDict
     from hklpy2.backends.base import SolverBase
     from hklpy2.backends.base import SolverLattice
-    from hklpy2.backends.base import SolverMatrix3x3
     from hklpy2.backends.base import SolverReflection
     from hklpy2.misc import IDENTITY_MATRIX_3X3
+    from hklpy2.misc import Matrix3x3
+    from hklpy2.misc import NamedFloatDict
 
     class MySolver(SolverBase):
         name = "my_solver"
@@ -73,9 +73,7 @@ methods (methods marked with decorator ``@abstractmethod``
             """Add an observed diffraction reflection."""
             pass  # TODO: send to your library
 
-        def calculate_UB(
-            self, r1: SolverReflection, r2: SolverReflection
-        ) -> SolverMatrix3x3:
+        def calculate_UB(self, r1: SolverReflection, r2: SolverReflection) -> Matrix3x3:
             """Calculate the UB matrix with two reflections."""
             return IDENTITY_MATRIX_3X3  # TODO: calculate with your library
 
