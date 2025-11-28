@@ -205,7 +205,7 @@ class HklSolver(SolverBase):
         geometry: str,
         *,
         engine: str = "hkl",
-        mode: str = "",
+        mode: str = "",  # cannot set in super(), needs engine setup (below)
         **kwargs,
     ) -> None:
         self._hkl_engine = None
@@ -223,6 +223,8 @@ class HklSolver(SolverBase):
         self._hkl_engine_list = self._hkl_factory.create_new_engine_list()  # note!
         self._hkl_engine = self._hkl_engine_list.engine_get_by_name(engine)
         self._hkl_geometry = self._hkl_factory.create_new_geometry()
+
+        self.mode = mode
 
     def __repr__(self) -> str:
         args = [
