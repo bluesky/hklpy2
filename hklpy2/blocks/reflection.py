@@ -13,10 +13,13 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 """
 
 import logging
+from typing import Mapping
 from typing import Optional
+from typing import Union
 
 from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import ConfigurationError
+from ..misc import NamedFloatDict
 from ..misc import ReflectionError
 from ..misc import check_value_in_list
 from ..misc import compare_float_dicts
@@ -25,9 +28,9 @@ from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_REFLECTION_DIGITS = 4
+DEFAULT_REFLECTION_DIGITS: int = 4
 
-UNUSED_REFLECTION = "unused"
+UNUSED_REFLECTION: str = "unused"
 """Identifies an unused reflection in the ReflectionsDict."""
 
 
@@ -74,12 +77,12 @@ class Reflection:
     def __init__(
         self,
         name: str,
-        pseudos: dict,
-        reals: dict,
+        pseudos: NamedFloatDict,
+        reals: NamedFloatDict,
         wavelength: float,
         geometry: str,
-        pseudo_axis_names: list,
-        real_axis_names: list,
+        pseudo_axis_names: list[str],
+        real_axis_names: list[str],
         *,
         core: Optional[object] = None,
         digits: Optional[int] = None,
@@ -113,7 +116,7 @@ class Reflection:
         self.wavelength = wavelength
         self.wavelength_units = wavelength_units or INTERNAL_LENGTH_UNITS
 
-    def __add__(self, other):
+    def __add__(self, other: object) -> object:
         """
         Add a Reflection object to this one and return as a new Reflection.
 
@@ -144,7 +147,7 @@ class Reflection:
             real_axis_names=self.real_axis_names,
         )
 
-    def __eq__(self, r2):
+    def __eq__(self, r2: object) -> bool:
         """
         Compare this reflection with another for equality.
 
@@ -168,7 +171,7 @@ class Reflection:
         )
         return pseudos_ok and reals_ok and wavelength_ok
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Standard brief representation of reflection.
         """
@@ -180,7 +183,7 @@ class Reflection:
         guts = [f"name={self.name!r}"] + pseudos
         return f"{self.__class__.__name__}({', '.join(guts)})"
 
-    def __sub__(self, other):
+    def __sub__(self, other: object) -> object:
         """
         Subtract another Reflection from this one and return as a new Reflection.
 
@@ -211,7 +214,7 @@ class Reflection:
             real_axis_names=self.real_axis_names,
         )
 
-    def _asdict(self):
+    def _asdict(self) -> Mapping[str, Union[float, int, str]]:
         """Describe this reflection as a dictionary."""
         return {
             "name": self.name,
@@ -224,7 +227,7 @@ class Reflection:
             "digits": self.digits,
         }
 
-    def _fromdict(self, config):
+    def _fromdict(self, config: Mapping[str, Union[float, int, str]]):
         """Redefine this reflection from a (configuration) dictionary."""
         if config.get("name") != self.name:
             raise ConfigurationError(
@@ -258,7 +261,7 @@ class Reflection:
         self.wavelength_units = config.get("wavelength_units", self.wavelength_units)
         self.wavelength = config.get("wavelength", self.wavelength)
 
-    def _validate_pseudos(self, value):
+    def _validate_pseudos(self, value: NamedFloatDict):
         """Raise Exception if pseudos do not match expectations."""
         if not isinstance(value, dict):
             raise TypeError(f"Must supply dict, received pseudos={value!r}")
@@ -273,7 +276,7 @@ class Reflection:
                 )
             # fmt: on
 
-    def _validate_reals(self, value):
+    def _validate_reals(self, value: NamedFloatDict):
         """Raise Exception if reals do not match expectations."""
         if not isinstance(value, dict):
             raise TypeError(f"Must supply dict, received reals={value!r}")
@@ -288,7 +291,7 @@ class Reflection:
                 )
             # fmt: on
 
-    def _validate_wavelength(self, value):
+    def _validate_wavelength(self, value: float):
         """Raise exception if pseudos do not match expectations."""
         if not isinstance(value, (int, float)):
             raise TypeError(f"Must supply number, received {value=!r}")
@@ -298,18 +301,18 @@ class Reflection:
     # --------- get/set properties
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Sample name."""
         return self._name
 
     @name.setter
-    def name(self, value):
+    def name(self, value: str):
         if not isinstance(value, str):
             raise TypeError(f"Must supply str, received name={value!r}")
         self._name = value
 
     @property
-    def pseudos(self):
+    def pseudos(self) -> NamedFloatDict:
         """
         Ordered dictionary of diffractometer's reciprocal-space axes.
 
@@ -318,12 +321,12 @@ class Reflection:
         return self._pseudos
 
     @pseudos.setter
-    def pseudos(self, values):
+    def pseudos(self, values: NamedFloatDict) -> None:
         self._validate_pseudos(values)
         self._pseudos = values
 
     @property
-    def reals(self):
+    def reals(self) -> NamedFloatDict:
         """
         Ordered dictionary of diffractometer's real-space axes.
 
@@ -332,7 +335,7 @@ class Reflection:
         return self._reals
 
     @reals.setter
-    def reals(self, values):
+    def reals(self, values: NamedFloatDict) -> None:
         self._validate_reals(values)
         self._reals = values
 
@@ -347,12 +350,12 @@ class Reflection:
         self._reals_units = value
 
     @property
-    def wavelength(self):
+    def wavelength(self) -> float:
         """Wavelength of reflection."""
         return self._wavelength
 
     @wavelength.setter
-    def wavelength(self, value):
+    def wavelength(self, value: float):
         self._validate_wavelength(value)
         self._wavelength = value
 
@@ -385,12 +388,12 @@ class ReflectionsDict(dict):
         ~swap
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._order = []
         self.geometry = None
 
-    def _asdict(self):
+    def _asdict(self) -> Mapping[str, Union[float, int, str]]:
         """
         Describe the reflections list as an ordered dictionary.
 
@@ -399,7 +402,9 @@ class ReflectionsDict(dict):
         self.prune()
         return {v.name: v._asdict() for v in self.values()}
 
-    def _fromdict(self, config, core=None):
+    def _fromdict(
+        self, config: Mapping[str, Union[float, int, str]], core=None
+    ) -> None:
         """Add or redefine reflections from a (configuration) dictionary."""
         from ..ops import Core
 
@@ -461,11 +466,11 @@ class ReflectionsDict(dict):
             self.order.append(reflection.name)
         self.prune()
 
-    def prune(self):
+    def prune(self) -> None:
         """Remove any undefined reflections from order list."""
         self.order = [refl for refl in self.order if refl in self]
 
-    def swap(self):
+    def swap(self) -> list[Reflection]:
         """Swap the first two orientation reflections."""
         if len(self.order) < 2:
             raise ReflectionError("Need at least two reflections to swap.")
@@ -474,8 +479,8 @@ class ReflectionsDict(dict):
         self._order[1] = rname1
         return self.order
 
-    def _validate_reflection(self, reflection, replace):
-        """Validate the new reflection."""
+    def _validate_reflection(self, reflection: Reflection, replace: bool) -> None:
+        """Validate the new reflection (raise exception if invalid)."""
         if not isinstance(reflection, Reflection):
             raise TypeError(
                 #
@@ -523,10 +528,10 @@ class ReflectionsDict(dict):
     # ---- get/set properties
 
     @property
-    def order(self):
+    def order(self) -> list[Reflection]:
         """Ordered list of reflection names used for orientation."""
         return self._order
 
     @order.setter
-    def order(self, value):
+    def order(self, value: list[Reflection]):
         self._order = list(value)
