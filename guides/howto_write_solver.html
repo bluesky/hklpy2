@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=7f9fe292"></script>
+    <script src="../_static/documentation_options.js?v=996b7a13"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -433,8 +433,8 @@
                   
   <section id="how-to-write-a-new-solver">
 <span id="howto-solvers-write"></span><h1>How to write a new Solver<a class="headerlink" href="#how-to-write-a-new-solver" title="Link to this heading">#</a></h1>
-<p>An <strong>hklpy2</strong> <strong>Solver</strong> is an adapter <a class="footnote-reference brackets" href="#adapter-pattern" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> for the backend
-diffractometer computation library it supports.</p>
+<p>An <strong>hklpy2</strong> <strong>Solver</strong> is an adapter <a class="footnote-reference brackets" href="#adapter-pattern" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> for a backend
+diffractometer computation library.</p>
 <section id="steps">
 <h2>Steps<a class="headerlink" href="#steps" title="Link to this heading">#</a></h2>
 <aside class="sidebar">
@@ -451,7 +451,7 @@ that inherits from <a class="reference internal" href="../autoapi/hklpy2/backend
 register it as an entry point.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Create a new project <a class="footnote-reference brackets" href="#new-python-gh-project" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> for this work.</p>
+<p>Create a new project <a class="footnote-reference brackets" href="#new-python-gh-project" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a> for this work.</p>
 </div>
 <p>Here are the essential steps:</p>
 <section id="step-1-create-a-solver-class">
@@ -476,7 +476,7 @@ methods (methods marked with decorator <code class="docutils literal notranslate
 <span class="linenos">14</span>
 <span class="linenos">15</span>    <span class="c1"># Required abstract methods</span>
 <span class="linenos">16</span>    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">SolverReflection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="linenos">17</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add coordinates of a diffraction condition.&quot;&quot;&quot;</span>
+<span class="linenos">17</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an observed diffraction reflection.&quot;&quot;&quot;</span>
 <span class="linenos">18</span>        <span class="k">pass</span>  <span class="c1"># TODO: send to your library</span>
 <span class="linenos">19</span>
 <span class="linenos">20</span>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span>
@@ -531,8 +531,8 @@ methods (methods marked with decorator <code class="docutils literal notranslate
 </section>
 <section id="step-2-register-as-entry-point">
 <h3>Step 2. Register as Entry Point<a class="headerlink" href="#step-2-register-as-entry-point" title="Link to this heading">#</a></h3>
-<p>Add your solver to the <code class="docutils literal notranslate"><span class="pre">[project.entry-points.&quot;hklpy2.solver&quot;]</span></code>
-section in your project’s <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file.  Here’s an example:</p>
+<p>Create a <code class="docutils literal notranslate"><span class="pre">[project.entry-points.&quot;hklpy2.solver&quot;]</span></code> section in your project’s
+<code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file and declare your solver.  Here’s an example:</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">[project.entry-points.</span><span class="s2">&quot;hklpy2.solver&quot;</span><span class="k">]</span>
 <span class="linenos">2</span><span class="n">my_solver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_package.my_solver:MySolver&quot;</span>
 </pre></div>
@@ -554,8 +554,8 @@ loads correctly:</p>
 <span class="linenos">10</span><span class="n">solver</span> <span class="o">=</span> <span class="n">SolverClass</span><span class="p">(</span><span class="s2">&quot;MY_GEOMETRY&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Use the <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> factory to create a
-diffractometer with your solver and its default geometry:</p>
+<p>Use the <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> factory to create a diffractometer
+with your solver and test it.  Here’s a suggested start:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 <span class="linenos">2</span>
 <span class="linenos">3</span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;my_solver&quot;</span><span class="p">)</span>
@@ -568,28 +568,52 @@ diffractometer with your solver and its default geometry:</p>
 <h2>Key Implementation Details<a class="headerlink" href="#key-implementation-details" title="Link to this heading">#</a></h2>
 <section id="required-methods-contract">
 <h3>Required Methods Contract<a class="headerlink" href="#required-methods-contract" title="Link to this heading">#</a></h3>
-<p>All solvers must implement these methods with specific contracts:</p>
+<p>All solvers must implement these attributes, methods, and properties:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
-<tr class="row-odd"><th class="head"><p>method</p></th>
+<tr class="row-odd"><th class="head"><p>method (or property)</p></th>
 <th class="head"><p>description</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">forward(pseudos)</span></code></p></td>
-<td><p>Returns <code class="docutils literal notranslate"><span class="pre">list[dict]</span></code> of all possible real angle solutions</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>(string attribute) Name of this solver.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">version</span></code></p></td>
+<td><p>(string attribute) Version of this solver.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">addReflection(reflection)</span></code></p></td>
+<td><p>Add an observed diffraction reflection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">calculate_UB(r1,</span> <span class="pre">r2)</span></code></p></td>
+<td><p>Calculate the UB matrix with two reflections.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">extra_axis_names</span></code></p></td>
+<td><p>Returns list of any extra axes in the current <em>mode</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">forward(pseudos)</span></code></p></td>
+<td><p>Compute list of solutions(reals) from pseudos.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geometries</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&#64;classmethod</span></code> <a class="footnote-reference brackets" href="#classmethod-decorator" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> : Returns list of all geometries support by this solver.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inverse(reals)</span></code></p></td>
-<td><p>Returns single <code class="docutils literal notranslate"><span class="pre">dict</span></code> of pseudo coordinates</p></td>
+<td><p>Compute pseudos from reals.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">calculate_UB(r1,</span> <span class="pre">r2)</span></code></p></td>
-<td><p>Returns 3×3 UB matrix using Busing &amp; Levy method</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">modes</span></code></p></td>
+<td><p>Returns list of all modes support by this geometry.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">addReflection(reflection)</span></code></p></td>
-<td><p>Updates (current) sample with new reflection</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pseudo_axis_names</span></code></p></td>
+<td><p>Returns list of all pseudos support by this geometry.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">real_axis_names</span></code></p></td>
+<td><p>Returns list of all reals support by this geometry.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">refineLattice(reflections)</span></code></p></td>
+<td><p>Return refined lattice parameters given reflections.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">removeAllReflections()</span></code></p></td>
-<td><p>Clears (current) sample all stored reflections</p></td>
+<td><p>Clears sample of all stored reflections.</p></td>
 </tr>
 </tbody>
 </table>
@@ -605,7 +629,7 @@ diffractometer with your solver and its default geometry:</p>
 </section>
 <section id="example-reference">
 <h3>Example Reference<a class="headerlink" href="#example-reference" title="Link to this heading">#</a></h3>
-<p>See these example solver implementation classes:</p>
+<p>Compare with these <strong>Solver</strong> classes:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>class</p></th>
@@ -622,7 +646,7 @@ diffractometer with your solver and its default geometry:</p>
 <tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a></p></td>
 <td><p>Production solver (Linux x86_64 only)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TrivialSolver()</span></code> <a class="footnote-reference brackets" href="#trivialsolver" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TrivialSolver()</span></code> <a class="footnote-reference brackets" href="#trivialsolver" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a></p></td>
 <td><p>basic template (in tests)</p></td>
 </tr>
 </tbody>
@@ -633,18 +657,18 @@ diffractometer with your solver and its default geometry:</p>
 <section id="notes">
 <h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>The solver system <a class="footnote-reference brackets" href="#solver-system-analysis" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> uses Python’s <em>entry point</em>
-mechanism <a class="footnote-reference brackets" href="#entry-point" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> for runtime discovery.</p></li>
+<li><p><strong>hklpy2</strong> identifies a <strong>Solver</strong> <a class="footnote-reference brackets" href="#solver-system-analysis" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> as a plugin using
+Python’s <em>entry point</em> <a class="footnote-reference brackets" href="#entry-point" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> support.</p></li>
 <li><p>All solvers must inherit from
 <a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> which enforces a consistent
 interface.</p></li>
 <li><p>The <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> class handles unit conversion between
 diffractometer and solver units.</p></li>
-<li><p>Solvers can be platform-specific (like
-<a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a> which is Linux x86_64
-only).</p></li>
+<li><p>Solvers can be platform-specific (such as
+<a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a> which is C code compiled only
+for Linux x86_64 architectures).</p></li>
 <li><p>Consider using <a class="reference internal" href="../autoapi/hklpy2/backends/no_op/index.html#hklpy2.backends.no_op.NoOpSolver" title="hklpy2.backends.no_op.NoOpSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoOpSolver</span></code></a> or
-<code class="docutils literal notranslate"><span class="pre">TrivialSolver()</span></code> <a class="footnote-reference brackets" href="#trivialsolver" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a> as starting references for testing
+<code class="docutils literal notranslate"><span class="pre">TrivialSolver()</span></code> <a class="footnote-reference brackets" href="#trivialsolver" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> as starting references for testing
 infrastructure.</p></li>
 </ul>
 <section id="footnotes">
@@ -654,7 +678,7 @@ infrastructure.</p></li>
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">1</a><span class="fn-bracket">]</span></span>
 <p>The <code class="docutils literal notranslate"><span class="pre">&#64;abstractmethod</span></code> decorator, from the
 Python standard library module  <a class="reference external" href="https://docs.python.org/3/library/abc.html#module-abc" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a>, enforces that subclasses
-implement the decorated methods. See <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.abstractmethod">&#64;abstractmethod</a> for more
+implement the decorated method. See <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.abstractmethod">&#64;abstractmethod</a> for more
 details or this <a class="reference external" href="https://coderivers.org/blog/abstract-method-python/">tutorial</a>.</p>
 </aside>
 <aside class="footnote brackets" id="adapter-pattern" role="doc-footnote">
@@ -662,25 +686,32 @@ details or this <a class="reference external" href="https://coderivers.org/blog/
 <p><em>Adapter pattern</em> ( or <em>wrapper</em>) is a software design pattern.
 For more details, see this <a class="reference external" href="https://en.wikipedia.org/wiki/Adapter_pattern">explanation</a>.</p>
 </aside>
+<aside class="footnote brackets" id="classmethod-decorator" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;classmethod_decorator</span></code> decorator, from the
+Python standard library module  <a class="reference external" href="https://docs.python.org/3/library/abc.html#module-abc" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a>, enforces that subclasses
+implement the decorated method. See <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.classmethod_decorator">&#64;classmethod_decorator</a> for more
+details.</p>
+</aside>
 <aside class="footnote brackets" id="solver-system-analysis" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">3</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">4</a><span class="fn-bracket">]</span></span>
 <p>Analysis of <strong>hklpy2</strong> <em>Solver</em>
 <a class="reference external" href="https://deepwiki.com/bluesky/hklpy2/3.4-solver-backend-system">backend</a></p>
 </aside>
 <aside class="footnote brackets" id="entry-point" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">4</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">5</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://packaging.python.org/en/latest/specifications/entry-points/">Entry Points</a>:
 <em>Entry points are a way for Python packages to advertise components they
 provide to be discovered and used by other packages at runtime.</em></p>
 </aside>
 <aside class="footnote brackets" id="new-python-gh-project" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">5</a><span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">6</a><span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://coderivers.org/blog/github-python-projects/#creating-a-python-project-on-github">Guide</a>
 to <em>Create a Python Project on GitHub</em>.</p>
 </aside>
 <aside class="footnote brackets" id="trivialsolver" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id4">1</a>,<a role="doc-backlink" href="#id7">2</a>)</span>
+<span class="label"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id5">1</a>,<a role="doc-backlink" href="#id8">2</a>)</span>
 <p><code class="docutils literal notranslate"><span class="pre">TrivialSolver()</span></code>: Source code in the test <a class="reference external" href="https://github.com/bluesky/hklpy2/blob/main/hklpy2/backends/tests/test_base.py">suite</a>.</p>
 </aside>
 </aside>
