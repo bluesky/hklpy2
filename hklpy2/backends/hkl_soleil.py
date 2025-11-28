@@ -48,10 +48,10 @@ from ..misc import check_value_in_list
 from ..misc import istype
 from ..misc import roundoff
 from ..misc import unique_name
-from .base import Lattice
-from .base import Reflection
-from .base import Sample
+from .base import NamedFloatDict
 from .base import SolverBase
+from .base import SolverReflection
+from .base import SolverSample
 from .hkl_soleil_utils import setup_libhkl
 
 logger = logging.getLogger(__name__)
@@ -227,11 +227,11 @@ class HklSolver(SolverBase):
         ]
         return f"{self.__class__.__name__}({', '.join(args)})"
 
-    def addReflection(self, reflection: Reflection) -> None:
+    def addReflection(self, reflection: SolverReflection) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
-        if not istype(reflection, Reflection):
+        if not istype(reflection, SolverReflection):
             raise TypeError(
-                f"Must supply {Reflection!r} object, received {reflection!r}",
+                f"Must supply {SolverReflection!r} object, received {reflection!r}",
             )
 
         logger.debug("reflection: %r", reflection)
@@ -269,8 +269,8 @@ class HklSolver(SolverBase):
 
     def calculate_UB(
         self,
-        r1: Reflection,
-        r2: Reflection,
+        r1: SolverReflection,
+        r2: SolverReflection,
     ) -> list[list[float]]:
         """
         Calculate the UB (orientation) matrix with two reflections.
@@ -429,7 +429,7 @@ class HklSolver(SolverBase):
         return pdict
 
     @property
-    def lattice(self) -> Lattice:
+    def lattice(self) -> NamedFloatDict:
         """
         Dictionary of crystal lattice parameters.
         """
@@ -438,9 +438,9 @@ class HklSolver(SolverBase):
         return {k: getattr(values, k) for k in keys}
 
     @lattice.setter
-    def lattice(self, value: Lattice):
+    def lattice(self, value: NamedFloatDict):
         if not istype(value, dict):
-            raise TypeError(f"Must supply {Lattice} object, received {value!r}")
+            raise TypeError(f"Must supply {NamedFloatDict} object, received {value!r}")
 
         logger.debug("lattice.setter(): value=%s", value)
         self._sample.lattice_set(
@@ -508,7 +508,7 @@ class HklSolver(SolverBase):
             )
         return rlist
 
-    def refineLattice(self, reflections: list[Reflection]) -> Lattice:
+    def refineLattice(self, reflections: list[SolverReflection]) -> NamedFloatDict:
         """
         Refine the lattice parameters from a list of reflections.
 
@@ -531,7 +531,7 @@ class HklSolver(SolverBase):
             self._sample.del_reflection(ref)
 
     @property
-    def sample(self) -> Sample:
+    def sample(self) -> SolverSample:
         """
         Crystalline sample.  libhkl's sample object.
         """
@@ -543,9 +543,9 @@ class HklSolver(SolverBase):
         return sample
 
     @sample.setter
-    def sample(self, value: Sample):
+    def sample(self, value: SolverSample):
         if not istype(value, dict):
-            raise TypeError(f"Must supply {Sample} object, received {value!r}")
+            raise TypeError(f"Must supply {SolverSample} object, received {value!r}")
 
         # Just drop the old sample and make a new one.
         # Python knows its correct name.

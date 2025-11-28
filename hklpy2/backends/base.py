@@ -4,6 +4,10 @@ Abstract base class for all solvers.
 .. autosummary::
 
     ~SolverBase
+    ~NamedFloatDict
+    ~SolverMatrix3x3
+    ~SolverReflection
+    ~SolverSample
 """
 
 import logging
@@ -23,9 +27,17 @@ from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
-Lattice = Dict[str, float]
-Reflection = Dict[str, Any]
-Sample = Dict[str, Any]
+NamedFloatDict = Dict[str, float]  # TODO: Hoist to ..misc?
+"""Python type annotation: dictionary of named floats."""
+
+SolverMatrix3x3 = List[List[float]]  # TODO: Hoist (& rename) to ..misc?
+"""Python type annotation: mutable orientation & rotation matrices."""
+
+SolverReflection = Dict[str, Any]
+"""Python type annotation: solver reflection."""
+
+SolverSample = Dict[str, Any]
+"""Python type annotation: solver sample."""
 
 
 class SolverBase(ABC):
@@ -125,7 +137,7 @@ class SolverBase(ABC):
         self._gname: str = geometry
         self.mode = mode
         self._all_extra_axis_names: List[str] | None = None
-        self._sample: Sample | None = None
+        self._sample: SolverSample | None = None
 
         validate_and_canonical_unit(self.ANGLE_UNITS, INTERNAL_ANGLE_UNITS)
         validate_and_canonical_unit(self.LENGTH_UNITS, INTERNAL_LENGTH_UNITS)
@@ -153,7 +165,7 @@ class SolverBase(ABC):
         }
 
     @abstractmethod
-    def addReflection(self, reflection: Reflection) -> None:
+    def addReflection(self, reflection: SolverReflection) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
 
     @property
@@ -173,9 +185,9 @@ class SolverBase(ABC):
     @abstractmethod
     def calculate_UB(
         self,
-        r1: Reflection,
-        r2: Reflection,
-    ) -> List[List[float]]:
+        r1: SolverReflection,
+        r2: SolverReflection,
+    ) -> SolverMatrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
@@ -198,7 +210,7 @@ class SolverBase(ABC):
         return {}
 
     @abstractmethod
-    def forward(self, pseudos: Dict[str, float]) -> List[Dict[str, float]]:
+    def forward(self, pseudos: NamedFloatDict) -> List[NamedFloatDict]:
         """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
         # based on geometry and mode
         # return [{}]
@@ -232,21 +244,21 @@ class SolverBase(ABC):
         return self._gname
 
     @abstractmethod
-    def inverse(self, reals: Dict[str, float]) -> Dict[str, float]:
+    def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
         """Compute dict of pseudos from reals (angles -> hkl)."""
         # return {}
 
     @property
-    def lattice(self) -> Lattice:
+    def lattice(self) -> NamedFloatDict:
         """
         Crystal lattice parameters.  (Not used by this |solver|.)
         """
         return self._lattice
 
     @lattice.setter
-    def lattice(self, value: Lattice) -> None:
-        if not istype(value, Lattice):
-            raise TypeError(f"Must supply {Lattice} object, received {value!r}")
+    def lattice(self, value: NamedFloatDict) -> None:
+        if not istype(value, NamedFloatDict):
+            raise TypeError(f"Must supply {NamedFloatDict} object, received {value!r}")
         self._lattice = value
 
     @property
@@ -291,7 +303,7 @@ class SolverBase(ABC):
         # return []
 
     @abstractmethod
-    def refineLattice(self, reflections: List[Reflection]) -> Lattice:
+    def refineLattice(self, reflections: List[SolverReflection]) -> NamedFloatDict:
         """Refine the lattice parameters from a list of reflections."""
 
     @abstractmethod
@@ -299,16 +311,16 @@ class SolverBase(ABC):
         """Remove all reflections."""
 
     @property
-    def sample(self) -> Sample | None:
+    def sample(self) -> SolverSample | None:
         """
         Crystalline sample.
         """
         return self._sample
 
     @sample.setter
-    def sample(self, value: Sample) -> None:
-        if not istype(value, Sample):
-            raise TypeError(f"Must supply {Sample} object, received {value!r}")
+    def sample(self, value: SolverSample) -> None:
+        if not istype(value, SolverSample):
+            raise TypeError(f"Must supply {SolverSample} object, received {value!r}")
         self._sample = value
 
     @property
@@ -357,6 +369,6 @@ class SolverBase(ABC):
         return table
 
     @property
-    def UB(self) -> List[List[float]]:
+    def UB(self) -> SolverMatrix3x3:
         """Orientation matrix (3x3)."""
         return IDENTITY_MATRIX_3X3
