@@ -1,7 +1,7 @@
 """Test the no_op solver class."""
 
-from ..no_op import NoOpSolver
 from ...misc import IDENTITY_MATRIX_3X3
+from ..no_op import NoOpSolver
 
 
 def test_NoOpSolver():

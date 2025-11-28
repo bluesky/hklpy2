@@ -3,7 +3,7 @@ from contextlib import nullcontext as does_not_raise
 import numpy as np
 import pytest
 
-from ...blocks.reflection import Reflection
+from ...misc import IDENTITY_MATRIX_3X3
 from ...misc import SolverError
 from ...misc import get_solver
 from ...misc import solver_factory
@@ -29,7 +29,7 @@ def test_solver():
     assert solver.real_axis_names == "th tth".split()
     assert solver.extra_axis_names == []
     assert solver.refineLattice([]) is None
-    assert solver.calculate_UB(None, None) == []
+    assert solver.calculate_UB(None, None) == IDENTITY_MATRIX_3X3
 
     assert solver.mode == "", f"{solver.mode=!r}"
     solver.mode = BISECTOR_MODE
@@ -112,8 +112,8 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
 @pytest.mark.parametrize(
     "value, context, expected",
     [
-        [
-            Reflection(
+        pytest.param(
+            dict(
                 name="r1",
                 pseudos=dict(q=0),
                 reals=dict(th=0, tth=0),
@@ -124,10 +124,16 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
             ),
             does_not_raise(),
             None,
-        ],
-        ["wrong object", pytest.raises(TypeError), "Must supply Reflection object"],
-        [
-            Reflection(
+            id="standard case",
+        ),
+        pytest.param(
+            "wrong object",
+            pytest.raises(TypeError),
+            "Must supply SolverReflection (dict)",
+            id="Wrong object type",
+        ),
+        pytest.param(
+            dict(
                 name="r1",
                 pseudos=dict(q=0),
                 reals=dict(th=0, tth=0),
@@ -138,13 +144,14 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
             ),
             pytest.raises(SolverError),
             "All reflections must have same wavelength",
-        ],
+            id="Different reflection wavelengths",
+        ),
     ],
 )
 def test_reflections(value, context, expected):
     with context as reason:
         solver = solver_factory("th_tth", "TH TTH Q")
-        r0 = Reflection(
+        r0 = dict(
             name="r0",
             pseudos=dict(q=0.1),
             reals=dict(th=0, tth=1),
