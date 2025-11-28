@@ -15,10 +15,14 @@ From **hklpy**, these TODO items:
 """
 
 import logging
+from typing import Any
+from typing import Mapping
 
 from ..misc import ConfigurationError
 
 logger = logging.getLogger(__name__)
+
+KeyValueMap = Mapping[str, Any]
 
 
 class Configuration:
@@ -32,19 +36,19 @@ class Configuration:
         ~_valid
     """
 
-    def __init__(self, diffractometer) -> None:
+    def __init__(self, diffractometer: object) -> None:
         self.diffractometer = diffractometer
 
-    def _asdict(self) -> dict:
+    def _asdict(self) -> KeyValueMap:
         """Return diffractometer's configuration as a dict."""
         return self.diffractometer.core._asdict()
 
     def _fromdict(
         self,
-        config: dict,
+        config: KeyValueMap,
         clear: bool = True,
         restore_constraints: bool = True,
-    ):
+    ) -> None:
         """Restore diffractometer's configuration from a dict."""
         self._valid(config)  # will raise if invalid
 
@@ -66,15 +70,12 @@ class Configuration:
 
         self.diffractometer.core._fromdict(config)
 
-    def _valid(self, config):
+    def _valid(self, config: KeyValueMap) -> bool:
         """Validate incoming configuration for current diffractometer."""
 
-        def compare(incoming, existing, template):
+        def compare(incoming: Any, existing: any, template: str) -> None:
             if incoming != existing:
-                message = template % (incoming, existing)
-                raise ConfigurationError(message)
-                # logger.warning(template, incoming, existing)
-                # return False
+                raise ConfigurationError(template % (incoming, existing))
 
         compare(
             config.get("solver", {}).get("name"),
