@@ -12,7 +12,9 @@ Lattice parameters for a single crystal.
 import enum
 import logging
 import math
+from typing import Mapping
 from typing import Optional
+from typing import Union
 
 import numpy as np
 from numpy import typing as npt
@@ -26,21 +28,22 @@ from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_LATTICE_DIGITS = 4
+DEFAULT_LATTICE_DIGITS: int = 4
 """Default number of digits to display for lattice parameters."""
 
-SI_LATTICE_PARAMETER = 5.431020511
+SI_LATTICE_PARAMETER: float = 5.431020511
 """
 2018 CODATA recommended lattice parameter of silicon, Angstrom.
 
 :see: https://physics.nist.gov/cgi-bin/cuu/Value?asil
 """
 
-SI_LATTICE_PARAMETER_UNCERTAINTY = 0.000000089
+SI_LATTICE_PARAMETER_UNCERTAINTY: float = 0.000000089
 """
 2018 CODATA reported uncertainty of :data:`SI_LATTICE_PARAMETER`.
 """
 
+LatticeDictType = Mapping[str, Union[float, int, str]]
 
 CrystalSystem = enum.Enum(  # in order from lowest symmetry
     "CrystalSystem",
@@ -107,7 +110,7 @@ class Lattice:
         digits: Optional[int] = None,
         length_units: Optional[str] = None,
         tol: Optional[float] = 1e-12,
-    ):
+    ) -> None:
         """Initialize lattice parameters.
 
         Parameters
@@ -180,7 +183,7 @@ class Lattice:
         self.cartesian_lattice_matrix = self.compute_cartesian_lattice()
         self.B = self.compute_B(with_2pi=True)
 
-    def __eq__(self, latt):
+    def __eq__(self, latt) -> bool:
         """
         Compare two lattices for equality.
 
@@ -227,7 +230,7 @@ class Lattice:
 
         return compare_float_dicts(vals_self, vals_other, digits)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Standard representation of lattice.
         """
@@ -241,7 +244,7 @@ class Lattice:
         parameters.append(f"{system=!r}")
         return f"{self.__class__.__name__}({', '.join(parameters)})"
 
-    def _asdict(self):
+    def _asdict(self) -> LatticeDictType:
         """Return a new dict which maps lattice constant names and values."""
         # note: name is identical to namedtuple._asdict method
         return {
@@ -256,7 +259,7 @@ class Lattice:
             "length_units": self.length_units,
         }
 
-    def _fromdict(self, config):
+    def _fromdict(self, config: LatticeDictType):
         """Redefine lattice from a (configuration) dictionary."""
         for k in "a b c alpha beta gamma".split():
             setattr(self, k, config[k])
@@ -331,7 +334,7 @@ class Lattice:
 
         return np.vstack([v_a, v_b, v_c])
 
-    def system_parameter_names(self, system: str):
+    def system_parameter_names(self, system: str) -> LatticeDictType:
         """Return list of lattice parameter names for this crystal system."""
         all = "a b c alpha beta gamma".split()
         return {
@@ -358,7 +361,7 @@ class Lattice:
         self._angle_units = canon
 
     @property
-    def crystal_system(self):
+    def crystal_system(self) -> str:
         """
         The crystal system of this lattice.  By inspection of the parameters.
 
@@ -431,7 +434,7 @@ class Lattice:
         return self._digits
 
     @digits.setter
-    def digits(self, value: int):
+    def digits(self, value: int) -> None:
         self._digits = value
 
     @property

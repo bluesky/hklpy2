@@ -25,8 +25,11 @@ From **hklpy**, these TODO items:
 
 from abc import ABC
 from abc import abstractmethod
+from typing import Any
 from typing import Dict
 from typing import List
+from typing import Mapping
+from typing import Optional
 from typing import Union
 
 from ..misc import ConfigurationError
@@ -35,6 +38,8 @@ from ..misc import ConstraintsError
 ENDPOINT_TOLERANCE = 1e-7  # for comparisons, less than motion step size
 NUMERIC = Union[int, float]
 UNDEFINED_LABEL = "undefined"
+
+ConstraintsDictType = Mapping[str, Any]
 
 
 class ConstraintBase(ABC):
@@ -55,13 +60,13 @@ class ConstraintBase(ABC):
         content = [f"{k}={v}" for k, v in self._asdict().items()]
         return f"{self.__class__.__name__}({', '.join(content)})"
 
-    def _asdict(self):
+    def _asdict(self) -> ConstraintsDictType:
         """Return a new dict which maps field names to their values."""
         result = {k: getattr(self, k) for k in self._fields}
         result["class"] = self.__class__.__name__
         return result
 
-    def _fromdict(self, config, core=None):
+    def _fromdict(self, config: ConstraintsDictType, core: Optional[Any] = None):
         """Redefine this constraint from a (configuration) dictionary."""
         from ..ops import Core
 
@@ -127,7 +132,12 @@ class LimitsConstraint(ConstraintBase):
         ~valid
     """
 
-    def __init__(self, low_limit=-180, high_limit=180, label=None):
+    def __init__(
+        self,
+        low_limit: Optional[float] = -180,
+        high_limit: Optional[float] = 180,
+        label: Optional[str] = None,
+    ) -> None:
         if label is None:
             raise ConstraintsError("Must provide a value for 'label'.")
 
@@ -148,12 +158,12 @@ class LimitsConstraint(ConstraintBase):
         return f"{self.low_limit} <= {self.label} <= {self.high_limit}"
 
     @property
-    def limits(self):
+    def limits(self) -> tuple[float, float]:
         """Return the low and high limits of this constraint."""
         return (self.low_limit, self.high_limit)
 
     @limits.setter
-    def limits(self, values):
+    def limits(self, values: tuple[float, float]) -> None:
         if len(values) != 2:
             raise ConstraintsError(f"Use exactly two values.  Received: {values!r}")
         self.low_limit, self.high_limit = sorted(map(float, values))
@@ -193,7 +203,7 @@ class RealAxisConstraints(dict):
         ~valid
     """
 
-    def __init__(self, reals: List[str]):
+    def __init__(self, reals: List[str]) -> None:
         for k in reals:
             self[k] = LimitsConstraint(label=k)
 
@@ -201,11 +211,11 @@ class RealAxisConstraints(dict):
         """Return a nicely-formatted string."""
         return str([str(c) for c in self.values()])
 
-    def _asdict(self):
+    def _asdict(self) -> ConstraintsDictType:
         """Return all constraints as a dictionary."""
         return {k: c._asdict() for k, c in self.items()}
 
-    def _fromdict(self, config, core=None):
+    def _fromdict(self, config: ConstraintsDictType, core=None) -> None:
         """Redefine existing constraints from a (configuration) dictionary."""
         for k, v in config.items():
             self[k]._fromdict(v, core=core)

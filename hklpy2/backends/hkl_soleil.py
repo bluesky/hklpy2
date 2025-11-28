@@ -43,6 +43,7 @@ from typing import Dict
 from typing import List
 
 import numpy as np
+from numpy import typing as npt
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
@@ -86,7 +87,7 @@ def hkl_euler_matrix(
     return libhkl.Matrix.new_euler(euler_x, euler_y, euler_z)
 
 
-def to_hkl(arr: np.ndarray) -> libhkl.Matrix:  # type: ignore
+def to_hkl(arr: npt.NDArray[np.float64]) -> libhkl.Matrix:  # type: ignore
     """Convert a numpy ndarray to an hkl ``Matrix``
 
     Parameters
@@ -102,13 +103,15 @@ def to_hkl(arr: np.ndarray) -> libhkl.Matrix:  # type: ignore
         return arr
 
     arr = np.array(arr)
+    if arr.shape != (3, 3):
+        raise ValueError(f"Expected shape (3, 3), received {arr=}")
 
     hklm = hkl_euler_matrix(0, 0, 0)
     hklm.init(*arr.flatten())
     return hklm
 
 
-def to_numpy(mat: libhkl.Matrix) -> np.ndarray:  # type: ignore
+def to_numpy(mat: libhkl.Matrix) -> npt.NDArray[np.float64]:  # type: ignore
     """Convert an hkl ``Matrix`` to a numpy ndarray
 
     Parameters
