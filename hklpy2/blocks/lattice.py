@@ -43,6 +43,7 @@ SI_LATTICE_PARAMETER_UNCERTAINTY: float = 0.000000089
 2018 CODATA reported uncertainty of :data:`SI_LATTICE_PARAMETER`.
 """
 
+LatticeDictType = Mapping[str, Union[float, int, str]]
 
 CrystalSystem = enum.Enum(  # in order from lowest symmetry
     "CrystalSystem",
@@ -243,7 +244,7 @@ class Lattice:
         parameters.append(f"{system=!r}")
         return f"{self.__class__.__name__}({', '.join(parameters)})"
 
-    def _asdict(self) -> Mapping[str, Union[float, int, str]]:
+    def _asdict(self) -> LatticeDictType:
         """Return a new dict which maps lattice constant names and values."""
         # note: name is identical to namedtuple._asdict method
         return {
@@ -258,7 +259,7 @@ class Lattice:
             "length_units": self.length_units,
         }
 
-    def _fromdict(self, config: Mapping[str, Union[float, int, str]]):
+    def _fromdict(self, config: LatticeDictType):
         """Redefine lattice from a (configuration) dictionary."""
         for k in "a b c alpha beta gamma".split():
             setattr(self, k, config[k])
@@ -333,9 +334,7 @@ class Lattice:
 
         return np.vstack([v_a, v_b, v_c])
 
-    def system_parameter_names(
-        self, system: str
-    ) -> Mapping[str, Union[float, int, str]]:
+    def system_parameter_names(self, system: str) -> LatticeDictType:
         """Return list of lattice parameter names for this crystal system."""
         all = "a b c alpha beta gamma".split()
         return {
