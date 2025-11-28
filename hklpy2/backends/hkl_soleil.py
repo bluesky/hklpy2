@@ -39,7 +39,11 @@ Example::
 import logging
 import math
 import platform
+from typing import Any
+from typing import Dict
+from typing import List
 
+import numpy as np
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
@@ -50,6 +54,7 @@ from ..misc import roundoff
 from ..misc import unique_name
 from .base import NamedFloatDict
 from .base import SolverBase
+from .base import SolverMatrix3x3
 from .base import SolverReflection
 from .base import SolverSample
 from .hkl_soleil_utils import setup_libhkl
@@ -68,17 +73,23 @@ LIBHKL_USER_UNITS = LIBHKL_UNITS["user"]
 ROUNDOFF_DIGITS = 12
 
 
-def roundoff_list(values, digits=ROUNDOFF_DIGITS):
+def roundoff_list(values: List[float], digits=ROUNDOFF_DIGITS) -> List[float]:
     """Prevent underflows and '-0' for all numbers in a list."""
     return [roundoff(v, digits) for v in values]
 
 
-def hkl_euler_matrix(euler_x, euler_y, euler_z):
+# TODO: Want to use libhkl.Matrix here instead of Any
+def hkl_euler_matrix(
+    euler_x: List[float],
+    euler_y: List[float],
+    euler_z: List[float],
+) -> Any:
     """Convert into matrix form."""
     return libhkl.Matrix.new_euler(euler_x, euler_y, euler_z)
 
 
-def to_hkl(arr):
+# TODO: Want to use libhkl.Matrix here instead of Any
+def to_hkl(arr: np.ndarray) -> Any:
     """Convert a numpy ndarray to an hkl ``Matrix``
 
     Parameters
@@ -89,7 +100,6 @@ def to_hkl(arr):
     -------
     Hkl.Matrix
     """
-    import numpy as np
 
     if isinstance(arr, libhkl.Matrix):
         return arr
@@ -101,7 +111,8 @@ def to_hkl(arr):
     return hklm
 
 
-def to_numpy(mat):
+# TODO: Want to use libhkl.Matrix here instead of Any
+def to_numpy(mat: Any) -> np.ndarray:
     """Convert an hkl ``Matrix`` to a numpy ndarray
 
     Parameters
@@ -112,8 +123,6 @@ def to_numpy(mat):
     -------
     ndarray
     """
-    import numpy as np
-
     if isinstance(mat, np.ndarray):
         return mat
 
@@ -271,7 +280,7 @@ class HklSolver(SolverBase):
         self,
         r1: SolverReflection,
         r2: SolverReflection,
-    ) -> list[list[float]]:
+    ) -> SolverMatrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
@@ -287,8 +296,9 @@ class HklSolver(SolverBase):
         logger.debug("%r reflections", len(self._sample.reflections_get()))
         return self.UB
 
+    # TODO: Want to use libhkl.Engine here instead of Any
     @property
-    def engine(self) -> libhkl.Engine:
+    def engine(self) -> Any:
         """Selected computational engine for this geometry."""
         return self._hkl_engine
 
@@ -312,7 +322,7 @@ class HklSolver(SolverBase):
         return self.engine.parameters_names_get()  # Do NOT sort.
 
     @property
-    def extras(self) -> dict:
+    def extras(self) -> NamedFloatDict:
         """
         Ordered dictionary of any extra parameters.
 
@@ -326,7 +336,7 @@ class HklSolver(SolverBase):
         )
 
     @extras.setter
-    def extras(self, values: dict) -> None:
+    def extras(self, values: NamedFloatDict) -> None:
         known_names = self.extra_axis_names
         for k in values.keys():
             if k not in known_names:
@@ -341,7 +351,7 @@ class HklSolver(SolverBase):
             p.value_set(v, LIBHKL_USER_UNITS)
             self.engine.parameter_set(k, p)
 
-    def forward(self, pseudos: dict) -> list[dict[str, float]]:
+    def forward(self, pseudos: NamedFloatDict) -> List[NamedFloatDict]:
         """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
         from gi.repository import GLib  # noqa: E402, F401  # W0611
 
@@ -397,7 +407,7 @@ class HklSolver(SolverBase):
             ]
         )
 
-    def inverse(self, reals: dict[str, float]) -> dict[str, float]:
+    def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
         """Compute tuple of pseudos from reals (angles -> hkl)."""
         logger.debug("{__name__=} inverse(reals=%r)", reals)
         if list(reals) != self.real_axis_names:
@@ -489,7 +499,7 @@ class HklSolver(SolverBase):
         return self._hkl_geometry.axis_names_get()  # Do NOT sort.
 
     @property
-    def reflections(self) -> dict:
+    def reflections(self) -> Dict[str, SolverReflection]:
         """List of defined reflections (no store reflection names in libhkl)."""
         rlist = {}
         for refl in self._sample.reflections_get():
@@ -569,7 +579,7 @@ class HklSolver(SolverBase):
                     self.addReflection(refl)
                     break
 
-    def set_reals(self, reals: dict) -> None:
+    def set_reals(self, reals: NamedFloatDict) -> None:
         """Set the values of all the real axes."""
         self._hkl_geometry.axis_values_set(
             (list(reals.values())),
@@ -647,7 +657,7 @@ class HklSolver(SolverBase):
         return table
 
     @property
-    def U(self) -> list[list[float]]:
+    def U(self) -> SolverMatrix3x3:
         """
         Relative orientation of crystal on diffractometer.
 
@@ -659,13 +669,13 @@ class HklSolver(SolverBase):
         return matrix.round(decimals=ROUNDOFF_DIGITS).tolist()
 
     @U.setter
-    def U(self, value: list[list[float]]) -> None:
+    def U(self, value: SolverMatrix3x3) -> None:
         if self._sample is not None:
             logger.debug("U.setter(): value=%s", value)
             self._sample.U_set(to_hkl(value))
 
     @property
-    def UB(self) -> list[list[float]]:
+    def UB(self) -> SolverMatrix3x3:
         """Orientation matrix (3x3)."""
         if self._sample is None:
             return IDENTITY_MATRIX_3X3
@@ -673,7 +683,7 @@ class HklSolver(SolverBase):
         return matrix.round(decimals=ROUNDOFF_DIGITS).tolist()
 
     @UB.setter
-    def UB(self, value: list[list[float]]) -> None:
+    def UB(self, value: SolverMatrix3x3) -> None:
         if self._sample is not None:
             logger.debug("UB.setter(): value=%s", value)
             self._sample.UB_set(to_hkl(value))
