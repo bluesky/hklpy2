@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=000c92bf"></script>
+    <script src="../_static/documentation_options.js?v=7f9fe292"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -433,24 +433,259 @@
                   
   <section id="how-to-write-a-new-solver">
 <span id="howto-solvers-write"></span><h1>How to write a new Solver<a class="headerlink" href="#how-to-write-a-new-solver" title="Link to this heading">#</a></h1>
-<div class="admonition caution">
-<p class="admonition-title">Caution</p>
-<p>TODO:: work-in-progress</p>
-</div>
-<p>Until this document is written, review the existing solvers:</p>
+<p>An <strong>hklpy2</strong> <strong>Solver</strong> is an adapter <a class="footnote-reference brackets" href="#adapter-pattern" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> for the backend
+diffractometer computation library it supports.</p>
+<section id="steps">
+<h2>Steps<a class="headerlink" href="#steps" title="Link to this heading">#</a></h2>
+<aside class="sidebar">
+<p class="sidebar-title">Overview</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a></p></li>
-<li><p><a class="reference internal" href="../autoapi/hklpy2/backends/no_op/index.html#hklpy2.backends.no_op.NoOpSolver" title="hklpy2.backends.no_op.NoOpSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoOpSolver</span></code></a></p></li>
-<li><p><a class="reference internal" href="../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver" title="hklpy2.backends.th_tth_q.ThTthSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThTthSolver</span></code></a></p></li>
+<li><p>Create a new Python package.</p></li>
+<li><p>Create a Solver class.</p></li>
+<li><p>Register as Entry Point.</p></li>
+<li><p>Install and test.</p></li>
 </ul>
-<p>## SolverBase</p>
-<p><strong>Solver</strong> classes always subclass <a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.SolverBase</span>
-
-<span class="k">class</span><span class="w"> </span><span class="nc">MySolver</span><span class="p">(</span><span class="n">SolverBase</span><span class="p">):</span>
-    <span class="o">...</span>
+</aside>
+<p>To write a new solver for <strong>hklpy2</strong>, you need to create a Python class
+that inherits from <a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> and
+register it as an entry point.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Create a new project <a class="footnote-reference brackets" href="#new-python-gh-project" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> for this work.</p>
+</div>
+<p>Here are the essential steps:</p>
+<section id="step-1-create-a-solver-class">
+<h3>Step 1. Create a Solver Class<a class="headerlink" href="#step-1-create-a-solver-class" title="Link to this heading">#</a></h3>
+<p>Create a Python class that inherits from
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> and implement all required abstract
+methods (methods marked with decorator <code class="docutils literal notranslate"><span class="pre">&#64;abstractmethod</span></code>
+<a class="footnote-reference brackets" href="#abstractmethod-decorator" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>):</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverLattice</span>
+<span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverMatrix3x3</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverReflection</span>
+<span class="linenos"> 6</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="k">class</span><span class="w"> </span><span class="nc">MySolver</span><span class="p">(</span><span class="n">SolverBase</span><span class="p">):</span>
+<span class="linenos"> 9</span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_solver&quot;</span>
+<span class="linenos">10</span>    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;1.0.0&quot;</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos">13</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>    <span class="c1"># Required abstract methods</span>
+<span class="linenos">16</span>    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">SolverReflection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">17</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add coordinates of a diffraction condition.&quot;&quot;&quot;</span>
+<span class="linenos">18</span>        <span class="k">pass</span>  <span class="c1"># TODO: send to your library</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span>
+<span class="linenos">21</span>        <span class="bp">self</span><span class="p">,</span> <span class="n">r1</span><span class="p">:</span> <span class="n">SolverReflection</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="n">SolverReflection</span>
+<span class="linenos">22</span>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverMatrix3x3</span><span class="p">:</span>
+<span class="linenos">23</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the UB matrix with two reflections.&quot;&quot;&quot;</span>
+<span class="linenos">24</span>        <span class="k">return</span> <span class="n">IDENTITY_MATRIX_3X3</span>  <span class="c1"># TODO: calculate with your library</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedFloatDict</span><span class="p">]:</span>
+<span class="linenos">27</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute list of solutions(reals) from pseudos.&quot;&quot;&quot;</span>
+<span class="linenos">28</span>        <span class="k">return</span> <span class="p">[{}]</span>  <span class="c1"># TODO: calculate with your library</span>
+<span class="linenos">29</span>
+<span class="linenos">30</span>    <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+<span class="linenos">31</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute pseudos from reals.&quot;&quot;&quot;</span>
+<span class="linenos">32</span>        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># TODO: calculate with your library</span>
+<span class="linenos">33</span>
+<span class="linenos">34</span>    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SolverReflection</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+<span class="linenos">35</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Refine lattice parameters from reflections.&quot;&quot;&quot;</span>
+<span class="linenos">36</span>        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># TODO: calculate with your library</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span>    <span class="k">def</span><span class="w"> </span><span class="nf">removeAllReflections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">39</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all reflections.&quot;&quot;&quot;</span>
+<span class="linenos">40</span>        <span class="k">pass</span>  <span class="c1"># TODO: use your library</span>
+<span class="linenos">41</span>
+<span class="linenos">42</span>    <span class="c1"># Required properties</span>
+<span class="linenos">43</span>    <span class="nd">@property</span>
+<span class="linenos">44</span>    <span class="k">def</span><span class="w"> </span><span class="nf">extra_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">45</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of extra axis names.&quot;&quot;&quot;</span>
+<span class="linenos">46</span>        <span class="k">return</span> <span class="p">[]</span>
+<span class="linenos">47</span>
+<span class="linenos">48</span>    <span class="nd">@classmethod</span>
+<span class="linenos">49</span>    <span class="k">def</span><span class="w"> </span><span class="nf">geometries</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">50</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Supported diffractometer geometries.&quot;&quot;&quot;</span>
+<span class="linenos">51</span>        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;MY_GEOMETRY&quot;</span><span class="p">]</span>
+<span class="linenos">52</span>
+<span class="linenos">53</span>    <span class="nd">@property</span>
+<span class="linenos">54</span>    <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">55</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Available operating modes.&quot;&quot;&quot;</span>
+<span class="linenos">56</span>        <span class="k">return</span> <span class="p">[]</span>
+<span class="linenos">57</span>
+<span class="linenos">58</span>    <span class="nd">@property</span>
+<span class="linenos">59</span>    <span class="k">def</span><span class="w"> </span><span class="nf">pseudo_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">60</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of pseudo axis names (h, k, l).&quot;&quot;&quot;</span>
+<span class="linenos">61</span>        <span class="k">return</span> <span class="p">[]</span>
+<span class="linenos">62</span>
+<span class="linenos">63</span>    <span class="nd">@property</span>
+<span class="linenos">64</span>    <span class="k">def</span><span class="w"> </span><span class="nf">real_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">65</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of real axis names (omega, chi, phi, tth).&quot;&quot;&quot;</span>
+<span class="linenos">66</span>        <span class="k">return</span> <span class="p">[]</span>
 </pre></div>
 </div>
+</section>
+<section id="step-2-register-as-entry-point">
+<h3>Step 2. Register as Entry Point<a class="headerlink" href="#step-2-register-as-entry-point" title="Link to this heading">#</a></h3>
+<p>Add your solver to the <code class="docutils literal notranslate"><span class="pre">[project.entry-points.&quot;hklpy2.solver&quot;]</span></code>
+section in your project’s <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> file.  Here’s an example:</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">[project.entry-points.</span><span class="s2">&quot;hklpy2.solver&quot;</span><span class="k">]</span>
+<span class="linenos">2</span><span class="n">my_solver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_package.my_solver:MySolver&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-install-and-test">
+<h3>Step 3. Install and Test<a class="headerlink" href="#step-3-install-and-test" title="Link to this heading">#</a></h3>
+<p>Install your package to make the solver discoverable. Then test that it
+loads correctly:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="c1"># List available solvers</span>
+<span class="linenos"> 4</span><span class="nb">print</span><span class="p">(</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">solvers</span><span class="p">())</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="c1"># Load your solver class</span>
+<span class="linenos"> 7</span><span class="n">SolverClass</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">get_solver</span><span class="p">(</span><span class="s2">&quot;my_solver&quot;</span><span class="p">)</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="c1"># Create an instance</span>
+<span class="linenos">10</span><span class="n">solver</span> <span class="o">=</span> <span class="n">SolverClass</span><span class="p">(</span><span class="s2">&quot;MY_GEOMETRY&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use the <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> factory to create a
+diffractometer with your solver and its default geometry:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;my_solver&quot;</span><span class="p">)</span>
+<span class="linenos">4</span><span class="n">sim</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="key-implementation-details">
+<h2>Key Implementation Details<a class="headerlink" href="#key-implementation-details" title="Link to this heading">#</a></h2>
+<section id="required-methods-contract">
+<h3>Required Methods Contract<a class="headerlink" href="#required-methods-contract" title="Link to this heading">#</a></h3>
+<p>All solvers must implement these methods with specific contracts:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>method</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">forward(pseudos)</span></code></p></td>
+<td><p>Returns <code class="docutils literal notranslate"><span class="pre">list[dict]</span></code> of all possible real angle solutions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inverse(reals)</span></code></p></td>
+<td><p>Returns single <code class="docutils literal notranslate"><span class="pre">dict</span></code> of pseudo coordinates</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">calculate_UB(r1,</span> <span class="pre">r2)</span></code></p></td>
+<td><p>Returns 3×3 UB matrix using Busing &amp; Levy method</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">addReflection(reflection)</span></code></p></td>
+<td><p>Updates (current) sample with new reflection</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">removeAllReflections()</span></code></p></td>
+<td><p>Clears (current) sample all stored reflections</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="engineering-units-system">
+<h3>Engineering Units System<a class="headerlink" href="#engineering-units-system" title="Link to this heading">#</a></h3>
+<p>Define your solver’s internal units via class constants:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ANGLE_UNITS</span></code>: Default “degrees”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LENGTH_UNITS</span></code>: Default “angstrom”</p></li>
+</ul>
+</section>
+<section id="example-reference">
+<h3>Example Reference<a class="headerlink" href="#example-reference" title="Link to this heading">#</a></h3>
+<p>See these example solver implementation classes:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>class</p></th>
+<th class="head"><p>description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver" title="hklpy2.backends.th_tth_q.ThTthSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThTthSolver</span></code></a></p></td>
+<td><p>Minimal pure-Python solver</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/no_op/index.html#hklpy2.backends.no_op.NoOpSolver" title="hklpy2.backends.no_op.NoOpSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoOpSolver</span></code></a></p></td>
+<td><p>No-operation solver for testing</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a></p></td>
+<td><p>Production solver (Linux x86_64 only)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TrivialSolver()</span></code> <a class="footnote-reference brackets" href="#trivialsolver" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a></p></td>
+<td><p>basic template (in tests)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The solver system <a class="footnote-reference brackets" href="#solver-system-analysis" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> uses Python’s <em>entry point</em>
+mechanism <a class="footnote-reference brackets" href="#entry-point" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> for runtime discovery.</p></li>
+<li><p>All solvers must inherit from
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> which enforces a consistent
+interface.</p></li>
+<li><p>The <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> class handles unit conversion between
+diffractometer and solver units.</p></li>
+<li><p>Solvers can be platform-specific (like
+<a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a> which is Linux x86_64
+only).</p></li>
+<li><p>Consider using <a class="reference internal" href="../autoapi/hklpy2/backends/no_op/index.html#hklpy2.backends.no_op.NoOpSolver" title="hklpy2.backends.no_op.NoOpSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoOpSolver</span></code></a> or
+<code class="docutils literal notranslate"><span class="pre">TrivialSolver()</span></code> <a class="footnote-reference brackets" href="#trivialsolver" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a> as starting references for testing
+infrastructure.</p></li>
+</ul>
+<section id="footnotes">
+<h3>Footnotes<a class="headerlink" href="#footnotes" title="Link to this heading">#</a></h3>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="abstractmethod-decorator" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">1</a><span class="fn-bracket">]</span></span>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;abstractmethod</span></code> decorator, from the
+Python standard library module  <a class="reference external" href="https://docs.python.org/3/library/abc.html#module-abc" title="(in Python v3.14)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">abc</span></code></a>, enforces that subclasses
+implement the decorated methods. See <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.abstractmethod">&#64;abstractmethod</a> for more
+details or this <a class="reference external" href="https://coderivers.org/blog/abstract-method-python/">tutorial</a>.</p>
+</aside>
+<aside class="footnote brackets" id="adapter-pattern" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">2</a><span class="fn-bracket">]</span></span>
+<p><em>Adapter pattern</em> ( or <em>wrapper</em>) is a software design pattern.
+For more details, see this <a class="reference external" href="https://en.wikipedia.org/wiki/Adapter_pattern">explanation</a>.</p>
+</aside>
+<aside class="footnote brackets" id="solver-system-analysis" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">3</a><span class="fn-bracket">]</span></span>
+<p>Analysis of <strong>hklpy2</strong> <em>Solver</em>
+<a class="reference external" href="https://deepwiki.com/bluesky/hklpy2/3.4-solver-backend-system">backend</a></p>
+</aside>
+<aside class="footnote brackets" id="entry-point" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">4</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://packaging.python.org/en/latest/specifications/entry-points/">Entry Points</a>:
+<em>Entry points are a way for Python packages to advertise components they
+provide to be discovered and used by other packages at runtime.</em></p>
+</aside>
+<aside class="footnote brackets" id="new-python-gh-project" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">5</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://coderivers.org/blog/github-python-projects/#creating-a-python-project-on-github">Guide</a>
+to <em>Create a Python Project on GitHub</em>.</p>
+</aside>
+<aside class="footnote brackets" id="trivialsolver" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id4">1</a>,<a role="doc-backlink" href="#id7">2</a>)</span>
+<p><code class="docutils literal notranslate"><span class="pre">TrivialSolver()</span></code>: Source code in the test <a class="reference external" href="https://github.com/bluesky/hklpy2/blob/main/hklpy2/backends/tests/test_base.py">suite</a>.</p>
+</aside>
+</aside>
+</section>
+</section>
 </section>
 
 
@@ -491,6 +726,33 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steps">Steps</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-create-a-solver-class">Step 1. Create a Solver Class</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-register-as-entry-point">Step 2. Register as Entry Point</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-install-and-test">Step 3. Install and Test</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-implementation-details">Key Implementation Details</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-methods-contract">Required Methods Contract</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#engineering-units-system">Engineering Units System</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-reference">Example Reference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#footnotes">Footnotes</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
@@ -551,7 +813,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>

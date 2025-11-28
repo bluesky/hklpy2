@@ -97,17 +97,17 @@ Module Contents
    :value: 12
 
 
-.. py:function:: roundoff_list(values, digits=ROUNDOFF_DIGITS)
+.. py:function:: roundoff_list(values: List[float], digits=ROUNDOFF_DIGITS) -> List[float]
 
    Prevent underflows and '-0' for all numbers in a list.
 
 
-.. py:function:: hkl_euler_matrix(euler_x, euler_y, euler_z)
+.. py:function:: hkl_euler_matrix(euler_x: List[float], euler_y: List[float], euler_z: List[float]) -> libhkl
 
    Convert into matrix form.
 
 
-.. py:function:: to_hkl(arr)
+.. py:function:: to_hkl(arr: numpy.ndarray) -> libhkl
 
    Convert a numpy ndarray to an hkl ``Matrix``
 
@@ -117,7 +117,7 @@ Module Contents
    :rtype: Hkl.Matrix
 
 
-.. py:function:: to_numpy(mat)
+.. py:function:: to_numpy(mat: libhkl) -> numpy.ndarray
 
    Convert an hkl ``Matrix`` to a numpy ndarray
 
@@ -230,10 +230,17 @@ Module Contents
    .. py:attribute:: _hkl_geometry
 
 
+   .. py:property:: mode
+      :type: str
+
+
+      Name of the current geometry operating mode.
+
+
    .. py:method:: __repr__() -> str
 
 
-   .. py:method:: addReflection(reflection: hklpy2.backends.base.Reflection) -> None
+   .. py:method:: addReflection(reflection: hklpy2.backends.base.SolverReflection) -> None
 
       Add coordinates of a diffraction condition (a reflection).
 
@@ -264,7 +271,7 @@ Module Contents
       Updated by 'forward()' computation.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.backends.base.Reflection, r2: hklpy2.backends.base.Reflection) -> list[list[float]]
+   .. py:method:: calculate_UB(r1: hklpy2.backends.base.SolverReflection, r2: hklpy2.backends.base.SolverReflection) -> hklpy2.backends.base.SolverMatrix3x3
 
       Calculate the UB (orientation) matrix with two reflections.
 
@@ -303,7 +310,7 @@ Module Contents
 
 
    .. py:property:: extras
-      :type: dict
+      :type: hklpy2.backends.base.NamedFloatDict
 
 
       Ordered dictionary of any extra parameters.
@@ -311,7 +318,7 @@ Module Contents
       Depends on selected geometry, engine, and mode.
 
 
-   .. py:method:: forward(pseudos: dict) -> list[dict[str, float]]
+   .. py:method:: forward(pseudos: hklpy2.backends.base.NamedFloatDict) -> List[hklpy2.backends.base.NamedFloatDict]
 
       Compute list of solutions(reals) from pseudos (hkl -> [angles]).
 
@@ -327,24 +334,17 @@ Module Contents
 
 
 
-   .. py:method:: inverse(reals: dict[str, float]) -> dict[str, float]
+   .. py:method:: inverse(reals: hklpy2.backends.base.NamedFloatDict) -> hklpy2.backends.base.NamedFloatDict
 
       Compute tuple of pseudos from reals (angles -> hkl).
 
 
 
    .. py:property:: lattice
-      :type: hklpy2.backends.base.Lattice
+      :type: hklpy2.backends.base.NamedFloatDict
 
 
       Dictionary of crystal lattice parameters.
-
-
-   .. py:property:: mode
-      :type: str
-
-
-      Name of the current geometry operating mode.
 
 
    .. py:property:: modes
@@ -369,13 +369,13 @@ Module Contents
 
 
    .. py:property:: reflections
-      :type: dict
+      :type: Dict[str, hklpy2.backends.base.SolverReflection]
 
 
       List of defined reflections (no store reflection names in libhkl).
 
 
-   .. py:method:: refineLattice(reflections: list[hklpy2.backends.base.Reflection]) -> hklpy2.backends.base.Lattice
+   .. py:method:: refineLattice(reflections: list[hklpy2.backends.base.SolverReflection]) -> hklpy2.backends.base.NamedFloatDict
 
       Refine the lattice parameters from a list of reflections.
 
@@ -390,13 +390,13 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: hklpy2.backends.base.Sample
+      :type: hklpy2.backends.base.SolverSample
 
 
       Crystalline sample.  libhkl's sample object.
 
 
-   .. py:method:: set_reals(reals: dict) -> None
+   .. py:method:: set_reals(reals: hklpy2.backends.base.NamedFloatDict) -> None
 
       Set the values of all the real axes.
 
@@ -434,7 +434,7 @@ Module Contents
 
 
    .. py:property:: U
-      :type: list[list[float]]
+      :type: hklpy2.backends.base.SolverMatrix3x3
 
 
       Relative orientation of crystal on diffractometer.
@@ -443,7 +443,7 @@ Module Contents
 
 
    .. py:property:: UB
-      :type: list[list[float]]
+      :type: hklpy2.backends.base.SolverMatrix3x3
 
 
       Orientation matrix (3x3).

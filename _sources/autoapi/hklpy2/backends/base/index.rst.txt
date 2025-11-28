@@ -10,6 +10,10 @@ hklpy2.backends.base
    .. autosummary::
 
        ~SolverBase
+       ~NamedFloatDict
+       ~SolverMatrix3x3
+       ~SolverReflection
+       ~SolverSample
 
 
 
@@ -19,9 +23,10 @@ Attributes
 .. autoapisummary::
 
    hklpy2.backends.base.logger
-   hklpy2.backends.base.Lattice
-   hklpy2.backends.base.Reflection
-   hklpy2.backends.base.Sample
+   hklpy2.backends.base.NamedFloatDict
+   hklpy2.backends.base.SolverMatrix3x3
+   hklpy2.backends.base.SolverReflection
+   hklpy2.backends.base.SolverSample
 
 
 Classes
@@ -37,13 +42,31 @@ Module Contents
 
 .. py:data:: logger
 
-.. py:data:: Lattice
+.. py:data:: NamedFloatDict
 
-.. py:data:: Reflection
+   dictionary of named floats.
 
-.. py:data:: Sample
+   :type: Python type annotation
 
-.. py:class:: SolverBase(geometry: str, *, mode: str = '', **kwargs)
+.. py:data:: SolverMatrix3x3
+
+   mutable orientation & rotation matrices.
+
+   :type: Python type annotation
+
+.. py:data:: SolverReflection
+
+   solver reflection.
+
+   :type: Python type annotation
+
+.. py:data:: SolverSample
+
+   solver sample.
+
+   :type: Python type annotation
+
+.. py:class:: SolverBase(geometry: str, *, mode: str = '', **kwargs: Any)
 
    Bases: :py:obj:`abc.ABC`
 
@@ -77,7 +100,9 @@ Module Contents
 
    .. seealso:: :mod:`~hklpy2.backends.hkl_soleil` & :mod:`~hklpy2.backends.no_op`
 
-   .. rubric:: Python Methods
+   .. rubric:: Python Abstract Methods
+
+   Subclasses must override each of these methods.
 
    .. autosummary::
 
@@ -87,6 +112,7 @@ Module Contents
        ~forward
        ~geometries
        ~inverse
+       ~modes
        ~pseudo_axis_names
        ~real_axis_names
        ~refineLattice
@@ -102,12 +128,12 @@ Module Contents
        ~geometry
        ~lattice
        ~mode
-       ~modes
        ~sample
        ~UB
 
 
    .. py:attribute:: name
+      :type:  str
       :value: 'base'
 
 
@@ -115,11 +141,13 @@ Module Contents
 
 
    .. py:attribute:: version
+      :type:  str
 
       Version of this Solver.
 
 
    .. py:attribute:: ANGLE_UNITS
+      :type:  str
       :value: 'degrees'
 
 
@@ -130,6 +158,7 @@ Module Contents
 
 
    .. py:attribute:: LENGTH_UNITS
+      :type:  str
       :value: 'angstrom'
 
 
@@ -140,6 +169,7 @@ Module Contents
 
 
    .. py:attribute:: _gname
+      :type:  str
 
 
    .. py:property:: mode
@@ -153,11 +183,13 @@ Module Contents
 
 
    .. py:attribute:: _all_extra_axis_names
+      :type:  List[str] | None
       :value: None
 
 
 
    .. py:attribute:: _sample
+      :type:  SolverSample | None
       :value: None
 
 
@@ -166,13 +198,13 @@ Module Contents
 
 
    .. py:property:: _metadata
-      :type: dict
+      :type: Dict[str, Any]
 
 
       Dictionary with this solver's summary metadata.
 
 
-   .. py:method:: addReflection(reflection: Reflection) -> None
+   .. py:method:: addReflection(reflection: SolverReflection) -> None
       :abstractmethod:
 
 
@@ -181,13 +213,13 @@ Module Contents
 
 
    .. py:property:: all_extra_axis_names
-      :type: list[str]
+      :type: List[str]
 
 
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-   .. py:method:: calculate_UB(r1: Reflection, r2: Reflection) -> list[list[float]]
+   .. py:method:: calculate_UB(r1: SolverReflection, r2: SolverReflection) -> SolverMatrix3x3
       :abstractmethod:
 
 
@@ -198,7 +230,7 @@ Module Contents
 
 
    .. py:property:: extra_axis_names
-      :type: list[str]
+      :type: List[str]
 
       :abstractmethod:
 
@@ -207,13 +239,13 @@ Module Contents
 
 
    .. py:property:: extras
-      :type: dict
+      :type: Dict[str, Any]
 
 
       Ordered dictionary of any extra parameters.
 
 
-   .. py:method:: forward(pseudos: dict) -> list[dict[str, float]]
+   .. py:method:: forward(pseudos: NamedFloatDict) -> List[NamedFloatDict]
       :abstractmethod:
 
 
@@ -221,7 +253,7 @@ Module Contents
 
 
 
-   .. py:method:: geometries() -> list[str]
+   .. py:method:: geometries() -> List[str]
       :classmethod:
 
       :abstractmethod:
@@ -251,7 +283,7 @@ Module Contents
       for each geometry.
 
 
-   .. py:method:: inverse(reals: dict) -> dict[str, float]
+   .. py:method:: inverse(reals: NamedFloatDict) -> NamedFloatDict
       :abstractmethod:
 
 
@@ -260,14 +292,14 @@ Module Contents
 
 
    .. py:property:: lattice
-      :type: Lattice
+      :type: NamedFloatDict
 
 
       Crystal lattice parameters.  (Not used by this |solver|.)
 
 
    .. py:property:: modes
-      :type: list[str]
+      :type: List[str]
 
       :abstractmethod:
 
@@ -276,7 +308,7 @@ Module Contents
 
 
    .. py:property:: pseudo_axis_names
-      :type: list[str]
+      :type: List[str]
 
       :abstractmethod:
 
@@ -285,7 +317,7 @@ Module Contents
 
 
    .. py:property:: real_axis_names
-      :type: list[str]
+      :type: List[str]
 
       :abstractmethod:
 
@@ -293,7 +325,7 @@ Module Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: list[Reflection]) -> Lattice
+   .. py:method:: refineLattice(reflections: List[SolverReflection]) -> NamedFloatDict
       :abstractmethod:
 
 
@@ -310,13 +342,15 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: object
+      :type: SolverSample | None
 
 
       Crystalline sample.
 
 
    .. py:property:: _summary_dict
+      :type: Dict[str, Any]
+
 
       Return a summary of the geometry (modes, axes)
 
@@ -332,6 +366,8 @@ Module Contents
 
 
    .. py:property:: UB
+      :type: SolverMatrix3x3
+
 
       Orientation matrix (3x3).
 

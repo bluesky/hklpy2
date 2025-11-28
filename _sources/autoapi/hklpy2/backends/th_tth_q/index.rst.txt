@@ -126,13 +126,13 @@ Module Contents
 
 
 
-   .. py:method:: addReflection(value: hklpy2.blocks.reflection.Reflection)
+   .. py:method:: addReflection(value: hklpy2.backends.base.SolverReflection) -> None
 
       Add coordinates of a diffraction condition (a reflection).
 
 
 
-   .. py:method:: calculate_UB(r1, r2)
+   .. py:method:: calculate_UB(r1: hklpy2.backends.base.SolverReflection, r2: hklpy2.backends.base.SolverReflection) -> hklpy2.backends.base.SolverMatrix3x3
 
       Calculate the UB (orientation) matrix with two reflections.
 
@@ -140,18 +140,20 @@ Module Contents
 
 
 
-   .. py:method:: forward(pseudos: dict) -> list[dict[str, float]]
+   .. py:property:: extra_axis_names
+      :type: List[str]
+
+
+      Ordered list of any extra axis names (such as x, y, z).
+
+
+   .. py:method:: forward(pseudos: hklpy2.backends.base.NamedFloatDict) -> List[hklpy2.backends.base.NamedFloatDict]
 
       Transform pseudos to list of reals.
 
 
 
-   .. py:property:: extra_axis_names
-
-      Ordered list of any extra axis names (such as x, y, z).
-
-
-   .. py:method:: geometries()
+   .. py:method:: geometries() -> List[str]
       :classmethod:
 
 
@@ -169,34 +171,40 @@ Module Contents
 
 
 
-   .. py:method:: inverse(reals: dict)
+   .. py:method:: inverse(reals: hklpy2.backends.base.NamedFloatDict) -> hklpy2.backends.base.NamedFloatDict
 
       Transform reals to pseudos.
 
 
 
    .. py:property:: modes
+      :type: List[str]
+
 
       List of the geometry operating modes.
 
 
    .. py:property:: pseudo_axis_names
+      :type: List[str]
+
 
       Ordered list of the pseudo axis names (such as h, k, l).
 
 
    .. py:property:: real_axis_names
+      :type: List[str]
+
 
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: list[hklpy2.blocks.reflection.Reflection]) -> None
+   .. py:method:: refineLattice(reflections: list[hklpy2.backends.base.SolverReflection]) -> hklpy2.backends.base.NamedFloatDict
 
       No lattice refinement in this |solver|.
 
 
 
-   .. py:method:: removeAllReflections()
+   .. py:method:: removeAllReflections() -> None
       :abstractmethod:
 
 
@@ -205,6 +213,8 @@ Module Contents
 
 
    .. py:property:: wavelength
+      :type: float
+
 
       Diffractometer wavelength, for forward() and inverse().
 
