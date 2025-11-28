@@ -10,10 +10,8 @@ hklpy2.backends.base
    .. autosummary::
 
        ~SolverBase
-       ~NamedFloatDict
-       ~SolverMatrix3x3
-       ~SolverReflection
-       ~SolverSample
+       ~SolverReflectionType
+       ~SolverSampleType
 
 
 
@@ -23,10 +21,8 @@ Attributes
 .. autoapisummary::
 
    hklpy2.backends.base.logger
-   hklpy2.backends.base.NamedFloatDict
-   hklpy2.backends.base.SolverMatrix3x3
-   hklpy2.backends.base.SolverReflection
-   hklpy2.backends.base.SolverSample
+   hklpy2.backends.base.SolverReflectionType
+   hklpy2.backends.base.SolverSampleType
 
 
 Classes
@@ -42,25 +38,13 @@ Module Contents
 
 .. py:data:: logger
 
-.. py:data:: NamedFloatDict
-
-   dictionary of named floats.
-
-   :type: Python type annotation
-
-.. py:data:: SolverMatrix3x3
-
-   mutable orientation & rotation matrices.
-
-   :type: Python type annotation
-
-.. py:data:: SolverReflection
+.. py:data:: SolverReflectionType
 
    solver reflection.
 
    :type: Python type annotation
 
-.. py:data:: SolverSample
+.. py:data:: SolverSampleType
 
    solver sample.
 
@@ -189,7 +173,7 @@ Module Contents
 
 
    .. py:attribute:: _sample
-      :type:  SolverSample | None
+      :type:  SolverSampleType | None
       :value: None
 
 
@@ -204,7 +188,7 @@ Module Contents
       Dictionary with this solver's summary metadata.
 
 
-   .. py:method:: addReflection(reflection: SolverReflection) -> None
+   .. py:method:: addReflection(reflection: SolverReflectionType) -> None
       :abstractmethod:
 
 
@@ -219,7 +203,7 @@ Module Contents
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-   .. py:method:: calculate_UB(r1: SolverReflection, r2: SolverReflection) -> SolverMatrix3x3
+   .. py:method:: calculate_UB(r1: SolverReflectionType, r2: SolverReflectionType) -> hklpy2.misc.Matrix3x3
       :abstractmethod:
 
 
@@ -245,7 +229,7 @@ Module Contents
       Ordered dictionary of any extra parameters.
 
 
-   .. py:method:: forward(pseudos: NamedFloatDict) -> List[NamedFloatDict]
+   .. py:method:: forward(pseudos: hklpy2.misc.NamedFloatDict) -> List[hklpy2.misc.NamedFloatDict]
       :abstractmethod:
 
 
@@ -283,7 +267,7 @@ Module Contents
       for each geometry.
 
 
-   .. py:method:: inverse(reals: NamedFloatDict) -> NamedFloatDict
+   .. py:method:: inverse(reals: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
       :abstractmethod:
 
 
@@ -292,7 +276,7 @@ Module Contents
 
 
    .. py:property:: lattice
-      :type: NamedFloatDict
+      :type: hklpy2.misc.NamedFloatDict
 
 
       Crystal lattice parameters.  (Not used by this |solver|.)
@@ -325,7 +309,7 @@ Module Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: List[SolverReflection]) -> NamedFloatDict
+   .. py:method:: refineLattice(reflections: List[SolverReflectionType]) -> hklpy2.misc.NamedFloatDict
       :abstractmethod:
 
 
@@ -342,7 +326,7 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: SolverSample | None
+      :type: SolverSampleType | None
 
 
       Crystalline sample.
@@ -366,7 +350,7 @@ Module Contents
 
 
    .. py:property:: UB
-      :type: SolverMatrix3x3
+      :type: hklpy2.misc.Matrix3x3
 
 
       Orientation matrix (3x3).

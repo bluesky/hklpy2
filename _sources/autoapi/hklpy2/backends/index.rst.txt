@@ -168,7 +168,7 @@ Package Contents
 
 
    .. py:attribute:: _sample
-      :type:  SolverSample | None
+      :type:  SolverSampleType | None
       :value: None
 
 
@@ -183,7 +183,7 @@ Package Contents
       Dictionary with this solver's summary metadata.
 
 
-   .. py:method:: addReflection(reflection: SolverReflection) -> None
+   .. py:method:: addReflection(reflection: SolverReflectionType) -> None
       :abstractmethod:
 
 
@@ -198,7 +198,7 @@ Package Contents
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-   .. py:method:: calculate_UB(r1: SolverReflection, r2: SolverReflection) -> SolverMatrix3x3
+   .. py:method:: calculate_UB(r1: SolverReflectionType, r2: SolverReflectionType) -> hklpy2.misc.Matrix3x3
       :abstractmethod:
 
 
@@ -224,7 +224,7 @@ Package Contents
       Ordered dictionary of any extra parameters.
 
 
-   .. py:method:: forward(pseudos: NamedFloatDict) -> List[NamedFloatDict]
+   .. py:method:: forward(pseudos: hklpy2.misc.NamedFloatDict) -> List[hklpy2.misc.NamedFloatDict]
       :abstractmethod:
 
 
@@ -262,7 +262,7 @@ Package Contents
       for each geometry.
 
 
-   .. py:method:: inverse(reals: NamedFloatDict) -> NamedFloatDict
+   .. py:method:: inverse(reals: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
       :abstractmethod:
 
 
@@ -271,7 +271,7 @@ Package Contents
 
 
    .. py:property:: lattice
-      :type: NamedFloatDict
+      :type: hklpy2.misc.NamedFloatDict
 
 
       Crystal lattice parameters.  (Not used by this |solver|.)
@@ -304,7 +304,7 @@ Package Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: List[SolverReflection]) -> NamedFloatDict
+   .. py:method:: refineLattice(reflections: List[SolverReflectionType]) -> hklpy2.misc.NamedFloatDict
       :abstractmethod:
 
 
@@ -321,7 +321,7 @@ Package Contents
 
 
    .. py:property:: sample
-      :type: SolverSample | None
+      :type: SolverSampleType | None
 
 
       Crystalline sample.
@@ -345,7 +345,7 @@ Package Contents
 
 
    .. py:property:: UB
-      :type: SolverMatrix3x3
+      :type: hklpy2.misc.Matrix3x3
 
 
       Orientation matrix (3x3).

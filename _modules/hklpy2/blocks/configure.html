@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=996b7a13"></script>
+    <script src="../../../_static/documentation_options.js?v=22d6633a"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -381,12 +381,19 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationError</span>
 
 <div class="viewcode-block" id="logger">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/configure/index.html#hklpy2.blocks.configure.logger">[docs]</a>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KeyValueMap">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/configure/index.html#hklpy2.blocks.configure.KeyValueMap">[docs]</a>
+<span class="n">KeyValueMap</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
 
 
 
@@ -403,7 +410,7 @@
 <span class="sd">        ~_valid</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffractometer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffractometer</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <div class="viewcode-block" id="Configuration.diffractometer">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/configure/index.html#hklpy2.blocks.configure.Configuration.diffractometer">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span> <span class="o">=</span> <span class="n">diffractometer</span></div>
@@ -411,7 +418,7 @@
 
 <div class="viewcode-block" id="Configuration._asdict">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.configure.Configuration._asdict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return diffractometer&#39;s configuration as a dict.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span></div>
 
@@ -420,10 +427,10 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.configure.Configuration._fromdict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
         <span class="n">clear</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">restore_constraints</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore diffractometer&#39;s configuration from a dict.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>  <span class="c1"># will raise if invalid</span>
 
@@ -448,15 +455,12 @@
 
 <div class="viewcode-block" id="Configuration._valid">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.configure.Configuration._valid">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate incoming configuration for current diffractometer.&quot;&quot;&quot;</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="n">incoming</span><span class="p">,</span> <span class="n">existing</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">compare</span><span class="p">(</span><span class="n">incoming</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">existing</span><span class="p">:</span> <span class="nb">any</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">incoming</span> <span class="o">!=</span> <span class="n">existing</span><span class="p">:</span>
-                <span class="n">message</span> <span class="o">=</span> <span class="n">template</span> <span class="o">%</span> <span class="p">(</span><span class="n">incoming</span><span class="p">,</span> <span class="n">existing</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-                <span class="c1"># logger.warning(template, incoming, existing)</span>
-                <span class="c1"># return False</span>
+                <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span><span class="n">template</span> <span class="o">%</span> <span class="p">(</span><span class="n">incoming</span><span class="p">,</span> <span class="n">existing</span><span class="p">))</span>
 
         <span class="n">compare</span><span class="p">(</span>
             <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solver&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">),</span>

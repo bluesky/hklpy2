@@ -25,6 +25,7 @@ Attributes
    hklpy2.blocks.lattice.DEFAULT_LATTICE_DIGITS
    hklpy2.blocks.lattice.SI_LATTICE_PARAMETER
    hklpy2.blocks.lattice.SI_LATTICE_PARAMETER_UNCERTAINTY
+   hklpy2.blocks.lattice.LatticeDictType
    hklpy2.blocks.lattice.CrystalSystem
 
 
@@ -42,12 +43,14 @@ Module Contents
 .. py:data:: logger
 
 .. py:data:: DEFAULT_LATTICE_DIGITS
+   :type:  int
    :value: 4
 
 
    Default number of digits to display for lattice parameters.
 
 .. py:data:: SI_LATTICE_PARAMETER
+   :type:  float
    :value: 5.431020511
 
 
@@ -56,10 +59,13 @@ Module Contents
    :see: https://physics.nist.gov/cgi-bin/cuu/Value?asil
 
 .. py:data:: SI_LATTICE_PARAMETER_UNCERTAINTY
+   :type:  float
    :value: 8.9e-08
 
 
    2018 CODATA reported uncertainty of :data:`SI_LATTICE_PARAMETER`.
+
+.. py:data:: LatticeDictType
 
 .. py:data:: CrystalSystem
 
@@ -157,7 +163,7 @@ Module Contents
    .. py:attribute:: B
 
 
-   .. py:method:: __eq__(latt)
+   .. py:method:: __eq__(latt) -> bool
 
       Compare two lattices for equality.
 
@@ -173,19 +179,19 @@ Module Contents
 
 
 
-   .. py:method:: __repr__()
+   .. py:method:: __repr__() -> str
 
       Standard representation of lattice.
 
 
 
-   .. py:method:: _asdict()
+   .. py:method:: _asdict() -> LatticeDictType
 
       Return a new dict which maps lattice constant names and values.
 
 
 
-   .. py:method:: _fromdict(config)
+   .. py:method:: _fromdict(config: LatticeDictType)
 
       Redefine lattice from a (configuration) dictionary.
 
@@ -213,13 +219,15 @@ Module Contents
 
 
 
-   .. py:method:: system_parameter_names(system: str)
+   .. py:method:: system_parameter_names(system: str) -> LatticeDictType
 
       Return list of lattice parameter names for this crystal system.
 
 
 
    .. py:property:: crystal_system
+      :type: str
+
 
       The crystal system of this lattice.  By inspection of the parameters.
 

@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=996b7a13"></script>
+    <script src="../_static/documentation_options.js?v=22d6633a"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -460,72 +460,69 @@ register it as an entry point.</p>
 <a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> and implement all required abstract
 methods (methods marked with decorator <code class="docutils literal notranslate"><span class="pre">&#64;abstractmethod</span></code>
 <a class="footnote-reference brackets" href="#abstractmethod-decorator" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>):</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
-<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
-<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverLattice</span>
-<span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverMatrix3x3</span>
-<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverReflection</span>
-<span class="linenos"> 6</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
-<span class="linenos"> 7</span>
-<span class="linenos"> 8</span><span class="k">class</span><span class="w"> </span><span class="nc">MySolver</span><span class="p">(</span><span class="n">SolverBase</span><span class="p">):</span>
-<span class="linenos"> 9</span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_solver&quot;</span>
-<span class="linenos">10</span>    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;1.0.0&quot;</span>
-<span class="linenos">11</span>
-<span class="linenos">12</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="linenos">13</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="linenos">14</span>
-<span class="linenos">15</span>    <span class="c1"># Required abstract methods</span>
-<span class="linenos">16</span>    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">SolverReflection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="linenos">17</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an observed diffraction reflection.&quot;&quot;&quot;</span>
-<span class="linenos">18</span>        <span class="k">pass</span>  <span class="c1"># TODO: send to your library</span>
-<span class="linenos">19</span>
-<span class="linenos">20</span>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span>
-<span class="linenos">21</span>        <span class="bp">self</span><span class="p">,</span> <span class="n">r1</span><span class="p">:</span> <span class="n">SolverReflection</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="n">SolverReflection</span>
-<span class="linenos">22</span>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverMatrix3x3</span><span class="p">:</span>
-<span class="linenos">23</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the UB matrix with two reflections.&quot;&quot;&quot;</span>
-<span class="linenos">24</span>        <span class="k">return</span> <span class="n">IDENTITY_MATRIX_3X3</span>  <span class="c1"># TODO: calculate with your library</span>
-<span class="linenos">25</span>
-<span class="linenos">26</span>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedFloatDict</span><span class="p">]:</span>
-<span class="linenos">27</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute list of solutions(reals) from pseudos.&quot;&quot;&quot;</span>
-<span class="linenos">28</span>        <span class="k">return</span> <span class="p">[{}]</span>  <span class="c1"># TODO: calculate with your library</span>
-<span class="linenos">29</span>
-<span class="linenos">30</span>    <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
-<span class="linenos">31</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute pseudos from reals.&quot;&quot;&quot;</span>
-<span class="linenos">32</span>        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># TODO: calculate with your library</span>
-<span class="linenos">33</span>
-<span class="linenos">34</span>    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SolverReflection</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
-<span class="linenos">35</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Refine lattice parameters from reflections.&quot;&quot;&quot;</span>
-<span class="linenos">36</span>        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># TODO: calculate with your library</span>
-<span class="linenos">37</span>
-<span class="linenos">38</span>    <span class="k">def</span><span class="w"> </span><span class="nf">removeAllReflections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="linenos">39</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all reflections.&quot;&quot;&quot;</span>
-<span class="linenos">40</span>        <span class="k">pass</span>  <span class="c1"># TODO: use your library</span>
-<span class="linenos">41</span>
-<span class="linenos">42</span>    <span class="c1"># Required properties</span>
-<span class="linenos">43</span>    <span class="nd">@property</span>
-<span class="linenos">44</span>    <span class="k">def</span><span class="w"> </span><span class="nf">extra_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="linenos">45</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of extra axis names.&quot;&quot;&quot;</span>
-<span class="linenos">46</span>        <span class="k">return</span> <span class="p">[]</span>
-<span class="linenos">47</span>
-<span class="linenos">48</span>    <span class="nd">@classmethod</span>
-<span class="linenos">49</span>    <span class="k">def</span><span class="w"> </span><span class="nf">geometries</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="linenos">50</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Supported diffractometer geometries.&quot;&quot;&quot;</span>
-<span class="linenos">51</span>        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;MY_GEOMETRY&quot;</span><span class="p">]</span>
-<span class="linenos">52</span>
-<span class="linenos">53</span>    <span class="nd">@property</span>
-<span class="linenos">54</span>    <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="linenos">55</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Available operating modes.&quot;&quot;&quot;</span>
-<span class="linenos">56</span>        <span class="k">return</span> <span class="p">[]</span>
-<span class="linenos">57</span>
-<span class="linenos">58</span>    <span class="nd">@property</span>
-<span class="linenos">59</span>    <span class="k">def</span><span class="w"> </span><span class="nf">pseudo_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="linenos">60</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of pseudo axis names (h, k, l).&quot;&quot;&quot;</span>
-<span class="linenos">61</span>        <span class="k">return</span> <span class="p">[]</span>
-<span class="linenos">62</span>
-<span class="linenos">63</span>    <span class="nd">@property</span>
-<span class="linenos">64</span>    <span class="k">def</span><span class="w"> </span><span class="nf">real_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="linenos">65</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of real axis names (omega, chi, phi, tth).&quot;&quot;&quot;</span>
-<span class="linenos">66</span>        <span class="k">return</span> <span class="p">[]</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverReflectionType</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
+<span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="k">class</span><span class="w"> </span><span class="nc">MySolver</span><span class="p">(</span><span class="n">SolverBase</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_solver&quot;</span>
+<span class="linenos"> 9</span>    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;1.0.0&quot;</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos">12</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>    <span class="c1"># Required abstract methods</span>
+<span class="linenos">15</span>    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">16</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an observed diffraction reflection.&quot;&quot;&quot;</span>
+<span class="linenos">17</span>        <span class="k">pass</span>  <span class="c1"># TODO: send to your library</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r1</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
+<span class="linenos">20</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the UB matrix with two reflections.&quot;&quot;&quot;</span>
+<span class="linenos">21</span>        <span class="k">return</span> <span class="n">IDENTITY_MATRIX_3X3</span>  <span class="c1"># TODO: calculate with your library</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedFloatDict</span><span class="p">]:</span>
+<span class="linenos">24</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute list of solutions(reals) from pseudos.&quot;&quot;&quot;</span>
+<span class="linenos">25</span>        <span class="k">return</span> <span class="p">[{}]</span>  <span class="c1"># TODO: calculate with your library</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span>    <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+<span class="linenos">28</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute pseudos from reals.&quot;&quot;&quot;</span>
+<span class="linenos">29</span>        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># TODO: calculate with your library</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span>    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SolverReflectionType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+<span class="linenos">32</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Refine lattice parameters from reflections.&quot;&quot;&quot;</span>
+<span class="linenos">33</span>        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># TODO: calculate with your library</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span>    <span class="k">def</span><span class="w"> </span><span class="nf">removeAllReflections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">36</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all reflections.&quot;&quot;&quot;</span>
+<span class="linenos">37</span>        <span class="k">pass</span>  <span class="c1"># TODO: use your library</span>
+<span class="linenos">38</span>
+<span class="linenos">39</span>    <span class="c1"># Required properties</span>
+<span class="linenos">40</span>    <span class="nd">@property</span>
+<span class="linenos">41</span>    <span class="k">def</span><span class="w"> </span><span class="nf">extra_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">42</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of extra axis names.&quot;&quot;&quot;</span>
+<span class="linenos">43</span>        <span class="k">return</span> <span class="p">[]</span>
+<span class="linenos">44</span>
+<span class="linenos">45</span>    <span class="nd">@classmethod</span>
+<span class="linenos">46</span>    <span class="k">def</span><span class="w"> </span><span class="nf">geometries</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">47</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Supported diffractometer geometries.&quot;&quot;&quot;</span>
+<span class="linenos">48</span>        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;MY_GEOMETRY&quot;</span><span class="p">]</span>
+<span class="linenos">49</span>
+<span class="linenos">50</span>    <span class="nd">@property</span>
+<span class="linenos">51</span>    <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">52</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Available operating modes.&quot;&quot;&quot;</span>
+<span class="linenos">53</span>        <span class="k">return</span> <span class="p">[]</span>
+<span class="linenos">54</span>
+<span class="linenos">55</span>    <span class="nd">@property</span>
+<span class="linenos">56</span>    <span class="k">def</span><span class="w"> </span><span class="nf">pseudo_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">57</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of pseudo axis names (h, k, l).&quot;&quot;&quot;</span>
+<span class="linenos">58</span>        <span class="k">return</span> <span class="p">[]</span>
+<span class="linenos">59</span>
+<span class="linenos">60</span>    <span class="nd">@property</span>
+<span class="linenos">61</span>    <span class="k">def</span><span class="w"> </span><span class="nf">real_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="linenos">62</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of real axis names (omega, chi, phi, tth).&quot;&quot;&quot;</span>
+<span class="linenos">63</span>        <span class="k">return</span> <span class="p">[]</span>
 </pre></div>
 </div>
 </section>
@@ -637,17 +634,17 @@ with your solver and test it.  Here’s a suggested start:</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver" title="hklpy2.backends.th_tth_q.ThTthSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThTthSolver</span></code></a></p></td>
-<td><p>Minimal pure-Python solver</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a></p></td>
+<td><p>Full-featured (Linux x86_64 only)</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/no_op/index.html#hklpy2.backends.no_op.NoOpSolver" title="hklpy2.backends.no_op.NoOpSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoOpSolver</span></code></a></p></td>
-<td><p>No-operation solver for testing</p></td>
+<td><p>No-operation (demonstration &amp; testing)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a></p></td>
-<td><p>Production solver (Linux x86_64 only)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver" title="hklpy2.backends.th_tth_q.ThTthSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThTthSolver</span></code></a></p></td>
+<td><p>Minimal pure-Python (demonstration)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TrivialSolver()</span></code> <a class="footnote-reference brackets" href="#trivialsolver" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a></p></td>
-<td><p>basic template (in tests)</p></td>
+<td><p>Minimal requirements, non-functional (internal testing)</p></td>
 </tr>
 </tbody>
 </table>

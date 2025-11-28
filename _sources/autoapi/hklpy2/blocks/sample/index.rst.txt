@@ -19,6 +19,7 @@ Attributes
 .. autoapisummary::
 
    hklpy2.blocks.sample.logger
+   hklpy2.blocks.sample.SampleDictType
 
 
 Classes
@@ -34,7 +35,9 @@ Module Contents
 
 .. py:data:: logger
 
-.. py:class:: Sample(core, name: str, lattice: hklpy2.blocks.lattice.Lattice)
+.. py:data:: SampleDictType
+
+.. py:class:: Sample(core: object, name: str, lattice: hklpy2.blocks.lattice.Lattice)
 
    A crystalline sample mounted on a diffractometer.
 
@@ -64,6 +67,8 @@ Module Contents
 
 
    .. py:property:: name
+      :type: str
+
 
       Sample name.
 
@@ -72,19 +77,21 @@ Module Contents
 
 
    .. py:property:: lattice
+      :type: hklpy2.blocks.lattice.Lattice
+
 
       Sample crystal lattice.
 
 
    .. py:property:: U
-      :type: list[list[float]]
+      :type: hklpy2.misc.Matrix3x3
 
 
       Return the matrix, U, crystal orientation on the diffractometer.
 
 
    .. py:property:: UB
-      :type: list[list[float]]
+      :type: hklpy2.misc.Matrix3x3
 
 
       Return the crystal orientation matrix, UB.
@@ -95,29 +102,31 @@ Module Contents
 
 
    .. py:property:: reflections
+      :type: hklpy2.blocks.reflection.ReflectionsDict
+
 
       Ordered dictionary of orientation reflections.
 
 
-   .. py:method:: __repr__()
+   .. py:method:: __repr__() -> str
 
       Brief text representation.
 
 
 
-   .. py:method:: _asdict()
+   .. py:method:: _asdict() -> SampleDictType
 
       Describe the sample as a dictionary.
 
 
 
-   .. py:method:: _fromdict(config, core=None)
+   .. py:method:: _fromdict(config: SampleDictType, core=None)
 
       Redefine sample from a (configuration) dictionary.
 
 
 
-   .. py:method:: refine_lattice()
+   .. py:method:: refine_lattice() -> None
 
       Refine the lattice parameters from 3 or more reflections.
 
@@ -130,11 +139,13 @@ Module Contents
 
 
    .. py:property:: digits
+      :type: int
+
 
       Sample crystal lattice.
 
 
-   .. py:method:: _validate_matrices(value: list[list[float]], name: str) -> None
+   .. py:method:: _validate_matrices(value: hklpy2.misc.Matrix3x3, name: str) -> None
 
       (internal) Validate U & UB matrices.
 

@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=996b7a13"></script>
+    <script src="../../../_static/documentation_options.js?v=22d6633a"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -378,7 +378,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">enum</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">typing</span> <span class="k">as</span> <span class="n">npt</span>
@@ -397,13 +399,13 @@
 
 <div class="viewcode-block" id="DEFAULT_LATTICE_DIGITS">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.DEFAULT_LATTICE_DIGITS">[docs]</a>
-<span class="n">DEFAULT_LATTICE_DIGITS</span> <span class="o">=</span> <span class="mi">4</span></div>
+<span class="n">DEFAULT_LATTICE_DIGITS</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span></div>
 
 <span class="sd">&quot;&quot;&quot;Default number of digits to display for lattice parameters.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="SI_LATTICE_PARAMETER">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.lattice.SI_LATTICE_PARAMETER">[docs]</a>
-<span class="n">SI_LATTICE_PARAMETER</span> <span class="o">=</span> <span class="mf">5.431020511</span></div>
+<span class="n">SI_LATTICE_PARAMETER</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.431020511</span></div>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">2018 CODATA recommended lattice parameter of silicon, Angstrom.</span>
@@ -413,11 +415,15 @@
 
 <div class="viewcode-block" id="SI_LATTICE_PARAMETER_UNCERTAINTY">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.SI_LATTICE_PARAMETER_UNCERTAINTY">[docs]</a>
-<span class="n">SI_LATTICE_PARAMETER_UNCERTAINTY</span> <span class="o">=</span> <span class="mf">0.000000089</span></div>
+<span class="n">SI_LATTICE_PARAMETER_UNCERTAINTY</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.000000089</span></div>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">2018 CODATA reported uncertainty of :data:`SI_LATTICE_PARAMETER`.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LatticeDictType">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.LatticeDictType">[docs]</a>
+<span class="n">LatticeDictType</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span></div>
 
 
 <div class="viewcode-block" id="CrystalSystem">
@@ -490,7 +496,7 @@
         <span class="n">digits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">length_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-12</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize lattice parameters.</span>
 
 <span class="sd">        Parameters</span>
@@ -592,7 +598,7 @@
 
 <div class="viewcode-block" id="Lattice.__eq__">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.__eq__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latt</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">latt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compare two lattices for equality.</span>
 
@@ -642,7 +648,7 @@
 
 <div class="viewcode-block" id="Lattice.__repr__">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.__repr__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Standard representation of lattice.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -659,7 +665,7 @@
 
 <div class="viewcode-block" id="Lattice._asdict">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice._asdict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LatticeDictType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new dict which maps lattice constant names and values.&quot;&quot;&quot;</span>
         <span class="c1"># note: name is identical to namedtuple._asdict method</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -677,7 +683,7 @@
 
 <div class="viewcode-block" id="Lattice._fromdict">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice._fromdict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">LatticeDictType</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Redefine lattice from a (configuration) dictionary.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s2">&quot;a b c alpha beta gamma&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
@@ -761,7 +767,7 @@
 
 <div class="viewcode-block" id="Lattice.system_parameter_names">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.system_parameter_names">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">system_parameter_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">system_parameter_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LatticeDictType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of lattice parameter names for this crystal system.&quot;&quot;&quot;</span>
         <span class="nb">all</span> <span class="o">=</span> <span class="s2">&quot;a b c alpha beta gamma&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">{</span>
@@ -794,7 +800,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Lattice.crystal_system">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.crystal_system">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">crystal_system</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">crystal_system</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The crystal system of this lattice.  By inspection of the parameters.</span>
 
@@ -871,7 +877,7 @@
 
 
     <span class="nd">@digits</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">digits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">digits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_digits</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>

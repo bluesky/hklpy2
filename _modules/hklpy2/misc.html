@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=996b7a13"></script>
+    <script src="../../_static/documentation_options.js?v=22d6633a"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -415,6 +415,8 @@
 <span class="sd">    ~AxesDict</span>
 <span class="sd">    ~AxesList</span>
 <span class="sd">    ~AxesTuple</span>
+<span class="sd">    ~NamedFloatDict</span>
+<span class="sd">    ~Matrix3x3</span>
 
 <span class="sd">.. rubric: Custom Preprocessors</span>
 <span class="sd">.. autosummary::</span>
@@ -447,6 +449,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">entry_points</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
@@ -524,24 +528,6 @@
 <span class="sd">&quot;&quot;&quot;Default labels applied to real-axis positioners.&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="validate_and_canonical_unit">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.validate_and_canonical_unit">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">validate_and_canonical_unit</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_units</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate that *value* is a unit convertible to *target_units*.</span>
-
-<span class="sd">    Returns a canonical string representation of the unit (via UREG).</span>
-<span class="sd">    Raises ValueError on failure.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Constructing the Unit will raise pint.UndefinedUnitError if unknown.</span>
-    <span class="n">unit</span> <span class="o">=</span> <span class="n">UREG</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="c1"># Attempt a dimensional conversion; will raise pint.DimensionalityError if incompatible.</span>
-    <span class="n">UREG</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">target_units</span><span class="p">)</span>
-    <span class="c1"># On success, preserve and return the original user-provided unit string so callers</span>
-    <span class="c1"># (and tests) see the same spelling/casing that was provided.</span>
-    <span class="k">return</span> <span class="n">value</span></div>
-
-
-
 <span class="c1"># Custom data types</span>
 
 <div class="viewcode-block" id="AxesArray">
@@ -586,8 +572,22 @@
 <span class="sd">=============   =========================   ====================</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="NamedFloatDict">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.NamedFloatDict">[docs]</a>
+<span class="n">NamedFloatDict</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Python type annotation: dictionary of named floats.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Matrix3x3">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.Matrix3x3">[docs]</a>
+<span class="n">Matrix3x3</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Python type annotation: mutable orientation &amp; rotation matrices.&quot;&quot;&quot;</span>
+
 
 <span class="c1"># Custom exceptions</span>
+
+
 <div class="viewcode-block" id="Hklpy2Error">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.Hklpy2Error">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Hklpy2Error</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -1670,6 +1670,24 @@
 <span class="sd">    Short, unique name, first 7 (at most) characters of a unique, random uuid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="mi">7</span><span class="p">))]</span></div>
+
+
+
+<div class="viewcode-block" id="validate_and_canonical_unit">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.validate_and_canonical_unit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_and_canonical_unit</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_units</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate that *value* is a unit convertible to *target_units*.</span>
+
+<span class="sd">    Returns a canonical string representation of the unit (via UREG).</span>
+<span class="sd">    Raises ValueError on failure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Constructing the Unit will raise pint.UndefinedUnitError if unknown.</span>
+    <span class="n">unit</span> <span class="o">=</span> <span class="n">UREG</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="c1"># Attempt a dimensional conversion; will raise pint.DimensionalityError if incompatible.</span>
+    <span class="n">UREG</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">target_units</span><span class="p">)</span>
+    <span class="c1"># On success, preserve and return the original user-provided unit string so callers</span>
+    <span class="c1"># (and tests) see the same spelling/casing that was provided.</span>
+    <span class="k">return</span> <span class="n">value</span></div>
 
 </pre></div>
 

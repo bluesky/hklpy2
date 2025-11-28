@@ -55,6 +55,8 @@ hklpy2.misc
        ~AxesDict
        ~AxesList
        ~AxesTuple
+       ~NamedFloatDict
+       ~Matrix3x3
 
    .. rubric: Custom Preprocessors
    .. autosummary::
@@ -98,6 +100,8 @@ Attributes
    hklpy2.misc.AxesList
    hklpy2.misc.AxesTuple
    hklpy2.misc.AnyAxesType
+   hklpy2.misc.NamedFloatDict
+   hklpy2.misc.Matrix3x3
 
 
 Exceptions
@@ -131,7 +135,6 @@ Functions
 
 .. autoapisummary::
 
-   hklpy2.misc.validate_and_canonical_unit
    hklpy2.misc.axes_to_dict
    hklpy2.misc.check_value_in_list
    hklpy2.misc.compare_float_dicts
@@ -156,6 +159,7 @@ Functions
    hklpy2.misc.solver_factory
    hklpy2.misc.solvers
    hklpy2.misc.unique_name
+   hklpy2.misc.validate_and_canonical_unit
 
 
 Module Contents
@@ -207,14 +211,6 @@ Module Contents
 
    Default labels applied to real-axis positioners.
 
-.. py:function:: validate_and_canonical_unit(value: str, target_units: str) -> str
-
-   Validate that *value* is a unit convertible to *target_units*.
-
-   Returns a canonical string representation of the unit (via UREG).
-   Raises ValueError on failure.
-
-
 .. py:data:: AxesArray
 
    Numpy array of axes values.
@@ -244,6 +240,18 @@ Module Contents
    ordered list    [0, 1, -1]                  AxesList
    ordered tuple   (0, 1, -1)                  AxesTuple
    =============   =========================   ====================
+
+.. py:data:: NamedFloatDict
+
+   dictionary of named floats.
+
+   :type: Python type annotation
+
+.. py:data:: Matrix3x3
+
+   mutable orientation & rotation matrices.
+
+   :type: Python type annotation
 
 .. py:exception:: Hklpy2Error
 
@@ -801,5 +809,13 @@ Module Contents
 .. py:function:: unique_name(prefix='', length=7)
 
    Short, unique name, first 7 (at most) characters of a unique, random uuid.
+
+
+.. py:function:: validate_and_canonical_unit(value: str, target_units: str) -> str
+
+   Validate that *value* is a unit convertible to *target_units*.
+
+   Returns a canonical string representation of the unit (via UREG).
+   Raises ValueError on failure.
 
 

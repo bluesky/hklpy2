@@ -126,13 +126,13 @@ Module Contents
 
 
 
-   .. py:method:: addReflection(value: hklpy2.backends.base.SolverReflection) -> None
+   .. py:method:: addReflection(value: hklpy2.backends.base.SolverReflectionType) -> None
 
       Add coordinates of a diffraction condition (a reflection).
 
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.backends.base.SolverReflection, r2: hklpy2.backends.base.SolverReflection) -> hklpy2.backends.base.SolverMatrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.backends.base.SolverReflectionType, r2: hklpy2.backends.base.SolverReflectionType) -> hklpy2.misc.Matrix3x3
 
       Calculate the UB (orientation) matrix with two reflections.
 
@@ -147,7 +147,7 @@ Module Contents
       Ordered list of any extra axis names (such as x, y, z).
 
 
-   .. py:method:: forward(pseudos: hklpy2.backends.base.NamedFloatDict) -> List[hklpy2.backends.base.NamedFloatDict]
+   .. py:method:: forward(pseudos: hklpy2.misc.NamedFloatDict) -> List[hklpy2.misc.NamedFloatDict]
 
       Transform pseudos to list of reals.
 
@@ -171,7 +171,7 @@ Module Contents
 
 
 
-   .. py:method:: inverse(reals: hklpy2.backends.base.NamedFloatDict) -> hklpy2.backends.base.NamedFloatDict
+   .. py:method:: inverse(reals: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
 
       Transform reals to pseudos.
 
@@ -198,7 +198,7 @@ Module Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: list[hklpy2.backends.base.SolverReflection]) -> hklpy2.backends.base.NamedFloatDict
+   .. py:method:: refineLattice(reflections: list[hklpy2.backends.base.SolverReflectionType]) -> hklpy2.misc.NamedFloatDict
 
       No lattice refinement in this |solver|.
 

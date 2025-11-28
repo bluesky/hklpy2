@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=996b7a13"></script>
+    <script src="../../../_static/documentation_options.js?v=22d6633a"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -370,10 +370,8 @@
 <span class="sd">.. autosummary::</span>
 
 <span class="sd">    ~SolverBase</span>
-<span class="sd">    ~NamedFloatDict</span>
-<span class="sd">    ~SolverMatrix3x3</span>
-<span class="sd">    ~SolverReflection</span>
-<span class="sd">    ~SolverSample</span>
+<span class="sd">    ~SolverReflectionType</span>
+<span class="sd">    ~SolverSampleType</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -388,6 +386,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">istype</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_and_canonical_unit</span>
 
@@ -396,27 +396,15 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="NamedFloatDict">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.NamedFloatDict">[docs]</a>
-<span class="n">NamedFloatDict</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>  <span class="c1"># TODO: Hoist to ..misc?</span></div>
-
-<span class="sd">&quot;&quot;&quot;Python type annotation: dictionary of named floats.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="SolverMatrix3x3">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverMatrix3x3">[docs]</a>
-<span class="n">SolverMatrix3x3</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>  <span class="c1"># TODO: Hoist (&amp; rename) to ..misc?</span></div>
-
-<span class="sd">&quot;&quot;&quot;Python type annotation: mutable orientation &amp; rotation matrices.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="SolverReflection">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverReflection">[docs]</a>
-<span class="n">SolverReflection</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
+<div class="viewcode-block" id="SolverReflectionType">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverReflectionType">[docs]</a>
+<span class="n">SolverReflectionType</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Python type annotation: solver reflection.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SolverSample">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverSample">[docs]</a>
-<span class="n">SolverSample</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
+<div class="viewcode-block" id="SolverSampleType">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverSampleType">[docs]</a>
+<span class="n">SolverSampleType</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Python type annotation: solver sample.&quot;&quot;&quot;</span>
 
@@ -540,7 +528,7 @@
 
 <div class="viewcode-block" id="SolverBase._sample">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase._sample">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">:</span> <span class="n">SolverSample</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">:</span> <span class="n">SolverSampleType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
         <span class="n">validate_and_canonical_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ANGLE_UNITS</span><span class="p">,</span> <span class="n">INTERNAL_ANGLE_UNITS</span><span class="p">)</span>
@@ -577,7 +565,7 @@
     <span class="nd">@abstractmethod</span>
 <div class="viewcode-block" id="SolverBase.addReflection">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.backends.base.SolverBase.addReflection">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">SolverReflection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add coordinates of a diffraction condition (a reflection).&quot;&quot;&quot;</span></div>
 
 
@@ -603,9 +591,9 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.backends.base.SolverBase.calculate_UB">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">r1</span><span class="p">:</span> <span class="n">SolverReflection</span><span class="p">,</span>
-        <span class="n">r2</span><span class="p">:</span> <span class="n">SolverReflection</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverMatrix3x3</span><span class="p">:</span>
+        <span class="n">r1</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">,</span>
+        <span class="n">r2</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the UB (orientation) matrix with two reflections.</span>
 
@@ -757,7 +745,7 @@
     <span class="nd">@abstractmethod</span>
 <div class="viewcode-block" id="SolverBase.refineLattice">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.backends.base.SolverBase.refineLattice">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SolverReflection</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SolverReflectionType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Refine the lattice parameters from a list of reflections.&quot;&quot;&quot;</span></div>
 
 
@@ -771,7 +759,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="SolverBase.sample">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.sample">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverSample</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverSampleType</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Crystalline sample.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -779,9 +767,11 @@
 
 
     <span class="nd">@sample</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">SolverSample</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">istype</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">SolverSample</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply </span><span class="si">{</span><span class="n">SolverSample</span><span class="si">}</span><span class="s2"> object, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">SolverSampleType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">istype</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">SolverSampleType</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Must supply </span><span class="si">{</span><span class="n">SolverSampleType</span><span class="si">}</span><span class="s2"> object, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
@@ -838,7 +828,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="SolverBase.UB">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.UB">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">UB</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverMatrix3x3</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">UB</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Orientation matrix (3x3).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">IDENTITY_MATRIX_3X3</span></div>
 </div>

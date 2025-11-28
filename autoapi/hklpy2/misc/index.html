@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=996b7a13"></script>
+    <script src="../../../_static/documentation_options.js?v=22d6633a"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -522,6 +522,12 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.AxesTuple" title="hklpy2.misc.AxesTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesTuple</span></code></a></p></td>
 <td><p>Tuple of axes values.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.NamedFloatDict" title="hklpy2.misc.NamedFloatDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedFloatDict</span></code></a></p></td>
+<td><p>dictionary of named floats.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.Matrix3x3" title="hklpy2.misc.Matrix3x3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Matrix3x3</span></code></a></p></td>
+<td><p>mutable orientation &amp; rotation matrices.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -620,6 +626,12 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.AnyAxesType" title="hklpy2.misc.AnyAxesType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnyAxesType</span></code></a></p></td>
 <td><p>Any of these types are used to describe both pseudo and real axes.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.NamedFloatDict" title="hklpy2.misc.NamedFloatDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedFloatDict</span></code></a></p></td>
+<td><p>dictionary of named floats.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.Matrix3x3" title="hklpy2.misc.Matrix3x3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Matrix3x3</span></code></a></p></td>
+<td><p>mutable orientation &amp; rotation matrices.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -680,80 +692,80 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.validate_and_canonical_unit" title="hklpy2.misc.validate_and_canonical_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_and_canonical_unit</span></code></a>(→ str)</p></td>
-<td><p>Validate that <em>value</em> is a unit convertible to <em>target_units</em>.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.axes_to_dict" title="hklpy2.misc.axes_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes_to_dict</span></code></a>(→ AxesDict)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.axes_to_dict" title="hklpy2.misc.axes_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes_to_dict</span></code></a>(→ AxesDict)</p></td>
 <td><p>Convert any acceptable axes input to standard form (dict).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.check_value_in_list" title="hklpy2.misc.check_value_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_value_in_list</span></code></a>(title, value, examples[, blank_ok])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.check_value_in_list" title="hklpy2.misc.check_value_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_value_in_list</span></code></a>(title, value, examples[, blank_ok])</p></td>
 <td><p>Raise ValueError exception if value is not in the list of examples.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.compare_float_dicts" title="hklpy2.misc.compare_float_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_float_dicts</span></code></a>(a1, a2[, tol])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.compare_float_dicts" title="hklpy2.misc.compare_float_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_float_dicts</span></code></a>(a1, a2[, tol])</p></td>
 <td><p>Compare two dictionaries.  Values are all floats.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.convert_units" title="hklpy2.misc.convert_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_units</span></code></a>(→ float)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.convert_units" title="hklpy2.misc.convert_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_units</span></code></a>(→ float)</p></td>
 <td><p>Convert 'value' from old units to new.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.define_real_axis" title="hklpy2.misc.define_real_axis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define_real_axis</span></code></a>(specs, kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.define_real_axis" title="hklpy2.misc.define_real_axis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define_real_axis</span></code></a>(specs, kwargs)</p></td>
 <td><p>Return class and kwargs of a real axis from its 'specs'.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.dict_device_factory" title="hklpy2.misc.dict_device_factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict_device_factory</span></code></a>(data, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.dict_device_factory" title="hklpy2.misc.dict_device_factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict_device_factory</span></code></a>(data, **kwargs)</p></td>
 <td><p>Create a <code class="docutils literal notranslate"><span class="pre">DictionaryDevice()</span></code> class using the supplied dictionary.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.distance_between_pos_tuples" title="hklpy2.misc.distance_between_pos_tuples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_between_pos_tuples</span></code></a>(pos1, pos2)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.distance_between_pos_tuples" title="hklpy2.misc.distance_between_pos_tuples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_between_pos_tuples</span></code></a>(pos1, pos2)</p></td>
 <td><p>Return the RMS distance between 'pos1' and 'pos2'.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.dynamic_import" title="hklpy2.misc.dynamic_import"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dynamic_import</span></code></a>(→ type)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.dynamic_import" title="hklpy2.misc.dynamic_import"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dynamic_import</span></code></a>(→ type)</p></td>
 <td><p>Import the object given its import path as text.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.flatten_lists" title="hklpy2.misc.flatten_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_lists</span></code></a>(xs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.flatten_lists" title="hklpy2.misc.flatten_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_lists</span></code></a>(xs)</p></td>
 <td><p>Convert nested lists into single list.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.get_solver" title="hklpy2.misc.get_solver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solver</span></code></a>(solver_name)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.get_solver" title="hklpy2.misc.get_solver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solver</span></code></a>(solver_name)</p></td>
 <td><p>Load a Solver class from a named entry point.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.get_run_orientation" title="hklpy2.misc.get_run_orientation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_run_orientation</span></code></a>(run[, name, start_key])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.get_run_orientation" title="hklpy2.misc.get_run_orientation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_run_orientation</span></code></a>(run[, name, start_key])</p></td>
 <td><p>Return the orientation information dictionary from a run.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.istype" title="hklpy2.misc.istype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">istype</span></code></a>(→ bool)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.istype" title="hklpy2.misc.istype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">istype</span></code></a>(→ bool)</p></td>
 <td><p>Check if 'value' matches the type 'annotation'.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.list_orientation_runs" title="hklpy2.misc.list_orientation_runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_orientation_runs</span></code></a>(catalog[, limit, start_key])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.list_orientation_runs" title="hklpy2.misc.list_orientation_runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_orientation_runs</span></code></a>(catalog[, limit, start_key])</p></td>
 <td><p>List the runs with orientation information.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.load_yaml" title="hklpy2.misc.load_yaml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_yaml</span></code></a>(text)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.load_yaml" title="hklpy2.misc.load_yaml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_yaml</span></code></a>(text)</p></td>
 <td><p>Load YAML from text.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.load_yaml_file" title="hklpy2.misc.load_yaml_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_yaml_file</span></code></a>(file)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.load_yaml_file" title="hklpy2.misc.load_yaml_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_yaml_file</span></code></a>(file)</p></td>
 <td><p>Return contents of a YAML file as a Python object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.make_component" title="hklpy2.misc.make_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_component</span></code></a>(→ ophyd.Component)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.make_component" title="hklpy2.misc.make_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_component</span></code></a>(→ ophyd.Component)</p></td>
 <td><p>Create an Component for a custom ophyd Device class.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.make_dynamic_instance" title="hklpy2.misc.make_dynamic_instance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_dynamic_instance</span></code></a>(→ Any)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.make_dynamic_instance" title="hklpy2.misc.make_dynamic_instance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_dynamic_instance</span></code></a>(→ Any)</p></td>
 <td><p>Return an instance of the Python 'call_name'.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.parse_factory_axes" title="hklpy2.misc.parse_factory_axes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_factory_axes</span></code></a>(→ Mapping[str, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.parse_factory_axes" title="hklpy2.misc.parse_factory_axes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_factory_axes</span></code></a>(→ Mapping[str, ...)</p></td>
 <td><p>Parse a set of axis specifications, return Device class attributes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.pick_closest_solution" title="hklpy2.misc.pick_closest_solution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick_closest_solution</span></code></a>(→ NamedTuple)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.pick_closest_solution" title="hklpy2.misc.pick_closest_solution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick_closest_solution</span></code></a>(→ NamedTuple)</p></td>
 <td><p>Find the solution closest to the current real position.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.pick_first_solution" title="hklpy2.misc.pick_first_solution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick_first_solution</span></code></a>(→ NamedTuple)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.pick_first_solution" title="hklpy2.misc.pick_first_solution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick_first_solution</span></code></a>(→ NamedTuple)</p></td>
 <td><p>Choose first solution from list.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.roundoff" title="hklpy2.misc.roundoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roundoff</span></code></a>(value[, digits])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.roundoff" title="hklpy2.misc.roundoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roundoff</span></code></a>(value[, digits])</p></td>
 <td><p>Round a number to specified precision.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.solver_factory" title="hklpy2.misc.solver_factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solver_factory</span></code></a>(solver_name, geometry, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.solver_factory" title="hklpy2.misc.solver_factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solver_factory</span></code></a>(solver_name, geometry, **kwargs)</p></td>
 <td><p>Create a <strong>Solver</strong> object with geometry and axes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.solvers" title="hklpy2.misc.solvers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solvers</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.solvers" title="hklpy2.misc.solvers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solvers</span></code></a>()</p></td>
 <td><p>Dictionary of available Solver classes, mapped by entry point name.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.unique_name" title="hklpy2.misc.unique_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique_name</span></code></a>([prefix, length])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.unique_name" title="hklpy2.misc.unique_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique_name</span></code></a>([prefix, length])</p></td>
 <td><p>Short, unique name, first 7 (at most) characters of a unique, random uuid.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.validate_and_canonical_unit" title="hklpy2.misc.validate_and_canonical_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_and_canonical_unit</span></code></a>(→ str)</p></td>
+<td><p>Validate that <em>value</em> is a unit convertible to <em>target_units</em>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -820,14 +832,6 @@
 <dd><p>Default labels applied to real-axis positioners.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="hklpy2.misc.validate_and_canonical_unit">
-<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">validate_and_canonical_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#validate_and_canonical_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.validate_and_canonical_unit" title="Link to this definition">#</a></dt>
-<dd><p>Validate that <em>value</em> is a unit convertible to <em>target_units</em>.</p>
-<p>Returns a canonical string representation of the unit (via UREG).
-Raises ValueError on failure.</p>
-</dd></dl>
-
 <dl class="py data">
 <dt class="sig sig-object py" id="hklpy2.misc.AxesArray">
 <span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">AxesArray</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#AxesArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.AxesArray" title="Link to this definition">#</a></dt>
@@ -887,6 +891,28 @@ Raises ValueError on failure.</p>
 </tbody>
 </table>
 </div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.NamedFloatDict">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">NamedFloatDict</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#NamedFloatDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.NamedFloatDict" title="Link to this definition">#</a></dt>
+<dd><p>dictionary of named floats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Python type annotation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.Matrix3x3">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">Matrix3x3</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#Matrix3x3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.Matrix3x3" title="Link to this definition">#</a></dt>
+<dd><p>mutable orientation &amp; rotation matrices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Python type annotation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py exception">
@@ -1462,6 +1488,14 @@ a solution from a list of possible solutions.  Assign to diffractometer’s
 <dd><p>Short, unique name, first 7 (at most) characters of a unique, random uuid.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.validate_and_canonical_unit">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">validate_and_canonical_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#validate_and_canonical_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.validate_and_canonical_unit" title="Link to this definition">#</a></dt>
+<dd><p>Validate that <em>value</em> is a unit convertible to <em>target_units</em>.</p>
+<p>Returns a canonical string representation of the unit (via UREG).
+Raises ValueError on failure.</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -1528,12 +1562,13 @@ a solution from a list of possible solutions.  Assign to diffractometer’s
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.UREG"><code class="docutils literal notranslate"><span class="pre">UREG</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.PINT_ERRORS"><code class="docutils literal notranslate"><span class="pre">PINT_ERRORS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.DEFAULT_MOTOR_LABELS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_MOTOR_LABELS</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.validate_and_canonical_unit"><code class="docutils literal notranslate"><span class="pre">validate_and_canonical_unit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.AxesArray"><code class="docutils literal notranslate"><span class="pre">AxesArray</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.AxesDict"><code class="docutils literal notranslate"><span class="pre">AxesDict</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.AxesList"><code class="docutils literal notranslate"><span class="pre">AxesList</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.AxesTuple"><code class="docutils literal notranslate"><span class="pre">AxesTuple</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.AnyAxesType"><code class="docutils literal notranslate"><span class="pre">AnyAxesType</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.NamedFloatDict"><code class="docutils literal notranslate"><span class="pre">NamedFloatDict</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.Matrix3x3"><code class="docutils literal notranslate"><span class="pre">Matrix3x3</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.Hklpy2Error"><code class="docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationError"><code class="docutils literal notranslate"><span class="pre">ConfigurationError</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConstraintsError"><code class="docutils literal notranslate"><span class="pre">ConstraintsError</span></code></a></li>
@@ -1590,6 +1625,7 @@ a solution from a list of possible solutions.  Assign to diffractometer’s
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.solver_factory"><code class="docutils literal notranslate"><span class="pre">solver_factory()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.solvers"><code class="docutils literal notranslate"><span class="pre">solvers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.unique_name"><code class="docutils literal notranslate"><span class="pre">unique_name()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.validate_and_canonical_unit"><code class="docutils literal notranslate"><span class="pre">validate_and_canonical_unit()</span></code></a></li>
 </ul>
 </li>
 </ul>

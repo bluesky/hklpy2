@@ -38,6 +38,7 @@ Attributes
    hklpy2.blocks.constraints.ENDPOINT_TOLERANCE
    hklpy2.blocks.constraints.NUMERIC
    hklpy2.blocks.constraints.UNDEFINED_LABEL
+   hklpy2.blocks.constraints.ConstraintsDictType
 
 
 Classes
@@ -62,6 +63,8 @@ Module Contents
 .. py:data:: UNDEFINED_LABEL
    :value: 'undefined'
 
+
+.. py:data:: ConstraintsDictType
 
 .. py:class:: ConstraintBase
 
@@ -94,13 +97,13 @@ Module Contents
 
 
 
-   .. py:method:: _asdict()
+   .. py:method:: _asdict() -> ConstraintsDictType
 
       Return a new dict which maps field names to their values.
 
 
 
-   .. py:method:: _fromdict(config, core=None)
+   .. py:method:: _fromdict(config: ConstraintsDictType, core: Optional[Any] = None)
 
       Redefine this constraint from a (configuration) dictionary.
 
@@ -119,7 +122,7 @@ Module Contents
 
 
 
-.. py:class:: LimitsConstraint(low_limit=-180, high_limit=180, label=None)
+.. py:class:: LimitsConstraint(low_limit: Optional[float] = -180, high_limit: Optional[float] = 180, label: Optional[str] = None)
 
    Bases: :py:obj:`ConstraintBase`
 
@@ -153,6 +156,8 @@ Module Contents
 
 
    .. py:property:: limits
+      :type: tuple[float, float]
+
 
       Return the low and high limits of this constraint.
 
@@ -188,13 +193,13 @@ Module Contents
 
 
 
-   .. py:method:: _asdict()
+   .. py:method:: _asdict() -> ConstraintsDictType
 
       Return all constraints as a dictionary.
 
 
 
-   .. py:method:: _fromdict(config, core=None)
+   .. py:method:: _fromdict(config: ConstraintsDictType, core=None) -> None
 
       Redefine existing constraints from a (configuration) dictionary.
 
