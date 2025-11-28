@@ -1,5 +1,6 @@
 """Test the no_op solver class."""
 
+from ...misc import IDENTITY_MATRIX_3X3
 from ..no_op import NoOpSolver
 
 
@@ -12,5 +13,5 @@ def test_NoOpSolver():
     assert solver.extra_axis_names == []
     assert solver.forward({}) == [{}]
     assert solver.inverse({}) == {}
-    assert solver.calculate_UB(None, None) == []
+    assert solver.calculate_UB(None, None) == IDENTITY_MATRIX_3X3
     assert solver.addReflection(None) is None
