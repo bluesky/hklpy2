@@ -16,11 +16,15 @@ Example::
 
 import logging
 import math
+from typing import List
 
 from .. import __version__
-from ..blocks.reflection import Reflection
+from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import SolverError
+from .base import NamedFloatDict
 from .base import SolverBase
+from .base import SolverMatrix3x3
+from .base import SolverReflection
 
 logger = logging.getLogger(__name__)
 TH_TTH_Q_GEOMETRY = "TH TTH Q"
@@ -80,14 +84,14 @@ class ThTthSolver(SolverBase):
         self._reflections = []
         self._wavelength = None
 
-    def addReflection(self, value: Reflection):
+    def addReflection(self, value: SolverReflection) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
-        if not isinstance(value, Reflection):
-            raise TypeError(f"Must supply Reflection object, received {value!r}")
+        if not isinstance(value, dict):
+            raise TypeError(f"Must supply SolverReflection (dict), received {value!r}")
         self._reflections.append(value)
 
         # validate: all reflections must have same wavelength
-        wavelengths = [r.wavelength for r in self._reflections]
+        wavelengths = [r["wavelength"] for r in self._reflections]
         if min(wavelengths) != max(wavelengths):
             self._reflections.pop(-1)
             raise SolverError(
@@ -95,10 +99,16 @@ class ThTthSolver(SolverBase):
             )
         self.wavelength = wavelengths[0]
 
-    def calculate_UB(self, r1, r2):
+    def calculate_UB(
+        self, r1: SolverReflection, r2: SolverReflection
+    ) -> SolverMatrix3x3:
+        return IDENTITY_MATRIX_3X3
+
+    @property
+    def extra_axis_names(self) -> List[str]:
         return []
 
-    def forward(self, pseudos: dict) -> list[dict[str, float]]:
+    def forward(self, pseudos: NamedFloatDict) -> List[NamedFloatDict]:
         """Transform pseudos to list of reals."""
         if not isinstance(pseudos, dict):
             raise TypeError(f"Must supply dict, received {pseudos!r}")
@@ -116,15 +126,11 @@ class ThTthSolver(SolverBase):
 
         return solutions
 
-    @property
-    def extra_axis_names(self):
-        return []
-
     @classmethod
-    def geometries(cls):
+    def geometries(cls) -> List[str]:
         return [TH_TTH_Q_GEOMETRY]  # only one geometry
 
-    def inverse(self, reals: dict):
+    def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
         """Transform reals to pseudos."""
         if not isinstance(reals, dict):
             raise TypeError(f"Must supply dict, received {reals!r}")
@@ -143,35 +149,35 @@ class ThTthSolver(SolverBase):
         return pseudos
 
     @property
-    def modes(self):
+    def modes(self) -> List[str]:
         if self.geometry == TH_TTH_Q_GEOMETRY:
             return [BISECTOR_MODE]
 
     @property
-    def pseudo_axis_names(self):
+    def pseudo_axis_names(self) -> List[str]:
         axes = {TH_TTH_Q_GEOMETRY: ["q"]}
         return axes.get(self.geometry, [])
 
     @property
-    def real_axis_names(self):
+    def real_axis_names(self) -> List[str]:
         axes = {TH_TTH_Q_GEOMETRY: "th tth".split()}
         return axes.get(self.geometry, [])
 
-    def refineLattice(self, reflections: list[Reflection]) -> None:
+    def refineLattice(self, reflections: list[SolverReflection]) -> NamedFloatDict:
         """No lattice refinement in this |solver|."""
         return None
 
-    def removeAllReflections(self):
+    def removeAllReflections(self) -> None:
         """Remove all reflections."""
         raise NotImplementedError()  # TODO: implement this method
 
     @property
-    def wavelength(self):
+    def wavelength(self) -> float:
         """Diffractometer wavelength, for forward() and inverse()."""
         return self._wavelength
 
     @wavelength.setter
-    def wavelength(self, value):
+    def wavelength(self, value) -> None:
         if not isinstance(value, (int, float)):
             raise TypeError(f"Must supply number, received {value!r}")
         if value <= 0:
