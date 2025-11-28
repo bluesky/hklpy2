@@ -54,9 +54,12 @@ methods (methods marked with decorator ``@abstractmethod``
 .. code-block:: Python
     :linenos:
 
+    from hklpy2.backends.base import NamedFloatDict
     from hklpy2.backends.base import SolverBase
-    from hklpy2.blocks.reflection import Reflection
-    from hklpy2.blocks.lattice import Lattice
+    from hklpy2.backends.base import SolverLattice
+    from hklpy2.backends.base import SolverMatrix3x3
+    from hklpy2.backends.base import SolverReflection
+    from hklpy2.misc import IDENTITY_MATRIX_3X3
 
     class MySolver(SolverBase):
         name = "my_solver"
@@ -66,29 +69,31 @@ methods (methods marked with decorator ``@abstractmethod``
             super().__init__(geometry, **kwargs)
 
         # Required abstract methods
-        def addReflection(self, reflection: Reflection) -> None:
+        def addReflection(self, reflection: SolverReflection) -> None:
             """Add coordinates of a diffraction condition."""
-            pass
+            pass  # TODO: send to your library
 
-        def calculate_UB(self, r1: Reflection, r2: Reflection) -> list[list[float]]:
+        def calculate_UB(
+            self, r1: SolverReflection, r2: SolverReflection
+        ) -> SolverMatrix3x3:
             """Calculate the UB matrix with two reflections."""
-            return []
+            return IDENTITY_MATRIX_3X3  # TODO: calculate with your library
 
-        def forward(self, pseudos: dict) -> list[dict[str, float]]:
+        def forward(self, pseudos: NamedFloatDict) -> list[NamedFloatDict]:
             """Compute list of solutions(reals) from pseudos."""
-            return [{}]
+            return [{}]  # TODO: calculate with your library
 
-        def inverse(self, reals: dict) -> dict[str, float]:
+        def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
             """Compute pseudos from reals."""
-            return {}
+            return {}  # TODO: calculate with your library
 
-        def refineLattice(self, reflections: list[Reflection]) -> Lattice:
+        def refineLattice(self, reflections: list[SolverReflection]) -> NamedFloatDict:
             """Refine lattice parameters from reflections."""
-            return Lattice(1.0)
+            return {}  # TODO: calculate with your library
 
         def removeAllReflections(self) -> None:
             """Remove all reflections."""
-            pass
+            pass  # TODO: use your library
 
         # Required properties
         @property
