@@ -206,10 +206,10 @@ Compare with these |Solver| classes:
 =======================================================  =====================================
 class                                                    description
 =======================================================  =====================================
-:class:`~hklpy2.backends.th_tth_q.ThTthSolver`           Minimal pure-Python solver
-:class:`~hklpy2.backends.no_op.NoOpSolver`               No-operation solver for testing
-:class:`~hklpy2.backends.hkl_soleil.HklSolver`           Production solver (Linux x86_64 only)
-``TrivialSolver()`` [#TrivialSolver]_                    basic template (in tests)
+:class:`~hklpy2.backends.hkl_soleil.HklSolver`           Full-featured (Linux x86_64 only)
+:class:`~hklpy2.backends.no_op.NoOpSolver`               No-operation (demonstration & testing)
+:class:`~hklpy2.backends.th_tth_q.ThTthSolver`           Minimal pure-Python (demonstration)
+``TrivialSolver()`` [#TrivialSolver]_                    Minimal requirements, non-functional (internal testing)
 =======================================================  =====================================
 
 Notes
