@@ -59,7 +59,9 @@ class SolverBase(ABC):
 
     .. seealso:: :mod:`~hklpy2.backends.hkl_soleil` & :mod:`~hklpy2.backends.no_op`
 
-    .. rubric:: Python Methods
+    .. rubric:: Python Abstract Methods
+
+    Subclasses must override each of these methods.
 
     .. autosummary::
 
@@ -69,6 +71,7 @@ class SolverBase(ABC):
         ~forward
         ~geometries
         ~inverse
+        ~modes
         ~pseudo_axis_names
         ~real_axis_names
         ~refineLattice
@@ -84,7 +87,6 @@ class SolverBase(ABC):
         ~geometry
         ~lattice
         ~mode
-        ~modes
         ~sample
         ~UB
     """
