@@ -55,8 +55,7 @@ methods (methods marked with decorator ``@abstractmethod``
     :linenos:
 
     from hklpy2.backends.base import SolverBase
-    from hklpy2.backends.base import SolverLattice
-    from hklpy2.backends.base import SolverReflection
+    from hklpy2.backends.base import SolverReflectionType
     from hklpy2.misc import IDENTITY_MATRIX_3X3
     from hklpy2.misc import Matrix3x3
     from hklpy2.misc import NamedFloatDict
@@ -69,11 +68,11 @@ methods (methods marked with decorator ``@abstractmethod``
             super().__init__(geometry, **kwargs)
 
         # Required abstract methods
-        def addReflection(self, reflection: SolverReflection) -> None:
+        def addReflection(self, reflection: SolverReflectionType) -> None:
             """Add an observed diffraction reflection."""
             pass  # TODO: send to your library
 
-        def calculate_UB(self, r1: SolverReflection, r2: SolverReflection) -> Matrix3x3:
+        def calculate_UB(self, r1: SolverReflectionType, r2: SolverReflectionType) -> Matrix3x3:
             """Calculate the UB matrix with two reflections."""
             return IDENTITY_MATRIX_3X3  # TODO: calculate with your library
 
@@ -85,7 +84,7 @@ methods (methods marked with decorator ``@abstractmethod``
             """Compute pseudos from reals."""
             return {}  # TODO: calculate with your library
 
-        def refineLattice(self, reflections: list[SolverReflection]) -> NamedFloatDict:
+        def refineLattice(self, reflections: list[SolverReflectionType]) -> NamedFloatDict:
             """Refine lattice parameters from reflections."""
             return {}  # TODO: calculate with your library
 

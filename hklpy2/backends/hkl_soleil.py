@@ -54,8 +54,8 @@ from ..misc import istype
 from ..misc import roundoff
 from ..misc import unique_name
 from .base import SolverBase
-from .base import SolverReflection
-from .base import SolverSample
+from .base import SolverReflectionType
+from .base import SolverSampleType
 from .hkl_soleil_utils import setup_libhkl
 
 logger = logging.getLogger(__name__)
@@ -234,11 +234,11 @@ class HklSolver(SolverBase):
         ]
         return f"{self.__class__.__name__}({', '.join(args)})"
 
-    def addReflection(self, reflection: SolverReflection) -> None:
+    def addReflection(self, reflection: SolverReflectionType) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
-        if not istype(reflection, SolverReflection):
+        if not istype(reflection, SolverReflectionType):
             raise TypeError(
-                f"Must supply {SolverReflection!r} object, received {reflection!r}",
+                f"Must supply {SolverReflectionType!r} object, received {reflection!r}",
             )
 
         logger.debug("reflection: %r", reflection)
@@ -276,8 +276,8 @@ class HklSolver(SolverBase):
 
     def calculate_UB(
         self,
-        r1: SolverReflection,
-        r2: SolverReflection,
+        r1: SolverReflectionType,
+        r2: SolverReflectionType,
     ) -> Matrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
@@ -496,7 +496,7 @@ class HklSolver(SolverBase):
         return self._hkl_geometry.axis_names_get()  # Do NOT sort.
 
     @property
-    def reflections(self) -> Dict[str, SolverReflection]:
+    def reflections(self) -> Dict[str, SolverReflectionType]:
         """List of defined reflections (no store reflection names in libhkl)."""
         rlist = {}
         for refl in self._sample.reflections_get():
@@ -515,7 +515,7 @@ class HklSolver(SolverBase):
             )
         return rlist
 
-    def refineLattice(self, reflections: list[SolverReflection]) -> NamedFloatDict:
+    def refineLattice(self, reflections: list[SolverReflectionType]) -> NamedFloatDict:
         """
         Refine the lattice parameters from a list of reflections.
 
@@ -538,7 +538,7 @@ class HklSolver(SolverBase):
             self._sample.del_reflection(ref)
 
     @property
-    def sample(self) -> SolverSample:
+    def sample(self) -> SolverSampleType:
         """
         Crystalline sample.  libhkl's sample object.
         """
@@ -550,9 +550,11 @@ class HklSolver(SolverBase):
         return sample
 
     @sample.setter
-    def sample(self, value: SolverSample):
+    def sample(self, value: SolverSampleType):
         if not istype(value, dict):
-            raise TypeError(f"Must supply {SolverSample} object, received {value!r}")
+            raise TypeError(
+                f"Must supply {SolverSampleType} object, received {value!r}"
+            )
 
         # Just drop the old sample and make a new one.
         # Python knows its correct name.

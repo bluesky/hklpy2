@@ -4,8 +4,8 @@ Abstract base class for all solvers.
 .. autosummary::
 
     ~SolverBase
-    ~SolverReflection
-    ~SolverSample
+    ~SolverReflectionType
+    ~SolverSampleType
 """
 
 import logging
@@ -27,10 +27,10 @@ from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
-SolverReflection = Dict[str, Any]
+SolverReflectionType = Dict[str, Any]
 """Python type annotation: solver reflection."""
 
-SolverSample = Dict[str, Any]
+SolverSampleType = Dict[str, Any]
 """Python type annotation: solver sample."""
 
 
@@ -131,7 +131,7 @@ class SolverBase(ABC):
         self._gname: str = geometry
         self.mode = mode
         self._all_extra_axis_names: List[str] | None = None
-        self._sample: SolverSample | None = None
+        self._sample: SolverSampleType | None = None
 
         validate_and_canonical_unit(self.ANGLE_UNITS, INTERNAL_ANGLE_UNITS)
         validate_and_canonical_unit(self.LENGTH_UNITS, INTERNAL_LENGTH_UNITS)
@@ -159,7 +159,7 @@ class SolverBase(ABC):
         }
 
     @abstractmethod
-    def addReflection(self, reflection: SolverReflection) -> None:
+    def addReflection(self, reflection: SolverReflectionType) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
 
     @property
@@ -179,8 +179,8 @@ class SolverBase(ABC):
     @abstractmethod
     def calculate_UB(
         self,
-        r1: SolverReflection,
-        r2: SolverReflection,
+        r1: SolverReflectionType,
+        r2: SolverReflectionType,
     ) -> Matrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
@@ -297,7 +297,7 @@ class SolverBase(ABC):
         # return []
 
     @abstractmethod
-    def refineLattice(self, reflections: List[SolverReflection]) -> NamedFloatDict:
+    def refineLattice(self, reflections: List[SolverReflectionType]) -> NamedFloatDict:
         """Refine the lattice parameters from a list of reflections."""
 
     @abstractmethod
@@ -305,16 +305,18 @@ class SolverBase(ABC):
         """Remove all reflections."""
 
     @property
-    def sample(self) -> SolverSample | None:
+    def sample(self) -> SolverSampleType | None:
         """
         Crystalline sample.
         """
         return self._sample
 
     @sample.setter
-    def sample(self, value: SolverSample) -> None:
-        if not istype(value, SolverSample):
-            raise TypeError(f"Must supply {SolverSample} object, received {value!r}")
+    def sample(self, value: SolverSampleType) -> None:
+        if not istype(value, SolverSampleType):
+            raise TypeError(
+                f"Must supply {SolverSampleType} object, received {value!r}"
+            )
         self._sample = value
 
     @property

@@ -22,7 +22,7 @@ from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import Matrix3x3
 from ..misc import NamedFloatDict
 from .base import SolverBase
-from .base import SolverReflection
+from .base import SolverReflectionType
 
 logger = logging.getLogger(__name__)
 
@@ -65,10 +65,12 @@ class NoOpSolver(SolverBase):
     def __init__(self, geometry: str, **kwargs) -> None:
         super().__init__(geometry, **kwargs)
 
-    def addReflection(self, reflection: SolverReflection) -> None:
+    def addReflection(self, reflection: SolverReflectionType) -> None:
         return None
 
-    def calculate_UB(self, r1: SolverReflection, r2: SolverReflection) -> Matrix3x3:
+    def calculate_UB(
+        self, r1: SolverReflectionType, r2: SolverReflectionType
+    ) -> Matrix3x3:
         return IDENTITY_MATRIX_3X3
 
     @property
@@ -97,7 +99,7 @@ class NoOpSolver(SolverBase):
     def real_axis_names(self) -> List[str]:
         return []  # no axes
 
-    def refineLattice(self, reflections: List[SolverReflection]) -> NamedFloatDict:
+    def refineLattice(self, reflections: List[SolverReflectionType]) -> NamedFloatDict:
         """No refinement."""
         return None
 
