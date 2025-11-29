@@ -9,7 +9,7 @@
 
 [![FCC ball&stick](/docs/source/_static/fcc-ball-and-stick.jpg)](https://worldrecord.r-krickl.com/en/)
 
-![API diagram](/docs/source/_static/hklpy2-block-diagram.png)
+[deepwiki](https://deepwiki.com/badge-maker?url=https%3A%2F%2Fdeepwiki.com%2Fbluesky%2Fhklpy2)
 
 ## About
 
