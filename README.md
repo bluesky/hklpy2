@@ -1,15 +1,24 @@
 # hklpy2
 
-| Name | Downloads | Version | Platforms | PyPI | Coverage |
-| --- | --- | --- | --- | --- | --- |
+<!-- 
+| Name                                                                                                               | Downloads                                                                                                             | Version                                                                                                             | Platforms                                                                                                             | PyPI                                                                                     | Coverage                                                                                                                                             |
+| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [![Conda Package](https://img.shields.io/badge/package-hklpy2-green.svg)](https://anaconda.org/conda-forge/hklpy2) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/hklpy2.svg)](https://anaconda.org/conda-forge/hklpy2) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/hklpy2.svg)](https://anaconda.org/conda-forge/hklpy2) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/hklpy2.svg)](https://anaconda.org/conda-forge/hklpy2) | [![PyPi](https://img.shields.io/pypi/v/hklpy2.svg)](https://pypi.python.org/pypi/hklpy2) | [![Coverage Status](https://coveralls.io/repos/github/bluesky/hklpy2/badge.svg?branch=main)](https://coveralls.io/github/bluesky/hklpy2?branch=main) |
+-->
+
+[![Conda Package](https://img.shields.io/badge/package-hklpy2-green.svg)](https://anaconda.org/conda-forge/hklpy2)
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/hklpy2.svg)](https://anaconda.org/conda-forge/hklpy2)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/hklpy2.svg)](https://anaconda.org/conda-forge/hklpy2)
+[![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/hklpy2.svg)](https://anaconda.org/conda-forge/hklpy2)
+[![PyPi](https://img.shields.io/pypi/v/hklpy2.svg)](https://pypi.python.org/pypi/hklpy2)
+[![Coverage Status](https://coveralls.io/repos/github/bluesky/hklpy2/badge.svg?branch=main)](https://coveralls.io/github/bluesky/hklpy2?branch=main)
+[![Docs](https://img.shields.io/badge/docs-blue)](https://blueskyproject.io/hklpy2/)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/bluesky/hklpy2)
 
 2nd generation controls for diffractometers as PseudoPositioners in the
 [Bluesky Framework](https://blueskyproject.io).
 
 [![FCC ball&stick](/docs/source/_static/fcc-ball-and-stick.jpg)](https://worldrecord.r-krickl.com/en/)
-
-[deepwiki](https://deepwiki.com/badge-maker?url=https%3A%2F%2Fdeepwiki.com%2Fbluesky%2Fhklpy2)
 
 ## About
 
