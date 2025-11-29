@@ -1,9 +1,9 @@
 # hklpy2
 
 <!-- Badges -->
-[![Docs](https://img.shields.io/badge/docs-blue)](https://blueskyproject.io/hklpy2/)
-[![Tag](https://img.shields.io/github/v/tag/bluesky/hklpy2)](https://github.com/bluesky/hklpy2/tags)
 [![Release](https://img.shields.io/github/v/release/bluesky/hklpy2)](https://github.com/bluesky/hklpy2/releases)
+[![Tag](https://img.shields.io/github/v/tag/bluesky/hklpy2)](https://github.com/bluesky/hklpy2/tags)
+[![Docs](https://img.shields.io/badge/docs-blue)](https://blueskyproject.io/hklpy2/)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/bluesky/hklpy2)
 [![Conda Package](https://img.shields.io/badge/package-hklpy2-green.svg)](https://anaconda.org/conda-forge/hklpy2)
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/hklpy2.svg)](https://anaconda.org/conda-forge/hklpy2)
@@ -13,8 +13,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/bluesky/hklpy2/badge.svg?branch=main)](https://coveralls.io/github/bluesky/hklpy2?branch=main)
 
 <!-- text -->
-2nd generation controls for diffractometers as PseudoPositioners in the
-[Bluesky Framework](https://blueskyproject.io).
+2nd generation controls for diffractometers as ophyd
+[PseudoPositioners](https://blueskyproject.io/ophyd/user/how-to/pseudopositioner.html)
+in the [Bluesky Framework](https://blueskyproject.io).
 
 <!-- graphic -->
 [![FCC ball&stick](/docs/source/_static/fcc-ball-and-stick.jpg)](https://worldrecord.r-krickl.com/en/)
