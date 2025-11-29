@@ -35,11 +35,11 @@ from typing import Union
 from ..misc import ConfigurationError
 from ..misc import ConstraintsError
 
-ENDPOINT_TOLERANCE = 1e-7  # for comparisons, less than motion step size
-NUMERIC = Union[int, float]
-UNDEFINED_LABEL = "undefined"
+ENDPOINT_TOLERANCE: float = 1e-7  # for comparisons, less than motion step size
+UNDEFINED_LABEL: str = "undefined"
 
 ConstraintsDictType = Mapping[str, Any]
+NUMERIC = Union[int, float]
 
 
 class ConstraintBase(ABC):
