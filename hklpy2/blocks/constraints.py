@@ -30,14 +30,13 @@ from typing import Dict
 from typing import List
 from typing import Mapping
 from typing import Optional
-from typing import Union
 
+from ..misc import NUMERIC
 from ..misc import ConfigurationError
 from ..misc import ConstraintsError
 
-ENDPOINT_TOLERANCE = 1e-7  # for comparisons, less than motion step size
-NUMERIC = Union[int, float]
-UNDEFINED_LABEL = "undefined"
+ENDPOINT_TOLERANCE: float = 1e-7  # for comparisons, less than motion step size
+UNDEFINED_LABEL: str = "undefined"
 
 ConstraintsDictType = Mapping[str, Any]
 

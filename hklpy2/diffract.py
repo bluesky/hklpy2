@@ -787,7 +787,7 @@ class DiffractometerBase(PseudoPositioner):
     def sample(self, value: str) -> None:
         self.core.sample = value
 
-    def wh(self, digits=4, full=False):
+    def wh(self, digits=4, full=False) -> None:
         """Concise report of the current diffractometer positions."""
 
         if not self.connected:

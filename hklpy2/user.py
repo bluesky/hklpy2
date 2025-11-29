@@ -28,7 +28,7 @@ Simplified interface for |hklpy2| diffractometer users.
 import uuid
 from collections.abc import Iterable
 from typing import Any
-from typing import Dict
+from typing import Generator
 from typing import List
 from typing import Optional
 from typing import Union
@@ -39,10 +39,14 @@ from pyRestTable import Table
 
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
+from .blocks.sample import Sample
 from .diffract import DiffractometerBase
+from .misc import NUMERIC
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import AxesTuple
+from .misc import Matrix3x3
+from .misc import NamedFloatDict
 from .misc import NoForwardSolutions
 from .ops import CoreError
 
@@ -69,8 +73,6 @@ __all__ = """
 import logging
 
 logger = logging.getLogger(__name__)
-
-Number = Union[int, float]
 
 
 class _SelectedDiffractometer:
@@ -120,7 +122,7 @@ def add_sample(
     gamma: float = None,
     digits: int = 4,
     replace: bool = False,
-):
+) -> Sample:
     """
     Add (and select) a new crystal sample.
 
@@ -157,7 +159,7 @@ def add_sample(
     return diffractometer.sample
 
 
-def cahkl(h: float, k: float, l: float) -> list | str:  # noqa: E741
+def cahkl(h: float, k: float, l: float) -> Union[list, str]:  # noqa: E741
     """
     Calculate motor positions for specified 'h, k l' - DOES NOT MOVE motors.
 
@@ -184,7 +186,7 @@ def cahkl(h: float, k: float, l: float) -> list | str:  # noqa: E741
         return str(exinfo)
 
 
-def cahkl_table(*reflections: list[AxesTuple], digits=4):
+def cahkl_table(*reflections: list[AxesTuple], digits=4) -> Table:
     """
     Print a table with motor positions for each reflection given.
 
@@ -225,8 +227,8 @@ def cahkl_table(*reflections: list[AxesTuple], digits=4):
         value.  Default is 5.
     """
 
-    def brief(data: Dict[str, Number]) -> List[str]:
-        def fmt(v: Number) -> str:
+    def brief(data: NamedFloatDict) -> List[str]:
+        def fmt(v: NUMERIC) -> str:
             if isinstance(v, int):
                 return str(v)
             fv = round(float(v), digits)
@@ -259,7 +261,7 @@ def calc_UB(
     r1: Union[Reflection, str],
     r2: Union[Reflection, str],
     wavelength: float = None,
-) -> list[list[float]]:
+) -> Matrix3x3:
     """
     Compute the UB matrix with two reflections.
 
@@ -279,7 +281,7 @@ def calc_UB(
     return get_diffractometer().core.calc_UB(r1, r2)
 
 
-def solver_summary(write=True):
+def solver_summary(write=True) -> Table:
     """
     Table of diffractometer solver's modes, axes, ...
 
@@ -318,7 +320,7 @@ def solver_summary(write=True):
         return table
 
 
-def get_diffractometer():
+def get_diffractometer() -> Union[DiffractometerBase, None]:
     """
     Return the currently-selected diffractometer (or ``None``).
 
@@ -345,7 +347,7 @@ def get_diffractometer():
         return None
 
 
-def list_samples(full=False):
+def list_samples(full=False) -> None:
     """
     Summarize diffractometer's samples.
 
@@ -363,7 +365,7 @@ def list_samples(full=False):
     .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.remove_sample`
     """
 
-    def display(sample, preface=""):
+    def display(sample: Sample, preface: str = ""):
         if full:
             print(f"{preface}{sample}")
         else:
@@ -382,7 +384,7 @@ def list_samples(full=False):
             display(sample, preface)
 
 
-def or_swap() -> list[list[float]]:
+def or_swap() -> Matrix3x3:
     """
     Swap the first 2 ORienting reflections, re-compute & return new [UB].
 
@@ -409,7 +411,7 @@ def or_swap() -> list[list[float]]:
     return calc_UB(*reflections)
 
 
-def pa(digits=4):
+def pa(digits=4) -> None:
     """
     Report (all) the diffractometer settings.
 
@@ -514,7 +516,7 @@ def scan_extra(
     extras: Optional[dict] = {},
     fail_on_exception: Optional[bool] = False,
     md: Optional[dict] = None,
-):
+) -> Generator[Any, None, None]:
     """
     Scan diffractometer parameter(s) at constant pseudos or reals.
 
@@ -601,7 +603,7 @@ def set_diffractometer(diffractometer: DiffractometerBase = None) -> None:
     _choice.diffractometer = diffractometer
 
 
-def set_wavelength(value: float, units=None):
+def set_wavelength(value: float, units=None) -> None:
     """
     Set the wavelength; if Signal has write access, changes control system.
 
@@ -630,7 +632,7 @@ def set_lattice(
     beta: float = None,
     gamma: float = None,
     digits: int = 4,
-):
+) -> None:
     """
     Redefine the sample's lattice.
 
@@ -659,7 +661,7 @@ def setor(
     wavelength=None,
     name=None,
     **kwreals: AxesDict,
-):  # noqa: E741
+) -> Reflection:  # noqa: E741
     """
     Define an ORienting reflection.
 
@@ -734,7 +736,7 @@ def setor(
     if wavelength not in (None, 0):
         diffractometer.beam.wavelength.put(wavelength)
 
-    def make_name():
+    def make_name() -> str:
         while True:
             name = f"r_{str(uuid.uuid4())[:4]}"
             if name not in diffractometer.sample.reflections:
@@ -745,7 +747,7 @@ def setor(
     return refl
 
 
-def wh(digits=4):
+def wh(digits=4) -> None:
     """
     Report (brief) where is the diffractometer.
 
