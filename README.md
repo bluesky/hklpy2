@@ -2,8 +2,8 @@
 
 <!-- Badges -->
 [![Docs](https://img.shields.io/badge/docs-blue)](https://blueskyproject.io/hklpy2/)
-[![Tag](https://img.shields.io/github/v/tag/:user/:repo)](https://github.com/bluesky/hklpy2/tags)
-[![Release](https://img.shields.io/github/v/release/:user/:repo)](https://github.com/bluesky/hklpy2/releases)
+[![Tag](https://img.shields.io/github/v/tag/bluesky/hklpy2)](https://github.com/bluesky/hklpy2/tags)
+[![Release](https://img.shields.io/github/v/release/bluesky/hklpy2)](https://github.com/bluesky/hklpy2/releases)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/bluesky/hklpy2)
 [![Conda Package](https://img.shields.io/badge/package-hklpy2-green.svg)](https://anaconda.org/conda-forge/hklpy2)
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/hklpy2.svg)](https://anaconda.org/conda-forge/hklpy2)
