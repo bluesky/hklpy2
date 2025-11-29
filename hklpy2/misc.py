@@ -709,7 +709,7 @@ def dynamic_import(full_path: str) -> type:
 
 def flatten_lists(
     xs: Sequence[Union[bytes, Iterable, str]],
-) -> Generator[Sequence]:
+) -> Generator[Sequence, None, None]:
     """
     Convert nested lists into single list.
 
