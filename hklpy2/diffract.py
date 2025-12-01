@@ -14,7 +14,7 @@ import pathlib
 from collections.abc import Iterable
 from typing import Any
 from typing import Callable
-from typing import Mapping
+from typing import NamedTuple
 from typing import Optional
 from typing import Sequence
 from typing import Union
@@ -34,6 +34,7 @@ from ophyd.device import required_for_connection
 from ophyd.pseudopos import pseudo_position_argument
 from ophyd.pseudopos import real_position_argument
 
+from .misc import KeyValueMap
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .incident import WavelengthXray
@@ -62,7 +63,7 @@ class Hklpy2PseudoAxis(PseudoSingle):
     """Override to allow auxiliary pseudos."""
 
     @property
-    def position(self):
+    def position(self) -> NamedTuple:
         """The current position of the positioner in its engineering units
 
         Returns
@@ -74,10 +75,8 @@ class Hklpy2PseudoAxis(PseudoSingle):
         return self._parent.position[self._idx]
 
     @required_for_connection(description="{device.name} readback subscription")
-    def _sub_proxy_readback(self, obj=None, value=None, **kwargs):
-        """Parent callbacks including a position value will be filtered through
-        this function and re-broadcast using only the relevant position to this
-        pseudo axis.
+    def _sub_proxy_readback(self, obj=None, value=None, **kwargs) -> Any:
+        """Override allows (and ignores) auxiliary pseudos.
         """
         if hasattr(value, "__getitem__"):
             if self._idx is not None:  # auxiliary pseudos are ignored here.
@@ -183,7 +182,7 @@ class DiffractometerBase(PseudoPositioner):
         reals_units: Optional[str] = None,
         forward_solution_function: Optional[Callable] = None,
         **kwargs,
-    ):
+    ) -> None:
         from .ops import Core
 
         self._backend = None
@@ -281,12 +280,12 @@ class DiffractometerBase(PseudoPositioner):
         )
 
     @property
-    def configuration(self) -> dict:
+    def configuration(self) -> KeyValueMap:
         """Diffractometer configuration (orientation)."""
         return self.core._asdict()
 
     @configuration.setter
-    def configuration(self, config: dict) -> dict:
+    def configuration(self, config: KeyValueMap) -> KeyValueMap:
         """
         Diffractometer configuration (orientation).
 
@@ -861,7 +860,7 @@ def creator(
     _pseudo: Optional[Sequence[str]] = None,
     pseudos: list = [],
     _real: Optional[Sequence[str]] = None,
-    reals: Optional[Union[Sequence[str], Mapping[str, Any]]] = {},
+    reals: Optional[Union[Sequence[str], KeyValueMap]] = {},
     motor_labels: Optional[Sequence[str]] = ["motors"],
     labels: list = ["diffractometer"],
     class_name: str = "Hklpy2Diffractometer",

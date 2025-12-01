@@ -88,7 +88,7 @@ from typing import Any
 from typing import Iterator
 from typing import List
 from typing import Mapping
-from typing import NamedTuple
+from typing import NamedTuple, Protocol
 from typing import Sequence
 from typing import Type
 from typing import Union
@@ -115,6 +115,9 @@ if TYPE_CHECKING:
 
 BlueskyPlanType = Iterator[Sequence[Msg]]
 """Type of a bluesky plan."""
+
+KeyValueMap = Mapping[str, Any]
+"""Dictionary for configuration and other."""
 
 NUMERIC = Union[float, int]
 """Either integer or real number."""
@@ -603,8 +606,8 @@ def convert_units(value: float, old_units: str, new_units: str) -> float:
 
 
 def define_real_axis(
-    specs: Union[None, str, Mapping[str, Any]],
-    kwargs: Mapping[str, Any],
+    specs: Union[None, str, KeyValueMap],
+    kwargs: KeyValueMap,
 ) -> tuple[str, Mapping]:
     """Return class and kwargs of a real axis from its 'specs'."""
     kwargs["labels"] += DEFAULT_MOTOR_LABELS
@@ -634,7 +637,7 @@ def define_real_axis(
     return class_name, kwargs
 
 
-def dict_device_factory(data: Mapping[str, Any], **kwargs: Mapping):
+def dict_device_factory(data: KeyValueMap, **kwargs: KeyValueMap) -> Protocol:
     """
     Create a ``DictionaryDevice()`` class using the supplied dictionary.
 
@@ -746,7 +749,7 @@ def get_run_orientation(
     run: Any,
     name=None,
     start_key: str = DEFAULT_START_KEY,
-) -> Mapping[str, Any]:
+) -> KeyValueMap:
     """
     Return the orientation information dictionary from a run.
 
@@ -962,7 +965,7 @@ def make_dynamic_instance(
 def parse_factory_axes(
     *,
     space: str = None,
-    axes: Union[Mapping[str, Any], None, Sequence[str]] = None,
+    axes: Union[KeyValueMap, None, Sequence[str]] = None,
     order: Sequence[str] = None,
     canonical: Sequence[str] = None,
     labels: Sequence[str] = None,

@@ -26,7 +26,7 @@ from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .misc import AnyAxesType
 from .misc import AxesDict
-from .misc import CoreError
+from .misc import CoreError, KeyValueMap
 from .misc import Matrix3x3
 from .misc import NamedFloatDict
 from .misc import NoForwardSolutions
@@ -123,7 +123,7 @@ class Core:
             # first sample is cubic, no reflections
             self.add_sample(DEFAULT_SAMPLE_NAME, 1)
 
-    def _asdict(self) -> Mapping[str, Any]:
+    def _asdict(self) -> KeyValueMap:
         """Describe the diffractometer as a dictionary."""
         from .__init__ import __version__
 
@@ -162,7 +162,7 @@ class Core:
         """Convert keys of axis dictionary from diffractometer to solver."""
         return {self.axes_xref[k]: v for k, v in axis_dict.items()}
 
-    def _fromdict(self, config: Mapping[str, Any]) -> None:
+    def _fromdict(self, config: KeyValueMap) -> None:
         """Redefine diffractometer from a (configuration) dictionary."""
         # Since this code might raise, validate first.
         extras = self._validate_extras(config["axes"]["extra_axes"], self.all_extras)

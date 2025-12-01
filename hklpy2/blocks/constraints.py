@@ -31,14 +31,12 @@ from typing import List
 from typing import Mapping
 from typing import Optional
 
-from ..misc import NUMERIC
+from ..misc import NUMERIC, KeyValueMap
 from ..misc import ConfigurationError
 from ..misc import ConstraintsError
 
 ENDPOINT_TOLERANCE: float = 1e-7  # for comparisons, less than motion step size
 UNDEFINED_LABEL: str = "undefined"
-
-ConstraintsDictType = Mapping[str, Any]
 
 
 class ConstraintBase(ABC):
@@ -59,13 +57,13 @@ class ConstraintBase(ABC):
         content = [f"{k}={v}" for k, v in self._asdict().items()]
         return f"{self.__class__.__name__}({', '.join(content)})"
 
-    def _asdict(self) -> ConstraintsDictType:
+    def _asdict(self) -> KeyValueMap:
         """Return a new dict which maps field names to their values."""
         result = {k: getattr(self, k) for k in self._fields}
         result["class"] = self.__class__.__name__
         return result
 
-    def _fromdict(self, config: ConstraintsDictType, core: Optional[Any] = None):
+    def _fromdict(self, config: KeyValueMap, core: Optional[Any] = None):
         """Redefine this constraint from a (configuration) dictionary."""
         from ..ops import Core
 
@@ -210,11 +208,11 @@ class RealAxisConstraints(dict):
         """Return a nicely-formatted string."""
         return str([str(c) for c in self.values()])
 
-    def _asdict(self) -> ConstraintsDictType:
+    def _asdict(self) -> KeyValueMap:
         """Return all constraints as a dictionary."""
         return {k: c._asdict() for k, c in self.items()}
 
-    def _fromdict(self, config: ConstraintsDictType, core=None) -> None:
+    def _fromdict(self, config: KeyValueMap, core=None) -> None:
         """Redefine existing constraints from a (configuration) dictionary."""
         for k, v in config.items():
             self[k]._fromdict(v, core=core)

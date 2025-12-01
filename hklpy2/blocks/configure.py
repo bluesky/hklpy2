@@ -16,13 +16,10 @@ From **hklpy**, these TODO items:
 
 import logging
 from typing import Any
-from typing import Mapping
 
-from ..misc import ConfigurationError
+from ..misc import ConfigurationError, KeyValueMap
 
 logger = logging.getLogger(__name__)
-
-KeyValueMap = Mapping[str, Any]
 
 
 class Configuration:

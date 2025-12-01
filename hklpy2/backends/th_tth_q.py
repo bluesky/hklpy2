@@ -24,7 +24,7 @@ from ..misc import Matrix3x3
 from ..misc import NamedFloatDict
 from ..misc import SolverError
 from .base import SolverBase
-from .base import SolverReflectionType
+from ..misc import KeyValueMap
 
 logger = logging.getLogger(__name__)
 TH_TTH_Q_GEOMETRY = "TH TTH Q"
@@ -84,7 +84,7 @@ class ThTthSolver(SolverBase):
         self._reflections = []
         self._wavelength = None
 
-    def addReflection(self, value: SolverReflectionType) -> None:
+    def addReflection(self, value: KeyValueMap) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
         if not isinstance(value, dict):
             raise TypeError(f"Must supply SolverReflection (dict), received {value!r}")
@@ -100,7 +100,7 @@ class ThTthSolver(SolverBase):
         self.wavelength = wavelengths[0]
 
     def calculate_UB(
-        self, r1: SolverReflectionType, r2: SolverReflectionType
+        self, r1: KeyValueMap, r2: KeyValueMap
     ) -> Matrix3x3:
         return IDENTITY_MATRIX_3X3
 
@@ -163,7 +163,7 @@ class ThTthSolver(SolverBase):
         axes = {TH_TTH_Q_GEOMETRY: "th tth".split()}
         return axes.get(self.geometry, [])
 
-    def refineLattice(self, reflections: list[SolverReflectionType]) -> NamedFloatDict:
+    def refineLattice(self, reflections: list[KeyValueMap]) -> NamedFloatDict:
         """No lattice refinement in this |solver|."""
         return None
 
