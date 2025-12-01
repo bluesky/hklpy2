@@ -49,8 +49,9 @@ Miscellaneous Support.
     ~AxesDict
     ~AxesList
     ~AxesTuple
-    ~NamedFloatDict
     ~Matrix3x3
+    ~NamedFloatDict
+    ~NUMERIC
 
 .. rubric: Custom Preprocessors
 .. autosummary::
@@ -82,8 +83,9 @@ import uuid
 import warnings
 from collections.abc import Iterable
 from importlib.metadata import entry_points
+from typing import TYPE_CHECKING
 from typing import Any
-from typing import Dict
+from typing import Iterator
 from typing import List
 from typing import Mapping
 from typing import NamedTuple
@@ -91,12 +93,13 @@ from typing import Sequence
 from typing import Type
 from typing import Union
 
-import numpy
-import numpy.typing
+import numpy as np
+import numpy.typing as npt
 import pandas as pd
 import pint
 import tqdm
 import yaml
+from bluesky.utils import Msg
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsMotor
@@ -105,42 +108,30 @@ from ophyd import SoftPositioner
 
 logger = logging.getLogger(__name__)
 
-IDENTITY_MATRIX_3X3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-"""Identity matrix, 2-D, 3 rows, 3 columns."""
-
-SOLVER_ENTRYPOINT_GROUP = "hklpy2.solver"
-"""Name by which |hklpy2| backend |solver| classes are grouped."""
-
-DEFAULT_DIGITS = 4
-DEFAULT_START_KEY = "diffractometers"
-
-INTERNAL_ANGLE_UNITS = "degrees"
-INTERNAL_LENGTH_UNITS = "angstrom"
-INTERNAL_XRAY_ENERGY_UNITS = "keV"
-
-# Shared pint UnitRegistry to avoid recreating it repeatedly.
-# Agents and hot paths should use this registry via helper functions below.
-UREG = pint.UnitRegistry()
-
-PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
-"""Exception from pint that we are trapping here."""
-
-DEFAULT_MOTOR_LABELS = ["motors"]
-"""Default labels applied to real-axis positioners."""
-
-
 # Custom data types
 
-AxesArray = numpy.typing.NDArray[numpy.floating]
+if TYPE_CHECKING:
+    from .backends.base import SolverBase
+
+BlueskyPlanType = Iterator[Sequence[Msg]]
+"""Type of a bluesky plan."""
+
+KeyValueMap = Mapping[str, Any]
+"""Dictionary for configuration and other."""
+
+NUMERIC = Union[float, int]
+"""Either integer or real number."""
+
+AxesArray = npt.NDArray[np.floating]
 """Numpy array of axes values."""
 
-AxesDict = dict[str, Union[float, int]]
+AxesDict = dict[str, NUMERIC]
 """Dictionary of axes names and values."""
 
-AxesList = list[Union[float, int]]
+AxesList = list[NUMERIC]
 """List of axes values."""
 
-AxesTuple = tuple[Union[float, int], ...]
+AxesTuple = tuple[NUMERIC, ...]
 """Tuple of axes values."""
 
 AnyAxesType = Union[AxesArray, AxesDict, AxesList, AxesTuple]
@@ -158,12 +149,36 @@ ordered tuple   (0, 1, -1)                  AxesTuple
 =============   =========================   ====================
 """
 
-NamedFloatDict = Dict[str, float]
-"""Python type annotation: dictionary of named floats."""
-
 Matrix3x3 = List[List[float]]
 """Python type annotation: mutable orientation & rotation matrices."""
 
+NamedFloatDict = Mapping[str, NUMERIC]
+"""Python type annotation: dictionary of named floats."""
+
+# Constants and Structures
+
+IDENTITY_MATRIX_3X3: Matrix3x3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+"""Identity matrix, 2-D, 3 rows, 3 columns."""
+
+SOLVER_ENTRYPOINT_GROUP: str = "hklpy2.solver"
+"""Name by which |hklpy2| |solver| classes are grouped."""
+
+DEFAULT_DIGITS: int = 4
+DEFAULT_START_KEY: str = "diffractometers"
+
+INTERNAL_ANGLE_UNITS: str = "degrees"
+INTERNAL_LENGTH_UNITS: str = "angstrom"
+INTERNAL_XRAY_ENERGY_UNITS: str = "keV"
+
+# Shared pint UnitRegistry to avoid recreating it repeatedly.
+# Agents and hot paths should use this registry via helper functions below.
+UREG = pint.UnitRegistry()
+
+PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
+"""Exception from pint that we are trapping here."""
+
+DEFAULT_MOTOR_LABELS: Sequence[str] = ["motors"]
+"""Default labels applied to real-axis positioners."""
 
 # Custom exceptions
 
@@ -221,7 +236,7 @@ class VirtualPositionerBase(SoftPositioner):
     sibling positioner attribute.
     """
 
-    def __init__(self, *, physical_name: str = "", **kwargs):
+    def __init__(self, *, physical_name: str = "", **kwargs) -> None:
         """Constructor.
 
         Subclass should override and add any additional kwargs, as needed.
@@ -235,7 +250,7 @@ class VirtualPositionerBase(SoftPositioner):
 
         self.physical = getattr(self.parent, physical_name)
 
-    def _setup_move(self, position, status):
+    def _setup_move(self, position: float, status: Any) -> None:
         """Move requested to position."""
         self._run_subs(sub_type=self.SUB_START, timestamp=time.time())
 
@@ -267,14 +282,14 @@ class VirtualPositionerBase(SoftPositioner):
         """
         return virtual / 2  # Subclass should redefine.
 
-    def _cb_update_position(self, value, **kwargs):
+    def _cb_update_position(self, value: float, **kwargs) -> None:
         """Called when physical position is changed."""
         self._position = self.forward(value)
 
         # Update our position in diffractometer's internal cache.
         self.parent._real_cur_pos[self] = self._position
 
-    def _finish_setup(self):
+    def _finish_setup(self) -> None:
         """
         Complete the axis setup after diffractometer is built.
 
@@ -322,7 +337,7 @@ class VirtualPositionerBase(SoftPositioner):
             hi = min(hi, self._limits[-1])
             self.parent.core.constraints[self.attr_name].limits = (lo, hi)
 
-    def __getattribute__(self, name):
+    def __getattribute__(self, name: str):
         """
         Run final setup automatically, on conditions.
 
@@ -393,10 +408,10 @@ class ConfigurationRunWrapper:
         ~wrapper
     """
 
-    devices = []
+    devices: Sequence[Device] = []
     """List of devices to be reported."""
 
-    known_bases = []
+    known_bases: Sequence[Device] = []
     """
     Known device base classes.
 
@@ -404,10 +419,10 @@ class ConfigurationRunWrapper:
     the `.read_configuration()` method can be added to this tuple.
     """
 
-    start_key = DEFAULT_START_KEY
+    start_key: str = DEFAULT_START_KEY
     """Top-level key in run's metadata dictionary."""
 
-    def __init__(self, *devices, knowns=None):
+    def __init__(self, *devices, knowns=None) -> None:
         """
         Constructor.
 
@@ -446,13 +461,13 @@ class ConfigurationRunWrapper:
         """Set permit to write configuration."""
         self._enable = state
 
-    def validate(self, devices) -> None:
+    def validate(self, devices: Sequence[Device]) -> None:
         """Verify all are recognized objects."""
         for dev in devices:
             if not isinstance(dev, tuple(self.known_bases)):
                 raise TypeError(f"{dev} is not a recognized object.")
 
-    def wrapper(self, plan):
+    def wrapper(self, plan: Iterator):
         """
         Bluesky plan wrapper (preprocessor).
 
@@ -535,7 +550,7 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
         for name, value in zip(names, input):
             axes[name] = value
 
-    elif istype(input, AxesArray) or isinstance(input, numpy.ndarray):
+    elif istype(input, AxesArray) or isinstance(input, np.ndarray):
         # Accept numpy arrays (ndarray) of numeric values as an AxesArray.
         for name, value in zip(names, input):
             axes[name] = value
@@ -552,7 +567,7 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
     return axes
 
 
-def check_value_in_list(title, value, examples, blank_ok=False):
+def check_value_in_list(title, value, examples, blank_ok=False) -> None:
     """Raise ValueError exception if value is not in the list of examples."""
     if blank_ok:
         examples.append("")
@@ -561,7 +576,7 @@ def check_value_in_list(title, value, examples, blank_ok=False):
         raise ValueError(msg)
 
 
-def compare_float_dicts(a1, a2, tol=1e-4):
+def compare_float_dicts(a1, a2, tol=1e-4) -> bool:
     """
     Compare two dictionaries.  Values are all floats.
     """
@@ -590,7 +605,10 @@ def convert_units(value: float, old_units: str, new_units: str) -> float:
     return UREG.Quantity(value, old_units).to(new_units).magnitude
 
 
-def define_real_axis(specs, kwargs):
+def define_real_axis(
+    specs: Union[None, str, KeyValueMap],
+    kwargs: KeyValueMap,
+) -> tuple[str, Mapping]:
     """Return class and kwargs of a real axis from its 'specs'."""
     kwargs["labels"] += DEFAULT_MOTOR_LABELS
 
@@ -619,7 +637,7 @@ def define_real_axis(specs, kwargs):
     return class_name, kwargs
 
 
-def dict_device_factory(data: dict, **kwargs):
+def dict_device_factory(data: KeyValueMap, **kwargs: KeyValueMap) -> type:
     """
     Create a ``DictionaryDevice()`` class using the supplied dictionary.
 
@@ -637,7 +655,7 @@ def dict_device_factory(data: dict, **kwargs):
     return fc
 
 
-def distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple):
+def distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple) -> float:
     """Return the RMS distance between 'pos1' and 'pos2'."""
     if len(pos1) != len(pos2):
         raise AttributeError(f"{pos1=} and {pos2=} are not the same length.")
@@ -696,7 +714,9 @@ def dynamic_import(full_path: str) -> type:
     return import_object
 
 
-def flatten_lists(xs):
+def flatten_lists(
+    xs: Sequence[Union[bytes, Iterable, str]],
+) -> BlueskyPlanType:
     """
     Convert nested lists into single list.
 
@@ -709,7 +729,7 @@ def flatten_lists(xs):
             yield x
 
 
-def get_solver(solver_name):
+def get_solver(solver_name: str) -> "SolverBase":
     """
     Load a Solver class from a named entry point.
 
@@ -725,7 +745,11 @@ def get_solver(solver_name):
     return entries[solver_name].load()
 
 
-def get_run_orientation(run, name=None, start_key=DEFAULT_START_KEY):
+def get_run_orientation(
+    run: Any,
+    name=None,
+    start_key: str = DEFAULT_START_KEY,
+) -> KeyValueMap:
     """
     Return the orientation information dictionary from a run.
 
@@ -826,7 +850,12 @@ def istype(value: Any, annotation: Type) -> bool:
         return False
 
 
-def list_orientation_runs(catalog, limit=10, start_key=DEFAULT_START_KEY, **kwargs):
+def list_orientation_runs(
+    catalog: Any,
+    limit: int = 10,
+    start_key: str = DEFAULT_START_KEY,
+    **kwargs: Mapping,
+) -> pd.DataFrame:
     """
     List the runs with orientation information.
 
@@ -902,12 +931,12 @@ def list_orientation_runs(catalog, limit=10, start_key=DEFAULT_START_KEY, **kwar
     return pd.DataFrame(buffer)
 
 
-def load_yaml(text: str):
+def load_yaml(text: str) -> Mapping:
     """Load YAML from text."""
     return yaml.load(text, yaml.Loader)
 
 
-def load_yaml_file(file):
+def load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping:
     """Return contents of a YAML file as a Python object."""
     path = pathlib.Path(file)
     if not path.exists():
@@ -921,7 +950,11 @@ def make_component(call_name: str, **kwargs: Any) -> Component:
     return make_dynamic_instance("ophyd.Component", CallableObject, **kwargs)
 
 
-def make_dynamic_instance(call_name: str, *args: Any, **kwargs: Any) -> Any:
+def make_dynamic_instance(
+    call_name: str,
+    *args: Any,
+    **kwargs: Any,
+) -> Any:
     """Return an instance of the Python 'call_name'."""
     DynamicCallable = dynamic_import(call_name)
     if not callable(DynamicCallable):
@@ -932,7 +965,7 @@ def make_dynamic_instance(call_name: str, *args: Any, **kwargs: Any) -> Any:
 def parse_factory_axes(
     *,
     space: str = None,
-    axes: Union[Mapping[str, Any], None, Sequence[str]] = None,
+    axes: Union[KeyValueMap, None, Sequence[str]] = None,
     order: Sequence[str] = None,
     canonical: Sequence[str] = None,
     labels: Sequence[str] = None,
@@ -1059,12 +1092,16 @@ def pick_first_solution(
     return solutions[0]
 
 
-def roundoff(value, digits=4):
+def roundoff(value: float, digits=4) -> float:
     """Round a number to specified precision."""
     return round(value, ndigits=digits) or 0  # "-0" becomes "0"
 
 
-def solver_factory(solver_name: str, geometry: str, **kwargs):
+def solver_factory(
+    solver_name: str,
+    geometry: str,
+    **kwargs: Mapping,
+) -> "SolverBase":
     """
     Create a |solver| object with geometry and axes.
     """
@@ -1072,7 +1109,7 @@ def solver_factory(solver_name: str, geometry: str, **kwargs):
     return solver_class(geometry, **kwargs)
 
 
-def solvers():
+def solvers() -> Mapping[str, "SolverBase"]:
     """
     Dictionary of available Solver classes, mapped by entry point name.
 
@@ -1090,7 +1127,7 @@ def solvers():
     return entries
 
 
-def unique_name(prefix="", length=7):
+def unique_name(prefix: str = "", length: int = 7) -> str:
     """
     Short, unique name, first 7 (at most) characters of a unique, random uuid.
     """

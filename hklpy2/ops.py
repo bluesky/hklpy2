@@ -12,7 +12,8 @@ library.
 import datetime
 import logging
 from collections.abc import Iterable
-from typing import List
+from typing import TYPE_CHECKING
+from typing import Mapping
 from typing import Optional
 from typing import Union
 
@@ -25,6 +26,9 @@ from .blocks.sample import Sample
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import CoreError
+from .misc import KeyValueMap
+from .misc import Matrix3x3
+from .misc import NamedFloatDict
 from .misc import NoForwardSolutions
 from .misc import axes_to_dict
 from .misc import convert_units
@@ -33,10 +37,12 @@ from .misc import unique_name
 
 __all__ = ["Core"]
 
-Number = Union[int, float]
+if TYPE_CHECKING:
+    from .diffract import DiffractometerBase
+
 logger = logging.getLogger(__name__)
-DEFAULT_EXTRA_VALUE = 0
-DEFAULT_SAMPLE_NAME = "sample"
+DEFAULT_EXTRA_VALUE: float = 0
+DEFAULT_SAMPLE_NAME: str = "sample"
 
 
 class Core:
@@ -97,7 +103,11 @@ class Core:
 
     from .blocks.sample import Sample
 
-    def __init__(self, diffractometer, default_sample: bool = True) -> None:
+    def __init__(
+        self,
+        diffractometer: "DiffractometerBase",
+        default_sample: bool = True,
+    ) -> None:
         self.axes_xref = {}  # cross-reference:  diffractometer name : solver name
         self.diffractometer = diffractometer
         self._extras = {}  # Dictionary of any extra solver axis (across all modes).
@@ -113,7 +123,7 @@ class Core:
             # first sample is cubic, no reflections
             self.add_sample(DEFAULT_SAMPLE_NAME, 1)
 
-    def _asdict(self):
+    def _asdict(self) -> KeyValueMap:
         """Describe the diffractometer as a dictionary."""
         from .__init__ import __version__
 
@@ -143,16 +153,16 @@ class Core:
 
         return config
 
-    def _axes_names_s2d(self, axis_dict: dict[str, float]) -> dict[str, float]:
+    def _axes_names_s2d(self, axis_dict: NamedFloatDict) -> NamedFloatDict:
         """Convert keys of axis dictionary from solver to diffractometer."""
         reverse = self.axes_xref_reversed
         return {reverse[k]: v for k, v in axis_dict.items()}
 
-    def _axes_names_d2s(self, axis_dict: dict[str, float]) -> dict[str, float]:
+    def _axes_names_d2s(self, axis_dict: NamedFloatDict) -> NamedFloatDict:
         """Convert keys of axis dictionary from diffractometer to solver."""
         return {self.axes_xref[k]: v for k, v in axis_dict.items()}
 
-    def _fromdict(self, config):
+    def _fromdict(self, config: KeyValueMap) -> None:
         """Redefine diffractometer from a (configuration) dictionary."""
         # Since this code might raise, validate first.
         extras = self._validate_extras(config["axes"]["extra_axes"], self.all_extras)
@@ -184,9 +194,9 @@ class Core:
 
     def _validate_extras(
         self,
-        values: dict[str, Number],
-        expected: dict[str, Number],
-    ) -> dict[str, Number]:
+        values: NamedFloatDict,
+        expected: NamedFloatDict,
+    ) -> NamedFloatDict:
         """Validate that the supplied extras are acceptable."""
         extras, unexpected = {}, []
         for key, value in values.items():
@@ -202,7 +212,7 @@ class Core:
             )
         return extras
 
-    def _validate_pseudos(self, pseudos) -> bool:
+    def _validate_pseudos(self, pseudos: Union[Iterable, NamedFloatDict]) -> bool:
         """Validate that the supplied pseudos are acceptable."""
         if not isinstance(pseudos, Iterable):
             raise TypeError(
@@ -243,9 +253,9 @@ class Core:
         self,
         pseudos: AnyAxesType,
         reals: Union[AnyAxesType, None] = None,
-        wavelength=None,
+        wavelength: float = None,
         wavelength_units: str = None,
-        name=None,
+        name: str = None,
         replace: bool = False,
     ) -> Reflection:
         """
@@ -390,7 +400,7 @@ class Core:
         self.configuration = Configuration(self.diffractometer)
 
     @property
-    def axes_xref_reversed(self):
+    def axes_xref_reversed(self) -> Mapping[str, str]:
         """Map axis names from solver to diffractometer."""
         if len(self.axes_xref) == 0:
             if self.solver is not None:
@@ -402,14 +412,14 @@ class Core:
 
     def calc_UB(
         self, r1: Union[Reflection, str], r2: Union[Reflection, str]
-    ) -> List[List[Number]]:
+    ) -> Matrix3x3:
         """
         Calculate and return the UB (orientation) matrix with two reflections.
 
         The method of Busing & Levy, Acta Cryst 22 (1967) 457.
         """
 
-        def _get(r):
+        def _get(r: Union[Reflection, str]) -> Reflection:
             """Given a reference, get the Reflection object."""
             if isinstance(r, Reflection):
                 return r
@@ -440,7 +450,7 @@ class Core:
         return current
 
     @extras.setter
-    def extras(self, values: dict[str, Number]):
+    def extras(self, values: NamedFloatDict) -> None:
         """Set |solver| extra parameters for the current mode."""
         incoming = self._validate_extras(values, self.extras)
         if len(incoming) > 0:
@@ -539,7 +549,7 @@ class Core:
         return pseudos
 
     @property
-    def local_pseudo_axes(self) -> list:
+    def local_pseudo_axes(self) -> list[str]:
         """
         List of the diffractometer pseudo axes expected by the solver.
 
@@ -555,7 +565,7 @@ class Core:
         ]
 
     @property
-    def local_real_axes(self) -> list:
+    def local_real_axes(self) -> list[str]:
         """
         List of the diffractometer real axes expected by the solver.
 
@@ -657,7 +667,7 @@ class Core:
             reflections.append(refl)
         return reflections
 
-    def remove_sample(self, name):
+    def remove_sample(self, name: str):
         """Remove the named sample.  No error if name is not known."""
         if name not in self.samples:
             raise KeyError(f"{name!r} not in sample list:{list(self.samples)}.")
@@ -676,11 +686,11 @@ class Core:
         """
         self._solver_needs_update = flag
 
-    def reset_constraints(self):
+    def reset_constraints(self) -> None:
         """Restore diffractometer constraints to default settings."""
         self.constraints = RealAxisConstraints(self.diffractometer.real_axis_names)
 
-    def reset_samples(self):
+    def reset_samples(self) -> None:
         """Restore diffractometer samples to default settings."""
         self._samples = {}  # Remove all the samples.
         # Create the default sample.
@@ -702,7 +712,7 @@ class Core:
                 pass  # property is not settable
 
     @property
-    def samples(self) -> dict:
+    def samples(self) -> Mapping[str, Sample]:
         """Sample dictionary."""
         return self._samples
 
