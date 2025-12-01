@@ -1,5 +1,6 @@
 import logging
 import math
+import re
 from collections import namedtuple
 from contextlib import nullcontext as does_not_raise
 
@@ -360,6 +361,20 @@ def test_set_lattice(fourc):
             does_not_raise(),
             None,
         ],
+        pytest.param(
+            {
+                "class": "hklpy2.incident.EpicsWavelengthRO",
+                "pv_wavelength": PV_WAVELENGTH,
+            },
+            None,
+            None,
+            pytest.raises(
+                TypeError,
+                match=re.escape("'set_wavelength()' not supported"),
+            ),
+            None,
+            id="set_wavelength() not supported",
+        ),
     ],
 )
 def test_set_wavelength(beam_kwargs, wavelength, units, context, expected):
@@ -497,7 +512,7 @@ def test_cahkl_no_solutions(specs, mode, pseudos, text, context, expected):
 
 
 @pytest.mark.parametrize(
-    "specs, mode, scan_args, scan_kwargs, context, expected",
+    "specs, mode, scan_args, scan_kwargs, context",
     [
         pytest.param(
             dict(name="e6c", geometry="E6C"),
@@ -509,7 +524,6 @@ def test_cahkl_no_solutions(specs, mode, pseudos, text, context, expected):
                 extras=dict(h2=1, k2=2, l2=0),
             ),
             does_not_raise(),
-            None,
             id="psic example",
         ),
         pytest.param(
@@ -523,14 +537,13 @@ def test_cahkl_no_solutions(specs, mode, pseudos, text, context, expected):
                 extras=dict(h4=2, k4=2, l4=0),
                 fail_on_exception=True,
             ),
-            pytest.raises(KeyError),
-            "Unexpected extra axis name",
+            pytest.raises(KeyError, match='"Unexpected extra axis name'),
             id="no hkl_4 extras",
         ),
     ],
 )
-def test_scan_extra(specs, mode, scan_args, scan_kwargs, context, expected):
-    with context as reason:
+def test_scan_extra(specs, mode, scan_args, scan_kwargs, context):
+    with context:
         sim = creator(**specs)
         if mode is not None:
             sim.core.mode = mode
@@ -538,5 +551,3 @@ def test_scan_extra(specs, mode, scan_args, scan_kwargs, context, expected):
         set_diffractometer(sim)
         RE = RunEngine()
         RE(scan_extra(*scan_args, **scan_kwargs))
-
-    assert_context_result(expected, reason)
