@@ -17,7 +17,8 @@ From **hklpy**, these TODO items:
 import logging
 from typing import Any
 
-from ..misc import ConfigurationError, KeyValueMap
+from ..misc import ConfigurationError
+from ..misc import KeyValueMap
 
 logger = logging.getLogger(__name__)
 

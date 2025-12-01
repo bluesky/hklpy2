@@ -19,10 +19,10 @@ from typing import List
 
 from .. import __version__
 from ..misc import IDENTITY_MATRIX_3X3
+from ..misc import KeyValueMap
 from ..misc import Matrix3x3
 from ..misc import NamedFloatDict
 from .base import SolverBase
-from ..misc import KeyValueMap
 
 logger = logging.getLogger(__name__)
 
@@ -68,9 +68,7 @@ class NoOpSolver(SolverBase):
     def addReflection(self, reflection: KeyValueMap) -> None:
         return None
 
-    def calculate_UB(
-        self, r1: KeyValueMap, r2: KeyValueMap
-    ) -> Matrix3x3:
+    def calculate_UB(self, r1: KeyValueMap, r2: KeyValueMap) -> Matrix3x3:
         return IDENTITY_MATRIX_3X3
 
     @property

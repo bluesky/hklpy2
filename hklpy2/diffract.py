@@ -17,12 +17,16 @@ from typing import Callable
 from typing import NamedTuple
 from typing import Optional
 from typing import Sequence
+from typing import Type
+from typing import TypeVar
 from typing import Union
+from typing import cast
 
 import numpy as np
 import yaml
 from bluesky.protocols import Movable
 from bluesky.protocols import Readable
+from bluesky.utils import plan
 from cytoolz import partition
 from ophyd import Component as Cpt
 from ophyd import Kind
@@ -34,7 +38,6 @@ from ophyd.device import required_for_connection
 from ophyd.pseudopos import pseudo_position_argument
 from ophyd.pseudopos import real_position_argument
 
-from .misc import KeyValueMap
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .incident import WavelengthXray
@@ -42,7 +45,9 @@ from .misc import DEFAULT_DIGITS
 from .misc import INTERNAL_ANGLE_UNITS
 from .misc import AnyAxesType
 from .misc import AxesDict
+from .misc import BlueskyPlanType
 from .misc import DiffractometerError
+from .misc import KeyValueMap
 from .misc import load_yaml_file
 from .misc import pick_first_solution
 from .misc import roundoff
@@ -57,6 +62,7 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_PHOTON_ENERGY_KEV = 8.0
 H_OR_N = Kind.hinted | Kind.normal
+T = TypeVar("T")
 
 
 class Hklpy2PseudoAxis(PseudoSingle):
@@ -76,8 +82,7 @@ class Hklpy2PseudoAxis(PseudoSingle):
 
     @required_for_connection(description="{device.name} readback subscription")
     def _sub_proxy_readback(self, obj=None, value=None, **kwargs) -> Any:
-        """Override allows (and ignores) auxiliary pseudos.
-        """
+        """Override allows (and ignores) auxiliary pseudos."""
         if hasattr(value, "__getitem__"):
             if self._idx is not None:  # auxiliary pseudos are ignored here.
                 value = value[self._idx]
@@ -297,7 +302,7 @@ class DiffractometerBase(PseudoPositioner):
         """
         return self.core._fromdict(config)
 
-    def export(self, file, comment=""):
+    def export(self, file, comment="") -> None:
         """
         Export the diffractometer configuration to a YAML file.
 
@@ -327,7 +332,7 @@ class DiffractometerBase(PseudoPositioner):
         clear=True,
         restore_constraints=True,
         restore_wavelength=True,
-    ):
+    ) -> None:
         """
         Restore diffractometer configuration.
 
@@ -385,13 +390,13 @@ class DiffractometerBase(PseudoPositioner):
         )
 
     @pseudo_position_argument
-    def forward(self, pseudos: dict, wavelength: float = None) -> tuple:
+    def forward(self, pseudos: dict, wavelength: float = None) -> NamedTuple:
         """Compute real-space coordinates from pseudos (hkl -> angles)."""
         logger.debug("forward: pseudos=%r", pseudos)
         solutions = self.core.forward(pseudos, wavelength=wavelength)
         return self._forward_solution(self.real_position, solutions)
 
-    def full_position(self, digits=4) -> dict:
+    def full_position(self, digits=4) -> KeyValueMap:
         """Return dict with positions of pseudos, reals, & extras."""
         from .misc import roundoff
 
@@ -403,13 +408,14 @@ class DiffractometerBase(PseudoPositioner):
         return pdict
 
     @real_position_argument
-    def inverse(self, reals: tuple, wavelength: float = None) -> tuple:
+    def inverse(self, reals: tuple, wavelength: float = None) -> NamedTuple:
         """Compute pseudo-space coordinates from reals (angles -> hkl)."""
         logger.debug("inverse: reals=%r", reals)
         pos = self.core.inverse(reals, wavelength=wavelength)
         return self.PseudoPosition(**pos)  # as created by namedtuple
 
-    def move_dict(self, axes: AxesDict):
+    @plan
+    def move_dict(self, axes: AxesDict) -> BlueskyPlanType:
         """(plan) Move diffractometer axes to positions in 'axes'."""
         from bluesky import plan_stubs as bps
 
@@ -427,7 +433,12 @@ class DiffractometerBase(PseudoPositioner):
         )
         yield from bps.mv(*moves)
 
-    def move_forward_with_extras(self, pseudos: AnyAxesType, extras: AxesDict):
+    @plan
+    def move_forward_with_extras(
+        self,
+        pseudos: AnyAxesType,
+        extras: AxesDict,
+    ) -> BlueskyPlanType:
         """
         (plan stub) Compute forward solution at fixed pseudos and extras.
 
@@ -446,7 +457,12 @@ class DiffractometerBase(PseudoPositioner):
         solution = self.forward(self.core.standardize_pseudos(pseudos))
         yield from self.move_dict(solution)
 
-    def move_inverse_with_extras(self, reals: AnyAxesType, extras: AxesDict):
+    @plan
+    def move_inverse_with_extras(
+        self,
+        reals: AnyAxesType,
+        extras: AxesDict,
+    ) -> BlueskyPlanType:
         """
         (plan stub) Compute inverse solution at fixed reals and extras.
 
@@ -473,6 +489,7 @@ class DiffractometerBase(PseudoPositioner):
             hkl_axis = getattr(self, axis_name)
             hkl_axis.move(position)
 
+    @plan
     def scan_extra(
         self,
         detectors: Iterable[Readable],
@@ -483,7 +500,7 @@ class DiffractometerBase(PseudoPositioner):
         extras: Optional[dict] = {},
         fail_on_exception: Optional[bool] = False,
         md: Optional[dict] = None,
-    ):
+    ) -> BlueskyPlanType:
         """
         Scan extra diffractometer parameter(s), such as 'psi'.
 
@@ -632,7 +649,10 @@ class DiffractometerBase(PseudoPositioner):
         return (yield from _inner())
 
     @staticmethod
-    def _format_value_for_repr(x, digits):
+    def _format_value_for_repr(
+        x: Union[float, np.floating],
+        digits: int,
+    ) -> str:
         """Format numeric values for display without changing them.
 
         - Floats: fixed-point with `digits` decimals, trailing zeros
@@ -649,7 +669,11 @@ class DiffractometerBase(PseudoPositioner):
         return repr(x)
 
     @classmethod
-    def _make_wrapped_namedtuple_class(cls, orig_cls, digits):
+    def _make_wrapped_namedtuple_class(
+        cls,
+        orig_cls: Optional[Type[T]],
+        digits: int,
+    ) -> Optional[Type[T]]:
         """Return a lightweight subclass of ``orig_cls`` with concise repr.
 
         Avoid re-wrapping when the same digit count is already applied.
@@ -658,23 +682,35 @@ class DiffractometerBase(PseudoPositioner):
         if orig_cls is None:
             return None
 
-        existing_digits = getattr(orig_cls, "_hklpy2_wrapped_digits", None)
-        if getattr(orig_cls, "_hklpy2_wrapped", False) and existing_digits == digits:
-            return orig_cls
+        existing_digits = cast(
+            Optional[int],
+            getattr(orig_cls, "_hklpy2_wrapped_digits", None),
+        )
+        if (
+            getattr(orig_cls, "_hklpy2_wrapped", False)
+            #
+            and existing_digits == digits
+        ):
+            return cast(Type[T], orig_cls)
+
+        orig_name = orig_cls.__name__
 
         def __repr__(self):
-            pairs = []
+            pairs: list[str] = []
             for name in getattr(self, "_fields", ()):  # namedtuple fields
                 val = getattr(self, name)
                 pairs.append(f"{name}={cls._format_value_for_repr(val, digits)}")
-            return f"{orig_cls.__name__}({', '.join(pairs)})"
+            return f"{orig_name}({', '.join(pairs)})"
 
         def __str__(self):
             return self.__repr__()
 
         new_cls = type(
-            orig_cls.__name__, (orig_cls,), {"__repr__": __repr__, "__str__": __str__}
+            orig_name,
+            (orig_cls,),
+            {"__repr__": __repr__, "__str__": __str__},
         )
+
         setattr(new_cls, "_hklpy2_wrapped", True)
         setattr(new_cls, "_hklpy2_wrapped_digits", digits)
         return new_cls
@@ -715,7 +751,7 @@ class DiffractometerBase(PseudoPositioner):
         return self._position_repr_digits
 
     @digits.setter
-    def digits(self, digits: int):
+    def digits(self, digits: int) -> None:
         if not isinstance(digits, int) or digits < 0:
             raise ValueError(
                 f"Digits must be a non-negative integer, received {digits}."
@@ -732,7 +768,7 @@ class DiffractometerBase(PseudoPositioner):
             )
 
     @property
-    def pseudo_axis_names(self):
+    def pseudo_axis_names(self) -> None:
         """
         Names of all the pseudo axes, in order of appearance.
 
@@ -744,7 +780,7 @@ class DiffractometerBase(PseudoPositioner):
         return [o.attr_name for o in self.pseudo_positioners]
 
     @property
-    def real_axis_names(self):
+    def real_axis_names(self) -> None:
         """
         Names of all the real axes, in order of appearance.
 
@@ -769,14 +805,14 @@ class DiffractometerBase(PseudoPositioner):
         self._reals_units = value
 
     @property
-    def samples(self):
+    def samples(self) -> dict[str, Sample]:
         """Dictionary of samples."""
         if self.core is None:
             return {}
         return self.core.samples
 
     @property
-    def sample(self):
+    def sample(self) -> Union[None, Sample]:
         """Current sample object."""
         if self.core is None:
             return None
@@ -867,7 +903,7 @@ def creator(
     class_bases: list = [DiffractometerBase],
     forward_solution_function: Optional[str] = None,
     **kwargs,
-):
+) -> DiffractometerBase:
     """
     Factory function to create a diffractometer instance.
 

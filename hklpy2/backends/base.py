@@ -10,13 +10,16 @@ import logging
 from abc import ABC
 from abc import abstractmethod
 from typing import Any
-from typing import List, Optional, Union
+from typing import List
+from typing import Optional
+from typing import Union
 
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import INTERNAL_ANGLE_UNITS
-from ..misc import INTERNAL_LENGTH_UNITS, KeyValueMap
+from ..misc import INTERNAL_LENGTH_UNITS
+from ..misc import KeyValueMap
 from ..misc import Matrix3x3
 from ..misc import NamedFloatDict
 from ..misc import istype
@@ -305,16 +308,14 @@ class SolverBase(ABC):
     @sample.setter
     def sample(self, value: KeyValueMap) -> None:
         if not istype(value, KeyValueMap):
-            raise TypeError(
-                f"Must supply dictionary, received {value!r}"
-            )
+            raise TypeError(f"Must supply dictionary, received {value!r}")
         self._sample = value
 
     @property
     def _summary_dict(self) -> KeyValueMap:
         """Return a summary of the geometry (modes, axes)"""
         geometry_name = self.geometry
-        description: KeyValueMap= {
+        description: KeyValueMap = {
             "name": geometry_name,
             "pseudos": self.pseudo_axis_names,
             "reals": self.real_axis_names,

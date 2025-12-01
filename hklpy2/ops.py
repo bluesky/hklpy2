@@ -13,7 +13,6 @@ import datetime
 import logging
 from collections.abc import Iterable
 from typing import TYPE_CHECKING
-from typing import Any
 from typing import Mapping
 from typing import Optional
 from typing import Union
@@ -26,7 +25,8 @@ from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .misc import AnyAxesType
 from .misc import AxesDict
-from .misc import CoreError, KeyValueMap
+from .misc import CoreError
+from .misc import KeyValueMap
 from .misc import Matrix3x3
 from .misc import NamedFloatDict
 from .misc import NoForwardSolutions

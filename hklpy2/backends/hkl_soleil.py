@@ -47,6 +47,7 @@ from numpy import typing as npt
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
+from ..misc import KeyValueMap
 from ..misc import Matrix3x3
 from ..misc import NamedFloatDict
 from ..misc import NoForwardSolutions
@@ -55,8 +56,6 @@ from ..misc import istype
 from ..misc import roundoff
 from ..misc import unique_name
 from .base import SolverBase
-from ..misc import KeyValueMap
-from .base import KeyValueMap
 from .hkl_soleil_utils import setup_libhkl
 
 logger = logging.getLogger(__name__)
@@ -555,9 +554,7 @@ class HklSolver(SolverBase):
     @sample.setter
     def sample(self, value: KeyValueMap):
         if not istype(value, dict):
-            raise TypeError(
-                f"Must supply {KeyValueMap} object, received {value!r}"
-            )
+            raise TypeError(f"Must supply {KeyValueMap} object, received {value!r}")
 
         # Just drop the old sample and make a new one.
         # Python knows its correct name.

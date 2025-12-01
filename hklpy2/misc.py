@@ -88,7 +88,7 @@ from typing import Any
 from typing import Iterator
 from typing import List
 from typing import Mapping
-from typing import NamedTuple, Protocol
+from typing import NamedTuple
 from typing import Sequence
 from typing import Type
 from typing import Union
@@ -637,7 +637,7 @@ def define_real_axis(
     return class_name, kwargs
 
 
-def dict_device_factory(data: KeyValueMap, **kwargs: KeyValueMap) -> Protocol:
+def dict_device_factory(data: KeyValueMap, **kwargs: KeyValueMap) -> type:
     """
     Create a ``DictionaryDevice()`` class using the supplied dictionary.
 
