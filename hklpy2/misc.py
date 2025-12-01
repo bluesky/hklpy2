@@ -85,7 +85,7 @@ from collections.abc import Iterable
 from importlib.metadata import entry_points
 from typing import TYPE_CHECKING
 from typing import Any
-from typing import Generator
+from typing import Iterator
 from typing import List
 from typing import Mapping
 from typing import NamedTuple
@@ -99,6 +99,7 @@ import pandas as pd
 import pint
 import tqdm
 import yaml
+from bluesky.utils import Msg
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsMotor
@@ -111,6 +112,9 @@ logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
     from .backends.base import SolverBase
+
+BlueskyPlanType = Iterator[Sequence[Msg]]
+"""Type of a bluesky plan."""
 
 NUMERIC = Union[float, int]
 """Either integer or real number."""
@@ -460,7 +464,7 @@ class ConfigurationRunWrapper:
             if not isinstance(dev, tuple(self.known_bases)):
                 raise TypeError(f"{dev} is not a recognized object.")
 
-    def wrapper(self, plan: Generator):
+    def wrapper(self, plan: Iterator):
         """
         Bluesky plan wrapper (preprocessor).
 
@@ -709,7 +713,7 @@ def dynamic_import(full_path: str) -> type:
 
 def flatten_lists(
     xs: Sequence[Union[bytes, Iterable, str]],
-) -> Generator[Sequence, None, None]:
+) -> BlueskyPlanType:
     """
     Convert nested lists into single list.
 

@@ -28,7 +28,6 @@ Simplified interface for |hklpy2| diffractometer users.
 import uuid
 from collections.abc import Iterable
 from typing import Any
-from typing import Generator
 from typing import List
 from typing import Optional
 from typing import Union
@@ -45,6 +44,7 @@ from .misc import NUMERIC
 from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import AxesTuple
+from .misc import BlueskyPlanType
 from .misc import Matrix3x3
 from .misc import NamedFloatDict
 from .misc import NoForwardSolutions
@@ -516,7 +516,7 @@ def scan_extra(
     extras: Optional[dict] = {},
     fail_on_exception: Optional[bool] = False,
     md: Optional[dict] = None,
-) -> Generator[Any, None, None]:
+) -> BlueskyPlanType:
     """
     Scan diffractometer parameter(s) at constant pseudos or reals.
 
