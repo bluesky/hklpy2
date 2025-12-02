@@ -30,6 +30,19 @@ describe future plans.
 
     Release expected 2026-H1.
 
+0.2.3
+#####
+
+Released 2025-12-02.
+
+Maintenance
+-----------
+
+* Add Python type annotations to source code.
+* Add reference to DeepWiki site.
+* Relocate source code from 'hklpy2' to 'src/hklpy2'.
+* Transition from databroker to tiled.
+
 0.2.2
 #####
 
