@@ -6,7 +6,7 @@ clean ::
 	make -C docs clean
 
 coverage:
-	coverage run --concurrency=thread --parallel-mode -m pytest -q ./hklpy2
+	coverage run --concurrency=thread --parallel-mode -m pytest -q ./src
 	coverage combine
 	coverage report --precision 3 -m
 	coverage html
@@ -20,7 +20,7 @@ geo_tables:
 	python ./docs/make_geometries_doc.py
 
 isort:
-	isort --sl ./hklpy2
+	isort --sl ./src
 
 pre:
 	pre-commit run --all-files
@@ -32,4 +32,4 @@ realclean :: clean
 style :: isort pre
 
 test:
-	pytest -q --lf ./hklpy2
+	pytest -q --lf ./src

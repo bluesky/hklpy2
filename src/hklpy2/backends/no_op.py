@@ -19,10 +19,10 @@ from typing import List
 
 from .. import __version__
 from ..misc import IDENTITY_MATRIX_3X3
-from .base import NamedFloatDict
+from ..misc import KeyValueMap
+from ..misc import Matrix3x3
+from ..misc import NamedFloatDict
 from .base import SolverBase
-from .base import SolverMatrix3x3
-from .base import SolverReflection
 
 logger = logging.getLogger(__name__)
 
@@ -65,12 +65,10 @@ class NoOpSolver(SolverBase):
     def __init__(self, geometry: str, **kwargs) -> None:
         super().__init__(geometry, **kwargs)
 
-    def addReflection(self, reflection: SolverReflection) -> None:
+    def addReflection(self, reflection: KeyValueMap) -> None:
         return None
 
-    def calculate_UB(
-        self, r1: SolverReflection, r2: SolverReflection
-    ) -> SolverMatrix3x3:
+    def calculate_UB(self, r1: KeyValueMap, r2: KeyValueMap) -> Matrix3x3:
         return IDENTITY_MATRIX_3X3
 
     @property
@@ -99,7 +97,7 @@ class NoOpSolver(SolverBase):
     def real_axis_names(self) -> List[str]:
         return []  # no axes
 
-    def refineLattice(self, reflections: List[SolverReflection]) -> NamedFloatDict:
+    def refineLattice(self, reflections: List[KeyValueMap]) -> NamedFloatDict:
         """No refinement."""
         return None
 

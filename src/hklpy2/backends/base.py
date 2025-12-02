@@ -4,40 +4,28 @@ Abstract base class for all solvers.
 .. autosummary::
 
     ~SolverBase
-    ~NamedFloatDict
-    ~SolverMatrix3x3
-    ~SolverReflection
-    ~SolverSample
 """
 
 import logging
 from abc import ABC
 from abc import abstractmethod
 from typing import Any
-from typing import Dict
 from typing import List
+from typing import Optional
+from typing import Union
 
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import INTERNAL_ANGLE_UNITS
 from ..misc import INTERNAL_LENGTH_UNITS
+from ..misc import KeyValueMap
+from ..misc import Matrix3x3
+from ..misc import NamedFloatDict
 from ..misc import istype
 from ..misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
-
-NamedFloatDict = Dict[str, float]  # TODO: Hoist to ..misc?
-"""Python type annotation: dictionary of named floats."""
-
-SolverMatrix3x3 = List[List[float]]  # TODO: Hoist (& rename) to ..misc?
-"""Python type annotation: mutable orientation & rotation matrices."""
-
-SolverReflection = Dict[str, Any]
-"""Python type annotation: solver reflection."""
-
-SolverSample = Dict[str, Any]
-"""Python type annotation: solver sample."""
 
 
 class SolverBase(ABC):
@@ -136,8 +124,8 @@ class SolverBase(ABC):
     ) -> None:
         self._gname: str = geometry
         self.mode = mode
-        self._all_extra_axis_names: List[str] | None = None
-        self._sample: SolverSample | None = None
+        self._all_extra_axis_names: Optional[List[str]] = None
+        self._sample: Optional[KeyValueMap] = None
 
         validate_and_canonical_unit(self.ANGLE_UNITS, INTERNAL_ANGLE_UNITS)
         validate_and_canonical_unit(self.LENGTH_UNITS, INTERNAL_LENGTH_UNITS)
@@ -154,7 +142,7 @@ class SolverBase(ABC):
         return f"{self.__class__.__name__}({', '.join(args)})"
 
     @property
-    def _metadata(self) -> Dict[str, Any]:
+    def _metadata(self) -> KeyValueMap:
         """Dictionary with this solver's summary metadata."""
         return {
             "name": self.name,
@@ -165,7 +153,7 @@ class SolverBase(ABC):
         }
 
     @abstractmethod
-    def addReflection(self, reflection: SolverReflection) -> None:
+    def addReflection(self, reflection: KeyValueMap) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
 
     @property
@@ -185,9 +173,9 @@ class SolverBase(ABC):
     @abstractmethod
     def calculate_UB(
         self,
-        r1: SolverReflection,
-        r2: SolverReflection,
-    ) -> SolverMatrix3x3:
+        r1: KeyValueMap,
+        r2: KeyValueMap,
+    ) -> Matrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
@@ -203,7 +191,7 @@ class SolverBase(ABC):
         # return []
 
     @property
-    def extras(self) -> Dict[str, Any]:
+    def extras(self) -> KeyValueMap:
         """
         Ordered dictionary of any extra parameters.
         """
@@ -303,7 +291,7 @@ class SolverBase(ABC):
         # return []
 
     @abstractmethod
-    def refineLattice(self, reflections: List[SolverReflection]) -> NamedFloatDict:
+    def refineLattice(self, reflections: List[KeyValueMap]) -> NamedFloatDict:
         """Refine the lattice parameters from a list of reflections."""
 
     @abstractmethod
@@ -311,23 +299,23 @@ class SolverBase(ABC):
         """Remove all reflections."""
 
     @property
-    def sample(self) -> SolverSample | None:
+    def sample(self) -> Union[KeyValueMap, None]:
         """
         Crystalline sample.
         """
         return self._sample
 
     @sample.setter
-    def sample(self, value: SolverSample) -> None:
-        if not istype(value, SolverSample):
-            raise TypeError(f"Must supply {SolverSample} object, received {value!r}")
+    def sample(self, value: KeyValueMap) -> None:
+        if not istype(value, KeyValueMap):
+            raise TypeError(f"Must supply dictionary, received {value!r}")
         self._sample = value
 
     @property
-    def _summary_dict(self) -> Dict[str, Any]:
+    def _summary_dict(self) -> KeyValueMap:
         """Return a summary of the geometry (modes, axes)"""
         geometry_name = self.geometry
-        description: Dict[str, Any] = {
+        description: KeyValueMap = {
             "name": geometry_name,
             "pseudos": self.pseudo_axis_names,
             "reals": self.real_axis_names,
@@ -336,7 +324,7 @@ class SolverBase(ABC):
 
         for mode in self.modes:
             self.mode = mode
-            desc: Dict[str, Any] = {
+            desc: KeyValueMap = {
                 "extras": [],
                 # the reals to be written in this mode (solver should override)
                 "reals": self.real_axis_names,
@@ -369,6 +357,6 @@ class SolverBase(ABC):
         return table
 
     @property
-    def UB(self) -> SolverMatrix3x3:
+    def UB(self) -> Matrix3x3:
         """Orientation matrix (3x3)."""
         return IDENTITY_MATRIX_3X3

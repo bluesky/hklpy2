@@ -8,15 +8,32 @@ A Crystalline Sample.
 
 import logging
 import math
+from typing import Mapping
+from typing import Union
 
 import numpy as np
 from numpy.linalg import norm
 
+from ..misc import Matrix3x3
 from ..misc import unique_name
 from .lattice import Lattice
+from .lattice import LatticeDictType
+from .reflection import Reflection
 from .reflection import ReflectionsDict
 
 logger = logging.getLogger(__name__)
+
+SampleDictType = Mapping[
+    str,
+    Union[
+        int,
+        list[Reflection],
+        Matrix3x3,
+        ReflectionsDict,
+        str,
+        Union[Lattice, LatticeDictType],
+    ],
+]
 
 
 class Sample:
@@ -50,7 +67,7 @@ class Sample:
 
     def __init__(
         self,
-        core,
+        core: object,
         name: str,
         lattice: Lattice,
     ) -> None:
@@ -67,11 +84,11 @@ class Sample:
         self.UB = ((2 * math.pi / self.lattice.a) * np.array(self.U)).tolist()
         self.reflections = ReflectionsDict()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Brief text representation."""
         return f"Sample(name={self.name!r}, lattice={self.lattice!r})"
 
-    def _asdict(self):
+    def _asdict(self) -> SampleDictType:
         """Describe the sample as a dictionary."""
         return {
             "name": self.name,
@@ -83,7 +100,7 @@ class Sample:
             "digits": self.digits,
         }
 
-    def _fromdict(self, config, core=None):
+    def _fromdict(self, config: SampleDictType, core=None):
         """Redefine sample from a (configuration) dictionary."""
         self.name = config["name"]
         self.digits = config["digits"]
@@ -93,7 +110,7 @@ class Sample:
         self.U = config["U"]
         self.UB = config["UB"]
 
-    def refine_lattice(self):
+    def refine_lattice(self) -> None:
         """Refine the lattice parameters from 3 or more reflections."""
         self.lattice = self.core.refine_lattice()
 
@@ -108,21 +125,21 @@ class Sample:
     # --------- get/set properties
 
     @property
-    def digits(self):
+    def digits(self) -> int:
         """Sample crystal lattice."""
         return self.lattice.digits
 
     @digits.setter
-    def digits(self, value):
+    def digits(self, value: int) -> None:
         self.lattice.digits = value
 
     @property
-    def lattice(self):
+    def lattice(self) -> Lattice:
         """Sample crystal lattice."""
         return self._lattice
 
     @lattice.setter
-    def lattice(self, value):
+    def lattice(self, value: Union[LatticeDictType, Lattice]):
         if isinstance(value, dict):
             value = Lattice(**value)
         if not isinstance(value, Lattice):
@@ -130,28 +147,28 @@ class Sample:
         self._lattice = value
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Sample name."""
         return self._name
 
     @name.setter
-    def name(self, value):
+    def name(self, value: str) -> None:
         if not isinstance(value, (type(None), str)):
             raise TypeError(f"Must supply str, received {value!r}")
         self._name = value
 
     @property
-    def reflections(self):
+    def reflections(self) -> ReflectionsDict:
         """Ordered dictionary of orientation reflections."""
         return self._reflections
 
     @reflections.setter
-    def reflections(self, value):
+    def reflections(self, value: ReflectionsDict) -> None:
         if not isinstance(value, ReflectionsDict):
             raise TypeError(f"Must supply ReflectionsDict() object, received {value!r}")
         self._reflections = value
 
-    def _validate_matrices(self, value: list[list[float]], name: str) -> None:
+    def _validate_matrices(self, value: Matrix3x3, name: str) -> None:
         """(internal) Validate U & UB matrices."""
         arr = np.array(value)
         if not np.isreal(arr).all():
@@ -169,19 +186,19 @@ class Sample:
             )
 
     @property
-    def U(self) -> list[list[float]]:
+    def U(self) -> Matrix3x3:
         """Return the matrix, U, crystal orientation on the diffractometer."""
         return self._U
 
     @U.setter
-    def U(self, value: list[list[float]]):
+    def U(self, value: Matrix3x3) -> None:
         self._validate_matrices(value, "U")
 
         self._U = value
         self.core._solver_needs_update = True
 
     @property
-    def UB(self) -> list[list[float]]:
+    def UB(self) -> Matrix3x3:
         """
         Return the crystal orientation matrix, UB.
 
@@ -192,7 +209,7 @@ class Sample:
         return self._UB
 
     @UB.setter
-    def UB(self, value: list[list[float]]):
+    def UB(self, value: Matrix3x3) -> None:
         self._validate_matrices(value, "UB")
 
         self._UB = value

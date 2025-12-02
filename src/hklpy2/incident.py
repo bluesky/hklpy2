@@ -45,6 +45,8 @@ the engineering units.
 import atexit
 import logging
 import weakref
+from typing import Mapping
+from typing import Union
 
 from ophyd import Component
 from ophyd import Device
@@ -59,11 +61,11 @@ from .misc import INTERNAL_XRAY_ENERGY_UNITS
 from .misc import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
-DEFAULT_SOURCE_TYPE = "Synchrotron X-ray Source"
-DEFAULT_WAVELENGTH = 1.0
-DEFAULT_WAVELENGTH_DEADBAND = 0.000_1
+DEFAULT_SOURCE_TYPE: str = "Synchrotron X-ray Source"
+DEFAULT_WAVELENGTH: float = 1.0
+DEFAULT_WAVELENGTH_DEADBAND: float = 0.000_1
 
-XRAY_ENERGY_EQUIVALENT_ = 8.065_543_937e5
+XRAY_ENERGY_EQUIVALENT_: float = 8.065_543_937e5
 """
 Energy equivalent factor :math:`1 / (h \\nu)`
 
@@ -72,10 +74,12 @@ Per NIST publication, of CODATA Fundamental Physical Constants, 2022 revision.
 :see: https://physics.nist.gov/cuu/Constants/factors.html ("1 eV" *v*. "1/m")
 """
 
-A_KEV = 1e7 / XRAY_ENERGY_EQUIVALENT_  # 1 Angstrom ~= 12.39842 keV
+A_KEV: float = 1e7 / XRAY_ENERGY_EQUIVALENT_  # 1 Angstrom ~= 12.39842 keV
 """
 X-ray voltage wavelength product (:math:`h \\nu`), per NIST standard.
 """
+
+WavelengthDictType = Mapping[str, Union[float, str]]
 
 
 class _WavelengthBase(Device):
@@ -112,14 +116,14 @@ class _WavelengthBase(Device):
     _keyset: list[str] = "source_type wavelength wavelength_units".split()
     """List of Component names for '_asdict()' and '_fromdict()'."""
 
-    def _asdict(self) -> dict[str, (float | str)]:
+    def _asdict(self) -> WavelengthDictType:
         """Returns dictionary with attributes named in '_keyset'."""
         info = {"class": self.__class__.__name__}
         for attr in self._keyset:
             info[attr] = getattr(self, attr).get()
         return info
 
-    def _fromdict(self, info: dict[str, (float | str)]) -> None:
+    def _fromdict(self, info: WavelengthDictType) -> None:
         """Set attributes from dictionary based on keys in '_keyset'."""
         if info.get("class") == self.__class__.__name__:
             for attr, value in info.items():
@@ -146,7 +150,7 @@ class _WavelengthBase(Device):
         wavelength_deadband: float = DEFAULT_WAVELENGTH_DEADBAND,
         connection_timeout: float = None,
         **kwargs,
-    ):
+    ) -> None:
         """."""
         super().__init__(prefix, **kwargs)
 
@@ -173,7 +177,7 @@ class _WavelengthBase(Device):
         weakref.finalize(self.wavelength, self.wavelength.unsubscribe_all)
         atexit.register(self.cleanup_subscriptions)
 
-    def _wavelength_changed(self, value, **kwargs):
+    def _wavelength_changed(self, value: float, **kwargs) -> None:
         """
         Called when wavelength changes (EPICS CA monitor event) or on-demand.
 
@@ -188,7 +192,7 @@ class _WavelengthBase(Device):
                 self._wavelength_reference = value
                 self.wavelength_updated_func(True)
 
-    def cleanup_subscriptions(self):
+    def cleanup_subscriptions(self) -> None:
         """Clear subscriptions on exit."""
         self.wavelength.unsubscribe_all()
 
@@ -261,7 +265,7 @@ class WavelengthXray(Wavelength):
         energy: float = None,
         energy_units: str = None,
         **kwargs,
-    ):
+    ) -> None:
         """."""
         super().__init__(prefix, **kwargs)
         if energy_units is not None:
@@ -280,7 +284,7 @@ class WavelengthXray(Wavelength):
         return self._to_energy(self.wavelength.get())
 
     @_energy.setter
-    def _energy(self, value: float):
+    def _energy(self, value: float) -> None:
         """Given energy, set the wavelength, in the current units."""
         self.wavelength.put(self._to_wavelength(value))
 
@@ -316,7 +320,7 @@ class WavelengthXray(Wavelength):
         )
         return energy
 
-    def _wavelength_changed(self, value: float, **kwargs):
+    def _wavelength_changed(self, value: float, **kwargs) -> None:
         """Sync energy with wavelength changes."""
         super()._wavelength_changed(value, **kwargs)
         self.energy._readback = self._to_energy(value)
@@ -335,13 +339,13 @@ class EpicsWavelengthRO(_WavelengthBase):
         pv_wavelength: str = "",
         wavelength_units: str = INTERNAL_LENGTH_UNITS,
         **kwargs,
-    ):
+    ) -> None:
         """."""
         self._pv_wavelength = pv_wavelength
         super().__init__(prefix, **kwargs)
         self.wavelength_units._readback = wavelength_units
 
-    def _asdict(self):
+    def _asdict(self) -> WavelengthDictType:
         """."""
         info = super()._asdict()
         info["wavelength_PV"] = self.wavelength.pvname
@@ -371,13 +375,13 @@ class EpicsMonochromatorRO(EpicsWavelengthRO):
         pv_energy: str = "",
         energy_units: str = INTERNAL_XRAY_ENERGY_UNITS,
         **kwargs,
-    ):
+    ) -> None:
         """."""
         self._pv_energy = pv_energy
         super().__init__(prefix, **kwargs)
         self.energy_units._readback = energy_units
 
-    def _asdict(self):
+    def _asdict(self) -> WavelengthDictType:
         """."""
         info = super()._asdict()
         info["energy_PV"] = self.energy.pvname

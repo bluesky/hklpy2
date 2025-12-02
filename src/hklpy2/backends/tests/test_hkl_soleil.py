@@ -1,4 +1,5 @@
 import math
+import re
 
 import numpy as np
 import pytest
@@ -48,6 +49,12 @@ def test_hkl_soleil():
 
     arr = np.array([1, 2, 3])
     np.testing.assert_array_equal(hkl_soleil.to_numpy(arr), arr)
+
+    with pytest.raises(
+        ValueError,
+        match=re.escape("Expected shape (3, 3), received arr=array([1, 2])"),
+    ):
+        hkl_soleil.to_hkl([1, 2])
 
 
 def test_HklSolver():

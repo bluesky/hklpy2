@@ -2,6 +2,7 @@
 
 import importlib
 import runpy
+import sys
 
 import pytest
 
@@ -42,24 +43,19 @@ def test_get_version_fallback(mocker, side_effect, expected_version):
     assert version == expected_version
 
 
-def test_prints_version_when_run_as_main(capsys):
+def test_main_version(capsys):
     """
-    Running the package as a script (so __name__ == "__main__") should
-    execute the print(...) in hklpy2.__init__ and emit the package version.
+    Test that running the __init__.py as __main__ prints version and exits.
     """
     pkg = importlib.import_module("hklpy2")
-
-    # Execute the package __init__ as __main__ to trigger the guarded print.
-    # To avoid RuntimeWarning from runpy about a package already being in
-    # sys.modules, temporarily remove the package entries before running the
-    # module as __main__, then restore them afterward.
-    import sys
-
     saved_pkg = sys.modules.pop("hklpy2", None)
     saved_init = sys.modules.pop("hklpy2.__init__", None)
     try:
-        runpy.run_module("hklpy2.__init__", run_name="__main__")
+        with pytest.raises(SystemExit):
+            sys.path.append("src")
+            runpy.run_module("hklpy2.__init__", run_name="__main__")
     finally:
+        assert sys.path.pop() == "src"
         if saved_pkg is not None:
             sys.modules["hklpy2"] = saved_pkg
         if saved_init is not None:

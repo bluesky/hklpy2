@@ -43,19 +43,19 @@ from typing import Dict
 from typing import List
 
 import numpy as np
+from numpy import typing as npt
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
+from ..misc import KeyValueMap
+from ..misc import Matrix3x3
+from ..misc import NamedFloatDict
 from ..misc import NoForwardSolutions
 from ..misc import check_value_in_list
 from ..misc import istype
 from ..misc import roundoff
 from ..misc import unique_name
-from .base import NamedFloatDict
 from .base import SolverBase
-from .base import SolverMatrix3x3
-from .base import SolverReflection
-from .base import SolverSample
 from .hkl_soleil_utils import setup_libhkl
 
 logger = logging.getLogger(__name__)
@@ -86,7 +86,7 @@ def hkl_euler_matrix(
     return libhkl.Matrix.new_euler(euler_x, euler_y, euler_z)
 
 
-def to_hkl(arr: np.ndarray) -> libhkl.Matrix:  # type: ignore
+def to_hkl(arr: npt.NDArray[np.float64]) -> libhkl.Matrix:  # type: ignore
     """Convert a numpy ndarray to an hkl ``Matrix``
 
     Parameters
@@ -102,13 +102,15 @@ def to_hkl(arr: np.ndarray) -> libhkl.Matrix:  # type: ignore
         return arr
 
     arr = np.array(arr)
+    if arr.shape != (3, 3):
+        raise ValueError(f"Expected shape (3, 3), received {arr=}")
 
     hklm = hkl_euler_matrix(0, 0, 0)
     hklm.init(*arr.flatten())
     return hklm
 
 
-def to_numpy(mat: libhkl.Matrix) -> np.ndarray:  # type: ignore
+def to_numpy(mat: libhkl.Matrix) -> npt.NDArray[np.float64]:  # type: ignore
     """Convert an hkl ``Matrix`` to a numpy ndarray
 
     Parameters
@@ -234,11 +236,11 @@ class HklSolver(SolverBase):
         ]
         return f"{self.__class__.__name__}({', '.join(args)})"
 
-    def addReflection(self, reflection: SolverReflection) -> None:
+    def addReflection(self, reflection: KeyValueMap) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
-        if not istype(reflection, SolverReflection):
+        if not istype(reflection, KeyValueMap):
             raise TypeError(
-                f"Must supply {SolverReflection!r} object, received {reflection!r}",
+                f"Must supply {KeyValueMap!r} object, received {reflection!r}",
             )
 
         logger.debug("reflection: %r", reflection)
@@ -276,9 +278,9 @@ class HklSolver(SolverBase):
 
     def calculate_UB(
         self,
-        r1: SolverReflection,
-        r2: SolverReflection,
-    ) -> SolverMatrix3x3:
+        r1: KeyValueMap,
+        r2: KeyValueMap,
+    ) -> Matrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
@@ -496,7 +498,7 @@ class HklSolver(SolverBase):
         return self._hkl_geometry.axis_names_get()  # Do NOT sort.
 
     @property
-    def reflections(self) -> Dict[str, SolverReflection]:
+    def reflections(self) -> Dict[str, KeyValueMap]:
         """List of defined reflections (no store reflection names in libhkl)."""
         rlist = {}
         for refl in self._sample.reflections_get():
@@ -515,7 +517,7 @@ class HklSolver(SolverBase):
             )
         return rlist
 
-    def refineLattice(self, reflections: list[SolverReflection]) -> NamedFloatDict:
+    def refineLattice(self, reflections: list[KeyValueMap]) -> NamedFloatDict:
         """
         Refine the lattice parameters from a list of reflections.
 
@@ -538,7 +540,7 @@ class HklSolver(SolverBase):
             self._sample.del_reflection(ref)
 
     @property
-    def sample(self) -> SolverSample:
+    def sample(self) -> KeyValueMap:
         """
         Crystalline sample.  libhkl's sample object.
         """
@@ -550,9 +552,9 @@ class HklSolver(SolverBase):
         return sample
 
     @sample.setter
-    def sample(self, value: SolverSample):
+    def sample(self, value: KeyValueMap):
         if not istype(value, dict):
-            raise TypeError(f"Must supply {SolverSample} object, received {value!r}")
+            raise TypeError(f"Must supply {KeyValueMap} object, received {value!r}")
 
         # Just drop the old sample and make a new one.
         # Python knows its correct name.
@@ -654,7 +656,7 @@ class HklSolver(SolverBase):
         return table
 
     @property
-    def U(self) -> SolverMatrix3x3:
+    def U(self) -> Matrix3x3:
         """
         Relative orientation of crystal on diffractometer.
 
@@ -666,13 +668,13 @@ class HklSolver(SolverBase):
         return matrix.round(decimals=ROUNDOFF_DIGITS).tolist()
 
     @U.setter
-    def U(self, value: SolverMatrix3x3) -> None:
+    def U(self, value: Matrix3x3) -> None:
         if self._sample is not None:
             logger.debug("U.setter(): value=%s", value)
             self._sample.U_set(to_hkl(value))
 
     @property
-    def UB(self) -> SolverMatrix3x3:
+    def UB(self) -> Matrix3x3:
         """Orientation matrix (3x3)."""
         if self._sample is None:
             return IDENTITY_MATRIX_3X3
@@ -680,7 +682,7 @@ class HklSolver(SolverBase):
         return matrix.round(decimals=ROUNDOFF_DIGITS).tolist()
 
     @UB.setter
-    def UB(self, value: SolverMatrix3x3) -> None:
+    def UB(self, value: Matrix3x3) -> None:
         if self._sample is not None:
             logger.debug("UB.setter(): value=%s", value)
             self._sample.UB_set(to_hkl(value))

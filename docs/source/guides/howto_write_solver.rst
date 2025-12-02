@@ -3,8 +3,8 @@
 How to write a new Solver
 =========================
 
-An |hklpy2| |solver| is an adapter [#adapter_pattern]_ for the backend
-diffractometer computation library it supports.
+An |hklpy2| |solver| is an adapter [#adapter_pattern]_ for a backend
+diffractometer computation library.
 
 .. reference:
     https://deepwiki.com/search/describe-the-steps-to-write-a_90411934-3765-4bb8-b4da-bc1672c09b96?mode=fast
@@ -54,12 +54,11 @@ methods (methods marked with decorator ``@abstractmethod``
 .. code-block:: Python
     :linenos:
 
-    from hklpy2.backends.base import NamedFloatDict
     from hklpy2.backends.base import SolverBase
-    from hklpy2.backends.base import SolverLattice
-    from hklpy2.backends.base import SolverMatrix3x3
-    from hklpy2.backends.base import SolverReflection
     from hklpy2.misc import IDENTITY_MATRIX_3X3
+    from hklpy2.misc import KeyValueMap
+    from hklpy2.misc import Matrix3x3
+    from hklpy2.misc import NamedFloatDict
 
     class MySolver(SolverBase):
         name = "my_solver"
@@ -69,13 +68,11 @@ methods (methods marked with decorator ``@abstractmethod``
             super().__init__(geometry, **kwargs)
 
         # Required abstract methods
-        def addReflection(self, reflection: SolverReflection) -> None:
-            """Add coordinates of a diffraction condition."""
+        def addReflection(self, reflection: KeyValueMap) -> None:
+            """Add an observed diffraction reflection."""
             pass  # TODO: send to your library
 
-        def calculate_UB(
-            self, r1: SolverReflection, r2: SolverReflection
-        ) -> SolverMatrix3x3:
+        def calculate_UB(self, r1: KeyValueMap, r2: KeyValueMap) -> Matrix3x3:
             """Calculate the UB matrix with two reflections."""
             return IDENTITY_MATRIX_3X3  # TODO: calculate with your library
 
@@ -87,7 +84,7 @@ methods (methods marked with decorator ``@abstractmethod``
             """Compute pseudos from reals."""
             return {}  # TODO: calculate with your library
 
-        def refineLattice(self, reflections: list[SolverReflection]) -> NamedFloatDict:
+        def refineLattice(self, reflections: list[KeyValueMap]) -> NamedFloatDict:
             """Refine lattice parameters from reflections."""
             return {}  # TODO: calculate with your library
 
@@ -124,8 +121,8 @@ methods (methods marked with decorator ``@abstractmethod``
 Step 2. Register as Entry Point
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Add your solver to the ``[project.entry-points."hklpy2.solver"]``
-section in your project's ``pyproject.toml`` file.  Here's an example:
+Create a ``[project.entry-points."hklpy2.solver"]`` section in your project's
+``pyproject.toml`` file and declare your solver.  Here's an example:
 
 .. code-block:: toml
     :linenos:
@@ -153,8 +150,8 @@ loads correctly:
     # Create an instance
     solver = SolverClass("MY_GEOMETRY")
 
-Use the :func:`~hklpy2.diffract.creator()` factory to create a
-diffractometer with your solver and its default geometry:
+Use the :func:`~hklpy2.diffract.creator()` factory to create a diffractometer
+with your solver and test it.  Here's a suggested start:
 
 .. code-block:: Python
     :linenos:
@@ -170,17 +167,25 @@ Key Implementation Details
 Required Methods Contract
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-All solvers must implement these methods with specific contracts:
+All solvers must implement these attributes, methods, and properties:
 
-=============================   ==================
-method                          description
-=============================   ==================
-``forward(pseudos)``            Returns ``list[dict]`` of all possible real angle solutions
-``inverse(reals)``              Returns single ``dict`` of pseudo coordinates
-``calculate_UB(r1, r2)``        Returns 3×3 UB matrix using Busing & Levy method
-``addReflection(reflection)``   Updates (current) sample with new reflection
-``removeAllReflections()``      Clears (current) sample all stored reflections
-=============================   ==================
+==============================  ==================
+method (or property)            description
+==============================  ==================
+``name``                        (string attribute) Name of this solver.
+``version``                     (string attribute) Version of this solver.
+``addReflection(reflection)``   Add an observed diffraction reflection.
+``calculate_UB(r1, r2)``        Calculate the UB matrix with two reflections.
+``extra_axis_names``            Returns list of any extra axes in the current *mode*.
+``forward(pseudos)``            Compute list of solutions(reals) from pseudos.
+``geometries``                  ``@classmethod`` [#classmethod_decorator]_ : Returns list of all geometries support by this solver.
+``inverse(reals)``              Compute pseudos from reals.
+``modes``                       Returns list of all modes support by this geometry.
+``pseudo_axis_names``           Returns list of all pseudos support by this geometry.
+``real_axis_names``             Returns list of all reals support by this geometry.
+``refineLattice(reflections)``  Return refined lattice parameters given reflections.
+``removeAllReflections()``      Clears sample of all stored reflections.
+==============================  ==================
 
 Engineering Units System
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -193,30 +198,30 @@ Define your solver's internal units via class constants:
 Example Reference
 ^^^^^^^^^^^^^^^^^
 
-See these example solver implementation classes:
+Compare with these |Solver| classes:
 
 =======================================================  =====================================
 class                                                    description
 =======================================================  =====================================
-:class:`~hklpy2.backends.th_tth_q.ThTthSolver`           Minimal pure-Python solver
-:class:`~hklpy2.backends.no_op.NoOpSolver`               No-operation solver for testing
-:class:`~hklpy2.backends.hkl_soleil.HklSolver`           Production solver (Linux x86_64 only)
-``TrivialSolver()`` [#TrivialSolver]_                    basic template (in tests)
+:class:`~hklpy2.backends.hkl_soleil.HklSolver`           Full-featured (Linux x86_64 only)
+:class:`~hklpy2.backends.no_op.NoOpSolver`               No-operation (demonstration & testing)
+:class:`~hklpy2.backends.th_tth_q.ThTthSolver`           Minimal pure-Python (demonstration)
+``TrivialSolver()`` [#TrivialSolver]_                    Minimal requirements, non-functional (internal testing)
 =======================================================  =====================================
 
 Notes
 -----
 
-* The solver system [#solver_system_analysis]_ uses Python's *entry point*
-  mechanism [#entry_point]_ for runtime discovery.
+* |hklpy2| identifies a |Solver| [#solver_system_analysis]_ as a plugin using
+  Python's *entry point* [#entry_point]_ support.
 * All solvers must inherit from
   :class:`~hklpy2.backends.base.SolverBase` which enforces a consistent
   interface.
 * The :class:`~hklpy2.ops.Core` class handles unit conversion between
   diffractometer and solver units.
-* Solvers can be platform-specific (like
-  :class:`~hklpy2.backends.hkl_soleil.HklSolver` which is Linux x86_64
-  only).
+* Solvers can be platform-specific (such as
+  :class:`~hklpy2.backends.hkl_soleil.HklSolver` which is C code compiled only
+  for Linux x86_64 architectures).
 * Consider using :class:`~hklpy2.backends.no_op.NoOpSolver` or
   ``TrivialSolver()`` [#TrivialSolver]_ as starting references for testing
   infrastructure.
@@ -226,12 +231,17 @@ Footnotes
 
 .. [#abstractmethod_decorator] The ``@abstractmethod`` decorator, from the
     Python standard library module  :mod:`abc`, enforces that subclasses
-    implement the decorated methods. See `@abstractmethod
+    implement the decorated method. See `@abstractmethod
     <https://docs.python.org/3/library/abc.html#abc.abstractmethod>`_ for more
     details or this `tutorial
     <https://coderivers.org/blog/abstract-method-python/>`_.
 .. [#adapter_pattern] *Adapter pattern* ( or *wrapper*) is a software design pattern.
     For more details, see this `explanation <https://en.wikipedia.org/wiki/Adapter_pattern>`_.
+.. [#classmethod_decorator] The ``@classmethod_decorator`` decorator, from the
+    Python standard library module  :mod:`abc`, enforces that subclasses
+    implement the decorated method. See `@classmethod_decorator
+    <https://docs.python.org/3/library/abc.html#abc.classmethod_decorator>`_ for more
+    details.
 .. [#solver_system_analysis] Analysis of |hklpy2| *Solver*
     `backend <https://deepwiki.com/bluesky/hklpy2/3.4-solver-backend-system>`_
 .. [#entry_point] `Entry Points
