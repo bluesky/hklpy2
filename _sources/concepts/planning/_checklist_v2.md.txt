@@ -14,13 +14,13 @@ It could be re-organized.
     * [x] tests
   * Axes
     * [x] Make it easy to provide additional axes
-      * [ ] rotation about arbitrary vector
+      * [x] rotation about arbitrary vector
       * [ ] scan along a crystallographic *zone*
       * [x] Solvers with different reciprocal-space axes
       * [x] extra parameters, as required by solver
     * [x] user can choose different names for any of the diffractometer axes
   * [x] Default diffractometer geometries
-  * [ ] Bragg Peak optimization tools
+  * [-] Bragg Peak optimization tools
   * [x] Defining orientation matrix or matrices (set UB)
   * [x] Simulating diffraction and diffractometer modes
   * [x] Built in reciprocal space plans (or scans)
@@ -90,7 +90,7 @@ It could be re-organized.
   * [x] position targets
     * [x] dicts
     * [x] lists
-    * [ ] numpy arrays
+    * [-] numpy arrays
     * [x] scalars
     * [x] tuples
 * [x] Core-Solver interface transactions API
@@ -153,7 +153,7 @@ It could be re-organized.
       * [x] list all available geometries
       * [x] set
     * mode
-      * [ ] set
+      * [x] set
       * [x] list available
     * [x] orientation : calculate (does not apply, empty [] as result)
     * [x] sample : add
