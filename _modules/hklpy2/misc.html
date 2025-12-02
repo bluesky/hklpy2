@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=9caff4c2"></script>
+    <script src="../../_static/documentation_options.js?v=a47416a6"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -1428,7 +1428,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    catalog : object</span>
-<span class="sd">        Instance of a databroker catalog.</span>
+<span class="sd">        Catalog of bluesky runs.</span>
 <span class="sd">    limit : int</span>
 <span class="sd">        Limit the list to at most ``limit`` runs. (default=10)</span>
 <span class="sd">        It could take a long time to search an entire catalog.</span>
@@ -1449,11 +1449,15 @@
         <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;solver.name&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">columns</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">limit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">v2</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">v2</span>  <span class="c1"># data broker catalog</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="n">catalog</span>  <span class="c1"># tiled Container</span>
+    <span class="n">limit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">container</span><span class="p">))</span>
     <span class="k">with</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">leave</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">as</span> <span class="n">progress_bar</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">full_uid</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">v2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">full_uid</span> <span class="ow">in</span> <span class="n">container</span><span class="p">:</span>
             <span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">run</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">v2</span><span class="p">[</span><span class="n">full_uid</span><span class="p">]</span>
+            <span class="n">run</span> <span class="o">=</span> <span class="n">container</span><span class="p">[</span><span class="n">full_uid</span><span class="p">]</span>
             <span class="n">start_md</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="p">{})</span>
             <span class="n">info</span> <span class="o">=</span> <span class="n">get_run_orientation</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">start_key</span><span class="o">=</span><span class="n">start_key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

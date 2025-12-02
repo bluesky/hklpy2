@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=9caff4c2"></script>
+    <script src="../_static/documentation_options.js?v=a47416a6"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -582,11 +582,11 @@ its <code class="docutils literal notranslate"><span class="pre">.put()</span></
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diffractometer=&#39;k4cv&#39;
-HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;K4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)
+HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.3&#39;, geometry=&#39;K4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)
 Sample(name=&#39;silicon&#39;, lattice=Lattice(a=5.431, system=&#39;cubic&#39;))
-Reflection(name=&#39;r_4add&#39;, h=4, k=0, l=0)
-Reflection(name=&#39;r_b390&#39;, h=0, k=4, l=0)
-Orienting reflections: [&#39;r_4add&#39;, &#39;r_b390&#39;]
+Reflection(name=&#39;r_efc2&#39;, h=4, k=0, l=0)
+Reflection(name=&#39;r_759f&#39;, h=0, k=4, l=0)
+Orienting reflections: [&#39;r_efc2&#39;, &#39;r_759f&#39;]
 U=[[0.0, 0.0001, -1.0], [0.0, -1.0, 0.0001], [-1.0, 0.0, 0.0]]
 UB=[[0.0, 0.0001, -1.1569], [0.0, -1.1569, 0.0001], [-1.1569, 0.0, 0.0]]
 constraint: -180.0 &lt;= komega &lt;= 180.0
@@ -657,7 +657,7 @@ call <code class="docutils literal notranslate"><span class="pre">k4cv.inverse()
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>k4cv.real_axis_names=[&#39;komega&#39;, &#39;kappa&#39;, &#39;kphi&#39;, &#39;tth&#39;]
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerPseudoPos(h=6.159871816956, k=0, l=0)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerPseudoPos(h=6.1599, k=0, l=0)
 </pre></div>
 </div>
 </div>
@@ -704,7 +704,7 @@ for the given reflection.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerRealPos(komega=55.450879097241, kappa=-1.0856e-07, kphi=-90.000999946633, tth=-69.0982418753)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerRealPos(komega=55.4509, kappa=-0.0, kphi=-90.001, tth=-69.0982)
 </pre></div>
 </div>
 </div>
@@ -718,7 +718,7 @@ for the given reflection.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerRealPos(komega=55.450879097241, kappa=-1.0856e-07, kphi=-90.000999946632, tth=-69.0982418753)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerRealPos(komega=55.4509, kappa=-0.0, kphi=-90.001, tth=-69.0982)
 </pre></div>
 </div>
 </div>
@@ -732,12 +732,16 @@ for the given reflection.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======= = ======== ===== ======= ========
-(hkl)   # komega   kappa kphi    tth     
-======= = ======== ===== ======= ========
-(4 0 0) 1 55.4509  0.0   -90.001 -69.0982
-(4 0 0) 2 -55.4509 0.0   -90.001 69.0982 
-======= = ======== ===== ======= ========
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======= = ========= ======== ========= ========
+(hkl)   # komega    kappa    kphi      tth     
+======= = ========= ======== ========= ========
+(4 0 0) 1 55.4509   0        -90.001   -69.0982
+(4 0 0) 2 -55.4509  0        -90.001   69.0982 
+(0 4 0) 1 -1.5879   134.746  -57.0399  -69.0982
+(0 4 0) 2 -112.4896 134.746  -57.0376  69.0982 
+(0 4 0) 3 -67.5104  -134.746 -122.9624 -69.0982
+(0 4 0) 4 -178.4121 -134.746 -122.9601 69.0982 
+======= = ========= ======== ========= ========
 </pre></div>
 </div>
 </div>
@@ -757,7 +761,7 @@ second orientation reflection.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerPseudoPos(h=-6.8203037e-05, k=3.999916773745, l=-0.000264650749)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerPseudoPos(h=-0.0001, k=3.9999, l=-0.0003)
 </pre></div>
 </div>
 </div>
@@ -772,7 +776,7 @@ second orientation reflection.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerRealPos(komega=-1.587888157854, kappa=134.745974867536, kphi=-57.039586562413, tth=-69.098241325639)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerRealPos(komega=-1.5879, kappa=134.746, kphi=-57.0399, tth=-69.0982)
 </pre></div>
 </div>
 </div>
@@ -785,26 +789,34 @@ second orientation reflection.</p>
 <p>To scan with Bluesky, we need more setup.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunEngine</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bluesky.plans</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunEngine</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupplementalData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky_tiled_plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">TiledWriter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.callbacks.best_effort</span><span class="w"> </span><span class="kn">import</span> <span class="n">BestEffortCallback</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">bluesky.plans</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">databroker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tiled.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_uri</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tiled.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleTiledServer</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="n">SimpleTiledServer</span><span class="p">()</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">from_uri</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>
 
 <span class="n">bec</span> <span class="o">=</span> <span class="n">BestEffortCallback</span><span class="p">()</span>
 <span class="n">bec</span><span class="o">.</span><span class="n">disable_plots</span><span class="p">()</span>
-<span class="n">cat</span> <span class="o">=</span> <span class="n">databroker</span><span class="o">.</span><span class="n">temp</span><span class="p">()</span><span class="o">.</span><span class="n">v2</span>
 <span class="n">sd</span> <span class="o">=</span> <span class="n">SupplementalData</span><span class="p">()</span>
+<span class="n">tw</span> <span class="o">=</span> <span class="n">TiledWriter</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
 
 <span class="n">RE</span> <span class="o">=</span> <span class="n">RunEngine</span><span class="p">({})</span>
 <span class="n">RE</span><span class="o">.</span><span class="n">md</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sd</span><span class="p">)</span>
-<span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">insert</span><span class="p">)</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">tw</span><span class="p">)</span>
 <span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">bec</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tiled version 0.2.2
+</pre></div>
+</div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
 </pre></div>
 </div>
@@ -838,22 +850,22 @@ pseudos: h=4.0, k=0, l=0
 reals: komega=55.4509, kappa=0, kphi=-90.001, tth=-69.0982
 
 
-Transient Scan ID: 1     Time: 2025-07-21 15:01:38
-Persistent Unique Scan ID: &#39;7eff6720-2494-4d72-ac10-ad92aba29e8d&#39;
+Transient Scan ID: 1     Time: 2025-12-02 11:50:47
+Persistent Unique Scan ID: &#39;1652cfa2-7ead-4b34-bd79-c5fbfa669390&#39;
 New stream: &#39;primary&#39;
 +-----------+------------+------------+----------------------+------------------+------------+------------+-------------+------------+------------+------------+
 |   seq_num |       time |     k4cv_h | k4cv_beam_wavelength | k4cv_beam_energy |     k4cv_k |     k4cv_l | k4cv_komega | k4cv_kappa |  k4cv_kphi |   k4cv_tth |
 +-----------+------------+------------+----------------------+------------------+------------+------------+-------------+------------+------------+------------+
-|         1 | 15:01:38.3 |      3.900 |                1.540 |            8.051 |     -0.000 |     -0.000 |      56.431 |     -0.000 |    -90.001 |    -67.137 |
-|         2 | 15:01:38.3 |      3.950 |                1.540 |            8.051 |     -0.000 |     -0.000 |      55.943 |     -0.000 |    -90.001 |    -68.115 |
-|         3 | 15:01:38.3 |      4.000 |                1.540 |            8.051 |      0.000 |     -0.000 |      55.451 |     -0.000 |    -90.001 |    -69.098 |
-|         4 | 15:01:38.3 |      4.050 |                1.540 |            8.051 |      0.000 |      0.000 |      54.956 |     -0.000 |    -90.001 |    -70.087 |
-|         5 | 15:01:38.4 |      4.100 |                1.540 |            8.051 |      0.000 |      0.000 |      54.459 |     -0.000 |    -90.001 |    -71.083 |
+|         1 | 11:50:47.3 |      3.900 |                1.540 |            8.051 |      0.000 |      0.000 |      56.431 |     -0.000 |    -90.001 |    -67.137 |
+|         2 | 11:50:47.3 |      3.950 |                1.540 |            8.051 |     -0.000 |     -0.000 |      55.943 |     -0.000 |    -90.001 |    -68.115 |
+|         3 | 11:50:47.3 |      4.000 |                1.540 |            8.051 |      0.000 |     -0.000 |      55.451 |      0.000 |    -90.001 |    -69.098 |
+|         4 | 11:50:47.3 |      4.050 |                1.540 |            8.051 |      0.000 |      0.000 |      54.956 |      0.000 |    -90.001 |    -70.087 |
+|         5 | 11:50:47.3 |      4.100 |                1.540 |            8.051 |      0.000 |      0.000 |      54.459 |      0.000 |    -90.001 |    -71.083 |
 +-----------+------------+------------+----------------------+------------------+------------+------------+-------------+------------+------------+------------+
-generator scan [&#39;7eff6720&#39;] (scan num: 1)
+generator scan [&#39;1652cfa2&#39;] (scan num: 1)
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&#39;7eff6720-2494-4d72-ac10-ad92aba29e8d&#39;,)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&#39;1652cfa2-7ead-4b34-bd79-c5fbfa669390&#39;,)
 </pre></div>
 </div>
 </div>
@@ -873,27 +885,27 @@ big jumps during the scan.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 2     Time: 2025-07-21 15:01:38
-Persistent Unique Scan ID: &#39;ab5aaf00-71d5-4398-aaf1-e45583722251&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 2     Time: 2025-12-02 11:50:47
+Persistent Unique Scan ID: &#39;8029aea2-4328-4762-8e16-3d87634bae90&#39;
 New stream: &#39;primary&#39;
 +-----------+------------+------------+------------+----------------------+------------------+------------+-------------+------------+------------+------------+
 |   seq_num |       time |     k4cv_h |     k4cv_k | k4cv_beam_wavelength | k4cv_beam_energy |     k4cv_l | k4cv_komega | k4cv_kappa |  k4cv_kphi |   k4cv_tth |
 +-----------+------------+------------+------------+----------------------+------------------+------------+-------------+------------+------------+------------+
-|         1 | 15:01:38.5 |      3.800 |      4.200 |                1.540 |            8.051 |      0.000 |    -121.557 |    -63.947 |    111.866 |   -106.839 |
-|         2 | 15:01:38.5 |      3.844 |      4.156 |                1.540 |            8.051 |      0.000 |    -121.861 |    -63.054 |    111.524 |   -106.763 |
-|         3 | 15:01:38.6 |      3.889 |      4.111 |                1.540 |            8.051 |      0.000 |    -122.173 |    -62.163 |    111.183 |   -106.706 |
-|         4 | 15:01:38.6 |      3.933 |      4.067 |                1.540 |            8.051 |      0.000 |    -122.492 |    -61.273 |    110.845 |   -106.668 |
-|         5 | 15:01:38.6 |      3.978 |      4.022 |                1.540 |            8.051 |     -0.000 |    -122.819 |    -60.385 |    110.509 |   -106.649 |
-|         6 | 15:01:38.6 |      4.022 |      3.978 |                1.540 |            8.051 |     -0.000 |    -123.152 |    -59.499 |    110.175 |   -106.649 |
-|         7 | 15:01:38.6 |      4.067 |      3.933 |                1.540 |            8.051 |     -0.000 |    -123.493 |    -58.614 |    109.844 |   -106.668 |
-|         8 | 15:01:38.6 |      4.111 |      3.889 |                1.540 |            8.051 |     -0.000 |    -123.842 |    -57.732 |    109.514 |   -106.706 |
-|         9 | 15:01:38.6 |      4.156 |      3.844 |                1.540 |            8.051 |     -0.000 |    -124.197 |    -56.852 |    109.187 |   -106.763 |
-|        10 | 15:01:38.6 |      4.200 |      3.800 |                1.540 |            8.051 |     -0.000 |    -124.559 |    -55.975 |    108.863 |   -106.839 |
+|         1 | 11:50:47.6 |      3.800 |      4.200 |                1.540 |            8.051 |      0.000 |    -121.557 |    -63.947 |    111.866 |   -106.839 |
+|         2 | 11:50:47.6 |      3.844 |      4.156 |                1.540 |            8.051 |      0.000 |    -121.861 |    -63.054 |    111.524 |   -106.763 |
+|         3 | 11:50:47.6 |      3.889 |      4.111 |                1.540 |            8.051 |      0.000 |    -122.173 |    -62.163 |    111.183 |   -106.706 |
+|         4 | 11:50:47.6 |      3.933 |      4.067 |                1.540 |            8.051 |      0.000 |    -122.492 |    -61.273 |    110.845 |   -106.668 |
+|         5 | 11:50:47.7 |      3.978 |      4.022 |                1.540 |            8.051 |      0.000 |    -122.819 |    -60.385 |    110.509 |   -106.649 |
+|         6 | 11:50:47.7 |      4.022 |      3.978 |                1.540 |            8.051 |      0.000 |    -123.152 |    -59.499 |    110.175 |   -106.649 |
+|         7 | 11:50:47.7 |      4.067 |      3.933 |                1.540 |            8.051 |      0.000 |    -123.493 |    -58.614 |    109.844 |   -106.668 |
+|         8 | 11:50:47.7 |      4.111 |      3.889 |                1.540 |            8.051 |      0.000 |    -123.842 |    -57.732 |    109.514 |   -106.706 |
+|         9 | 11:50:47.7 |      4.156 |      3.844 |                1.540 |            8.051 |      0.000 |    -124.197 |    -56.852 |    109.187 |   -106.763 |
+|        10 | 11:50:47.7 |      4.200 |      3.800 |                1.540 |            8.051 |      0.000 |    -124.559 |    -55.975 |    108.863 |   -106.839 |
 +-----------+------------+------------+------------+----------------------+------------------+------------+-------------+------------+------------+------------+
-generator rel_scan [&#39;ab5aaf00&#39;] (scan num: 2)
+generator rel_scan [&#39;8029aea2&#39;] (scan num: 2)
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&#39;ab5aaf00-71d5-4398-aaf1-e45583722251&#39;,)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&#39;8029aea2-4328-4762-8e16-3d87634bae90&#39;,)
 </pre></div>
 </div>
 </div>
