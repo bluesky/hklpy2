@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=22d6633a"></script>
+    <script src="../../../_static/documentation_options.js?v=9caff4c2"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -370,22 +370,22 @@
 <span class="sd">.. autosummary::</span>
 
 <span class="sd">    ~SolverBase</span>
-<span class="sd">    ~SolverReflectionType</span>
-<span class="sd">    ~SolverSampleType</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyRestTable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">istype</span>
@@ -395,18 +395,6 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.logger">[docs]</a>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="SolverReflectionType">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverReflectionType">[docs]</a>
-<span class="n">SolverReflectionType</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Python type annotation: solver reflection.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="SolverSampleType">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverSampleType">[docs]</a>
-<span class="n">SolverSampleType</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Python type annotation: solver sample.&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="SolverBase">
@@ -524,11 +512,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
 <div class="viewcode-block" id="SolverBase._all_extra_axis_names">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase._all_extra_axis_names">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_all_extra_axis_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_extra_axis_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="SolverBase._sample">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase._sample">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">:</span> <span class="n">SolverSampleType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">KeyValueMap</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
         <span class="n">validate_and_canonical_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ANGLE_UNITS</span><span class="p">,</span> <span class="n">INTERNAL_ANGLE_UNITS</span><span class="p">)</span>
@@ -551,7 +539,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="SolverBase._metadata">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase._metadata">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Dictionary with this solver&#39;s summary metadata.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -565,7 +553,7 @@
     <span class="nd">@abstractmethod</span>
 <div class="viewcode-block" id="SolverBase.addReflection">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.backends.base.SolverBase.addReflection">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add coordinates of a diffraction condition (a reflection).&quot;&quot;&quot;</span></div>
 
 
@@ -591,8 +579,8 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.backends.base.SolverBase.calculate_UB">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">r1</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">,</span>
-        <span class="n">r2</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">,</span>
+        <span class="n">r1</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
+        <span class="n">r2</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the UB (orientation) matrix with two reflections.</span>
@@ -615,7 +603,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="SolverBase.extras">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.extras">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extras</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extras</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Ordered dictionary of any extra parameters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -745,7 +733,7 @@
     <span class="nd">@abstractmethod</span>
 <div class="viewcode-block" id="SolverBase.refineLattice">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.backends.base.SolverBase.refineLattice">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SolverReflectionType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">KeyValueMap</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Refine the lattice parameters from a list of reflections.&quot;&quot;&quot;</span></div>
 
 
@@ -759,7 +747,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="SolverBase.sample">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.sample">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverSampleType</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">KeyValueMap</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Crystalline sample.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -767,20 +755,18 @@
 
 
     <span class="nd">@sample</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">SolverSampleType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">istype</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">SolverSampleType</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Must supply </span><span class="si">{</span><span class="n">SolverSampleType</span><span class="si">}</span><span class="s2"> object, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">istype</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">KeyValueMap</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dictionary, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="SolverBase._summary_dict">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase._summary_dict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_summary_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_summary_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a summary of the geometry (modes, axes)&quot;&quot;&quot;</span>
         <span class="n">geometry_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
-        <span class="n">description</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">description</span><span class="p">:</span> <span class="n">KeyValueMap</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">geometry_name</span><span class="p">,</span>
             <span class="s2">&quot;pseudos&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">,</span>
             <span class="s2">&quot;reals&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span>
@@ -789,7 +775,7 @@
 
         <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
-            <span class="n">desc</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">desc</span><span class="p">:</span> <span class="n">KeyValueMap</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;extras&quot;</span><span class="p">:</span> <span class="p">[],</span>
                 <span class="c1"># the reals to be written in this mode (solver should override)</span>
                 <span class="s2">&quot;reals&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span>

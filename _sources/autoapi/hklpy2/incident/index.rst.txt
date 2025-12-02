@@ -60,6 +60,7 @@ Attributes
    hklpy2.incident.DEFAULT_WAVELENGTH_DEADBAND
    hklpy2.incident.XRAY_ENERGY_EQUIVALENT_
    hklpy2.incident.A_KEV
+   hklpy2.incident.WavelengthDictType
 
 
 Classes
@@ -80,18 +81,22 @@ Module Contents
 .. py:data:: logger
 
 .. py:data:: DEFAULT_SOURCE_TYPE
+   :type:  str
    :value: 'Synchrotron X-ray Source'
 
 
 .. py:data:: DEFAULT_WAVELENGTH
+   :type:  float
    :value: 1.0
 
 
 .. py:data:: DEFAULT_WAVELENGTH_DEADBAND
+   :type:  float
    :value: 0.0001
 
 
 .. py:data:: XRAY_ENERGY_EQUIVALENT_
+   :type:  float
    :value: 806554.3937
 
 
@@ -102,10 +107,13 @@ Module Contents
    :see: https://physics.nist.gov/cuu/Constants/factors.html ("1 eV" *v*. "1/m")
 
 .. py:data:: A_KEV
+   :type:  float
    :value: 12.398419843856837
 
 
    X-ray voltage wavelength product (:math:`h \nu`), per NIST standard.
+
+.. py:data:: WavelengthDictType
 
 .. py:class:: _WavelengthBase(prefix: str = '', *, source_type: str = None, wavelength: float = None, wavelength_units: str = None, wavelength_deadband: float = DEFAULT_WAVELENGTH_DEADBAND, connection_timeout: float = None, **kwargs)
 
@@ -153,13 +161,13 @@ Module Contents
       List of Component names for '_asdict()' and '_fromdict()'.
 
 
-   .. py:method:: _asdict() -> dict[str, float | str]
+   .. py:method:: _asdict() -> WavelengthDictType
 
       Returns dictionary with attributes named in '_keyset'.
 
 
 
-   .. py:method:: _fromdict(info: dict[str, float | str]) -> None
+   .. py:method:: _fromdict(info: WavelengthDictType) -> None
 
       Set attributes from dictionary based on keys in '_keyset'.
 
@@ -175,7 +183,7 @@ Module Contents
 
 
 
-   .. py:method:: _wavelength_changed(value, **kwargs)
+   .. py:method:: _wavelength_changed(value: float, **kwargs) -> None
 
       Called when wavelength changes (EPICS CA monitor event) or on-demand.
 
@@ -184,7 +192,7 @@ Module Contents
 
 
 
-   .. py:method:: cleanup_subscriptions()
+   .. py:method:: cleanup_subscriptions() -> None
 
       Clear subscriptions on exit.
 
@@ -279,7 +287,7 @@ Module Contents
 
 
 
-   .. py:method:: _wavelength_changed(value: float, **kwargs)
+   .. py:method:: _wavelength_changed(value: float, **kwargs) -> None
 
       Sync energy with wavelength changes.
 
@@ -308,7 +316,7 @@ Module Contents
 
 
 
-   .. py:method:: _asdict()
+   .. py:method:: _asdict() -> WavelengthDictType
 
       .
 
@@ -342,7 +350,7 @@ Module Contents
 
 
 
-   .. py:method:: _asdict()
+   .. py:method:: _asdict() -> WavelengthDictType
 
       .
 

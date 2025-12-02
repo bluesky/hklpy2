@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=22d6633a"></script>
+    <script src="../../_static/documentation_options.js?v=9caff4c2"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -378,7 +378,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
@@ -391,6 +392,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyAxesType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoreError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">axes_to_dict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
@@ -399,10 +403,12 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Core&quot;</span><span class="p">]</span>
 
-<span class="n">Number</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerBase</span>
+
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="n">DEFAULT_EXTRA_VALUE</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">DEFAULT_SAMPLE_NAME</span> <span class="o">=</span> <span class="s2">&quot;sample&quot;</span>
+<span class="n">DEFAULT_EXTRA_VALUE</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">DEFAULT_SAMPLE_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sample&quot;</span>
 
 
 <div class="viewcode-block" id="Core">
@@ -465,7 +471,11 @@
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.sample</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sample</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffractometer</span><span class="p">,</span> <span class="n">default_sample</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">diffractometer</span><span class="p">:</span> <span class="s2">&quot;DiffractometerBase&quot;</span><span class="p">,</span>
+        <span class="n">default_sample</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <div class="viewcode-block" id="Core.axes_xref">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.axes_xref">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes_xref</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># cross-reference:  diffractometer name : solver name</span></div>
@@ -510,7 +520,7 @@
 
 <div class="viewcode-block" id="Core._asdict">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core._asdict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Describe the diffractometer as a dictionary.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.__init__</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
 
@@ -543,7 +553,7 @@
 
 <div class="viewcode-block" id="Core._axes_names_s2d">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core._axes_names_s2d">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_axes_names_s2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_axes_names_s2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_dict</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert keys of axis dictionary from solver to diffractometer.&quot;&quot;&quot;</span>
         <span class="n">reverse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes_xref_reversed</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">reverse</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">axis_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
@@ -551,14 +561,14 @@
 
 <div class="viewcode-block" id="Core._axes_names_d2s">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core._axes_names_d2s">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_axes_names_d2s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_axes_names_d2s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_dict</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert keys of axis dictionary from diffractometer to solver.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">axes_xref</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">axis_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
 
 
 <div class="viewcode-block" id="Core._fromdict">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core._fromdict">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Redefine diffractometer from a (configuration) dictionary.&quot;&quot;&quot;</span>
         <span class="c1"># Since this code might raise, validate first.</span>
         <span class="n">extras</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_extras</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">][</span><span class="s2">&quot;extra_axes&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_extras</span><span class="p">)</span>
@@ -593,9 +603,9 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core._validate_extras">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_validate_extras</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
-        <span class="n">expected</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Number</span><span class="p">]:</span>
+        <span class="n">values</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">,</span>
+        <span class="n">expected</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that the supplied extras are acceptable.&quot;&quot;&quot;</span>
         <span class="n">extras</span><span class="p">,</span> <span class="n">unexpected</span> <span class="o">=</span> <span class="p">{},</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -614,7 +624,7 @@
 
 <div class="viewcode-block" id="Core._validate_pseudos">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core._validate_pseudos">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_pseudos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_pseudos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">NamedFloatDict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that the supplied pseudos are acceptable.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -658,9 +668,9 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pseudos</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span>
         <span class="n">reals</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AnyAxesType</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">wavelength</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">wavelength</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wavelength_units</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Reflection</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -817,7 +827,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Core.axes_xref_reversed">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.axes_xref_reversed">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">axes_xref_reversed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">axes_xref_reversed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Map axis names from solver to diffractometer.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes_xref</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -832,14 +842,14 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.calc_UB">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calc_UB</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">r1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Reflection</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">r2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Reflection</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Number</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate and return the UB (orientation) matrix with two reflections.</span>
 
 <span class="sd">        The method of Busing &amp; Levy, Acta Cryst 22 (1967) 457.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">_get</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_get</span><span class="p">(</span><span class="n">r</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Reflection</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Reflection</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Given a reference, get the Reflection object.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Reflection</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">r</span>
@@ -874,7 +884,7 @@
 
 
     <span class="nd">@extras</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">extras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Number</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set |solver| extra parameters for the current mode.&quot;&quot;&quot;</span>
         <span class="n">incoming</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_extras</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">extras</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">incoming</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -987,7 +997,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Core.local_pseudo_axes">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.local_pseudo_axes">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">local_pseudo_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">local_pseudo_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List of the diffractometer pseudo axes expected by the solver.</span>
 
@@ -1006,7 +1016,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Core.local_real_axes">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.local_real_axes">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">local_real_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">local_real_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List of the diffractometer real axes expected by the solver.</span>
 
@@ -1123,7 +1133,7 @@
 
 <div class="viewcode-block" id="Core.remove_sample">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.remove_sample">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">remove_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the named sample.  No error if name is not known.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> not in sample list:</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">samples</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
@@ -1148,14 +1158,14 @@
 
 <div class="viewcode-block" id="Core.reset_constraints">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.reset_constraints">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">reset_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore diffractometer constraints to default settings.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="o">=</span> <span class="n">RealAxisConstraints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Core.reset_samples">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.reset_samples">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">reset_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore diffractometer samples to default settings.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Remove all the samples.</span>
         <span class="c1"># Create the default sample.</span>
@@ -1183,7 +1193,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Core.samples">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.samples">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">samples</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">samples</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sample</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sample dictionary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span></div>
 

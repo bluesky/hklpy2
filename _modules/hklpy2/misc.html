@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=22d6633a"></script>
+    <script src="../../_static/documentation_options.js?v=9caff4c2"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -415,8 +415,9 @@
 <span class="sd">    ~AxesDict</span>
 <span class="sd">    ~AxesList</span>
 <span class="sd">    ~AxesTuple</span>
-<span class="sd">    ~NamedFloatDict</span>
 <span class="sd">    ~Matrix3x3</span>
+<span class="sd">    ~NamedFloatDict</span>
+<span class="sd">    ~NUMERIC</span>
 
 <span class="sd">.. rubric: Custom Preprocessors</span>
 <span class="sd">.. autosummary::</span>
@@ -448,8 +449,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">entry_points</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
@@ -457,12 +459,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pint</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tqdm</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Msg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpicsMotor</span>
@@ -474,83 +477,50 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="IDENTITY_MATRIX_3X3">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.IDENTITY_MATRIX_3X3">[docs]</a>
-<span class="n">IDENTITY_MATRIX_3X3</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Identity matrix, 2-D, 3 rows, 3 columns.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="SOLVER_ENTRYPOINT_GROUP">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.SOLVER_ENTRYPOINT_GROUP">[docs]</a>
-<span class="n">SOLVER_ENTRYPOINT_GROUP</span> <span class="o">=</span> <span class="s2">&quot;hklpy2.solver&quot;</span></div>
-
-<span class="sd">&quot;&quot;&quot;Name by which |hklpy2| backend |solver| classes are grouped.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="DEFAULT_DIGITS">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.DEFAULT_DIGITS">[docs]</a>
-<span class="n">DEFAULT_DIGITS</span> <span class="o">=</span> <span class="mi">4</span></div>
-
-<div class="viewcode-block" id="DEFAULT_START_KEY">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.DEFAULT_START_KEY">[docs]</a>
-<span class="n">DEFAULT_START_KEY</span> <span class="o">=</span> <span class="s2">&quot;diffractometers&quot;</span></div>
-
-
-<div class="viewcode-block" id="INTERNAL_ANGLE_UNITS">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INTERNAL_ANGLE_UNITS">[docs]</a>
-<span class="n">INTERNAL_ANGLE_UNITS</span> <span class="o">=</span> <span class="s2">&quot;degrees&quot;</span></div>
-
-<div class="viewcode-block" id="INTERNAL_LENGTH_UNITS">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INTERNAL_LENGTH_UNITS">[docs]</a>
-<span class="n">INTERNAL_LENGTH_UNITS</span> <span class="o">=</span> <span class="s2">&quot;angstrom&quot;</span></div>
-
-<div class="viewcode-block" id="INTERNAL_XRAY_ENERGY_UNITS">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INTERNAL_XRAY_ENERGY_UNITS">[docs]</a>
-<span class="n">INTERNAL_XRAY_ENERGY_UNITS</span> <span class="o">=</span> <span class="s2">&quot;keV&quot;</span></div>
-
-
-<span class="c1"># Shared pint UnitRegistry to avoid recreating it repeatedly.</span>
-<span class="c1"># Agents and hot paths should use this registry via helper functions below.</span>
-<div class="viewcode-block" id="UREG">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.UREG">[docs]</a>
-<span class="n">UREG</span> <span class="o">=</span> <span class="n">pint</span><span class="o">.</span><span class="n">UnitRegistry</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="PINT_ERRORS">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.PINT_ERRORS">[docs]</a>
-<span class="n">PINT_ERRORS</span> <span class="o">=</span> <span class="p">(</span><span class="n">pint</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">)</span></div>
-
-<span class="sd">&quot;&quot;&quot;Exception from pint that we are trapping here.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="DEFAULT_MOTOR_LABELS">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.DEFAULT_MOTOR_LABELS">[docs]</a>
-<span class="n">DEFAULT_MOTOR_LABELS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;motors&quot;</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Default labels applied to real-axis positioners.&quot;&quot;&quot;</span>
-
-
 <span class="c1"># Custom data types</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
+
+<div class="viewcode-block" id="BlueskyPlanType">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.BlueskyPlanType">[docs]</a>
+<span class="n">BlueskyPlanType</span> <span class="o">=</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Msg</span><span class="p">]]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Type of a bluesky plan.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="KeyValueMap">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.KeyValueMap">[docs]</a>
+<span class="n">KeyValueMap</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Dictionary for configuration and other.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NUMERIC">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.NUMERIC">[docs]</a>
+<span class="n">NUMERIC</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Either integer or real number.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AxesArray">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesArray">[docs]</a>
-<span class="n">AxesArray</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">typing</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">floating</span><span class="p">]</span></div>
+<span class="n">AxesArray</span> <span class="o">=</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Numpy array of axes values.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AxesDict">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesDict">[docs]</a>
-<span class="n">AxesDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></div>
+<span class="n">AxesDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Dictionary of axes names and values.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AxesList">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesList">[docs]</a>
-<span class="n">AxesList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span></div>
+<span class="n">AxesList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">]</span></div>
 
 <span class="sd">&quot;&quot;&quot;List of axes values.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AxesTuple">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesTuple">[docs]</a>
-<span class="n">AxesTuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span></div>
+<span class="n">AxesTuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Tuple of axes values.&quot;&quot;&quot;</span>
 
@@ -572,18 +542,72 @@
 <span class="sd">=============   =========================   ====================</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="NamedFloatDict">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.NamedFloatDict">[docs]</a>
-<span class="n">NamedFloatDict</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Python type annotation: dictionary of named floats.&quot;&quot;&quot;</span>
-
 <div class="viewcode-block" id="Matrix3x3">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.Matrix3x3">[docs]</a>
 <span class="n">Matrix3x3</span> <span class="o">=</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Python type annotation: mutable orientation &amp; rotation matrices.&quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="NamedFloatDict">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.NamedFloatDict">[docs]</a>
+<span class="n">NamedFloatDict</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Python type annotation: dictionary of named floats.&quot;&quot;&quot;</span>
+
+<span class="c1"># Constants and Structures</span>
+
+<div class="viewcode-block" id="IDENTITY_MATRIX_3X3">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.IDENTITY_MATRIX_3X3">[docs]</a>
+<span class="n">IDENTITY_MATRIX_3X3</span><span class="p">:</span> <span class="n">Matrix3x3</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Identity matrix, 2-D, 3 rows, 3 columns.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SOLVER_ENTRYPOINT_GROUP">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.SOLVER_ENTRYPOINT_GROUP">[docs]</a>
+<span class="n">SOLVER_ENTRYPOINT_GROUP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;hklpy2.solver&quot;</span></div>
+
+<span class="sd">&quot;&quot;&quot;Name by which |hklpy2| |solver| classes are grouped.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DEFAULT_DIGITS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.DEFAULT_DIGITS">[docs]</a>
+<span class="n">DEFAULT_DIGITS</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span></div>
+
+<div class="viewcode-block" id="DEFAULT_START_KEY">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.DEFAULT_START_KEY">[docs]</a>
+<span class="n">DEFAULT_START_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;diffractometers&quot;</span></div>
+
+
+<div class="viewcode-block" id="INTERNAL_ANGLE_UNITS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INTERNAL_ANGLE_UNITS">[docs]</a>
+<span class="n">INTERNAL_ANGLE_UNITS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;degrees&quot;</span></div>
+
+<div class="viewcode-block" id="INTERNAL_LENGTH_UNITS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INTERNAL_LENGTH_UNITS">[docs]</a>
+<span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;angstrom&quot;</span></div>
+
+<div class="viewcode-block" id="INTERNAL_XRAY_ENERGY_UNITS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INTERNAL_XRAY_ENERGY_UNITS">[docs]</a>
+<span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;keV&quot;</span></div>
+
+
+<span class="c1"># Shared pint UnitRegistry to avoid recreating it repeatedly.</span>
+<span class="c1"># Agents and hot paths should use this registry via helper functions below.</span>
+<div class="viewcode-block" id="UREG">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.UREG">[docs]</a>
+<span class="n">UREG</span> <span class="o">=</span> <span class="n">pint</span><span class="o">.</span><span class="n">UnitRegistry</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PINT_ERRORS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.PINT_ERRORS">[docs]</a>
+<span class="n">PINT_ERRORS</span> <span class="o">=</span> <span class="p">(</span><span class="n">pint</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">)</span></div>
+
+<span class="sd">&quot;&quot;&quot;Exception from pint that we are trapping here.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DEFAULT_MOTOR_LABELS">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.DEFAULT_MOTOR_LABELS">[docs]</a>
+<span class="n">DEFAULT_MOTOR_LABELS</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;motors&quot;</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Default labels applied to real-axis positioners.&quot;&quot;&quot;</span>
 
 <span class="c1"># Custom exceptions</span>
 
@@ -673,7 +697,7 @@
 <span class="sd">    sibling positioner attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">physical_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">physical_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
 
 <span class="sd">        Subclass should override and add any additional kwargs, as needed.</span>
@@ -695,7 +719,7 @@
 
 <div class="viewcode-block" id="VirtualPositionerBase._setup_move">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._setup_move">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Move requested to position.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_run_subs</span><span class="p">(</span><span class="n">sub_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">SUB_START</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
 
@@ -736,7 +760,7 @@
 
 <div class="viewcode-block" id="VirtualPositionerBase._cb_update_position">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._cb_update_position">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_cb_update_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cb_update_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when physical position is changed.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
@@ -746,7 +770,7 @@
 
 <div class="viewcode-block" id="VirtualPositionerBase._finish_setup">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase._finish_setup">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_finish_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_finish_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Complete the axis setup after diffractometer is built.</span>
 
@@ -800,7 +824,7 @@
 
 <div class="viewcode-block" id="VirtualPositionerBase.__getattribute__">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.VirtualPositionerBase.__getattribute__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run final setup automatically, on conditions.</span>
 
@@ -877,13 +901,13 @@
 
 <div class="viewcode-block" id="ConfigurationRunWrapper.devices">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.ConfigurationRunWrapper.devices">[docs]</a>
-    <span class="n">devices</span> <span class="o">=</span> <span class="p">[]</span></div>
+    <span class="n">devices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;List of devices to be reported.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ConfigurationRunWrapper.known_bases">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.ConfigurationRunWrapper.known_bases">[docs]</a>
-    <span class="n">known_bases</span> <span class="o">=</span> <span class="p">[]</span></div>
+    <span class="n">known_bases</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Device</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Known device base classes.</span>
@@ -894,11 +918,11 @@
 
 <div class="viewcode-block" id="ConfigurationRunWrapper.start_key">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.ConfigurationRunWrapper.start_key">[docs]</a>
-    <span class="n">start_key</span> <span class="o">=</span> <span class="n">DEFAULT_START_KEY</span></div>
+    <span class="n">start_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_START_KEY</span></div>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Top-level key in run&#39;s metadata dictionary.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">devices</span><span class="p">,</span> <span class="n">knowns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">devices</span><span class="p">,</span> <span class="n">knowns</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Constructor.</span>
 
@@ -945,7 +969,7 @@
 
 <div class="viewcode-block" id="ConfigurationRunWrapper.validate">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.ConfigurationRunWrapper.validate">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">devices</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">devices</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Device</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify all are recognized objects.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">dev</span> <span class="ow">in</span> <span class="n">devices</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">known_bases</span><span class="p">)):</span>
@@ -954,7 +978,7 @@
 
 <div class="viewcode-block" id="ConfigurationRunWrapper.wrapper">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.ConfigurationRunWrapper.wrapper">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plan</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plan</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Bluesky plan wrapper (preprocessor).</span>
 
@@ -1041,7 +1065,7 @@
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
             <span class="n">axes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="k">elif</span> <span class="n">istype</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">AxesArray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">istype</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">AxesArray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
         <span class="c1"># Accept numpy arrays (ndarray) of numeric values as an AxesArray.</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
             <span class="n">axes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -1061,7 +1085,7 @@
 
 <div class="viewcode-block" id="check_value_in_list">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.check_value_in_list">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">check_value_in_list</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">examples</span><span class="p">,</span> <span class="n">blank_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_value_in_list</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">examples</span><span class="p">,</span> <span class="n">blank_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise ValueError exception if value is not in the list of examples.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">blank_ok</span><span class="p">:</span>
         <span class="n">examples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -1073,7 +1097,7 @@
 
 <div class="viewcode-block" id="compare_float_dicts">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.compare_float_dicts">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compare_float_dicts</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_float_dicts</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compare two dictionaries.  Values are all floats.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1108,7 +1132,10 @@
 
 <div class="viewcode-block" id="define_real_axis">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.define_real_axis">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">define_real_axis</span><span class="p">(</span><span class="n">specs</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">define_real_axis</span><span class="p">(</span>
+    <span class="n">specs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">KeyValueMap</span><span class="p">],</span>
+    <span class="n">kwargs</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return class and kwargs of a real axis from its &#39;specs&#39;.&quot;&quot;&quot;</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">DEFAULT_MOTOR_LABELS</span>
 
@@ -1140,7 +1167,7 @@
 
 <div class="viewcode-block" id="dict_device_factory">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.dict_device_factory">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">dict_device_factory</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dict_device_factory</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a ``DictionaryDevice()`` class using the supplied dictionary.</span>
 
@@ -1161,7 +1188,7 @@
 
 <div class="viewcode-block" id="distance_between_pos_tuples">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.distance_between_pos_tuples">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">distance_between_pos_tuples</span><span class="p">(</span><span class="n">pos1</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">pos2</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">distance_between_pos_tuples</span><span class="p">(</span><span class="n">pos1</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">pos2</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the RMS distance between &#39;pos1&#39; and &#39;pos2&#39;.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos2</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pos1</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="n">pos2</span><span class="si">=}</span><span class="s2"> are not the same length.&quot;</span><span class="p">)</span>
@@ -1226,7 +1253,9 @@
 
 <div class="viewcode-block" id="flatten_lists">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.flatten_lists">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">flatten_lists</span><span class="p">(</span><span class="n">xs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flatten_lists</span><span class="p">(</span>
+    <span class="n">xs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert nested lists into single list.</span>
 
@@ -1242,7 +1271,7 @@
 
 <div class="viewcode-block" id="get_solver">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.get_solver">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_solver</span><span class="p">(</span><span class="n">solver_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_solver</span><span class="p">(</span><span class="n">solver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SolverBase&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load a Solver class from a named entry point.</span>
 
@@ -1261,7 +1290,11 @@
 
 <div class="viewcode-block" id="get_run_orientation">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.get_run_orientation">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_run_orientation</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_key</span><span class="o">=</span><span class="n">DEFAULT_START_KEY</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_run_orientation</span><span class="p">(</span>
+    <span class="n">run</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">start_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_START_KEY</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the orientation information dictionary from a run.</span>
 
@@ -1368,7 +1401,12 @@
 
 <div class="viewcode-block" id="list_orientation_runs">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.list_orientation_runs">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">list_orientation_runs</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start_key</span><span class="o">=</span><span class="n">DEFAULT_START_KEY</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_orientation_runs</span><span class="p">(</span>
+    <span class="n">catalog</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">start_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_START_KEY</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    List the runs with orientation information.</span>
 
@@ -1447,7 +1485,7 @@
 
 <div class="viewcode-block" id="load_yaml">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.load_yaml">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">load_yaml</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_yaml</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load YAML from text.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">Loader</span><span class="p">)</span></div>
 
@@ -1455,7 +1493,7 @@
 
 <div class="viewcode-block" id="load_yaml_file">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.load_yaml_file">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">load_yaml_file</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_yaml_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return contents of a YAML file as a Python object.&quot;&quot;&quot;</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
@@ -1475,7 +1513,11 @@
 
 <div class="viewcode-block" id="make_dynamic_instance">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.make_dynamic_instance">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">make_dynamic_instance</span><span class="p">(</span><span class="n">call_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_dynamic_instance</span><span class="p">(</span>
+    <span class="n">call_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an instance of the Python &#39;call_name&#39;.&quot;&quot;&quot;</span>
     <span class="n">DynamicCallable</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span><span class="n">call_name</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">DynamicCallable</span><span class="p">):</span>
@@ -1489,7 +1531,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_factory_axes</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">space</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">KeyValueMap</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">canonical</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1625,7 +1667,7 @@
 
 <div class="viewcode-block" id="roundoff">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.roundoff">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Round a number to specified precision.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="n">digits</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>  <span class="c1"># &quot;-0&quot; becomes &quot;0&quot;</span></div>
 
@@ -1633,7 +1675,11 @@
 
 <div class="viewcode-block" id="solver_factory">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.solver_factory">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">solver_factory</span><span class="p">(</span><span class="n">solver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">solver_factory</span><span class="p">(</span>
+    <span class="n">solver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SolverBase&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a |solver| object with geometry and axes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1644,7 +1690,7 @@
 
 <div class="viewcode-block" id="solvers">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.solvers">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">solvers</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">solvers</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;SolverBase&quot;</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Dictionary of available Solver classes, mapped by entry point name.</span>
 
@@ -1665,7 +1711,7 @@
 
 <div class="viewcode-block" id="unique_name">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.unique_name">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">unique_name</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">unique_name</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Short, unique name, first 7 (at most) characters of a unique, random uuid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

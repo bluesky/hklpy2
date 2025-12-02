@@ -10,8 +10,6 @@ hklpy2.backends.base
    .. autosummary::
 
        ~SolverBase
-       ~SolverReflectionType
-       ~SolverSampleType
 
 
 
@@ -21,8 +19,6 @@ Attributes
 .. autoapisummary::
 
    hklpy2.backends.base.logger
-   hklpy2.backends.base.SolverReflectionType
-   hklpy2.backends.base.SolverSampleType
 
 
 Classes
@@ -37,18 +33,6 @@ Module Contents
 ---------------
 
 .. py:data:: logger
-
-.. py:data:: SolverReflectionType
-
-   solver reflection.
-
-   :type: Python type annotation
-
-.. py:data:: SolverSampleType
-
-   solver sample.
-
-   :type: Python type annotation
 
 .. py:class:: SolverBase(geometry: str, *, mode: str = '', **kwargs: Any)
 
@@ -167,13 +151,13 @@ Module Contents
 
 
    .. py:attribute:: _all_extra_axis_names
-      :type:  List[str] | None
+      :type:  Optional[List[str]]
       :value: None
 
 
 
    .. py:attribute:: _sample
-      :type:  SolverSampleType | None
+      :type:  Optional[hklpy2.misc.KeyValueMap]
       :value: None
 
 
@@ -182,13 +166,13 @@ Module Contents
 
 
    .. py:property:: _metadata
-      :type: Dict[str, Any]
+      :type: hklpy2.misc.KeyValueMap
 
 
       Dictionary with this solver's summary metadata.
 
 
-   .. py:method:: addReflection(reflection: SolverReflectionType) -> None
+   .. py:method:: addReflection(reflection: hklpy2.misc.KeyValueMap) -> None
       :abstractmethod:
 
 
@@ -203,7 +187,7 @@ Module Contents
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-   .. py:method:: calculate_UB(r1: SolverReflectionType, r2: SolverReflectionType) -> hklpy2.misc.Matrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.misc.KeyValueMap, r2: hklpy2.misc.KeyValueMap) -> hklpy2.misc.Matrix3x3
       :abstractmethod:
 
 
@@ -223,7 +207,7 @@ Module Contents
 
 
    .. py:property:: extras
-      :type: Dict[str, Any]
+      :type: hklpy2.misc.KeyValueMap
 
 
       Ordered dictionary of any extra parameters.
@@ -309,7 +293,7 @@ Module Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: List[SolverReflectionType]) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: refineLattice(reflections: List[hklpy2.misc.KeyValueMap]) -> hklpy2.misc.NamedFloatDict
       :abstractmethod:
 
 
@@ -326,14 +310,14 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: SolverSampleType | None
+      :type: Union[hklpy2.misc.KeyValueMap, None]
 
 
       Crystalline sample.
 
 
    .. py:property:: _summary_dict
-      :type: Dict[str, Any]
+      :type: hklpy2.misc.KeyValueMap
 
 
       Return a summary of the geometry (modes, axes)

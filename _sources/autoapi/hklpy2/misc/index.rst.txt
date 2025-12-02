@@ -55,8 +55,9 @@ hklpy2.misc
        ~AxesDict
        ~AxesList
        ~AxesTuple
-       ~NamedFloatDict
        ~Matrix3x3
+       ~NamedFloatDict
+       ~NUMERIC
 
    .. rubric: Custom Preprocessors
    .. autosummary::
@@ -85,6 +86,16 @@ Attributes
 .. autoapisummary::
 
    hklpy2.misc.logger
+   hklpy2.misc.BlueskyPlanType
+   hklpy2.misc.KeyValueMap
+   hklpy2.misc.NUMERIC
+   hklpy2.misc.AxesArray
+   hklpy2.misc.AxesDict
+   hklpy2.misc.AxesList
+   hklpy2.misc.AxesTuple
+   hklpy2.misc.AnyAxesType
+   hklpy2.misc.Matrix3x3
+   hklpy2.misc.NamedFloatDict
    hklpy2.misc.IDENTITY_MATRIX_3X3
    hklpy2.misc.SOLVER_ENTRYPOINT_GROUP
    hklpy2.misc.DEFAULT_DIGITS
@@ -95,13 +106,6 @@ Attributes
    hklpy2.misc.UREG
    hklpy2.misc.PINT_ERRORS
    hklpy2.misc.DEFAULT_MOTOR_LABELS
-   hklpy2.misc.AxesArray
-   hklpy2.misc.AxesDict
-   hklpy2.misc.AxesList
-   hklpy2.misc.AxesTuple
-   hklpy2.misc.AnyAxesType
-   hklpy2.misc.NamedFloatDict
-   hklpy2.misc.Matrix3x3
 
 
 Exceptions
@@ -167,49 +171,17 @@ Module Contents
 
 .. py:data:: logger
 
-.. py:data:: IDENTITY_MATRIX_3X3
-   :value: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+.. py:data:: BlueskyPlanType
 
+   Type of a bluesky plan.
 
-   Identity matrix, 2-D, 3 rows, 3 columns.
+.. py:data:: KeyValueMap
 
-.. py:data:: SOLVER_ENTRYPOINT_GROUP
-   :value: 'hklpy2.solver'
+   Dictionary for configuration and other.
 
+.. py:data:: NUMERIC
 
-   Name by which |hklpy2| backend |solver| classes are grouped.
-
-.. py:data:: DEFAULT_DIGITS
-   :value: 4
-
-
-.. py:data:: DEFAULT_START_KEY
-   :value: 'diffractometers'
-
-
-.. py:data:: INTERNAL_ANGLE_UNITS
-   :value: 'degrees'
-
-
-.. py:data:: INTERNAL_LENGTH_UNITS
-   :value: 'angstrom'
-
-
-.. py:data:: INTERNAL_XRAY_ENERGY_UNITS
-   :value: 'keV'
-
-
-.. py:data:: UREG
-
-.. py:data:: PINT_ERRORS
-
-   Exception from pint that we are trapping here.
-
-.. py:data:: DEFAULT_MOTOR_LABELS
-   :value: ['motors']
-
-
-   Default labels applied to real-axis positioners.
+   Either integer or real number.
 
 .. py:data:: AxesArray
 
@@ -241,17 +213,69 @@ Module Contents
    ordered tuple   (0, 1, -1)                  AxesTuple
    =============   =========================   ====================
 
+.. py:data:: Matrix3x3
+
+   mutable orientation & rotation matrices.
+
+   :type: Python type annotation
+
 .. py:data:: NamedFloatDict
 
    dictionary of named floats.
 
    :type: Python type annotation
 
-.. py:data:: Matrix3x3
+.. py:data:: IDENTITY_MATRIX_3X3
+   :type:  Matrix3x3
+   :value: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 
-   mutable orientation & rotation matrices.
 
-   :type: Python type annotation
+   Identity matrix, 2-D, 3 rows, 3 columns.
+
+.. py:data:: SOLVER_ENTRYPOINT_GROUP
+   :type:  str
+   :value: 'hklpy2.solver'
+
+
+   Name by which |hklpy2| |solver| classes are grouped.
+
+.. py:data:: DEFAULT_DIGITS
+   :type:  int
+   :value: 4
+
+
+.. py:data:: DEFAULT_START_KEY
+   :type:  str
+   :value: 'diffractometers'
+
+
+.. py:data:: INTERNAL_ANGLE_UNITS
+   :type:  str
+   :value: 'degrees'
+
+
+.. py:data:: INTERNAL_LENGTH_UNITS
+   :type:  str
+   :value: 'angstrom'
+
+
+.. py:data:: INTERNAL_XRAY_ENERGY_UNITS
+   :type:  str
+   :value: 'keV'
+
+
+.. py:data:: UREG
+
+.. py:data:: PINT_ERRORS
+
+   Exception from pint that we are trapping here.
+
+.. py:data:: DEFAULT_MOTOR_LABELS
+   :type:  Sequence[str]
+   :value: ['motors']
+
+
+   Default labels applied to real-axis positioners.
 
 .. py:exception:: Hklpy2Error
 
@@ -355,7 +379,7 @@ Module Contents
    .. py:attribute:: physical
 
 
-   .. py:method:: _setup_move(position, status)
+   .. py:method:: _setup_move(position: float, status: Any) -> None
 
       Move requested to position.
 
@@ -377,13 +401,13 @@ Module Contents
 
 
 
-   .. py:method:: _cb_update_position(value, **kwargs)
+   .. py:method:: _cb_update_position(value: float, **kwargs) -> None
 
       Called when physical position is changed.
 
 
 
-   .. py:method:: _finish_setup()
+   .. py:method:: _finish_setup() -> None
 
       Complete the axis setup after diffractometer is built.
 
@@ -404,7 +428,7 @@ Module Contents
 
 
 
-   .. py:method:: __getattribute__(name)
+   .. py:method:: __getattribute__(name: str)
 
       Run final setup automatically, on conditions.
 
@@ -461,6 +485,7 @@ Module Contents
 
 
    .. py:attribute:: devices
+      :type:  Sequence[ophyd.Device]
       :value: []
 
 
@@ -468,6 +493,7 @@ Module Contents
 
 
    .. py:attribute:: known_bases
+      :type:  Sequence[ophyd.Device]
       :value: []
 
 
@@ -478,6 +504,7 @@ Module Contents
 
 
    .. py:attribute:: start_key
+      :type:  str
       :value: 'diffractometers'
 
 
@@ -498,13 +525,13 @@ Module Contents
       Return list of configured device names.
 
 
-   .. py:method:: validate(devices) -> None
+   .. py:method:: validate(devices: Sequence[ophyd.Device]) -> None
 
       Verify all are recognized objects.
 
 
 
-   .. py:method:: wrapper(plan)
+   .. py:method:: wrapper(plan: Iterator)
 
       Bluesky plan wrapper (preprocessor).
 
@@ -536,12 +563,12 @@ Module Contents
        Expected names of the axes, in order expected by the solver.
 
 
-.. py:function:: check_value_in_list(title, value, examples, blank_ok=False)
+.. py:function:: check_value_in_list(title, value, examples, blank_ok=False) -> None
 
    Raise ValueError exception if value is not in the list of examples.
 
 
-.. py:function:: compare_float_dicts(a1, a2, tol=0.0001)
+.. py:function:: compare_float_dicts(a1, a2, tol=0.0001) -> bool
 
    Compare two dictionaries.  Values are all floats.
 
@@ -551,18 +578,18 @@ Module Contents
    Convert 'value' from old units to new.
 
 
-.. py:function:: define_real_axis(specs, kwargs)
+.. py:function:: define_real_axis(specs: Union[None, str, KeyValueMap], kwargs: KeyValueMap) -> tuple[str, Mapping]
 
    Return class and kwargs of a real axis from its 'specs'.
 
 
-.. py:function:: dict_device_factory(data: dict, **kwargs)
+.. py:function:: dict_device_factory(data: KeyValueMap, **kwargs: KeyValueMap) -> type
 
    Create a ``DictionaryDevice()`` class using the supplied dictionary.
 
    .. index:: factory; dict_device_factory, dict_device_factory
 
-.. py:function:: distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple)
+.. py:function:: distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple) -> float
 
    Return the RMS distance between 'pos1' and 'pos2'.
 
@@ -585,14 +612,14 @@ Module Contents
    From the `apstools <https://github.com/BCDA-APS/apstools>`_ package.
 
 
-.. py:function:: flatten_lists(xs)
+.. py:function:: flatten_lists(xs: Sequence[Union[bytes, collections.abc.Iterable, str]]) -> BlueskyPlanType
 
    Convert nested lists into single list.
 
    https://stackoverflow.com/questions/2158395
 
 
-.. py:function:: get_solver(solver_name)
+.. py:function:: get_solver(solver_name: str) -> hklpy2.backends.base.SolverBase
 
    Load a Solver class from a named entry point.
 
@@ -603,7 +630,7 @@ Module Contents
        libhkl_solver = SolverClass()
 
 
-.. py:function:: get_run_orientation(run, name=None, start_key=DEFAULT_START_KEY)
+.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> KeyValueMap
 
    Return the orientation information dictionary from a run.
 
@@ -687,7 +714,7 @@ Module Contents
        True
 
 
-.. py:function:: list_orientation_runs(catalog, limit=10, start_key=DEFAULT_START_KEY, **kwargs)
+.. py:function:: list_orientation_runs(catalog: Any, limit: int = 10, start_key: str = DEFAULT_START_KEY, **kwargs: Mapping) -> pandas.DataFrame
 
    List the runs with orientation information.
 
@@ -719,12 +746,12 @@ Module Contents
    :type \*\*kwargs: dict[str:str]
 
 
-.. py:function:: load_yaml(text: str)
+.. py:function:: load_yaml(text: str) -> Mapping
 
    Load YAML from text.
 
 
-.. py:function:: load_yaml_file(file)
+.. py:function:: load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping
 
    Return contents of a YAML file as a Python object.
 
@@ -739,7 +766,7 @@ Module Contents
    Return an instance of the Python 'call_name'.
 
 
-.. py:function:: parse_factory_axes(*, space: str = None, axes: Union[Mapping[str, Any], None, Sequence[str]] = None, order: Sequence[str] = None, canonical: Sequence[str] = None, labels: Sequence[str] = None, **_ignored: Any) -> Mapping[str, Union[ophyd.Component, Sequence[str]]]
+.. py:function:: parse_factory_axes(*, space: str = None, axes: Union[KeyValueMap, None, Sequence[str]] = None, order: Sequence[str] = None, canonical: Sequence[str] = None, labels: Sequence[str] = None, **_ignored: Any) -> Mapping[str, Union[ophyd.Component, Sequence[str]]]
 
    Parse a set of axis specifications, return Device class attributes.
 
@@ -786,17 +813,17 @@ Module Contents
        :func:`~hklpy2.misc.pick_closest_solution`
 
 
-.. py:function:: roundoff(value, digits=4)
+.. py:function:: roundoff(value: float, digits=4) -> float
 
    Round a number to specified precision.
 
 
-.. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs)
+.. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs: Mapping) -> hklpy2.backends.base.SolverBase
 
    Create a |solver| object with geometry and axes.
 
 
-.. py:function:: solvers()
+.. py:function:: solvers() -> Mapping[str, hklpy2.backends.base.SolverBase]
 
    Dictionary of available Solver classes, mapped by entry point name.
 
@@ -806,7 +833,7 @@ Module Contents
        print(hklpy2.solvers())
 
 
-.. py:function:: unique_name(prefix='', length=7)
+.. py:function:: unique_name(prefix: str = '', length: int = 7) -> str
 
    Short, unique name, first 7 (at most) characters of a unique, random uuid.
 

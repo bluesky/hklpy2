@@ -39,7 +39,6 @@ Attributes
 
    hklpy2.user.__all__
    hklpy2.user.logger
-   hklpy2.user.Number
    hklpy2.user._choice
    hklpy2.user.add_reflection
 
@@ -83,8 +82,6 @@ Module Contents
 
 .. py:data:: logger
 
-.. py:data:: Number
-
 .. py:class:: _SelectedDiffractometer
 
    Module class to maintain the diffractometer selection.
@@ -109,7 +106,7 @@ Module Contents
 
 .. py:data:: _choice
 
-.. py:function:: add_sample(name: str, a: float, b: float = None, c: float = None, alpha: float = 90, beta: float = None, gamma: float = None, digits: int = 4, replace: bool = False)
+.. py:function:: add_sample(name: str, a: float, b: float = None, c: float = None, alpha: float = 90, beta: float = None, gamma: float = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
 
    Add (and select) a new crystal sample.
 
@@ -123,7 +120,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.list_samples` :func:`~hklpy2.user.remove_sample`
 
 
-.. py:function:: cahkl(h: float, k: float, l: float) -> list | str
+.. py:function:: cahkl(h: float, k: float, l: float) -> Union[list, str]
 
    Calculate motor positions for specified 'h, k l' - DOES NOT MOVE motors.
 
@@ -141,7 +138,7 @@ Module Contents
            tth=24.509837696782)
 
 
-.. py:function:: cahkl_table(*reflections: list[hklpy2.misc.AxesTuple], digits=4)
+.. py:function:: cahkl_table(*reflections: list[hklpy2.misc.AxesTuple], digits=4) -> pyRestTable.Table
 
    Print a table with motor positions for each reflection given.
 
@@ -180,7 +177,7 @@ Module Contents
    :type digits: int
 
 
-.. py:function:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str], wavelength: float = None) -> list[list[float]]
+.. py:function:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str], wavelength: float = None) -> hklpy2.misc.Matrix3x3
 
    Compute the UB matrix with two reflections.
 
@@ -198,7 +195,7 @@ Module Contents
 
 
 
-.. py:function:: solver_summary(write=True)
+.. py:function:: solver_summary(write=True) -> pyRestTable.Table
 
    Table of diffractometer solver's modes, axes, ...
 
@@ -231,7 +228,7 @@ Module Contents
        :meth:`hklpy2.backends.base.SolverBase.summary()`
 
 
-.. py:function:: get_diffractometer()
+.. py:function:: get_diffractometer() -> Union[hklpy2.diffract.DiffractometerBase, None]
 
    Return the currently-selected diffractometer (or ``None``).
 
@@ -253,7 +250,7 @@ Module Contents
            concurrent=True)
 
 
-.. py:function:: list_samples(full=False)
+.. py:function:: list_samples(full=False) -> None
 
    Summarize diffractometer's samples.
 
@@ -271,7 +268,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.remove_sample`
 
 
-.. py:function:: or_swap() -> list[list[float]]
+.. py:function:: or_swap() -> hklpy2.misc.Matrix3x3
 
    Swap the first 2 ORienting reflections, re-compute & return new [UB].
 
@@ -294,7 +291,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.setor`
 
 
-.. py:function:: pa(digits=4)
+.. py:function:: pa(digits=4) -> None
 
    Report (all) the diffractometer settings.
 
@@ -376,7 +373,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.list_samples`
 
 
-.. py:function:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None)
+.. py:function:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.misc.BlueskyPlanType
 
    Scan diffractometer parameter(s) at constant pseudos or reals.
 
@@ -450,7 +447,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.get_diffractometer`
 
 
-.. py:function:: set_wavelength(value: float, units=None)
+.. py:function:: set_wavelength(value: float, units=None) -> None
 
    Set the wavelength; if Signal has write access, changes control system.
 
@@ -461,7 +458,7 @@ Module Contents
        >>> set_wavelength(123.45, units="pm")
 
 
-.. py:function:: set_lattice(a: float, b: float = None, c: float = None, alpha: float = 90, beta: float = None, gamma: float = None, digits: int = 4)
+.. py:function:: set_lattice(a: float, b: float = None, c: float = None, alpha: float = 90, beta: float = None, gamma: float = None, digits: int = 4) -> None
 
    Redefine the sample's lattice.
 
@@ -472,7 +469,7 @@ Module Contents
        >>> set_lattice(3, c=4, gamma=120)
 
 
-.. py:function:: setor(h, k, l, *reals: hklpy2.misc.AnyAxesType, wavelength=None, name=None, **kwreals: hklpy2.misc.AxesDict)
+.. py:function:: setor(h, k, l, *reals: hklpy2.misc.AnyAxesType, wavelength=None, name=None, **kwreals: hklpy2.misc.AxesDict) -> hklpy2.blocks.reflection.Reflection
 
    Define an ORienting reflection.
 
@@ -532,7 +529,7 @@ Module Contents
      See the examples above.
 
 
-.. py:function:: wh(digits=4)
+.. py:function:: wh(digits=4) -> None
 
    Report (brief) where is the diffractometer.
 

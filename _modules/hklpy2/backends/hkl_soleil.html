@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=22d6633a"></script>
+    <script src="../../../_static/documentation_options.js?v=9caff4c2"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -413,6 +413,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyRestTable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
@@ -421,8 +422,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">roundoff</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_name</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverReflectionType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverSampleType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.hkl_soleil_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup_libhkl</span>
 
 <div class="viewcode-block" id="logger">
@@ -670,11 +669,11 @@
 
 <div class="viewcode-block" id="HklSolver.addReflection">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.addReflection">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add coordinates of a diffraction condition (a reflection).&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">istype</span><span class="p">(</span><span class="n">reflection</span><span class="p">,</span> <span class="n">SolverReflectionType</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">istype</span><span class="p">(</span><span class="n">reflection</span><span class="p">,</span> <span class="n">KeyValueMap</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Must supply </span><span class="si">{</span><span class="n">SolverReflectionType</span><span class="si">!r}</span><span class="s2"> object, received </span><span class="si">{</span><span class="n">reflection</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="sa">f</span><span class="s2">&quot;Must supply </span><span class="si">{</span><span class="n">KeyValueMap</span><span class="si">!r}</span><span class="s2"> object, received </span><span class="si">{</span><span class="n">reflection</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;reflection: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reflection</span><span class="p">)</span>
@@ -724,8 +723,8 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.calculate_UB">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">r1</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">,</span>
-        <span class="n">r2</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">,</span>
+        <span class="n">r1</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
+        <span class="n">r2</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the UB (orientation) matrix with two reflections.</span>
@@ -986,7 +985,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="HklSolver.reflections">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.reflections">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">reflections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">SolverReflectionType</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reflections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">KeyValueMap</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;List of defined reflections (no store reflection names in libhkl).&quot;&quot;&quot;</span>
         <span class="n">rlist</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">refl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="o">.</span><span class="n">reflections_get</span><span class="p">():</span>
@@ -1008,7 +1007,7 @@
 
 <div class="viewcode-block" id="HklSolver.refineLattice">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.refineLattice">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SolverReflectionType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">KeyValueMap</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Refine the lattice parameters from a list of reflections.</span>
 
@@ -1037,7 +1036,7 @@
     <span class="nd">@property</span>
 <div class="viewcode-block" id="HklSolver.sample">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.sample">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverSampleType</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Crystalline sample.  libhkl&#39;s sample object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1050,11 +1049,9 @@
 
 
     <span class="nd">@sample</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">SolverSampleType</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">istype</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Must supply </span><span class="si">{</span><span class="n">SolverSampleType</span><span class="si">}</span><span class="s2"> object, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply </span><span class="si">{</span><span class="n">KeyValueMap</span><span class="si">}</span><span class="s2"> object, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Just drop the old sample and make a new one.</span>
         <span class="c1"># Python knows its correct name.</span>

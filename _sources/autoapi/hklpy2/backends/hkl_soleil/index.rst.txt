@@ -240,7 +240,7 @@ Module Contents
    .. py:method:: __repr__() -> str
 
 
-   .. py:method:: addReflection(reflection: hklpy2.backends.base.SolverReflectionType) -> None
+   .. py:method:: addReflection(reflection: hklpy2.misc.KeyValueMap) -> None
 
       Add coordinates of a diffraction condition (a reflection).
 
@@ -271,7 +271,7 @@ Module Contents
       Updated by 'forward()' computation.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.backends.base.SolverReflectionType, r2: hklpy2.backends.base.SolverReflectionType) -> hklpy2.misc.Matrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.misc.KeyValueMap, r2: hklpy2.misc.KeyValueMap) -> hklpy2.misc.Matrix3x3
 
       Calculate the UB (orientation) matrix with two reflections.
 
@@ -369,13 +369,13 @@ Module Contents
 
 
    .. py:property:: reflections
-      :type: Dict[str, hklpy2.backends.base.SolverReflectionType]
+      :type: Dict[str, hklpy2.misc.KeyValueMap]
 
 
       List of defined reflections (no store reflection names in libhkl).
 
 
-   .. py:method:: refineLattice(reflections: list[hklpy2.backends.base.SolverReflectionType]) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: refineLattice(reflections: list[hklpy2.misc.KeyValueMap]) -> hklpy2.misc.NamedFloatDict
 
       Refine the lattice parameters from a list of reflections.
 
@@ -390,7 +390,7 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: hklpy2.backends.base.SolverSampleType
+      :type: hklpy2.misc.KeyValueMap
 
 
       Crystalline sample.  libhkl's sample object.

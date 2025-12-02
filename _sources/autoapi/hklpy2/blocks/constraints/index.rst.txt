@@ -36,9 +36,7 @@ Attributes
 .. autoapisummary::
 
    hklpy2.blocks.constraints.ENDPOINT_TOLERANCE
-   hklpy2.blocks.constraints.NUMERIC
    hklpy2.blocks.constraints.UNDEFINED_LABEL
-   hklpy2.blocks.constraints.ConstraintsDictType
 
 
 Classes
@@ -55,16 +53,14 @@ Module Contents
 ---------------
 
 .. py:data:: ENDPOINT_TOLERANCE
+   :type:  float
    :value: 1e-07
 
 
-.. py:data:: NUMERIC
-
 .. py:data:: UNDEFINED_LABEL
+   :type:  str
    :value: 'undefined'
 
-
-.. py:data:: ConstraintsDictType
 
 .. py:class:: ConstraintBase
 
@@ -97,19 +93,19 @@ Module Contents
 
 
 
-   .. py:method:: _asdict() -> ConstraintsDictType
+   .. py:method:: _asdict() -> hklpy2.misc.KeyValueMap
 
       Return a new dict which maps field names to their values.
 
 
 
-   .. py:method:: _fromdict(config: ConstraintsDictType, core: Optional[Any] = None)
+   .. py:method:: _fromdict(config: hklpy2.misc.KeyValueMap, core: Optional[Any] = None)
 
       Redefine this constraint from a (configuration) dictionary.
 
 
 
-   .. py:method:: valid(**values: Dict[str, NUMERIC]) -> bool
+   .. py:method:: valid(**values: Dict[str, hklpy2.misc.NUMERIC]) -> bool
       :abstractmethod:
 
 
@@ -162,7 +158,7 @@ Module Contents
       Return the low and high limits of this constraint.
 
 
-   .. py:method:: valid(**values: Dict[str, NUMERIC]) -> bool
+   .. py:method:: valid(**values: Dict[str, hklpy2.misc.NUMERIC]) -> bool
 
       True if low <= value <= high.
 
@@ -193,19 +189,19 @@ Module Contents
 
 
 
-   .. py:method:: _asdict() -> ConstraintsDictType
+   .. py:method:: _asdict() -> hklpy2.misc.KeyValueMap
 
       Return all constraints as a dictionary.
 
 
 
-   .. py:method:: _fromdict(config: ConstraintsDictType, core=None) -> None
+   .. py:method:: _fromdict(config: hklpy2.misc.KeyValueMap, core=None) -> None
 
       Redefine existing constraints from a (configuration) dictionary.
 
 
 
-   .. py:method:: valid(**reals: Dict[str, NUMERIC]) -> bool
+   .. py:method:: valid(**reals: Dict[str, hklpy2.misc.NUMERIC]) -> bool
 
       Are all constraints satisfied?
 

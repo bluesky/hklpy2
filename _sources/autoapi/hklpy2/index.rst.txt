@@ -216,13 +216,13 @@ Package Contents
 
 
    .. py:attribute:: _all_extra_axis_names
-      :type:  List[str] | None
+      :type:  Optional[List[str]]
       :value: None
 
 
 
    .. py:attribute:: _sample
-      :type:  SolverSampleType | None
+      :type:  Optional[hklpy2.misc.KeyValueMap]
       :value: None
 
 
@@ -231,13 +231,13 @@ Package Contents
 
 
    .. py:property:: _metadata
-      :type: Dict[str, Any]
+      :type: hklpy2.misc.KeyValueMap
 
 
       Dictionary with this solver's summary metadata.
 
 
-   .. py:method:: addReflection(reflection: SolverReflectionType) -> None
+   .. py:method:: addReflection(reflection: hklpy2.misc.KeyValueMap) -> None
       :abstractmethod:
 
 
@@ -252,7 +252,7 @@ Package Contents
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-   .. py:method:: calculate_UB(r1: SolverReflectionType, r2: SolverReflectionType) -> hklpy2.misc.Matrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.misc.KeyValueMap, r2: hklpy2.misc.KeyValueMap) -> hklpy2.misc.Matrix3x3
       :abstractmethod:
 
 
@@ -272,7 +272,7 @@ Package Contents
 
 
    .. py:property:: extras
-      :type: Dict[str, Any]
+      :type: hklpy2.misc.KeyValueMap
 
 
       Ordered dictionary of any extra parameters.
@@ -358,7 +358,7 @@ Package Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: List[SolverReflectionType]) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: refineLattice(reflections: List[hklpy2.misc.KeyValueMap]) -> hklpy2.misc.NamedFloatDict
       :abstractmethod:
 
 
@@ -375,14 +375,14 @@ Package Contents
 
 
    .. py:property:: sample
-      :type: SolverSampleType | None
+      :type: Union[hklpy2.misc.KeyValueMap, None]
 
 
       Crystalline sample.
 
 
    .. py:property:: _summary_dict
-      :type: Dict[str, Any]
+      :type: hklpy2.misc.KeyValueMap
 
 
       Return a summary of the geometry (modes, axes)
@@ -419,19 +419,19 @@ Package Contents
    .. py:attribute:: diffractometer
 
 
-   .. py:method:: _asdict() -> KeyValueMap
+   .. py:method:: _asdict() -> hklpy2.misc.KeyValueMap
 
       Return diffractometer's configuration as a dict.
 
 
 
-   .. py:method:: _fromdict(config: KeyValueMap, clear: bool = True, restore_constraints: bool = True) -> None
+   .. py:method:: _fromdict(config: hklpy2.misc.KeyValueMap, clear: bool = True, restore_constraints: bool = True) -> None
 
       Restore diffractometer's configuration from a dict.
 
 
 
-   .. py:method:: _valid(config: KeyValueMap) -> bool
+   .. py:method:: _valid(config: hklpy2.misc.KeyValueMap) -> bool
 
       Validate incoming configuration for current diffractometer.
 
@@ -595,13 +595,13 @@ Package Contents
 
 
    .. py:property:: configuration
-      :type: dict
+      :type: hklpy2.misc.KeyValueMap
 
 
       Diffractometer configuration (orientation).
 
 
-   .. py:method:: export(file, comment='')
+   .. py:method:: export(file, comment='') -> None
 
       Export the diffractometer configuration to a YAML file.
 
@@ -614,7 +614,7 @@ Package Contents
 
 
 
-   .. py:method:: restore(config, clear=True, restore_constraints=True, restore_wavelength=True)
+   .. py:method:: restore(config, clear=True, restore_constraints=True, restore_wavelength=True) -> None
 
       Restore diffractometer configuration.
 
@@ -648,31 +648,31 @@ Package Contents
 
 
 
-   .. py:method:: forward(pseudos: dict, wavelength: float = None) -> tuple
+   .. py:method:: forward(pseudos: dict, wavelength: float = None) -> NamedTuple
 
       Compute real-space coordinates from pseudos (hkl -> angles).
 
 
 
-   .. py:method:: full_position(digits=4) -> dict
+   .. py:method:: full_position(digits=4) -> hklpy2.misc.KeyValueMap
 
       Return dict with positions of pseudos, reals, & extras.
 
 
 
-   .. py:method:: inverse(reals: tuple, wavelength: float = None) -> tuple
+   .. py:method:: inverse(reals: tuple, wavelength: float = None) -> NamedTuple
 
       Compute pseudo-space coordinates from reals (angles -> hkl).
 
 
 
-   .. py:method:: move_dict(axes: hklpy2.misc.AxesDict)
+   .. py:method:: move_dict(axes: hklpy2.misc.AxesDict) -> hklpy2.misc.BlueskyPlanType
 
       (plan) Move diffractometer axes to positions in 'axes'.
 
 
 
-   .. py:method:: move_forward_with_extras(pseudos: hklpy2.misc.AnyAxesType, extras: hklpy2.misc.AxesDict)
+   .. py:method:: move_forward_with_extras(pseudos: hklpy2.misc.AnyAxesType, extras: hklpy2.misc.AxesDict) -> hklpy2.misc.BlueskyPlanType
 
       (plan stub) Compute forward solution at fixed pseudos and extras.
 
@@ -688,7 +688,7 @@ Package Contents
 
 
 
-   .. py:method:: move_inverse_with_extras(reals: hklpy2.misc.AnyAxesType, extras: hklpy2.misc.AxesDict)
+   .. py:method:: move_inverse_with_extras(reals: hklpy2.misc.AnyAxesType, extras: hklpy2.misc.AxesDict) -> hklpy2.misc.BlueskyPlanType
 
       (plan stub) Compute inverse solution at fixed reals and extras.
 
@@ -710,7 +710,7 @@ Package Contents
 
 
 
-   .. py:method:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None)
+   .. py:method:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.misc.BlueskyPlanType
 
       Scan extra diffractometer parameter(s), such as 'psi'.
 
@@ -759,7 +759,7 @@ Package Contents
 
 
 
-   .. py:method:: _format_value_for_repr(x, digits)
+   .. py:method:: _format_value_for_repr(x: Union[float, numpy.floating], digits: int) -> str
       :staticmethod:
 
 
@@ -771,7 +771,7 @@ Package Contents
 
 
 
-   .. py:method:: _make_wrapped_namedtuple_class(orig_cls, digits)
+   .. py:method:: _make_wrapped_namedtuple_class(orig_cls: Optional[Type[T]], digits: int) -> Optional[Type[T]]
       :classmethod:
 
 
@@ -798,6 +798,8 @@ Package Contents
 
 
    .. py:property:: pseudo_axis_names
+      :type: None
+
 
       Names of all the pseudo axes, in order of appearance.
 
@@ -808,6 +810,8 @@ Package Contents
 
 
    .. py:property:: real_axis_names
+      :type: None
+
 
       Names of all the real axes, in order of appearance.
 
@@ -818,22 +822,26 @@ Package Contents
 
 
    .. py:property:: samples
+      :type: dict[str, hklpy2.blocks.sample.Sample]
+
 
       Dictionary of samples.
 
 
    .. py:property:: sample
+      :type: Union[None, hklpy2.blocks.sample.Sample]
+
 
       Current sample object.
 
 
-   .. py:method:: wh(digits=4, full=False)
+   .. py:method:: wh(digits=4, full=False) -> None
 
       Concise report of the current diffractometer positions.
 
 
 
-.. py:function:: creator(*, prefix: str = '', name: str = '', solver: str = 'hkl_soleil', geometry: str = 'E4CV', beam_kwargs: dict[str, object] = {}, solver_kwargs: dict[str, object] = {}, _pseudo: Optional[Sequence[str]] = None, pseudos: list = [], _real: Optional[Sequence[str]] = None, reals: Optional[Union[Sequence[str], Mapping[str, Any]]] = {}, motor_labels: Optional[Sequence[str]] = ['motors'], labels: list = ['diffractometer'], class_name: str = 'Hklpy2Diffractometer', class_bases: list = [DiffractometerBase], forward_solution_function: Optional[str] = None, **kwargs)
+.. py:function:: creator(*, prefix: str = '', name: str = '', solver: str = 'hkl_soleil', geometry: str = 'E4CV', beam_kwargs: dict[str, object] = {}, solver_kwargs: dict[str, object] = {}, _pseudo: Optional[Sequence[str]] = None, pseudos: list = [], _real: Optional[Sequence[str]] = None, reals: Optional[Union[Sequence[str], hklpy2.misc.KeyValueMap]] = {}, motor_labels: Optional[Sequence[str]] = ['motors'], labels: list = ['diffractometer'], class_name: str = 'Hklpy2Diffractometer', class_bases: list = [DiffractometerBase], forward_solution_function: Optional[str] = None, **kwargs) -> DiffractometerBase
 
    Factory function to create a diffractometer instance.
 
@@ -1009,16 +1017,18 @@ Package Contents
 
 
 .. py:data:: A_KEV
+   :type:  float
    :value: 12.398419843856837
 
 
    X-ray voltage wavelength product (:math:`h \nu`), per NIST standard.
 
 .. py:data:: SOLVER_ENTRYPOINT_GROUP
+   :type:  str
    :value: 'hklpy2.solver'
 
 
-   Name by which |hklpy2| backend |solver| classes are grouped.
+   Name by which |hklpy2| |solver| classes are grouped.
 
 .. py:class:: ConfigurationRunWrapper(*devices, knowns=None)
 
@@ -1054,6 +1064,7 @@ Package Contents
 
 
    .. py:attribute:: devices
+      :type:  Sequence[ophyd.Device]
       :value: []
 
 
@@ -1061,6 +1072,7 @@ Package Contents
 
 
    .. py:attribute:: known_bases
+      :type:  Sequence[ophyd.Device]
       :value: []
 
 
@@ -1071,6 +1083,7 @@ Package Contents
 
 
    .. py:attribute:: start_key
+      :type:  str
       :value: 'diffractometers'
 
 
@@ -1091,13 +1104,13 @@ Package Contents
       Return list of configured device names.
 
 
-   .. py:method:: validate(devices) -> None
+   .. py:method:: validate(devices: Sequence[ophyd.Device]) -> None
 
       Verify all are recognized objects.
 
 
 
-   .. py:method:: wrapper(plan)
+   .. py:method:: wrapper(plan: Iterator)
 
       Bluesky plan wrapper (preprocessor).
 
@@ -1118,7 +1131,7 @@ Package Contents
    Custom exceptions from a |solver|.
 
 
-.. py:function:: get_solver(solver_name)
+.. py:function:: get_solver(solver_name: str) -> hklpy2.backends.base.SolverBase
 
    Load a Solver class from a named entry point.
 
@@ -1129,12 +1142,12 @@ Package Contents
        libhkl_solver = SolverClass()
 
 
-.. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs)
+.. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs: Mapping) -> hklpy2.backends.base.SolverBase
 
    Create a |solver| object with geometry and axes.
 
 
-.. py:function:: solvers()
+.. py:function:: solvers() -> Mapping[str, hklpy2.backends.base.SolverBase]
 
    Dictionary of available Solver classes, mapped by entry point name.
 

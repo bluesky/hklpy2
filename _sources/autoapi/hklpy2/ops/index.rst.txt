@@ -27,7 +27,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: Core(diffractometer, default_sample: bool = True)
+.. py:class:: Core(diffractometer: hklpy2.diffract.DiffractometerBase, default_sample: bool = True)
 
    Core operations of a diffractometer, coordinating with sample & |solver|.
 
@@ -120,43 +120,43 @@ Module Contents
 
 
 
-   .. py:method:: _asdict()
+   .. py:method:: _asdict() -> hklpy2.misc.KeyValueMap
 
       Describe the diffractometer as a dictionary.
 
 
 
-   .. py:method:: _axes_names_s2d(axis_dict: dict[str, float]) -> dict[str, float]
+   .. py:method:: _axes_names_s2d(axis_dict: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
 
       Convert keys of axis dictionary from solver to diffractometer.
 
 
 
-   .. py:method:: _axes_names_d2s(axis_dict: dict[str, float]) -> dict[str, float]
+   .. py:method:: _axes_names_d2s(axis_dict: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
 
       Convert keys of axis dictionary from diffractometer to solver.
 
 
 
-   .. py:method:: _fromdict(config)
+   .. py:method:: _fromdict(config: hklpy2.misc.KeyValueMap) -> None
 
       Redefine diffractometer from a (configuration) dictionary.
 
 
 
-   .. py:method:: _validate_extras(values: dict[str, Number], expected: dict[str, Number]) -> dict[str, Number]
+   .. py:method:: _validate_extras(values: hklpy2.misc.NamedFloatDict, expected: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
 
       Validate that the supplied extras are acceptable.
 
 
 
-   .. py:method:: _validate_pseudos(pseudos) -> bool
+   .. py:method:: _validate_pseudos(pseudos: Union[collections.abc.Iterable, hklpy2.misc.NamedFloatDict]) -> bool
 
       Validate that the supplied pseudos are acceptable.
 
 
 
-   .. py:method:: add_reflection(pseudos: hklpy2.misc.AnyAxesType, reals: Union[hklpy2.misc.AnyAxesType, None] = None, wavelength=None, wavelength_units: str = None, name=None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
+   .. py:method:: add_reflection(pseudos: hklpy2.misc.AnyAxesType, reals: Union[hklpy2.misc.AnyAxesType, None] = None, wavelength: float = None, wavelength_units: str = None, name: str = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
 
       Add a new reflection.
 
@@ -210,11 +210,13 @@ Module Contents
 
 
    .. py:property:: axes_xref_reversed
+      :type: Mapping[str, str]
+
 
       Map axis names from solver to diffractometer.
 
 
-   .. py:method:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str]) -> List[List[Number]]
+   .. py:method:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str]) -> hklpy2.misc.Matrix3x3
 
       Calculate and return the UB (orientation) matrix with two reflections.
 
@@ -255,7 +257,7 @@ Module Contents
 
 
    .. py:property:: local_pseudo_axes
-      :type: list
+      :type: list[str]
 
 
       List of the diffractometer pseudo axes expected by the solver.
@@ -265,7 +267,7 @@ Module Contents
 
 
    .. py:property:: local_real_axes
-      :type: list
+      :type: list[str]
 
 
       List of the diffractometer real axes expected by the solver.
@@ -306,7 +308,7 @@ Module Contents
 
 
 
-   .. py:method:: remove_sample(name)
+   .. py:method:: remove_sample(name: str)
 
       Remove the named sample.  No error if name is not known.
 
@@ -321,13 +323,13 @@ Module Contents
 
 
 
-   .. py:method:: reset_constraints()
+   .. py:method:: reset_constraints() -> None
 
       Restore diffractometer constraints to default settings.
 
 
 
-   .. py:method:: reset_samples()
+   .. py:method:: reset_samples() -> None
 
       Restore diffractometer samples to default settings.
 
@@ -341,7 +343,7 @@ Module Contents
 
 
    .. py:property:: samples
-      :type: dict
+      :type: Mapping[str, hklpy2.blocks.sample.Sample]
 
 
       Sample dictionary.

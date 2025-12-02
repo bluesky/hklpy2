@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=22d6633a"></script>
+    <script src="../_static/documentation_options.js?v=9caff4c2"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -461,8 +461,8 @@ register it as an entry point.</p>
 methods (methods marked with decorator <code class="docutils literal notranslate"><span class="pre">&#64;abstractmethod</span></code>
 <a class="footnote-reference brackets" href="#abstractmethod-decorator" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>):</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
-<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverReflectionType</span>
-<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span>
 <span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
 <span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
 <span class="linenos"> 6</span>
@@ -474,11 +474,11 @@ methods (methods marked with decorator <code class="docutils literal notranslate
 <span class="linenos">12</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 <span class="linenos">13</span>
 <span class="linenos">14</span>    <span class="c1"># Required abstract methods</span>
-<span class="linenos">15</span>    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos">15</span>    <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="linenos">16</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an observed diffraction reflection.&quot;&quot;&quot;</span>
 <span class="linenos">17</span>        <span class="k">pass</span>  <span class="c1"># TODO: send to your library</span>
 <span class="linenos">18</span>
-<span class="linenos">19</span>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r1</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="n">SolverReflectionType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
+<span class="linenos">19</span>    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r1</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
 <span class="linenos">20</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the UB matrix with two reflections.&quot;&quot;&quot;</span>
 <span class="linenos">21</span>        <span class="k">return</span> <span class="n">IDENTITY_MATRIX_3X3</span>  <span class="c1"># TODO: calculate with your library</span>
 <span class="linenos">22</span>
@@ -490,7 +490,7 @@ methods (methods marked with decorator <code class="docutils literal notranslate
 <span class="linenos">28</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute pseudos from reals.&quot;&quot;&quot;</span>
 <span class="linenos">29</span>        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># TODO: calculate with your library</span>
 <span class="linenos">30</span>
-<span class="linenos">31</span>    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SolverReflectionType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+<span class="linenos">31</span>    <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">KeyValueMap</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
 <span class="linenos">32</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;Refine lattice parameters from reflections.&quot;&quot;&quot;</span>
 <span class="linenos">33</span>        <span class="k">return</span> <span class="p">{}</span>  <span class="c1"># TODO: calculate with your library</span>
 <span class="linenos">34</span>

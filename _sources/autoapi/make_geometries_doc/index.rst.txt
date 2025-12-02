@@ -1,0 +1,92 @@
+make_geometries_doc
+===================
+
+.. py:module:: make_geometries_doc
+
+.. autoapi-nested-parse::
+
+   (Re)create the `geometries.rst` document.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   make_geometries_doc.DOCS_DIR
+   make_geometries_doc.GEO_DOC
+   make_geometries_doc.PAGE_TITLE
+   make_geometries_doc.PREFACE
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   make_geometries_doc.title
+   make_geometries_doc.page_header
+   make_geometries_doc.rst_anchor
+   make_geometries_doc.table_of_reals
+   make_geometries_doc.geometry_summary_table
+   make_geometries_doc.all_summary_tables
+   make_geometries_doc.linter
+   make_geometries_doc.main
+
+
+Module Contents
+---------------
+
+.. py:data:: DOCS_DIR
+
+.. py:data:: GEO_DOC
+
+.. py:data:: PAGE_TITLE
+   :value: 'Diffractometers'
+
+
+.. py:data:: PREFACE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """
+      Tables are provided for the different geometries (sorted by number of real axes)
+      and then, for each geometry, the calculation engines, modes of operation, pseudo
+      axes required, and any additional parameters required by the
+      :meth:`~hklpy2.backends.base.SolverBase.mode`.  The mode defines which axes will
+      be computed, which will be held constant, and any relationships between axes.
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:function:: title(text: str, underchar: str = H1, both: bool = False) -> str
+
+.. py:function:: page_header()
+
+.. py:function:: rst_anchor(sname: str, gname: str) -> str
+
+.. py:function:: table_of_reals()
+
+.. py:function:: geometry_summary_table(solver_name, geometry_name: str) -> str
+
+.. py:function:: all_summary_tables()
+
+.. py:function:: linter(text: str) -> str
+
+   Clean up items that would be corrected on pre-commit linting.
+
+   * trailing-whitespace
+
+
+.. py:function:: main()
+
