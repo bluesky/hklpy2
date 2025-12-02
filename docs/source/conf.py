@@ -55,7 +55,11 @@ extensions = [
 ]
 extensions.append("sphinx_tabs.tabs")  # this must be last
 
-exclude_patterns = ["**.ipynb_checkpoints"]
+exclude_patterns = [
+    "**.ipynb_checkpoints",
+    "dev_*.ipynb",
+    "dev_*.py",
+]
 myst_enable_extensions = ["colon_fence"]
 source_suffix = ".rst .md".split()
 templates_path = ["_templates"]
@@ -65,10 +69,12 @@ nb_execution_mode = "off"
 
 autoapi_dirs = ["../.."]
 autoapi_ignore = [
-    "*tests*",
-    "dev_*",
+    ".dev/*",
+    "**/.logs/*",
+    "**/dev_*",
+    "**/docs/*",
     "**/examples/*",
-    "docs/source/examples/*",
+    "*tests*",
 ]
 
 # # where the generated rst files will be written (relative to the Sphinx source dir)
@@ -137,9 +143,9 @@ autodoc_default_options = {
 }
 autodoc_mock_imports = """
     bluesky
+    bluesky_tiled_plugins
     coverage
     dask
-    databroker
     gi
     numba
     numba_backend
@@ -147,6 +153,7 @@ autodoc_mock_imports = """
     pandas
     pint
     sparse
+    tiled
     tqdm
 """.split()
 

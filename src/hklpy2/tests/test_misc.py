@@ -9,7 +9,6 @@ from collections import namedtuple
 from contextlib import nullcontext as does_not_raise
 from typing import Union
 
-import databroker
 import numpy as np
 import pint
 import pytest
@@ -68,14 +67,22 @@ class MyPVPositioner(PVPositioner):
 
 @pytest.fixture
 def cat():
-    return databroker.temp().v2
+    from tiled.client import from_uri
+    from tiled.server import SimpleTiledServer
+
+    with SimpleTiledServer() as server:
+        client = from_uri(server.uri)
+        yield client
 
 
 @pytest.fixture
 def RE(cat):
+    from bluesky_tiled_plugins import TiledWriter
+
+    tw = TiledWriter(cat)
     engine = RunEngine({})
-    engine.subscribe(cat.v1.insert)
-    return engine
+    engine.subscribe(tw)
+    yield engine
 
 
 @pytest.mark.filterwarnings("error")
@@ -383,7 +390,7 @@ def test_list_orientation_runs(devices, cat, RE):
     assert scan_id == 1
 
     # test get_run_orientation() for specific diffractometer
-    info = get_run_orientation(cat[1], name="sim4c")
+    info = get_run_orientation(cat[uids[0]], name="sim4c")
     assert isinstance(info, dict)
     if sim4c in devices:
         assert len(info) > 0
