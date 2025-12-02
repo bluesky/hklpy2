@@ -14,13 +14,6 @@ coordinates can have many solutions. One or more constraints (Constraint)
     ~RealAxisConstraints
     ~ConstraintBase
     ~LimitsConstraint
-
-From **hklpy**, these TODO items:
-
-- _constraints_dict
-- _constraints_for_databroker
-- _push_current_constraints
-- _set_constraints
 """
 
 from abc import ABC

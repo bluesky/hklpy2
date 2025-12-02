@@ -877,7 +877,7 @@ def list_orientation_runs(
     Parameters
     ----------
     catalog : object
-        Instance of a databroker catalog.
+        Catalog of bluesky runs.
     limit : int
         Limit the list to at most ``limit`` runs. (default=10)
         It could take a long time to search an entire catalog.
@@ -898,11 +898,15 @@ def list_orientation_runs(
         solver="solver.name",
     )
     columns.update(**kwargs)
-    limit = min(limit, len(catalog.v2))
+    try:
+        container = catalog.v2  # data broker catalog
+    except AttributeError:
+        container = catalog  # tiled Container
+    limit = min(limit, len(container))
     with tqdm.tqdm(total=limit, file=sys.stdout, leave=False) as progress_bar:
-        for full_uid in catalog.v2:
+        for full_uid in container:
             _count += 1
-            run = catalog.v2[full_uid]
+            run = container[full_uid]
             start_md = run.metadata.get("start", {})
             info = get_run_orientation(run, start_key=start_key)
             if info is not None:
