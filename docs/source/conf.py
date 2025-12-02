@@ -16,7 +16,7 @@ with open(root_path / "pyproject.toml", "rb") as fp:
     toml = tomllib.load(fp)
 metadata = toml["project"]
 
-sys.path.insert(0, str(root_path))
+sys.path.insert(0, str(root_path / "src"))
 
 # imports here for sphinx to build the documents without many WARNINGS.
 import hklpy2
@@ -33,7 +33,7 @@ today_fmt = "%Y-%m-%d %H:%M"
 
 # -- Special handling for version numbers ---------------------------------------------------
 # https://github.com/pypa/setuptools_scm#usage-from-sphinx
-release = version(project)
+release = hklpy2.__version__
 version = ".".join(release.split(".")[:2])
 
 # -- General configuration ---------------------------------------------------
