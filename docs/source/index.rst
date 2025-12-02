@@ -17,7 +17,7 @@ PseudoPositioners in the `Bluesky Framework <https://blueskyproject.io>`_.
 
 .. icons: https://fonts.google.com/icons
 
-.. grid:: 4
+.. grid:: 2
 
     .. grid-item-card:: :material-outlined:`summarize;3em` :ref:`user_guide`
     .. grid-item-card:: :material-regular:`install_desktop;3em`  :ref:`install`
