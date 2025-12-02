@@ -47,6 +47,12 @@ def _get_version(version_module=None):
 __version__ = _get_version()  # Must define before these imports.
 """Package version string."""
 
+if __name__ == "__main__":
+    import sys
+
+    print(f"Package version: {__version__}")
+    sys.exit()
+
 from .backends import SolverBase  # noqa: E402, F401
 from .blocks.configure import Configuration  # noqa: E402, F401
 from .blocks.lattice import SI_LATTICE_PARAMETER  # noqa: E402, F401
@@ -60,6 +66,3 @@ from .misc import SolverError  # noqa: E402, F401
 from .misc import get_solver  # noqa: E402, F401
 from .misc import solver_factory  # noqa: E402, F401
 from .misc import solvers  # noqa: E402, F401
-
-if __name__ == "__main__":
-    print(f"Package version: {__version__}")
