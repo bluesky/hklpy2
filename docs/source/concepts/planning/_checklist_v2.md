@@ -15,7 +15,7 @@ It could be re-organized.
   * Axes
     * [x] Make it easy to provide additional axes
       * [x] rotation about arbitrary vector
-      * [ ] scan along a crystallographic *zone*
+      * [x] scan along a crystallographic *zone*
       * [x] Solvers with different reciprocal-space axes
       * [x] extra parameters, as required by solver
     * [x] user can choose different names for any of the diffractometer axes
@@ -45,7 +45,7 @@ It could be re-organized.
   * Other
     * [x] [modify existing sample](https://github.com/bluesky/hklpy/issues/157)
     * [x] [control display precision in `wh()` and `pa()`](https://github.com/bluesky/hklpy/issues/179)
-    * [ ] [crystallographic *zones*](https://github.com/bluesky/hklpy/issues/291)
+    * [x] [crystallographic *zones*](https://github.com/bluesky/hklpy/issues/291)
 * [ ] Solvers
   * [x] `libhkl`
   * [ ] [*ad-hoc* geometries](https://github.com/bluesky/hklpy/issues/244)

@@ -39,9 +39,9 @@ the tools in Bluesky's |hklpy2| package.
 ``unfreeze``     Choose mode that updates *axis*.                               Allow axis to be updated by ``forward()`` computation.
 --               :func:`~hklpy2.user.calc_UB`                                   Compute the UB matrix with two reflections.
 ``setaz h k l``  :attr:`~hklpy2.ops.Core.extras`                                Set the azimuthal reference vector to the given :math:`h, k, l`.
-``setsector``    Not yet implemented.                                           Select a sector.
-``cz``           Not yet implemented.                                           Calculate zone from two reflections
-``mz``           Not yet implemented.                                           Move zone
-``pl``           Not yet implemented.                                           Set the scattering plane
-``sz``           Not yet implemented.                                           Set zone
+``setsector``    ``diffractometer.core.constraints``                                          Select a sector.
+``cz``           See :meth:`~hklpy2.blocks.zone.zone_scan`                      Calculate zone from two reflections: TODO
+``mz``           See :meth:`~hklpy2.blocks.zone.zone_scan`                      Move zone: TODO
+``pl``           See :meth:`~hklpy2.blocks.zone.zone_scan`                      Set the scattering plane: TODO
+``sz``           See :meth:`~hklpy2.blocks.zone.Zone`                           Set zone: TODO
 ===============  =============================================================  ============
