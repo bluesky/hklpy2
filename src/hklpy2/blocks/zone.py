@@ -8,9 +8,9 @@ be specified directly or computed from two vectors (normal to their respective
 
 .. autosummary::
 
-    ~Zone
+    ~OrthonormalZone
+    ~scan_zone
     ~zonespace
-    ~zone_scan
     ~zone_series
 """
 
@@ -28,8 +28,9 @@ from bluesky.utils import plan
 from numpy.typing import NDArray
 from pyRestTable import Table
 
-import hklpy2
-from hklpy2.misc import BlueskyPlanType
+from ..diffract import DiffractometerBase
+from ..misc import BlueskyPlanType
+from ..misc import NoForwardSolutions
 
 logger = logging.getLogger(__name__)
 NUMBER = Union[int, float]
@@ -41,12 +42,15 @@ INPUT_VECTOR = Union[
 ]
 
 
-class Zone:
+class OrthonormalZone:
     """
-    A Cartesian zone for crystallography defined by a *zone axis*.
+    An orthonormal Cartesian zone defined by a *zone axis*.
 
-    The zone axis can be defined directly or computed from two vectors
-    using their cross product.
+    The zone axis can be defined directly or computed from two vectors using
+    their cross product.
+
+    For crystallography, this class operates on the Cartesian reciprocal
+    lattice, transformed from the crystal lattice h,k,l coordinates.
 
     Parameters
     ----------
@@ -297,7 +301,7 @@ class Zone:
 
 
 def zonespace(
-    diff: hklpy2.DiffractometerBase,
+    diff: DiffractometerBase,
     hkl_1: INPUT_VECTOR,
     hkl_2: INPUT_VECTOR,
     n: int,
@@ -311,7 +315,7 @@ def zonespace(
 
     Parameters
     ----------
-    diff : hklpy2.DiffractometerBase
+    diff : DiffractometerBase
         Diffractometer instance for sample & forward() calculations.
     hkl_1 : INPUT_VECTOR
         Starting vector in Miller index space (h, k, l).
@@ -332,7 +336,7 @@ def zonespace(
       the sample's lattice parameters.
     - Failed forward() solutions are logged at debug level.
     """
-    zone = Zone()
+    zone = OrthonormalZone()
 
     astar = diff.sample.lattice.cartesian_lattice_matrix
     astar_inv = np.linalg.inv(astar).T
@@ -345,12 +349,12 @@ def zonespace(
         try:
             miller = (astar_inv @ vec).tolist()
             yield miller, list(diff.forward(miller))
-        except hklpy2.misc.NoForwardSolutions:
+        except NoForwardSolutions:
             logger.debug("no solution for forward(%s)", miller)
 
 
 def zone_series(
-    diff: hklpy2.DiffractometerBase,
+    diff: DiffractometerBase,
     hkl_1: INPUT_VECTOR,
     hkl_2: INPUT_VECTOR,
     n: int,
@@ -366,7 +370,7 @@ def zone_series(
 
     Parameters
     ----------
-    diff : hklpy2.DiffractometerBase
+    diff : DiffractometerBase
         The diffractometer instance used for forward calculations.
     hkl_1 : INPUT_VECTOR
         Starting vector in Miller index space (h, k, l).
@@ -397,16 +401,16 @@ def zone_series(
 
 
 @plan
-def zone_scan(
+def scan_zone(
     detectors: Sequence[Readable],
-    diff: hklpy2.DiffractometerBase,
+    diff: DiffractometerBase,
     start: INPUT_VECTOR,
     finish: INPUT_VECTOR,
     num: int,
     md=None,
 ) -> BlueskyPlanType:
     """Scan zone."""
-    _md = dict(plan_name="zone_scan").update(md or {})
+    _md = dict(plan_name="scan_zone").update(md or {})
 
     @bpp.stage_decorator(detectors)
     @bpp.run_decorator(md=_md)
