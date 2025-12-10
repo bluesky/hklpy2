@@ -56,9 +56,9 @@ class OrthonormalZone:
     ----------
     axis : INPUT_VECTOR, optional
         Direct specification of the zone axis vector
-    v1 : INPUT_VECTOR, optional
+    b1 : INPUT_VECTOR, optional
         First vector for cross product calculation
-    v2 : INPUT_VECTOR, optional
+    b2 : INPUT_VECTOR, optional
         Second vector for cross product calculation
 
     Raises
@@ -71,21 +71,21 @@ class OrthonormalZone:
         self,
         *,
         axis: INPUT_VECTOR = None,
-        v1: INPUT_VECTOR = None,
-        v2: INPUT_VECTOR = None,
+        b1: INPUT_VECTOR = None,
+        b2: INPUT_VECTOR = None,
     ) -> None:
         self._axis = None
 
-        if axis is not None and (v1 is not None or v2 is not None):
-            raise ValueError("Cannot specify both 'axis' and 'v1/v2' parameters")
+        if axis is not None and (b1 is not None or b2 is not None):
+            raise ValueError("Cannot specify both 'axis' and 'b1/b2' parameters")
 
         if axis is not None:
             self.axis = axis
-        elif v1 is not None and v2 is not None:
-            self.define_axis(v1, v2)
-        elif v1 is not None or v2 is not None:
+        elif b1 is not None and b2 is not None:
+            self.define_axis(b1, b2)
+        elif b1 is not None or b2 is not None:
             raise ValueError(
-                "Both v1 and v2 must be provided to define axis from vectors"
+                "Both b1 and b2 must be provided to define axis from vectors"
             )
 
     def __repr__(self) -> str:
@@ -175,17 +175,17 @@ class OrthonormalZone:
 
     def define_axis(
         self,
-        v1: INPUT_VECTOR,
-        v2: INPUT_VECTOR,
+        b1: INPUT_VECTOR,
+        b2: INPUT_VECTOR,
         normalize: bool = False,
     ) -> NDArray[np.floating]:
         """Define the zone axis from two vectors using cross product.
 
         Parameters
         ----------
-        v1 : INPUT_VECTOR
+        b1 : INPUT_VECTOR
             First vector (3-element)
-        v2 : INPUT_VECTOR
+        b2 : INPUT_VECTOR
             Second vector (3-element)
         normalize : bool, default False
             If True, normalize the resulting axis vector
@@ -200,13 +200,13 @@ class OrthonormalZone:
         ValueError
             If vectors are parallel, zero, or invalid
         """
-        arr1 = self._standardize_vector(v1)
-        arr2 = self._standardize_vector(v2)
+        arr1 = self._standardize_vector(b1)
+        arr2 = self._standardize_vector(b2)
         axis = np.cross(arr1, arr2)
         norm = np.linalg.norm(axis)
         if norm == 0:
             raise ValueError(
-                f"Vectors v1={v1} and v2={v2} are parallel or one is zero; "
+                f"Vectors {b1=} and {b2=} are parallel or one is zero; "
                 #
                 "cross product is zero and cannot define a zone axis."
             )
@@ -240,15 +240,15 @@ class OrthonormalZone:
         dot = float(np.dot(self.axis, arr))
         return abs(dot) <= float(tol)
 
-    def vecspace(self, v1: np.ndarray, v2: np.ndarray, n: int) -> Iterator[NDArray]:
+    def vecspace(self, b1: INPUT_VECTOR, b2: INPUT_VECTOR, n: int) -> Iterator[NDArray]:
         """
-        Generate 'n' vectors from 'v1' to 'v2' rotated around v1 x v2.
+        Generate 'n' vectors from 'b1' to 'b2' rotated around b1 x b2.
 
         Parameters
         ----------
-        v1 : np.ndarray
+        b1 : INPUT_VECTOR
             Starting vector
-        v2 : np.ndarray
+        b2 : INPUT_VECTOR
             Ending vector
         n : int
             Number of vectors to generate
@@ -264,18 +264,18 @@ class OrthonormalZone:
             If vectors are not in the zone
         """
         if n < 2:
-            yield self._standardize_vector(v1)  # the trivial case
+            yield self._standardize_vector(b1)  # the trivial case
         else:
             if not self.axis_defined:
-                self.define_axis(v1, v2)
-            if not self.in_zone(v1):
-                raise ValueError(f"{v1=} not in zone {self}.")
-            if not self.in_zone(v2):
-                raise ValueError(f"{v2=} not in zone {self}.")
+                self.define_axis(b1, b2)
+            if not self.in_zone(b1):
+                raise ValueError(f"{b1=} not in zone {self}.")
+            if not self.in_zone(b2):
+                raise ValueError(f"{b2=} not in zone {self}.")
 
             axis = self.axis / np.linalg.norm(self.axis)
-            u1 = self._standardize_vector(v1)
-            u2 = self._standardize_vector(v2)
+            u1 = self._standardize_vector(b1)
+            u2 = self._standardize_vector(b2)
             n1 = np.linalg.norm(u1)
             n2 = np.linalg.norm(u2)
             u1 /= n1
@@ -307,33 +307,36 @@ def zonespace(
     n: int,
 ) -> Iterator[tuple[Sequence[float], Sequence[float]]]:
     """
-    Generate diffractometer positions along a crystallographic zone.
+    Generate pseudos and reals along a crystallographic zone.
 
-    Transforms Miller indices to Cartesian space, creates a zone between them,
-    and yields corresponding diffractometer pseudo and real positions for each
-    interpolated point along the zone.
+    - Transforms crystallographic coordinates (hkl) to Cartesian space (b) using
+      the sample's receiprocal lattice.
+    - Creates a zone from b1 & b2
+    - Yields corresponding diffractometer pseudo and real positions for
+      'n' points (including hkl_1 and hkl_2 points) along the
+      orthonormal zone, distributed evenly by angle.
 
     Parameters
     ----------
     diff : DiffractometerBase
         Diffractometer instance for sample & forward() calculations.
     hkl_1 : INPUT_VECTOR
-        Starting vector in Miller index space (h, k, l).
+        Starting vector of pseudos (h, k, l).
     hkl_2 : INPUT_VECTOR
-        Ending vector in Miller index space (h, k, l).
+        Ending vector of pseudos (h, k, l).
     n : int
         Number of interpolation points to generate (must be > 0).
 
     Yields
     ------
     tuple[Sequence[float], Sequence[float]]
-        (miller_indices, motor_positions) for each valid point.
-        Points where forward() fails are logged and skipped.
+        (pseudos, reals) for each valid point.
+        Points where forward(pseudos) fails are logged and skipped.
 
     Notes
     -----
-    - Vectors are transformed from Miller to Cartesian coordinates using
-      the sample's lattice parameters.
+    - hkl_1 & hkl_2 vectors are transformed from Miller to orthonormal
+      space using the sample's reciprocal lattice.
     - Failed forward() solutions are logged at debug level.
     """
     zone = OrthonormalZone()
@@ -342,15 +345,17 @@ def zonespace(
     astar_inv = np.linalg.inv(astar).T
 
     # Transform v1 & v2 from Miller space to Cartesian.
-    _v1 = astar.T @ zone._standardize_vector(hkl_1)
-    _v2 = astar.T @ zone._standardize_vector(hkl_2)
+    b1 = astar.T @ zone._standardize_vector(hkl_1)
+    b2 = astar.T @ zone._standardize_vector(hkl_2)
 
-    for vec in zone.vecspace(_v1, _v2, n):
+    # Step through the orthonormal zone space.
+    for b_vector in zone.vecspace(b1, b2, n):
+        # Convert each step back to crystallographic space.
+        pseudos = (astar_inv @ b_vector).tolist()
         try:
-            miller = (astar_inv @ vec).tolist()
-            yield miller, list(diff.forward(miller))
+            yield pseudos, list(diff.forward(pseudos))
         except NoForwardSolutions:
-            logger.debug("no solution for forward(%s)", miller)
+            logger.debug("no solution for forward(%s)", pseudos)
 
 
 def zone_series(
@@ -362,29 +367,29 @@ def zone_series(
     """
     Example: a series of diffractometer positions along a zone.
 
-    This function defines a crystallographic zone from two vectors, generates n
-    interpolated vectors distributed evenly in angle rotating about the zone
-    axis from hkl_1 to hkl_2, and calculates the corresponding diffractometer
-    positions. Results are displayed in a formatted table showing both
-    reciprocal space coordinates and real motor positions.
+    - defines a crystallographic zone from two vectors
+    - generates 'n' interpolated vectors distributed evenly in angle
+      rotating about the zone axis from hkl_1 to hkl_2
+    - calculates the corresponding diffractometer positions. 
+    - Results are displayed in a formatted table showing both reciprocal
+      space coordinates (pseudos) and real motor positions (reals).
 
     Parameters
     ----------
     diff : DiffractometerBase
         The diffractometer instance used for forward calculations.
     hkl_1 : INPUT_VECTOR
-        Starting vector in Miller index space (h, k, l).
+        Starting pseudo (h, k, l).
     hkl_2 : INPUT_VECTOR
-        Ending vector in Miller index space (h, k, l).
+        Ending pseudo (h, k, l).
     n : int
-        Number of points to generate from v1 to v2 (inclusive).
+        Number of points to generate from hkl_1 to hkl_2 (inclusive).
 
     Notes
     -----
-    - Vectors are transformed from Miller space to Cartesian coordinates
-      using the sample lattice.
-    - The zone axis is computed as the cross product of the transformed vectors.
-    - Forward kinematics may fail for some positions; these are silently skipped.
+    - Series is computed using the orthonormal zone.
+    - The 'forward(pseudos)' calculation may fail for some positions;
+      these are silently logged and skipped.
     - Results are printed to stdout as a formatted table.
 
     Examples
@@ -394,8 +399,8 @@ def zone_series(
     """
     table = Table()
     table.labels = diff.pseudo_axis_names + diff.real_axis_names
-    for vec, pos in zonespace(diff, hkl_1, hkl_2, n):
-        table.addRow([f"{v:.4f}" for v in vec + pos])
+    for pseudos, reals in zonespace(diff, hkl_1, hkl_2, n):
+        table.addRow([f"{v:.4f}" for v in pseudos + reals])
     print(f"{hkl_1=} {hkl_2=} {n=}")
     print(table)
 
@@ -409,9 +414,10 @@ def scan_zone(
     num: int,
     md=None,
 ) -> BlueskyPlanType:
-    """Scan zone."""
+    """Scan zone."""  # TODO: elaborate
     _md = dict(plan_name="scan_zone").update(md or {})
 
+    # TODO: Consider refactor using cycler and using bp.scan_nd.
     @bpp.stage_decorator(detectors)
     @bpp.run_decorator(md=_md)
     def inner():
