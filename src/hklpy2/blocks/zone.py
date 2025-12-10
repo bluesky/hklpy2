@@ -27,11 +27,18 @@ from numpy.typing import NDArray
 from pyRestTable import Table
 
 from ..diffract import DiffractometerBase
-from ..misc import BlueskyPlanType
 from ..misc import INPUT_VECTOR
+from ..misc import BlueskyPlanType
 from ..misc import NoForwardSolutions
 
 logger = logging.getLogger(__name__)
+
+__all__ = """
+    OrthonormalZone
+    scan_zone
+    zonespace
+    zone_series
+""".split()
 
 
 class OrthonormalZone:
@@ -312,7 +319,7 @@ def zonespace(
 
     Parameters
     ----------
-    diff : DiffractometerBase
+    diff : hklpy2.DiffractometerBase
         Diffractometer instance for sample & forward() calculations.
     hkl_1 : INPUT_VECTOR
         Starting vector of pseudos (h, k, l).
@@ -368,7 +375,7 @@ def zone_series(
 
     Parameters
     ----------
-    diff : DiffractometerBase
+    diff : hklpy2.DiffractometerBase
         The diffractometer instance used for forward calculations.
     hkl_1 : INPUT_VECTOR
         Starting pseudo (h, k, l).
