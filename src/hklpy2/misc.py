@@ -50,6 +50,7 @@ Miscellaneous Support.
     ~AxesList
     ~AxesTuple
     ~Matrix3x3
+    ~INPUT_VECTOR
     ~NamedFloatDict
     ~NUMERIC
 
@@ -121,6 +122,14 @@ KeyValueMap = Mapping[str, Any]
 
 NUMERIC = Union[float, int]
 """Either integer or real number."""
+
+INPUT_VECTOR = Union[
+    list[NUMERIC],
+    Mapping[str, NUMERIC],
+    npt.NDArray[np.floating],
+    Sequence[NUMERIC],
+]
+"""Acceptable forms of vector input for zones, ..."""
 
 AxesArray = npt.NDArray[np.floating]
 """Numpy array of axes values."""

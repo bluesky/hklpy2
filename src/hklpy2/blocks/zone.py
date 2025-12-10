@@ -16,9 +16,7 @@ be specified directly or computed from two vectors (normal to their respective
 
 import logging
 from typing import Iterator
-from typing import Mapping
 from typing import Sequence
-from typing import Union
 
 import numpy as np
 from bluesky import plan_stubs as bps
@@ -30,21 +28,15 @@ from pyRestTable import Table
 
 from ..diffract import DiffractometerBase
 from ..misc import BlueskyPlanType
+from ..misc import INPUT_VECTOR
 from ..misc import NoForwardSolutions
 
 logger = logging.getLogger(__name__)
-NUMBER = Union[int, float]
-INPUT_VECTOR = Union[
-    list[NUMBER],
-    Mapping[str, NUMBER],
-    NDArray[np.floating],
-    Sequence[NUMBER],
-]
 
 
 class OrthonormalZone:
     """
-    An orthonormal Cartesian zone defined by a *zone axis*.
+    An orthonormal (Cartesian) zone defined by a *zone axis*.
 
     The zone axis can be defined directly or computed from two vectors using
     their cross product.
@@ -74,6 +66,7 @@ class OrthonormalZone:
         b1: INPUT_VECTOR = None,
         b2: INPUT_VECTOR = None,
     ) -> None:
+        """Constructor"""
         self._axis = None
 
         if axis is not None and (b1 is not None or b2 is not None):
@@ -89,6 +82,7 @@ class OrthonormalZone:
             )
 
     def __repr__(self) -> str:
+        """Text representation of a zone object."""
         try:
             axis = self.axis
         except ValueError:
@@ -309,10 +303,10 @@ def zonespace(
     """
     Generate pseudos and reals along a crystallographic zone.
 
-    - Transforms crystallographic coordinates (hkl) to Cartesian space (b) using
-      the sample's receiprocal lattice.
-    - Creates a zone from b1 & b2
-    - Yields corresponding diffractometer pseudo and real positions for
+    * Transforms crystallographic coordinates (hkl) to Cartesian space
+      (b) using the sample's reciprocal lattice.
+    * Creates a zone from b1 & b2
+    * Yields corresponding diffractometer pseudo and real positions for
       'n' points (including hkl_1 and hkl_2 points) along the
       orthonormal zone, distributed evenly by angle.
 
@@ -335,9 +329,9 @@ def zonespace(
 
     Notes
     -----
-    - hkl_1 & hkl_2 vectors are transformed from Miller to orthonormal
+    * hkl_1 & hkl_2 vectors are transformed from Miller to orthonormal
       space using the sample's reciprocal lattice.
-    - Failed forward() solutions are logged at debug level.
+    * Failed forward() solutions are logged at debug level.
     """
     zone = OrthonormalZone()
 
@@ -367,12 +361,10 @@ def zone_series(
     """
     Example: a series of diffractometer positions along a zone.
 
-    - defines a crystallographic zone from two vectors
-    - generates 'n' interpolated vectors distributed evenly in angle
-      rotating about the zone axis from hkl_1 to hkl_2
-    - calculates the corresponding diffractometer positions. 
-    - Results are displayed in a formatted table showing both reciprocal
-      space coordinates (pseudos) and real motor positions (reals).
+    Print 'n' positions along the zone from hkl_1 to hkl_2 inclusive.
+    The series is computed using the orthonormal zone.
+    Results are displayed in a formatted table showing both reciprocal
+    space coordinates (pseudos) and real motor positions (reals).
 
     Parameters
     ----------
@@ -384,13 +376,6 @@ def zone_series(
         Ending pseudo (h, k, l).
     n : int
         Number of points to generate from hkl_1 to hkl_2 (inclusive).
-
-    Notes
-    -----
-    - Series is computed using the orthonormal zone.
-    - The 'forward(pseudos)' calculation may fail for some positions;
-      these are silently logged and skipped.
-    - Results are printed to stdout as a formatted table.
 
     Examples
     --------
