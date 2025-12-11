@@ -1,12 +1,30 @@
 """Unit tests of the zone module."""
 
+import logging
 import re
 from contextlib import nullcontext as does_not_raise
 
+import bluesky
 import numpy as np
 import pytest
+from ophyd.sim import noisy_det
 
+from ...diffract import creator
 from ..zone import OrthonormalZone
+from ..zone import scan_zone
+from ..zone import zone_series
+from ..zone import zonespace
+
+
+def sim4c2():
+    """For the zonespace test."""
+    sim = creator()
+    sim.add_sample("test", 4, 5, 6, 75, 85, 95, replace=True)
+    r1 = sim.add_reflection((4, 0, 0), (30.345, 10, 10, 60.69))
+    r2 = sim.add_reflection((0, 4, 0), (-24.63, -9.265, -85.08, -49.27))
+    sim.core.calc_UB(r1, r2)
+    sim.core.mode = "psi_constant"
+    return sim
 
 
 @pytest.mark.parametrize(
@@ -267,4 +285,74 @@ def test_OrthonormalZone_vecspace(parms, b1, b2, n, context):
         for b_vector in zone.vecspace(b1, b2, n):
             assert zone.in_zone(b_vector)
 
-# TODO: test zonespace, zone_series, scan_zone
+
+@pytest.mark.parametrize(
+    "diff, hkl_1, hkl_2, n, log, context",
+    [
+        pytest.param(
+            creator(),
+            (1, 0, 0),
+            (0, 1, 0),
+            3,
+            None,
+            does_not_raise(),
+            id="Ok",
+        ),
+        pytest.param(
+            sim4c2(),
+            (1, 0, 0),
+            (0, 1, 0),
+            3,
+            "no solution for forward",
+            does_not_raise(),
+            id="NoForwardSolutions",
+        ),
+    ],
+)
+def test_zonespace_and_series(
+    diff,
+    hkl_1,
+    hkl_2,
+    n,
+    log,
+    context,
+    capsys,
+    caplog,
+):
+    with context:
+        caplog.set_level(logging.DEBUG, logger="hklpy2.blocks.zone")
+        count = 0
+        for pseudos, reals in zonespace(diff, hkl_1, hkl_2, n):
+            count += 1
+        if log is None:
+            assert count == n
+        else:
+            assert log in caplog.text
+
+        zone_series(diff, hkl_1, hkl_2, n)
+        out, err = capsys.readouterr()
+        assert err == ""
+        assert isinstance(out, str)
+        assert len(out.splitlines()) > n
+
+
+@pytest.mark.parametrize(
+    "dets, diff, v1, v2, n, context",
+    [
+        pytest.param(
+            [noisy_det],
+            creator(),
+            (1, 0, 0),
+            (0, 1, 0),
+            5,
+            does_not_raise(),
+            id="Ok",
+        ),
+    ],
+)
+def test_scan_zone(dets, diff, v1, v2, n, context):
+    with context:
+        RE = bluesky.RunEngine()
+        (uid,) = RE(scan_zone([noisy_det], diff, v1, v2, n))
+        assert isinstance(uid, str)
+        assert len(uid) > 0
