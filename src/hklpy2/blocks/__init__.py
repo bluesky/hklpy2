@@ -8,4 +8,5 @@ Blocks support Diffractometer Operations.
    ~lattice
    ~reflection
    ~sample
+   ~zone
 """

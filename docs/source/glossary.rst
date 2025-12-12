@@ -275,3 +275,11 @@ Glossary
   The radiation is expected to be *monochromatic* neutrons or X-rays.
   The engineering units of wavelength must be identical to those of the
   *crystalline* *lattice* length parameters.
+
+..  index::
+    !definition; zone
+    !zone
+    !zone axis
+
+:zone: A set of *lattice* planes which are all parallel to one line, called the
+    *zone axis*.

@@ -245,10 +245,9 @@ class HklSolver(SolverBase):
 
         logger.debug("reflection: %r", reflection)
         pseudos = list(reflection["pseudos"].values())
-        reals = list(reflection["reals"].values())
+        self.set_reals(reflection["reals"])
         w0 = self.wavelength
         self.wavelength = reflection["wavelength"]
-        self._hkl_geometry.axis_values_set(reals, LIBHKL_USER_UNITS)
         self._sample.add_reflection(self._hkl_geometry, self._hkl_detector, *pseudos)
         self.wavelength = w0
 
@@ -423,9 +422,7 @@ class HklSolver(SolverBase):
             )
             # fmt: on
 
-        reals = list(reals.values())
-        self._hkl_geometry.axis_values_set(reals, LIBHKL_USER_UNITS)
-
+        self.set_reals(reals)
         self._hkl_engine_list.get()  # reals -> pseudos  (Odd name for this call!)
 
         # Assemble the dictionary

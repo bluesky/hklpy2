@@ -15,6 +15,7 @@ from ophyd import SoftPositioner
 from ophyd.sim import noisy_det
 
 from ..backends.base import SolverBase
+from ..backends.hkl_soleil import LIBHKL_USER_UNITS
 from ..blocks.reflection import ReflectionError
 from ..blocks.sample import Sample
 from ..diffract import DiffractometerBase
@@ -410,18 +411,18 @@ def test_full_position(mode, keys, context, expected, config_file):
 
 
 @pytest.mark.parametrize(
-    "pseudos, extras, mode, context, expected",
+    "pseudos, extras, mode, context",
     [
-        [
+        pytest.param(
             dict(h=1, k=1, l=0),
             dict(h2=1, k2=1, l2=1, psi=0),
             "psi_constant",
             does_not_raise(),
-            None,
-        ],
+            id="Ok",
+        ),
     ],
 )
-def test_move_forward_with_extras(pseudos, extras, mode, context, expected):
+def test_move_forward_with_extras(pseudos, extras, mode, context):
     from ..diffract import creator
 
     fourc = creator()
@@ -431,10 +432,61 @@ def test_move_forward_with_extras(pseudos, extras, mode, context, expected):
 
     RE = bluesky.RunEngine()
 
-    with context as reason:
+    with context:
+        assert np.allclose(
+            np.array(fourc.position),
+            np.array([0, 0, 0]),
+            atol=0.1,
+        )
+        assert np.allclose(
+            np.array(fourc.real_position),
+            np.array([0, 0, 0, 0]),
+            atol=0.1,
+        )
+        solver_geo = fourc.core.solver._hkl_geometry
+        assert np.allclose(
+            np.array(list(solver_geo.axis_values_get(LIBHKL_USER_UNITS))),
+            np.array([0, 0, 0, 0]),
+            atol=0.1,
+        )
+        assert np.allclose(
+            np.array(list(fourc.core.extras.values())),
+            np.array([0, 0, 0, 0]),
+            atol=0.1,
+        )
+        assert np.allclose(
+            np.array(list(fourc.core.solver.extras.values())),
+            np.array([0, 0, 0, 0]),
+            atol=0.1,
+        )
+
         RE(fourc.move_forward_with_extras(pseudos, extras))
 
-    assert_context_result(expected, reason)
+        assert np.allclose(
+            np.array(fourc.position),
+            np.array([1, 1, 0]),
+            atol=0.1,
+        )
+        assert np.allclose(
+            np.array(fourc.real_position),
+            np.array([80, 90, 45, -20]),
+            atol=0.1,
+        )
+        assert np.allclose(
+            np.array(list(solver_geo.axis_values_get(LIBHKL_USER_UNITS))),
+            np.array([80, 90, 45, -20]),
+            atol=0.1,
+        )
+        assert np.allclose(
+            np.array(list(fourc.core.extras.values())),
+            np.array([1, 1, 1, 0]),
+            atol=0.1,
+        )
+        assert np.allclose(
+            np.array(list(fourc.core.solver.extras.values())),
+            np.array([1, 1, 1, 0]),
+            atol=0.1,
+        )
 
 
 @pytest.mark.parametrize(

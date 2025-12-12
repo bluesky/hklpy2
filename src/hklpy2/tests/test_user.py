@@ -330,7 +330,7 @@ def test_set_lattice(fourc):
         [{"class": WavelengthXray}, 1.54, "angstrom", does_not_raise(), None],
         [{"class": WavelengthXray}, 120, "pm", does_not_raise(), None],
         [{"class": WavelengthXray}, 121, "pm", does_not_raise(), None],
-        [
+        pytest.param(
             {
                 "class": "hklpy2.incident.EpicsWavelengthRO",
                 "pv_wavelength": PV_WAVELENGTH,
@@ -339,8 +339,9 @@ def test_set_lattice(fourc):
             "angstrom",
             pytest.raises(TypeError),
             "'set_wavelength()' not supported",
-        ],
-        [
+            id="TypeError: set_wavelength(2), EpicsWavelengthRO",
+        ),
+        pytest.param(
             {
                 "class": "hklpy2.incident.EpicsMonochromatorRO",
                 "pv_energy": PV_ENERGY,
@@ -350,7 +351,8 @@ def test_set_lattice(fourc):
             "angstrom",
             pytest.raises(TypeError),
             "'set_wavelength()' not supported",
-        ],
+            id="TypeError: set_wavelength, EpicsMonochromatorRO",
+        ),
         [
             {
                 "class": "hklpy2.incident.EpicsWavelengthRO",
@@ -373,7 +375,7 @@ def test_set_lattice(fourc):
                 match=re.escape("'set_wavelength()' not supported"),
             ),
             None,
-            id="set_wavelength() not supported",
+            id="TypeError: set_wavelength(None), EpicsWavelengthRO",
         ),
     ],
 )

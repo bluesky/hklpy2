@@ -445,8 +445,7 @@ class DiffractometerBase(PseudoPositioner):
         EXAMPLE::
 
             RE(
-                move_forward_with_extras(
-                    diffractometer,
+                diffractometer.move_forward_with_extras(
                     pseudos=dict(h=2, k=1, l=0),
                     extras=dict(h2=2, k2=2, l2=0, psi=25),
                 )

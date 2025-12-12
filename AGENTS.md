@@ -20,26 +20,35 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 
 - Agents must write tests using parametrized pytest patterns and explicit context managers for expected success/failure.
 - Prefer more parameter sets to minimize the number of test functions.
-- Use `from contextlib import nullcontext as does_not_raise` for success cases and `pytest.raises(...)` for expected exceptions.
+- Use `from contextlib import nullcontext as does_not_raise` for success cases and `pytest.raises(..., match=re.escape(...))` for expected exceptions.
 - Construct objects and perform assignments that may raise inside the `with context:` block. Place assertions about object state after the `with` when the case expects success.
-- Use the project's helper `assert_context_result(expected, reason)` where available to standardize result checks.
+- - newer advice: When using pytest.raises(...), use `match=re.escape(...)` for partial text matches from the expected exception.
+- older advice: Use the project's helper `assert_context_result(expected, reason)` where available to standardize result checks.
+- Use pytest.param() for all parameter sets.  Identify each parameter set with a relevant `id="..."` kwarg.
 - Example pattern (brief):
 
 ```py
 @pytest.mark.parametrize(
-  "set_value, context, expected",
-  [
-    ("angstrom", does_not_raise(), "angstrom"),
-    ("not_a_unit", pytest.raises(Exception), None),
-  ],
+    "parms, context",
+    [
+        pytest.param(
+            dict(axis=(0, 0, 0)),
+            pytest.raises(
+                ValueError,
+                match=re.escape("Zero |axis| not allowed."),
+            ),
+            id="|axis| = 0",
+        ),
+        pytest.param(
+            dict(axis=(0, 0, 1)),
+            does_not_raise(),
+            id="|axis| = 1",
+        ),
+    ],
 )
-def test_length_units_property_and_validation(set_value, context, expected):
-  with context:
-    lat = Lattice(3.0)
-    lat.length_units = set_value
-
-  if expected is not None:
-    assert lat.length_units == expected
+def test_OrthonormalZone_set_zone_axis(parms, context):
+    with context:
+        OrthonormalZone(**parms)
 ```
 
 This makes tests explicit and machine-friendly for automated agents.
