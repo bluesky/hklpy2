@@ -377,37 +377,37 @@ def test_diffractometer_wh(
 
 
 @pytest.mark.parametrize(
-    "mode, keys, context, expected, config_file",
+    "mode, keys, context, config_file",
     [
-        [
+        pytest.param(
             "bissector",
             "h k l omega chi phi tth".split(),
             does_not_raise(),
-            None,
             "e4cv_orient.yml",
-        ],
-        [
+            id="Ok: e4cv_orient.yml",
+        ),
+        pytest.param(
             "bissector",
             "h k l omega chi phi tth".split(),
             does_not_raise(),
-            None,
             "fourc-configuration.yml",
-        ],
+            id="Ok: fourc-configuration.yml",
+        ),
     ],
 )
-def test_full_position(mode, keys, context, expected, config_file):
+def test_full_position(mode, keys, context, config_file):
     from ..diffract import creator
 
     assert config_file.endswith(".yml")
 
-    with context as reason:
+    with context:
         fourc = creator()
         fourc.restore(HKLPY2_DIR / "tests" / config_file)
         fourc.core.mode = mode
         pos = fourc.full_position()
         assert isinstance(pos, dict)
-
-    assert_context_result(expected, reason)
+        for key in keys:
+            assert key in pos
 
 
 @pytest.mark.parametrize(
