@@ -1,7 +1,7 @@
 """
 Crystallographic zone axis operations.
 
-A *zone* is set of *lattice* planes which are all parallel to one line, called
+A *zone* is set of crystal *lattice* planes, all parallel to one line, called
 the *zone axis*. A *zone* is defined by a *zone axis* (a unit vector), which can
 be specified directly or computed from two vectors (normal to their respective
 *lattice* planes) using their cross product.
@@ -15,7 +15,10 @@ be specified directly or computed from two vectors (normal to their respective
 """
 
 import logging
+from typing import Any
 from typing import Iterator
+from typing import Mapping
+from typing import Optional
 from typing import Sequence
 
 import numpy as np
@@ -248,9 +251,9 @@ class OrthonormalZone:
         Parameters
         ----------
         b1 : INPUT_VECTOR
-            Starting vector
+            Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
         b2 : INPUT_VECTOR
-            Ending vector
+            Ending :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
         n : int
             Number of vectors to generate
 
@@ -322,9 +325,9 @@ def zonespace(
     diff : hklpy2.DiffractometerBase
         Diffractometer instance for sample & forward() calculations.
     hkl_1 : INPUT_VECTOR
-        Starting vector of pseudos (h, k, l).
+        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
     hkl_2 : INPUT_VECTOR
-        Ending vector of pseudos (h, k, l).
+        Ending :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
     n : int
         Number of interpolation points to generate (must be > 0).
 
@@ -378,9 +381,9 @@ def zone_series(
     diff : hklpy2.DiffractometerBase
         The diffractometer instance used for forward calculations.
     hkl_1 : INPUT_VECTOR
-        Starting pseudo (h, k, l).
+        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
     hkl_2 : INPUT_VECTOR
-        Ending pseudo (h, k, l).
+        Ending :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
     n : int
         Number of points to generate from hkl_1 to hkl_2 (inclusive).
 
@@ -400,13 +403,52 @@ def zone_series(
 @plan
 def scan_zone(
     detectors: Sequence[Readable],
-    diff: DiffractometerBase,
+    diffractometer: DiffractometerBase,
     start: INPUT_VECTOR,
     finish: INPUT_VECTOR,
     num: int,
-    md=None,
+    md: Optional[Mapping[str, Any]] = None,
 ) -> BlueskyPlanType:
-    """Scan zone."""  # TODO: elaborate
+    """
+    Perform a zone scan on a diffractometer.
+
+    .. rubric:: Behavior
+
+    * Computes a sequence of pseudos and the corresponding reals in the
+      crystallographic zone defined by the cross-product of start cross finish.
+      Skips a position if not permitted by the UB matrix or diffractometer
+      constraints.
+    * For each point:
+        1. Moves the diffractometer real axes to the computed
+           real positions.
+        2. Triggers all detectors and waits for completion.
+        3. Creates a ``primary`` stream, reads all detectors and the
+           diffractometer, and saves the event.
+
+    .. rubric:: Example
+
+    .. code-block:: python
+
+        from hklpy2 import creator, scan_zone
+        fourc = creator()
+        (uid,) = RE(scan_zone([scaler],fourc, (1,0,0), (0,1,0), 5))
+
+    Parameters
+    ----------
+    detectors : Sequence[Readable])
+        Ophyd devices to trigger and read at each measurement point.
+    diffractometer : hklpy2.DiffractometerBase
+        hklpy2 Diffractometer object.
+    start : INPUT_VECTOR
+        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+    finish : INPUT_VECTOR
+        Finishing :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+    num : int
+        Number of points to sample along the zone (inclusive
+        of endpoints).
+    md : dict
+        (Optional) User-supplied metadata.
+    """
     _md = dict(plan_name="scan_zone").update(md or {})
 
     # TODO: Consider refactor using cycler and using bp.scan_nd.
@@ -414,12 +456,12 @@ def scan_zone(
     @bpp.run_decorator(md=_md)
     def inner():
         # Compute sequence of pseudos & reals in the zone
-        for pseudos, reals in zonespace(diff, start, finish, num):
+        for pseudos, reals in zonespace(diffractometer, start, finish, num):
             # move axes
             logger.debug("zone hkl=%s", pseudos)
             parms = []
-            for k, v in zip(diff.real_axis_names, reals):
-                parms.append(getattr(diff, k))
+            for k, v in zip(diffractometer.real_axis_names, reals):
+                parms.append(getattr(diffractometer, k))
                 parms.append(v)
             yield from bps.mv(*parms)
 
@@ -431,7 +473,7 @@ def scan_zone(
 
             # read
             yield from bps.create("primary")
-            for item in detectors + [diff]:
+            for item in detectors + [diffractometer]:
                 yield from bps.read(item)
             yield from bps.save()
 
