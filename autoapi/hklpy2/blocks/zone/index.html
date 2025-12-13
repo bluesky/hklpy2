@@ -1,0 +1,891 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>hklpy2.blocks.zone &#8212; hklpy2 0.2</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../_static/documentation_options.js?v=b62419fa"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/hklpy2/blocks/zone/index';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="hklpy2.diffract" href="../../diffract/index.html" />
+    <link rel="prev" title="hklpy2.blocks.sample" href="../sample/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.2</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">hklpy2</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../backends/index.html">hklpy2.backends</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../backends/base/index.html">hklpy2.backends.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../backends/hkl_soleil/index.html">hklpy2.backends.hkl_soleil</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../backends/hkl_soleil_utils/index.html">hklpy2.backends.hkl_soleil_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../backends/no_op/index.html">hklpy2.backends.no_op</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../backends/th_tth_q/index.html">hklpy2.backends.th_tth_q</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../index.html">hklpy2.blocks</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../configure/index.html">hklpy2.blocks.configure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../constraints/index.html">hklpy2.blocks.constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lattice/index.html">hklpy2.blocks.lattice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reflection/index.html">hklpy2.blocks.reflection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sample/index.html">hklpy2.blocks.sample</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">hklpy2.blocks.zone</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../diffract/index.html">hklpy2.diffract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../incident/index.html">hklpy2.incident</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../misc/index.html">hklpy2.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../ops/index.html">hklpy2.ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../user/index.html">hklpy2.user</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">hklpy2</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">hklpy2.blocks</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">hklpy2.blocks.zone</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-hklpy2.blocks.zone">
+<span id="hklpy2-blocks-zone"></span><h1>hklpy2.blocks.zone<a class="headerlink" href="#module-hklpy2.blocks.zone" title="Link to this heading">#</a></h1>
+<p>Crystallographic zone axis operations.</p>
+<p>A <em>zone</em> is set of crystal <em>lattice</em> planes, all parallel to one line, called
+the <em>zone axis</em>. A <em>zone</em> is defined by a <em>zone axis</em> (a unit vector), which can
+be specified directly or computed from two vectors (normal to their respective
+<em>lattice</em> planes) using their cross product.</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.OrthonormalZone" title="hklpy2.blocks.zone.OrthonormalZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrthonormalZone</span></code></a>(*[, axis, b1, b2])</p></td>
+<td><p>An orthonormal (Cartesian) zone defined by a <em>zone axis</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.scan_zone" title="hklpy2.blocks.zone.scan_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scan_zone</span></code></a>(detectors, diffractometer, start, ...)</p></td>
+<td><p>Perform a zone scan on a diffractometer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.zonespace" title="hklpy2.blocks.zone.zonespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zonespace</span></code></a>(diff, hkl_1, hkl_2, n)</p></td>
+<td><p>Generate pseudos and reals along a crystallographic zone.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.zone_series" title="hklpy2.blocks.zone.zone_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zone_series</span></code></a>(diff, hkl_1, hkl_2, n)</p></td>
+<td><p>Example: a series of diffractometer positions along a zone.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.logger" title="hklpy2.blocks.zone.logger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.__all__" title="hklpy2.blocks.zone.__all__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__all__</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.OrthonormalZone" title="hklpy2.blocks.zone.OrthonormalZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrthonormalZone</span></code></a></p></td>
+<td><p>An orthonormal (Cartesian) zone defined by a <em>zone axis</em>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.zonespace" title="hklpy2.blocks.zone.zonespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zonespace</span></code></a>(→ Iterator[tuple[Sequence[float], ...)</p></td>
+<td><p>Generate pseudos and reals along a crystallographic zone.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.zone_series" title="hklpy2.blocks.zone.zone_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zone_series</span></code></a>(→ None)</p></td>
+<td><p>Example: a series of diffractometer positions along a zone.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.scan_zone" title="hklpy2.blocks.zone.scan_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scan_zone</span></code></a>(→ hklpy2.misc.BlueskyPlanType)</p></td>
+<td><p>Perform a zone scan on a diffractometer.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.logger">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.zone.</span></span><span class="sig-name descname"><span class="pre">logger</span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.logger" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.__all__">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.zone.</span></span><span class="sig-name descname"><span class="pre">__all__</span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#__all__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.__all__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.OrthonormalZone">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.zone.</span></span><span class="sig-name descname"><span class="pre">OrthonormalZone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#OrthonormalZone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.OrthonormalZone" title="Link to this definition">#</a></dt>
+<dd><p>An orthonormal (Cartesian) zone defined by a <em>zone axis</em>.</p>
+<p>The zone axis can be defined directly or computed from two vectors using
+their cross product.</p>
+<p>For crystallography, this class operates on the Cartesian reciprocal
+lattice, transformed from the crystal lattice h,k,l coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>INPUT_VECTOR</em><em>, </em><em>optional</em>) – Direct specification of the zone axis vector</p></li>
+<li><p><strong>b1</strong> (<em>INPUT_VECTOR</em><em>, </em><em>optional</em>) – First vector for cross product calculation</p></li>
+<li><p><strong>b2</strong> (<em>INPUT_VECTOR</em><em>, </em><em>optional</em>) – Second vector for cross product calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If both axis and v1/v2 are provided, or if only one of v1/v2 is provided</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.OrthonormalZone._axis">
+<span class="sig-name descname"><span class="pre">_axis</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#OrthonormalZone._axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.OrthonormalZone._axis" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.OrthonormalZone.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#OrthonormalZone.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.OrthonormalZone.__repr__" title="Link to this definition">#</a></dt>
+<dd><p>Text representation of a zone object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.OrthonormalZone._standardize_vector">
+<span class="sig-name descname"><span class="pre">_standardize_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.typing.NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.floating</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#OrthonormalZone._standardize_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.OrthonormalZone._standardize_vector" title="Link to this definition">#</a></dt>
+<dd><p>Return a numpy array of 3 floats. Raise exception as needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vector</strong> (<em>INPUT_VECTOR</em>) – A 3-element sequence, array, or dict with 3 values</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>3-element numpy array of floats</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>NDArray[np.floating]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If vector cannot be converted to 3-element array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.OrthonormalZone.axis">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">axis</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">numpy.typing.NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.floating</span><span class="p"><span class="pre">]</span></span></em><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#OrthonormalZone.axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.OrthonormalZone.axis" title="Link to this definition">#</a></dt>
+<dd><p>Get the zone axis (unit) vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>3-element numpy array representing the zone axis</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>NDArray[np.floating]</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If zone axis is undefined</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.OrthonormalZone.axis_defined">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">axis_defined</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></em><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#OrthonormalZone.axis_defined"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.OrthonormalZone.axis_defined" title="Link to this definition">#</a></dt>
+<dd><p>Is the zone axis defined?</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.OrthonormalZone.define_axis">
+<span class="sig-name descname"><span class="pre">define_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.typing.NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.floating</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#OrthonormalZone.define_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.OrthonormalZone.define_axis" title="Link to this definition">#</a></dt>
+<dd><p>Define the zone axis from two vectors using cross product.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b1</strong> (<em>INPUT_VECTOR</em>) – First vector (3-element)</p></li>
+<li><p><strong>b2</strong> (<em>INPUT_VECTOR</em>) – Second vector (3-element)</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>default False</em>) – If True, normalize the resulting axis vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The computed zone axis vector</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>NDArray[np.floating]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If vectors are parallel, zero, or invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.OrthonormalZone.in_zone">
+<span class="sig-name descname"><span class="pre">in_zone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#OrthonormalZone.in_zone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.OrthonormalZone.in_zone" title="Link to this definition">#</a></dt>
+<dd><p>Verify if ‘vector’ is in this zone.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vector</strong> (<em>INPUT_VECTOR</em>) – Vector to test for zone membership</p></li>
+<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a><em>, </em><em>default 1e-5</em>) – Tolerance for dot product comparison</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if vector is in the zone (dot product with axis ≤ tol)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If zone axis is undefined or vector is invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.OrthonormalZone.vecspace">
+<span class="sig-name descname"><span class="pre">vecspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.typing.NDArray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#OrthonormalZone.vecspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.OrthonormalZone.vecspace" title="Link to this definition">#</a></dt>
+<dd><p>Generate ‘n’ vectors from ‘b1’ to ‘b2’ rotated around b1 x b2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b1</strong> (<em>INPUT_VECTOR</em>) – Starting <a class="reference internal" href="../../misc/index.html#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a> of pseudos (<em>h,k,l</em>).</p></li>
+<li><p><strong>b2</strong> (<em>INPUT_VECTOR</em>) – Ending <a class="reference internal" href="../../misc/index.html#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a> of pseudos (<em>h,k,l</em>).</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of vectors to generate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>NDArray</em> – Vectors interpolated between v1 and v2</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If vectors are not in the zone</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.zonespace">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.zone.</span></span><span class="sig-name descname"><span class="pre">zonespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><span class="pre">hklpy2.diffract.DiffractometerBase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hkl_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hkl_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#zonespace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.zonespace" title="Link to this definition">#</a></dt>
+<dd><p>Generate pseudos and reals along a crystallographic zone.</p>
+<ul class="simple">
+<li><p>Transforms crystallographic coordinates (hkl) to Cartesian space
+(b) using the sample’s reciprocal lattice.</p></li>
+<li><p>Creates a zone from b1 &amp; b2</p></li>
+<li><p>Yields corresponding diffractometer pseudo and real positions for
+‘n’ points (including hkl_1 and hkl_2 points) along the
+orthonormal zone, distributed evenly by angle.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diff</strong> (<a class="reference internal" href="../../index.html#hklpy2.DiffractometerBase" title="hklpy2.DiffractometerBase"><em>hklpy2.DiffractometerBase</em></a>) – Diffractometer instance for sample &amp; forward() calculations.</p></li>
+<li><p><strong>hkl_1</strong> (<em>INPUT_VECTOR</em>) – Starting <a class="reference internal" href="../../misc/index.html#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a> of pseudos (<em>h,k,l</em>).</p></li>
+<li><p><strong>hkl_2</strong> (<em>INPUT_VECTOR</em>) – Ending <a class="reference internal" href="../../misc/index.html#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a> of pseudos (<em>h,k,l</em>).</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of interpolation points to generate (must be &gt; 0).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>tuple[Sequence[float], Sequence[float]]</em> – (pseudos, reals) for each valid point.
+Points where forward(pseudos) fails are logged and skipped.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>hkl_1 &amp; hkl_2 vectors are transformed from Miller to orthonormal
+space using the sample’s reciprocal lattice.</p></li>
+<li><p>Failed forward() solutions are logged at debug level.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.zone_series">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.zone.</span></span><span class="sig-name descname"><span class="pre">zone_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><span class="pre">hklpy2.diffract.DiffractometerBase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hkl_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hkl_2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#zone_series"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.zone_series" title="Link to this definition">#</a></dt>
+<dd><p>Example: a series of diffractometer positions along a zone.</p>
+<p>Print ‘n’ positions along the zone from hkl_1 to hkl_2 inclusive.
+The series is computed using the orthonormal zone.
+Results are displayed in a formatted table showing both reciprocal
+space coordinates (pseudos) and real motor positions (reals).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diff</strong> (<a class="reference internal" href="../../index.html#hklpy2.DiffractometerBase" title="hklpy2.DiffractometerBase"><em>hklpy2.DiffractometerBase</em></a>) – The diffractometer instance used for forward calculations.</p></li>
+<li><p><strong>hkl_1</strong> (<em>INPUT_VECTOR</em>) – Starting <a class="reference internal" href="../../misc/index.html#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a> of pseudos (<em>h,k,l</em>).</p></li>
+<li><p><strong>hkl_2</strong> (<em>INPUT_VECTOR</em>) – Ending <a class="reference internal" href="../../misc/index.html#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a> of pseudos (<em>h,k,l</em>).</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points to generate from hkl_1 to hkl_2 (inclusive).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate 5 points from (1,0,0) to (0,1,0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">zone_series</span><span class="p">(</span><span class="n">my_diffractometer</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.scan_zone">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.zone.</span></span><span class="sig-name descname"><span class="pre">scan_zone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detectors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">bluesky.protocols.Readable</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffractometer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><span class="pre">hklpy2.diffract.DiffractometerBase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finish</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.misc.INPUT_VECTOR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">md</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">hklpy2.misc.BlueskyPlanType</span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#scan_zone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.scan_zone" title="Link to this definition">#</a></dt>
+<dd><p>Perform a zone scan on a diffractometer.</p>
+<p class="rubric">Behavior</p>
+<ul class="simple">
+<li><p>Computes a sequence of pseudos and the corresponding reals in the
+crystallographic zone defined by the cross-product of start cross finish.
+Skips a position if not permitted by the UB matrix or diffractometer
+constraints.</p></li>
+<li><dl class="simple">
+<dt>For each point:</dt><dd><ol class="arabic simple">
+<li><p>Moves the diffractometer real axes to the computed
+real positions.</p></li>
+<li><p>Triggers all detectors and waits for completion.</p></li>
+<li><p>Creates a <code class="docutils literal notranslate"><span class="pre">primary</span></code> stream, reads all detectors and the
+diffractometer, and saves the event.</p></li>
+</ol>
+</dd>
+</dl>
+</li>
+</ul>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">creator</span><span class="p">,</span> <span class="n">scan_zone</span>
+<span class="n">fourc</span> <span class="o">=</span> <span class="n">creator</span><span class="p">()</span>
+<span class="p">(</span><span class="n">uid</span><span class="p">,)</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span><span class="n">scan_zone</span><span class="p">([</span><span class="n">scaler</span><span class="p">],</span><span class="n">fourc</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>detectors</strong> (<em>Sequence</em><em>[</em><em>Readable</em><em>]</em><em>)</em>) – Ophyd devices to trigger and read at each measurement point.</p></li>
+<li><p><strong>diffractometer</strong> (<a class="reference internal" href="../../index.html#hklpy2.DiffractometerBase" title="hklpy2.DiffractometerBase"><em>hklpy2.DiffractometerBase</em></a>) – hklpy2 Diffractometer object.</p></li>
+<li><p><strong>start</strong> (<em>INPUT_VECTOR</em>) – Starting <a class="reference internal" href="../../misc/index.html#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a> of pseudos (<em>h,k,l</em>).</p></li>
+<li><p><strong>finish</strong> (<em>INPUT_VECTOR</em>) – Finishing <a class="reference internal" href="../../misc/index.html#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a> of pseudos (<em>h,k,l</em>).</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points to sample along the zone (inclusive
+of endpoints).</p></li>
+<li><p><strong>md</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a>) – (Optional) User-supplied metadata.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../sample/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">hklpy2.blocks.sample</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../../diffract/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">hklpy2.diffract</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.__all__"><code class="docutils literal notranslate"><span class="pre">__all__</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.OrthonormalZone"><code class="docutils literal notranslate"><span class="pre">OrthonormalZone</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.OrthonormalZone._axis"><code class="docutils literal notranslate"><span class="pre">OrthonormalZone._axis</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.OrthonormalZone.__repr__"><code class="docutils literal notranslate"><span class="pre">OrthonormalZone.__repr__()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.OrthonormalZone._standardize_vector"><code class="docutils literal notranslate"><span class="pre">OrthonormalZone._standardize_vector()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.OrthonormalZone.axis"><code class="docutils literal notranslate"><span class="pre">OrthonormalZone.axis</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.OrthonormalZone.axis_defined"><code class="docutils literal notranslate"><span class="pre">OrthonormalZone.axis_defined</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.OrthonormalZone.define_axis"><code class="docutils literal notranslate"><span class="pre">OrthonormalZone.define_axis()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.OrthonormalZone.in_zone"><code class="docutils literal notranslate"><span class="pre">OrthonormalZone.in_zone()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.OrthonormalZone.vecspace"><code class="docutils literal notranslate"><span class="pre">OrthonormalZone.vecspace()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.zonespace"><code class="docutils literal notranslate"><span class="pre">zonespace()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.zone_series"><code class="docutils literal notranslate"><span class="pre">zone_series()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.scan_zone"><code class="docutils literal notranslate"><span class="pre">scan_zone()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/autoapi/hklpy2/blocks/zone/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../../../_sources/autoapi/hklpy2/blocks/zone/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2025, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

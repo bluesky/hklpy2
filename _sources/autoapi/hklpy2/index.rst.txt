@@ -62,6 +62,7 @@ Functions
 .. autoapisummary::
 
    hklpy2._get_version
+   hklpy2.scan_zone
    hklpy2.creator
    hklpy2.diffractometer_class_factory
    hklpy2.get_solver
@@ -446,6 +447,46 @@ Package Contents
 
    :see: https://physics.nist.gov/cgi-bin/cuu/Value?asil
 
+.. py:function:: scan_zone(detectors: Sequence[bluesky.protocols.Readable], diffractometer: hklpy2.diffract.DiffractometerBase, start: hklpy2.misc.INPUT_VECTOR, finish: hklpy2.misc.INPUT_VECTOR, num: int, md: Optional[Mapping[str, Any]] = None) -> hklpy2.misc.BlueskyPlanType
+
+   Perform a zone scan on a diffractometer.
+
+   .. rubric:: Behavior
+
+   * Computes a sequence of pseudos and the corresponding reals in the
+     crystallographic zone defined by the cross-product of start cross finish.
+     Skips a position if not permitted by the UB matrix or diffractometer
+     constraints.
+   * For each point:
+       1. Moves the diffractometer real axes to the computed
+          real positions.
+       2. Triggers all detectors and waits for completion.
+       3. Creates a ``primary`` stream, reads all detectors and the
+          diffractometer, and saves the event.
+
+   .. rubric:: Example
+
+   .. code-block:: python
+
+       from hklpy2 import creator, scan_zone
+       fourc = creator()
+       (uid,) = RE(scan_zone([scaler],fourc, (1,0,0), (0,1,0), 5))
+
+   :param detectors: Ophyd devices to trigger and read at each measurement point.
+   :type detectors: Sequence[Readable])
+   :param diffractometer: hklpy2 Diffractometer object.
+   :type diffractometer: hklpy2.DiffractometerBase
+   :param start: Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type start: INPUT_VECTOR
+   :param finish: Finishing :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type finish: INPUT_VECTOR
+   :param num: Number of points to sample along the zone (inclusive
+               of endpoints).
+   :type num: int
+   :param md: (Optional) User-supplied metadata.
+   :type md: dict
+
+
 .. py:class:: DiffractometerBase(prefix: str = '', *, solver: str = None, geometry: str = None, solver_kwargs: dict = {}, pseudos: list[str] = [], reals: list[str] = [], reals_units: Optional[str] = None, forward_solution_function: Optional[Callable] = None, **kwargs)
 
    Bases: :py:obj:`ophyd.PseudoPositioner`
@@ -679,8 +720,7 @@ Package Contents
       EXAMPLE::
 
           RE(
-              move_forward_with_extras(
-                  diffractometer,
+              diffractometer.move_forward_with_extras(
                   pseudos=dict(h=2, k=1, l=0),
                   extras=dict(h2=2, k2=2, l2=0, psi=25),
               )

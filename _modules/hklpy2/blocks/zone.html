@@ -1,0 +1,962 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hklpy2.blocks.zone &#8212; hklpy2 0.2</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=b62419fa"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/blocks/zone';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.2" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.2</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../hklpy2.html" class="nav-link">hklpy2</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">hklpy2.blocks.zone</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for hklpy2.blocks.zone</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Crystallographic zone axis operations.</span>
+
+<span class="sd">A *zone* is set of crystal *lattice* planes, all parallel to one line, called</span>
+<span class="sd">the *zone axis*. A *zone* is defined by a *zone axis* (a unit vector), which can</span>
+<span class="sd">be specified directly or computed from two vectors (normal to their respective</span>
+<span class="sd">*lattice* planes) using their cross product.</span>
+
+<span class="sd">.. autosummary::</span>
+
+<span class="sd">    ~OrthonormalZone</span>
+<span class="sd">    ~scan_zone</span>
+<span class="sd">    ~zonespace</span>
+<span class="sd">    ~zone_series</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan_stubs</span> <span class="k">as</span> <span class="n">bps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">preprocessors</span> <span class="k">as</span> <span class="n">bpp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Readable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NDArray</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyRestTable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INPUT_VECTOR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlueskyPlanType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="__all__">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.__all__">[docs]</a>
+<span class="n">__all__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    OrthonormalZone</span>
+<span class="s2">    scan_zone</span>
+<span class="s2">    zonespace</span>
+<span class="s2">    zone_series</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="OrthonormalZone">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OrthonormalZone</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An orthonormal (Cartesian) zone defined by a *zone axis*.</span>
+
+<span class="sd">    The zone axis can be defined directly or computed from two vectors using</span>
+<span class="sd">    their cross product.</span>
+
+<span class="sd">    For crystallography, this class operates on the Cartesian reciprocal</span>
+<span class="sd">    lattice, transformed from the crystal lattice h,k,l coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    axis : INPUT_VECTOR, optional</span>
+<span class="sd">        Direct specification of the zone axis vector</span>
+<span class="sd">    b1 : INPUT_VECTOR, optional</span>
+<span class="sd">        First vector for cross product calculation</span>
+<span class="sd">    b2 : INPUT_VECTOR, optional</span>
+<span class="sd">        Second vector for cross product calculation</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If both axis and v1/v2 are provided, or if only one of v1/v2 is provided</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="OrthonormalZone._axis">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone._axis">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">b1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">b2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot specify both &#39;axis&#39; and &#39;b1/b2&#39; parameters&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span>
+        <span class="k">elif</span> <span class="n">b1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">b2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">define_axis</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">b1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">b2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Both b1 and b2 must be provided to define axis from vectors&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="OrthonormalZone.__repr__">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.__repr__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Text representation of a zone object.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="s2">&quot;undefined&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">axis</span><span class="si">=}</span><span class="s2">)&quot;</span></div>
+
+
+<div class="viewcode-block" id="OrthonormalZone._standardize_vector">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone._standardize_vector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_standardize_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a numpy array of 3 floats. Raise exception as needed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vector : INPUT_VECTOR</span>
+<span class="sd">            A 3-element sequence, array, or dict with 3 values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        NDArray[np.floating]</span>
+<span class="sd">            3-element numpy array of floats</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If vector cannot be converted to 3-element array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">vector</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arr</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot create vector from empty dictionary&quot;</span><span class="p">)</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;vector must be 1-D array-like vector of length 3.&quot;</span>
+                <span class="c1">#</span>
+                <span class="sa">f</span><span class="s2">&quot;  Received </span><span class="si">{</span><span class="n">vector</span><span class="si">}</span><span class="s2"> with shape </span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">arr</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="OrthonormalZone.axis">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.axis">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the zone axis (unit) vector.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        NDArray[np.floating]</span>
+<span class="sd">            3-element numpy array representing the zone axis</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If zone axis is undefined</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_defined</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Zone axis is undefined.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span></div>
+
+
+    <span class="nd">@axis</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the zone axis (unit) vector.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vector : INPUT_VECTOR</span>
+<span class="sd">            A 3-element sequence, array, or dict representing the axis</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If vector cannot be converted to 3-element array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Zero |axis| not allowed. Received </span><span class="si">{</span><span class="n">vector</span><span class="si">=}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">/</span> <span class="n">norm</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="OrthonormalZone.axis_defined">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.axis_defined">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">axis_defined</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Is the zone axis defined?&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="OrthonormalZone.define_axis">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.define_axis">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">define_axis</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
+        <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define the zone axis from two vectors using cross product.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        b1 : INPUT_VECTOR</span>
+<span class="sd">            First vector (3-element)</span>
+<span class="sd">        b2 : INPUT_VECTOR</span>
+<span class="sd">            Second vector (3-element)</span>
+<span class="sd">        normalize : bool, default False</span>
+<span class="sd">            If True, normalize the resulting axis vector</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        NDArray[np.floating]</span>
+<span class="sd">            The computed zone axis vector</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If vectors are parallel, zero, or invalid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">arr1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
+        <span class="n">arr2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="n">arr2</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Vectors </span><span class="si">{</span><span class="n">b1</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="n">b2</span><span class="si">=}</span><span class="s2"> are parallel or one is zero; &quot;</span>
+                <span class="c1">#</span>
+                <span class="s2">&quot;cross product is zero and cannot define a zone axis.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span> <span class="o">/</span> <span class="n">norm</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">axis</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span></div>
+
+
+<div class="viewcode-block" id="OrthonormalZone.in_zone">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.in_zone">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">in_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify if &#39;vector&#39; is in this zone.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vector : INPUT_VECTOR</span>
+<span class="sd">            Vector to test for zone membership</span>
+<span class="sd">        tol : float, default 1e-5</span>
+<span class="sd">            Tolerance for dot product comparison</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if vector is in the zone (dot product with axis ≤ tol)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If zone axis is undefined or vector is invalid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_defined</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot check zone membership: zone axis is undefined&quot;</span><span class="p">)</span>
+
+        <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+        <span class="n">dot</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">,</span> <span class="n">arr</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dot</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tol</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OrthonormalZone.vecspace">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.vecspace">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vecspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate &#39;n&#39; vectors from &#39;b1&#39; to &#39;b2&#39; rotated around b1 x b2.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        b1 : INPUT_VECTOR</span>
+<span class="sd">            Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
+<span class="sd">        b2 : INPUT_VECTOR</span>
+<span class="sd">            Ending :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
+<span class="sd">        n : int</span>
+<span class="sd">            Number of vectors to generate</span>
+
+<span class="sd">        Yields</span>
+<span class="sd">        ------</span>
+<span class="sd">        NDArray</span>
+<span class="sd">            Vectors interpolated between v1 and v2</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If vectors are not in the zone</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>  <span class="c1"># the trivial case</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_defined</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">define_axis</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_zone</span><span class="p">(</span><span class="n">b1</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">b1</span><span class="si">=}</span><span class="s2"> not in zone </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_zone</span><span class="p">(</span><span class="n">b2</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">b2</span><span class="si">=}</span><span class="s2"> not in zone </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+            <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span>
+            <span class="n">u1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
+            <span class="n">u2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span>
+            <span class="n">n1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u1</span><span class="p">)</span>
+            <span class="n">n2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u2</span><span class="p">)</span>
+            <span class="n">u1</span> <span class="o">/=</span> <span class="n">n1</span>
+            <span class="n">u2</span> <span class="o">/=</span> <span class="n">n2</span>
+
+            <span class="n">cos_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">),</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cos_theta</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">rodrigues_rotation</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">unit_axis</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="n">vec</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">unit_axis</span><span class="p">,</span> <span class="n">vec</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="n">unit_axis</span> <span class="o">*</span> <span class="p">(</span><span class="n">unit_axis</span> <span class="o">@</span> <span class="n">vec</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+                <span class="p">)</span>
+
+            <span class="n">unit_vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">rodrigues_rotation</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span>
+                <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">magnitudes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">n</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">vector</span><span class="p">,</span> <span class="n">scale</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">unit_vectors</span><span class="p">,</span> <span class="n">magnitudes</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">vector</span> <span class="o">*</span> <span class="n">scale</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="zonespace">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.zonespace">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">zonespace</span><span class="p">(</span>
+    <span class="n">diff</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span>
+    <span class="n">hkl_1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
+    <span class="n">hkl_2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate pseudos and reals along a crystallographic zone.</span>
+
+<span class="sd">    * Transforms crystallographic coordinates (hkl) to Cartesian space</span>
+<span class="sd">      (b) using the sample&#39;s reciprocal lattice.</span>
+<span class="sd">    * Creates a zone from b1 &amp; b2</span>
+<span class="sd">    * Yields corresponding diffractometer pseudo and real positions for</span>
+<span class="sd">      &#39;n&#39; points (including hkl_1 and hkl_2 points) along the</span>
+<span class="sd">      orthonormal zone, distributed evenly by angle.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    diff : hklpy2.DiffractometerBase</span>
+<span class="sd">        Diffractometer instance for sample &amp; forward() calculations.</span>
+<span class="sd">    hkl_1 : INPUT_VECTOR</span>
+<span class="sd">        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
+<span class="sd">    hkl_2 : INPUT_VECTOR</span>
+<span class="sd">        Ending :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
+<span class="sd">    n : int</span>
+<span class="sd">        Number of interpolation points to generate (must be &gt; 0).</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    tuple[Sequence[float], Sequence[float]]</span>
+<span class="sd">        (pseudos, reals) for each valid point.</span>
+<span class="sd">        Points where forward(pseudos) fails are logged and skipped.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    * hkl_1 &amp; hkl_2 vectors are transformed from Miller to orthonormal</span>
+<span class="sd">      space using the sample&#39;s reciprocal lattice.</span>
+<span class="sd">    * Failed forward() solutions are logged at debug level.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">zone</span> <span class="o">=</span> <span class="n">OrthonormalZone</span><span class="p">()</span>
+
+    <span class="n">astar</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cartesian_lattice_matrix</span>
+    <span class="n">astar_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">astar</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="c1"># Transform v1 &amp; v2 from Miller space to Cartesian.</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">astar</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">zone</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">hkl_1</span><span class="p">)</span>
+    <span class="n">b2</span> <span class="o">=</span> <span class="n">astar</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">zone</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">hkl_2</span><span class="p">)</span>
+
+    <span class="c1"># Step through the orthonormal zone space.</span>
+    <span class="k">for</span> <span class="n">b_vector</span> <span class="ow">in</span> <span class="n">zone</span><span class="o">.</span><span class="n">vecspace</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="c1"># Convert each step back to crystallographic space.</span>
+        <span class="n">pseudos</span> <span class="o">=</span> <span class="p">(</span><span class="n">astar_inv</span> <span class="o">@</span> <span class="n">b_vector</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">pseudos</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">pseudos</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">NoForwardSolutions</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;no solution for forward(</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="zone_series">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.zone_series">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">zone_series</span><span class="p">(</span>
+    <span class="n">diff</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span>
+    <span class="n">hkl_1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
+    <span class="n">hkl_2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Example: a series of diffractometer positions along a zone.</span>
+
+<span class="sd">    Print &#39;n&#39; positions along the zone from hkl_1 to hkl_2 inclusive.</span>
+<span class="sd">    The series is computed using the orthonormal zone.</span>
+<span class="sd">    Results are displayed in a formatted table showing both reciprocal</span>
+<span class="sd">    space coordinates (pseudos) and real motor positions (reals).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    diff : hklpy2.DiffractometerBase</span>
+<span class="sd">        The diffractometer instance used for forward calculations.</span>
+<span class="sd">    hkl_1 : INPUT_VECTOR</span>
+<span class="sd">        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
+<span class="sd">    hkl_2 : INPUT_VECTOR</span>
+<span class="sd">        Ending :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
+<span class="sd">    n : int</span>
+<span class="sd">        Number of points to generate from hkl_1 to hkl_2 (inclusive).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; # Generate 5 points from (1,0,0) to (0,1,0)</span>
+<span class="sd">    &gt;&gt;&gt; zone_series(my_diffractometer, (1,0,0), (0,1,0), 5)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
+    <span class="n">table</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">pseudo_axis_names</span> <span class="o">+</span> <span class="n">diff</span><span class="o">.</span><span class="n">real_axis_names</span>
+    <span class="k">for</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span> <span class="ow">in</span> <span class="n">zonespace</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">hkl_1</span><span class="p">,</span> <span class="n">hkl_2</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">addRow</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pseudos</span> <span class="o">+</span> <span class="n">reals</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hkl_1</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">hkl_2</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">n</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@plan</span>
+<div class="viewcode-block" id="scan_zone">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.zone.scan_zone">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">scan_zone</span><span class="p">(</span>
+    <span class="n">detectors</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Readable</span><span class="p">],</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span>
+    <span class="n">start</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
+    <span class="n">finish</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
+    <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">md</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform a zone scan on a diffractometer.</span>
+
+<span class="sd">    .. rubric:: Behavior</span>
+
+<span class="sd">    * Computes a sequence of pseudos and the corresponding reals in the</span>
+<span class="sd">      crystallographic zone defined by the cross-product of start cross finish.</span>
+<span class="sd">      Skips a position if not permitted by the UB matrix or diffractometer</span>
+<span class="sd">      constraints.</span>
+<span class="sd">    * For each point:</span>
+<span class="sd">        1. Moves the diffractometer real axes to the computed</span>
+<span class="sd">           real positions.</span>
+<span class="sd">        2. Triggers all detectors and waits for completion.</span>
+<span class="sd">        3. Creates a ``primary`` stream, reads all detectors and the</span>
+<span class="sd">           diffractometer, and saves the event.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from hklpy2 import creator, scan_zone</span>
+<span class="sd">        fourc = creator()</span>
+<span class="sd">        (uid,) = RE(scan_zone([scaler],fourc, (1,0,0), (0,1,0), 5))</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    detectors : Sequence[Readable])</span>
+<span class="sd">        Ophyd devices to trigger and read at each measurement point.</span>
+<span class="sd">    diffractometer : hklpy2.DiffractometerBase</span>
+<span class="sd">        hklpy2 Diffractometer object.</span>
+<span class="sd">    start : INPUT_VECTOR</span>
+<span class="sd">        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
+<span class="sd">    finish : INPUT_VECTOR</span>
+<span class="sd">        Finishing :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
+<span class="sd">    num : int</span>
+<span class="sd">        Number of points to sample along the zone (inclusive</span>
+<span class="sd">        of endpoints).</span>
+<span class="sd">    md : dict</span>
+<span class="sd">        (Optional) User-supplied metadata.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_md</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">plan_name</span><span class="o">=</span><span class="s2">&quot;scan_zone&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">md</span> <span class="ow">or</span> <span class="p">{})</span>
+
+    <span class="c1"># TODO: Consider refactor using cycler and using bp.scan_nd.</span>
+    <span class="nd">@bpp</span><span class="o">.</span><span class="n">stage_decorator</span><span class="p">(</span><span class="n">detectors</span><span class="p">)</span>
+    <span class="nd">@bpp</span><span class="o">.</span><span class="n">run_decorator</span><span class="p">(</span><span class="n">md</span><span class="o">=</span><span class="n">_md</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inner</span><span class="p">():</span>
+        <span class="c1"># Compute sequence of pseudos &amp; reals in the zone</span>
+        <span class="k">for</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span> <span class="ow">in</span> <span class="n">zonespace</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+            <span class="c1"># move axes</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;zone hkl=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span>
+            <span class="n">parms</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span> <span class="n">reals</span><span class="p">):</span>
+                <span class="n">parms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
+                <span class="n">parms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="o">*</span><span class="n">parms</span><span class="p">)</span>
+
+            <span class="c1"># trigger</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="s2">&quot;trigger_objects&quot;</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">detectors</span><span class="p">:</span>
+                <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+
+            <span class="c1"># read</span>
+            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;primary&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">detectors</span> <span class="o">+</span> <span class="p">[</span><span class="n">diffractometer</span><span class="p">]:</span>
+                <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="k">yield from</span> <span class="n">inner</span><span class="p">())</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2025, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

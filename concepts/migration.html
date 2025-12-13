@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Wavelength &#8212; hklpy2 0.2</title>
+    <title>Migration from hklpy (v1) &#8212; hklpy2 0.2</title>
   
   
   
@@ -34,6 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -46,13 +47,12 @@
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'concepts/wavelength';</script>
+    <script src="../_static/tabs.js?v=3030b3cb"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'concepts/migration';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Feature Checklist for v2" href="planning/_checklist_v2.html" />
-    <link rel="prev" title="User Friendliness" href="user.html" />
+    <link rel="next" title="Core Operations" href="ops.html" />
+    <link rel="prev" title="Crystal Lattice" href="lattice.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.2" />
@@ -325,13 +325,13 @@
 <li class="toctree-l2"><a class="reference internal" href="creator.html">Diffractometer creator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diffract.html">Diffractometer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lattice.html">Crystal Lattice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Migration from <strong>hklpy (v1)</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="ops.html">Core Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reflection.html">Orientation Reflection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sample.html">Sample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user.html">User Friendliness</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Wavelength</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavelength.html">Wavelength</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planning/_checklist_v2.html">Feature Checklist for v2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="planning/_design-discussion.html">Design for hklpy2</a></li>
 </ul>
@@ -418,7 +418,7 @@
     
     <li class="breadcrumb-item"><a href="../concepts.html" class="nav-link">Concepts</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Wavelength</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Migration from <strong>hklpy (v1)</strong></span></li>
   </ul>
 </nav>
 </div>
@@ -435,43 +435,90 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="wavelength">
-<span id="concepts-wavelength"></span><h1>Wavelength<a class="headerlink" href="#wavelength" title="Link to this heading">#</a></h1>
-<p>In diffraction, the wavelength of the incident radiation sets the radius of the
-Ewald sphere. <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>  Only <span class="math notranslate nohighlight">\(hkl\)</span> reflections which lie within the Ewald sphere are
-accessible to the experiment.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>While the <em>energy</em> of the incident beam may be interesting to
-diffractometer users at X-ray synchrotrons, <em>wavelength</em> is the general term
-used by diffraction science.</p>
+  <section id="migration-from-hklpy">
+<span id="concepts-migration-from-hklpy-v1"></span><h1>Migration from <strong>hklpy (v1)</strong><a class="headerlink" href="#migration-from-hklpy" title="Link to this heading">#</a></h1>
+<p><strong>hklpy2</strong> is a complete redesign of the <strong>hklpy (v1)</strong> library with significant
+architectural changes. The main difference is that <strong>hklpy2</strong> moves from a design
+centered on <strong>Hkl/Soleil</strong> to a Python-native data model with pluggable solvers.</p>
+<p>For an AI-assisted description of the factors involved in migration, see
+<a class="reference external" href="https://deepwiki.com/search/how-to-migrate-to-hklpy2-from_5bab86c6-f617-46c0-bdf0-79c7c62a3640?mode=fast">DeepWiki</a>.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Be careful with the code examples presented by the AI-assisted
+description.  Often, they are not correct technically.</p>
 </div>
-<p>Here, a diffractometer (as a subclass of
-<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a>) is a <em>positioner</em> that expects the
-incident radiation to be <em>monochromatic</em>.  Knowledge of wavelength is essential
-for diffractometer operations.  Simulators are provided for the general case
-(<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.Wavelength" title="hklpy2.incident.Wavelength"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wavelength()</span></code></a>) for any type of monochromatic
-radiation) and for the case of X-rays
-(<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.WavelengthXray" title="hklpy2.incident.WavelengthXray"><code class="xref py py-class docutils literal notranslate"><span class="pre">WavelengthXray()</span></code></a>) where photon energy is computed
-from the wavelength.</p>
-<p>When the wavelength (and possibly the energy) is known from EPICS, <em>read-only</em>
-support is provided for the general case
-(<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.EpicsWavelengthRO" title="hklpy2.incident.EpicsWavelengthRO"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsWavelengthRO()</span></code></a>) and for a monochromator
-(<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.EpicsMonochromatorRO" title="hklpy2.incident.EpicsMonochromatorRO"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsMonochromatorRO()</span></code></a>) which provides both
-wavelength and energy. Control of these EPICS PVs is beyond the scope of
-diffractometer controls. Refer to EPICS for control of the monochromator or
-wavelength PV.  Or, create a custom subclass of
-<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident._WavelengthBase" title="hklpy2.incident._WavelengthBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_WavelengthBase()</span></code></a>.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>The <a class="reference internal" href="../autoapi/hklpy2/incident/index.html#module-hklpy2.incident" title="hklpy2.incident"><code class="xref py py-mod docutils literal notranslate"><span class="pre">incident</span></code></a> module.</p>
+<section id="simulated-eulerian-4-circle-diffractometer">
+<h2>Simulated Eulerian 4-circle diffractometer<a class="headerlink" href="#simulated-eulerian-4-circle-diffractometer" title="Link to this heading">#</a></h2>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0"><strong>hklpy2</strong></button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1"><strong>hklpy (v1)</strong></button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">creator</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="n">fourc</span> <span class="o">=</span> <span class="n">creator</span><span class="p">()</span>
+</pre></div>
 </div>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id2" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
-<p><a class="reference external" href="https://dictionary.iucr.org/Ewald_sphere">https://dictionary.iucr.org/Ewald_sphere</a></p>
-</aside>
-</aside>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hkl</span><span class="w"> </span><span class="kn">import</span> <span class="n">E4CV</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">SoftPositioner</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Cpt</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="k">class</span><span class="w"> </span><span class="nc">FourCircle</span><span class="p">(</span><span class="n">SimMixin</span><span class="p">,</span> <span class="n">E4CV</span><span class="p">):</span>
+<span class="linenos"> 6</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 7</span><span class="sd">    Our 4-circle.  Eulerian, vertical scattering orientation.</span>
+<span class="linenos"> 8</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 9</span>    <span class="n">h</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">10</span>    <span class="n">k</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">11</span>    <span class="n">l</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span>    <span class="n">omega</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">14</span>    <span class="n">chi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">15</span>    <span class="n">phi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">16</span>    <span class="n">tth</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="n">fourc</span> <span class="o">=</span> <span class="n">FourCircle</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="epics-based-eulerian-4-circle-diffractometer">
+<h2>EPICS-based Eulerian 4-circle diffractometer<a class="headerlink" href="#epics-based-eulerian-4-circle-diffractometer" title="Link to this heading">#</a></h2>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0"><strong>hklpy2</strong></button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1"><strong>hklpy (v1)</strong></button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">creator</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="n">fourc</span> <span class="o">=</span> <span class="n">creator</span><span class="p">(</span>
+<span class="linenos"> 4</span>    <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;PREFIX:&quot;</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+<span class="linenos"> 9</span>        <span class="n">omega</span><span class="o">=</span><span class="s2">&quot;m30&quot;</span><span class="p">,</span>
+<span class="linenos">10</span>        <span class="n">chi</span><span class="o">=</span><span class="s2">&quot;m31&quot;</span><span class="p">,</span>
+<span class="linenos">11</span>        <span class="n">phi</span><span class="o">=</span><span class="s2">&quot;m32&quot;</span><span class="p">,</span>
+<span class="linenos">12</span>        <span class="n">tth</span><span class="o">=</span><span class="s2">&quot;m29&quot;</span><span class="p">,</span>
+<span class="linenos">13</span>    <span class="p">)</span>
+<span class="linenos">14</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hkl</span><span class="w"> </span><span class="kn">import</span> <span class="n">E4CV</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpicsMotor</span><span class="p">,</span> <span class="n">PseudoSingle</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Cpt</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="k">class</span><span class="w"> </span><span class="nc">FourCircle</span><span class="p">(</span><span class="n">E4CV</span><span class="p">):</span>
+<span class="linenos"> 6</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 7</span><span class="sd">    Our 4-circle.  Eulerian, vertical scattering orientation.</span>
+<span class="linenos"> 8</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 9</span>    <span class="c1"># the reciprocal axes h, k, l are defined by SimMixin</span>
+<span class="linenos">10</span>    <span class="n">h</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">11</span>    <span class="n">k</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">12</span>    <span class="n">l</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>    <span class="n">omega</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;m30&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">15</span>    <span class="n">chi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;m31&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">16</span>    <span class="n">phi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;m32&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">17</span>    <span class="n">tth</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;m29&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="n">fourc</span> <span class="o">=</span> <span class="n">FourCircle</span><span class="p">(</span><span class="s2">&quot;PREFIX:&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></div>
+</section>
 </section>
 
 
@@ -485,20 +532,20 @@ wavelength PV.  Or, create a custom subclass of
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="user.html"
+       href="lattice.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">User Friendliness</p>
+        <p class="prev-next-title">Crystal Lattice</p>
       </div>
     </a>
     <a class="right-next"
-       href="planning/_checklist_v2.html"
+       href="ops.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Feature Checklist for v2</p>
+        <p class="prev-next-title">Core Operations</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -514,10 +561,23 @@ wavelength PV.  Or, create a custom subclass of
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulated-eulerian-4-circle-diffractometer">Simulated Eulerian 4-circle diffractometer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#epics-based-eulerian-4-circle-diffractometer">EPICS-based Eulerian 4-circle diffractometer</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/concepts/wavelength.rst">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/concepts/migration.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -533,7 +593,7 @@ wavelength PV.  Or, create a custom subclass of
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/concepts/wavelength.rst.txt"
+      <li><a href="../_sources/concepts/migration.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

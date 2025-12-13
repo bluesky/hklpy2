@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>hkl_soleil UB matrix : calculate from 2 reflections. &#8212; hklpy2 0.2</title>
+    <title>Zone Scan &#8212; hklpy2 0.2</title>
   
   
   
@@ -48,11 +48,11 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/hkl_soleil-ub_calc';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/zone-scan';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="hkl_soleil UB matrix : Set directly" href="hkl_soleil-ub_set.html" />
-    <link rel="prev" title="hkl_soleil Refine lattice from 3 reflections" href="hkl_soleil-lattice_refine.html" />
+    <link rel="next" title="Guides" href="../guides.html" />
+    <link rel="prev" title="Virtual diffractometer axis" href="virtual-axis.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.2" />
@@ -350,13 +350,13 @@
 <li class="toctree-l2"><a class="reference internal" href="hkl_soleil-e6c-test_calculations.html"><strong>hkl_soleil</strong> E6C test of calculations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hkl_soleil-k4cv.html"><strong>hkl_soleil</strong> K4CV</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hkl_soleil-lattice_refine.html"><strong>hkl_soleil</strong> Refine lattice from 3 reflections</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#"><strong>hkl_soleil</strong> UB matrix : calculate from 2 reflections.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hkl_soleil-ub_calc.html"><strong>hkl_soleil</strong> UB matrix : calculate from 2 reflections.</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hkl_soleil-ub_set.html"><strong>hkl_soleil</strong> UB matrix : Set directly</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nslsii-tardis.html"><strong>NSLS-II</strong> <strong>tardis</strong> diffractometer</a></li>
 
 <li class="toctree-l2"><a class="reference internal" href="tst_e4cv_fourc.html">Compare <strong>hkl_soleil</strong> <strong>E4CV</strong> with <strong>SPEC</strong> <strong>fourc</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="virtual-axis.html">Virtual diffractometer axis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="zone-scan.html">Zone Scan</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Zone Scan</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guides.html">Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -418,7 +418,7 @@
     
     <li class="breadcrumb-item"><a href="../examples.html" class="nav-link">Examples</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><strong>hkl_soleil</strong> UB matrix : calculate from 2 reflections.</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Zone Scan</span></li>
   </ul>
 </nav>
 </div>
@@ -435,127 +435,203 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="hkl-soleil-ub-matrix-calculate-from-2-reflections">
-<h1><strong>hkl_soleil</strong> UB matrix : calculate from 2 reflections.<a class="headerlink" href="#hkl-soleil-ub-matrix-calculate-from-2-reflections" title="Link to this heading">#</a></h1>
-<p><span class="math notranslate nohighlight">\(UB\)</span> is the 3x3 orientation matrix used to transform coordinates between
-reciprocal space directions (of the crystal lattice planes) and the rotational
-axes of the diffractometer.</p>
-<section id="create-a-diffractometer-object">
-<h2>Create a diffractometer object<a class="headerlink" href="#create-a-diffractometer-object" title="Link to this heading">#</a></h2>
-<p>First, create a diffractometer object that uses the <code class="docutils literal notranslate"><span class="pre">&quot;hkl_soleil&quot;</span></code> solver with
-the <code class="docutils literal notranslate"><span class="pre">&quot;hkl&quot;</span></code> computation engine.  This solver provides support for many
-diffractometer geometries.  This example will use the simulated 4-circle
-geometry from the solver’s <code class="docutils literal notranslate"><span class="pre">&quot;E4CV&quot;</span></code>.</p>
+  <section id="zone-scan">
+<h1>Zone Scan<a class="headerlink" href="#zone-scan" title="Link to this heading">#</a></h1>
+<p>A crystallographic <strong>zone</strong> is characterized by a set of planes which are all
+parallel to one line, called the <em>zone axis</em>. (*)  If the axis of a zone has indices
+<span class="math notranslate nohighlight">\([uvw]\)</span>, then any plane belongs to that zone whose indices <span class="math notranslate nohighlight">\((hkl)\)</span>
+satisfy the relation:</p>
+<p><span class="math notranslate nohighlight">\(hu+hv+lw=0\)</span></p>
+<p>In diffractometer use, a zone is used to align, index, and interpret diffraction patterns. Key uses and practical steps:</p>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><em>Crystal Alignment</em>: Orient the sample so a chosen zone axis is parallel
+to the incident beam or goniometer rotation axis. That places high symmetry
+directions into the diffractometer frame and often maximizes systematic
+reflections.</p></li>
+<li><p><em>Indexing</em>: When the crystal is on a zone axis, all observed
+diffraction spots correspond to reflections whose reciprocal-lattice vectors
+lie in a plane perpendicular to that axis. This simplifies assignment of
+Miller indices.</p></li>
+<li><p><em>Symmetry determination</em>: A zone-axis pattern reveals symmetry of the lattice
+projection, helping determine lattice type, possible space groups, and
+systematic absences.</p></li>
+<li><p><em>Setting up data collection</em>: Choosing zone axes for multiple orientations
+(e.g., principal axes) helps plan rotation ranges and ensures coverage of
+independent reflections.</p></li>
+</ul>
+<p>(*) <em>Elements of X-ray Diffraction</em>, B.D. Cullity, 1978, Second Edition.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.blocks.zone</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrthonormalZone</span><span class="p">,</span> <span class="n">zone_series</span><span class="p">,</span> <span class="n">scan_zone</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">precision</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">floatmode</span><span class="o">=</span><span class="s2">&quot;maxprec&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">v1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">v2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">v3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">zone</span> <span class="o">=</span> <span class="n">OrthonormalZone</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">zone</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">zone</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">v3</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">zone</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OrthonormalZone</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">v1</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OrthonormalZone</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">])</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OrthonormalZone</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">))</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OrthonormalZone</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">u</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="o">=</span><span class="mi">33</span><span class="p">))</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OrthonormalZone</span><span class="p">(</span><span class="n">b1</span><span class="o">=</span><span class="n">v1</span><span class="p">,</span><span class="w"> </span><span class="n">b2</span><span class="o">=</span><span class="n">v2</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">zone</span><span class="o">.</span><span class="n">in_zone</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">zone</span><span class="o">.</span><span class="n">in_zone</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">zone</span><span class="o">.</span><span class="n">in_zone</span><span class="p">(</span><span class="n">v3</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v1</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v2</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>zone=OrthonormalZone(axis=&#39;undefined&#39;)
+zone=OrthonormalZone(axis=array([-0.5774,  0.5774,  0.5774]))
+OrthonormalZone(axis=v1)=OrthonormalZone(axis=array([0.7071, 0.7071, 0.    ]))
+OrthonormalZone(axis=[0, 1, 1])=OrthonormalZone(axis=array([0.    , 0.7071, 0.7071]))
+OrthonormalZone(axis=(1, 2, 3))=OrthonormalZone(axis=array([0.2673, 0.5345, 0.8018]))
+OrthonormalZone(axis=dict(u=11, v=22, w=33))=OrthonormalZone(axis=array([0.2673, 0.5345, 0.8018]))
+OrthonormalZone(b1=v1, b2=v2)=OrthonormalZone(axis=array([-0.5774,  0.5774,  0.5774]))
+zone.in_zone(v1)=True
+zone.in_zone(v2)=True
+zone.in_zone(v3)=False
+v1=array([1, 1, 0])
+v2=array([-3, -2, -1])
+</pre></div>
+</div>
+</div>
+</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
-<span class="n">diffractometer</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;diffractometer&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<section id="defaults">
-<h3>Defaults<a class="headerlink" href="#defaults" title="Link to this heading">#</a></h3>
-<p>The diffractometer object starts with a default sample.  The structure is cubic (<span class="math notranslate nohighlight">\(a=b=c\)</span>, 90 degree corners).</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">sample</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sim</span><span class="o">.</span><span class="n">forward</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mf">1.</span><span class="p">])</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sim</span><span class="o">.</span><span class="n">forward</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">])</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample(name=&#39;sample&#39;, lattice=Lattice(a=1, system=&#39;cubic&#39;))
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sim.forward([-0.5, -1., 1.])=Hklpy2DiffractometerRealPos(omega=48.5904, chi=-41.8103, phi=-26.5651, tth=97.1808)
+sim.forward([0, -1, 0.5])=Hklpy2DiffractometerRealPos(omega=33.9879, chi=-63.435, phi=-0.0, tth=67.9757)
 </pre></div>
 </div>
 </div>
 </div>
-</section>
-</section>
-<section id="add-2-reflections">
-<h2>Add 2 reflections<a class="headerlink" href="#add-2-reflections" title="Link to this heading">#</a></h2>
-<p>Two reflections are needed to calculate $UB$.  Since we do not specify the wavelength, the support assumes the diffractometer’s current wavelength.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;tth&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">180.01</span>
+<span class="n">zone_series</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1"># zone_series(sim, v1, v3, 17)</span>
+<span class="c1"># zone_series(sim, (1, 0, 0), [0, -1, 0.5], 17)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>hkl_1=(1, 0, 0) hkl_2=[0, 1, 0] n=5
+====== ====== ====== ======= ======= ======= =======
+h      k      l      omega   chi     phi     tth    
+====== ====== ====== ======= ======= ======= =======
+1.0000 0.0000 0.0000 30.0000 0.0000  90.0000 60.0000
+0.9239 0.3827 0.0000 30.0000 22.5000 90.0000 60.0000
+0.7071 0.7071 0.0000 30.0000 45.0000 90.0000 60.0000
+0.3827 0.9239 0.0000 30.0000 67.5000 90.0000 60.0000
+0.0000 1.0000 0.0000 30.0000 90.0000 0.0000  60.0000
+====== ====== ====== ======= ======= ======= =======
 </pre></div>
 </div>
 </div>
 </div>
-<p>Add two non-parallel reflections.  Here, just the values of the pseudos and
-reals are specified as Python tuples, in the exact order expected by the
-<em>solver</em> geometry.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r100</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mf">69.0966</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(100)&quot;</span><span class="p">)</span>
-<span class="n">r010</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mf">69.0966</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(010)&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="compute-ub">
-<h2>Compute UB<a class="headerlink" href="#compute-ub" title="Link to this heading">#</a></h2>
-<p>Compute $UB$ with these two reflections:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">calc_UB</span><span class="p">(</span><span class="n">r100</span><span class="p">,</span> <span class="n">r010</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">r1</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">30.345</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">60.69</span><span class="p">))</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">24.63</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.265</span><span class="p">,</span> <span class="o">-</span><span class="mf">85.08</span><span class="p">,</span> <span class="o">-</span><span class="mf">49.27</span><span class="p">))</span>
+<span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">calc_UB</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.545455242664, -6.239788247453, -0.49592954663],
- [-0.547615556651, -0.543471893498, 6.235636483453],
- [-6.235462715682, -0.498106806877, -0.591013170474]]
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[ 0.2714,  1.2877, -0.4837],
+       [ 0.2756,  0.2108,  0.9575],
+       [ 1.5393, -0.1109, -0.2144]])
 </pre></div>
 </div>
 </div>
 </div>
-<p>Show the calculated $UB$ matrix:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">zone_series</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.545455242664, -6.239788247453, -0.49592954663],
- [-0.547615556651, -0.543471893498, 6.235636483453],
- [-6.235462715682, -0.498106806877, -0.591013170474]]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>hkl_1=(4, 0, 0) hkl_2=[0, 4, 0] n=5
+====== ====== ====== ======= ======= ======= =======
+h      k      l      omega   chi     phi     tth    
+====== ====== ====== ======= ======= ======= =======
+4.0000 0.0000 0.0000 30.3449 10.0000 10.0000 60.6899
+4.0398 1.3746 0.0000 33.0559 11.8130 25.2925 66.1118
+3.3304 2.6643 0.0000 31.9896 12.8420 41.8998 63.9792
+1.9204 3.6121 0.0000 28.0637 12.6122 63.7067 56.1274
+0.0000 4.0000 0.0000 24.6345 9.2657  94.9203 49.2691
+====== ====== ====== ======= ======= ======= =======
 </pre></div>
 </div>
 </div>
 </div>
-</section>
-<section id="try-it-out">
-<h2>Try it out<a class="headerlink" href="#try-it-out" title="Link to this heading">#</a></h2>
-<p>corresponding to the $(1,0,0)$ reflection:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunEngine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.callbacks.best_effort</span><span class="w"> </span><span class="kn">import</span> <span class="n">BestEffortCallback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">noisy_det</span>
+
+<span class="n">RE</span> <span class="o">=</span> <span class="n">RunEngine</span><span class="p">()</span>
+<span class="n">bec</span> <span class="o">=</span> <span class="n">BestEffortCallback</span><span class="p">()</span>
+<span class="n">bec</span><span class="o">.</span><span class="n">disable_plots</span><span class="p">()</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">bec</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerRealPos(omega=-150.000007544679, chi=4.999999954605, phi=-4.999297290893, tth=59.999984910642)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0
 </pre></div>
 </div>
 </div>
 </div>
-<p>Show the (first set of computed) angles corresponding to the $(1 \bar1 1)$ reflection:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">uid</span><span class="p">,</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span><span class="n">scan_zone</span><span class="p">([</span><span class="n">noisy_det</span><span class="p">],</span> <span class="n">sim</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2DiffractometerRealPos(omega=-120.000010463815, chi=-34.931759528333, phi=-44.822654658067, tth=119.99997907237)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 1     Time: 2025-12-11 10:51:40
+Persistent Unique Scan ID: &#39;07cb65c6-8065-49a7-86a8-b11aa4553144&#39;
+New stream: &#39;primary&#39;
++-----------+------------+------------+----------------------+------------------+------------+------------+------------+------------+------------+------------+------------+
+|   seq_num |       time |  noisy_det | e4cv_beam_wavelength | e4cv_beam_energy |     e4cv_h |     e4cv_k |     e4cv_l | e4cv_omega |   e4cv_chi |   e4cv_phi |   e4cv_tth |
++-----------+------------+------------+----------------------+------------------+------------+------------+------------+------------+------------+------------+------------+
+|         1 | 10:51:40.5 |      0.973 |                1.000 |           12.398 |      1.000 |      0.000 |     -0.000 |      7.256 |     10.000 |     10.000 |     14.512 |
+|         2 | 10:51:40.5 |      0.958 |                1.000 |           12.398 |      1.010 |      0.344 |      0.000 |      7.838 |     11.813 |     25.293 |     15.675 |
+|         3 | 10:51:40.5 |      1.058 |                1.000 |           12.398 |      0.833 |      0.666 |     -0.000 |      7.611 |     12.842 |     41.900 |     15.221 |
+|         4 | 10:51:40.5 |      0.919 |                1.000 |           12.398 |      0.480 |      0.903 |      0.000 |      6.754 |     12.612 |     63.707 |     13.509 |
+|         5 | 10:51:40.5 |      1.057 |                1.000 |           12.398 |      0.000 |      1.000 |     -0.000 |      5.981 |      9.266 |     94.920 |     11.963 |
++-----------+------------+------------+----------------------+------------------+------------+------------+------------+------------+------------+------------+------------+
+Plan  [&#39;07cb65c6&#39;] (scan num: 1)
 </pre></div>
 </div>
 </div>
@@ -574,20 +650,20 @@ reals are specified as Python tuples, in the exact order expected by the
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="hkl_soleil-lattice_refine.html"
+       href="virtual-axis.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><strong>hkl_soleil</strong> Refine lattice from 3 reflections</p>
+        <p class="prev-next-title">Virtual diffractometer axis</p>
       </div>
     </a>
     <a class="right-next"
-       href="hkl_soleil-ub_set.html"
+       href="../guides.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><strong>hkl_soleil</strong> UB matrix : Set directly</p>
+        <p class="prev-next-title">Guides</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -610,13 +686,7 @@ reals are specified as Python tuples, in the exact order expected by the
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-diffractometer-object">Create a diffractometer object</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#defaults">Defaults</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-2-reflections">Add 2 reflections</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-ub">Compute UB</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#try-it-out">Try it out</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#purpose">Purpose</a></li>
 </ul>
   </nav></div>
 
@@ -624,7 +694,7 @@ reals are specified as Python tuples, in the exact order expected by the
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/examples/hkl_soleil-ub_calc.ipynb">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/examples/zone-scan.ipynb">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -640,7 +710,7 @@ reals are specified as Python tuples, in the exact order expected by the
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/examples/hkl_soleil-ub_calc.ipynb.txt"
+      <li><a href="../_sources/examples/zone-scan.ipynb.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

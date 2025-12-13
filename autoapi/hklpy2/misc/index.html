@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=c47cf8d5"></script>
+    <script src="../../../_static/documentation_options.js?v=b62419fa"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -331,6 +331,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../blocks/lattice/index.html">hklpy2.blocks.lattice</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../blocks/reflection/index.html">hklpy2.blocks.reflection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../blocks/sample/index.html">hklpy2.blocks.sample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks/zone/index.html">hklpy2.blocks.zone</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../diffract/index.html">hklpy2.diffract</a></li>
@@ -525,10 +526,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.Matrix3x3" title="hklpy2.misc.Matrix3x3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Matrix3x3</span></code></a></p></td>
 <td><p>mutable orientation &amp; rotation matrices.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.NamedFloatDict" title="hklpy2.misc.NamedFloatDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedFloatDict</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a></p></td>
+<td><p>Acceptable forms of vector input for zones, ...</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.NamedFloatDict" title="hklpy2.misc.NamedFloatDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedFloatDict</span></code></a></p></td>
 <td><p>dictionary of named floats.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.NUMERIC" title="hklpy2.misc.NUMERIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NUMERIC</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.NUMERIC" title="hklpy2.misc.NUMERIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NUMERIC</span></code></a></p></td>
 <td><p>Either integer or real number.</p></td>
 </tr>
 </tbody>
@@ -593,55 +597,58 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.NUMERIC" title="hklpy2.misc.NUMERIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NUMERIC</span></code></a></p></td>
 <td><p>Either integer or real number.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.AxesArray" title="hklpy2.misc.AxesArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesArray</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.INPUT_VECTOR" title="hklpy2.misc.INPUT_VECTOR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a></p></td>
+<td><p>Acceptable forms of vector input for zones, ...</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.AxesArray" title="hklpy2.misc.AxesArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesArray</span></code></a></p></td>
 <td><p>Numpy array of axes values.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.AxesDict" title="hklpy2.misc.AxesDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesDict</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.AxesDict" title="hklpy2.misc.AxesDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesDict</span></code></a></p></td>
 <td><p>Dictionary of axes names and values.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.AxesList" title="hklpy2.misc.AxesList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesList</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.AxesList" title="hklpy2.misc.AxesList"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesList</span></code></a></p></td>
 <td><p>List of axes values.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.AxesTuple" title="hklpy2.misc.AxesTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesTuple</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.AxesTuple" title="hklpy2.misc.AxesTuple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesTuple</span></code></a></p></td>
 <td><p>Tuple of axes values.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.AnyAxesType" title="hklpy2.misc.AnyAxesType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnyAxesType</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.AnyAxesType" title="hklpy2.misc.AnyAxesType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnyAxesType</span></code></a></p></td>
 <td><p>Any of these types are used to describe both pseudo and real axes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.Matrix3x3" title="hklpy2.misc.Matrix3x3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Matrix3x3</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.Matrix3x3" title="hklpy2.misc.Matrix3x3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Matrix3x3</span></code></a></p></td>
 <td><p>mutable orientation &amp; rotation matrices.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.NamedFloatDict" title="hklpy2.misc.NamedFloatDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedFloatDict</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.NamedFloatDict" title="hklpy2.misc.NamedFloatDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NamedFloatDict</span></code></a></p></td>
 <td><p>dictionary of named floats.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.IDENTITY_MATRIX_3X3" title="hklpy2.misc.IDENTITY_MATRIX_3X3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IDENTITY_MATRIX_3X3</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.IDENTITY_MATRIX_3X3" title="hklpy2.misc.IDENTITY_MATRIX_3X3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IDENTITY_MATRIX_3X3</span></code></a></p></td>
 <td><p>Identity matrix, 2-D, 3 rows, 3 columns.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.SOLVER_ENTRYPOINT_GROUP" title="hklpy2.misc.SOLVER_ENTRYPOINT_GROUP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SOLVER_ENTRYPOINT_GROUP</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.SOLVER_ENTRYPOINT_GROUP" title="hklpy2.misc.SOLVER_ENTRYPOINT_GROUP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SOLVER_ENTRYPOINT_GROUP</span></code></a></p></td>
 <td><p>Name by which <strong>hklpy2</strong> <strong>Solver</strong> classes are grouped.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.DEFAULT_DIGITS" title="hklpy2.misc.DEFAULT_DIGITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_DIGITS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.DEFAULT_DIGITS" title="hklpy2.misc.DEFAULT_DIGITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_DIGITS</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.DEFAULT_START_KEY" title="hklpy2.misc.DEFAULT_START_KEY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_START_KEY</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.DEFAULT_START_KEY" title="hklpy2.misc.DEFAULT_START_KEY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_START_KEY</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.INTERNAL_ANGLE_UNITS" title="hklpy2.misc.INTERNAL_ANGLE_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTERNAL_ANGLE_UNITS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.INTERNAL_ANGLE_UNITS" title="hklpy2.misc.INTERNAL_ANGLE_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTERNAL_ANGLE_UNITS</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.INTERNAL_LENGTH_UNITS" title="hklpy2.misc.INTERNAL_LENGTH_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTERNAL_LENGTH_UNITS</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.INTERNAL_LENGTH_UNITS" title="hklpy2.misc.INTERNAL_LENGTH_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTERNAL_LENGTH_UNITS</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS" title="hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTERNAL_XRAY_ENERGY_UNITS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS" title="hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTERNAL_XRAY_ENERGY_UNITS</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.UREG" title="hklpy2.misc.UREG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UREG</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.UREG" title="hklpy2.misc.UREG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UREG</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.PINT_ERRORS" title="hklpy2.misc.PINT_ERRORS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PINT_ERRORS</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.PINT_ERRORS" title="hklpy2.misc.PINT_ERRORS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PINT_ERRORS</span></code></a></p></td>
 <td><p>Exception from pint that we are trapping here.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.DEFAULT_MOTOR_LABELS" title="hklpy2.misc.DEFAULT_MOTOR_LABELS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_MOTOR_LABELS</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.DEFAULT_MOTOR_LABELS" title="hklpy2.misc.DEFAULT_MOTOR_LABELS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_MOTOR_LABELS</span></code></a></p></td>
 <td><p>Default labels applied to real-axis positioners.</p></td>
 </tr>
 </tbody>
@@ -806,6 +813,12 @@
 <dt class="sig sig-object py" id="hklpy2.misc.NUMERIC">
 <span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">NUMERIC</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#NUMERIC"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.NUMERIC" title="Link to this definition">#</a></dt>
 <dd><p>Either integer or real number.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.INPUT_VECTOR">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">INPUT_VECTOR</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#INPUT_VECTOR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.INPUT_VECTOR" title="Link to this definition">#</a></dt>
+<dd><p>Acceptable forms of vector input for zones, …</p>
 </dd></dl>
 
 <dl class="py data">
@@ -1585,6 +1598,7 @@ Raises ValueError on failure.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.BlueskyPlanType"><code class="docutils literal notranslate"><span class="pre">BlueskyPlanType</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.KeyValueMap"><code class="docutils literal notranslate"><span class="pre">KeyValueMap</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.NUMERIC"><code class="docutils literal notranslate"><span class="pre">NUMERIC</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.INPUT_VECTOR"><code class="docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.AxesArray"><code class="docutils literal notranslate"><span class="pre">AxesArray</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.AxesDict"><code class="docutils literal notranslate"><span class="pre">AxesDict</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.AxesList"><code class="docutils literal notranslate"><span class="pre">AxesList</span></code></a></li>
