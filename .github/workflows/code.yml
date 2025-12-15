@@ -31,7 +31,7 @@ jobs:
           python-version: "3.13"
 
       - name: Cache pip
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: pip-cache-${{ runner.os }}-py3.13-${{ hashFiles('**/pyproject.toml','**/requirements*.txt') }}
@@ -84,7 +84,7 @@ jobs:
             yaml
 
       - name: Cache pip (per matrix)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: pip-cache-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml','**/requirements*.txt') }}
