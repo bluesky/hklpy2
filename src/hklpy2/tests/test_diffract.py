@@ -415,7 +415,7 @@ def test_full_position(mode, keys, context, config_file):
     [
         pytest.param(
             dict(h=1, k=1, l=0),
-            dict(h2=1, k2=1, l2=1, psi=0),
+            dict(h2=0, k2=1, l2=1, psi=0),
             "psi_constant",
             does_not_raise(),
             id="Ok",
@@ -469,22 +469,22 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
         )
         assert np.allclose(
             np.array(fourc.real_position),
-            np.array([80, 90, 45, -20]),
+            np.array([80, 54.7, 45, -20]),
             atol=0.1,
         )
         assert np.allclose(
             np.array(list(solver_geo.axis_values_get(LIBHKL_USER_UNITS))),
-            np.array([80, 90, 45, -20]),
+            np.array([80, 54.7, 45, -20]),
             atol=0.1,
         )
         assert np.allclose(
             np.array(list(fourc.core.extras.values())),
-            np.array([1, 1, 1, 0]),
+            np.array([0, 1, 1, 0]),
             atol=0.1,
         )
         assert np.allclose(
             np.array(list(fourc.core.solver.extras.values())),
-            np.array([1, 1, 1, 0]),
+            np.array([0, 1, 1, 0]),
             atol=0.1,
         )
 
