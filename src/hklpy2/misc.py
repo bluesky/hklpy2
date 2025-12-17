@@ -617,8 +617,9 @@ def convert_units(value: float, old_units: str, new_units: str) -> float:
 def define_real_axis(
     specs: Union[None, str, KeyValueMap],
     kwargs: KeyValueMap,
-) -> tuple[str, Mapping]:
+) -> tuple[str, Sequence, Mapping]:
     """Return class and kwargs of a real axis from its 'specs'."""
+    args = []
     kwargs["labels"] += DEFAULT_MOTOR_LABELS
 
     if specs is None:
@@ -626,7 +627,7 @@ def define_real_axis(
         kwargs.update({"limits": (-180, 180), "init_pos": 0})
     elif isinstance(specs, str):
         class_name = "ophyd.EpicsMotor"
-        kwargs.update({"prefix": specs})
+        args.append(specs)  # PV (appends to parent's prefix)
     elif isinstance(specs, dict):
         class_name = specs.pop("class", None)
         if class_name is None:
@@ -643,7 +644,7 @@ def define_real_axis(
             " a custom configuration."
         )
 
-    return class_name, kwargs
+    return class_name, args, kwargs
 
 
 def dict_device_factory(data: KeyValueMap, **kwargs: KeyValueMap) -> type:
@@ -957,10 +958,15 @@ def load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping:
     return load_yaml(open(path, "r").read())
 
 
-def make_component(call_name: str, **kwargs: Any) -> Component:
+def make_component(call_name: str, *args: Any, **kwargs: Any) -> Component:
     """Create an Component for a custom ophyd Device class."""
     CallableObject = dynamic_import(call_name)
-    return make_dynamic_instance("ophyd.Component", CallableObject, **kwargs)
+    return make_dynamic_instance(
+        "ophyd.Component",
+        CallableObject,
+        *args,
+        **kwargs,
+    )
 
 
 def make_dynamic_instance(
@@ -1015,17 +1021,18 @@ def parse_factory_axes(
     attributes = {}
     for i, axis_name in enumerate(_axes):
         axis = _axes[axis_name]
+        args = []
         kwargs = dict(kind="hinted", labels=labels or [])
         class_name = "class_name"
         if space == "pseudos":
             class_name = "hklpy2.diffract.Hklpy2PseudoAxis"
-            kwargs["prefix"] = ""
+            # args.append("")
         elif space == "reals":
-            class_name, kwargs = define_real_axis(axis, kwargs)
+            class_name, args, kwargs = define_real_axis(axis, kwargs)
         if learn_order and i < len(canonical):
             order.append(axis_name)
 
-        attributes[axis_name] = make_component(class_name, **kwargs)
+        attributes[axis_name] = make_component(class_name, *args, **kwargs)
 
     if len(order) > len(canonical):
         raise ValueError(

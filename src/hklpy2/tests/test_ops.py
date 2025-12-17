@@ -213,7 +213,7 @@ def test_unknown_reflection():
             "Expected 'class' key, received None",
             id="Expected 'class' key, received None",
         ),
-        [
+        pytest.param(
             "h k l".split(),
             dict(
                 a=None,
@@ -224,7 +224,8 @@ def test_unknown_reflection():
             "a b c d".split(),  # standard order
             does_not_raise(),
             None,
-        ],
+            id="Ok: mixed reals",
+        ),
     ],
 )
 def test_assign_axes(pseudos, reals, assign, context, expected):
