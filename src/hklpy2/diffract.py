@@ -1123,21 +1123,21 @@ def diffractometer_class_factory(
             raise TypeError(f"Expected a dict.  Received {reals=!r}")
 
     # Define Component attributes of __this__ custom class.
-    class_attributes = {}
+    attributes = {}
     beam_class = beam_kwargs.pop("class", "hklpy2.incident.WavelengthXray")
     maker = make_component if isinstance(beam_class, str) else Cpt
-    class_attributes["beam"] = maker(beam_class, **beam_kwargs)
+    attributes["beam"] = maker(beam_class, **beam_kwargs)
 
     if forward_solution_function is None:
         forward_solution_function = "hklpy2.misc.pick_first_solution"
-    class_attributes["_forward_solution"] = dynamic_import(
+    attributes["_forward_solution"] = dynamic_import(
         forward_solution_function,
     )
 
     # Find the chosen solver.  It describes its various axes.
     solver_object = solver_factory(solver, geometry, **solver_kwargs)
     # Add the axes
-    class_attributes.update(
+    attributes.update(
         parse_factory_axes(
             space="pseudos",
             canonical=solver_object.pseudo_axis_names,
@@ -1146,7 +1146,7 @@ def diffractometer_class_factory(
         )
     )
     motor_labels = motor_labels or DEFAULT_MOTOR_LABELS
-    class_attributes.update(
+    attributes.update(
         parse_factory_axes(
             space="reals",
             canonical=solver_object.real_axis_names,
@@ -1163,8 +1163,8 @@ def diffractometer_class_factory(
         solver: str = solver,
         geometry: str = geometry,
         solver_kwargs: dict = solver_kwargs,
-        pseudos: list[str] = class_attributes["_pseudo"],
-        reals: list[str] = class_attributes["_real"],
+        pseudos: list[str] = attributes["_pseudo"],
+        reals: list[str] = attributes["_real"],
         **kwargs,
     ):
         DiffractometerBase.__init__(
@@ -1178,5 +1178,5 @@ def diffractometer_class_factory(
             **kwargs,
         )
 
-    class_attributes["__init__"] = constructor
-    return type(class_name, tuple(class_bases), class_attributes)
+    attributes["__init__"] = constructor
+    return type(class_name, tuple(class_bases), attributes)
