@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=b62419fa"></script>
+    <script src="../../_static/documentation_options.js?v=c20f47fd"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -1147,8 +1147,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">define_real_axis</span><span class="p">(</span>
     <span class="n">specs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">KeyValueMap</span><span class="p">],</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return class and kwargs of a real axis from its &#39;specs&#39;.&quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">DEFAULT_MOTOR_LABELS</span>
 
     <span class="k">if</span> <span class="n">specs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1156,7 +1157,7 @@
         <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;limits&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="s2">&quot;init_pos&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">specs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">class_name</span> <span class="o">=</span> <span class="s2">&quot;ophyd.EpicsMotor&quot;</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;prefix&quot;</span><span class="p">:</span> <span class="n">specs</span><span class="p">})</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">specs</span><span class="p">)</span>  <span class="c1"># PV (appends to parent&#39;s prefix)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">specs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">class_name</span> <span class="o">=</span> <span class="n">specs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">class_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1173,7 +1174,7 @@
             <span class="s2">&quot; a custom configuration.&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">kwargs</span></div>
+    <span class="k">return</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span></div>
 
 
 
@@ -1520,10 +1521,15 @@
 
 <div class="viewcode-block" id="make_component">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.make_component">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">make_component</span><span class="p">(</span><span class="n">call_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Component</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_component</span><span class="p">(</span><span class="n">call_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Component</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an Component for a custom ophyd Device class.&quot;&quot;&quot;</span>
     <span class="n">CallableObject</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span><span class="n">call_name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">make_dynamic_instance</span><span class="p">(</span><span class="s2">&quot;ophyd.Component&quot;</span><span class="p">,</span> <span class="n">CallableObject</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">make_dynamic_instance</span><span class="p">(</span>
+        <span class="s2">&quot;ophyd.Component&quot;</span><span class="p">,</span>
+        <span class="n">CallableObject</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 
@@ -1584,17 +1590,18 @@
     <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">axis_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_axes</span><span class="p">):</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="n">_axes</span><span class="p">[</span><span class="n">axis_name</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span> <span class="ow">or</span> <span class="p">[])</span>
         <span class="n">class_name</span> <span class="o">=</span> <span class="s2">&quot;class_name&quot;</span>
         <span class="k">if</span> <span class="n">space</span> <span class="o">==</span> <span class="s2">&quot;pseudos&quot;</span><span class="p">:</span>
             <span class="n">class_name</span> <span class="o">=</span> <span class="s2">&quot;hklpy2.diffract.Hklpy2PseudoAxis&quot;</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;prefix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="c1"># args.append(&quot;&quot;)</span>
         <span class="k">elif</span> <span class="n">space</span> <span class="o">==</span> <span class="s2">&quot;reals&quot;</span><span class="p">:</span>
-            <span class="n">class_name</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">define_real_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">class_name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">define_real_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">learn_order</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">canonical</span><span class="p">):</span>
             <span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">axis_name</span><span class="p">)</span>
 
-        <span class="n">attributes</span><span class="p">[</span><span class="n">axis_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_component</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="n">axis_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_component</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">canonical</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>

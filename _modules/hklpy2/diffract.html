@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=b62419fa"></script>
+    <script src="../../_static/documentation_options.js?v=c20f47fd"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -1602,21 +1602,21 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected a dict.  Received </span><span class="si">{</span><span class="n">reals</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Define Component attributes of __this__ custom class.</span>
-    <span class="n">class_attributes</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">beam_class</span> <span class="o">=</span> <span class="n">beam_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;hklpy2.incident.WavelengthXray&quot;</span><span class="p">)</span>
     <span class="n">maker</span> <span class="o">=</span> <span class="n">make_component</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">beam_class</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">Cpt</span>
-    <span class="n">class_attributes</span><span class="p">[</span><span class="s2">&quot;beam&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maker</span><span class="p">(</span><span class="n">beam_class</span><span class="p">,</span> <span class="o">**</span><span class="n">beam_kwargs</span><span class="p">)</span>
+    <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;beam&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maker</span><span class="p">(</span><span class="n">beam_class</span><span class="p">,</span> <span class="o">**</span><span class="n">beam_kwargs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">forward_solution_function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">forward_solution_function</span> <span class="o">=</span> <span class="s2">&quot;hklpy2.misc.pick_first_solution&quot;</span>
-    <span class="n">class_attributes</span><span class="p">[</span><span class="s2">&quot;_forward_solution&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span>
+    <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;_forward_solution&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span>
         <span class="n">forward_solution_function</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Find the chosen solver.  It describes its various axes.</span>
     <span class="n">solver_object</span> <span class="o">=</span> <span class="n">solver_factory</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">solver_kwargs</span><span class="p">)</span>
     <span class="c1"># Add the axes</span>
-    <span class="n">class_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
         <span class="n">parse_factory_axes</span><span class="p">(</span>
             <span class="n">space</span><span class="o">=</span><span class="s2">&quot;pseudos&quot;</span><span class="p">,</span>
             <span class="n">canonical</span><span class="o">=</span><span class="n">solver_object</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">,</span>
@@ -1625,7 +1625,7 @@
         <span class="p">)</span>
     <span class="p">)</span>
     <span class="n">motor_labels</span> <span class="o">=</span> <span class="n">motor_labels</span> <span class="ow">or</span> <span class="n">DEFAULT_MOTOR_LABELS</span>
-    <span class="n">class_attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="n">attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
         <span class="n">parse_factory_axes</span><span class="p">(</span>
             <span class="n">space</span><span class="o">=</span><span class="s2">&quot;reals&quot;</span><span class="p">,</span>
             <span class="n">canonical</span><span class="o">=</span><span class="n">solver_object</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span>
@@ -1642,8 +1642,8 @@
         <span class="n">solver</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">solver</span><span class="p">,</span>
         <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">geometry</span><span class="p">,</span>
         <span class="n">solver_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">solver_kwargs</span><span class="p">,</span>
-        <span class="n">pseudos</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">class_attributes</span><span class="p">[</span><span class="s2">&quot;_pseudo&quot;</span><span class="p">],</span>
-        <span class="n">reals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">class_attributes</span><span class="p">[</span><span class="s2">&quot;_real&quot;</span><span class="p">],</span>
+        <span class="n">pseudos</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;_pseudo&quot;</span><span class="p">],</span>
+        <span class="n">reals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;_real&quot;</span><span class="p">],</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">DiffractometerBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -1657,8 +1657,8 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="n">class_attributes</span><span class="p">[</span><span class="s2">&quot;__init__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">constructor</span>
-    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">class_bases</span><span class="p">),</span> <span class="n">class_attributes</span><span class="p">)</span></div>
+    <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;__init__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">constructor</span>
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">class_bases</span><span class="p">),</span> <span class="n">attributes</span><span class="p">)</span></div>
 
 </pre></div>
 
