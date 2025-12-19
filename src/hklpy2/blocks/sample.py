@@ -80,9 +80,8 @@ class Sample:
         self.core = core
         self.lattice = lattice
         self.U = IDENTITY_MATRIX_3X3
-        # TODO: Consider: UB = self.U @ self.lattice.B
-        # self.UB = ((2 * math.pi / self.lattice.a) * np.array(self.U)).tolist()
-        self._UB = ((2 * math.pi / self.lattice.a) * np.array(self.U)).tolist()
+        # Consider: UB = self.U @ self.lattice.B
+        self.UB = ((2 * math.pi / self.lattice.a) * np.array(self.U)).tolist()
         self.core._solver_needs_update = True
         self.reflections = ReflectionsDict()
 
