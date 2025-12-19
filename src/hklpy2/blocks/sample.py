@@ -82,6 +82,7 @@ class Sample:
         self.U = IDENTITY_MATRIX_3X3
         # Consider: UB = self.U @ self.lattice.B
         self.UB = ((2 * math.pi / self.lattice.a) * np.array(self.U)).tolist()
+        self.core._solver_needs_update = True
         self.reflections = ReflectionsDict()
 
     def __repr__(self) -> str:

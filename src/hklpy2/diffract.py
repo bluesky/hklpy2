@@ -848,7 +848,7 @@ class DiffractometerBase(PseudoPositioner):
                 """Roundoff each float."""
                 # return roundoff(x, digits)
                 text = f"{x:.{digits}f}"
-                if text.startswith("-0."):
+                if text.startswith("-0.") and float(text) == 0.0:
                     text = text[1:]
                 return float(text)
 
