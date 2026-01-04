@@ -824,8 +824,8 @@ def test_reflections_to_solver_converts_per_reflection_units():
     dif = creator(name="testdif")
     core = dif.core
 
-    pseudos = {"h": 1}
-    reals = {"x": 0.0}
+    pseudos = dict(h=1, k=0, l=0)
+    reals = dict(omega=0, chi=0, phi=0, tth=0)
 
     # Reflection with 1.0 angstrom
     rA = Reflection(
@@ -834,8 +834,8 @@ def test_reflections_to_solver_converts_per_reflection_units():
         reals,
         1.0,
         "geo",
-        list(pseudos.keys()),
-        list(reals.keys()),
+        list(pseudos),
+        list(reals),
         wavelength_units="angstrom",
     )
     # Reflection with 0.1 nanometer (equal to 1.0 angstrom)
@@ -845,8 +845,8 @@ def test_reflections_to_solver_converts_per_reflection_units():
         reals,
         0.1,
         "geo",
-        list(pseudos.keys()),
-        list(reals.keys()),
+        list(pseudos),
+        list(reals),
         wavelength_units="nanometer",
     )
 
