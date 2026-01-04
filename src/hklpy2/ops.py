@@ -479,11 +479,11 @@ class Core:
 
             presets = {
                 axis: convert_units(
-                    value,
+                    reals[self.axes_xref_reversed[axis]],
                     angle_units_core,
                     angle_units_solver,
                 )
-                for axis, value in reals.items()
+                for axis in self.solver.real_axis_names
             }
             self.solver.set_reals(presets)
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
@@ -631,7 +631,11 @@ class Core:
                     value, length_units_solver, length_units_uc
                 )
             elif parm in "alpha beta gamma".split():
-                lattice[parm] = convert_units(value, angle_units_solver, angle_units_uc)
+                lattice[parm] = convert_units(
+                    value,
+                    angle_units_solver,
+                    angle_units_uc,
+                )
 
         return Lattice(**lattice)
 
@@ -650,14 +654,19 @@ class Core:
                 refl = self.sample.reflections[refl]
             refl = refl._asdict()
 
-            for axis, value in refl["reals"].items():
-                angle_units_uc = self.diffractometer.reals_units
-                angle_units_solver = self.solver.ANGLE_UNITS
-                refl["reals"][axis] = convert_units(
-                    value, angle_units_uc, angle_units_solver
+            angle_units_uc = self.diffractometer.reals_units
+            angle_units_solver = self.solver.ANGLE_UNITS
+            reals = {
+                axis: convert_units(
+                    refl["reals"][self.axes_xref_reversed[axis]],
+                    angle_units_uc,
+                    angle_units_solver,
                 )
+                for axis in self.solver.real_axis_names
+            }
+            refl["reals"] = reals
 
-            # determine the original wavelength_units: reflection-level, else beam-level
+            # determine the original wavelength_units from reflection or incident beam
             refl_wl_units = (
                 refl.get("wavelength_units")
                 or self.diffractometer.beam.wavelength_units.get()

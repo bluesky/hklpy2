@@ -1,4 +1,9 @@
-"""Issue 183: UB matrix reported by pa() and configuration differ."""
+"""
+Resolve issues involving UB matrix and cahkl().
+
+* Issue 183: UB matrix reported by pa() and configuration should not be different.
+* Issue 186: UB matrix computed from two reflections should match known value.
+"""
 
 import ast
 import pathlib
