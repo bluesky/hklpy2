@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hklpy2.ops &#8212; hklpy2 0.2</title>
+    <title>hklpy2.ops &#8212; hklpy2 0.3</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=c20f47fd"></script>
+    <script src="../../_static/documentation_options.js?v=e259d695"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -50,7 +50,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2" />
+  <meta name="docsearch:version" content="0.3" />
   </head>
   
   
@@ -112,7 +112,7 @@
   
   
   
-    <p class="title logo__title">hklpy2 0.2</p>
+    <p class="title logo__title">hklpy2 0.3</p>
   
 </a></div>
     
@@ -915,11 +915,11 @@
 
             <span class="n">presets</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="n">axis</span><span class="p">:</span> <span class="n">convert_units</span><span class="p">(</span>
-                    <span class="n">value</span><span class="p">,</span>
+                    <span class="n">reals</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">axes_xref_reversed</span><span class="p">[</span><span class="n">axis</span><span class="p">]],</span>
                     <span class="n">angle_units_core</span><span class="p">,</span>
                     <span class="n">angle_units_solver</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reals</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">real_axis_names</span>
             <span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">set_reals</span><span class="p">(</span><span class="n">presets</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_d2s</span><span class="p">(</span><span class="n">pdict</span><span class="p">)):</span>
@@ -1091,7 +1091,11 @@
                     <span class="n">value</span><span class="p">,</span> <span class="n">length_units_solver</span><span class="p">,</span> <span class="n">length_units_uc</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">parm</span> <span class="ow">in</span> <span class="s2">&quot;alpha beta gamma&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
-                <span class="n">lattice</span><span class="p">[</span><span class="n">parm</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">angle_units_solver</span><span class="p">,</span> <span class="n">angle_units_uc</span><span class="p">)</span>
+                <span class="n">lattice</span><span class="p">[</span><span class="n">parm</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                    <span class="n">value</span><span class="p">,</span>
+                    <span class="n">angle_units_solver</span><span class="p">,</span>
+                    <span class="n">angle_units_uc</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Lattice</span><span class="p">(</span><span class="o">**</span><span class="n">lattice</span><span class="p">)</span></div>
 
@@ -1113,14 +1117,19 @@
                 <span class="n">refl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="p">[</span><span class="n">refl</span><span class="p">]</span>
             <span class="n">refl</span> <span class="o">=</span> <span class="n">refl</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>
 
-            <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">refl</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">angle_units_uc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">reals_units</span>
-                <span class="n">angle_units_solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ANGLE_UNITS</span>
-                <span class="n">refl</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
-                    <span class="n">value</span><span class="p">,</span> <span class="n">angle_units_uc</span><span class="p">,</span> <span class="n">angle_units_solver</span>
+            <span class="n">angle_units_uc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">reals_units</span>
+            <span class="n">angle_units_solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ANGLE_UNITS</span>
+            <span class="n">reals</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">axis</span><span class="p">:</span> <span class="n">convert_units</span><span class="p">(</span>
+                    <span class="n">refl</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">axes_xref_reversed</span><span class="p">[</span><span class="n">axis</span><span class="p">]],</span>
+                    <span class="n">angle_units_uc</span><span class="p">,</span>
+                    <span class="n">angle_units_solver</span><span class="p">,</span>
                 <span class="p">)</span>
+                <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">real_axis_names</span>
+            <span class="p">}</span>
+            <span class="n">refl</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reals</span>
 
-            <span class="c1"># determine the original wavelength_units: reflection-level, else beam-level</span>
+            <span class="c1"># determine the original wavelength_units from reflection or incident beam</span>
             <span class="n">refl_wl_units</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">refl</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wavelength_units&quot;</span><span class="p">)</span>
                 <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>

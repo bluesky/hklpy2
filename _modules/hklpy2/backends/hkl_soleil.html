@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hklpy2.backends.hkl_soleil &#8212; hklpy2 0.2</title>
+    <title>hklpy2.backends.hkl_soleil &#8212; hklpy2 0.3</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=c20f47fd"></script>
+    <script src="../../../_static/documentation_options.js?v=e259d695"></script>
     <script src="../../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -50,7 +50,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2" />
+  <meta name="docsearch:version" content="0.3" />
   </head>
   
   
@@ -112,7 +112,7 @@
   
   
   
-    <p class="title logo__title">hklpy2 0.2</p>
+    <p class="title logo__title">hklpy2 0.3</p>
   
 </a></div>
     
@@ -677,7 +677,7 @@
             <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;reflection: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reflection</span><span class="p">)</span>
-        <span class="n">pseudos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">reflection</span><span class="p">[</span><span class="s2">&quot;pseudos&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">pseudos</span> <span class="o">=</span> <span class="p">[</span><span class="n">reflection</span><span class="p">[</span><span class="s2">&quot;pseudos&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_reals</span><span class="p">(</span><span class="n">reflection</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">])</span>
         <span class="n">w0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">reflection</span><span class="p">[</span><span class="s2">&quot;wavelength&quot;</span><span class="p">]</span>
@@ -823,7 +823,7 @@
             <span class="c1"># Still, it has a .items() method.</span>
             <span class="n">raw</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">pseudo_axis_values_set</span><span class="p">(</span>
-                    <span class="nb">list</span><span class="p">(</span><span class="n">pseudos</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+                    <span class="p">[</span><span class="n">pseudos</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">],</span>
                     <span class="n">LIBHKL_USER_UNITS</span><span class="p">,</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">)</span>
@@ -883,22 +883,19 @@
                 <span class="c1"># .</span>
                 <span class="sa">f</span><span class="s2">&quot; Expected: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="si">!r}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="kc">False</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">reals</span><span class="o">.</span><span class="n">values</span><span class="p">()]:</span>
-            <span class="c1"># fmt: off</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;All values must be numbers.&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;  Received: </span><span class="si">{</span><span class="n">reals</span><span class="si">!r}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-            <span class="c1"># fmt: on</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_reals</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine_list</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>  <span class="c1"># reals -&gt; pseudos  (Odd name for this call!)</span>
+
+        <span class="c1"># This is the transform: reals -&gt; pseudos  (Odd name for this call!)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine_list</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
         <span class="c1"># Assemble the dictionary</span>
         <span class="n">pdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="nb">zip</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">pseudo_axis_names_get</span><span class="p">(),</span>
-                <span class="n">roundoff_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">pseudo_axis_values_get</span><span class="p">(</span><span class="n">LIBHKL_USER_UNITS</span><span class="p">)),</span>
+                <span class="n">roundoff_list</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">pseudo_axis_values_get</span><span class="p">(</span><span class="n">LIBHKL_USER_UNITS</span><span class="p">),</span>
+                <span class="p">),</span>
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">pdict</span></div>
@@ -1075,11 +1072,22 @@
 <div class="viewcode-block" id="HklSolver.set_reals">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.set_reals">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_reals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the values of all the real axes.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_geometry</span><span class="o">.</span><span class="n">axis_values_set</span><span class="p">(</span>
-            <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">reals</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>
-            <span class="n">LIBHKL_USER_UNITS</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the values of all the real axes.</span>
+
+<span class="sd">        Pick the values from the supplied dictionary in order of the canonical</span>
+<span class="sd">        axis names.  Caller cannot be expected to supply them in order, such as</span>
+<span class="sd">        when restoring from a YAML file where the keys have been sorted</span>
+<span class="sd">        alphabetically.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_r</span> <span class="o">=</span> <span class="p">[</span><span class="n">reals</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="kc">False</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">_r</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;All values must be numbers.  Received: </span><span class="si">{reals!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_geometry</span><span class="o">.</span><span class="n">axis_values_set</span><span class="p">(</span><span class="n">_r</span><span class="p">,</span> <span class="n">LIBHKL_USER_UNITS</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
