@@ -40,6 +40,11 @@ New Features
 
 * Support (define, scan) crystallographic zones.
 
+Fixes
+-----
+
+* creator() not connecting with EPICS
+
 Maintenance
 -----------
 
