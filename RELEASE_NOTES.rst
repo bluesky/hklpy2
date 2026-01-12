@@ -30,6 +30,21 @@ describe future plans.
 
     Release expected 2026-H1.
 
+0.3.0
+#####
+
+Released 2026-01-12.
+
+New Features
+-------------
+
+* Support (define, scan) crystallographic zones.
+
+Maintenance
+-----------
+
+* UB computed from 2 reflections should match expected value.
+
 0.2.3
 #####
 
