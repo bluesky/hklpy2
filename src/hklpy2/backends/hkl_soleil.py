@@ -244,7 +244,7 @@ class HklSolver(SolverBase):
             )
 
         logger.debug("reflection: %r", reflection)
-        pseudos = list(reflection["pseudos"].values())
+        pseudos = [reflection["pseudos"][k] for k in self.pseudo_axis_names]
         self.set_reals(reflection["reals"])
         w0 = self.wavelength
         self.wavelength = reflection["wavelength"]
@@ -360,7 +360,7 @@ class HklSolver(SolverBase):
             # Still, it has a .items() method.
             raw = list(
                 self.engine.pseudo_axis_values_set(
-                    list(pseudos.values()),
+                    [pseudos[k] for k in self.pseudo_axis_names],
                     LIBHKL_USER_UNITS,
                 ).items()
             )
@@ -414,22 +414,19 @@ class HklSolver(SolverBase):
                 # .
                 f" Expected: {self.real_axis_names!r}"
             )
-        if False in [isinstance(v, (float, int)) for v in reals.values()]:
-            # fmt: off
-            raise TypeError(
-                "All values must be numbers."
-                f"  Received: {reals!r}"
-            )
-            # fmt: on
 
         self.set_reals(reals)
-        self._hkl_engine_list.get()  # reals -> pseudos  (Odd name for this call!)
+
+        # This is the transform: reals -> pseudos  (Odd name for this call!)
+        self._hkl_engine_list.get()
 
         # Assemble the dictionary
         pdict = dict(
             zip(
                 self.engine.pseudo_axis_names_get(),
-                roundoff_list(self.engine.pseudo_axis_values_get(LIBHKL_USER_UNITS)),
+                roundoff_list(
+                    self.engine.pseudo_axis_values_get(LIBHKL_USER_UNITS),
+                ),
             )
         )
         return pdict
@@ -576,11 +573,22 @@ class HklSolver(SolverBase):
                     break
 
     def set_reals(self, reals: NamedFloatDict) -> None:
-        """Set the values of all the real axes."""
-        self._hkl_geometry.axis_values_set(
-            (list(reals.values())),
-            LIBHKL_USER_UNITS,
-        )
+        """
+        Set the values of all the real axes.
+
+        Pick the values from the supplied dictionary in order of the canonical
+        axis names.  Caller cannot be expected to supply them in order, such as
+        when restoring from a YAML file where the keys have been sorted
+        alphabetically.
+        """
+        _r = [reals[k] for k in self.real_axis_names]
+
+        if False in [isinstance(v, (float, int)) for v in _r]:
+            raise TypeError(
+                "All values must be numbers.  Received: {reals!r}",
+            )
+
+        self._hkl_geometry.axis_values_set(_r, LIBHKL_USER_UNITS)
 
     @property
     def _summary_dict(self):
