@@ -253,12 +253,26 @@ class CoordinateSystem:
             """Convert to unit vector."""
             v = np.asarray(vec, dtype=float)
             n = np.linalg.norm(v)
-            if n == 0.0 or not np.isfinite(n):
-                raise ValueError("zero or invalid vector")
+            if n == 0.0:
+                raise ValueError(f"Vector norm is zero: {vec}")
+            if not np.isfinite(n):
+                raise ValueError(f"Vector norm is not finite: {vec}")
             return v / n
 
-        # TODO: Verify vx, vy, & vz are othornormal
-        self.frame = np.column_stack((norm(vx), norm(vy), norm(vz)))
+        # Normalize the input vectors
+        nvx = norm(vx)
+        nvy = norm(vy)
+        nvz = norm(vz)
+
+        # Verify vx, vy, & vz are orthogonal
+        if not (
+            np.isclose(np.dot(nvx, nvy), 0)
+            and np.isclose(np.dot(nvx, nvz), 0)
+            and np.isclose(np.dot(nvy, nvz), 0)
+        ):
+            raise ValueError("Vectors are not orthogonal.")
+
+        self.frame = np.column_stack((nvx, nvy, nvz))
         # self.rotation_matrix = REFERENCE_FRAME.T @ self.frame
 
 

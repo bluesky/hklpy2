@@ -1,5 +1,8 @@
+"""Test the hkl_soleil solver."""
+
 import math
 import re
+from contextlib import nullcontext as does_not_raise
 
 import numpy as np
 import pytest
@@ -319,3 +322,24 @@ def test_sample_property():
     assert math.isclose(sample["lattice"]["beta"], 90, abs_tol=0.01)
     assert math.isclose(sample["lattice"]["gamma"], 90, abs_tol=0.01)
     assert len(sample.get("reflections")) == 2
+
+
+@pytest.mark.parametrize(
+    "input_vector, expected_output, context",
+    [
+        pytest.param(
+            [1, 2, 3],
+            [2, 3, 1],
+            does_not_raise(),
+            id="rotation: hklpy2 -> libhkl",
+        ),
+    ],
+)
+def test_rotate_to_libhkl(input_vector, expected_output, context):
+    """Test round-trip rotations: hklpy2 -> libhkl -> hklpy2."""
+    with context:
+        result = hkl_soleil.rotate_to_libhkl(input_vector)
+        np.testing.assert_allclose(result, expected_output, rtol=1e-5)
+
+        result = hkl_soleil.rotate_to_hklpy2(result)
+        np.testing.assert_allclose(result, input_vector, rtol=1e-5)
