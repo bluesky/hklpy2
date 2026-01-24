@@ -4,6 +4,7 @@ Miscellaneous Support.
 .. rubric: Base classes
 .. autosummary::
 
+    ~CoordinateSystem
     ~VirtualPositionerBase
 
 .. rubric: Functions
@@ -38,7 +39,15 @@ Miscellaneous Support.
 .. rubric: Symbols
 .. autosummary::
 
+    ~ANTIGRAVITY_DIRECTION
+    ~FORWARD_DIRECTION
+    ~GRAVITY_DIRECTION
+    ~HAT_X
+    ~HAT_Y
+    ~HAT_Z
+    ~HKLPY2_COORDINATES
     ~IDENTITY_MATRIX_3X3
+    ~REFERENCE_FRAME
     ~SOLVER_ENTRYPOINT_GROUP
 
 .. rubric: Custom Data Types
@@ -188,6 +197,77 @@ PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
 
 DEFAULT_MOTOR_LABELS: Sequence[str] = ["motors"]
 """Default labels applied to real-axis positioners."""
+
+HAT_X = np.array((1, 0, 0), dtype=float)
+"""X axis basis vector in reference coordinate system."""
+
+HAT_Y = np.array((0, 1, 0), dtype=float)
+"""Y axis basis vector in reference coordinate system."""
+
+HAT_Z = np.array((0, 0, 1), dtype=float)
+"""Z axis basis vector in reference coordinate system."""
+
+FORWARD_DIRECTION = HAT_X
+"""Forward direction in reference coordinate system."""
+
+GRAVITY_DIRECTION = -HAT_Z
+"""Direction of gravity in reference coordinate system."""
+
+ANTIGRAVITY_DIRECTION = -GRAVITY_DIRECTION
+"""Opposite of 'GRAVITY_DIRECTION'."""
+
+REFERENCE_FRAME = np.column_stack((HAT_X, HAT_Y, HAT_Z))
+"""Coordinate system reference frame, a 3x3 matrix."""
+
+
+class CoordinateSystem:
+    """
+    Coordinate frame (system), defined in terms of a reference system.
+
+    3-D orthonormal (Cartesian) coordinate system.
+
+    Examples:
+
+    Rotation matrix from reference frame to this one::
+
+        rotation_matrix = REFERENCE_FRAME.T @ self.frame
+
+    Rotate vector 'v_ref' to 'v_local'::
+
+        v_local = rotation_matrix @ np.asarray(v_ref, dtype=float)
+
+    Rotate vector 'v_local' to 'v_ref'::
+
+        v_ref = rotation_matrix.T @ np.asarray(v_local, dtype=float)
+
+    """
+
+    def __init__(
+        self,
+        *,
+        vx: Sequence[float],
+        vy: Sequence[float],
+        vz: Sequence[float],
+    ) -> None:
+        def norm(vec):
+            """Convert to unit vector."""
+            v = np.asarray(vec, dtype=float)
+            n = np.linalg.norm(v)
+            if n == 0.0 or not np.isfinite(n):
+                raise ValueError("zero or invalid vector")
+            return v / n
+
+        # TODO: Verify vx, vy, & vz are othornormal
+        self.frame = np.column_stack((norm(vx), norm(vy), norm(vz)))
+        # self.rotation_matrix = REFERENCE_FRAME.T @ self.frame
+
+
+HKLPY2_COORDINATES = CoordinateSystem(
+    vx=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
+    vy=ANTIGRAVITY_DIRECTION,
+    vz=FORWARD_DIRECTION,
+)
+"""Coordinate system in hklpy2."""
 
 # Custom exceptions
 

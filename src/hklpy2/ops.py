@@ -41,6 +41,7 @@ if TYPE_CHECKING:
     from .diffract import DiffractometerBase
 
 logger = logging.getLogger(__name__)
+
 DEFAULT_EXTRA_VALUE: float = 0
 DEFAULT_SAMPLE_NAME: str = "sample"
 

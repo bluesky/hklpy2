@@ -24,12 +24,18 @@ from yaml.parser import ParserError
 
 from ..diffract import creator
 from ..diffract import diffractometer_class_factory
+from ..misc import ANTIGRAVITY_DIRECTION
+from ..misc import FORWARD_DIRECTION
+from ..misc import HAT_X
+from ..misc import HAT_Y
+from ..misc import HAT_Z
 from ..misc import AnyAxesType
 from ..misc import AxesArray
 from ..misc import AxesDict
 from ..misc import AxesList
 from ..misc import AxesTuple
 from ..misc import ConfigurationRunWrapper
+from ..misc import CoordinateSystem
 from ..misc import NoForwardSolutions
 from ..misc import SolverError
 from ..misc import VirtualPositionerBase
@@ -969,3 +975,42 @@ def test_make_dynamic_instance_raises():
         match=f"{non_callable!r} is not callable",
     ):
         make_dynamic_instance(non_callable)
+
+
+@pytest.mark.parametrize(
+    "x, y, z, context",
+    [
+        pytest.param(
+            np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
+            ANTIGRAVITY_DIRECTION,
+            FORWARD_DIRECTION,
+            does_not_raise(),
+            id="hklpy2 coordinate reference frame",
+        ),
+        pytest.param(
+            [0, 0, 0],
+            HAT_Y,
+            HAT_Z,
+            pytest.raises(ValueError, match="zero or invalid vector"),
+            id="|x| = 0, cannot be zero",
+        ),
+        pytest.param(
+            HAT_X,
+            np.array([0, np.inf, 0]),
+            HAT_Z,
+            pytest.raises(ValueError, match="zero or invalid vector"),
+            id="|y| cannot be infinite",
+        ),
+        pytest.param(
+            HAT_X,
+            HAT_Z,
+            np.array([0, 0, np.nan]),
+            pytest.raises(ValueError, match="zero or invalid vector"),
+            id="|z| cannot be NaN",
+        ),
+    ],
+)
+def test_CoordinateSystem(x, y, z, context):
+    """Test the CoordinateSystem class"""
+    with context:
+        CoordinateSystem(vx=x, vy=y, vz=z)
