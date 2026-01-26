@@ -15,9 +15,14 @@ library.
 #    coordinate transformations should be added here.
 #  * Rotations should be factored into any Core method that communicates pseudos
 #    with a solver.
+#  * Core methods: forward(), inverse(), update_solver().  Others?
+#  * Every solver has an attribute named `_coordinate_system` (instance of
+#    `hklpy2.misc.CoordinateSystem`).
+#  * Use the CoordinateSystem methods `rotate_to_hklpy2()` and
+#    `rotate_to_local()`.
+#  * Make corresponding methods in Core that call these
+#    after confirming presence of these keys: h, k, l using axes_xref.
 #  * Transformations should only be applied to pseudos involving h, k, l.
-#  * Every solver has an attribute named `_coordinate_system` (instance of `hklpy2.misc.CoordinateSystem`).
-#    Use the methods `rotate_to_hklpy2()` and `rotate_to_local()`.
 
 import datetime
 import logging
