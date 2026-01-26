@@ -27,8 +27,6 @@ Example::
 .. autosummary::
 
     ~HklSolver
-    ~LIBHKL_COORDINATES
-    ~R_LIBHKL_HKLPY2
 """
 
 # Notes:
@@ -50,9 +48,7 @@ from pyRestTable import Table
 
 from ..misc import ANTIGRAVITY_DIRECTION
 from ..misc import FORWARD_DIRECTION
-from ..misc import HKLPY2_COORDINATES
 from ..misc import IDENTITY_MATRIX_3X3
-from ..misc import CoordinateSystem
 from ..misc import KeyValueMap
 from ..misc import Matrix3x3
 from ..misc import NamedFloatDict
@@ -76,26 +72,6 @@ LIBHKL_UNITS = {
 }
 LIBHKL_USER_UNITS = LIBHKL_UNITS["user"]
 ROUNDOFF_DIGITS = 12
-
-LIBHKL_COORDINATES = CoordinateSystem(
-    vx=FORWARD_DIRECTION,
-    vy=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
-    vz=ANTIGRAVITY_DIRECTION,
-)
-"""Coordinate system in hklpy2."""
-
-R_LIBHKL_HKLPY2 = LIBHKL_COORDINATES.frame.T @ HKLPY2_COORDINATES.frame
-"""Rotation matrix from libhkl to hklpy2."""
-
-
-def rotate_to_hklpy2(pseudos: List[float]) -> List[float]:
-    """Rotate pseudos from libhkl to hklpy2 coordinates."""
-    return (R_LIBHKL_HKLPY2 @ np.asarray(pseudos, dtype=float)).tolist()
-
-
-def rotate_to_libhkl(pseudos: List[float]) -> List[float]:
-    """Rotate pseudos from hklpy2 to libhkl coordinates."""
-    return (R_LIBHKL_HKLPY2.T @ np.asarray(pseudos, dtype=float)).tolist()
 
 
 def roundoff_list(values: List[float], digits=ROUNDOFF_DIGITS) -> List[float]:
@@ -241,6 +217,8 @@ class HklSolver(SolverBase):
 
         super().__init__(geometry, **kwargs)
 
+        self._custom_coordinate_setup()
+
         # Preface libhkl object names with "_hkl".
         # Note: must keep the '_hkl_engine_list' object as class attribute or
         # random core dumps, usually when accessing 'engine.name_get()'.
@@ -320,6 +298,16 @@ class HklSolver(SolverBase):
         self._sample.compute_UB_busing_levy(*self._sample.reflections_get())
         logger.debug("%r reflections", len(self._sample.reflections_get()))
         return self.UB
+
+    def _custom_coordinate_setup(self) -> None:
+        """
+        Customize the coordinate system for HKL specific transformations.
+        """
+        self.update_coordinate_system(
+            vx=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
+            vy=ANTIGRAVITY_DIRECTION,
+            vz=FORWARD_DIRECTION,
+        )
 
     @property
     def engine(self) -> libhkl.Engine:  # type: ignore

@@ -14,11 +14,13 @@ from typing import List
 from typing import Optional
 from typing import Union
 
+import numpy as np
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import INTERNAL_ANGLE_UNITS
 from ..misc import INTERNAL_LENGTH_UNITS
+from ..misc import CoordinateSystem
 from ..misc import KeyValueMap
 from ..misc import Matrix3x3
 from ..misc import NamedFloatDict
@@ -127,6 +129,9 @@ class SolverBase(ABC):
         self._all_extra_axis_names: Optional[List[str]] = None
         self._sample: Optional[KeyValueMap] = None
 
+        self._coordinate_system = self._initialize_coordinate_system()
+        self._rotation_matrix = None
+
         validate_and_canonical_unit(self.ANGLE_UNITS, INTERNAL_ANGLE_UNITS)
         validate_and_canonical_unit(self.LENGTH_UNITS, INTERNAL_LENGTH_UNITS)
 
@@ -183,6 +188,14 @@ class SolverBase(ABC):
         """
         # return self.UB
 
+    def _compute_rotation_matrix(self) -> np.ndarray:
+        """
+        Compute and return the rotation matrix using the current coordinate system.
+        """
+        from ..misc import HKLPY2_COORDINATES
+
+        return self._coordinate_system.frame.T @ HKLPY2_COORDINATES.frame
+
     @property
     @abstractmethod
     def extra_axis_names(self) -> List[str]:
@@ -230,6 +243,21 @@ class SolverBase(ABC):
         for each geometry.
         """
         return self._gname
+
+    def _initialize_coordinate_system(self) -> CoordinateSystem:
+        """
+        Initialize and return the coordinate system with default axes.
+        Subclasses can override this for specific configurations.
+        """
+        from ..misc import ANTIGRAVITY_DIRECTION
+        from ..misc import FORWARD_DIRECTION
+
+        return CoordinateSystem(
+            # same as hklpy2
+            vx=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
+            vy=ANTIGRAVITY_DIRECTION,
+            vz=FORWARD_DIRECTION,
+        )
 
     @abstractmethod
     def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
@@ -299,6 +327,33 @@ class SolverBase(ABC):
         """Remove all reflections."""
 
     @property
+    def rotation_matrix(self) -> np.ndarray:
+        """
+        Computes the rotation matrix, if not already set.
+
+        Example::
+
+            # v_solver -> v_hklpy2
+            v_solver = np.array([1, 2, 3], dtype=float)
+            v_hklpy2 = self.rotation_matrix @ v_solver
+
+            # v_hklpy2 -> v_solver
+            v_hklpy2 = np.array([1, 2, 3], dtype=float)
+            v_solver = self.rotation_matrix.T @ v_hklpy2
+
+        """
+        if self._rotation_matrix is None:
+            self._rotation_matrix = self._compute_rotation_matrix()
+        return self._rotation_matrix
+
+    @rotation_matrix.setter
+    def rotation_matrix(self, matrix: np.ndarray) -> None:
+        """
+        Set the rotation matrix.
+        """
+        self._rotation_matrix = matrix
+
+    @property
     def sample(self) -> Union[KeyValueMap, None]:
         """
         Crystalline sample.
@@ -360,3 +415,10 @@ class SolverBase(ABC):
     def UB(self) -> Matrix3x3:
         """Orientation matrix (3x3)."""
         return IDENTITY_MATRIX_3X3
+
+    def update_coordinate_system(self, vx, vy, vz) -> None:
+        """
+        Update the coordinate system and reset the rotation matrix to force recomputation.
+        """
+        self._coordinate_system = CoordinateSystem(vx=vx, vy=vy, vz=vz)
+        self._rotation_matrix = None
