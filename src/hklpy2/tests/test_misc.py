@@ -1021,3 +1021,123 @@ def test_CoordinateSystem(x, y, z, context):
     """Test the CoordinateSystem class"""
     with context:
         CoordinateSystem(vx=x, vy=y, vz=z)
+
+
+@pytest.mark.parametrize(
+    "x, y, z, method_name, v1, v2, context",
+    [
+        pytest.param(
+            HAT_X,
+            HAT_Y,
+            HAT_Z,
+            "rotate_to_hklpy2",
+            HAT_X,
+            HAT_Z,
+            does_not_raise(),
+            id="xyz coordinate reference frame -> hklpy2",
+        ),
+        pytest.param(
+            HAT_X,
+            HAT_Y,
+            HAT_Z,
+            "rotate_to_local",
+            HAT_X,
+            HAT_Y,
+            does_not_raise(),
+            id="xyz coordinate reference frame -> local",
+        ),
+        pytest.param(
+            HAT_X,
+            HAT_Y,
+            HAT_Z,
+            "rotate_to_hklpy2",
+            [1, 2, 3, 4, 5],
+            HAT_Y,
+            pytest.raises(
+                ValueError,
+                match="Expected vector to have 3-elements, received ",
+            ),
+            id="rotate_to_hklpy2 -- vector is wrong shape",
+        ),
+        pytest.param(
+            HAT_X,
+            HAT_Y,
+            HAT_Z,
+            "rotate_to_local",
+            [1, 2, 3, 4, 5],
+            HAT_Y,
+            pytest.raises(
+                ValueError,
+                match="Expected vector to have 3-elements, received ",
+            ),
+            id="rotate_to_local -- vector is wrong shape",
+        ),
+    ],
+)
+def test_CoordinateSystem_rotate_vector(x, y, z, method_name, v1, v2, context):
+    """Test the CoordinateSystem vector rotations."""
+    with context:
+        frame = CoordinateSystem(vx=x, vy=y, vz=z)
+        vector = getattr(frame, method_name)(v1)
+        assert np.allclose(vector, v2, atol=0.001)
+
+
+@pytest.mark.parametrize(
+    "x, y, z, matrix, matrix2, context",
+    [
+        pytest.param(
+            HAT_X,
+            HAT_Y,
+            HAT_Z,
+            np.column_stack((HAT_Y, HAT_Z, HAT_X)),
+            np.column_stack((HAT_Y, HAT_Z, HAT_X)),
+            does_not_raise(),
+            id="xyz coordinate reference frame",
+        ),
+        pytest.param(
+            HAT_X,
+            HAT_Y,
+            HAT_Z,
+            np.stack((HAT_Z, HAT_X, HAT_Y)),
+            np.stack((HAT_Z, HAT_X, HAT_Y)),
+            does_not_raise(),
+            id="xyz coordinate reference frame, stack matrix",
+        ),
+        pytest.param(
+            HAT_X,
+            HAT_Y,
+            HAT_Z,
+            np.column_stack((HAT_Y, HAT_Z, HAT_X)),
+            np.stack((HAT_Z, HAT_X)),
+            pytest.raises(
+                ValueError,
+                match="Expected matrix to be 3x3, received: ",
+            ),
+            id="wrong matrix shape",
+        ),
+        pytest.param(
+            HAT_X,
+            HAT_Y,
+            HAT_Z,
+            np.column_stack((HAT_Y, HAT_Z, HAT_X)),
+            [["a", "b", ":"], [2, 3, 4], [5, 6, 7]],
+            pytest.raises(
+                ValueError,
+                match=re.escape("could not convert string to float: 'a'"),
+            ),
+            id="non-numeric matrix, caught by numpy",
+        ),
+    ],
+)
+def test_CoordinateSystem_rotation_matrix(x, y, z, matrix, matrix2, context):
+    """Test the CoordinateSystem class"""
+    with context:
+        coords = CoordinateSystem(vx=x, vy=y, vz=z)
+        assert coords._rotation_matrix is None
+        assert coords.rotation_matrix is not None
+        assert coords._rotation_matrix is not None
+
+        assert np.allclose(coords.rotation_matrix, matrix, atol=0.001)
+
+        coords.rotation_matrix = matrix2
+        assert np.allclose(coords.rotation_matrix, matrix2, atol=0.001)

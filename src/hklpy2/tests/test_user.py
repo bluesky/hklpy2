@@ -377,6 +377,20 @@ def test_set_lattice(fourc):
             None,
             id="TypeError: set_wavelength(None), EpicsWavelengthRO",
         ),
+        pytest.param(
+            {
+                "class": "hklpy2.incident.EpicsWavelengthRO",
+                "pv_wavelength": PV_WAVELENGTH,
+            },
+            123.45,
+            "pm",
+            pytest.raises(
+                TypeError,
+                match=re.escape("'set_wavelength()' not supported"),
+            ),
+            None,
+            id="write_access=False",
+        ),
     ],
 )
 def test_set_wavelength(beam_kwargs, wavelength, units, context, expected):

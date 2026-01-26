@@ -10,18 +10,14 @@ library.
 """
 
 # TODO: Apply rotations of pseudos between hklpy2 and a solver's coordinate system.
-#  Example rotation functions are hklpy2.backends.hkl_soleil.rotate_to_hklpy2
-#  and hklpy2.backends.hkl_soleil.rotate_to_libhkl
-#  Since the Core class is responsible for conversions (axis names, engineering
-#  units, ...) from hklpy2 terms to solver terms, it seems logical that the
-#  coordinate transformations should be added here.
-#  The Core class should expect that any solver class defines its rotation
-#  matrix (such as hklpy2.backends.hkl_soleil.R_LIBHKL_HKLPY2).  The
-#  hklpy2.backends.base module should define a common attribute in the
-#  SolverBase class to standardize access to a solver's rotation matrix.
-#  Transformations should only be applied to pseudos involving h, k, l.
-#  Rotations should be factored into Core.forward, Core.inverse,
-#  Core.add_reflection.  Check for other use as well.
+#  * Since the Core class is responsible for conversions (axis names, engineering
+#    units, ...) from hklpy2 terms to solver terms, it seems logical that the
+#    coordinate transformations should be added here.
+#  * Rotations should be factored into any Core method that communicates pseudos
+#    with a solver.
+#  * Transformations should only be applied to pseudos involving h, k, l.
+#  * Every solver has an attribute named `_coordinate_system` (instance of `hklpy2.misc.CoordinateSystem`).
+#    Use the methods `rotate_to_hklpy2()` and `rotate_to_local()`.
 
 import datetime
 import logging

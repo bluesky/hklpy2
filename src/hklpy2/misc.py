@@ -226,19 +226,10 @@ class CoordinateSystem:
 
     3-D orthonormal (Cartesian) coordinate system.
 
-    Examples:
+    Examples::
 
-    Rotation matrix from reference frame to this one::
-
-        rotation_matrix = REFERENCE_FRAME.T @ self.frame
-
-    Rotate vector 'v_ref' to 'v_local'::
-
-        v_local = rotation_matrix @ np.asarray(v_ref, dtype=float)
-
-    Rotate vector 'v_local' to 'v_ref'::
-
-        v_ref = rotation_matrix.T @ np.asarray(v_local, dtype=float)
+        v_local = self.rotate_to_local(v_hklpy2)
+        v_hklpy2 = self.rotate_to_hklpy2(v_local)
 
     """
 
@@ -249,6 +240,24 @@ class CoordinateSystem:
         vy: Sequence[float],
         vz: Sequence[float],
     ) -> None:
+        """constructor"""
+        self._rotation_matrix = None
+        self.frame = self._define_frame(vx, vy, vz)
+
+    def _compute_rotation_matrix(self) -> np.ndarray:
+        """
+        Compute and return the rotation matrix using the current coordinate system.
+        """
+        return self.frame.T @ HKLPY2_COORDINATES.frame
+
+    def _define_frame(
+        self,
+        vx: Sequence[float],
+        vy: Sequence[float],
+        vz: Sequence[float],
+    ) -> np.ndarray:
+        """Define the coordinate frame."""
+
         def norm(vec):
             """Convert to unit vector."""
             v = np.asarray(vec, dtype=float)
@@ -267,13 +276,50 @@ class CoordinateSystem:
         # Verify vx, vy, & vz are orthogonal
         if not (
             np.isclose(np.dot(nvx, nvy), 0)
+            #
             and np.isclose(np.dot(nvx, nvz), 0)
             and np.isclose(np.dot(nvy, nvz), 0)
         ):
             raise ValueError("Vectors are not orthogonal.")
 
-        self.frame = np.column_stack((nvx, nvy, nvz))
-        # self.rotation_matrix = REFERENCE_FRAME.T @ self.frame
+        return np.column_stack((nvx, nvy, nvz))
+
+    def rotate_to_hklpy2(self, vector: np.ndarray) -> np.ndarray:
+        """Rotate vector from local to hklpy2 reference frame."""
+        v_solver = np.array(vector, dtype=float)
+        if v_solver.shape != (3,):
+            raise ValueError(
+                f"Expected vector to have 3-elements, received {vector=}",
+            )
+        return self.rotation_matrix.T @ v_solver
+
+    def rotate_to_local(self, vector: np.ndarray) -> np.ndarray:
+        """Rotate vector from hklpy2 to local reference frame."""
+        v_hklpy2 = np.array(vector, dtype=float)
+        if v_hklpy2.shape != (3,):
+            raise ValueError(
+                f"Expected vector to have 3-elements, received {vector=}",
+            )
+        return self.rotation_matrix @ v_hklpy2
+
+    @property
+    def rotation_matrix(self) -> np.ndarray:
+        """
+        Returns the rotation matrix, computes if not already set.
+        """
+        if self._rotation_matrix is None:
+            self._rotation_matrix = self._compute_rotation_matrix()
+        return self._rotation_matrix
+
+    @rotation_matrix.setter
+    def rotation_matrix(self, matrix: np.ndarray) -> None:
+        """
+        Set the rotation matrix directly.
+        """
+        new_matrix = np.array(matrix, dtype=float)
+        if new_matrix.shape != (3, 3):
+            raise ValueError(f"Expected matrix to be 3x3, received: {matrix=}")
+        self._rotation_matrix = new_matrix
 
 
 HKLPY2_COORDINATES = CoordinateSystem(

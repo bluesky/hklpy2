@@ -46,8 +46,6 @@ import numpy as np
 from numpy import typing as npt
 from pyRestTable import Table
 
-from ..misc import ANTIGRAVITY_DIRECTION
-from ..misc import FORWARD_DIRECTION
 from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import KeyValueMap
 from ..misc import Matrix3x3
@@ -217,8 +215,6 @@ class HklSolver(SolverBase):
 
         super().__init__(geometry, **kwargs)
 
-        self._custom_coordinate_setup()
-
         # Preface libhkl object names with "_hkl".
         # Note: must keep the '_hkl_engine_list' object as class attribute or
         # random core dumps, usually when accessing 'engine.name_get()'.
@@ -299,14 +295,17 @@ class HklSolver(SolverBase):
         logger.debug("%r reflections", len(self._sample.reflections_get()))
         return self.UB
 
-    def _custom_coordinate_setup(self) -> None:
-        """
-        Customize the coordinate system for HKL specific transformations.
-        """
-        self.update_coordinate_system(
-            vx=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
-            vy=ANTIGRAVITY_DIRECTION,
-            vz=FORWARD_DIRECTION,
+    def define_coordinate_framework(self):
+        """Define the coordinate framework for Hkl/Soleil diffractometers."""
+        from ..misc import ANTIGRAVITY_DIRECTION
+        from ..misc import FORWARD_DIRECTION
+        from ..misc import CoordinateSystem
+
+        return CoordinateSystem(
+            # same as hklpy2
+            vx=FORWARD_DIRECTION,
+            vy=np.cross(ANTIGRAVITY_DIRECTION, FORWARD_DIRECTION),
+            vz=ANTIGRAVITY_DIRECTION,
         )
 
     @property
