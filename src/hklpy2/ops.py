@@ -9,18 +9,6 @@ library.
     ~Core
 """
 
-# ADDRESSED (#192): Coordinate system rotations for pseudos (h, k, l)
-#  * Analysis determined that h, k, l are reciprocal-space coordinates
-#    independent of hardware/real-space coordinate system.
-#  * CoordinateSystem describes real-space/hardware frame, not reciprocal-space.
-#  * Therefore, h, k, l values do NOT need rotation based on solver's coordinate
-#    system. The coordinate system affects how real-space axes are oriented, not
-#    how h, k, l are defined in reciprocal space.
-#  * Infrastructure implemented: _rotate_pseudos_to_solver/hklpy2() helper methods
-#    with proper h,k,l rotation logic and zero-value type preservation, available
-#    for future use if requirements change.
-#  * Tests confirm rotation logic works correctly (test_rotate_pseudos_*).
-
 import datetime
 import logging
 from collections.abc import Iterable
