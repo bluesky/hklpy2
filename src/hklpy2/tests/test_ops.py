@@ -5,6 +5,7 @@ import uuid
 from collections import namedtuple
 from contextlib import nullcontext as does_not_raise
 
+import numpy as np
 import pyRestTable
 import pytest
 
@@ -904,3 +905,199 @@ def test_refine_lattice(rnames, context, expected):
         e4cv.core.refine_lattice(*reflections)
 
     assert_context_result(expected, reason)
+
+
+@pytest.mark.parametrize(
+    "pseudos, context",
+    [
+        pytest.param(
+            {"q": 1.0},
+            does_not_raise(),
+            id="no h,k,l",
+        ),
+        pytest.param(
+            {"h": 1.0, "k": 0.0},
+            does_not_raise(),
+            id="partial h,k,l (missing l)",
+        ),
+    ],
+)
+def test_rotate_pseudos_passthrough(pseudos, context):
+    """Pseudos without all h, k, l axes should pass through unchanged."""
+    sim = creator(name="sim")
+    core = sim.core
+
+    with context:
+        result_solver = core._rotate_pseudos_to_solver(pseudos)
+        result_hklpy2 = core._rotate_pseudos_to_hklpy2(pseudos)
+        assert result_solver == pseudos
+        assert result_hklpy2 == pseudos
+
+
+@pytest.mark.parametrize(
+    "pseudos_in, context",
+    [
+        pytest.param(
+            {"h": 1.0, "k": 0.5, "l": -0.3},
+            does_not_raise(),
+            id="generic vector",
+        ),
+        pytest.param(
+            {"h": 1.0, "k": 0.0, "l": 0.0},
+            does_not_raise(),
+            id="x-axis unit vector",
+        ),
+        pytest.param(
+            {"h": 0.0, "k": 1.0, "l": 0.0},
+            does_not_raise(),
+            id="y-axis unit vector",
+        ),
+        pytest.param(
+            {"h": 0.0, "k": 0.0, "l": 1.0},
+            does_not_raise(),
+            id="z-axis unit vector",
+        ),
+    ],
+)
+def test_rotate_pseudos_round_trip(pseudos_in, context):
+    """Rotating to solver and back should yield original values."""
+    sim = creator(name="sim")
+    core = sim.core
+
+    with context:
+        rotated = core._rotate_pseudos_to_solver(pseudos_in)
+        recovered = core._rotate_pseudos_to_hklpy2(rotated)
+        assert np.allclose(
+            [recovered["h"], recovered["k"], recovered["l"]],
+            [pseudos_in["h"], pseudos_in["k"], pseudos_in["l"]],
+            atol=1e-12,
+        )
+
+
+@pytest.mark.parametrize(
+    "pseudos_in, context",
+    [
+        pytest.param(
+            {"h": 1.0, "k": 0.0, "l": 0.0},
+            does_not_raise(),
+            id="basic rotation",
+        ),
+        pytest.param(
+            {"h": 1.0, "k": 0.0, "l": 0.0, "extra": 42.0},
+            does_not_raise(),
+            id="preserves other axes",
+        ),
+    ],
+)
+def test_rotate_pseudos_to_solver_hkl_soleil(pseudos_in, context):
+    """HklSolver has non-identity rotation; verify pseudos are rotated correctly."""
+    sim = creator(name="sim")  # uses hkl_soleil, E4CV
+    core = sim.core
+    R = core.solver._coordinate_system.rotation_matrix
+
+    # Verify HklSolver uses non-identity rotation matrix
+    assert not np.allclose(R, np.eye(3))
+
+    with context:
+        result = core._rotate_pseudos_to_solver(pseudos_in)
+        # Check h, k, l rotation
+        hkl_expected = R @ np.array([pseudos_in["h"], pseudos_in["k"], pseudos_in["l"]])
+        assert np.allclose(
+            [result["h"], result["k"], result["l"]],
+            hkl_expected,
+            atol=1e-12,
+        )
+        # Check other axes are preserved
+        for key in pseudos_in:
+            if key not in ("h", "k", "l"):
+                assert result[key] == pseudos_in[key]
+
+
+@pytest.mark.parametrize(
+    "pseudos_in, context",
+    [
+        pytest.param(
+            {"h": 1.0, "k": 0.0, "l": 0.0},
+            does_not_raise(),
+            id="identity rotation - x-axis unit vector",
+        ),
+        pytest.param(
+            {"h": 0.0, "k": 1.0, "l": 0.0},
+            does_not_raise(),
+            id="identity rotation - y-axis unit vector",
+        ),
+        pytest.param(
+            {"h": 0.0, "k": 0.0, "l": 1.0},
+            does_not_raise(),
+            id="identity rotation - z-axis unit vector",
+        ),
+        pytest.param(
+            {"h": 1.0, "k": 0.5, "l": -0.3},
+            does_not_raise(),
+            id="identity rotation - generic vector",
+        ),
+        pytest.param(
+            {"h": 1.0, "k": 0.0, "l": 0.0, "extra": 42.0},
+            does_not_raise(),
+            id="identity rotation - preserves other axes",
+        ),
+    ],
+)
+def test_rotate_pseudos_to_solver_identity(pseudos_in, context):
+    """Verify early return when rotation matrix is identity."""
+    sim = creator(name="sim", solver="th_tth", geometry="TH TTH Q")
+    core = sim.core
+    R = core.solver._coordinate_system.rotation_matrix
+
+    # Verify th_tth uses identity rotation matrix
+    assert np.allclose(R, np.eye(3))
+
+    with context:
+        result = core._rotate_pseudos_to_solver(pseudos_in)
+        # Should return pseudos unchanged for identity rotation
+        assert result == pseudos_in
+
+
+@pytest.mark.parametrize(
+    "pseudos_in, context",
+    [
+        pytest.param(
+            {"h": 1.0, "k": 0.0, "l": 0.0},
+            does_not_raise(),
+            id="identity rotation - x-axis unit vector",
+        ),
+        pytest.param(
+            {"h": 0.0, "k": 1.0, "l": 0.0},
+            does_not_raise(),
+            id="identity rotation - y-axis unit vector",
+        ),
+        pytest.param(
+            {"h": 0.0, "k": 0.0, "l": 1.0},
+            does_not_raise(),
+            id="identity rotation - z-axis unit vector",
+        ),
+        pytest.param(
+            {"h": 1.0, "k": 0.5, "l": -0.3},
+            does_not_raise(),
+            id="identity rotation - generic vector",
+        ),
+        pytest.param(
+            {"h": 1.0, "k": 0.0, "l": 0.0, "extra": 42.0},
+            does_not_raise(),
+            id="identity rotation - preserves other axes",
+        ),
+    ],
+)
+def test_rotate_pseudos_to_hklpy2_identity(pseudos_in, context):
+    """Verify early return when rotation matrix is identity."""
+    sim = creator(name="sim", solver="th_tth", geometry="TH TTH Q")
+    core = sim.core
+    R = core.solver._coordinate_system.rotation_matrix
+
+    # Verify th_tth uses identity rotation matrix
+    assert np.allclose(R, np.eye(3))
+
+    with context:
+        result = core._rotate_pseudos_to_hklpy2(pseudos_in)
+        # Should return pseudos unchanged for identity rotation
+        assert result == pseudos_in
