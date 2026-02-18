@@ -17,8 +17,6 @@ from typing import Mapping
 from typing import Optional
 from typing import Union
 
-import numpy as np
-
 from .backends.base import SolverBase
 from .blocks.configure import Configuration
 from .blocks.constraints import RealAxisConstraints
@@ -459,60 +457,6 @@ class Core:
         if len(incoming) > 0:
             self._extras.update(incoming)
             self.request_solver_update(True)
-
-    def _rotate_pseudos_to_solver(self, pseudos: NamedFloatDict) -> NamedFloatDict:
-        """Rotate h, k, l pseudo values from hklpy2 to solver coordinate system.
-
-        Only applies when the solver's pseudo axes include h, k, l
-        and the solver's coordinate system is not identity.
-        """
-        if not all(k in pseudos for k in ("h", "k", "l")):
-            return pseudos
-        cs = self.solver._coordinate_system
-        if np.allclose(cs.rotation_matrix, np.eye(3)):
-            return pseudos
-        v = cs.rotate_to_local(
-            np.array([pseudos["h"], pseudos["k"], pseudos["l"]], dtype=float)
-        )
-        # Preserve original type when result is essentially zero but input was
-        # zero (avoid float conversion of integer zero)
-        h_val = float(v[0])
-        if np.isclose(v[0], 0) and pseudos["h"] == 0:
-            h_val = pseudos["h"]
-        k_val = float(v[1])
-        if np.isclose(v[1], 0) and pseudos["k"] == 0:
-            k_val = pseudos["k"]
-        l_val = float(v[2])
-        if np.isclose(v[2], 0) and pseudos["l"] == 0:
-            l_val = pseudos["l"]
-        return {**pseudos, "h": h_val, "k": k_val, "l": l_val}
-
-    def _rotate_pseudos_to_hklpy2(self, pseudos: NamedFloatDict) -> NamedFloatDict:
-        """Rotate h, k, l pseudo values from solver coordinate system to hklpy2.
-
-        Only applies when the solver's pseudo axes include h, k, l
-        and the solver's coordinate system is not identity.
-        """
-        if not all(k in pseudos for k in ("h", "k", "l")):
-            return pseudos
-        cs = self.solver._coordinate_system
-        if np.allclose(cs.rotation_matrix, np.eye(3)):
-            return pseudos
-        v = cs.rotate_to_hklpy2(
-            np.array([pseudos["h"], pseudos["k"], pseudos["l"]], dtype=float)
-        )
-        # Preserve original type when result is essentially zero but input was
-        # zero (avoid float conversion of integer zero)
-        h_val = float(v[0])
-        if np.isclose(v[0], 0) and pseudos["h"] == 0:
-            h_val = pseudos["h"]
-        k_val = float(v[1])
-        if np.isclose(v[1], 0) and pseudos["k"] == 0:
-            k_val = pseudos["k"]
-        l_val = float(v[2])
-        if np.isclose(v[2], 0) and pseudos["l"] == 0:
-            l_val = pseudos["l"]
-        return {**pseudos, "h": h_val, "k": k_val, "l": l_val}
 
     def forward(self, pseudos: AnyAxesType, wavelength: float = None) -> list:
         """Compute [{names:reals}] from {names: pseudos} (hkl -> angles)."""
