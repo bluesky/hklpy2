@@ -262,9 +262,9 @@ class Core:
         self,
         pseudos: AnyAxesType,
         reals: Union[AnyAxesType, None] = None,
-        wavelength: float = None,
-        wavelength_units: str = None,
-        name: str = None,
+        wavelength: Optional[float] = None,
+        wavelength_units: Optional[str] = None,
+        name: Optional[str] = None,
         replace: bool = False,
     ) -> Reflection:
         """
@@ -343,11 +343,11 @@ class Core:
         self,
         name: str,
         a: float,
-        b: float = None,
-        c: float = None,
+        b: Optional[float] = None,
+        c: Optional[float] = None,
         alpha: float = 90.0,  # degrees
-        beta: float = None,  # degrees
-        gamma: float = None,  # degrees
+        beta: Optional[float] = None,  # degrees
+        gamma: Optional[float] = None,  # degrees
         digits: int = 4,
         replace: bool = False,
     ) -> Sample:
@@ -466,7 +466,7 @@ class Core:
             self._extras.update(incoming)
             self.request_solver_update(True)
 
-    def forward(self, pseudos: AnyAxesType, wavelength: float = None) -> list:
+    def forward(self, pseudos: AnyAxesType, wavelength: Optional[float] = None) -> list:
         """Compute [{names:reals}] from {names: pseudos} (hkl -> angles)."""
         logger.debug(
             "(%s) forward(): pseudos=%r",
@@ -548,7 +548,7 @@ class Core:
     def inverse(
         self,
         reals: Union[AnyAxesType, None],
-        wavelength: float = None,
+        wavelength: Optional[float] = None,
     ) -> AxesDict:
         """Compute (pseudos) from {names: reals} (angles -> hkl)."""
         logger.debug(
@@ -1028,7 +1028,7 @@ class Core:
 
         return axes_to_dict(reals, self.local_real_axes)
 
-    def to_solver_units(self, wavelength: float = None) -> dict:
+    def to_solver_units(self, wavelength: Optional[float] = None) -> dict:
         """Convert quantities from diffractometer units to solver units."""
         lattice = self.sample.lattice._asdict()
 
