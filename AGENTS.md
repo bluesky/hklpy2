@@ -92,8 +92,33 @@ PRs opened or modified by automated agents must follow the "Agent pytest style" 
 
 - Setup: create virtualenv, `pip install -e .[all]`
 - Common commands:
-  - Format & Lint: `pre-commit run --all-files`
+  - Format & Lint: `make style` or `pre-commit run --all-files`
   - Test: `pytest ./hklpy2`
+
+### pre-commit on NFS home directories
+
+The pre-commit cache (`~/.cache/pre-commit`) lives on NFS on this system
+(`aquila:/export/beams1`).  Setuptools' wheel-build cleanup uses `os.rmdir()`
+which fails non-deterministically on NFS because directory-entry removals are
+not immediately visible.  Symptom: `[Errno 39] Directory not empty` during
+`pip install` for any pre-commit hook environment.
+
+**Fix:** keep the pre-commit cache on local disk:
+
+```bash
+export PRE_COMMIT_HOME=/tmp/pre-commit-JEMIAN   # in ~/.bashrc and ~/.profile
+```
+
+This is already set in `~/.bashrc`, `~/.profile`, and hardcoded in
+`.git/hooks/pre-commit` (between the `# end templated` line and the `HERE=`
+line).  If `pre-commit install` regenerates the hook, re-add that line:
+
+```bash
+# Use local disk for pre-commit cache (avoids NFS rmdir failures)
+export PRE_COMMIT_HOME=/tmp/pre-commit-JEMIAN
+```
+
+The `Makefile` `pre` target also exports this variable automatically.
 
 ## CI integration
 

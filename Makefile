@@ -1,5 +1,9 @@
 # Makefile to support common developer commands
 
+# Keep pre-commit cache on local disk (avoids NFS rmdir failures on this system).
+# See AGENTS.md "pre-commit on NFS home directories" for details.
+export PRE_COMMIT_HOME := /tmp/pre-commit-JEMIAN
+
 all :: style docs coverage
 
 clean ::
