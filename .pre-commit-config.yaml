@@ -1,8 +1,11 @@
 # hint: pre-commit run --all-files
 
+default_language_version:
+  python: python3.13
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       # exclude_types: [jupyter]
       - id: check-yaml
@@ -20,7 +23,7 @@ repos:
       # - id: check-symlinks
       - id: check-executables-have-shebangs
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.8
+    rev: v0.15.6
     hooks:
       - id: ruff # replaces Flake8, isort, pydocstyle, pyupgrade
         args:

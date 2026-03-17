@@ -148,9 +148,9 @@ def test_fromdict():
             if field == "label":
                 assert cfg[field] == getattr(constraint, field)
             else:
-                assert cfg[field] != getattr(
-                    constraint, field
-                ), f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
+                assert cfg[field] != getattr(constraint, field), (
+                    f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
+                )
     # A few pre-checks
     assert "geometry" not in config
     assert "solver" in config
@@ -180,9 +180,9 @@ def test_fromdict():
         assert cfg["class"] == constraint.__class__.__name__
         for field in constraint._fields:
             assert field in cfg, f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
-            assert cfg[field] == getattr(
-                constraint, field
-            ), f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
+            assert cfg[field] == getattr(constraint, field), (
+                f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
+            )
 
 
 @pytest.mark.parametrize(

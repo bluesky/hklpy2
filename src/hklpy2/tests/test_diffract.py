@@ -545,9 +545,9 @@ def test_orientation():
     fourc = creator()
     fourc.add_sample("silicon", SI_LATTICE_PARAMETER)
     fourc.beam.wavelength.put(1.0)
-    assert math.isclose(
-        fourc.beam.wavelength.get(), 1.0, abs_tol=0.01
-    ), f"{fourc.beam.wavelength.get()=!r}"
+    assert math.isclose(fourc.beam.wavelength.get(), 1.0, abs_tol=0.01), (
+        f"{fourc.beam.wavelength.get()=!r}"
+    )
 
     fourc.add_reflection(
         (4, 0, 0),
@@ -562,9 +562,9 @@ def test_orientation():
         name="(040)",
     )
 
-    assert math.isclose(
-        fourc.beam.wavelength.get(), 1.0, abs_tol=0.01
-    ), f"{fourc.beam.wavelength.get()=!r}"
+    assert math.isclose(fourc.beam.wavelength.get(), 1.0, abs_tol=0.01), (
+        f"{fourc.beam.wavelength.get()=!r}"
+    )
     assert fourc.sample.reflections.order == "(400) (040)".split()
 
     result = fourc.core.calc_UB(*fourc.sample.reflections.order)
