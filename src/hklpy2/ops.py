@@ -734,7 +734,7 @@ class Core:
                 if axis in constant_axes:
                     self._mode_presets[mode][axis] = float(value)
 
-    def clear_presets(self, mode: str = None) -> None:
+    def clear_presets(self, mode: Optional[str] = None) -> None:
         """
         Clear preset values.
 

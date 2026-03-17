@@ -90,6 +90,7 @@ from typing import Iterator
 from typing import List
 from typing import Mapping
 from typing import NamedTuple
+from typing import Optional
 from typing import Sequence
 from typing import Type
 from typing import Union
@@ -983,11 +984,11 @@ def make_dynamic_instance(
 
 def parse_factory_axes(
     *,
-    space: str = None,
+    space: Optional[str] = None,
     axes: Union[KeyValueMap, None, Sequence[str]] = None,
-    order: Sequence[str] = None,
-    canonical: Sequence[str] = None,
-    labels: Sequence[str] = None,
+    order: Optional[Sequence[str]] = None,
+    canonical: Optional[Sequence[str]] = None,
+    labels: Optional[Sequence[str]] = None,
     **_ignored: Any,
 ) -> Mapping[str, Union[Component, Sequence[str]]]:
     """

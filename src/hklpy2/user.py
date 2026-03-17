@@ -115,11 +115,11 @@ _choice = _SelectedDiffractometer()  # selected diffractometer geometry
 def add_sample(
     name: str,
     a: float,
-    b: float = None,
-    c: float = None,
+    b: Optional[float] = None,
+    c: Optional[float] = None,
     alpha: float = 90,
-    beta: float = None,
-    gamma: float = None,
+    beta: Optional[float] = None,
+    gamma: Optional[float] = None,
     digits: int = 4,
     replace: bool = False,
 ) -> Sample:
@@ -269,7 +269,7 @@ def cahkl_table(*reflections: list[AxesTuple], digits=4) -> Table:
 def calc_UB(
     r1: Union[Reflection, str],
     r2: Union[Reflection, str],
-    wavelength: float = None,
+    wavelength: Optional[float] = None,
 ) -> Matrix3x3:
     """
     Compute the UB matrix with two reflections.
@@ -597,7 +597,7 @@ def scan_extra(
     )
 
 
-def set_diffractometer(diffractometer: DiffractometerBase = None) -> None:
+def set_diffractometer(diffractometer: Optional[DiffractometerBase] = None) -> None:
     """
     Declare the diffractometer to be used.
 
@@ -635,11 +635,11 @@ def set_wavelength(value: float, units=None) -> None:
 
 def set_lattice(
     a: float,
-    b: float = None,
-    c: float = None,
+    b: Optional[float] = None,
+    c: Optional[float] = None,
     alpha: float = 90,
-    beta: float = None,
-    gamma: float = None,
+    beta: Optional[float] = None,
+    gamma: Optional[float] = None,
     digits: int = 4,
 ) -> None:
     """

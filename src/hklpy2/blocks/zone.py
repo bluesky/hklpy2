@@ -72,9 +72,9 @@ class OrthonormalZone:
     def __init__(
         self,
         *,
-        axis: INPUT_VECTOR = None,
-        b1: INPUT_VECTOR = None,
-        b2: INPUT_VECTOR = None,
+        axis: Optional[INPUT_VECTOR] = None,
+        b1: Optional[INPUT_VECTOR] = None,
+        b2: Optional[INPUT_VECTOR] = None,
     ) -> None:
         """Constructor"""
         self._axis = None

@@ -46,6 +46,7 @@ import atexit
 import logging
 import weakref
 from typing import Mapping
+from typing import Optional
 from typing import Union
 
 from ophyd import Component
@@ -144,11 +145,11 @@ class _WavelengthBase(Device):
         self,
         prefix: str = "",
         *,
-        source_type: str = None,
-        wavelength: float = None,
-        wavelength_units: str = None,
+        source_type: Optional[str] = None,
+        wavelength: Optional[float] = None,
+        wavelength_units: Optional[str] = None,
         wavelength_deadband: float = DEFAULT_WAVELENGTH_DEADBAND,
-        connection_timeout: float = None,
+        connection_timeout: Optional[float] = None,
         **kwargs,
     ) -> None:
         """."""
@@ -262,8 +263,8 @@ class WavelengthXray(Wavelength):
         self,
         prefix: str = "",
         *,
-        energy: float = None,
-        energy_units: str = None,
+        energy: Optional[float] = None,
+        energy_units: Optional[str] = None,
         **kwargs,
     ) -> None:
         """."""

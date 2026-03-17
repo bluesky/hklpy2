@@ -100,11 +100,11 @@ class Lattice:
     def __init__(
         self,
         a: float,
-        b: float = None,
-        c: float = None,
+        b: Optional[float] = None,
+        c: Optional[float] = None,
         alpha: float = 90.0,  # degrees
-        beta: float = None,  # degrees
-        gamma: float = None,  # degrees
+        beta: Optional[float] = None,  # degrees
+        gamma: Optional[float] = None,  # degrees
         *,
         angle_units: Optional[str] = None,
         digits: Optional[int] = None,
