@@ -178,9 +178,18 @@ def cahkl(h: float, k: float, l: float) -> Union[list, str]:  # noqa: E741
     """
     diffractometer = get_diffractometer()
     try:
+        solutions = diffractometer.core.forward(pseudos=(h, k, l))
+        if not solutions:
+            return (
+                f"No solutions for ({h}, {k}, {l})."
+                " Either the solver found no solutions"
+                " or all solutions were rejected"
+                " by constraints."
+                " Check constraint limits."
+            )
         return diffractometer._forward_solution(
             diffractometer.real_position,
-            diffractometer.core.forward(pseudos=(h, k, l)),
+            solutions,
         )
     except NoForwardSolutions as exinfo:
         return str(exinfo)

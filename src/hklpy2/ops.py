@@ -530,8 +530,26 @@ class Core:
                     )
                 if self.constraints.valid(**reals):
                     solutions.append(self.diffractometer.RealPosition(**reals))
-        except NoForwardSolutions:
-            pass
+                else:
+                    # Log which constraint(s) rejected this solution.
+                    for name, constraint in self.constraints.items():
+                        if not constraint.valid(**reals):
+                            logger.info(
+                                "Solution discarded: %s=%.4f"
+                                " outside limits [%.4f, %.4f]."
+                                "  pseudos=%r",
+                                name,
+                                reals[name],
+                                constraint.low_limit,
+                                constraint.high_limit,
+                                pdict,
+                            )
+        except NoForwardSolutions as exc:
+            logger.info(
+                "No forward solutions from solver for pseudos=%r: %s",
+                pdict,
+                exc,
+            )
 
         return solutions
 

@@ -479,7 +479,7 @@ def test_solver_summary(fourc, capsys):
             {},
             None,
             (1, 0, 11_110),  # A reflection far beyond the Ewald sphere.
-            "No solutions.",
+            "No solutions for",
             does_not_raise(),
             None,
         ],
@@ -495,7 +495,7 @@ def test_solver_summary(fourc, capsys):
             dict(geometry="APS POLAR"),
             "psi constant vertical",
             (1, 0, 0),
-            "No solutions.",
+            "No solutions for",
             does_not_raise(),
             None,
         ],
