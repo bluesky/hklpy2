@@ -867,6 +867,9 @@ class DiffractometerBase(PseudoPositioner):
             for v in self.core.constraints.values():
                 print(f"constraint: {v}")
             print(f"Mode: {self.core.mode}")
+            mode_presets = self.core.presets
+            if len(mode_presets) > 0:
+                print(f"presets: {mode_presets}")
             beam = self.beam._asdict()
             for key in "energy wavelength".split():
                 if key in beam:

@@ -112,6 +112,7 @@ class Core:
         self.diffractometer = diffractometer
         self._extras = {}  # Dictionary of any extra solver axis (across all modes).
         self._mode = None
+        self._mode_presets = {}  # Dictionary of presets per mode: {mode_name: {axis: value}}
         self._sample_name = None
         self._samples = {}
         self._solver = None
@@ -146,6 +147,7 @@ class Core:
             "constraints": self.constraints._asdict(),
             "solver": self.solver._metadata,
             "beam": self.diffractometer.beam._asdict(),
+            "presets": self._mode_presets,
         }
 
         if "engine_name" in dir(self.solver):
@@ -191,6 +193,13 @@ class Core:
                 axis_local = self.axes_xref_reversed[axis_canonical]
                 constraint["label"] = axis_local
         self.constraints._fromdict(config["constraints"], core=self)
+
+        presets = config.get("presets", {})
+        for mode, mode_presets in presets.items():
+            if mode in self.modes:
+                self._mode_presets[mode] = {
+                    str(k): float(v) for k, v in mode_presets.items()
+                }
 
     def _validate_extras(
         self,
@@ -477,15 +486,39 @@ class Core:
             angle_units_solver = self.solver.ANGLE_UNITS
             angle_units_core = self.diffractometer.reals_units
 
-            presets = {
-                axis: convert_units(
-                    reals[self.axes_xref_reversed[axis]],
-                    angle_units_core,
-                    angle_units_solver,
-                )
-                for axis in self.solver.real_axis_names
-            }
-            self.solver.set_reals(presets)
+            # Get the constant (read-only) axis names for this mode.
+            constant_axes = self.solver_constant_axis_names
+
+            # Get presets for current mode.
+            mode_presets = self.presets
+
+            # Build the presets dict:
+            # - For constant axes: use preset value if set, otherwise use current motor position
+            # - For written axes: always use current motor position
+            solver_reals = {}
+            for axis in self.solver.real_axis_names:
+                local_axis = self.axes_xref_reversed[axis]
+                if axis in constant_axes:
+                    if local_axis in mode_presets:
+                        solver_reals[axis] = convert_units(
+                            mode_presets[local_axis],
+                            angle_units_core,
+                            angle_units_solver,
+                        )
+                    else:
+                        solver_reals[axis] = convert_units(
+                            reals[local_axis],
+                            angle_units_core,
+                            angle_units_solver,
+                        )
+                else:
+                    solver_reals[axis] = convert_units(
+                        reals[local_axis],
+                        angle_units_core,
+                        angle_units_solver,
+                    )
+
+            self.solver.set_reals(solver_reals)
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
                 new_reals = self._axes_names_s2d(solution)
                 for axis, value in new_reals.items():
@@ -599,6 +632,82 @@ class Core:
     def modes(self) -> list[str]:
         """Return the list of available |solver| modes."""
         return self.solver.modes
+
+    @property
+    def presets(self) -> NamedFloatDict:
+        """
+        Preset values for constant-axis modes.
+
+        When using a mode that holds one or more axes at constant values (such
+        as ``constant_phi``), these preset values override the current
+        diffractometer motor positions when computing ``forward()`` solutions.
+
+        The presets are stored per-mode: changing the mode switches to that
+        mode's saved presets. Presets only contain axes that are read-only
+        (constant) in the current mode.
+
+        Returns a dictionary of axis name:value pairs for the current mode.
+        """
+        mode = self.mode
+        if mode not in self._mode_presets:
+            self._mode_presets[mode] = {}
+        return self._mode_presets[mode]
+
+    @presets.setter
+    def presets(self, values: AnyAxesType) -> None:
+        """
+        Set preset values for the current mode.
+
+        PARAMETERS
+
+        values various:
+            Dictionary of axis name:value pairs to use as presets when
+            computing ``forward()`` solutions in the current mode.
+            Only axes that are read-only (constant) in the current mode
+            should be provided; other values will be ignored.
+        """
+        mode = self.mode
+        if mode not in self._mode_presets:
+            self._mode_presets[mode] = {}
+
+        constant_axes = self.constant_axis_names
+
+        if isinstance(values, dict):
+            for axis, value in values.items():
+                if axis in constant_axes:
+                    self._mode_presets[mode][axis] = float(value)
+        else:
+            standardized = self.standardize_reals(values)
+            for axis, value in standardized.items():
+                if axis in constant_axes:
+                    self._mode_presets[mode][axis] = float(value)
+
+    def clear_presets(self, mode: str = None) -> None:
+        """
+        Clear preset values.
+
+        PARAMETERS
+
+        mode str or None:
+            If provided, clear presets only for that mode.
+            If None (default), clear presets for all modes.
+        """
+        if mode is None:
+            self._mode_presets.clear()
+        elif mode in self._mode_presets:
+            del self._mode_presets[mode]
+
+    @property
+    def constant_axis_names(self) -> list[str]:
+        """
+        List of axis names that are held constant in the current mode.
+
+        These are the axes that will use preset values (or current motor
+        positions if no presets are set) when computing ``forward()``
+        solutions.
+        """
+        constant_solver_names = self.solver_constant_axis_names
+        return [self.axes_xref_reversed[k] for k in constant_solver_names]
 
     def refine_lattice(self, *reflections: list[Reflection]) -> Lattice:
         """
@@ -752,6 +861,33 @@ class Core:
         """Ordered list of |solver| real axis names."""
         self.update_solver()
         return self.solver.real_axis_names
+
+    @property
+    def solver_constant_axis_names(self) -> list[str]:
+        """
+        Ordered list of |solver| real axis names that are constant in the current mode.
+
+        These are axes that are read (not written) by the solver in the current
+        mode. They will use preset values (or current motor positions if no
+        presets are set) when computing ``forward()`` solutions.
+        """
+        self.update_solver()
+        if hasattr(self.solver, "axes_r"):
+            return self.solver.axes_r
+        return self.solver.real_axis_names
+
+    @property
+    def solver_written_axis_names(self) -> list[str]:
+        """
+        Ordered list of |solver| real axis names that are solved in the current mode.
+
+        These are axes that are written (computed) by the solver in the current
+        mode.
+        """
+        self.update_solver()
+        if hasattr(self.solver, "axes_w"):
+            return self.solver.axes_w
+        return []
 
     @property
     def solver_signature(self) -> str:
