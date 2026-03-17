@@ -3,6 +3,7 @@ import math
 import re
 from collections import namedtuple
 from contextlib import nullcontext as does_not_raise
+from unittest.mock import patch
 
 import numpy as np
 import numpy.testing
@@ -14,6 +15,7 @@ from pyRestTable import Table
 from ..blocks.lattice import SI_LATTICE_PARAMETER
 from ..diffract import creator
 from ..incident import WavelengthXray
+from ..misc import NoForwardSolutions
 from ..misc import ReflectionError
 from ..misc import roundoff
 from ..ops import CoreError
@@ -511,6 +513,30 @@ def test_cahkl_no_solutions(specs, mode, pseudos, text, context, expected):
         assert text in str(result), f"{text=!r}  {str(result)=}"
 
     assert_context_result(expected, reason)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(pseudos=(1, 0, 0), message="Solver error."),
+            does_not_raise(),
+            id="cahkl catches NoForwardSolutions from core.forward",
+        ),
+    ],
+)
+def test_cahkl_forward_raises(parms, context):
+    """Exercise the except NoForwardSolutions path in cahkl()."""
+    with context:
+        sim = creator()
+        set_diffractometer(sim)
+        with patch.object(
+            sim.core,
+            "forward",
+            side_effect=NoForwardSolutions(parms["message"]),
+        ):
+            result = cahkl(*parms["pseudos"])
+        assert parms["message"] in str(result)
 
 
 @pytest.mark.parametrize(

@@ -475,7 +475,7 @@ class Core:
         )
 
         pdict = self.standardize_pseudos(pseudos)
-        reals = self.diffractometer.real_position._asdict()  # Original values.
+        base_reals = self.diffractometer.real_position._asdict()  # Original values.
 
         self.update_solver(wavelength=wavelength)
 
@@ -507,19 +507,20 @@ class Core:
                         )
                     else:
                         solver_reals[axis] = convert_units(
-                            reals[local_axis],
+                            base_reals[local_axis],
                             angle_units_core,
                             angle_units_solver,
                         )
                 else:
                     solver_reals[axis] = convert_units(
-                        reals[local_axis],
+                        base_reals[local_axis],
                         angle_units_core,
                         angle_units_solver,
                     )
 
             self.solver.set_reals(solver_reals)
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
+                reals = base_reals.copy()  # Fresh copy per solution.
                 new_reals = self._axes_names_s2d(solution)
                 for axis, value in new_reals.items():
                     # Update with converted new value.
