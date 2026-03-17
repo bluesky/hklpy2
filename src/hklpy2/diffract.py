@@ -223,9 +223,9 @@ class DiffractometerBase(PseudoPositioner):
         self,
         pseudos,
         reals=None,
-        wavelength: float = None,
-        wavelength_units: str = None,
-        name: str = None,
+        wavelength: Optional[float] = None,
+        wavelength_units: Optional[str] = None,
+        name: Optional[str] = None,
         replace: bool = False,
     ) -> Reflection:
         """
@@ -263,11 +263,11 @@ class DiffractometerBase(PseudoPositioner):
         self,
         name: str,
         a: float,
-        b: float = None,
-        c: float = None,
+        b: Optional[float] = None,
+        c: Optional[float] = None,
         alpha: float = 90.0,  # degrees
-        beta: float = None,  # degrees
-        gamma: float = None,  # degrees
+        beta: Optional[float] = None,  # degrees
+        gamma: Optional[float] = None,  # degrees
         digits: int = 4,
         replace: bool = False,
     ) -> Sample:
@@ -390,7 +390,7 @@ class DiffractometerBase(PseudoPositioner):
         )
 
     @pseudo_position_argument
-    def forward(self, pseudos: dict, wavelength: float = None) -> NamedTuple:
+    def forward(self, pseudos: dict, wavelength: Optional[float] = None) -> NamedTuple:
         """Compute real-space coordinates from pseudos (hkl -> angles)."""
         logger.debug("forward: pseudos=%r", pseudos)
         solutions = self.core.forward(pseudos, wavelength=wavelength)
@@ -408,7 +408,7 @@ class DiffractometerBase(PseudoPositioner):
         return pdict
 
     @real_position_argument
-    def inverse(self, reals: tuple, wavelength: float = None) -> NamedTuple:
+    def inverse(self, reals: tuple, wavelength: Optional[float] = None) -> NamedTuple:
         """Compute pseudo-space coordinates from reals (angles -> hkl)."""
         logger.debug("inverse: reals=%r", reals)
         pos = self.core.inverse(reals, wavelength=wavelength)
@@ -867,6 +867,9 @@ class DiffractometerBase(PseudoPositioner):
             for v in self.core.constraints.values():
                 print(f"constraint: {v}")
             print(f"Mode: {self.core.mode}")
+            mode_presets = self.core.presets
+            if len(mode_presets) > 0:
+                print(f"presets: {mode_presets}")
             beam = self.beam._asdict()
             for key in "energy wavelength".split():
                 if key in beam:

@@ -112,6 +112,7 @@ class Core:
         self.diffractometer = diffractometer
         self._extras = {}  # Dictionary of any extra solver axis (across all modes).
         self._mode = None
+        self._mode_presets = {}  # Dictionary of presets per mode: {mode_name: {axis: value}}
         self._sample_name = None
         self._samples = {}
         self._solver = None
@@ -146,6 +147,7 @@ class Core:
             "constraints": self.constraints._asdict(),
             "solver": self.solver._metadata,
             "beam": self.diffractometer.beam._asdict(),
+            "presets": self._mode_presets,
         }
 
         if "engine_name" in dir(self.solver):
@@ -191,6 +193,13 @@ class Core:
                 axis_local = self.axes_xref_reversed[axis_canonical]
                 constraint["label"] = axis_local
         self.constraints._fromdict(config["constraints"], core=self)
+
+        presets = config.get("presets", {})
+        for mode, mode_presets in presets.items():
+            if mode in self.modes:
+                self._mode_presets[mode] = {
+                    str(k): float(v) for k, v in mode_presets.items()
+                }
 
     def _validate_extras(
         self,
@@ -253,9 +262,9 @@ class Core:
         self,
         pseudos: AnyAxesType,
         reals: Union[AnyAxesType, None] = None,
-        wavelength: float = None,
-        wavelength_units: str = None,
-        name: str = None,
+        wavelength: Optional[float] = None,
+        wavelength_units: Optional[str] = None,
+        name: Optional[str] = None,
         replace: bool = False,
     ) -> Reflection:
         """
@@ -334,11 +343,11 @@ class Core:
         self,
         name: str,
         a: float,
-        b: float = None,
-        c: float = None,
+        b: Optional[float] = None,
+        c: Optional[float] = None,
         alpha: float = 90.0,  # degrees
-        beta: float = None,  # degrees
-        gamma: float = None,  # degrees
+        beta: Optional[float] = None,  # degrees
+        gamma: Optional[float] = None,  # degrees
         digits: int = 4,
         replace: bool = False,
     ) -> Sample:
@@ -457,7 +466,7 @@ class Core:
             self._extras.update(incoming)
             self.request_solver_update(True)
 
-    def forward(self, pseudos: AnyAxesType, wavelength: float = None) -> list:
+    def forward(self, pseudos: AnyAxesType, wavelength: Optional[float] = None) -> list:
         """Compute [{names:reals}] from {names: pseudos} (hkl -> angles)."""
         logger.debug(
             "(%s) forward(): pseudos=%r",
@@ -477,15 +486,39 @@ class Core:
             angle_units_solver = self.solver.ANGLE_UNITS
             angle_units_core = self.diffractometer.reals_units
 
-            presets = {
-                axis: convert_units(
-                    reals[self.axes_xref_reversed[axis]],
-                    angle_units_core,
-                    angle_units_solver,
-                )
-                for axis in self.solver.real_axis_names
-            }
-            self.solver.set_reals(presets)
+            # Get the constant (read-only) axis names for this mode.
+            constant_axes = self.solver_constant_axis_names
+
+            # Get presets for current mode.
+            mode_presets = self.presets
+
+            # Build the presets dict:
+            # - For constant axes: use preset value if set, otherwise use current motor position
+            # - For written axes: always use current motor position
+            solver_reals = {}
+            for axis in self.solver.real_axis_names:
+                local_axis = self.axes_xref_reversed[axis]
+                if axis in constant_axes:
+                    if local_axis in mode_presets:
+                        solver_reals[axis] = convert_units(
+                            mode_presets[local_axis],
+                            angle_units_core,
+                            angle_units_solver,
+                        )
+                    else:
+                        solver_reals[axis] = convert_units(
+                            reals[local_axis],
+                            angle_units_core,
+                            angle_units_solver,
+                        )
+                else:
+                    solver_reals[axis] = convert_units(
+                        reals[local_axis],
+                        angle_units_core,
+                        angle_units_solver,
+                    )
+
+            self.solver.set_reals(solver_reals)
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
                 new_reals = self._axes_names_s2d(solution)
                 for axis, value in new_reals.items():
@@ -515,7 +548,7 @@ class Core:
     def inverse(
         self,
         reals: Union[AnyAxesType, None],
-        wavelength: float = None,
+        wavelength: Optional[float] = None,
     ) -> AxesDict:
         """Compute (pseudos) from {names: reals} (angles -> hkl)."""
         logger.debug(
@@ -599,6 +632,138 @@ class Core:
     def modes(self) -> list[str]:
         """Return the list of available |solver| modes."""
         return self.solver.modes
+
+    @property
+    def presets(self) -> NamedFloatDict:
+        """
+        Preset values for constant-axis modes.
+
+        When using a mode that holds one or more axes at constant values (such
+        as ``constant_phi``), these preset values override the current
+        diffractometer motor positions when computing ``forward()`` solutions.
+
+        The presets are stored per-mode: changing the mode switches to that
+        mode's saved presets. Presets only contain axes that are read-only
+        (constant) in the current mode.
+
+        Returns a dictionary of axis name:value pairs for the current mode.
+
+        EXAMPLE::
+
+            >>> diffractometer.core.mode = "constant_phi"
+            >>> diffractometer.core.presets = {"phi": 45.0}  # Set phi preset
+            >>> diffractometer.core.presets
+            {'phi': 45.0}
+
+            >>> # Switch to another mode - presets are saved per mode
+            >>> diffractometer.core.mode = "constant_omega"
+            >>> diffractometer.core.presets = {"omega": 30.0}
+
+            >>> # Switch back - phi preset is restored
+            >>> diffractometer.core.mode = "constant_phi"
+            >>> diffractometer.core.presets
+            {'phi': 45.0}
+        """
+        mode = self.mode
+        if mode not in self._mode_presets:
+            self._mode_presets[mode] = {}
+        return self._mode_presets[mode]
+
+    @presets.setter
+    def presets(self, values: AnyAxesType) -> None:
+        """
+        Set preset values for the current mode.
+
+        Only axes that are read-only (constant) in the current mode will be
+        stored. Values for computed axes are ignored.
+
+        PARAMETERS
+
+        values various:
+            Dictionary of axis name:value pairs to use as presets when
+            computing ``forward()`` solutions in the current mode.
+            Only axes that are read-only (constant) in the current mode
+            should be provided; other values will be ignored.
+            Can also be a list, tuple, or namedtuple in the order of
+            ``local_real_axes``.
+
+        NOTE: Setting a preset does NOT move the motor. It only specifies
+        the value to use when computing forward() solutions. Use this to
+        compute hkl positions without first moving motors to the constant
+        axis position.
+
+        EXAMPLE::
+
+            >>> diffractometer.core.mode = "constant_phi"
+            >>> # Motor is at phi=10, but we want to compute for phi=45
+            >>> diffractometer.core.presets = {"phi": 45.0}
+            >>> # Now forward() will use phi=45, not phi=10
+        """
+        mode = self.mode
+        if mode not in self._mode_presets:
+            self._mode_presets[mode] = {}
+
+        constant_axes = self.constant_axis_names
+
+        if isinstance(values, dict):
+            for axis, value in values.items():
+                if axis in constant_axes:
+                    self._mode_presets[mode][axis] = float(value)
+        else:
+            standardized = self.standardize_reals(values)
+            for axis, value in standardized.items():
+                if axis in constant_axes:
+                    self._mode_presets[mode][axis] = float(value)
+
+    def clear_presets(self, mode: str = None) -> None:
+        """
+        Clear preset values.
+
+        After clearing, ``forward()`` will use the current motor positions
+        for the constant axes.
+
+        PARAMETERS
+
+        mode str or None:
+            If provided, clear presets only for that mode.
+            If None (default), clear presets for all modes.
+
+        EXAMPLE::
+
+            >>> diffractometer.core.presets = {"phi": 45.0}
+            >>> diffractometer.core.presets
+            {'phi': 45.0}
+            >>> diffractometer.core.clear_presets()  # Clear all
+            >>> diffractometer.core.presets
+            {}
+            >>> diffractometer.core.clear_presets("constant_omega")  # Specific mode
+        """
+        if mode is None:
+            self._mode_presets.clear()
+        elif mode in self._mode_presets:
+            del self._mode_presets[mode]
+
+    @property
+    def constant_axis_names(self) -> list[str]:
+        """
+        List of axis names (diffractometer names) that are held constant
+        in the current mode.
+
+        These are the axes that will use preset values (or current motor
+        positions if no presets are set) when computing ``forward()``
+        solutions.
+
+        EXAMPLE::
+
+            >>> diffractometer.core.mode = "constant_phi"
+            >>> diffractometer.core.constant_axis_names
+            ['phi']
+            >>> diffractometer.core.mode = "bissector"
+            >>> diffractometer.core.constant_axis_names
+            []
+        """
+        constant_solver_names = self.solver_constant_axis_names
+        return [self.axes_xref_reversed[k] for k in constant_solver_names]
 
     def refine_lattice(self, *reflections: list[Reflection]) -> Lattice:
         """
@@ -754,6 +919,37 @@ class Core:
         return self.solver.real_axis_names
 
     @property
+    def solver_constant_axis_names(self) -> list[str]:
+        """
+        Ordered list of |solver| real axis names that are constant in the current mode.
+
+        These are axes that are read (not written) by the solver in the current
+        mode. They will use preset values (or current motor positions if no
+        presets are set) when computing ``forward()`` solutions.
+
+        Constant axes are computed as: all real axis names - written axis names.
+        """
+        self.update_solver()
+        all_axes = set(self.solver.real_axis_names)
+        written_axes = set(self.solver_written_axis_names)
+        constant_axes = list(all_axes - written_axes)
+        constant_axes.sort(key=self.solver.real_axis_names.index)
+        return constant_axes
+
+    @property
+    def solver_written_axis_names(self) -> list[str]:
+        """
+        Ordered list of |solver| real axis names that are solved in the current mode.
+
+        These are axes that are written (computed) by the solver in the current
+        mode.
+        """
+        self.update_solver()
+        if hasattr(self.solver, "axes_w"):
+            return self.solver.axes_w
+        return self.solver.real_axis_names
+
+    @property
     def solver_signature(self) -> str:
         """Return 'repr(self.solver)' for use as ophyd.AttributeSignal."""
         return repr(self.solver)
@@ -832,7 +1028,7 @@ class Core:
 
         return axes_to_dict(reals, self.local_real_axes)
 
-    def to_solver_units(self, wavelength: float = None) -> dict:
+    def to_solver_units(self, wavelength: Optional[float] = None) -> dict:
         """Convert quantities from diffractometer units to solver units."""
         lattice = self.sample.lattice._asdict()
 
