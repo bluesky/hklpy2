@@ -647,6 +647,22 @@ class Core:
         (constant) in the current mode.
 
         Returns a dictionary of axis name:value pairs for the current mode.
+
+        EXAMPLE::
+
+            >>> diffractometer.core.mode = "constant_phi"
+            >>> diffractometer.core.presets = {"phi": 45.0}  # Set phi preset
+            >>> diffractometer.core.presets
+            {'phi': 45.0}
+
+            >>> # Switch to another mode - presets are saved per mode
+            >>> diffractometer.core.mode = "constant_omega"
+            >>> diffractometer.core.presets = {"omega": 30.0}
+
+            >>> # Switch back - phi preset is restored
+            >>> diffractometer.core.mode = "constant_phi"
+            >>> diffractometer.core.presets
+            {'phi': 45.0}
         """
         mode = self.mode
         if mode not in self._mode_presets:
@@ -658,6 +674,9 @@ class Core:
         """
         Set preset values for the current mode.
 
+        Only axes that are read-only (constant) in the current mode will be
+        stored. Values for computed axes are ignored.
+
         PARAMETERS
 
         values various:
@@ -665,6 +684,20 @@ class Core:
             computing ``forward()`` solutions in the current mode.
             Only axes that are read-only (constant) in the current mode
             should be provided; other values will be ignored.
+            Can also be a list, tuple, or namedtuple in the order of
+            ``local_real_axes``.
+
+        NOTE: Setting a preset does NOT move the motor. It only specifies
+        the value to use when computing forward() solutions. Use this to
+        compute hkl positions without first moving motors to the constant
+        axis position.
+
+        EXAMPLE::
+
+            >>> diffractometer.core.mode = "constant_phi"
+            >>> # Motor is at phi=10, but we want to compute for phi=45
+            >>> diffractometer.core.presets = {"phi": 45.0}
+            >>> # Now forward() will use phi=45, not phi=10
         """
         mode = self.mode
         if mode not in self._mode_presets:
@@ -686,11 +719,24 @@ class Core:
         """
         Clear preset values.
 
+        After clearing, ``forward()`` will use the current motor positions
+        for the constant axes.
+
         PARAMETERS
 
         mode str or None:
             If provided, clear presets only for that mode.
             If None (default), clear presets for all modes.
+
+        EXAMPLE::
+
+            >>> diffractometer.core.presets = {"phi": 45.0}
+            >>> diffractometer.core.presets
+            {'phi': 45.0}
+            >>> diffractometer.core.clear_presets()  # Clear all
+            >>> diffractometer.core.presets
+            {}
+            >>> diffractometer.core.clear_presets("constant_omega")  # Specific mode
         """
         if mode is None:
             self._mode_presets.clear()
@@ -700,11 +746,21 @@ class Core:
     @property
     def constant_axis_names(self) -> list[str]:
         """
-        List of axis names that are held constant in the current mode.
+        List of axis names (diffractometer names) that are held constant
+        in the current mode.
 
         These are the axes that will use preset values (or current motor
         positions if no presets are set) when computing ``forward()``
         solutions.
+
+        EXAMPLE::
+
+            >>> diffractometer.core.mode = "constant_phi"
+            >>> diffractometer.core.constant_axis_names
+            ['phi']
+            >>> diffractometer.core.mode = "bissector"
+            >>> diffractometer.core.constant_axis_names
+            []
         """
         constant_solver_names = self.solver_constant_axis_names
         return [self.axes_xref_reversed[k] for k in constant_solver_names]
@@ -870,11 +926,15 @@ class Core:
         These are axes that are read (not written) by the solver in the current
         mode. They will use preset values (or current motor positions if no
         presets are set) when computing ``forward()`` solutions.
+
+        Constant axes are computed as: all real axis names - written axis names.
         """
         self.update_solver()
-        if hasattr(self.solver, "axes_r"):
-            return self.solver.axes_r
-        return self.solver.real_axis_names
+        all_axes = set(self.solver.real_axis_names)
+        written_axes = set(self.solver_written_axis_names)
+        constant_axes = list(all_axes - written_axes)
+        constant_axes.sort(key=self.solver.real_axis_names.index)
+        return constant_axes
 
     @property
     def solver_written_axis_names(self) -> list[str]:
@@ -887,7 +947,7 @@ class Core:
         self.update_solver()
         if hasattr(self.solver, "axes_w"):
             return self.solver.axes_w
-        return []
+        return self.solver.real_axis_names
 
     @property
     def solver_signature(self) -> str:
