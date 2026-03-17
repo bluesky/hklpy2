@@ -14,48 +14,104 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 - `pre-commit run --all-files`
 
 
-## Agent pytest style (for automated agents)
+## Agent pytest style (for automated agents) - MANDATORY
 
 ---
 
-- Agents must write tests using parametrized pytest patterns and explicit context managers for expected success/failure.
-- Prefer more parameter sets to minimize the number of test functions.
-- Use `from contextlib import nullcontext as does_not_raise` for success cases and `pytest.raises(..., match=re.escape(...))` for expected exceptions.
-- Construct objects and perform assignments that may raise inside the `with context:` block. Place assertions about object state after the `with` when the case expects success.
-- - newer advice: When using pytest.raises(...), use `match=re.escape(...)` for partial text matches from the expected exception.
-- older advice: Use the project's helper `assert_context_result(expected, reason)` where available to standardize result checks.
-- Use pytest.param() for all parameter sets.  Identify each parameter set with a relevant `id="..."` kwarg.
-- Example pattern (brief):
+**CRITICAL: All test code MUST follow this pattern. Tests not following this pattern will be rejected.**
+
+### Requirements
+
+1. **ALWAYS use parametrized pytest** with `parms, context` as the parameter names
+2. **ALWAYS use `pytest.param()`** for each parameter set with `id="..."`
+3. **ALWAYS use context managers**: `does_not_raise()` for success, `pytest.raises(...)` for failures
+4. **ALWAYS put all functional code and assertions inside `with context:` block**
+5. **ALWAYS use `match=re.escape(...)` with `pytest.raises(...)`** for exception matching
+6. **ALWAYS include failure test cases** - parameter sets that are expected to raise exceptions must use `pytest.raises(...)`
+7. **NEVER create separate test functions** for success vs failure cases
+8. **NEVER use try/except** for test logic
+9. **NEVER use the deprecated `assert_context_result()` helper**
+
+### Import requirements
+
+```python
+from contextlib import nullcontext as does_not_raise
+import pytest
+```
+
+### Correct pattern (copy this exactly):
 
 ```py
 @pytest.mark.parametrize(
     "parms, context",
     [
         pytest.param(
-            dict(axis=(0, 0, 0)),
-            pytest.raises(
-                ValueError,
-                match=re.escape("Zero |axis| not allowed."),
-            ),
-            id="|axis| = 0",
+            dict(some_param=value1),
+            does_not_raise(),
+            id="description of test case 1",
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
-            does_not_raise(),
-            id="|axis| = 1",
+            dict(some_param=invalid_value),
+            pytest.raises(SomeError, match=re.escape("expected message")),
+            id="description of test case 2",
         ),
     ],
 )
-def test_OrthonormalZone_set_zone_axis(parms, context):
+def test_function_name(parms, context):
     with context:
-        OrthonormalZone(**parms)
+        # ALL code that might raise goes HERE
+        result = object_under_test.method(**parms)
+        # ALL assertions go HERE (inside the with block)
+        assert result.expected_attribute == some_value
 ```
 
-This makes tests explicit and machine-friendly for automated agents.
+### Common mistakes to avoid
+
+- ❌ NOT this:
+  ```py
+  def test_something():
+      # setup code...
+      # test code...
+  ```
+
+- ❌ NOT this:
+  ```py
+  def test_success_case():
+      # code...
+      assert result == expected
+
+  def test_failure_case():
+      with pytest.raises(...):
+          # code...
+  ```
+
+- ❌ NOT this:
+  ```py
+  @pytest.mark.parametrize(...)
+  def test_something(values):
+      try:
+          result = do_something(values)
+      except SomeError:
+          # wrong!
+  ```
+
+- ✅ ALWAYS this:
+  ```py
+  @pytest.mark.parametrize(
+      "parms, context",
+      [
+          pytest.param(dict(value=valid), does_not_raise(), id="valid case"),
+          pytest.param(dict(value=invalid), pytest.raises(Error), id="error case"),
+      ],
+  )
+  def test_something(parms, context):
+      with context:
+          result = do_something(**parms)
+  ```
 
 ## Enforcement
 
-PRs opened or modified by automated agents must follow the "Agent pytest style" described above. Reviewers and CI will check for this pattern (test parametrization, use of context managers for expected outcomes, and the `assert_context_result` helper). Changes from agents that do not comply may be requested for revision or reverted.
+PRs opened or modified by automated agents must follow the "Agent pytest style" described above. Reviewers and CI will check for this pattern (test parametrization and use of context managers for expected outcomes, both successful and failed). Changes from agents that do not comply may be requested for revision or reverted.
 
 ## Agent behavior rules
 
