@@ -19,8 +19,9 @@ from ..diffract import creator
 from ..misc import NoForwardSolutions
 
 
-def _create_e4cv_with_ub():
-    """Helper to create an E4CV diffractometer with UB matrix."""
+@pytest.fixture()
+def e4cv():
+    """Create an E4CV diffractometer with UB matrix."""
     e4cv = creator()
     e4cv.add_sample("silicon", SI_LATTICE_PARAMETER)
     e4cv.beam.wavelength.put(1.54)
@@ -59,14 +60,21 @@ def _create_e4cv_with_ub():
             does_not_raise(),
             id="preset phi=90",
         ),
+        pytest.param(
+            dict(phi_preset="not_a_number"),
+            pytest.raises(
+                ValueError,
+                match=re.escape("could not convert string to float: 'not_a_number'"),
+            ),
+            id="preset phi=string raises ValueError",
+        ),
     ],
 )
-def test_presets_get_set(parms, context):
+def test_presets_get_set(e4cv, parms, context):
     """
     Test that presets can be set and retrieved for the current mode.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = "constant_phi"
         e4cv.core.presets = {"phi": parms["phi_preset"]}
 
@@ -90,13 +98,11 @@ def test_presets_get_set(parms, context):
         ),
     ],
 )
-def test_presets_per_mode(parms, context):
+def test_presets_per_mode(e4cv, parms, context):
     """
     Test that presets are remembered for each mode separately.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
-
         e4cv.core.mode = parms["mode1"]
         e4cv.core.presets = {"phi": parms["phi_preset"]}
 
@@ -125,26 +131,42 @@ def test_presets_per_mode(parms, context):
             pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
             id="forward NoSolutions: preset phi excluded by constraint",
         ),
+        pytest.param(
+            dict(phi_preset=45.0, tth_limits=(0, 5)),
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="forward NoSolutions: tth constraint excludes solution",
+        ),
+        pytest.param(
+            dict(
+                phi_preset=45.0,
+                hkl=dict(h=100, k=100, l=100),
+            ),
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="forward NoSolutions: unreachable hkl",
+        ),
     ],
 )
-def test_forward_with_presets(parms, context):
+def test_forward_with_presets(e4cv, parms, context):
     """
     Test that forward() uses the preset value, and raises NoForwardSolutions
     when the preset is excluded by constraints.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = "constant_phi"
 
         if "phi_limits" in parms:
             e4cv.core.constraints["phi"].limits = parms["phi_limits"]
+
+        if "tth_limits" in parms:
+            e4cv.core.constraints["tth"].limits = parms["tth_limits"]
 
         if "phi_motor" in parms:
             e4cv.phi.move(parms["phi_motor"])
 
         e4cv.core.presets = {"phi": parms["phi_preset"]}
 
-        result = e4cv.forward(dict(h=1, k=1, l=1))
+        hkl = parms.get("hkl", dict(h=1, k=1, l=1))
+        result = e4cv.forward(hkl)
         assert_almost_equal(result.phi, parms["phi_preset"], decimal=4)
 
 
@@ -167,12 +189,11 @@ def test_forward_with_presets(parms, context):
         ),
     ],
 )
-def test_clear_presets(parms, context):
+def test_clear_presets(e4cv, parms, context):
     """
     Test that clear_presets() removes presets.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = "constant_phi"
         e4cv.core.presets = {"phi": 45.0}
 
@@ -196,12 +217,11 @@ def test_clear_presets(parms, context):
         ),
     ],
 )
-def test_presets_in_config(parms, context):
+def test_presets_in_config(e4cv, parms, context):
     """
     Test that presets are included in the configuration dictionary.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = "constant_phi"
         e4cv.core.presets = {"phi": 45.0}
 
@@ -222,13 +242,11 @@ def test_presets_in_config(parms, context):
         ),
     ],
 )
-def test_presets_from_config(parms, context):
+def test_presets_from_config(e4cv, parms, context):
     """
     Test that presets can be restored from a configuration dictionary.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
-
         config = {
             "_header": {},
             "name": e4cv.name,
@@ -283,12 +301,11 @@ def test_presets_from_config(parms, context):
         ),
     ],
 )
-def test_constant_axis_names(parms, context):
+def test_constant_axis_names(e4cv, parms, context):
     """
     Test that constant_axis_names returns the correct axes for each mode.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = parms["mode"]
 
         constant_axes = e4cv.core.constant_axis_names
@@ -310,12 +327,11 @@ def test_constant_axis_names(parms, context):
         ),
     ],
 )
-def test_solver_constant_axis_names(parms, context):
+def test_solver_constant_axis_names(e4cv, parms, context):
     """
     Test that solver_constant_axis_names returns the correct axes.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = parms["mode"]
 
         constant_axes = e4cv.core.solver_constant_axis_names
@@ -335,17 +351,34 @@ def test_solver_constant_axis_names(parms, context):
             does_not_raise(),
             id="bissector written",
         ),
+        pytest.param(
+            dict(
+                mode="bissector",
+                expected=["omega", "chi", "phi", "tth"],
+                hide_axes_w=True,
+            ),
+            does_not_raise(),
+            id="fallback when solver lacks axes_w",
+        ),
     ],
 )
-def test_solver_written_axis_names(parms, context):
+def test_solver_written_axis_names(e4cv, parms, context):
     """
     Test that solver_written_axis_names returns the correct axes.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = parms["mode"]
 
-        written_axes = e4cv.core.solver_written_axis_names
+        if parms.get("hide_axes_w"):
+            solver_class = type(e4cv.core.solver)
+            original = solver_class.axes_w
+            delattr(solver_class, "axes_w")
+            try:
+                written_axes = e4cv.core.solver_written_axis_names
+            finally:
+                solver_class.axes_w = original
+        else:
+            written_axes = e4cv.core.solver_written_axis_names
         assert written_axes == parms["expected"]
 
 
@@ -357,14 +390,21 @@ def test_solver_written_axis_names(parms, context):
             does_not_raise(),
             id="ignore computed, keep constant",
         ),
+        pytest.param(
+            dict(presets={"phi": "not_a_number"}),
+            pytest.raises(
+                ValueError,
+                match=re.escape("could not convert string to float: 'not_a_number'"),
+            ),
+            id="non-numeric preset value raises ValueError",
+        ),
     ],
 )
-def test_presets_ignored_for_computed_axes(parms, context):
+def test_presets_ignored_for_computed_axes(e4cv, parms, context):
     """
     Test that presets for computed (non-constant) axes are ignored.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = "constant_phi"
         e4cv.core.presets = parms["presets"]
 
@@ -381,14 +421,39 @@ def test_presets_ignored_for_computed_axes(parms, context):
             does_not_raise(),
             id="list input with all axes",
         ),
+        pytest.param(
+            dict(presets=[1.0, 2.0]),
+            pytest.raises(
+                ValueError,
+                match=re.escape("Expected at least 4 axes, received 2."),
+            ),
+            id="list input too short raises ValueError",
+        ),
+        pytest.param(
+            dict(presets=[1.0, "bad", 3.0, 4.0]),
+            pytest.raises(
+                TypeError,
+                match=re.escape("Expected a number. Received: 'bad'."),
+            ),
+            id="list input non-numeric raises TypeError",
+        ),
+        pytest.param(
+            dict(presets="bad_input"),
+            pytest.raises(
+                TypeError,
+                match=re.escape(
+                    "Unexpected type: 'bad_input'.  Expected 'AnyAxesType'."
+                ),
+            ),
+            id="string input raises TypeError",
+        ),
     ],
 )
-def test_presets_with_list_input(parms, context):
+def test_presets_with_list_input(e4cv, parms, context):
     """
     Test that presets can be set with list/tuple input (all axes).
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = "constant_phi"
         e4cv.core.presets = parms["presets"]
 
@@ -405,12 +470,11 @@ def test_presets_with_list_input(parms, context):
         ),
     ],
 )
-def test_presets_empty_dict_initially(parms, context):
+def test_presets_empty_dict_initially(e4cv, parms, context):
     """
     Test that presets is empty dict initially.
     """
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = "constant_phi"
 
         assert e4cv.core.presets == {}
@@ -426,7 +490,7 @@ def test_presets_empty_dict_initially(parms, context):
         ),
     ],
 )
-def test_presets_wh_output(parms, context):
+def test_presets_wh_output(e4cv, parms, context):
     """
     Test that presets are reported in wh() full output.
     """
@@ -434,7 +498,6 @@ def test_presets_wh_output(parms, context):
     import sys
 
     with context:
-        e4cv = _create_e4cv_with_ub()
         e4cv.core.mode = "constant_phi"
         e4cv.core.presets = {"phi": parms["phi_preset"]}
 
