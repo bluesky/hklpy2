@@ -161,14 +161,14 @@ USER = dict(
             id="user: (001) phi=80 (has solution)",
         ),
         pytest.param(
-            dict(hkl=(1, 0, 1), phi=-6, constraints=USER),
+            dict(hkl=(1, 0, 1), phi=-25, constraints=USER),
             does_not_raise(),
-            id="user: (101) phi=-6 (has solution)",
+            id="user: (101) phi=-25 (has solution)",
         ),
         pytest.param(
-            dict(hkl=(1, 0, 1), phi=-19, constraints=USER),
+            dict(hkl=(1, 0, 1), phi=-15, constraints=USER),
             does_not_raise(),
-            id="user: (101) phi=-19 (has solution)",
+            id="user: (101) phi=-15 (has solution)",
         ),
     ],
 )
@@ -221,6 +221,11 @@ def test_issue_193(parms, context):
             dict(hkl=(0, 0, 1), phi=96, constraints=USER),
             does_not_raise(),
             id="user: (001) phi=96 (no solution, constraints)",
+        ),
+        pytest.param(
+            dict(hkl=(1, 0, 1), phi=-6, constraints=USER),
+            does_not_raise(),
+            id="user: (101) phi=-6 (no solution, constraints)",
         ),
         pytest.param(
             dict(hkl=(1, 0, 1), phi=0, constraints=USER),
