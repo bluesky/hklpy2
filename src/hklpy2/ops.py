@@ -475,7 +475,7 @@ class Core:
         )
 
         pdict = self.standardize_pseudos(pseudos)
-        reals = self.diffractometer.real_position._asdict()  # Original values.
+        base_reals = self.diffractometer.real_position._asdict()  # Original values.
 
         self.update_solver(wavelength=wavelength)
 
@@ -507,19 +507,20 @@ class Core:
                         )
                     else:
                         solver_reals[axis] = convert_units(
-                            reals[local_axis],
+                            base_reals[local_axis],
                             angle_units_core,
                             angle_units_solver,
                         )
                 else:
                     solver_reals[axis] = convert_units(
-                        reals[local_axis],
+                        base_reals[local_axis],
                         angle_units_core,
                         angle_units_solver,
                     )
 
             self.solver.set_reals(solver_reals)
             for solution in self.solver.forward(self._axes_names_d2s(pdict)):
+                reals = base_reals.copy()  # Fresh copy per solution.
                 new_reals = self._axes_names_s2d(solution)
                 for axis, value in new_reals.items():
                     # Update with converted new value.
@@ -530,8 +531,26 @@ class Core:
                     )
                 if self.constraints.valid(**reals):
                     solutions.append(self.diffractometer.RealPosition(**reals))
-        except NoForwardSolutions:
-            pass
+                else:
+                    # Log which constraint(s) rejected this solution.
+                    for name, constraint in self.constraints.items():
+                        if not constraint.valid(**reals):
+                            logger.info(
+                                "Solution discarded: %s=%.4f"
+                                " outside limits [%.4f, %.4f]."
+                                "  pseudos=%r",
+                                name,
+                                reals[name],
+                                constraint.low_limit,
+                                constraint.high_limit,
+                                pdict,
+                            )
+        except NoForwardSolutions as exc:
+            logger.info(
+                "No forward solutions from solver for pseudos=%r: %s",
+                pdict,
+                exc,
+            )
 
         return solutions
 
@@ -715,7 +734,7 @@ class Core:
                 if axis in constant_axes:
                     self._mode_presets[mode][axis] = float(value)
 
-    def clear_presets(self, mode: str = None) -> None:
+    def clear_presets(self, mode: Optional[str] = None) -> None:
         """
         Clear preset values.
 

@@ -91,7 +91,7 @@ class Reflection:
         core: Optional["Core"] = None,
         digits: Optional[int] = None,
         reals_units: Optional[str] = None,
-        wavelength_units: str = None,
+        wavelength_units: Optional[str] = None,
     ) -> None:
         from ..ops import Core
 
