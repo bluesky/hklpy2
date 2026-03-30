@@ -42,6 +42,8 @@ import platform
 from typing import Dict
 from typing import List
 
+from gi._error import GError
+
 import numpy as np
 from numpy import typing as npt
 from pyRestTable import Table
@@ -288,9 +290,11 @@ class HklSolver(SolverBase):
         Raises
         ------
         ValueError
-            If the solver returns a degenerate (all-zero or non-orthonormal) U
-            matrix.  Two common causes:
+            Three failure modes, each with a distinct message:
 
+            * **Colinear reflections**: libhkl rejects the reflections outright
+              because their scattering vectors are parallel.  Choose two
+              reflections with linearly independent scattering vectors.
             * **All-zero U**: the scattering vector is zero for one or both
               reflections (detector at the direct-beam position).  Check that
               detector angles are non-zero and that ``axes_xref`` is correct.
@@ -306,7 +310,14 @@ class HklSolver(SolverBase):
         self.removeAllReflections()
         self.addReflection(r1)
         self.addReflection(r2)
-        self._sample.compute_UB_busing_levy(*self._sample.reflections_get())
+        try:
+            self._sample.compute_UB_busing_levy(*self._sample.reflections_get())
+        except GError as exc:
+            raise ValueError(
+                "UB calculation failed: the two reflections are colinear."
+                " Choose two reflections with linearly independent scattering"
+                " vectors."
+            ) from exc
         logger.debug("%r reflections", len(self._sample.reflections_get()))
         u = np.array(self.U)
         row_norms = np.linalg.norm(u, axis=1)
