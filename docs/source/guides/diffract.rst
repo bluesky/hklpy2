@@ -217,29 +217,41 @@ differ, axes are silently swapped in ``axes_xref``, which can cause
 wired in a different order than the solver expects
 (solver order: ``tau, mu, chi, phi, gamma, delta``):
 
-.. code-block:: python
+.. tabs::
 
-    # Without _real: reals keys are zipped positionally to solver axes.
-    # gamma (3rd key) → solver chi (3rd slot)  ← wrong
-    # chi   (5th key) → solver gamma (5th slot) ← wrong
-    cradle_wrong = hklpy2.creator(
-        name="cradle",
-        solver="hkl_soleil",
-        geometry="APS POLAR",
-        reals=dict(tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"),
-    )
-    cradle_wrong.core.axes_xref
-    # {'tau': 'tau', 'mu': 'mu', 'gamma': 'chi', 'delta': 'phi',
-    #  'chi': 'gamma', 'phi': 'delta'}   ← swapped
+    .. tab:: Wrong (missing ``_real``)
 
-    # With _real: declare which local name maps to each solver axis slot.
-    cradle = hklpy2.creator(
-        name="cradle",
-        solver="hkl_soleil",
-        geometry="APS POLAR",
-        reals=dict(tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"),
-        _real="tau mu chi phi gamma delta".split(),
-    )
-    cradle.core.axes_xref
-    # {'tau': 'tau', 'mu': 'mu', 'chi': 'chi', 'phi': 'phi',
-    #  'gamma': 'gamma', 'delta': 'delta'}  ← correct
+        Without ``_real``, ``reals`` dict keys are zipped positionally to
+        solver axes. ``gamma`` (3rd key) maps to solver ``chi`` (3rd slot)
+        and ``chi`` (5th key) maps to solver ``gamma`` (5th slot) — silently
+        swapped:
+
+        .. code-block:: python
+
+            cradle = hklpy2.creator(
+                name="cradle",
+                solver="hkl_soleil",
+                geometry="APS POLAR",
+                reals=dict(tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"),
+            )
+            cradle.core.axes_xref
+            # {'tau': 'tau', 'mu': 'mu', 'gamma': 'chi', 'delta': 'phi',
+            #  'chi': 'gamma', 'phi': 'delta'}   ← swapped
+
+    .. tab:: Correct (with ``_real``)
+
+        Supply ``_real`` to declare which local name maps to each solver axis
+        slot, independent of the ``reals`` dict key order:
+
+        .. code-block:: python
+
+            cradle = hklpy2.creator(
+                name="cradle",
+                solver="hkl_soleil",
+                geometry="APS POLAR",
+                reals=dict(tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"),
+                _real="tau mu chi phi gamma delta".split(),
+            )
+            cradle.core.axes_xref
+            # {'tau': 'tau', 'mu': 'mu', 'chi': 'chi', 'phi': 'phi',
+            #  'gamma': 'gamma', 'delta': 'delta'}  ← correct
