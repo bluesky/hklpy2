@@ -126,17 +126,6 @@ Glossary
   An *extra* axis is not defined as a diffractometer `Component`.
 
 ..  index::
-    !definition; freeze
-    !freeze
-    see: freeze; presets
-
-:freeze: SPEC command to hold a real axis at a fixed value during
-  ``forward()`` computations.  In |hklpy2|, this is accomplished by
-  setting a *preset* for that axis.
-
-  .. seealso:: *preset*
-
-..  index::
     !definition; geometry
     !geometry
 
@@ -197,17 +186,6 @@ Glossary
   frame (described by the *reals*).
 
 ..  index::
-    !definition; pseudo
-    !pseudo
-
-:pseudo: Reciprocal-space axis, such as :math:`h`, :math:`k`, and :math:`l`.
-  The engineering units (rarely examined for *crystalline* work) are reciprocal
-  of the *wavelength* units.
-
-  Note: **pseudo** axes are **virtual** axes, computed by the solver from
-  **real** axes.
-
-..  index::
     !definition; preset
     !preset
     see: preset; presets
@@ -217,7 +195,18 @@ Glossary
   position.  Presets do not move any motor.  Each *mode* stores its
   own independent preset dictionary, defaulting to ``{}``.
 
-  .. seealso:: :ref:`how_presets`, *freeze*
+  .. seealso:: :ref:`how_presets`
+
+..  index::
+    !definition; pseudo
+    !pseudo
+
+:pseudo: Reciprocal-space axis, such as :math:`h`, :math:`k`, and :math:`l`.
+  The engineering units (rarely examined for *crystalline* work) are reciprocal
+  of the *wavelength* units.
+
+  Note: **pseudo** axes are **virtual** axes, computed by the solver from
+  **real** axes.
 
 ..  index::
     !definition; real
