@@ -2,11 +2,25 @@
 Regression test for issue #207.
 
 BUG: calc_UB raises a confusing "U matrix rows must be normalized" error
-when a misconfigured axes_xref causes the solver to receive degenerate
-reflection geometry (detector at the direct-beam position, Q=0).
+when the ``reals`` dict is passed to ``creator()`` in hardware naming order
+that differs from the solver's expected axis order, without using ``_real``
+to declare the correct mapping.
 
-The fix raises a clear ValueError from HklSolver.calculate_UB() when
-libhkl silently returns an all-zero U matrix.
+Root cause: ``creator()`` maps ``reals`` keys to solver axes by position.
+If the user's hardware axes are named ``tau, mu, gamma, delta, chi, phi``
+(in that order) but the solver expects ``tau, mu, chi, phi, gamma, delta``,
+the positional zip produces a swapped ``axes_xref``:
+    user gamma -> solver chi
+    user chi   -> solver gamma
+    user delta -> solver phi
+    user phi   -> solver delta
+
+Fix: pass ``_real="tau mu chi phi gamma delta".split()`` to ``creator()``
+to declare which local axis name corresponds to each solver axis slot.
+
+The fix in hklpy2 raises a clear ValueError from HklSolver.calculate_UB()
+when libhkl returns a degenerate U matrix, instead of the cryptic downstream
+"U matrix rows must be normalized" error.
 """
 
 import re
@@ -20,32 +34,27 @@ from ..diffract import creator
 @pytest.fixture()
 def polar_swapped():
     """
-    APS POLAR diffractometer with the misconfigured axes_xref from issue #207.
+    APS POLAR diffractometer reproducing the user's misconfiguration.
 
-    The user's axes_xref swaps detector arm angles (solver: gamma, delta)
-    with sample rotation angles (solver: chi, phi):
+    The user's hardware axes are named tau, mu, gamma, delta, chi, phi
+    (in their motor order), but the APS POLAR solver expects them in the
+    order tau, mu, chi, phi, gamma, delta.
+
+    Without ``_real``, ``creator()`` zips the reals dict keys against the
+    solver's axis order by position, producing the swapped axes_xref:
         user gamma -> solver chi   (detector angle sent as sample rotation)
         user chi   -> solver gamma (sample rotation sent as detector angle)
         user delta -> solver phi
         user phi   -> solver delta
-
-    With this mapping, reflections where the user's gamma=40 (detector arm)
-    are passed to the solver as chi=40, while solver.gamma receives the
-    user's chi value (0 or -90).  Since solver.gamma=0 and solver.delta=0
-    for both reflections, the detector sits at the direct-beam position
-    (Q=0), causing libhkl to return an all-zero U matrix.
     """
     sim = creator(
         name="polar",
         solver="hkl_soleil",
         geometry="APS POLAR",
+        # Hardware axis names in user's order — NOT the solver's order.
+        # This is the exact pattern from the issue report.
         reals=dict(tau=None, mu=None, gamma=None, delta=None, chi=None, phi=None),
-    )
-    # solver real order: tau, mu, chi, phi, gamma, delta
-    # user  real order:  tau, mu, gamma, delta, chi, phi  (as in the issue)
-    sim.core.assign_axes(
-        "h k l".split(),
-        "tau mu gamma delta chi phi".split(),
+        # _real is NOT provided — this is the bug.
     )
     sim.add_sample("test", 5.0)  # cubic, a=5 Å
     sim.beam.wavelength.put(1.7225)
@@ -53,18 +62,21 @@ def polar_swapped():
 
 
 @pytest.fixture()
-def polar_correct():
+def polar_fixed():
     """
-    APS POLAR diffractometer with correct identity axes_xref.
+    APS POLAR diffractometer with the corrected configuration.
 
-    Solver real order: tau, mu, chi, phi, gamma, delta.
-    User axis names match solver names exactly.
+    Same hardware axis names as polar_swapped, but ``_real`` declares
+    the solver's expected axis order so axes_xref is built correctly.
     """
     sim = creator(
         name="polar",
         solver="hkl_soleil",
         geometry="APS POLAR",
-        reals=dict(tau=None, mu=None, chi=None, phi=None, gamma=None, delta=None),
+        reals=dict(tau=None, mu=None, gamma=None, delta=None, chi=None, phi=None),
+        # _real declares which local name maps to each solver axis slot:
+        # solver order: tau, mu, chi, phi, gamma, delta
+        _real="tau mu chi phi gamma delta".split(),
     )
     sim.add_sample("test", 5.0)  # cubic, a=5 Å
     sim.beam.wavelength.put(1.7225)
@@ -88,15 +100,15 @@ def polar_correct():
                 ValueError,
                 match=re.escape("UB calculation produced a degenerate U matrix"),
             ),
-            id="issue-207 swapped axes_xref yields degenerate UB",
+            id="issue-207 missing _real yields degenerate UB",
         ),
     ],
 )
 def test_calc_UB_swapped_axes_xref(polar_swapped, parms, context):
     """
     Reproduces issue #207: calc_UB raises a clear ValueError (not a cryptic
-    'rows must be normalized' error) when a misconfigured axes_xref causes
-    the solver to receive degenerate reflection geometry (Q=0).
+    'rows must be normalized' error) when reals dict order does not match
+    solver axis order and _real is not supplied to creator().
     """
     r1 = polar_swapped.add_reflection(
         parms["r1_hkl"], parms["r1_reals"], wavelength=1.7225, name="r1"
@@ -113,28 +125,29 @@ def test_calc_UB_swapped_axes_xref(polar_swapped, parms, context):
     [
         pytest.param(
             dict(
-                # Valid reflections with correct axes_xref — solver receives
-                # non-zero gamma/delta, so Q != 0 and UB succeeds.
+                # Same hardware axis names and reflections as the swapped case,
+                # but with _real supplied to creator() — UB succeeds.
                 r1_hkl=(1, 0, 0),
-                r1_reals=dict(tau=0, mu=20, chi=0, phi=0, gamma=40, delta=0),
+                r1_reals=dict(tau=0, mu=20, gamma=40, delta=0, chi=0, phi=0),
                 r2_hkl=(0, 0, 3),
-                r2_reals=dict(tau=0, mu=20, chi=-90, phi=0, gamma=40, delta=0),
+                r2_reals=dict(tau=0, mu=20, gamma=40, delta=0, chi=-90, phi=0),
             ),
             does_not_raise(),
-            id="correct axes_xref with non-degenerate reflections succeeds",
+            id="issue-207 with _real supplied succeeds",
         ),
     ],
 )
-def test_calc_UB_correct_axes_xref(polar_correct, parms, context):
+def test_calc_UB_fixed_real_order(polar_fixed, parms, context):
     """
-    With a correct axes_xref, calc_UB succeeds for valid reflections.
+    With _real supplied to creator(), the same hardware axes and reflections
+    produce a valid UB matrix.
     """
-    r1 = polar_correct.add_reflection(
+    r1 = polar_fixed.add_reflection(
         parms["r1_hkl"], parms["r1_reals"], wavelength=1.7225, name="r1"
     )
-    r2 = polar_correct.add_reflection(
+    r2 = polar_fixed.add_reflection(
         parms["r2_hkl"], parms["r2_reals"], wavelength=1.7225, name="r2"
     )
     with context:
-        ub = polar_correct.core.calc_UB(r1, r2)
+        ub = polar_fixed.core.calc_UB(r1, r2)
         assert ub is not None

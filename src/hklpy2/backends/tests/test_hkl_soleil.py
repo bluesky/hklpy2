@@ -388,12 +388,13 @@ def test_sample_property():
         ),
         pytest.param(
             dict(
-                # Non-orthonormal U: swapped axes_xref sends detector arm angle
-                # to solver as a sample rotation, causing a partial U matrix.
+                # Non-orthonormal U: reals dict supplied in wrong order to
+                # creator() without _real, causing axes_xref to map detector
+                # arm angles to sample rotation slots and vice versa.
                 # Reproduced using E6C (same axis set as APS POLAR) with the
-                # angles the solver receives after the user's swapped axes_xref:
+                # angle values the solver receives after the positional swap:
                 #   user.chi (sample rotation) → solver.gamma (detector arm)
-                # r1: solver.gamma=90, r2: solver.gamma=0 → inconsistent geometry.
+                # r1: solver.gamma=90, r2: solver.gamma=0 → degenerate geometry.
                 r1=dict(
                     pseudos=dict(h=0, k=0, l=2),
                     reals=dict(mu=20, omega=0, chi=40, phi=0, gamma=90, delta=0),
@@ -407,9 +408,9 @@ def test_sample_property():
             ),
             pytest.raises(
                 ValueError,
-                match=re.escape("Check that the axes_xref mapping"),
+                match=re.escape("Check that the 'reals' dict"),
             ),
-            id="non-orthonormal U (swapped axes_xref) raises ValueError",
+            id="non-orthonormal U (wrong reals order, no _real) raises ValueError",
         ),
     ],
 )

@@ -298,11 +298,12 @@ class HklSolver(SolverBase):
             * **All-zero U**: the scattering vector is zero for one or both
               reflections (detector at the direct-beam position).  Check that
               detector angles are non-zero and that ``axes_xref`` is correct.
-            * **Non-orthonormal U**: the ``axes_xref`` mapping may assign a
-              diffractometer axis to the wrong solver role (e.g. a detector
-              angle mapped to a sample-rotation axis).  If ``axes_xref`` is
-              correct, the two reflections may be nearly parallel in reciprocal
-              space; choose two that are well separated.
+            * **Non-orthonormal U**: the ``reals`` dict passed to
+              ``creator()`` may list axes in a different order than the solver
+              expects, without ``_real`` being supplied to declare the correct
+              mapping.  If the axis order is correct, the two reflections may
+              be nearly parallel in reciprocal space; choose two that are well
+              separated.
         """
         if self._sample is None:
             return
@@ -330,12 +331,12 @@ class HklSolver(SolverBase):
                 )
             else:
                 hint = (
-                    " Check that the axes_xref mapping correctly assigns each"
-                    " diffractometer axis to the intended solver axis (in"
-                    " particular, that detector angles map to detector axes,"
-                    " not sample-rotation axes). If axes_xref is correct,"
-                    " choose two reflections that are well separated in"
-                    " reciprocal space (not nearly parallel scattering vectors)."
+                    " Check that the 'reals' dict passed to creator() lists"
+                    " axes in the same order as the solver expects, or supply"
+                    " '_real' to declare the correct solver axis order"
+                    " independently of the 'reals' dict key order."
+                    " If the axis mapping is correct, choose two reflections"
+                    " that are well separated in reciprocal space."
                 )
             raise ValueError(
                 "UB calculation produced a degenerate U matrix"
