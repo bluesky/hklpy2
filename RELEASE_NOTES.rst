@@ -41,6 +41,7 @@ describe future plans.
     * Add ``presets`` dict to supply constant-axis values for ``forward()``
       without moving motors; presets are stored per mode. (:issue:`190`)
 
+
     Enhancements
     ------------
 
@@ -61,6 +62,9 @@ describe future plans.
     * ``calc_UB()`` now raises a clear ``ValueError`` with diagnostic hints
       when libhkl returns a degenerate U matrix, rather than a cryptic
       downstream error. (:issue:`207`)
+    * Constraints example: rename "Freeze an axis" to "Limited range";
+      add "Preset (frozen) axes" section; update SPEC ``freeze``/``unfreeze``
+      cross-references to point to presets. (:issue:`212`)
     * ``forward()`` solutions no longer use wrong angle values from orientation
       reflections when computing constant-axis modes. (:issue:`195`)
 
