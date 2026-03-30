@@ -30,6 +30,23 @@ describe future plans.
 
     Release expected 2026-H1.
 
+    0.3.1
+    ##########
+
+    Release expected 2026-04-03.
+
+    Enhancements
+    ------------
+
+    * Document ``presets`` setter update (merge) behavior, per-mode storage, and
+      effect on ``forward()`` solutions. Add how-to guide and Core concepts
+      summary table. (:issue:`200`)
+    * Improve Sphinx Index consistency: primary ``!term`` entries now point to
+      the most substantive page for each term rather than the Glossary.
+      (:issue:`202`)
+    * Add ``preset`` Glossary entry; alphabetize Glossary entries. (:issue:`202`)
+    * Use US spelling throughout docs and source. (:issue:`202`)
+
 0.3.0
 #####
 

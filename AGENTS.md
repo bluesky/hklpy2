@@ -188,6 +188,18 @@ The `Makefile` `pre` target also exports this variable automatically.
 - Includes changelog entry if behavior changed
 - Marks PR as draft if large refactor
 
+## Documentation: Sphinx Index entries
+
+- Each term should have **at most one primary index entry** (`!term`) across the
+  entire docs.
+- The primary entry belongs on the page with the **most substantive content**
+  for that term — typically its dedicated concept or how-to page, not the
+  Glossary.
+- The Glossary may include a secondary (non-primary) index entry for the same
+  term via its `!definition; term` sub-entry pattern.
+- Pages that reference a term but are not its primary source (e.g., a summary
+  table) should use a plain (non-primary) index entry.
+
 ## Notes
 
 - Keep agent actions small, reversible, and reviewable.

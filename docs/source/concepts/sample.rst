@@ -4,6 +4,8 @@
 Sample
 ======
 
+.. index:: !sample
+
 In |hklpy2|, each sample's name, :ref:`lattice <concepts.lattice>`,
 :ref:`reflections <concepts.reflection>`, and *orientation* are stored in the
 :class:`~hklpy2.blocks.sample.Sample()` class.  The complete list of all a

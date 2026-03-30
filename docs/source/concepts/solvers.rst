@@ -11,7 +11,9 @@ Solvers
     - Define the terms expected (add to glossary.).
     - Note that solvers provide different features: additions and not availables
 
-.. index:: !design; solver
+.. index::
+    !design; solver
+    !solver
 
 A |solver| is a Python class that connects |hklpy2| with a (backend) library
 that provides diffractometer capabilities, including:

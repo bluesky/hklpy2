@@ -4,6 +4,8 @@
 Constraints
 ======================
 
+.. index:: !constraint
+
 Computation of :meth:`~hklpy2.diffract.DiffractometerBase.forward()` can have
 many solutions.  One or more constraints
 (:class:`~hklpy2.blocks.constraints.ConstraintBase`) (a.k.a, cut points),

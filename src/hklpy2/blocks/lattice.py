@@ -159,7 +159,7 @@ class Lattice:
         # small gamma can produce numerically inconsistent parameters (an
         # imaginary c_z) for realistic floating-point arithmetic and solver
         # tolerances. The test-suite expects such pathological inputs to raise
-        # during construction with this message. Match that behaviour for the
+        # during construction with this message. Match that behavior for the
         # specific regime used in tests.
         try:
             alpha_val = float(self.alpha)
