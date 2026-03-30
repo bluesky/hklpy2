@@ -284,6 +284,15 @@ class HklSolver(SolverBase):
         Calculate the UB (orientation) matrix with two reflections.
 
         The method of Busing & Levy, Acta Cryst 22 (1967) 457.
+
+        Raises
+        ------
+        ValueError
+            If the solver returns a degenerate (all-zero or non-orthonormal) U
+            matrix.  The most common cause is a misconfigured ``axes_xref``
+            mapping that places the detector at the direct-beam position
+            (detector angles both zero) for one or more of the orienting
+            reflections, yielding a zero scattering vector.
         """
         if self._sample is None:
             return
@@ -293,6 +302,16 @@ class HklSolver(SolverBase):
         self.addReflection(r2)
         self._sample.compute_UB_busing_levy(*self._sample.reflections_get())
         logger.debug("%r reflections", len(self._sample.reflections_get()))
+        u = np.array(self.U)
+        row_norms = np.linalg.norm(u, axis=1)
+        if not np.allclose(row_norms, [1, 1, 1], atol=1e-6):
+            raise ValueError(
+                "UB calculation produced a degenerate U matrix"
+                f" (row norms={row_norms.tolist()})."
+                " This usually means the scattering vector is zero for one or"
+                " both orienting reflections — check that the detector angles"
+                " are non-zero and that the axes_xref mapping is correct."
+            )
         return self.UB
 
     @property

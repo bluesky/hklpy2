@@ -1,5 +1,6 @@
 import math
 import re
+from contextlib import nullcontext as does_not_raise
 
 import numpy as np
 import pytest
@@ -319,3 +320,62 @@ def test_sample_property():
     assert math.isclose(sample["lattice"]["beta"], 90, abs_tol=0.01)
     assert math.isclose(sample["lattice"]["gamma"], 90, abs_tol=0.01)
     assert len(sample.get("reflections")) == 2
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                # Two valid silicon reflections — UB should succeed.
+                r1=dict(
+                    pseudos=dict(h=4, k=0, l=0),
+                    reals=dict(omega=-145.451, chi=0, phi=0, tth=69.0966),
+                    wavelength=1.54,
+                ),
+                r2=dict(
+                    pseudos=dict(h=0, k=4, l=0),
+                    reals=dict(omega=-145.451, chi=90, phi=0, tth=69.0966),
+                    wavelength=1.54,
+                ),
+            ),
+            does_not_raise(),
+            id="valid reflections produce non-degenerate UB",
+        ),
+        pytest.param(
+            dict(
+                # Detector angles (tth) both zero → scattering vector Q=0
+                # → libhkl silently returns all-zero U matrix.
+                r1=dict(
+                    pseudos=dict(h=4, k=0, l=0),
+                    reals=dict(omega=0, chi=0, phi=0, tth=0),
+                    wavelength=1.54,
+                ),
+                r2=dict(
+                    pseudos=dict(h=0, k=4, l=0),
+                    reals=dict(omega=0, chi=90, phi=0, tth=0),
+                    wavelength=1.54,
+                ),
+            ),
+            pytest.raises(
+                ValueError,
+                match=re.escape("UB calculation produced a degenerate U matrix"),
+            ),
+            id="degenerate reflections (tth=0) raise ValueError",
+        ),
+    ],
+)
+def test_calculate_UB_degenerate(parms, context):
+    """calculate_UB raises ValueError when libhkl returns a degenerate U matrix."""
+    from ... import SI_LATTICE_PARAMETER
+    from ... import creator
+
+    sim = creator(name="e4cv", solver="hkl_soleil", geometry="E4CV")
+    sim.add_sample("silicon", SI_LATTICE_PARAMETER)
+    sim.core.update_solver()
+    solver = sim.core.solver
+    with context:
+        ub = solver.calculate_UB(parms["r1"], parms["r2"])
+        assert ub is not None
+        arr = np.array(ub)
+        assert arr.shape == (3, 3)

@@ -294,5 +294,11 @@ A Pull Request (PR) describes *how* an issue has been (or will be) addressed.
 
   Using `closes #N` will auto-close the issue when the PR is merged.
 - The PR title should be a concise summary of the change.
+- Sign the PR body with the agent and model name:
+
+  ```md
+  Agent: OpenCode (claudesonnet46)
+  ```
+
 - PR discussion comments should explain the approach, trade-offs, and any
   open questions.
