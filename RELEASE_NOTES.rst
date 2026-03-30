@@ -44,10 +44,13 @@ describe future plans.
     Fixes
     -----
 
-    * ``forward()`` solutions no longer use wrong angle values from orientation
-      reflections when computing constant-axis modes. (:issue:`195`)
     * ``cahkl()`` now returns solutions at motor positions that previously
       yielded no results. (:issue:`193`)
+    * Constraints example: rename "Freeze an axis" to "Limited range";
+      add "Preset (frozen) axes" section; update SPEC ``freeze``/``unfreeze``
+      cross-references to point to presets. (:issue:`212`)
+    * ``forward()`` solutions no longer use wrong angle values from orientation
+      reflections when computing constant-axis modes. (:issue:`195`)
 
     Enhancements
     ------------
