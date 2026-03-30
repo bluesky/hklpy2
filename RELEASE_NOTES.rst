@@ -35,6 +35,20 @@ describe future plans.
 
     Release expected 2026-04-03.
 
+    New Features
+    ------------
+
+    * Add ``presets`` dict to supply constant-axis values for ``forward()``
+      without moving motors; presets are stored per mode. (:issue:`190`)
+
+    Fixes
+    -----
+
+    * ``forward()`` solutions no longer use wrong angle values from orientation
+      reflections when computing constant-axis modes. (:issue:`195`)
+    * ``cahkl()`` now returns solutions at motor positions that previously
+      yielded no results. (:issue:`193`)
+
     Enhancements
     ------------
 
@@ -46,6 +60,12 @@ describe future plans.
       (:issue:`202`)
     * Add ``preset`` Glossary entry; alphabetize Glossary entries. (:issue:`202`)
     * Use US spelling throughout docs and source. (:issue:`202`)
+
+    Maintenance
+    -----------
+
+    * Skip CI unit tests for pull requests that change only documentation.
+    * Bump ``actions/upload-artifact`` from v6 to v7. (:pr:`194`)
 
 0.3.0
 #####
