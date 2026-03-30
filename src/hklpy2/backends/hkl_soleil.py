@@ -294,9 +294,11 @@ class HklSolver(SolverBase):
             * **All-zero U**: the scattering vector is zero for one or both
               reflections (detector at the direct-beam position).  Check that
               detector angles are non-zero and that ``axes_xref`` is correct.
-            * **Non-orthonormal U**: the two reflections are nearly parallel in
-              reciprocal space (too similar to span the lattice).  Choose two
-              reflections that are well separated in reciprocal space.
+            * **Non-orthonormal U**: the ``axes_xref`` mapping may assign a
+              diffractometer axis to the wrong solver role (e.g. a detector
+              angle mapped to a sample-rotation axis).  If ``axes_xref`` is
+              correct, the two reflections may be nearly parallel in reciprocal
+              space; choose two that are well separated.
         """
         if self._sample is None:
             return
@@ -317,10 +319,12 @@ class HklSolver(SolverBase):
                 )
             else:
                 hint = (
-                    " The two reflections may be too similar (nearly parallel"
-                    " scattering vectors), or the axes_xref mapping may be"
-                    " incorrect. Choose two reflections that are well separated"
-                    " in reciprocal space."
+                    " Check that the axes_xref mapping correctly assigns each"
+                    " diffractometer axis to the intended solver axis (in"
+                    " particular, that detector angles map to detector axes,"
+                    " not sample-rotation axes). If axes_xref is correct,"
+                    " choose two reflections that are well separated in"
+                    " reciprocal space (not nearly parallel scattering vectors)."
                 )
             raise ValueError(
                 "UB calculation produced a degenerate U matrix"
