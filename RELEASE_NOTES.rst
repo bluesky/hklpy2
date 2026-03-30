@@ -48,6 +48,9 @@ describe future plans.
       reflections when computing constant-axis modes. (:issue:`195`)
     * ``cahkl()`` now returns solutions at motor positions that previously
       yielded no results. (:issue:`193`)
+    * ``calc_UB()`` now raises a clear ``ValueError`` with diagnostic hints
+      when libhkl returns a degenerate U matrix, rather than a cryptic
+      downstream error. (:issue:`207`)
 
     Enhancements
     ------------

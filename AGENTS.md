@@ -185,8 +185,19 @@ The `Makefile` `pre` target also exports this variable automatically.
 
 - Runs formatting and linting locally
 - Adds/updates tests for changes
-- Includes changelog entry if behavior changed
+- Updates `RELEASE_NOTES.rst` under the current development heading
 - Marks PR as draft if large refactor
+
+## Release Notes
+
+- Update `RELEASE_NOTES.rst` as part of every PR that introduces a new
+  feature, fix, enhancement, or maintenance change.
+- Add the entry under the current development version heading (the topmost
+  unreleased section inside the ``.. comment`` block).
+- Entries should be terse — one or two lines — and reference the issue or PR
+  number with ``:issue:`N``` or ``:pr:`N```.
+- Use the appropriate subsection (``New Features``, ``Fixes``,
+  ``Enhancements``, ``Maintenance``) as defined at the top of the file.
 
 ## Documentation: Sphinx Index entries
 
