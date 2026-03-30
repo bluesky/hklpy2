@@ -30,6 +30,18 @@ describe future plans.
 
     Release expected 2026-H1.
 
+    0.3.1
+    ##########
+
+    Release expected 2026-04-03.
+
+    Enhancements
+    ------------
+
+    * Document ``presets`` setter update (merge) behavior, per-mode storage, and
+    effect on ``forward()`` solutions. Add how-to guide and concept section.
+    (:issue:`200`)
+
 0.3.0
 #####
 
