@@ -64,16 +64,69 @@ Only accept ``forward()`` solutions where ``chi`` is between :math:`\\pm90`:
    >>> sixc.core.constraints["chi"].limits
    (-90.0, 90.0)
 
-Freeze an axis
-~~~~~~~~~~~~~~~~~~
+Limited range
+~~~~~~~~~~~~~
 
-Only accept ``forward()`` solutions where ``mu`` is zero:
+.. index:: freeze
+
+Only accept ``forward()`` solutions where ``mu`` is near zero.  Setting
+both limits to the same value (or very close values) effectively restricts
+that axis to a single position:
 
 .. code-block:: python
    :linenos:
 
    >>> sixc.core.constraints["mu"].limits
    (-180.0, 180.0)
-   >>> sixc.core.constraints["mu"].limits = 0, 0
+   >>> sixc.core.constraints["mu"].limits = -0.01, 0.01   # narrow range
    >>> sixc.core.constraints["mu"].limits
-   (0.0, 0.0)
+   (-0.01, 0.01)
+
+.. tip:: Constraints *filter* solutions after the solver computes them.
+    If you want the solver to *use* a specific value for a constant axis
+    during ``forward()`` computation (rather than the current motor
+    position), use :ref:`presets <how_presets>` instead.
+
+Preset (frozen) axes
+--------------------
+
+.. index:: freeze; presets, presets; freeze
+
+In |spec|, the ``freeze`` command holds an axis at a fixed value during
+``forward()`` computation.  In |hklpy2|, this is done with
+:ref:`presets <how_presets>`.
+
+A *preset* tells the solver which value to use for a constant axis instead
+of the current motor position.  Presets do not move any motor.
+
+Choose a mode where the axis is constant, then set a preset:
+
+.. code-block:: python
+   :linenos:
+
+   >>> sixc.core.mode = "bissector_vertical"   # mu and gamma are constant
+   >>> sixc.core.constant_axis_names
+   ['mu', 'gamma']
+   >>> sixc.core.presets = {"mu": 0}           # solver uses mu=0
+   >>> sixc.forward(1, 0, 0)                   # no motor is moved
+
+To release a single preset (|spec| ``unfreeze``):
+
+.. code-block:: python
+   :linenos:
+
+   >>> sixc.core.presets.pop("mu")             # remove one preset
+   0
+   >>> sixc.core.presets
+   {}
+
+To release all presets at once:
+
+.. code-block:: python
+   :linenos:
+
+   >>> sixc.core.clear_presets()               # remove all presets
+
+.. seealso::
+
+    :ref:`how_presets` — complete how-to guide for presets.
