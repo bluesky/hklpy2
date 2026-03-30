@@ -59,7 +59,7 @@ engine (via ``solver_kwargs``)  :doc:`/guides/var_engines`
 EPICS PVs                       :doc:`/examples/hkl_soleil-e4cv+epics`
 renamed axes                    :doc:`/examples/aps-isn-e6c`
 additional reals                :doc:`/examples/hkl_soleil-e6c-psi`
-auto assign                     tbd
-reals out of order              tbd
+auto assign                     :ref:`diffract_axes.diffractometer-factory`
+reals out of order              :ref:`diffract_axes.direct-assign`
 extras                          :doc:`/examples/hkl_soleil-e6c-psi`
 =============================== ====================
