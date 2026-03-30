@@ -32,7 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
@@ -41,13 +41,13 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=0e9172f4"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=33c1dc81"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/aps-isn-e6c';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -364,6 +364,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/diffract.html">Diffractometer Axis Names</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_presets.html">How to Use Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/howto_write_solver.html">How to write a new Solver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/spec_xref.html">SPEC commands in hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
@@ -511,7 +512,7 @@ Specified in this order, <em>hklpy2</em> will use the first axes to compute <spa
     <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
     <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;hkl&quot;</span><span class="p">},</span>
     <span class="n">reals</span><span class="o">=</span><span class="s2">&quot;mu eta chi phi yaw pitch radius&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
-<span class="p">)</span> 
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -522,7 +523,7 @@ Length units are <em>angstrom</em>, angles are degrees, and energy is keV.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">12.3984</span> <span class="o">/</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">psic</span><span class="o">.</span><span class="n">yaw</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
-<span class="n">psic</span><span class="o">.</span><span class="n">mu</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">psic</span><span class="o">.</span><span class="n">yaw</span><span class="o">.</span><span class="n">position</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">psic</span><span class="o">.</span><span class="n">mu</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">psic</span><span class="o">.</span><span class="n">yaw</span><span class="o">.</span><span class="n">position</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">psic</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">_egu</span> <span class="o">=</span> <span class="s2">&quot;mm&quot;</span>
 <span class="n">psic</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">_limits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span>
 <span class="n">psic</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">800</span><span class="p">)</span>
@@ -712,7 +713,9 @@ adjustment, the computed (1,0,0) reflection should match the second orienting
 reflection.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">chi</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>  <span class="c1"># unreachable: ISN chi axis won&#39;t move for ISN diffractometer, but we can simulate it</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">chi</span><span class="o">.</span><span class="n">move</span><span class="p">(</span>
+    <span class="mi">90</span>
+<span class="p">)</span>  <span class="c1"># unreachable: ISN chi axis won&#39;t move for ISN diffractometer, but we can simulate it</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">psic</span><span class="o">.</span><span class="n">forward</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">psic</span><span class="o">.</span><span class="n">chi</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># put it back</span>
 </pre></div>
@@ -736,7 +739,7 @@ reflection.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_diffractometer</span>
 
 <span class="n">set_diffractometer</span><span class="p">(</span><span class="n">psic</span><span class="p">)</span>
-<span class="n">cahkl_table</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">cahkl_table</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1076,7 +1079,16 @@ generator scan [&#39;a6406340&#39;] (scan num: 1)
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">move_reals</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">x2x_scan</span><span class="p">([</span><span class="n">psic</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">yaw</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">pitch</span><span class="p">],</span> <span class="n">psic</span><span class="o">.</span><span class="n">yaw</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span>
+    <span class="n">bp</span><span class="o">.</span><span class="n">x2x_scan</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">psic</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">yaw</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">pitch</span><span class="p">],</span>
+        <span class="n">psic</span><span class="o">.</span><span class="n">yaw</span><span class="p">,</span>
+        <span class="n">psic</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span>
+        <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">,</span>
+        <span class="mi">5</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1105,7 +1117,11 @@ generator x2x_scan [&#39;6ade00e8&#39;] (scan num: 2)
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">rel_scan</span><span class="p">([</span><span class="n">psic</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">yaw</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">pitch</span><span class="p">],</span> <span class="n">psic</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">RE</span><span class="p">(</span>
+    <span class="n">bp</span><span class="o">.</span><span class="n">rel_scan</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">psic</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">yaw</span><span class="p">,</span> <span class="n">psic</span><span class="o">.</span><span class="n">pitch</span><span class="p">],</span> <span class="n">psic</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span>
+    <span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1257,7 +1273,7 @@ generator rel_scan [&#39;d766361e&#39;] (scan num: 3)
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>

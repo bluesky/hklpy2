@@ -49,6 +49,7 @@ Module Contents
        ~add_sample
        ~assign_axes
        ~calc_UB
+       ~clear_presets
        ~forward
        ~geometries
        ~inverse
@@ -69,10 +70,12 @@ Module Contents
    .. autosummary::
 
        ~all_extras
+       ~constant_axis_names
        ~extras
        ~geometry
        ~mode
        ~modes
+       ~presets
        ~sample
        ~solver
        ~solver_extra_axis_names
@@ -95,6 +98,9 @@ Module Contents
    .. py:attribute:: _mode
       :value: None
 
+
+
+   .. py:attribute:: _mode_presets
 
 
    .. py:attribute:: _sample_name
@@ -156,7 +162,7 @@ Module Contents
 
 
 
-   .. py:method:: add_reflection(pseudos: hklpy2.misc.AnyAxesType, reals: Union[hklpy2.misc.AnyAxesType, None] = None, wavelength: float = None, wavelength_units: str = None, name: str = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
+   .. py:method:: add_reflection(pseudos: hklpy2.misc.AnyAxesType, reals: Union[hklpy2.misc.AnyAxesType, None] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
 
       Add a new reflection.
 
@@ -188,7 +194,7 @@ Module Contents
 
 
 
-   .. py:method:: add_sample(name: str, a: float, b: float = None, c: float = None, alpha: float = 90.0, beta: float = None, gamma: float = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
+   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
 
       Add a new sample.
 
@@ -231,7 +237,7 @@ Module Contents
       Ordered dictionary of |solver| extra parameters in current mode.
 
 
-   .. py:method:: forward(pseudos: hklpy2.misc.AnyAxesType, wavelength: float = None) -> list
+   .. py:method:: forward(pseudos: hklpy2.misc.AnyAxesType, wavelength: Optional[float] = None) -> list
 
       Compute [{names:reals}] from {names: pseudos} (hkl -> angles).
 
@@ -250,7 +256,7 @@ Module Contents
       Return the |solver| geometry.
 
 
-   .. py:method:: inverse(reals: Union[hklpy2.misc.AnyAxesType, None], wavelength: float = None) -> hklpy2.misc.AxesDict
+   .. py:method:: inverse(reals: Union[hklpy2.misc.AnyAxesType, None], wavelength: Optional[float] = None) -> hklpy2.misc.AxesDict
 
       Compute (pseudos) from {names: reals} (angles -> hkl).
 
@@ -288,6 +294,110 @@ Module Contents
 
 
       Return the list of available |solver| modes.
+
+
+   .. py:property:: presets
+      :type: hklpy2.misc.NamedFloatDict
+
+
+      Preset values for constant-axis modes.
+
+      When using a mode that holds one or more axes at constant values (such
+      as ``constant_phi``), these preset values override the current
+      diffractometer motor positions when computing ``forward()`` solutions.
+
+      NOTE: Presets affect **computed solutions** from ``forward()``. They
+      do **not** move any motor.
+
+      The presets are stored per-mode: changing the mode switches to that
+      mode's saved presets. Presets default to an empty dictionary ``{}``
+      for each mode. Presets only contain axes that are read-only (constant)
+      in the current mode.
+
+      The getter returns the **live mutable dictionary** for the current
+      mode. To remove a single preset key without clearing all presets, call
+      ``diffractometer.core.presets.pop("phi")``.
+
+      Returns a dictionary of axis name:value pairs for the current mode.
+
+      EXAMPLE::
+
+          >>> diffractometer.core.mode = "constant_phi"
+          >>> diffractometer.core.presets = {"phi": 45.0}  # Set phi preset
+          >>> diffractometer.core.presets
+          {'phi': 45.0}
+
+          >>> # Remove a single preset entry
+          >>> diffractometer.core.presets.pop("phi")
+          45.0
+          >>> diffractometer.core.presets
+          {}
+
+          >>> # Switch to another mode - presets are saved per mode
+          >>> diffractometer.core.presets = {"phi": 45.0}
+          >>> diffractometer.core.mode = "constant_omega"
+          >>> diffractometer.core.presets = {"omega": 30.0}
+
+          >>> # Switch back - phi preset is restored
+          >>> diffractometer.core.mode = "constant_phi"
+          >>> diffractometer.core.presets
+          {'phi': 45.0}
+
+
+   .. py:method:: clear_presets(mode: Optional[str] = None) -> None
+
+      Clear preset values.
+
+      After clearing, ``forward()`` will use the current motor positions
+      for the constant axes.
+
+      To remove a single preset key rather than clearing all presets for a
+      mode, use ``diffractometer.core.presets.pop("axis")`` instead.
+
+      PARAMETERS
+
+      mode str or None:
+          If provided, clear presets only for that mode.
+          If None (default), clear presets for all modes.
+
+      EXAMPLE::
+
+          >>> diffractometer.core.presets = {"phi": 45.0}
+          >>> diffractometer.core.presets
+          {'phi': 45.0}
+
+          >>> # Remove a single key without clearing all presets:
+          >>> diffractometer.core.presets.pop("phi")
+          45.0
+
+          >>> diffractometer.core.presets = {"phi": 45.0}
+          >>> diffractometer.core.clear_presets()  # Clear all modes
+          >>> diffractometer.core.presets
+          {}
+
+          >>> diffractometer.core.clear_presets("constant_omega")  # One mode only
+
+
+
+   .. py:property:: constant_axis_names
+      :type: list[str]
+
+
+      List of axis names (diffractometer names) that are held constant
+      in the current mode.
+
+      These are the axes that will use preset values (or current motor
+      positions if no presets are set) when computing ``forward()``
+      solutions.
+
+      EXAMPLE::
+
+          >>> diffractometer.core.mode = "constant_phi"
+          >>> diffractometer.core.constant_axis_names
+          ['phi']
+          >>> diffractometer.core.mode = "bissector"
+          >>> diffractometer.core.constant_axis_names
+          []
 
 
    .. py:method:: refine_lattice(*reflections: list[hklpy2.blocks.reflection.Reflection]) -> hklpy2.blocks.lattice.Lattice
@@ -384,6 +494,29 @@ Module Contents
       Ordered list of |solver| real axis names.
 
 
+   .. py:property:: solver_constant_axis_names
+      :type: list[str]
+
+
+      Ordered list of |solver| real axis names that are constant in the current mode.
+
+      These are axes that are read (not written) by the solver in the current
+      mode. They will use preset values (or current motor positions if no
+      presets are set) when computing ``forward()`` solutions.
+
+      Constant axes are computed as: all real axis names - written axis names.
+
+
+   .. py:property:: solver_written_axis_names
+      :type: list[str]
+
+
+      Ordered list of |solver| real axis names that are solved in the current mode.
+
+      These are axes that are written (computed) by the solver in the current
+      mode.
+
+
    .. py:property:: solver_signature
       :type: str
 
@@ -440,7 +573,7 @@ Module Contents
 
 
 
-   .. py:method:: to_solver_units(wavelength: float = None) -> dict
+   .. py:method:: to_solver_units(wavelength: Optional[float] = None) -> dict
 
       Convert quantities from diffractometer units to solver units.
 

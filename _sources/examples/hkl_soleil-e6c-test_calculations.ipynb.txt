@@ -36,8 +36,8 @@
     "import hklpy2\n",
     "\n",
     "e6c = hklpy2.creator(name=\"e6c\", geometry=\"E6C\")\n",
-    "e6c.core.mode = 'constant_chi_vertical'\n",
-    "e6c.beam.wavelength.put(1.)  # Angstrom"
+    "e6c.core.mode = \"constant_chi_vertical\"\n",
+    "e6c.beam.wavelength.put(1.0)  # Angstrom"
    ]
   },
   {
@@ -107,9 +107,9 @@
    ],
    "source": [
     "# checking orientation of delta\n",
-    "r1p = dict(mu=0.0, omega=30.0, chi=0.0, phi=0.0, gamma=0., delta=60.)\n",
+    "r1p = dict(mu=0.0, omega=30.0, chi=0.0, phi=0.0, gamma=0.0, delta=60.0)\n",
     "r1 = e6c.add_reflection((0, 0, 1), r1p)\n",
-    "r2p = dict(mu=0.0, omega=120.0, chi=0.0, phi=0.0, gamma=0, delta=60.)\n",
+    "r2p = dict(mu=0.0, omega=120.0, chi=0.0, phi=0.0, gamma=0, delta=60.0)\n",
     "r2 = e6c.add_reflection((1, 0, 0), r2p)\n",
     "e6c.core.calc_UB(r1, r2)"
    ]
@@ -216,8 +216,8 @@
     }
    ],
    "source": [
-    "pos = e6c.inverse(dict(mu=0.0, omega=30.0, chi=90.0, phi=0.0, gamma=0, delta=60.))\n",
-    "print('expecting (0,1,0)=', pos)"
+    "pos = e6c.inverse(dict(mu=0.0, omega=30.0, chi=90.0, phi=0.0, gamma=0, delta=60.0))\n",
+    "print(\"expecting (0,1,0)=\", pos)"
    ]
   },
   {
@@ -240,8 +240,8 @@
    ],
    "source": [
     "# alternate settings for same reflection\n",
-    "pos = e6c.inverse(dict(mu=30.0, omega=0.0, chi=0.0, phi=0.0, gamma=60., delta=0.))\n",
-    "print('expecting (0,1,0)=', pos)"
+    "pos = e6c.inverse(dict(mu=30.0, omega=0.0, chi=0.0, phi=0.0, gamma=60.0, delta=0.0))\n",
+    "print(\"expecting (0,1,0)=\", pos)"
    ]
   },
   {
@@ -270,8 +270,8 @@
     }
    ],
    "source": [
-    "pos = e6c.inverse(dict(mu=0, omega=30., chi=-90.0, phi=0.0, gamma=0., delta=60.))\n",
-    "print('expecting (0,-1,0)=', pos)"
+    "pos = e6c.inverse(dict(mu=0, omega=30.0, chi=-90.0, phi=0.0, gamma=0.0, delta=60.0))\n",
+    "print(\"expecting (0,-1,0)=\", pos)"
    ]
   },
   {
@@ -300,8 +300,8 @@
     }
    ],
    "source": [
-    "pos = e6c.inverse(dict(mu=0.0, omega=-60.0, chi=0.0, phi=0.0, gamma=0, delta=60.))\n",
-    "print('expecting (-1,0,0)=', pos)"
+    "pos = e6c.inverse(dict(mu=0.0, omega=-60.0, chi=0.0, phi=0.0, gamma=0, delta=60.0))\n",
+    "print(\"expecting (-1,0,0)=\", pos)"
    ]
   },
   {
@@ -343,14 +343,14 @@
     }
    ],
    "source": [
-    "pos = e6c.inverse(dict(mu=0.0, omega=-50.0, chi=0.0, phi=-70.0, gamma=0, delta=-60.))\n",
-    "print('expecting (1,0,0)=', pos)\n",
+    "pos = e6c.inverse(dict(mu=0.0, omega=-50.0, chi=0.0, phi=-70.0, gamma=0, delta=-60.0))\n",
+    "print(\"expecting (1,0,0)=\", pos)\n",
     "\n",
-    "pos = e6c.inverse(dict(mu=0.0, omega=-100.0, chi=0.0, phi=-20.0, gamma=0, delta=-60.))\n",
-    "print('expecting (1,0,0)=', pos)\n",
+    "pos = e6c.inverse(dict(mu=0.0, omega=-100.0, chi=0.0, phi=-20.0, gamma=0, delta=-60.0))\n",
+    "print(\"expecting (1,0,0)=\", pos)\n",
     "\n",
-    "pos = e6c.inverse(dict(mu=0.0, omega=100.0, chi=0.0, phi=-220.0, gamma=0, delta=-60.))\n",
-    "print('expecting (1,0,0)=', pos)"
+    "pos = e6c.inverse(dict(mu=0.0, omega=100.0, chi=0.0, phi=-220.0, gamma=0, delta=-60.0))\n",
+    "print(\"expecting (1,0,0)=\", pos)"
    ]
   },
   {
@@ -379,8 +379,8 @@
     }
    ],
    "source": [
-    "pos = e6c.inverse(dict(mu=0.0, omega=45.0, chi=45.0, phi=0.0, gamma=0, delta=90.))\n",
-    "print('expecting (0,1,1)=', pos)"
+    "pos = e6c.inverse(dict(mu=0.0, omega=45.0, chi=45.0, phi=0.0, gamma=0, delta=90.0))\n",
+    "print(\"expecting (0,1,1)=\", pos)"
    ]
   },
   {

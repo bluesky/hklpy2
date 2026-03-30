@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Diffractometer Extra Solver Parameters &#8212; hklpy2 0.3</title>
+    <title>How to Use Presets &#8212; hklpy2 0.3</title>
   
   
   
@@ -48,11 +48,11 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'guides/how_additional_parameters';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'guides/how_presets';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Diffractometer Extra Motors and/or Pseudos" href="how_extra_reals_and_pseudos.html" />
-    <link rel="prev" title="Diffractometer Axis Names" href="diffract.html" />
+    <link rel="next" title="How to write a new Solver" href="howto_write_solver.html" />
+    <link rel="prev" title="Diffractometer Extra Motors and/or Pseudos" href="how_extra_reals_and_pseudos.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.3" />
@@ -362,9 +362,9 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../guides.html">Guides</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diffract.html">Diffractometer Axis Names</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Diffractometer Extra Solver Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
-<li class="toctree-l2"><a class="reference internal" href="how_presets.html">How to Use Presets</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">How to Use Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="howto_write_solver.html">How to write a new Solver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="spec_xref.html">SPEC commands in hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
@@ -419,7 +419,7 @@
     
     <li class="breadcrumb-item"><a href="../guides.html" class="nav-link">Guides</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Diffractometer Extra Solver Parameters</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">How to Use Presets</span></li>
   </ul>
 </nav>
 </div>
@@ -436,138 +436,159 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="diffractometer-extra-solver-parameters">
-<h1>Diffractometer Extra Solver Parameters<a class="headerlink" href="#diffractometer-extra-solver-parameters" title="Link to this heading">#</a></h1>
-<p>Some diffractometer <em>modes</em> use extra parameters.  The <a class="reference internal" href="../diffractometers.html#geometries-hkl-soleil-e4cv"><span class="std std-ref">E4CV</span></a> geometry, for example, has a <code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code> mode which requires a reference <span class="math notranslate nohighlight">\(hkl_2\)</span> vector.  The vector is set as a Python dictionary:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head text-left"><p>action</p></th>
-<th class="head text-left"><p><code class="docutils literal notranslate"><span class="pre">E4CV</span></code> method</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td class="text-left"><p>read</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">e4cv.core.extras</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p>write</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">e4cv.core.extras</span> <span class="pre">=</span></code> dictionary</p></td>
-</tr>
-</tbody>
-</table>
+  <section id="how-to-use-presets">
+<span id="how-presets"></span><h1>How to Use Presets<a class="headerlink" href="#how-to-use-presets" title="Link to this heading">#</a></h1>
+<p id="index-0">Some diffractometer modes hold one or more real axes at a fixed value while
+the solver computes the remaining axes needed to reach a requested <span class="math notranslate nohighlight">\(hkl\)</span>
+position.  <strong>Presets</strong> are the values the solver assumes for those constant
+axes during <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computations.</p>
+<p>This guide walks through common preset operations using a simulated E4CV
+diffractometer.</p>
+<section id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
+<p>Create a simulated 4-circle diffractometer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">)</span>
+</pre></div>
 </div>
-<p><strong>Objective</strong></p>
-<p>Show how to use the <code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code> mode in the <code class="docutils literal notranslate"><span class="pre">E4CV</span></code> geometry.</p>
-<section id="e4cv-hkl-double-diffraction">
-<h2><code class="docutils literal notranslate"><span class="pre">E4CV</span></code>, <code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code><a class="headerlink" href="#e4cv-hkl-double-diffraction" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head text-left"><p>term</p></th>
-<th class="head text-left"><p>value</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td class="text-left"><p>geometry</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">E4CV</span></code></p></td>
-</tr>
-<tr class="row-odd"><td class="text-left"><p>engine</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">hkl</span></code></p></td>
-</tr>
-<tr class="row-even"><td class="text-left"><p>mode</p></td>
-<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>Using the standard <code class="docutils literal notranslate"><span class="pre">E4CV</span></code> geometry with simulated motors, we copy the <a class="reference external" href="https://github.com/bluesky/hklpy/tree/main/docs/source/examples/notebooks/tst_e4cv_fourc.html#read-the-spec-scan-from-the-data-file">E4CV setup for the <em>LNO_LAO</em> sample</a>.  Using a kwarg, we can automatically compute the UB matrix once we define the second reflection.  (This means we do not have to call <code class="docutils literal notranslate"><span class="pre">compute_UB()</span></code> on a separate line.)</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+</section>
+<section id="do-presets-move-motors">
+<h2>Do presets move motors?<a class="headerlink" href="#do-presets-move-motors" title="Link to this heading">#</a></h2>
+<p><strong>No.</strong> Setting a preset never commands a motor to move. The preset only tells
+the solver which value to <em>assume</em> for a constant axis when computing
+<code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions. The motor position is unaffected.</p>
+<p>This is useful when you want to compute <span class="math notranslate nohighlight">\(hkl\)</span> solutions at a specific
+constant-axis angle without physically driving the motor there first.</p>
+</section>
+<section id="which-axes-can-have-presets">
+<h2>Which axes can have presets?<a class="headerlink" href="#which-axes-can-have-presets" title="Link to this heading">#</a></h2>
+<p>Only axes that are <strong>constant</strong> (held fixed) in the current mode accept
+presets. Values supplied for computed axes are silently ignored.</p>
+<p>Check which axes are constant for the active mode:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constant_axis_names</span>
+<span class="go">[&#39;phi&#39;]</span>
 
-<span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">)</span>
-<span class="n">e4cv</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="s2">&quot;e4cv-LNO_LAO.yml&quot;</span><span class="p">)</span>
-<span class="n">e4cv</span><span class="o">.</span><span class="n">wh</span><span class="p">(</span><span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_omega&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constant_axis_names</span>
+<span class="go">[&#39;omega&#39;]</span>
 </pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diffractometer=&#39;e4cv&#39;
-HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)
-Sample(name=&#39;LNO_LAO&#39;, lattice=Lattice(a=3.7817, b=3.7914, c=3.7989, alpha=90.2546, beta=90.0182, gamma=89.8997, system=&#39;triclinic&#39;))
-Reflection(name=&#39;r_85d9&#39;, h=0.0, k=0.0, l=2.0)
-Reflection(name=&#39;r_bca7&#39;, h=1.0, k=1.0, l=3.0)
-Orienting reflections: [&#39;r_85d9&#39;, &#39;r_bca7&#39;]
-U=[[0.0575, 0.9983, 0.0059], [0.0002, 0.0059, 1.0], [0.9983, 0.0575, 0.0002]]
-UB=[[0.0955, -1.6543, 0.0024], [0.0003, 0.0098, 1.654], [-1.6587, 0.0982, 0.0004]]
-constraint: -180 &lt;= omega &lt;= 180.0
-constraint: -180 &lt;= chi &lt;= 180.0
-constraint: -50 &lt;= phi &lt;= 100.0
-constraint: -2 &lt;= tth &lt;= 180.0
-Mode: bissector
-beam={&#39;class&#39;: &#39;WavelengthXray&#39;, &#39;source_type&#39;: &#39;Synchrotron X-ray Source&#39;, &#39;energy&#39;: 10.0034, &#39;wavelength&#39;: 1.2394, &#39;energy_units&#39;: &#39;keV&#39;, &#39;wavelength_units&#39;: &#39;angstrom&#39;}
-pseudos: h=0, k=0, l=0
-reals: omega=0, chi=0, phi=0, tth=0
-</pre></div>
-</div>
-</div>
-</div>
-<p>Set the <code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code> mode.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;double_diffraction&quot;</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>e4cv.core.mode=&#39;double_diffraction&#39;
-e4cv.core.extras={&#39;h2&#39;: 0, &#39;k2&#39;: 0, &#39;l2&#39;: 0}
-</pre></div>
-</div>
-</div>
-</div>
-<p>Set $hkl_2=(2\ 2\ 0)$.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h2&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-</pre></div>
-</div>
-</div>
 </div>
 </section>
-<section id="calculate-002-with-220-as-second-diffracting-plane">
-<h2>Calculate (002) with (220) as second diffracting plane<a class="headerlink" href="#calculate-002-with-220-as-second-diffracting-plane" title="Link to this heading">#</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(002) :&quot;</span><span class="p">,</span> <span class="n">e4cv</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<section id="setting-a-preset">
+<h2>Setting a preset<a class="headerlink" href="#setting-a-preset" title="Link to this heading">#</a></h2>
+<p>Assign a dictionary to <code class="docutils literal notranslate"><span class="pre">presets</span></code> while the desired mode is active:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
+<span class="go">{&#39;phi&#39;: 45.0}</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>e4cv.core.extras={&#39;h2&#39;: 2.0, &#39;k2&#39;: 2.0, &#39;l2&#39;: 0}
-(002) : Hklpy2DiffractometerRealPos(omega=19.125950225128, chi=89.985287878118, phi=19.056580793553, tth=38.084060865636)
+<p>A list or tuple in <code class="docutils literal notranslate"><span class="pre">local_real_axes</span></code> order is also accepted:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">45.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>   <span class="c1"># omega, chi, phi, tth</span>
 </pre></div>
 </div>
+<p>Only the constant-axis values are stored; the rest are silently dropped.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The setter <strong>updates</strong> (merges) the existing preset dictionary — it does
+<strong>not</strong> replace it.  Each call adds or overwrites individual keys while
+leaving other keys untouched.</p>
 </div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">}</span>   <span class="c1"># overwrites phi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
+<span class="go">{&#39;phi&#39;: 90.0}</span>
+</pre></div>
 </div>
 </section>
-<section id="calculate-002-with-222-as-second-diffracting-plane">
-<h2>Calculate (002) with (222) as second diffracting plane<a class="headerlink" href="#calculate-002-with-222-as-second-diffracting-plane" title="Link to this heading">#</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h2&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(002) :&quot;</span><span class="p">,</span> <span class="n">e4cv</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<section id="presets-are-per-mode">
+<h2>Presets are per-mode<a class="headerlink" href="#presets-are-per-mode" title="Link to this heading">#</a></h2>
+<p>Each mode stores its own independent preset dictionary. The default for every
+mode is an empty dictionary <code class="docutils literal notranslate"><span class="pre">{}</span></code>. Switching modes switches to that mode’s
+presets; switching back restores them:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_omega&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>          <span class="c1"># omega mode starts empty</span>
+<span class="go">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">}</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>          <span class="c1"># phi preset restored</span>
+<span class="go">{&#39;phi&#39;: 45.0}</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>e4cv.core.extras={&#39;h2&#39;: 2.0, &#39;k2&#39;: 2.0, &#39;l2&#39;: 2}
-(002) : Hklpy2DiffractometerRealPos(omega=19.125989212654, chi=89.985511048367, phi=18.904237611193, tth=38.084060993071)
+</section>
+<section id="removing-a-single-preset-key">
+<h2>Removing a single preset key<a class="headerlink" href="#removing-a-single-preset-key" title="Link to this heading">#</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">.pop()</span></code> on the live dictionary returned by the getter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;phi&quot;</span><span class="p">)</span>
+<span class="go">45.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
+<span class="go">{}</span>
 </pre></div>
 </div>
+</section>
+<section id="clearing-all-presets">
+<h2>Clearing all presets<a class="headerlink" href="#clearing-all-presets" title="Link to this heading">#</a></h2>
+<p>Use <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.clear_presets" title="hklpy2.ops.Core.clear_presets"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clear_presets()</span></code></a> to erase presets.</p>
+<p>Clear every mode at once:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clear_presets</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
+<span class="go">{}</span>
+</pre></div>
 </div>
+<p>Clear only one specific mode, leaving other modes’ presets intact:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_omega&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">}</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clear_presets</span><span class="p">(</span><span class="s2">&quot;constant_phi&quot;</span><span class="p">)</span>   <span class="c1"># only constant_phi cleared</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>    <span class="c1"># cleared</span>
+<span class="go">{}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_omega&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>    <span class="c1"># still set</span>
+<span class="go">{&#39;omega&#39;: 30.0}</span>
+</pre></div>
+</div>
+</section>
+<section id="replacing-all-presets-clear-then-set">
+<h2>Replacing all presets (clear then set)<a class="headerlink" href="#replacing-all-presets-clear-then-set" title="Link to this heading">#</a></h2>
+<p>Because the setter merges rather than replaces, clear the mode’s presets
+first when you want a clean slate:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clear_presets</span><span class="p">(</span><span class="s2">&quot;constant_phi&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
+<span class="go">{&#39;phi&#39;: 10.0}</span>
+</pre></div>
+</div>
+</section>
+<section id="checking-presets-with-wh">
+<h2>Checking presets with <code class="docutils literal notranslate"><span class="pre">wh()</span></code><a class="headerlink" href="#checking-presets-with-wh" title="Link to this heading">#</a></h2>
+<p>When presets are active, <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.wh" title="hklpy2.diffract.DiffractometerBase.wh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wh()</span></code></a> with
+<code class="docutils literal notranslate"><span class="pre">full=True</span></code> includes them in its output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">wh</span><span class="p">(</span><span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">presets: {&#39;phi&#39;: 45.0}</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../concepts/ops.html#concepts-ops"><span class="std std-ref">Core Operations</span></a> — overview of Core concepts, including presets.</p>
+<p><a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> — full API reference.</p>
 </div>
 </section>
 </section>
@@ -583,20 +604,20 @@ e4cv.core.extras={&#39;h2&#39;: 0, &#39;k2&#39;: 0, &#39;l2&#39;: 0}
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="diffract.html"
+       href="how_extra_reals_and_pseudos.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Diffractometer Axis Names</p>
+        <p class="prev-next-title">Diffractometer Extra Motors and/or Pseudos</p>
       </div>
     </a>
     <a class="right-next"
-       href="how_extra_reals_and_pseudos.html"
+       href="howto_write_solver.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Diffractometer Extra Motors and/or Pseudos</p>
+        <p class="prev-next-title">How to write a new Solver</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -619,9 +640,15 @@ e4cv.core.extras={&#39;h2&#39;: 0, &#39;k2&#39;: 0, &#39;l2&#39;: 0}
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#e4cv-hkl-double-diffraction"><code class="docutils literal notranslate"><span class="pre">E4CV</span></code>, <code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculate-002-with-220-as-second-diffracting-plane">Calculate (002) with (220) as second diffracting plane</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculate-002-with-222-as-second-diffracting-plane">Calculate (002) with (222) as second diffracting plane</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#do-presets-move-motors">Do presets move motors?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#which-axes-can-have-presets">Which axes can have presets?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-a-preset">Setting a preset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#presets-are-per-mode">Presets are per-mode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#removing-a-single-preset-key">Removing a single preset key</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clearing-all-presets">Clearing all presets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#replacing-all-presets-clear-then-set">Replacing all presets (clear then set)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-presets-with-wh">Checking presets with <code class="docutils literal notranslate"><span class="pre">wh()</span></code></a></li>
 </ul>
   </nav></div>
 
@@ -629,7 +656,7 @@ e4cv.core.extras={&#39;h2&#39;: 0, &#39;k2&#39;: 0, &#39;l2&#39;: 0}
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/guides/how_additional_parameters.ipynb">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/guides/how_presets.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -645,7 +672,7 @@ e4cv.core.extras={&#39;h2&#39;: 0, &#39;k2&#39;: 0, &#39;l2&#39;: 0}
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/guides/how_additional_parameters.ipynb.txt"
+      <li><a href="../_sources/guides/how_presets.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

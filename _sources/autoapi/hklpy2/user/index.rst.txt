@@ -106,7 +106,7 @@ Module Contents
 
 .. py:data:: _choice
 
-.. py:function:: add_sample(name: str, a: float, b: float = None, c: float = None, alpha: float = 90, beta: float = None, gamma: float = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
+.. py:function:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
 
    Add (and select) a new crystal sample.
 
@@ -177,7 +177,7 @@ Module Contents
    :type digits: int
 
 
-.. py:function:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str], wavelength: float = None) -> hklpy2.misc.Matrix3x3
+.. py:function:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str], wavelength: Optional[float] = None) -> hklpy2.misc.Matrix3x3
 
    Compute the UB matrix with two reflections.
 
@@ -434,7 +434,7 @@ Module Contents
 
 
 
-.. py:function:: set_diffractometer(diffractometer: hklpy2.diffract.DiffractometerBase = None) -> None
+.. py:function:: set_diffractometer(diffractometer: Optional[hklpy2.diffract.DiffractometerBase] = None) -> None
 
    Declare the diffractometer to be used.
 
@@ -458,7 +458,7 @@ Module Contents
        >>> set_wavelength(123.45, units="pm")
 
 
-.. py:function:: set_lattice(a: float, b: float = None, c: float = None, alpha: float = 90, beta: float = None, gamma: float = None, digits: int = 4) -> None
+.. py:function:: set_lattice(a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4) -> None
 
    Redefine the sample's lattice.
 

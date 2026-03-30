@@ -84,7 +84,7 @@ Module Contents
 
 
 
-.. py:class:: DiffractometerBase(prefix: str = '', *, solver: str = None, geometry: str = None, solver_kwargs: dict = {}, pseudos: list[str] = [], reals: list[str] = [], reals_units: Optional[str] = None, forward_solution_function: Optional[Callable] = None, **kwargs)
+.. py:class:: DiffractometerBase(prefix: str = '', *, solver: Optional[str] = None, geometry: Optional[str] = None, solver_kwargs: dict = {}, pseudos: list[str] = [], reals: list[str] = [], reals_units: Optional[str] = None, forward_solution_function: Optional[Callable] = None, **kwargs)
 
    Bases: :py:obj:`ophyd.PseudoPositioner`
 
@@ -201,7 +201,7 @@ Module Contents
       new digit count is used for their string representations.
 
 
-   .. py:method:: add_reflection(pseudos, reals=None, wavelength: float = None, wavelength_units: str = None, name: str = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
+   .. py:method:: add_reflection(pseudos, reals=None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
 
       Add a new reflection with this geometry to the selected sample.
 
@@ -226,7 +226,7 @@ Module Contents
 
 
 
-   .. py:method:: add_sample(name: str, a: float, b: float = None, c: float = None, alpha: float = 90.0, beta: float = None, gamma: float = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
+   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
 
       Add a new sample.
 
@@ -286,7 +286,7 @@ Module Contents
 
 
 
-   .. py:method:: forward(pseudos: dict, wavelength: float = None) -> NamedTuple
+   .. py:method:: forward(pseudos: dict, wavelength: Optional[float] = None) -> NamedTuple
 
       Compute real-space coordinates from pseudos (hkl -> angles).
 
@@ -298,7 +298,7 @@ Module Contents
 
 
 
-   .. py:method:: inverse(reals: tuple, wavelength: float = None) -> NamedTuple
+   .. py:method:: inverse(reals: tuple, wavelength: Optional[float] = None) -> NamedTuple
 
       Compute pseudo-space coordinates from reals (angles -> hkl).
 

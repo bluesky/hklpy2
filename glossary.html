@@ -32,7 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
   <!-- So that users can add custom icons -->
@@ -41,13 +41,13 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=0e9172f4"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=33c1dc81"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'glossary';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -364,6 +364,7 @@
 <li class="toctree-l2"><a class="reference internal" href="guides/diffract.html">Diffractometer Axis Names</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/how_presets.html">How to Use Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/howto_write_solver.html">How to write a new Solver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/spec_xref.html">SPEC commands in hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
@@ -590,6 +591,18 @@ frame (described by the <em>reals</em>).</p>
 </dd>
 </dl>
 <dl class="field-list" id="index-20">
+<dt class="field-odd">preset<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A value assigned to a constant (read-only) real axis for use
+during <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computations, in place of the current motor
+position.  Presets do not move any motor.  Each <em>mode</em> stores its
+own independent preset dictionary, defaulting to <code class="docutils literal notranslate"><span class="pre">{}</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="guides/how_presets.html#how-presets"><span class="std std-ref">How to Use Presets</span></a></p>
+</div>
+</dd>
+</dl>
+<dl class="field-list" id="index-21">
 <dt class="field-odd">pseudo<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Reciprocal-space axis, such as <span class="math notranslate nohighlight">\(h\)</span>, <span class="math notranslate nohighlight">\(k\)</span>, and <span class="math notranslate nohighlight">\(l\)</span>.
 The engineering units (rarely examined for <em>crystalline</em> work) are reciprocal
@@ -598,14 +611,14 @@ of the <em>wavelength</em> units.</p>
 <strong>real</strong> axes.</p>
 </dd>
 </dl>
-<dl class="field-list simple" id="index-21">
+<dl class="field-list simple" id="index-22">
 <dt class="field-odd">real<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Real-space axis (typically a rotation stage),
 such as <code class="docutils literal notranslate"><span class="pre">omega</span></code> (<span class="math notranslate nohighlight">\(\omega\)</span>).
 The engineering units are expected to be in <strong>degrees</strong>.</p>
 </dd>
 </dl>
-<dl class="field-list simple" id="index-22">
+<dl class="field-list simple" id="index-23">
 <dt class="field-odd">reflection<span class="colon">:</span></dt>
 <dd class="field-odd"><p>User-identified coordinates serving as a fiducial reference
 associating crystal orientation (reciprocal space, <em>pseudos</em>) and rotational
@@ -614,7 +627,7 @@ specific <em>diffractometer</em> geometry. In <strong>hklpy2</strong>, a reflect
 set of <em>pseudos</em>, a set of <em>reals</em>, and a <em>wavelength</em>.</p>
 </dd>
 </dl>
-<dl class="field-list" id="index-23">
+<dl class="field-list" id="index-24">
 <dt class="field-odd">sample<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The named substance to be explored with the <em>diffractometer</em>.
 In <strong>hklpy2</strong>, a sample has a name, a <em>lattice</em>, and a list of <em>reflections</em>.</p>
@@ -624,7 +637,7 @@ In <strong>hklpy2</strong>, a sample has a name, a <em>lattice</em>, and a list 
 <em>geometry</em>.  The same sample cannot be used for other geometries.</p>
 </dd>
 </dl>
-<dl class="field-list simple" id="index-24">
+<dl class="field-list simple" id="index-25">
 <dt class="field-odd">solver<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The <strong>hklpy2</strong> interface layer to a backend <strong>Solver</strong> library, such as
 <strong>Hkl/Soleil</strong>. The library provides computations to transform coordinates between
@@ -632,7 +645,7 @@ In <strong>hklpy2</strong>, a sample has a name, a <em>lattice</em>, and a list 
 library also provides one or more diffractometer geometries.</p>
 </dd>
 </dl>
-<dl class="field-list" id="index-25">
+<dl class="field-list" id="index-26">
 <dt class="field-odd">UB<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Orientation matrix (3 x 3).</p>
 <dl class="simple">
@@ -645,19 +658,19 @@ library also provides one or more diffractometer geometries.</p>
 </dl>
 </dd>
 </dl>
-<dl class="field-list simple" id="index-26">
+<dl class="field-list simple" id="index-27">
 <dt class="field-odd">unit cell<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The parallelepiped representing the smallest repeating structural
 pattern of the <em>crystal</em>, characterized by its <em>lattice</em> parameters.</p>
 </dd>
 </dl>
-<dl class="field-list simple" id="index-27">
+<dl class="field-list simple" id="index-28">
 <dt class="field-odd">real<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Virtual (computed) diffractometer <strong>axis</strong> (either <strong>pseudo</strong> or
 <strong>real</strong>), computed from one or more additional <strong>diffractometer</strong> axes.</p>
 </dd>
 </dl>
-<dl class="field-list simple" id="index-28">
+<dl class="field-list simple" id="index-29">
 <dt class="field-odd">wavelength<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The numerical value of the wavelength of the incident radiation.
 The radiation is expected to be <em>monochromatic</em> neutrons or X-rays.
@@ -665,7 +678,7 @@ The engineering units of wavelength must be identical to those of the
 <em>crystalline</em> <em>lattice</em> length parameters.</p>
 </dd>
 </dl>
-<dl class="field-list simple" id="index-29">
+<dl class="field-list simple" id="index-30">
 <dt class="field-odd">zone<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A set of <em>lattice</em> planes which are all parallel to one line, called the
 <em>zone axis</em>.</p>
@@ -771,7 +784,7 @@ The engineering units of wavelength must be identical to those of the
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>

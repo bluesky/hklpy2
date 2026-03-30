@@ -6,7 +6,11 @@ Diffractometer
 
 .. TODO: How much is guide or example?  This should be a concepts doc. Brief.
 
-.. index:: !design; diffractometer
+.. index::
+    !design; diffractometer
+    !diffractometer
+    !geometry
+    !mode
 
 Diffractometers are built as a subclass of
 :class:`~hklpy2.diffract.DiffractometerBase()`, adding a variety of

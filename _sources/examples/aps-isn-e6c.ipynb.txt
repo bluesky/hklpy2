@@ -75,7 +75,7 @@
     "    solver=\"hkl_soleil\",\n",
     "    solver_kwargs={\"engine\": \"hkl\"},\n",
     "    reals=\"mu eta chi phi yaw pitch radius\".split(),\n",
-    ") "
+    ")"
    ]
   },
   {
@@ -96,7 +96,7 @@
    "source": [
     "psic.beam.wavelength.put(12.3984 / 20)\n",
     "psic.yaw.move(40)\n",
-    "psic.mu.move(psic.yaw.position/2)\n",
+    "psic.mu.move(psic.yaw.position / 2)\n",
     "psic.radius._egu = \"mm\"\n",
     "psic.radius._limits = 0, 1000\n",
     "psic.radius.move(800)\n",
@@ -442,7 +442,9 @@
     }
    ],
    "source": [
-    "psic.chi.move(90)  # unreachable: ISN chi axis won't move for ISN diffractometer, but we can simulate it\n",
+    "psic.chi.move(\n",
+    "    90\n",
+    ")  # unreachable: ISN chi axis won't move for ISN diffractometer, but we can simulate it\n",
     "print(f\"{psic.forward((1, 0, 0))=}\")\n",
     "psic.chi.move(0)  # put it back"
    ]
@@ -489,7 +491,7 @@
     "from hklpy2.user import set_diffractometer\n",
     "\n",
     "set_diffractometer(psic)\n",
-    "cahkl_table((0, 0, 1), (0, 1, 1), (1,1,1))"
+    "cahkl_table((0, 0, 1), (0, 1, 1), (1, 1, 1))"
    ]
   },
   {
@@ -934,7 +936,16 @@
    ],
    "source": [
     "psic.move_reals(3, 0, 0, 0, 6, 0)\n",
-    "RE(bp.x2x_scan([psic.h, psic.k, psic.l, psic.mu, psic.yaw, psic.pitch], psic.yaw, psic.mu, -2, 2, 5))"
+    "RE(\n",
+    "    bp.x2x_scan(\n",
+    "        [psic.h, psic.k, psic.l, psic.mu, psic.yaw, psic.pitch],\n",
+    "        psic.yaw,\n",
+    "        psic.mu,\n",
+    "        -2,\n",
+    "        2,\n",
+    "        5,\n",
+    "    )\n",
+    ")"
    ]
   },
   {
@@ -988,7 +999,11 @@
    ],
    "source": [
     "psic.move(0, 0, 1)\n",
-    "RE(bp.rel_scan([psic.h, psic.k, psic.l, psic.mu, psic.yaw, psic.pitch], psic.pitch, -1, 6, 8))"
+    "RE(\n",
+    "    bp.rel_scan(\n",
+    "        [psic.h, psic.k, psic.l, psic.mu, psic.yaw, psic.pitch], psic.pitch, -1, 6, 8\n",
+    "    )\n",
+    ")"
    ]
   }
  ],
