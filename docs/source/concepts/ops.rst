@@ -53,7 +53,7 @@ EXAMPLE::
 Core concepts
 -------------
 
-The table below summarises the main topics managed by ``.core`` and points to
+The table below summarizes the main topics managed by ``.core`` and points to
 where each is described in more detail.
 
 .. list-table::
