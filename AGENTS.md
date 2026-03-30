@@ -294,7 +294,7 @@ A Pull Request (PR) describes *how* an issue has been (or will be) addressed.
 
   Using `closes #N` will auto-close the issue when the PR is merged.
 - The PR title should be a concise summary of the change.
-- Assign the PR to the user running the agent (``prjemian``).
+- Assign the PR to the user running the agent (determine with ``gh api user --jq '.login'``).
 - Copy the issue's labels, project(s), milestone, and status to the PR.
 - Sign the PR body with the agent and model name:
 
