@@ -196,6 +196,60 @@ to |solver| axis names (as defined in our MyTwoC class above):
     >>> twoc.core.axes_xref
     {'q': 'q', 'theta': 'th', 'ttheta': 'tth'}
 
+.. _diffract_axes.pseudos-out-of-order:
+
+Pseudos supplied in a different order than the solver expects
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. index:: _pseudo; pseudos out of order
+
+When custom pseudo axis names are defined in a different order than the
+|solver| expects, the ``_pseudo`` keyword declares which local name maps to
+each |solver| pseudo axis slot.
+
+Without ``_pseudo``, :func:`~hklpy2.diffract.creator()` zips the pseudo
+names positionally against the solver's pseudo axis order.  If these orders
+differ, pseudo axes are silently swapped in ``axes_xref``.
+
+**Example:** an E4CV diffractometer with custom pseudo names supplied in a
+different order than the solver's ``h, k, l``:
+
+.. tabs::
+
+    .. tab:: Wrong (missing ``_pseudo``)
+
+        Without ``_pseudo``, names are zipped positionally: ``ll`` (1st)
+        maps to solver ``h`` (1st) and ``hh`` (3rd) maps to solver ``l``
+        (3rd) — silently swapped:
+
+        .. code-block:: python
+
+            sim = hklpy2.creator(
+                name="sim",
+                solver="hkl_soleil",
+                geometry="E4CV",
+                pseudos=["ll", "kk", "hh"],
+            )
+            sim.core.axes_xref
+            # {'ll': 'h', 'kk': 'k', 'hh': 'l', ...}   ← swapped
+
+    .. tab:: Correct (with ``_pseudo``)
+
+        Supply ``_pseudo`` to declare which local name maps to each solver
+        pseudo axis slot, independent of the ``pseudos`` list order:
+
+        .. code-block:: python
+
+            sim = hklpy2.creator(
+                name="sim",
+                solver="hkl_soleil",
+                geometry="E4CV",
+                pseudos=["ll", "kk", "hh"],
+                _pseudo=["hh", "kk", "ll"],
+            )
+            sim.core.axes_xref
+            # {'hh': 'h', 'kk': 'k', 'll': 'l', ...}   ← correct
+
 .. _diffract_axes.reals-out-of-order:
 
 Reals supplied in a different order than the solver expects
