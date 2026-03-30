@@ -54,7 +54,7 @@ Glossary
 
 ..  index::
     !definition; constraint
-    !constraint
+    constraint
 
 :constraint: Limitations on acceptable positions for a *diffractometer's*
   computed ``forward()`` solutions (from :math:`hkl` to angles).  A *solver's*
@@ -65,7 +65,7 @@ Glossary
 
 ..  index::
     !definition; core
-    !core
+    core
 
 :core: The |hklpy2| intermediate software adapter layer between
   :class:`~hklpy2.diffract.DiffractometerBase` (user-facing code) and a
@@ -89,7 +89,7 @@ Glossary
 
 ..  index::
     !definition; diffractometer
-    !diffractometer
+    diffractometer
 
 :diffractometer:
   Diffractometers, mechanical systems of *real* space rotation axes, are used in
@@ -127,7 +127,7 @@ Glossary
 
 ..  index::
     !definition; geometry
-    !geometry
+    geometry
 
 :geometry: The set of *reals* (stacked rotation angles) which
   define a specific *diffractometer*. A common distinguishing feature is the
@@ -145,7 +145,7 @@ Glossary
 
 ..  index::
     !definition; lattice
-    !lattice
+    lattice
 
 :lattice: Characteristic dimensions of the parallelepiped representing the
   *sample* *crystal* structure.  For a three-dimensional crystal, the lengths of
@@ -154,7 +154,7 @@ Glossary
 
 ..  index::
     !definition; mode
-    !mode
+    mode
 
 :mode: *Diffractometer* *geometry* operation mode for
   :meth:`~hklpy2.diffract.DiffractometerBase.forward()`.
@@ -187,7 +187,7 @@ Glossary
 
 ..  index::
     !definition; preset
-    !preset
+    preset
     see: preset; presets
 
 :preset: A value assigned to a constant (read-only) real axis for use
@@ -218,7 +218,7 @@ Glossary
 
 ..  index::
     !definition; reflection
-    !reflection
+    reflection
 
 :reflection: User-identified coordinates serving as a fiducial reference
   associating crystal orientation (reciprocal space, *pseudos*) and rotational
@@ -228,7 +228,7 @@ Glossary
 
 ..  index::
     !definition; sample
-    !sample
+    sample
 
 :sample: The named substance to be explored with the *diffractometer*.
   In |hklpy2|, a sample has a name, a *lattice*, and a list of *reflections*.
@@ -241,7 +241,7 @@ Glossary
 
 ..  index::
     !definition; solver
-    !solver
+    solver
 
 :solver: The |hklpy2| interface layer to a backend |solver| library, such as
   |libhkl|. The library provides computations to transform coordinates between
@@ -249,8 +249,8 @@ Glossary
   library also provides one or more diffractometer geometries.
 
 ..  index::
-    !U
-    !UB
+    U
+    UB
     !definition; U
     !definition; UB
 
@@ -281,7 +281,7 @@ Glossary
 
 ..  index::
     !definition; wavelength
-    !wavelength
+    wavelength
 
 :wavelength: The numerical value of the wavelength of the incident radiation.
   The radiation is expected to be *monochromatic* neutrons or X-rays.

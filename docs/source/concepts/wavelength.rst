@@ -4,6 +4,8 @@
 Wavelength
 ==================
 
+.. index:: !wavelength
+
 In diffraction, the wavelength of the incident radiation sets the radius of the
 Ewald sphere. [#]_  Only :math:`hkl` reflections which lie within the Ewald sphere are
 accessible to the experiment.

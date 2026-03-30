@@ -4,6 +4,8 @@
 Crystal Lattice
 ==================
 
+.. index:: !lattice
+
 .. sample('EuPtIn4_eh1_ver', a=4.542, b=16.955, c=7.389)
 
 Record a sample's crystalline :index:`lattice` parameters: :math:`a, b, c,
