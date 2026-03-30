@@ -289,10 +289,14 @@ class HklSolver(SolverBase):
         ------
         ValueError
             If the solver returns a degenerate (all-zero or non-orthonormal) U
-            matrix.  The most common cause is a misconfigured ``axes_xref``
-            mapping that places the detector at the direct-beam position
-            (detector angles both zero) for one or more of the orienting
-            reflections, yielding a zero scattering vector.
+            matrix.  Two common causes:
+
+            * **All-zero U**: the scattering vector is zero for one or both
+              reflections (detector at the direct-beam position).  Check that
+              detector angles are non-zero and that ``axes_xref`` is correct.
+            * **Non-orthonormal U**: the two reflections are nearly parallel in
+              reciprocal space (too similar to span the lattice).  Choose two
+              reflections that are well separated in reciprocal space.
         """
         if self._sample is None:
             return
@@ -305,12 +309,22 @@ class HklSolver(SolverBase):
         u = np.array(self.U)
         row_norms = np.linalg.norm(u, axis=1)
         if not np.allclose(row_norms, [1, 1, 1], atol=1e-6):
+            if np.allclose(row_norms, [0, 0, 0], atol=1e-6):
+                hint = (
+                    " The scattering vector is zero for one or both reflections."
+                    " Check that the detector angles are non-zero and that the"
+                    " axes_xref mapping is correct."
+                )
+            else:
+                hint = (
+                    " The two reflections may be too similar (nearly parallel"
+                    " scattering vectors), or the axes_xref mapping may be"
+                    " incorrect. Choose two reflections that are well separated"
+                    " in reciprocal space."
+                )
             raise ValueError(
                 "UB calculation produced a degenerate U matrix"
-                f" (row norms={row_norms.tolist()})."
-                " This usually means the scattering vector is zero for one or"
-                " both orienting reflections — check that the detector angles"
-                " are non-zero and that the axes_xref mapping is correct."
+                f" (row norms={[round(v, 6) for v in row_norms.tolist()]})." + hint
             )
         return self.UB
 

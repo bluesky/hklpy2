@@ -304,3 +304,8 @@ A Pull Request (PR) describes *how* an issue has been (or will be) addressed.
 
 - PR discussion comments should explain the approach, trade-offs, and any
   open questions.
+- Sign all PR and issue comments with the agent and model name:
+
+  ```md
+  Agent: OpenCode (claudesonnet46)
+  ```
