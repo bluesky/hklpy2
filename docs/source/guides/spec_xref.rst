@@ -35,8 +35,8 @@ the tools in Bluesky's |hklpy2| package.
 ``reflex_end``   not necessary                                                  Closes the reflections file
 --               ``diffractometer.core.constraints``                            Show the current set of constraints (cut points).
 ``cuts``         See :meth:`~hklpy2.blocks.constraints.LimitsConstraint`        Add constraints to the diffractometer ``forward()`` computation.
-``freeze``       Move axis to value, Choose mode that does not update *axis*.   Hold an axis constant during the diffractometer ``forward()`` computation.
-``unfreeze``     Choose mode that updates *axis*.                               Allow axis to be updated by ``forward()`` computation.
+``freeze``       :ref:`presets <how_presets>`                                   Hold an axis constant during the diffractometer ``forward()`` computation.
+``unfreeze``     :ref:`presets <how_presets.pop>`                               Remove a preset constant value for an axis.
 --               :func:`~hklpy2.user.calc_UB`                                   Compute the UB matrix with two reflections.
 ``setaz h k l``  :attr:`~hklpy2.ops.Core.extras`                                Set the azimuthal reference vector to the given :math:`h, k, l`.
 ``setsector``    ``diffractometer.core.constraints``                                          Select a sector.
