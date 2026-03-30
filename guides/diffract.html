@@ -34,6 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -41,11 +42,12 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=33c1dc81"></script>
+    <script src="../_static/documentation_options.js?v=d0246360"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../_static/tabs.js?v=3030b3cb"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'guides/diffract';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -601,6 +603,113 @@ to <strong>Solver</strong> axis names (as defined in our MyTwoC class above):</p
 </pre></div>
 </div>
 </section>
+<section id="pseudos-supplied-in-a-different-order-than-the-solver-expects">
+<span id="diffract-axes-pseudos-out-of-order"></span><h3>Pseudos supplied in a different order than the solver expects<a class="headerlink" href="#pseudos-supplied-in-a-different-order-than-the-solver-expects" title="Link to this heading">#</a></h3>
+<p id="index-0">The <code class="docutils literal notranslate"><span class="pre">_pseudo</span></code> keyword has two related uses:</p>
+<ol class="arabic simple">
+<li><p><strong>Pseudos out of order</strong> — custom names defined in a different order than
+the <strong>Solver</strong> expects.</p></li>
+<li><p><strong>Additional pseudos</strong> — extra pseudo axes are present and only a subset
+should be mapped to the <strong>Solver</strong>.</p></li>
+</ol>
+<p>Without <code class="docutils literal notranslate"><span class="pre">_pseudo</span></code>, <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> zips pseudo names
+positionally against the solver’s pseudo axis order.  If orders differ, or
+if extra pseudos are present, the mapping will be incorrect.</p>
+<p><strong>Use 1: pseudos out of order</strong></p>
+<p>An E4CV diffractometer with custom pseudo names supplied in a different order
+than the solver’s <code class="docutils literal notranslate"><span class="pre">h,</span> <span class="pre">k,</span> <span class="pre">l</span></code>:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Wrong (missing <code class="docutils literal notranslate"><span class="pre">_pseudo</span></code>)</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Correct (with <code class="docutils literal notranslate"><span class="pre">_pseudo</span></code>)</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><p>Without <code class="docutils literal notranslate"><span class="pre">_pseudo</span></code>, names are zipped positionally: <code class="docutils literal notranslate"><span class="pre">ll</span></code> (1st)
+maps to solver <code class="docutils literal notranslate"><span class="pre">h</span></code> (1st) and <code class="docutils literal notranslate"><span class="pre">hh</span></code> (3rd) maps to solver <code class="docutils literal notranslate"><span class="pre">l</span></code>
+(3rd) — silently swapped:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ll&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;hh&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
+<span class="c1"># {&#39;ll&#39;: &#39;h&#39;, &#39;kk&#39;: &#39;k&#39;, &#39;hh&#39;: &#39;l&#39;, ...}   ← swapped</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><p>Supply <code class="docutils literal notranslate"><span class="pre">_pseudo</span></code> to declare which local name maps to each solver
+pseudo axis slot, independent of the <code class="docutils literal notranslate"><span class="pre">pseudos</span></code> list order:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ll&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;hh&quot;</span><span class="p">],</span>
+    <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hh&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;ll&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
+<span class="c1"># {&#39;hh&#39;: &#39;h&#39;, &#39;kk&#39;: &#39;k&#39;, &#39;ll&#39;: &#39;l&#39;, ...}   ← correct</span>
+</pre></div>
+</div>
+</div></div>
+<p><strong>Use 2: additional pseudos</strong></p>
+<p>When extra pseudo axes are added alongside the solver’s pseudos, <code class="docutils literal notranslate"><span class="pre">_pseudo</span></code>
+selects exactly which names map to the <strong>Solver</strong>.  The remaining pseudos are
+available as diffractometer attributes but are not included in the solver
+mapping:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hh&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;ll&quot;</span><span class="p">,</span> <span class="s2">&quot;extra&quot;</span><span class="p">],</span>
+    <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hh&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;ll&quot;</span><span class="p">],</span>   <span class="c1"># select these 3 for solver mapping</span>
+<span class="p">)</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
+<span class="c1"># {&#39;hh&#39;: &#39;h&#39;, &#39;kk&#39;: &#39;k&#39;, &#39;ll&#39;: &#39;l&#39;, ...}  ← &#39;extra&#39; not mapped</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">pseudo_axis_names</span>
+<span class="c1"># [&#39;hh&#39;, &#39;kk&#39;, &#39;ll&#39;]                        ← &#39;extra&#39; excluded</span>
+</pre></div>
+</div>
+</section>
+<section id="reals-supplied-in-a-different-order-than-the-solver-expects">
+<span id="diffract-axes-reals-out-of-order"></span><h3>Reals supplied in a different order than the solver expects<a class="headerlink" href="#reals-supplied-in-a-different-order-than-the-solver-expects" title="Link to this heading">#</a></h3>
+<p id="index-1">When hardware motor names are wired or named in a different order than the
+<strong>Solver</strong> expects, the <code class="docutils literal notranslate"><span class="pre">_real</span></code> keyword is required to declare which local
+axis name corresponds to each <strong>Solver</strong> axis slot.</p>
+<p>Without <code class="docutils literal notranslate"><span class="pre">_real</span></code>, <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> (and
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.diffractometer_class_factory" title="hklpy2.diffract.diffractometer_class_factory"><code class="xref py py-func docutils literal notranslate"><span class="pre">diffractometer_class_factory()</span></code></a>) zip the <code class="docutils literal notranslate"><span class="pre">reals</span></code>
+dict keys positionally against the solver’s axis order.  If these orders
+differ, axes are silently swapped in <code class="docutils literal notranslate"><span class="pre">axes_xref</span></code>, which can cause
+<a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.calc_UB" title="hklpy2.ops.Core.calc_UB"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_UB()</span></code></a> to fail with a degenerate U matrix.</p>
+<p><strong>Example:</strong> an APS POLAR 6-circle diffractometer whose hardware motors are
+wired in a different order than the solver expects
+(solver order: <code class="docutils literal notranslate"><span class="pre">tau,</span> <span class="pre">mu,</span> <span class="pre">chi,</span> <span class="pre">phi,</span> <span class="pre">gamma,</span> <span class="pre">delta</span></code>):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Wrong (missing <code class="docutils literal notranslate"><span class="pre">_real</span></code>)</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Correct (with <code class="docutils literal notranslate"><span class="pre">_real</span></code>)</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><p>Without <code class="docutils literal notranslate"><span class="pre">_real</span></code>, <code class="docutils literal notranslate"><span class="pre">reals</span></code> dict keys are zipped positionally to
+solver axes. <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (3rd key) maps to solver <code class="docutils literal notranslate"><span class="pre">chi</span></code> (3rd slot)
+and <code class="docutils literal notranslate"><span class="pre">chi</span></code> (5th key) maps to solver <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (5th slot) — silently
+swapped:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cradle</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cradle&quot;</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;APS POLAR&quot;</span><span class="p">,</span>
+    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="s2">&quot;m73&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="s2">&quot;m4&quot;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="s2">&quot;m19&quot;</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="s2">&quot;m20&quot;</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="s2">&quot;m37&quot;</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="s2">&quot;m38&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">cradle</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
+<span class="c1"># {&#39;tau&#39;: &#39;tau&#39;, &#39;mu&#39;: &#39;mu&#39;, &#39;gamma&#39;: &#39;chi&#39;, &#39;delta&#39;: &#39;phi&#39;,</span>
+<span class="c1">#  &#39;chi&#39;: &#39;gamma&#39;, &#39;phi&#39;: &#39;delta&#39;}   ← swapped</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><p>Supply <code class="docutils literal notranslate"><span class="pre">_real</span></code> to declare which local name maps to each solver axis
+slot, independent of the <code class="docutils literal notranslate"><span class="pre">reals</span></code> dict key order:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cradle</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cradle&quot;</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;APS POLAR&quot;</span><span class="p">,</span>
+    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="s2">&quot;m73&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="s2">&quot;m4&quot;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="s2">&quot;m19&quot;</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="s2">&quot;m20&quot;</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="s2">&quot;m37&quot;</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="s2">&quot;m38&quot;</span><span class="p">),</span>
+    <span class="n">_real</span><span class="o">=</span><span class="s2">&quot;tau mu chi phi gamma delta&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+<span class="p">)</span>
+<span class="n">cradle</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
+<span class="c1"># {&#39;tau&#39;: &#39;tau&#39;, &#39;mu&#39;: &#39;mu&#39;, &#39;chi&#39;: &#39;chi&#39;, &#39;phi&#39;: &#39;phi&#39;,</span>
+<span class="c1">#  &#39;gamma&#39;: &#39;gamma&#39;, &#39;delta&#39;: &#39;delta&#39;}  ← correct</span>
+</pre></div>
+</div>
+</div></div>
+</section>
 </section>
 </section>
 
@@ -655,6 +764,8 @@ to <strong>Solver</strong> axis names (as defined in our MyTwoC class above):</p
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diffractometer-creator">Diffractometer Creator</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-diffractometer-class">Custom Diffractometer class</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#custom-diffractometer-with-additional-axes">Custom Diffractometer with additional axes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pseudos-supplied-in-a-different-order-than-the-solver-expects">Pseudos supplied in a different order than the solver expects</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reals-supplied-in-a-different-order-than-the-solver-expects">Reals supplied in a different order than the solver expects</a></li>
 </ul>
 </li>
 </ul>

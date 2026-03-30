@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=33c1dc81"></script>
+    <script src="../../../_static/documentation_options.js?v=d0246360"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -408,6 +408,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">gi._error</span><span class="w"> </span><span class="kn">import</span> <span class="n">GError</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">typing</span> <span class="k">as</span> <span class="n">npt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyRestTable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
@@ -729,6 +731,24 @@
 <span class="sd">        Calculate the UB (orientation) matrix with two reflections.</span>
 
 <span class="sd">        The method of Busing &amp; Levy, Acta Cryst 22 (1967) 457.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            Three failure modes, each with a distinct message:</span>
+
+<span class="sd">            * **Colinear reflections**: libhkl rejects the reflections outright</span>
+<span class="sd">              because their scattering vectors are parallel.  Choose two</span>
+<span class="sd">              reflections with linearly independent scattering vectors.</span>
+<span class="sd">            * **All-zero U**: the scattering vector is zero for one or both</span>
+<span class="sd">              reflections (detector at the direct-beam position).  Check that</span>
+<span class="sd">              detector angles are non-zero and that ``axes_xref`` is correct.</span>
+<span class="sd">            * **Non-orthonormal U**: the ``reals`` dict passed to</span>
+<span class="sd">              ``creator()`` may list axes in a different order than the solver</span>
+<span class="sd">              expects, without ``_real`` being supplied to declare the correct</span>
+<span class="sd">              mapping.  If the axis order is correct, the two reflections may</span>
+<span class="sd">              be nearly parallel in reciprocal space; choose two that are well</span>
+<span class="sd">              separated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -736,8 +756,37 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">removeAllReflections</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">r2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="o">.</span><span class="n">compute_UB_busing_levy</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="o">.</span><span class="n">reflections_get</span><span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="o">.</span><span class="n">compute_UB_busing_levy</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="o">.</span><span class="n">reflections_get</span><span class="p">())</span>
+        <span class="k">except</span> <span class="n">GError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;UB calculation failed: the two reflections are colinear.&quot;</span>
+                <span class="s2">&quot; Choose two reflections with linearly independent scattering&quot;</span>
+                <span class="s2">&quot; vectors.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%r</span><span class="s2"> reflections&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="o">.</span><span class="n">reflections_get</span><span class="p">()))</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">)</span>
+        <span class="n">row_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">row_norms</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">row_norms</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+                <span class="n">hint</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot; The scattering vector is zero for one or both reflections.&quot;</span>
+                    <span class="s2">&quot; Check that the detector angles are non-zero and that the&quot;</span>
+                    <span class="s2">&quot; axes_xref mapping is correct.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hint</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot; Check that the &#39;reals&#39; dict passed to creator() lists&quot;</span>
+                    <span class="s2">&quot; axes in the same order as the solver expects, or supply&quot;</span>
+                    <span class="s2">&quot; &#39;_real&#39; to declare the correct solver axis order&quot;</span>
+                    <span class="s2">&quot; independently of the &#39;reals&#39; dict key order.&quot;</span>
+                    <span class="s2">&quot; If the axis mapping is correct, choose two reflections&quot;</span>
+                    <span class="s2">&quot; that are well separated in reciprocal space.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;UB calculation produced a degenerate U matrix&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; (row norms=</span><span class="si">{</span><span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">row_norms</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span><span class="si">}</span><span class="s2">).&quot;</span> <span class="o">+</span> <span class="n">hint</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">UB</span></div>
 
 

@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=33c1dc81"></script>
+    <script src="../_static/documentation_options.js?v=d0246360"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -485,17 +485,57 @@ Similar in concept yet not entirely identical in implementation.</p>
 </pre></div>
 </div>
 </section>
-<section id="freeze-an-axis">
-<h3>Freeze an axis<a class="headerlink" href="#freeze-an-axis" title="Link to this heading">#</a></h3>
-<p>Only accept <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions where <code class="docutils literal notranslate"><span class="pre">mu</span></code> is zero:</p>
+<section id="limited-range">
+<h3>Limited range<a class="headerlink" href="#limited-range" title="Link to this heading">#</a></h3>
+<p id="index-1">Only accept <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions where <code class="docutils literal notranslate"><span class="pre">mu</span></code> is near zero.  Setting
+both limits to the same value (or very close values) effectively restricts
+that axis to a single position:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
 <span class="linenos">2</span><span class="go">(-180.0, 180.0)</span>
-<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span>   <span class="c1"># narrow range</span>
 <span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
-<span class="linenos">5</span><span class="go">(0.0, 0.0)</span>
+<span class="linenos">5</span><span class="go">(-0.01, 0.01)</span>
 </pre></div>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Constraints <em>filter</em> solutions after the solver computes them.
+If you want the solver to <em>use</em> a specific value for a constant axis
+during <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation (rather than the current motor
+position), use <a class="reference internal" href="../guides/how_presets.html#how-presets"><span class="std std-ref">presets</span></a> instead.</p>
+</div>
 </section>
+</section>
+<section id="preset-frozen-axes">
+<h2>Preset (frozen) axes<a class="headerlink" href="#preset-frozen-axes" title="Link to this heading">#</a></h2>
+<p id="index-2">In <strong>SPEC</strong>, the <code class="docutils literal notranslate"><span class="pre">freeze</span></code> command holds an axis at a fixed value during
+<code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.  In <strong>hklpy2</strong>, this is done with
+<a class="reference internal" href="../guides/how_presets.html#how-presets"><span class="std std-ref">presets</span></a>.</p>
+<p>A <em>preset</em> tells the solver which value to use for a constant axis instead
+of the current motor position.  Presets do not move any motor.</p>
+<p>Choose a mode where the axis is constant, then set a preset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector_vertical&quot;</span>   <span class="c1"># mu and gamma are constant</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constant_axis_names</span>
+<span class="linenos">3</span><span class="go">[&#39;mu&#39;, &#39;gamma&#39;]</span>
+<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>           <span class="c1"># solver uses mu=0</span>
+<span class="linenos">5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>                   <span class="c1"># no motor is moved</span>
+</pre></div>
+</div>
+<p>To release a single preset (<strong>SPEC</strong> <code class="docutils literal notranslate"><span class="pre">unfreeze</span></code>):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;mu&quot;</span><span class="p">)</span>             <span class="c1"># remove one preset</span>
+<span class="linenos">2</span><span class="go">0</span>
+<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
+<span class="linenos">4</span><span class="go">{}</span>
+</pre></div>
+</div>
+<p>To release all presets at once:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clear_presets</span><span class="p">()</span>               <span class="c1"># remove all presets</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../guides/how_presets.html#how-presets"><span class="std std-ref">How to Use Presets</span></a> — complete how-to guide for presets.</p>
+</div>
 </section>
 </section>
 
@@ -549,9 +589,10 @@ Similar in concept yet not entirely identical in implementation.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#show-the-current-constraints">Show the current constraints</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#change-a-constraint">Change a constraint</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apply-axis-cuts">Apply axis cuts</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#freeze-an-axis">Freeze an axis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limited-range">Limited range</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preset-frozen-axes">Preset (frozen) axes</a></li>
 </ul>
   </nav></div>
 

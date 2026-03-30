@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../../_static/documentation_options.js?v=33c1dc81"></script>
+    <script src="../../../../_static/documentation_options.js?v=d0246360"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -808,6 +808,26 @@ sets of names.</p>
 <span class="sig-name descname"><span class="pre">calculate_UB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../misc/index.html#hklpy2.misc.KeyValueMap" title="hklpy2.misc.KeyValueMap"><span class="pre">hklpy2.misc.KeyValueMap</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../misc/index.html#hklpy2.misc.KeyValueMap" title="hklpy2.misc.KeyValueMap"><span class="pre">hklpy2.misc.KeyValueMap</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../misc/index.html#hklpy2.misc.Matrix3x3" title="hklpy2.misc.Matrix3x3"><span class="pre">hklpy2.misc.Matrix3x3</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/hkl_soleil.html#HklSolver.calculate_UB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.hkl_soleil.HklSolver.calculate_UB" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the UB (orientation) matrix with two reflections.</p>
 <p>The method of Busing &amp; Levy, Acta Cryst 22 (1967) 457.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – <p>Three failure modes, each with a distinct message:</p>
+<ul class="simple">
+<li><p><strong>Colinear reflections</strong>: libhkl rejects the reflections outright
+because their scattering vectors are parallel.  Choose two
+reflections with linearly independent scattering vectors.</p></li>
+<li><p><strong>All-zero U</strong>: the scattering vector is zero for one or both
+reflections (detector at the direct-beam position).  Check that
+detector angles are non-zero and that <code class="docutils literal notranslate"><span class="pre">axes_xref</span></code> is correct.</p></li>
+<li><p><strong>Non-orthonormal U</strong>: the <code class="docutils literal notranslate"><span class="pre">reals</span></code> dict passed to
+<code class="docutils literal notranslate"><span class="pre">creator()</span></code> may list axes in a different order than the solver
+expects, without <code class="docutils literal notranslate"><span class="pre">_real</span></code> being supplied to declare the correct
+mapping.  If the axis order is correct, the two reflections may
+be nearly parallel in reciprocal space; choose two that are well
+separated.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">

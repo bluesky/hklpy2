@@ -277,6 +277,21 @@ Module Contents
 
       The method of Busing & Levy, Acta Cryst 22 (1967) 457.
 
+      :raises ValueError: Three failure modes, each with a distinct message:
+          
+          * **Colinear reflections**: libhkl rejects the reflections outright
+            because their scattering vectors are parallel.  Choose two
+            reflections with linearly independent scattering vectors.
+          * **All-zero U**: the scattering vector is zero for one or both
+            reflections (detector at the direct-beam position).  Check that
+            detector angles are non-zero and that ``axes_xref`` is correct.
+          * **Non-orthonormal U**: the ``reals`` dict passed to
+            ``creator()`` may list axes in a different order than the solver
+            expects, without ``_real`` being supplied to declare the correct
+            mapping.  If the axis order is correct, the two reflections may
+            be nearly parallel in reciprocal space; choose two that are well
+            separated.
+
 
 
    .. py:property:: engine

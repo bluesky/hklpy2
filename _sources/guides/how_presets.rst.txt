@@ -99,6 +99,8 @@ presets; switching back restores them::
     >>> e4cv.core.presets          # phi preset restored
     {'phi': 45.0}
 
+.. _how_presets.pop:
+
 Removing a single preset key
 -----------------------------
 
