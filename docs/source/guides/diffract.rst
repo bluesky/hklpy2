@@ -203,16 +203,21 @@ Pseudos supplied in a different order than the solver expects
 
 .. index:: _pseudo; pseudos out of order
 
-When custom pseudo axis names are defined in a different order than the
-|solver| expects, the ``_pseudo`` keyword declares which local name maps to
-each |solver| pseudo axis slot.
+The ``_pseudo`` keyword has two related uses:
 
-Without ``_pseudo``, :func:`~hklpy2.diffract.creator()` zips the pseudo
-names positionally against the solver's pseudo axis order.  If these orders
-differ, pseudo axes are silently swapped in ``axes_xref``.
+1. **Pseudos out of order** — custom names defined in a different order than
+   the |solver| expects.
+2. **Additional pseudos** — extra pseudo axes are present and only a subset
+   should be mapped to the |solver|.
 
-**Example:** an E4CV diffractometer with custom pseudo names supplied in a
-different order than the solver's ``h, k, l``:
+Without ``_pseudo``, :func:`~hklpy2.diffract.creator()` zips pseudo names
+positionally against the solver's pseudo axis order.  If orders differ, or
+if extra pseudos are present, the mapping will be incorrect.
+
+**Use 1: pseudos out of order**
+
+An E4CV diffractometer with custom pseudo names supplied in a different order
+than the solver's ``h, k, l``:
 
 .. tabs::
 
@@ -249,6 +254,27 @@ different order than the solver's ``h, k, l``:
             )
             sim.core.axes_xref
             # {'hh': 'h', 'kk': 'k', 'll': 'l', ...}   ← correct
+
+**Use 2: additional pseudos**
+
+When extra pseudo axes are added alongside the solver's pseudos, ``_pseudo``
+selects exactly which names map to the |solver|.  The remaining pseudos are
+available as diffractometer attributes but are not included in the solver
+mapping:
+
+.. code-block:: python
+
+    sim = hklpy2.creator(
+        name="sim",
+        solver="hkl_soleil",
+        geometry="E4CV",
+        pseudos=["hh", "kk", "ll", "extra"],
+        _pseudo=["hh", "kk", "ll"],   # select these 3 for solver mapping
+    )
+    sim.core.axes_xref
+    # {'hh': 'h', 'kk': 'k', 'll': 'l', ...}  ← 'extra' not mapped
+    sim.pseudo_axis_names
+    # ['hh', 'kk', 'll']                        ← 'extra' excluded
 
 .. _diffract_axes.reals-out-of-order:
 

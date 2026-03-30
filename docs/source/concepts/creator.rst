@@ -59,6 +59,7 @@ engine (via ``solver_kwargs``)  :doc:`/guides/var_engines`
 EPICS PVs                       :doc:`/examples/hkl_soleil-e4cv+epics`
 renamed axes                    :doc:`/examples/aps-isn-e6c`
 additional reals                :doc:`/examples/hkl_soleil-e6c-psi`
+additional pseudos              :ref:`diffract_axes.pseudos-out-of-order`
 pseudos out of order            :ref:`diffract_axes.pseudos-out-of-order`
 reals out of order              :ref:`diffract_axes.reals-out-of-order`
 extras                          :doc:`/examples/hkl_soleil-e6c-psi`
