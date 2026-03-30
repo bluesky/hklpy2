@@ -195,3 +195,51 @@ to |solver| axis names (as defined in our MyTwoC class above):
 
     >>> twoc.core.axes_xref
     {'q': 'q', 'theta': 'th', 'ttheta': 'tth'}
+
+.. _diffract_axes.reals-out-of-order:
+
+Reals supplied in a different order than the solver expects
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. index:: _real; reals out of order
+
+When hardware motor names are wired or named in a different order than the
+|solver| expects, the ``_real`` keyword is required to declare which local
+axis name corresponds to each |solver| axis slot.
+
+Without ``_real``, :func:`~hklpy2.diffract.creator()` (and
+:func:`~hklpy2.diffract.diffractometer_class_factory()`) zip the ``reals``
+dict keys positionally against the solver's axis order.  If these orders
+differ, axes are silently swapped in ``axes_xref``, which can cause
+:meth:`~hklpy2.ops.Core.calc_UB` to fail with a degenerate U matrix.
+
+**Example:** an APS POLAR 6-circle diffractometer whose hardware motors are
+wired in a different order than the solver expects
+(solver order: ``tau, mu, chi, phi, gamma, delta``):
+
+.. code-block:: python
+
+    # Without _real: reals keys are zipped positionally to solver axes.
+    # gamma (3rd key) → solver chi (3rd slot)  ← wrong
+    # chi   (5th key) → solver gamma (5th slot) ← wrong
+    cradle_wrong = hklpy2.creator(
+        name="cradle",
+        solver="hkl_soleil",
+        geometry="APS POLAR",
+        reals=dict(tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"),
+    )
+    cradle_wrong.core.axes_xref
+    # {'tau': 'tau', 'mu': 'mu', 'gamma': 'chi', 'delta': 'phi',
+    #  'chi': 'gamma', 'phi': 'delta'}   ← swapped
+
+    # With _real: declare which local name maps to each solver axis slot.
+    cradle = hklpy2.creator(
+        name="cradle",
+        solver="hkl_soleil",
+        geometry="APS POLAR",
+        reals=dict(tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"),
+        _real="tau mu chi phi gamma delta".split(),
+    )
+    cradle.core.axes_xref
+    # {'tau': 'tau', 'mu': 'mu', 'chi': 'chi', 'phi': 'phi',
+    #  'gamma': 'gamma', 'delta': 'delta'}  ← correct

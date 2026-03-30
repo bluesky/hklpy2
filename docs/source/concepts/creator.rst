@@ -60,6 +60,6 @@ EPICS PVs                       :doc:`/examples/hkl_soleil-e4cv+epics`
 renamed axes                    :doc:`/examples/aps-isn-e6c`
 additional reals                :doc:`/examples/hkl_soleil-e6c-psi`
 auto assign                     :ref:`diffract_axes.diffractometer-factory`
-reals out of order              :ref:`diffract_axes.direct-assign`
+reals out of order              :ref:`diffract_axes.reals-out-of-order`
 extras                          :doc:`/examples/hkl_soleil-e6c-psi`
 =============================== ====================
