@@ -196,9 +196,10 @@ The `Makefile` `pre` target also exports this variable automatically.
   unreleased section inside the ``.. comment`` block).
 - Entries should be terse — one or two lines — and reference the issue or PR
   number with ``:issue:`N``` or ``:pr:`N```.
-- Use the appropriate subsection and keep subsections in alphabetical order:
-  Breaking Changes, Deprecations, Enhancements, Fixes, Maintenance, New
-  Contributors, New Features, Notice.
+- Use the appropriate subsection and keep subsections in the logical order
+  defined at the top of ``RELEASE_NOTES.rst``: Notice, Breaking Changes, New
+  Features, Enhancements, Fixes, Maintenance, Deprecations, New Contributors.
+- Sort entries alphabetically within each subsection.
 
 ## Documentation: Sphinx Index entries
 
