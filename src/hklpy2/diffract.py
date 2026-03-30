@@ -927,7 +927,7 @@ def creator(
             reals=dict(uno=None, dos=None, tres=None, cuatro=None),
         )
 
-    The same ``sim4c```` diffractometer, but the ``reals`` are specified in a
+    The same ``sim4c`` diffractometer, but the ``reals`` are specified in a
     different order. In this case, ``_real`` declares the order of these axes as
     expected by the solver::
 
