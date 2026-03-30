@@ -4,7 +4,9 @@
 How to Use Presets
 =======================
 
-.. index:: presets; how-to
+.. index::
+    !presets
+    see: freeze; presets
 
 Some diffractometer modes hold one or more real axes at a fixed value while
 the solver computes the remaining axes needed to reach a requested :math:`hkl`

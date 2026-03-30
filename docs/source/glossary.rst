@@ -126,6 +126,17 @@ Glossary
   An *extra* axis is not defined as a diffractometer `Component`.
 
 ..  index::
+    !definition; freeze
+    !freeze
+    see: freeze; presets
+
+:freeze: SPEC command to hold a real axis at a fixed value during
+  ``forward()`` computations.  In |hklpy2|, this is accomplished by
+  setting a *preset* for that axis.
+
+  .. seealso:: *preset*
+
+..  index::
     !definition; geometry
     !geometry
 
@@ -195,6 +206,18 @@ Glossary
 
   Note: **pseudo** axes are **virtual** axes, computed by the solver from
   **real** axes.
+
+..  index::
+    !definition; preset
+    !preset
+    see: preset; presets
+
+:preset: A value assigned to a constant (read-only) real axis for use
+  during ``forward()`` computations, in place of the current motor
+  position.  Presets do not move any motor.  Each *mode* stores its
+  own independent preset dictionary, defaulting to ``{}``.
+
+  .. seealso:: :ref:`how_presets`, *freeze*
 
 ..  index::
     !definition; real

@@ -50,6 +50,8 @@ EXAMPLE::
         >>> e4cv.core.solver_signature
         "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')"
 
+.. index:: presets
+
 Core concepts
 -------------
 
