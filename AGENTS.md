@@ -185,8 +185,21 @@ The `Makefile` `pre` target also exports this variable automatically.
 
 - Runs formatting and linting locally
 - Adds/updates tests for changes
-- Includes changelog entry if behavior changed
+- Updates `RELEASE_NOTES.rst` under the current development heading
 - Marks PR as draft if large refactor
+
+## Release Notes
+
+- Update `RELEASE_NOTES.rst` as part of every PR that introduces a new
+  feature, fix, enhancement, or maintenance change.
+- Add the entry under the current development version heading (the topmost
+  unreleased section inside the ``.. comment`` block).
+- Entries should be terse — one or two lines — and reference the issue or PR
+  number with ``:issue:`N``` or ``:pr:`N```.
+- Use the appropriate subsection and keep subsections in the logical order
+  defined at the top of ``RELEASE_NOTES.rst``: Notice, Breaking Changes, New
+  Features, Enhancements, Fixes, Maintenance, Deprecations, New Contributors.
+- Sort entries alphabetically within each subsection.
 
 ## Documentation: Sphinx Index entries
 
@@ -294,5 +307,18 @@ A Pull Request (PR) describes *how* an issue has been (or will be) addressed.
 
   Using `closes #N` will auto-close the issue when the PR is merged.
 - The PR title should be a concise summary of the change.
+- Assign the PR to the user running the agent (determine with ``gh api user --jq '.login'``).
+- Copy the issue's labels, project(s), milestone, and status to the PR.
+- Sign the PR body with the agent and model name:
+
+  ```md
+  Agent: OpenCode (claudesonnet46)
+  ```
+
 - PR discussion comments should explain the approach, trade-offs, and any
   open questions.
+- Sign all PR and issue comments with the agent and model name:
+
+  ```md
+  Agent: OpenCode (claudesonnet46)
+  ```

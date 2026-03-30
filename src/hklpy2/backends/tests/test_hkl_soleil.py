@@ -1,5 +1,6 @@
 import math
 import re
+from contextlib import nullcontext as does_not_raise
 
 import numpy as np
 import pytest
@@ -319,3 +320,113 @@ def test_sample_property():
     assert math.isclose(sample["lattice"]["beta"], 90, abs_tol=0.01)
     assert math.isclose(sample["lattice"]["gamma"], 90, abs_tol=0.01)
     assert len(sample.get("reflections")) == 2
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                # Two valid silicon reflections — UB should succeed.
+                r1=dict(
+                    pseudos=dict(h=4, k=0, l=0),
+                    reals=dict(omega=-145.451, chi=0, phi=0, tth=69.0966),
+                    wavelength=1.54,
+                ),
+                r2=dict(
+                    pseudos=dict(h=0, k=4, l=0),
+                    reals=dict(omega=-145.451, chi=90, phi=0, tth=69.0966),
+                    wavelength=1.54,
+                ),
+            ),
+            does_not_raise(),
+            id="valid reflections produce non-degenerate UB",
+        ),
+        pytest.param(
+            dict(
+                # Detector angles (tth) both zero → scattering vector Q=0
+                # → libhkl silently returns all-zero U matrix.
+                r1=dict(
+                    pseudos=dict(h=4, k=0, l=0),
+                    reals=dict(omega=0, chi=0, phi=0, tth=0),
+                    wavelength=1.54,
+                ),
+                r2=dict(
+                    pseudos=dict(h=0, k=4, l=0),
+                    reals=dict(omega=0, chi=90, phi=0, tth=0),
+                    wavelength=1.54,
+                ),
+            ),
+            pytest.raises(
+                ValueError,
+                match=re.escape("UB calculation produced a degenerate U matrix"),
+            ),
+            id="degenerate reflections (tth=0) raise ValueError",
+        ),
+        pytest.param(
+            dict(
+                # Strictly colinear reflections (same direction, different
+                # magnitude) → libhkl raises GError, re-raised as ValueError.
+                r1=dict(
+                    pseudos=dict(h=1, k=0, l=0),
+                    reals=dict(omega=-145.451, chi=0, phi=0, tth=69.0966),
+                    wavelength=1.54,
+                ),
+                r2=dict(
+                    pseudos=dict(h=2, k=0, l=0),
+                    reals=dict(omega=-145.451, chi=0, phi=0, tth=69.0966),
+                    wavelength=1.54,
+                ),
+            ),
+            pytest.raises(
+                ValueError,
+                match=re.escape(
+                    "UB calculation failed: the two reflections are colinear"
+                ),
+            ),
+            id="colinear reflections raise ValueError",
+        ),
+        pytest.param(
+            dict(
+                # Non-orthonormal U: reals dict supplied in wrong order to
+                # creator() without _real, causing axes_xref to map detector
+                # arm angles to sample rotation slots and vice versa.
+                # Reproduced using E6C (same axis set as APS POLAR) with the
+                # angle values the solver receives after the positional swap:
+                #   user.chi (sample rotation) → solver.gamma (detector arm)
+                # r1: solver.gamma=90, r2: solver.gamma=0 → degenerate geometry.
+                r1=dict(
+                    pseudos=dict(h=0, k=0, l=2),
+                    reals=dict(mu=20, omega=0, chi=40, phi=0, gamma=90, delta=0),
+                    wavelength=1.7225,
+                ),
+                r2=dict(
+                    pseudos=dict(h=2, k=0, l=0),
+                    reals=dict(mu=20, omega=0, chi=40, phi=0, gamma=0, delta=0),
+                    wavelength=1.7225,
+                ),
+            ),
+            pytest.raises(
+                ValueError,
+                match=re.escape("Check that the 'reals' dict"),
+            ),
+            id="non-orthonormal U (wrong reals order, no _real) raises ValueError",
+        ),
+    ],
+)
+def test_calculate_UB_degenerate(parms, context):
+    """calculate_UB raises ValueError for degenerate or colinear reflections."""
+    from ... import SI_LATTICE_PARAMETER
+    from ... import creator
+
+    geometry = "E6C" if "gamma" in parms["r1"]["reals"] else "E4CV"
+    sample_lattice = 5.0 if geometry == "E6C" else SI_LATTICE_PARAMETER
+    sim = creator(name="sim", solver="hkl_soleil", geometry=geometry)
+    sim.add_sample("test", sample_lattice)
+    sim.core.update_solver()
+    solver = sim.core.solver
+    with context:
+        ub = solver.calculate_UB(parms["r1"], parms["r2"])
+        assert ub is not None
+        arr = np.array(ub)
+        assert arr.shape == (3, 3)

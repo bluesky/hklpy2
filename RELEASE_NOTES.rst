@@ -41,34 +41,38 @@ describe future plans.
     * Add ``presets`` dict to supply constant-axis values for ``forward()``
       without moving motors; presets are stored per mode. (:issue:`190`)
 
-    Fixes
-    -----
-
-    * ``cahkl()`` now returns solutions at motor positions that previously
-      yielded no results. (:issue:`193`)
-    * Constraints example: rename "Freeze an axis" to "Limited range";
-      add "Preset (frozen) axes" section; update SPEC ``freeze``/``unfreeze``
-      cross-references to point to presets. (:issue:`212`)
-    * ``forward()`` solutions no longer use wrong angle values from orientation
-      reflections when computing constant-axis modes. (:issue:`195`)
 
     Enhancements
     ------------
 
+    * Add ``preset`` Glossary entry; alphabetize Glossary entries. (:issue:`202`)
     * Document ``presets`` setter update (merge) behavior, per-mode storage, and
       effect on ``forward()`` solutions. Add how-to guide and Core concepts
       summary table. (:issue:`200`)
     * Improve Sphinx Index consistency: primary ``!term`` entries now point to
       the most substantive page for each term rather than the Glossary.
       (:issue:`202`)
-    * Add ``preset`` Glossary entry; alphabetize Glossary entries. (:issue:`202`)
     * Use US spelling throughout docs and source. (:issue:`202`)
+
+    Fixes
+    -----
+
+    * ``cahkl()`` now returns solutions at motor positions that previously
+      yielded no results. (:issue:`193`)
+    * ``calc_UB()`` now raises a clear ``ValueError`` with diagnostic hints
+      when libhkl returns a degenerate U matrix, rather than a cryptic
+      downstream error. (:issue:`207`)
+    * Constraints example: rename "Freeze an axis" to "Limited range";
+      add "Preset (frozen) axes" section; update SPEC ``freeze``/``unfreeze``
+      cross-references to point to presets. (:issue:`212`)
+    * ``forward()`` solutions no longer use wrong angle values from orientation
+      reflections when computing constant-axis modes. (:issue:`195`)
 
     Maintenance
     -----------
 
-    * Skip CI unit tests for pull requests that change only documentation.
     * Bump ``actions/upload-artifact`` from v6 to v7. (:pr:`194`)
+    * Skip CI unit tests for pull requests that change only documentation.
 
 0.3.0
 #####

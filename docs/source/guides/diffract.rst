@@ -195,3 +195,143 @@ to |solver| axis names (as defined in our MyTwoC class above):
 
     >>> twoc.core.axes_xref
     {'q': 'q', 'theta': 'th', 'ttheta': 'tth'}
+
+.. _diffract_axes.pseudos-out-of-order:
+
+Pseudos supplied in a different order than the solver expects
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. index:: _pseudo; pseudos out of order
+
+The ``_pseudo`` keyword has two related uses:
+
+1. **Pseudos out of order** — custom names defined in a different order than
+   the |solver| expects.
+2. **Additional pseudos** — extra pseudo axes are present and only a subset
+   should be mapped to the |solver|.
+
+Without ``_pseudo``, :func:`~hklpy2.diffract.creator()` zips pseudo names
+positionally against the solver's pseudo axis order.  If orders differ, or
+if extra pseudos are present, the mapping will be incorrect.
+
+**Use 1: pseudos out of order**
+
+An E4CV diffractometer with custom pseudo names supplied in a different order
+than the solver's ``h, k, l``:
+
+.. tabs::
+
+    .. tab:: Wrong (missing ``_pseudo``)
+
+        Without ``_pseudo``, names are zipped positionally: ``ll`` (1st)
+        maps to solver ``h`` (1st) and ``hh`` (3rd) maps to solver ``l``
+        (3rd) — silently swapped:
+
+        .. code-block:: python
+
+            sim = hklpy2.creator(
+                name="sim",
+                solver="hkl_soleil",
+                geometry="E4CV",
+                pseudos=["ll", "kk", "hh"],
+            )
+            sim.core.axes_xref
+            # {'ll': 'h', 'kk': 'k', 'hh': 'l', ...}   ← swapped
+
+    .. tab:: Correct (with ``_pseudo``)
+
+        Supply ``_pseudo`` to declare which local name maps to each solver
+        pseudo axis slot, independent of the ``pseudos`` list order:
+
+        .. code-block:: python
+
+            sim = hklpy2.creator(
+                name="sim",
+                solver="hkl_soleil",
+                geometry="E4CV",
+                pseudos=["ll", "kk", "hh"],
+                _pseudo=["hh", "kk", "ll"],
+            )
+            sim.core.axes_xref
+            # {'hh': 'h', 'kk': 'k', 'll': 'l', ...}   ← correct
+
+**Use 2: additional pseudos**
+
+When extra pseudo axes are added alongside the solver's pseudos, ``_pseudo``
+selects exactly which names map to the |solver|.  The remaining pseudos are
+available as diffractometer attributes but are not included in the solver
+mapping:
+
+.. code-block:: python
+
+    sim = hklpy2.creator(
+        name="sim",
+        solver="hkl_soleil",
+        geometry="E4CV",
+        pseudos=["hh", "kk", "ll", "extra"],
+        _pseudo=["hh", "kk", "ll"],   # select these 3 for solver mapping
+    )
+    sim.core.axes_xref
+    # {'hh': 'h', 'kk': 'k', 'll': 'l', ...}  ← 'extra' not mapped
+    sim.pseudo_axis_names
+    # ['hh', 'kk', 'll']                        ← 'extra' excluded
+
+.. _diffract_axes.reals-out-of-order:
+
+Reals supplied in a different order than the solver expects
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. index:: _real; reals out of order
+
+When hardware motor names are wired or named in a different order than the
+|solver| expects, the ``_real`` keyword is required to declare which local
+axis name corresponds to each |solver| axis slot.
+
+Without ``_real``, :func:`~hklpy2.diffract.creator()` (and
+:func:`~hklpy2.diffract.diffractometer_class_factory()`) zip the ``reals``
+dict keys positionally against the solver's axis order.  If these orders
+differ, axes are silently swapped in ``axes_xref``, which can cause
+:meth:`~hklpy2.ops.Core.calc_UB` to fail with a degenerate U matrix.
+
+**Example:** an APS POLAR 6-circle diffractometer whose hardware motors are
+wired in a different order than the solver expects
+(solver order: ``tau, mu, chi, phi, gamma, delta``):
+
+.. tabs::
+
+    .. tab:: Wrong (missing ``_real``)
+
+        Without ``_real``, ``reals`` dict keys are zipped positionally to
+        solver axes. ``gamma`` (3rd key) maps to solver ``chi`` (3rd slot)
+        and ``chi`` (5th key) maps to solver ``gamma`` (5th slot) — silently
+        swapped:
+
+        .. code-block:: python
+
+            cradle = hklpy2.creator(
+                name="cradle",
+                solver="hkl_soleil",
+                geometry="APS POLAR",
+                reals=dict(tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"),
+            )
+            cradle.core.axes_xref
+            # {'tau': 'tau', 'mu': 'mu', 'gamma': 'chi', 'delta': 'phi',
+            #  'chi': 'gamma', 'phi': 'delta'}   ← swapped
+
+    .. tab:: Correct (with ``_real``)
+
+        Supply ``_real`` to declare which local name maps to each solver axis
+        slot, independent of the ``reals`` dict key order:
+
+        .. code-block:: python
+
+            cradle = hklpy2.creator(
+                name="cradle",
+                solver="hkl_soleil",
+                geometry="APS POLAR",
+                reals=dict(tau="m73", mu="m4", gamma="m19", delta="m20", chi="m37", phi="m38"),
+                _real="tau mu chi phi gamma delta".split(),
+            )
+            cradle.core.axes_xref
+            # {'tau': 'tau', 'mu': 'mu', 'chi': 'chi', 'phi': 'phi',
+            #  'gamma': 'gamma', 'delta': 'delta'}  ← correct

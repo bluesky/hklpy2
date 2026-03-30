@@ -42,6 +42,8 @@ import platform
 from typing import Dict
 from typing import List
 
+from gi._error import GError
+
 import numpy as np
 from numpy import typing as npt
 from pyRestTable import Table
@@ -284,6 +286,24 @@ class HklSolver(SolverBase):
         Calculate the UB (orientation) matrix with two reflections.
 
         The method of Busing & Levy, Acta Cryst 22 (1967) 457.
+
+        Raises
+        ------
+        ValueError
+            Three failure modes, each with a distinct message:
+
+            * **Colinear reflections**: libhkl rejects the reflections outright
+              because their scattering vectors are parallel.  Choose two
+              reflections with linearly independent scattering vectors.
+            * **All-zero U**: the scattering vector is zero for one or both
+              reflections (detector at the direct-beam position).  Check that
+              detector angles are non-zero and that ``axes_xref`` is correct.
+            * **Non-orthonormal U**: the ``reals`` dict passed to
+              ``creator()`` may list axes in a different order than the solver
+              expects, without ``_real`` being supplied to declare the correct
+              mapping.  If the axis order is correct, the two reflections may
+              be nearly parallel in reciprocal space; choose two that are well
+              separated.
         """
         if self._sample is None:
             return
@@ -291,8 +311,37 @@ class HklSolver(SolverBase):
         self.removeAllReflections()
         self.addReflection(r1)
         self.addReflection(r2)
-        self._sample.compute_UB_busing_levy(*self._sample.reflections_get())
+        try:
+            self._sample.compute_UB_busing_levy(*self._sample.reflections_get())
+        except GError as exc:
+            raise ValueError(
+                "UB calculation failed: the two reflections are colinear."
+                " Choose two reflections with linearly independent scattering"
+                " vectors."
+            ) from exc
         logger.debug("%r reflections", len(self._sample.reflections_get()))
+        u = np.array(self.U)
+        row_norms = np.linalg.norm(u, axis=1)
+        if not np.allclose(row_norms, [1, 1, 1], atol=1e-6):
+            if np.allclose(row_norms, [0, 0, 0], atol=1e-6):
+                hint = (
+                    " The scattering vector is zero for one or both reflections."
+                    " Check that the detector angles are non-zero and that the"
+                    " axes_xref mapping is correct."
+                )
+            else:
+                hint = (
+                    " Check that the 'reals' dict passed to creator() lists"
+                    " axes in the same order as the solver expects, or supply"
+                    " '_real' to declare the correct solver axis order"
+                    " independently of the 'reals' dict key order."
+                    " If the axis mapping is correct, choose two reflections"
+                    " that are well separated in reciprocal space."
+                )
+            raise ValueError(
+                "UB calculation produced a degenerate U matrix"
+                f" (row norms={[round(v, 6) for v in row_norms.tolist()]})." + hint
+            )
         return self.UB
 
     @property
