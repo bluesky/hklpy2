@@ -5,7 +5,6 @@
 
 # flake8: noqa
 
-import os
 import pathlib
 import sys
 import tomllib
@@ -36,11 +35,6 @@ today_fmt = "%Y-%m-%d %H:%M"
 # https://github.com/pypa/setuptools_scm#usage-from-sphinx
 release = hklpy2.__version__
 version = ".".join(release.split(".")[:2])
-
-# version_match: used by the version switcher to highlight the current version.
-# Set DOC_VERSION in CI to "latest" (main branch) or the tag (e.g. "0.3.1").
-# Falls back to release so local builds still work.
-switcher_version_match = os.environ.get("DOC_VERSION", release)
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -111,13 +105,6 @@ html_theme_options = {
     "github_url": "https://github.com/bluesky/hklpy2",
     "use_edit_page_button": True,
     "navbar_align": "content",
-    "navbar_end": ["version-switcher", "navbar-icon-links"],
-    "switcher": {
-        # Always load from 'latest' so all versions see the same list.
-        "json_url": "https://bluesky.github.io/hklpy2/latest/_static/switcher.json",
-        "version_match": switcher_version_match,
-    },
-    "check_switcher": False,
 }
 
 rst_prolog = """
