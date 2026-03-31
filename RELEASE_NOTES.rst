@@ -30,6 +30,20 @@ describe future plans.
 
     Release expected 2026-H1.
 
+    0.3.2
+    ##########
+
+    Release expected TBD.
+
+    Enhancements
+    ------------
+
+    Fixes
+    -----
+
+    Maintenance
+    -----------
+
 0.3.1
 ##########
 
@@ -65,23 +79,25 @@ Enhancements
 Fixes
 -----
 
-    * ``%wa`` bluesky magic raises ``TypeError`` for diffractometers under
-      numpy 2.x; this is a bluesky upstream bug triggered by numpy 2.0
-      tightening ``ndarray.__format__``. (:issue:`201`)
-    * ``cahkl()`` now returns solutions at motor positions that previously
-      yielded no results. (:issue:`193`)
-    * ``calc_UB()`` now raises a clear ``ValueError`` with diagnostic hints
-      when libhkl returns a degenerate U matrix, rather than a cryptic
-      downstream error. (:issue:`207`)
-    * Constraints example: rename "Freeze an axis" to "Limited range";
-      add "Preset (frozen) axes" section; update SPEC ``freeze``/``unfreeze``
-      cross-references to point to presets. (:issue:`212`)
-    * ``forward()`` solutions no longer use wrong angle values from orientation
-      reflections when computing constant-axis modes. (:issue:`195`)
+* ``%wa`` bluesky magic raises ``TypeError`` for diffractometers under
+  numpy 2.x; this is a bluesky upstream bug triggered by numpy 2.0
+  tightening ``ndarray.__format__``. (:issue:`201`)
+* ``cahkl()`` now returns solutions at motor positions that previously
+  yielded no results. (:issue:`193`)
+* ``calc_UB()`` now raises a clear ``ValueError`` with diagnostic hints
+  when libhkl returns a degenerate U matrix, rather than a cryptic
+  downstream error. (:issue:`207`)
+* Constraints example: rename "Freeze an axis" to "Limited range";
+  add "Preset (frozen) axes" section; update SPEC ``freeze``/``unfreeze``
+  cross-references to point to presets. (:issue:`212`)
+* ``forward()`` solutions no longer use wrong angle values from orientation
+  reflections when computing constant-axis modes. (:issue:`195`)
 
 Maintenance
 -----------
 
+* Add ``sphinx.ext.extlinks`` to Sphinx config; define ``:issue:`` and
+  ``:pr:`` roles pointing to GitHub. (:issue:`203`)
 * Bump ``actions/upload-artifact`` from v6 to v7. (:pr:`194`)
 * Skip CI unit tests for pull requests that change only documentation.
 
