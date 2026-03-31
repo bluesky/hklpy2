@@ -54,7 +54,7 @@ It could be re-organized.
   * [x] [TwoC unknown](https://github.com/bluesky/hklpy/issues/165)
   * [ ] [xrayutilities](https://github.com/bluesky/hklpy/issues/162) (:issue:`95`)
 * [ ] Documentation
-  * [ ] Choosing the default `forward()` solution. (:issue:`71`, :issue:`224`)
+  * [x] Choosing the default `forward()` solution. (:issue:`71`, :issue:`224`)
   * [x] documentation from hklpy.
   * [x] How to calculate UB from 2 reflections.
   * [x] How to hold axes fixed during `forward()` transformation.

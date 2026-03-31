@@ -42,6 +42,13 @@ describe future plans.
       diffractometer (no hardware) from a saved configuration file or dict.
       (:issue:`210`)
 
+    Enhancements
+    ------------
+
+    * Add how-to guide for choosing the default ``forward()`` solution picker
+      (``pick_first_solution``, ``pick_closest_solution``, or custom).
+      (:issue:`224`)
+
     Maintenance
     -----------
 
