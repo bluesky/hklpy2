@@ -1,0 +1,1015 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Diffractometer &#8212; hklpy2 0.3</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'concepts/diffract';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Crystal Lattice" href="lattice.html" />
+    <link rel="prev" title="Diffractometer creator" href="creator.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.3</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../concepts.html">Concepts</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="__overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creator.html">Diffractometer creator</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lattice.html">Crystal Lattice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ops.html">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reflection.html">Orientation Reflection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user.html">User Friendliness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavelength.html">Wavelength</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning/_checklist_v2.html">Feature Checklist for v2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning/_design-discussion.html">Design for hklpy2</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../diffractometers.html">Diffractometers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/_api_demo.html">Demonstrate <strong>hklpy2</strong>’s API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/aps-isn-e6c.html">APS ISN Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/constraints.html">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-creator.html">Example 4-circle diffractometer using creator()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-custom-class.html">Example 4-circle diffractometer custom Python class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4ch.html"><strong>hkl_soleil</strong> E4CH</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv.html"><strong>hkl_soleil</strong> E4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv%2Bepics.html"><strong>hkl_soleil</strong> E4CV with EPICS motors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-psi.html"><strong>hkl_soleil</strong> E6C psi axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-test_calculations.html"><strong>hkl_soleil</strong> E6C test of calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-k4cv.html"><strong>hkl_soleil</strong> K4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-lattice_refine.html"><strong>hkl_soleil</strong> Refine lattice from 3 reflections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_calc.html"><strong>hkl_soleil</strong> UB matrix : calculate from 2 reflections.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_set.html"><strong>hkl_soleil</strong> UB matrix : Set directly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/nslsii-tardis.html"><strong>NSLS-II</strong> <strong>tardis</strong> diffractometer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../examples/tst_e4cv_fourc.html">Compare <strong>hkl_soleil</strong> <strong>E4CV</strong> with <strong>SPEC</strong> <strong>fourc</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/virtual-axis.html">Virtual diffractometer axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/zone-scan.html">Zone Scan</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../guides.html">Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/diffract.html">Diffractometer Axis Names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/howto_write_solver.html">How to write a new Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/spec_xref.html">SPEC commands in hklpy2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../concepts.html" class="nav-link">Concepts</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Diffractometer</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="diffractometer">
+<span id="concepts-diffract"></span><h1>Diffractometer<a class="headerlink" href="#diffractometer" title="Link to this heading">#</a></h1>
+<p id="index-0">Diffractometers are built as a subclass of
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase()</span></code></a>, adding a variety of
+positioners as ophyd Components.  In an instance of that subclass, user
+sets <code class="xref py py-attr docutils literal notranslate"><span class="pre">backend_solver</span></code> by calling
+<a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.solver_factory" title="hklpy2.misc.solver_factory"><code class="xref py py-func docutils literal notranslate"><span class="pre">solver_factory()</span></code></a>.  In this call, the user specifies the solver,
+the geometry, and defines which Components (of the diffractometer) are to be used as
+pseudos and reals.  The backend implements
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.forward" title="hklpy2.backends.base.SolverBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.inverse" title="hklpy2.backends.base.SolverBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a>, and all related support, for
+only the pseudos and reals that are identified.</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 docutils">
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<svg version="4.0.0.63c5cb3" width="3.0em" height="3.0em" class="sd-material-icon sd-material-icon-check_box" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM17.99 9l-1.41-1.42-6.59 6.59-2.58-2.57-1.42 1.41 4 3.99z"></path></svg> A <strong>Solver</strong> is not needed to:</div>
+<ul class="simple">
+<li><p class="sd-card-text">define subclass of <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase()</span></code></a> and create instance</p></li>
+<li><p class="sd-card-text">create instance of <a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample" title="hklpy2.blocks.sample.Sample"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sample()</span></code></a></p></li>
+<li><p class="sd-card-text">create instance of <a class="reference internal" href="../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice" title="hklpy2.blocks.lattice.Lattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lattice()</span></code></a></p></li>
+<li><p class="sd-card-text">create instance of <a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident._WavelengthBase" title="hklpy2.incident._WavelengthBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_WavelengthBase()</span></code></a> subclass</p></li>
+<li><p class="sd-card-text">create instance of <a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase()</span></code></a> subclass</p></li>
+<li><p class="sd-card-text">set <a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident._WavelengthBase.wavelength" title="hklpy2.incident._WavelengthBase.wavelength"><code class="xref py py-attr docutils literal notranslate"><span class="pre">wavelength</span></code></a></p></li>
+<li><p class="sd-card-text">list <em>available</em> solvers: (<a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.solvers" title="hklpy2.misc.solvers"><code class="xref py py-func docutils literal notranslate"><span class="pre">solvers()</span></code></a>)</p></li>
+<li><p class="sd-card-text">review saved orientation details</p></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+<svg version="4.0.0.63c5cb3" width="3.0em" height="3.0em" class="sd-material-icon sd-material-icon-rule" viewBox="0 0 24 24" aria-hidden="true"><g><rect fill="none" height="24" width="24"></rect><path d="M16.54,11L13,7.46l1.41-1.41l2.12,2.12l4.24-4.24l1.41,1.41L16.54,11z M11,7H2v2h9V7z M21,13.41L19.59,12L17,14.59 L14.41,12L13,13.41L15.59,16L13,18.59L14.41,20L17,17.41L19.59,20L21,18.59L18.41,16L21,13.41z M11,15H2v2h9V15z"></path></g></svg> A <strong>Solver</strong> is needed to:</div>
+<ul class="simple">
+<li><p class="sd-card-text">list available <strong>Solver</strong> <a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.geometries" title="hklpy2.backends.base.SolverBase.geometries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">geometries</span></code></a></p></li>
+<li><p class="sd-card-text">list a <strong>Solver</strong> geometry’s required
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.pseudo_axis_names" title="hklpy2.backends.base.SolverBase.pseudo_axis_names"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pseudo_axis_names</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.real_axis_names" title="hklpy2.backends.base.SolverBase.real_axis_names"><code class="xref py py-attr docutils literal notranslate"><span class="pre">real_axis_names</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.extra_axis_names" title="hklpy2.backends.base.SolverBase.extra_axis_names"><code class="xref py py-attr docutils literal notranslate"><span class="pre">extra_axis_names</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.modes" title="hklpy2.backends.base.SolverBase.modes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">modes</span></code></a></p></li>
+<li><p class="sd-card-text">create instance of <a class="reference internal" href="../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection" title="hklpy2.blocks.reflection.Reflection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Reflection()</span></code></a></p></li>
+<li><p class="sd-card-text">define or compute a <span class="math notranslate nohighlight">\(UB\)</span> matrix
+(<code class="xref py py-meth docutils literal notranslate"><span class="pre">calculateOrientation()</span></code>)</p></li>
+<li><p class="sd-card-text"><a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.forward" title="hklpy2.backends.base.SolverBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>
+and <a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.inverse" title="hklpy2.backends.base.SolverBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a></p></li>
+<li><p class="sd-card-text">determine the diffractometer <code class="xref py py-attr docutils literal notranslate"><span class="pre">position</span></code></p></li>
+<li><p class="sd-card-text">save or restore orientation details</p></li>
+<li><p class="sd-card-text">refine lattice parameters</p></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="steps-to-define-a-diffractometer-object">
+<h2>Steps to define a diffractometer object<a class="headerlink" href="#steps-to-define-a-diffractometer-object" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Identify the geometry.</p></li>
+<li><p>Find its <strong>Solver</strong>, geometry, and other parameters in <a class="reference internal" href="../diffractometers.html#geometries"><span class="std std-ref">Diffractometers</span></a>.</p></li>
+<li><p>Create a custom subclass for the diffractometer.</p></li>
+<li><p>(optional) Identify the EPICS PVs for the real positioners.</p></li>
+<li><p>(optional) Connect energy to the control system.</p></li>
+<li><p>Define the diffractometer object using <code class="docutils literal notranslate"><span class="pre">hklpy2.creator()</span></code>.</p></li>
+</ol>
+</section>
+<section id="a-diffractometer-object">
+<h2>A <cite>Diffractometer</cite> object<a class="headerlink" href="#a-diffractometer-object" title="Link to this heading">#</a></h2>
+<section id="name">
+<h3>name<a class="headerlink" href="#name" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">name</span></code> of a <code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBaseBase()</span></code> instance is
+completely at the choice of the user and conveys no specific information to
+the underlying Python support code.</p>
+<p>One important <em>convention</em> is that the name given on the left side of the <code class="docutils literal notranslate"><span class="pre">=</span></code>
+matches the name given by the <code class="docutils literal notranslate"><span class="pre">name=&quot;...&quot;</span></code> keyword, such as this example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="geometry">
+<h3>geometry<a class="headerlink" href="#geometry" title="Link to this heading">#</a></h3>
+<p>The geometry describes the physical arrangement of real positioners, pseudo
+axes, and extra parameters that make up the diffractometer.  The choices are
+limited to those geometries provided the chosen <strong>Solver</strong>.</p>
+</section>
+<section id="core">
+<h3>core<a class="headerlink" href="#core" title="Link to this heading">#</a></h3>
+<p>All operations are coordinated through <a class="reference internal" href="ops.html#concepts-ops"><span class="std std-ref">Core Operations</span></a>.  This is <code class="docutils literal notranslate"><span class="pre">fourc.core</span></code>.</p>
+</section>
+<section id="wavelength-and-energy">
+<h3>wavelength (and energy)<a class="headerlink" href="#wavelength-and-energy" title="Link to this heading">#</a></h3>
+<p>The <cite>diffractometer.beam</cite> describes the radiation source using the
+<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident._WavelengthBase" title="hklpy2.incident._WavelengthBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">_WavelengthBase</span></code></a> class (or subclass).  Wavelength is
+the term common to both neutron and X-ray diffractometer users.
+<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.WavelengthXray" title="hklpy2.incident.WavelengthXray"><code class="xref py py-class docutils literal notranslate"><span class="pre">WavelengthXray</span></code></a> is the default. This supports
+conversion between wavelength and X-ray photon energy.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Neutron users would make a similar class with different calculations
+between wavelength and energy.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is more common for X-ray users to describe the <em>energy</em>
+of the incident radiation than its <em>wavelength</em>.  The
+<code class="docutils literal notranslate"><span class="pre">MonochromaticXrayWavelength()</span></code> class allows the X-ray photon energy
+to be expressed in any engineering units
+that are convertible to the expected units (<cite>keV</cite>).</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The wavelength, commonly written as <span class="math notranslate nohighlight">\(\lambda\)</span>,
+cannot be named in Python code as <cite>“lambda”</cite>.
+Python reserves <cite>lambda</cite> as a type of expression:
+<a class="reference external" href="https://docs.python.org/3/reference/expressions.html#lambda">reserved</a></p>
+</div>
+</section>
+<section id="sample">
+<h3>sample<a class="headerlink" href="#sample" title="Link to this heading">#</a></h3>
+<p>The purpose of a diffractometer is to position a sample for scientific
+measurements. The <code class="docutils literal notranslate"><span class="pre">sample</span></code> attribute is an instance of
+<a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample" title="hklpy2.blocks.sample.Sample"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sample</span></code></a>. Behind the scenes, the
+<a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> class maintains a <em>dictionary</em> of samples (keyed
+by <code class="docutils literal notranslate"><span class="pre">name</span></code>), each with its own <a class="reference internal" href="../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice" title="hklpy2.blocks.lattice.Lattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lattice</span></code></a> and
+orientation <a class="reference internal" href="../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection" title="hklpy2.blocks.reflection.Reflection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Reflection</span></code></a> information.</p>
+<section id="lattice">
+<h4>lattice<a class="headerlink" href="#lattice" title="Link to this heading">#</a></h4>
+<p>Crystal samples have <a class="reference internal" href="../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice" title="hklpy2.blocks.lattice.Lattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lattice</span></code></a> parameters defined by
+unit cell lengths and angles.  (Units here are angstroms and degrees.)</p>
+<p id="index-1">This table describes the lattice of crystalline Vibranium <a class="footnote-reference brackets" href="#vibranium" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>sample</p></th>
+<th class="head"><p>a</p></th>
+<th class="head"><p>b</p></th>
+<th class="head"><p>c</p></th>
+<th class="head"><p>alpha</p></th>
+<th class="head"><p>beta</p></th>
+<th class="head"><p>gamma</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>vibranium</p></td>
+<td><p><span class="math notranslate nohighlight">\(2\pi\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2\pi\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(2\pi\)</span></p></td>
+<td><p>90</p></td>
+<td><p>90</p></td>
+<td><p>90</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="vibranium" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>)</span>
+<p>Vibranium (<a class="reference external" href="https://en.wikipedia.org/wiki/Vibranium">https://en.wikipedia.org/wiki/Vibranium</a>)
+is a fictional metal.  Here, we have decided it has a cubic lattice
+with lattice parameter of exactly <span class="math notranslate nohighlight">\(2\pi\)</span>.</p>
+</aside>
+</aside>
+</section>
+<section id="orientation">
+<h4>orientation<a class="headerlink" href="#orientation" title="Link to this heading">#</a></h4>
+<p>The <strong>UB</strong> matrix describes the <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>
+and <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> transformations that allow
+precise positioning of a crystalline sample’s atomic planes in the laboratory
+reference system of the diffractometer.  It is common to compute the <strong>UB</strong> matrix
+from two orientation reflections using <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.calc_UB" title="hklpy2.ops.Core.calc_UB"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_UB()</span></code></a>.</p>
+<section id="orientation-reflections">
+<h5>orientation reflections<a class="headerlink" href="#orientation-reflections" title="Link to this heading">#</a></h5>
+<p>An orientation reflection consists of a set of matching pseudos
+and reals at a specified wavelength.  These values may be
+measured or computed.</p>
+<p>There are several use cases for a set of reflections:</p>
+<ul class="simple">
+<li><p>Computation of the <span class="math notranslate nohighlight">\(UB\)</span> matrix (for 2 or more non-parallel reflections).</p></li>
+<li><p>Documentation of observed (or theoretical) reflection settings.</p></li>
+<li><p>Reference settings so as to re-position the diffractometer.</p></li>
+<li><p>Define a crystallographic zone or axis to guide the diffractometer for measurements.</p></li>
+</ul>
+<p>Here is an example of three orientation reflections for a sample of crystalline
+vibranium <a class="footnote-reference brackets" href="#vibranium" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> as mounted on a diffractometer with
+<a class="reference internal" href="../diffractometers.html#geometries-hkl-soleil-e4cv"><span class="std std-ref">E4CV</span></a> geometry:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>#</p></th>
+<th class="head"><p>h</p></th>
+<th class="head"><p>k</p></th>
+<th class="head"><p>l</p></th>
+<th class="head"><p>omega</p></th>
+<th class="head"><p>chi</p></th>
+<th class="head"><p>phi</p></th>
+<th class="head"><p>tth</p></th>
+<th class="head"><p>wavelength</p></th>
+<th class="head"><p>orient?</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>4.0</p></td>
+<td><p>0.0</p></td>
+<td><p>0.0</p></td>
+<td><p>-145.451</p></td>
+<td><p>0.0</p></td>
+<td><p>0.0</p></td>
+<td><p>69.0966</p></td>
+<td><p>1.54</p></td>
+<td><p>False</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>0.0</p></td>
+<td><p>4.0</p></td>
+<td><p>0.0</p></td>
+<td><p>-145.451</p></td>
+<td><p>0.0</p></td>
+<td><p>90.0</p></td>
+<td><p>69.0966</p></td>
+<td><p>1.54</p></td>
+<td><p>True</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>0.0</p></td>
+<td><p>0.0</p></td>
+<td><p>4.0</p></td>
+<td><p>-145.451</p></td>
+<td><p>90.0</p></td>
+<td><p>0.0</p></td>
+<td><p>69.0966</p></td>
+<td><p>1.54</p></td>
+<td><p>True</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+<section id="mode">
+<h3>mode<a class="headerlink" href="#mode" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">forward()</span></code> transformation can have many solutions.  The
+diffractometer is set to a mode (chosen from a list specified by the
+diffractometer geometry) that controls how values for each of the real
+positioners will be controlled. A mode can control relationships between
+real positioners in addition to limiting the motion of a real positioner.
+Further, a mode can specify an additional reflection which will be used to
+determine the outcome of the <code class="docutils literal notranslate"><span class="pre">forward()</span></code> transformation.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>object</p></th>
+<th class="head"><p>meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DFRCT.core.mode</span></code></p></td>
+<td><p>mode selected now</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DFRCT.core.modes</span></code></p></td>
+<td><p>list of possible modes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">DFRCT</span></code> is the diffractometer object (such as <code class="docutils literal notranslate"><span class="pre">e4cv</span></code> above).</p>
+</section>
+</section>
+<section id="parts-of-diffractometerbase">
+<h2>Parts of <cite>DiffractometerBase</cite><a class="headerlink" href="#parts-of-diffractometerbase" title="Link to this heading">#</a></h2>
+<p>A <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a> object has several parts:</p>
+<p>The <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase()</span></code></a> class should
+be a thin interface. Most real diffractometer capability should be
+provided in the <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core()</span></code></a> class (or one of
+its attributes, such as <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.solver" title="hklpy2.ops.Core.solver"><code class="xref py py-attr docutils literal notranslate"><span class="pre">solver</span></code></a>
+and <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.sample" title="hklpy2.ops.Core.sample"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sample</span></code></a>)</p>
+<p class="rubric">Core-related methods and properties</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(pseudos[, wavelength])</p></td>
+<td><p>Compute real-space coordinates from pseudos (hkl -&gt; angles).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inverse</span></code></a>(reals[, wavelength])</p></td>
+<td><p>Compute pseudo-space coordinates from reals (angles -&gt; hkl).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">position</span></code></p></td>
+<td><p>Pseudo motor position namedtuple</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.pseudo_axis_names" title="hklpy2.diffract.DiffractometerBase.pseudo_axis_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pseudo_axis_names</span></code></a></p></td>
+<td><p>Names of all the pseudo axes, in order of appearance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.real_axis_names" title="hklpy2.diffract.DiffractometerBase.real_axis_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_axis_names</span></code></a></p></td>
+<td><p>Names of all the real axes, in order of appearance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.wh" title="hklpy2.diffract.DiffractometerBase.wh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wh</span></code></a>([digits, full])</p></td>
+<td><p>Concise report of the current diffractometer positions.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Sample-related methods and properties</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.add_reflection" title="hklpy2.diffract.DiffractometerBase.add_reflection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_reflection</span></code></a>(pseudos[, reals, wavelength, ...])</p></td>
+<td><p>Add a new reflection with this geometry to the selected sample.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.add_sample" title="hklpy2.diffract.DiffractometerBase.add_sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_sample</span></code></a>(name, a[, b, c, alpha, beta, ...])</p></td>
+<td><p>Add a new sample.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.sample" title="hklpy2.diffract.DiffractometerBase.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a></p></td>
+<td><p>Current sample object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.samples" title="hklpy2.diffract.DiffractometerBase.samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">samples</span></code></a></p></td>
+<td><p>Dictionary of samples.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Related methods and properties from other classes</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.assign_axes" title="hklpy2.ops.Core.assign_axes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assign_axes</span></code></a>(pseudos, reals)</p></td>
+<td><p>Designate attributes for use by the PseudoPositioner class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.extra_axis_names" title="hklpy2.backends.base.SolverBase.extra_axis_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extra_axis_names</span></code></a></p></td>
+<td><p>Ordered list of any extra axis names (such as x, y, z).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.lattice" title="hklpy2.blocks.sample.Sample.lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lattice</span></code></a></p></td>
+<td><p>Sample crystal lattice.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.refine_lattice" title="hklpy2.blocks.sample.Sample.refine_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refine_lattice</span></code></a>()</p></td>
+<td><p>Refine the lattice parameters from 3 or more reflections.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.refine_lattice" title="hklpy2.ops.Core.refine_lattice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refine_lattice</span></code></a>(*reflections)</p></td>
+<td><p>Return the sample lattice computed from 3 or more reflections.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.reflections" title="hklpy2.blocks.sample.Sample.reflections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reflections</span></code></a></p></td>
+<td><p>Ordered dictionary of orientation reflections.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.set_solver" title="hklpy2.ops.Core.set_solver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_solver</span></code></a>(name, geometry, **kwargs)</p></td>
+<td><p>Create an instance of the backend <strong>Solver</strong> library and geometry.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.U" title="hklpy2.blocks.sample.Sample.U"><code class="xref py py-obj docutils literal notranslate"><span class="pre">U</span></code></a></p></td>
+<td><p>Return the matrix, U, crystal orientation on the diffractometer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.UB" title="hklpy2.blocks.sample.Sample.UB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UB</span></code></a></p></td>
+<td><p>Return the crystal orientation matrix, UB.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="use-a-diffractometer-with-the-bluesky-runengine">
+<h2>Use a Diffractometer with the bluesky RunEngine<a class="headerlink" href="#use-a-diffractometer-with-the-bluesky-runengine" title="Link to this heading">#</a></h2>
+<p>The positioners of a <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a> object may be
+used with the <a class="reference external" href="https://blueskyproject.io/bluesky/generated/bluesky.run_engine.RunEngine.html?highlight=runengine">bluesky RunEngine</a>
+with any of the <a class="reference external" href="https://blueskyproject.io/bluesky/plans.html#pre-assembled-plans">pre-assembled plans</a> or
+in custom plans of your own.</p>
+<blockquote>
+<div><div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationRunWrapper</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">)</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1"># Save configuration with every run</span>
+<span class="linenos"> 6</span><span class="n">crw</span> <span class="o">=</span> <span class="n">ConfigurationRunWrapper</span><span class="p">(</span><span class="n">fourc</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crw</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="c1"># steps not shown here:</span>
+<span class="linenos">10</span><span class="c1">#   define a sample &amp; orientation reflections, and compute UB matrix</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="c1"># record the diffractometer metadata to a run</span>
+<span class="linenos">13</span><span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">count</span><span class="p">([</span><span class="n">fourc</span><span class="p">]))</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="c1"># relative *(h00)* scan</span>
+<span class="linenos">16</span><span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">rel_scan</span><span class="p">([</span><span class="n">scaler</span><span class="p">,</span> <span class="n">fourc</span><span class="p">],</span> <span class="n">fourc</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="c1"># absolute *(0kl)* scan</span>
+<span class="linenos">19</span><span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">scan</span><span class="p">([</span><span class="n">scaler</span><span class="p">,</span> <span class="n">fourc</span><span class="p">],</span> <span class="n">fourc</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="c1"># absolute ``chi`` scan</span>
+<span class="linenos">22</span><span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">scan</span><span class="p">([</span><span class="n">scaler</span><span class="p">,</span> <span class="n">fourc</span><span class="p">],</span> <span class="n">fourc</span><span class="o">.</span><span class="n">chi</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">31</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Keep in mind these considerations:</p>
+<ol class="arabic">
+<li><p>Use the <a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.ConfigurationRunWrapper" title="hklpy2.misc.ConfigurationRunWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.misc.ConfigurationRunWrapper</span></code></a> to save configuration
+as part of every run.  Here’s an example:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationRunWrapper</span>
+<span class="linenos">2</span><span class="n">crw</span> <span class="o">=</span> <span class="n">ConfigurationRunWrapper</span><span class="p">(</span><span class="n">fourc</span><span class="p">)</span>
+<span class="linenos">3</span><span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crw</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../guides/configuration_save_restore.html"><span class="doc">Diffractometer Configuration – Save and Restore</span></a></p>
+</div>
+</li>
+<li><p>Don’t mix axis types (pseudos <em>v.</em> reals) in a scan.  You can only
+scan with either <em>pseudo</em> axes (<code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code>, <code class="docutils literal notranslate"><span class="pre">q</span></code>, …) or <em>real</em>
+axes (<code class="docutils literal notranslate"><span class="pre">omega</span></code>, <code class="docutils literal notranslate"><span class="pre">tth</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, …) at one time.  You cannot scan with
+both types (such as <code class="docutils literal notranslate"><span class="pre">h</span></code> and <code class="docutils literal notranslate"><span class="pre">tth</span></code>) in a single scan (because the
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> and
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> methods cannot
+resolve).  Example:</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># Cannot scan both ``k`` and ``chi`` at the same time.</span>
+<span class="linenos">2</span><span class="c1"># This will raise a `ValueError` exception.</span>
+<span class="linenos">3</span><span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">scan</span><span class="p">([</span><span class="n">scaler</span><span class="p">,</span> <span class="n">fourc</span><span class="p">],</span> <span class="n">fourc</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">chi</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p>When scanning with pseudo axes (<code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code>, <code class="docutils literal notranslate"><span class="pre">q</span></code>, …), first
+check that all steps in the scan can be computed successfully with
+the <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> computation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mf">1.9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Only restore orientation reflections from a <strong>matching</strong>
+diffractometer geometry (such as <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>).  Mismatch will trigger an exception.</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="creator.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Diffractometer creator</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="lattice.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Crystal Lattice</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steps-to-define-a-diffractometer-object">Steps to define a diffractometer object</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-diffractometer-object">A <cite>Diffractometer</cite> object</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#name">name</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#geometry">geometry</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core">core</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#wavelength-and-energy">wavelength (and energy)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sample">sample</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#lattice">lattice</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#orientation">orientation</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#orientation-reflections">orientation reflections</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mode">mode</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parts-of-diffractometerbase">Parts of <cite>DiffractometerBase</cite></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-a-diffractometer-with-the-bluesky-runengine">Use a Diffractometer with the bluesky RunEngine</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/concepts/diffract.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/concepts/diffract.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2025, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

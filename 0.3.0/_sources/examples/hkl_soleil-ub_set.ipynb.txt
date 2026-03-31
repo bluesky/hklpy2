@@ -1,0 +1,433 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# **hkl_soleil** UB matrix : Set directly\n",
+    "\n",
+    "{math}`UB` is the 3x3 orientation matrix used to transform coordinates between\n",
+    "reciprocal space directions (of the crystal lattice planes) and the rotational\n",
+    "axes of the diffractometer.\n",
+    "\n",
+    "It is possible to set {math}`UB` directly, as shown below.\n",
+    "\n",
+    "Alternatively, {math}`UB` can be [calculated](./hkl_soleil-ub_calc.ipynb) from two\n",
+    "non-parallel reflections, using the method of Busing and Levy (*Acta Cryst*\n",
+    "**22** (1967) 457)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Quick example\n",
+    "\n",
+    "In **hklpy2**, the {math}`UB` matrix is a property of the *sample*.  For a\n",
+    "diffractometer object named `diffractometer`, set {math}`UB` such as:\n",
+    "\n",
+    "```py\n",
+    "diffractometer.sample.UB = [\n",
+    "    [0.5, 6.24, -0.5],\n",
+    "    [-0.5, -0.5, 6.24],\n",
+    "    [-6.24, -0.5, -0.5],\n",
+    "]\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Create a diffractometer object\n",
+    "\n",
+    "First, create a diffractometer object that uses the `\"hkl_soleil\"` solver with\n",
+    "the `\"hkl\"` computation engine.  This solver provides support for many\n",
+    "diffractometer geometries.  This example will use the simulated 4-circle\n",
+    "geometry from the solver's `\"E4CV\"`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from hklpy2 import creator\n",
+    "\n",
+    "diffractometer = creator(name=\"diffractometer\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Defaults\n",
+    "\n",
+    "The diffractometer object starts with a default sample.  The structure is cubic ({math}`a=b=c`, 90 degree corners)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Sample(name='sample', lattice=Lattice(a=1, system='cubic'))"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.sample"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This is the sample the solver will be using.\n",
+    "\n",
+    "{math}`U` (a property of the *sample*) is the orientation of the sample's crystal\n",
+    "lattice as mounted on the diffractometer sample holder.  The default is to\n",
+    "assume {math}`U=I`, where {math}`I` is the 3x3 identity matrix.  "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[1, 0, 0], [0, 1, 0], [0, 0, 1]]"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.sample.U"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The default {math}`UB` (without knowing how the crystal planes are oriented with\n",
+    "respect to the diffractometer) of this cubic crystal is {math}`(2\\pi/a) I` where\n",
+    "{math}`a` is the lattice parameter.  Like {math}`U`, this is provided by the\n",
+    "*solver*, in this case `\"hkl_soleil\"`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[6.283185307179586, 0.0, 0.0],\n",
+       " [0.0, 6.283185307179586, 0.0],\n",
+       " [0.0, 0.0, 6.283185307179586]]"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.sample.UB"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "$UB$ is used to transform *(hkl)* to angles (method: `forward()`) and angles to\n",
+    "*(hkl)* (method: `inverse()`).  These transformations are fundamental to\n",
+    "diffractometer operations, so they are provided to the diffractometer object\n",
+    "directly.\n",
+    "\n",
+    "Here, we compute the angles for the (111) orientation:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerRealPos(omega=59.999997499677, chi=35.264399309167, phi=45.000003331627, tth=119.999994999354)"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.forward(1, 1, 1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'bissector'"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.core.mode"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now, convert *(hkl)* from these angles.  Because we have truncated the numerical\n",
+    "precision, we should not expect the precise values of (1.0, 1.0, 1.0)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerPseudoPos(h=-1.003252647315, k=0.993463442978, l=-1.003252287813)"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.inverse(-60, -35, 45, -120)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Set UB to new matrix\n",
+    "\n",
+    "The solver's {math}`UB` matrix can be re-defined by providing a new Python matrix.\n",
+    "Here is a matrix for a cubic sample, oriented previously:\n",
+    "\n",
+    "```\n",
+    "[[0.545455316412, -6.239788968842, -0.495930309978],\n",
+    " [-0.547615630691, -0.543471652084, 6.235639164201],\n",
+    " [-6.235463558747, -0.498103654451, -0.591011669061]]\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[0.545455316412, -6.239788968842, -0.495930309978],\n",
+       " [-0.547615630691, -0.543471652084, 6.235639164201],\n",
+       " [-6.235463558747, -0.498103654451, -0.591011669061]]"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.sample.UB = [\n",
+    "    [0.545455316412, -6.239788968842, -0.495930309978],\n",
+    "    [-0.547615630691, -0.543471652084, 6.235639164201],\n",
+    "    [-6.235463558747, -0.498103654451, -0.591011669061]\n",
+    "]\n",
+    "diffractometer.sample.UB"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Try it out\n",
+    "\n",
+    "First, compute $(hkl)$ from a set of *reals*."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerPseudoPos(h=0.821953663396, k=0.989926119534, l=1.159500990198)"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.inverse(-60, -35, 45, -120)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "There can be more than one solution to the `forward()` transformation; many combinations of *reals* can be represented by the same set of *pseudos*.  A *solver*'s geometry provides one or *modes* which provide additional constraints or relationships to limit the `forward()` computation.\n",
+    "\n",
+    "The E4CV geometry's `\"bissector\"` mode adds this relationship: `tth = 2 * omega`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'bissector'"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.core.mode"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Still, there can be more than one solution returned by the *solver*.  In **hklpy2**, the default is to pick the first solution in the list returned from the *solver*, as shown next:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<function hklpy2.misc.pick_first_solution(position: <function NamedTuple at 0x7b72f4336200>, solutions: list[typing.NamedTuple]) -> <function NamedTuple at 0x7b72f4336200>>"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer._forward_solution"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Show the first computed solution in `\"bissector\"` mode for the $(1,1,1)$ reflection:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerRealPos(omega=-59.999921375969, chi=-28.211225311916, phi=40.202361982144, tth=-119.999842751938)"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.forward(1, 1, 1)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerRealPos(omega=-59.999921375969, chi=-28.211225311916, phi=40.202361982144, tth=-119.999842751938)"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from hklpy2.misc import pick_closest_solution\n",
+    "\n",
+    "diffractometer._forward_solution = pick_closest_solution\n",
+    "diffractometer.forward(1, 1, 1)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "hklpy2",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.11"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

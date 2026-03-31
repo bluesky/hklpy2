@@ -1,0 +1,749 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# **hkl_soleil** K4CV\n",
+    "\n",
+    "The *kappa* ({math}`\\kappa`) diffractometer {ref}`geometry\n",
+    "<geometries-hkl_soleil-k4cv>` replaces the {math}`\\chi`-ring on an Eulerian 4-circle\n",
+    "diffractometer with a *kappa* stage which holds the *phi* stage. The *kappa*\n",
+    "stage is tilted at angle {math}`\\alpha` (typically 50 degrees) from the {math}`\\omega`\n",
+    "stage.\n",
+    "\n",
+    "\n",
+    "![K4CV geometry](../_static/k4cv.png)\n",
+    "\n",
+    "This is the *hkl_soleil* *K4CV* [geometry](../diffractometers.rst):\n",
+    "\n",
+    "axis    | moves    | rotation axis    | vector\n",
+    "---     | ---      | ---              | ---\n",
+    "komega  | sample   | {math}`-\\vec{y}` | `[0 -1 0]`\n",
+    "kappa   | sample   | {math}`\\vec{x}`  | `[0 -0.6428 -0.7660]`\n",
+    "kphi    | sample   | {math}`-\\vec{y}` | `[0 -1 0]`\n",
+    "tth     | detector | {math}`-\\vec{y}` | `[0 -1 0]`\n",
+    "\n",
+    "* xrays incident on the {math}`\\vec{x}` direction (1, 0, 0)\n",
+    "\n",
+    "See: *hkl_soleil* [documentation](https://people.debian.org/~picca/hkl/hkl.html) for more details."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Define _this_ diffractometer\n",
+    "\n",
+    "Use the **hklpy2** `creator()` function to create a diffractometer\n",
+    "object.  The diffractometer object will have simulated rotational axes.\n",
+    "\n",
+    "We'll provide the geometry and solver names.\n",
+    "By convention, the `name` keyword is the same as the object name.\n",
+    "\n",
+    "See the [geometry tables](../diffractometers.rst) for\n",
+    "a more complete description of the available diffractometers.\n",
+    "\n",
+    "Create the Python diffractometer object (`k4cv`).  We choose this name to avoid any confusion with the diffractometer's `kappa` axis."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import hklpy2\n",
+    "\n",
+    "k4cv = hklpy2.creator(name=\"k4cv\", geometry=\"K4CV\", solver=\"hkl_soleil\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Add a sample with a crystal structure"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Sample(name='silicon', lattice=Lattice(a=5.431, system='cubic'))"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from hklpy2.user import add_sample, calc_UB, cahkl, cahkl_table, pa, set_diffractometer, setor, wh\n",
+    "\n",
+    "set_diffractometer(k4cv)\n",
+    "add_sample(\"silicon\", a=hklpy2.SI_LATTICE_PARAMETER)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Setup the UB orientation matrix using *hklpy*\n",
+    "\n",
+    "Define the crystal's orientation on the diffractometer using \n",
+    "the 2-reflection method described by [Busing & Levy, Acta Cryst 22 (1967) 457](https://www.psi.ch/sites/default/files/import/sinq/zebra/PracticalsEN/1967-Busing-Levy-3-4-circle-Acta22.pdf)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Diffractometer wavelength\n",
+    "\n",
+    "Set the diffractometer's X-ray wavelength.  This will be used for both reflections.  `k4cv.wavelength` is an\n",
+    "ophyd [Signal](https://blueskyproject.io/ophyd/user/reference/signals.html). Use\n",
+    "its `.put()` method."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "k4cv.beam.wavelength.put(1.54)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Specify the first reflection\n",
+    "\n",
+    "Provide the set of angles that correspond with the reflection's Miller indices: (_hkl_)\n",
+    "\n",
+    "The `setor()` (set orienting reflection) method uses the diffractometer's wavelength *at the time it is called*.  (To add reflections at different wavelengths, add a `wavelength=1.0` keyword argument with the correct value.)  "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r1 = setor(4, 0, 0, tth=-69.0966, komega=55.4507, kappa=0, kphi=-90)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Specify the second reflection"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r2 = setor(0, 4, 0, tth=-69.0966, komega=-1.5950, kappa=134.7658, kphi=123.3554)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Compute the *UB* orientation matrix\n",
+    "\n",
+    "The `calc_UB()` method returns the computed **UB** matrix."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[2.0191835e-05, -8.3752177e-05, -1.156906934347],\n",
+       " [0.0, -1.156906934523, 8.3752177e-05],\n",
+       " [-1.156906937379, -1.462e-09, -2.0191835e-05]]"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "calc_UB(r1, r2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Report our setup"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "diffractometer='k4cv'\n",
+      "HklSolver(name='hkl_soleil', version='5.1.3', geometry='K4CV', engine_name='hkl', mode='bissector')\n",
+      "Sample(name='silicon', lattice=Lattice(a=5.431, system='cubic'))\n",
+      "Reflection(name='r_efc2', h=4, k=0, l=0)\n",
+      "Reflection(name='r_759f', h=0, k=4, l=0)\n",
+      "Orienting reflections: ['r_efc2', 'r_759f']\n",
+      "U=[[0.0, 0.0001, -1.0], [0.0, -1.0, 0.0001], [-1.0, 0.0, 0.0]]\n",
+      "UB=[[0.0, 0.0001, -1.1569], [0.0, -1.1569, 0.0001], [-1.1569, 0.0, 0.0]]\n",
+      "constraint: -180.0 <= komega <= 180.0\n",
+      "constraint: -180.0 <= kappa <= 180.0\n",
+      "constraint: -180.0 <= kphi <= 180.0\n",
+      "constraint: -180.0 <= tth <= 180.0\n",
+      "Mode: bissector\n",
+      "beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source', 'energy': 8.0509, 'wavelength': 1.54, 'energy_units': 'keV', 'wavelength_units': 'angstrom'}\n",
+      "pseudos: h=0, k=0, l=0\n",
+      "reals: komega=0, kappa=0, kphi=0, tth=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "pa()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Check the orientation matrix\n",
+    "\n",
+    "Perform checks with `forward()` ($hkl$ to angle) and\n",
+    "`inverse()` (angle to $hkl$) computations to verify the diffractometer\n",
+    "will move to the same positions where the reflections were identified.\n",
+    "\n",
+    "### Constrain one of the motors\n",
+    "\n",
+    "* keep `kphi` in the negative range\n",
+    "* allow for slight roundoff errors\n",
+    "\n",
+    "First, apply [constraints](../concepts/constraints.rst) to the `kphi`\n",
+    "rotational motor. Constraints are part of the diffractometer's `core`-level\n",
+    "support.\n",
+    "\n",
+    "---\n",
+    "\n",
+    "**Note**: A constraint does not limit the range of the motor, it *constrains*\n",
+    "the choice of solutions from the `forward()` computation.\n",
+    "\n",
+    "---"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['-180.0 <= komega <= 180.0', '-180.0 <= kappa <= 180.0', '-180.0 <= kphi <= 0.001', '-180.0 <= tth <= 180.0']"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "k4cv.core.constraints[\"kphi\"].limits = (-180, 0.001)\n",
+    "k4cv.core.constraints"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### (400) reflection test\n",
+    "\n",
+    "1. Check the `inverse()` (angles -> (_hkl_)) computation.\n",
+    "1. Check the `forward()` ((_hkl_) -> angles) computation."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Check `inverse()` at (400)\n",
+    "\n",
+    "To calculate the (_hkl_) corresponding to a given set of motor angles,\n",
+    "call `k4cv.inverse()`.\n",
+    "\n",
+    "The _hkl_ values are provided as a Python [namedtuple](https://docs.python.org/3/library/collections.html#collections.namedtuple) structure."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "k4cv.real_axis_names=['komega', 'kappa', 'kphi', 'tth']\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerPseudoPos(h=6.1599, k=0, l=0)"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "print(f\"{k4cv.real_axis_names=}\")\n",
+    "# Specify values, by correct order of names.\n",
+    "k4cv.inverse(55.4507, 0, -90, -69.0966)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Check `forward(400)`\n",
+    "\n",
+    "Compute the angles necessary to position the diffractometer\n",
+    "for the given reflection.\n",
+    "\n",
+    "---\n",
+    "\n",
+    "**Note**:\n",
+    "\n",
+    "For the `forward()` computation, more than one set of angles may be used to reach the same crystal reflection.  This test will report the *default* selection.  The *default* selection (which may be changed through methods described in module :mod:`hklpy2.ops`) is the first solution.\n",
+    "\n",
+    "function | returns\n",
+    "--- | ---\n",
+    "`cahkl()` | The *default* solution\n",
+    "`cahkl_table()` | Table of all allowed solutions.\n",
+    "\n",
+    "---"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Before calling `forward()`, make sure we are using the desired operations\n",
+    "*mode*.  `\"bissector\"` maintains $\\omega = (2\\theta) / 2$"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "k4cv.core.mode = \"bissector\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here we print the *default* solution (the one returned by calling `cahkl()`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerRealPos(komega=55.4509, kappa=-0.0, kphi=-90.001, tth=-69.0982)"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "cahkl(4, 0, 0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "---\n",
+    "\n",
+    "**Note**: `cahkl()` is a shortcut to `k4cv.forward()`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerRealPos(komega=55.4509, kappa=-0.0, kphi=-90.001, tth=-69.0982)"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "k4cv.forward(4, 0, 0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "---"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Show the table of *all* `forward()` solutions for $(4\\ 0\\ 0)$ and $(0\\ 4\\ 0)$ allowed by the current constraints.  Since this function accepts a *list* of $hkl$  reflections, extra Python syntax is applied."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "======= = ========= ======== ========= ========\n",
+      "(hkl)   # komega    kappa    kphi      tth     \n",
+      "======= = ========= ======== ========= ========\n",
+      "(4 0 0) 1 55.4509   0        -90.001   -69.0982\n",
+      "(4 0 0) 2 -55.4509  0        -90.001   69.0982 \n",
+      "(0 4 0) 1 -1.5879   134.746  -57.0399  -69.0982\n",
+      "(0 4 0) 2 -112.4896 134.746  -57.0376  69.0982 \n",
+      "(0 4 0) 3 -67.5104  -134.746 -122.9624 -69.0982\n",
+      "(0 4 0) 4 -178.4121 -134.746 -122.9601 69.0982 \n",
+      "======= = ========= ======== ========= ========\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "cahkl_table((4, 0, 0), (0, 4, 0))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### (040) reflection test\n",
+    "\n",
+    "Repeat the `inverse` and `forward` calculations for the\n",
+    "second orientation reflection."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Check `inverse()` at (040)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerPseudoPos(h=-0.0001, k=3.9999, l=-0.0003)"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "k4cv.inverse(-1.5950, 134.7568, 123.3554, -69.0966)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Check `forward(040)`"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerRealPos(komega=-1.5879, kappa=134.746, kphi=-57.0399, tth=-69.0982)"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "k4cv.forward(0, 4, 0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Scan in reciprocal space using Bluesky\n",
+    "\n",
+    "To scan with Bluesky, we need more setup."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Tiled version 0.2.2\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "1"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import bluesky.plans as bp\n",
+    "from bluesky import RunEngine\n",
+    "from bluesky import SupplementalData\n",
+    "from bluesky_tiled_plugins import TiledWriter\n",
+    "from bluesky.callbacks.best_effort import BestEffortCallback\n",
+    "from tiled.client import from_uri\n",
+    "from tiled.server import SimpleTiledServer\n",
+    "\n",
+    "server = SimpleTiledServer()\n",
+    "client = from_uri(server.uri)\n",
+    "\n",
+    "bec = BestEffortCallback()\n",
+    "bec.disable_plots()\n",
+    "sd = SupplementalData()\n",
+    "tw = TiledWriter(client)\n",
+    "\n",
+    "RE = RunEngine({})\n",
+    "RE.md = {}\n",
+    "RE.preprocessors.append(sd)\n",
+    "RE.subscribe(tw)\n",
+    "RE.subscribe(bec)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Setup the `RE` to save the `k4cv` {class}`~hklpy2.blocks.configure.Configuration` with every run."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "crw = hklpy2.ConfigurationRunWrapper(k4cv)\n",
+    "RE.preprocessors.append(crw.wrapper)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### (_h00_) scan near (400)\n",
+    "\n",
+    "In this example, we have no detector.  Still, we add the diffractometer\n",
+    "object in the detector list so that the _hkl_ and motor positions will appear\n",
+    "as columns in the table."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=1.54\n",
+      "pseudos: h=4.0, k=0, l=0\n",
+      "reals: komega=55.4509, kappa=0, kphi=-90.001, tth=-69.0982\n",
+      "\n",
+      "\n",
+      "Transient Scan ID: 1     Time: 2025-12-02 11:50:47\n",
+      "Persistent Unique Scan ID: '1652cfa2-7ead-4b34-bd79-c5fbfa669390'\n",
+      "New stream: 'primary'\n",
+      "+-----------+------------+------------+----------------------+------------------+------------+------------+-------------+------------+------------+------------+\n",
+      "|   seq_num |       time |     k4cv_h | k4cv_beam_wavelength | k4cv_beam_energy |     k4cv_k |     k4cv_l | k4cv_komega | k4cv_kappa |  k4cv_kphi |   k4cv_tth |\n",
+      "+-----------+------------+------------+----------------------+------------------+------------+------------+-------------+------------+------------+------------+\n",
+      "|         1 | 11:50:47.3 |      3.900 |                1.540 |            8.051 |      0.000 |      0.000 |      56.431 |     -0.000 |    -90.001 |    -67.137 |\n",
+      "|         2 | 11:50:47.3 |      3.950 |                1.540 |            8.051 |     -0.000 |     -0.000 |      55.943 |     -0.000 |    -90.001 |    -68.115 |\n",
+      "|         3 | 11:50:47.3 |      4.000 |                1.540 |            8.051 |      0.000 |     -0.000 |      55.451 |      0.000 |    -90.001 |    -69.098 |\n",
+      "|         4 | 11:50:47.3 |      4.050 |                1.540 |            8.051 |      0.000 |      0.000 |      54.956 |      0.000 |    -90.001 |    -70.087 |\n",
+      "|         5 | 11:50:47.3 |      4.100 |                1.540 |            8.051 |      0.000 |      0.000 |      54.459 |      0.000 |    -90.001 |    -71.083 |\n",
+      "+-----------+------------+------------+----------------------+------------------+------------+------------+-------------+------------+------------+------------+\n",
+      "generator scan ['1652cfa2'] (scan num: 1)\n",
+      "\n",
+      "\n",
+      "\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "('1652cfa2-7ead-4b34-bd79-c5fbfa669390',)"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "\n",
+    "k4cv.move(4, 0, 0)\n",
+    "wh()\n",
+    "RE(bp.scan([k4cv], k4cv.h, 3.9, 4.1, 5))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### (_hk0_) scan near (440)\n",
+    "\n",
+    "Scan between the two orientation reflections. Need to keep $\\varphi\\ge0$ to avoid\n",
+    "big jumps during the scan."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "\n",
+      "Transient Scan ID: 2     Time: 2025-12-02 11:50:47\n",
+      "Persistent Unique Scan ID: '8029aea2-4328-4762-8e16-3d87634bae90'\n",
+      "New stream: 'primary'\n",
+      "+-----------+------------+------------+------------+----------------------+------------------+------------+-------------+------------+------------+------------+\n",
+      "|   seq_num |       time |     k4cv_h |     k4cv_k | k4cv_beam_wavelength | k4cv_beam_energy |     k4cv_l | k4cv_komega | k4cv_kappa |  k4cv_kphi |   k4cv_tth |\n",
+      "+-----------+------------+------------+------------+----------------------+------------------+------------+-------------+------------+------------+------------+\n",
+      "|         1 | 11:50:47.6 |      3.800 |      4.200 |                1.540 |            8.051 |      0.000 |    -121.557 |    -63.947 |    111.866 |   -106.839 |\n",
+      "|         2 | 11:50:47.6 |      3.844 |      4.156 |                1.540 |            8.051 |      0.000 |    -121.861 |    -63.054 |    111.524 |   -106.763 |\n",
+      "|         3 | 11:50:47.6 |      3.889 |      4.111 |                1.540 |            8.051 |      0.000 |    -122.173 |    -62.163 |    111.183 |   -106.706 |\n",
+      "|         4 | 11:50:47.6 |      3.933 |      4.067 |                1.540 |            8.051 |      0.000 |    -122.492 |    -61.273 |    110.845 |   -106.668 |\n",
+      "|         5 | 11:50:47.7 |      3.978 |      4.022 |                1.540 |            8.051 |      0.000 |    -122.819 |    -60.385 |    110.509 |   -106.649 |\n",
+      "|         6 | 11:50:47.7 |      4.022 |      3.978 |                1.540 |            8.051 |      0.000 |    -123.152 |    -59.499 |    110.175 |   -106.649 |\n",
+      "|         7 | 11:50:47.7 |      4.067 |      3.933 |                1.540 |            8.051 |      0.000 |    -123.493 |    -58.614 |    109.844 |   -106.668 |\n",
+      "|         8 | 11:50:47.7 |      4.111 |      3.889 |                1.540 |            8.051 |      0.000 |    -123.842 |    -57.732 |    109.514 |   -106.706 |\n",
+      "|         9 | 11:50:47.7 |      4.156 |      3.844 |                1.540 |            8.051 |      0.000 |    -124.197 |    -56.852 |    109.187 |   -106.763 |\n",
+      "|        10 | 11:50:47.7 |      4.200 |      3.800 |                1.540 |            8.051 |      0.000 |    -124.559 |    -55.975 |    108.863 |   -106.839 |\n",
+      "+-----------+------------+------------+------------+----------------------+------------------+------------+-------------+------------+------------+------------+\n",
+      "generator rel_scan ['8029aea2'] (scan num: 2)\n",
+      "\n",
+      "\n",
+      "\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "('8029aea2-4328-4762-8e16-3d87634bae90',)"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "k4cv.core.constraints[\"kphi\"].limits = -0.001, 180\n",
+    "\n",
+    "k4cv.move(4, 4, 0)\n",
+    "RE(bp.rel_scan([k4cv], k4cv.h, -0.2, 0.2, k4cv.k, 0.2, -0.2, 10))"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "test",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.9"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

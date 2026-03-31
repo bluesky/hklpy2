@@ -1,0 +1,284 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "6de7a703",
+   "metadata": {},
+   "source": [
+    "# Use `E4CV`'s `q` calculation engine\n",
+    "\n",
+    "We'll demonstrate the `q` calculation engine of the {ref}`E4CV\n",
+    "<geometries-hkl_soleil-e4cv>` (4-circle Eulerian in vertical scattering)\n",
+    "geometry.\n",
+    "\n",
+    "Many of the diffractometer geometries support different calculation *engines*.\n",
+    "By default, many [geometries](../diffractometers.rst) in *hklpy2* provide `h`,\n",
+    "`k`, & `l` pseudo positioners (the *hkl* engine) since this is the most common\n",
+    "case. For example, {ref}`E4CV <geometries-hkl_soleil-e4cv>` supports several\n",
+    "calculation engines:\n",
+    "\n",
+    "engine | pseudo(s) | real(s)\n",
+    ":--- | :--- | :---\n",
+    "`hkl` | `h`, `k`, `l` | `omega`, `chi`, `phi`, `tth`\n",
+    "`psi` | `psi` | `omega`, `chi`, `phi`, `tth`\n",
+    "`q` | `q` | `tth`\n",
+    "`incidence` | `incidence`, `azimuth` | `omega`, `chi`, `phi`\n",
+    "`emergence` | `emergence`, `azimuth` | `omega`, `chi`, `phi`, `tth`\n",
+    "\n",
+    "---\n",
+    "\n",
+    "**NOTE**:  The choice of calculation engine is set when creating an instance of\n",
+    "the {class}`~hklpy2.diffract.DiffractometerBase()` class.  Once the\n",
+    "diffractometer object is created, the calculation engine cannot be changed."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "98fb6c04",
+   "metadata": {},
+   "source": [
+    "## `q` engine\n",
+    "\n",
+    "The [`q` engine](https://people.debian.org/~picca/hkl/hkl.html#org7ef08ba) is easy\n",
+    "to demonstrate since it only involves the actions of the `tth` circle  ($q=4\\pi\\sin(\\theta)/\\lambda$ where $\\theta$ is half of `tth`) **and** no crystal orientation reflections are necessary."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "1f02b71b",
+   "metadata": {},
+   "source": [
+    "## Create the diffractometer object.\n",
+    "\n",
+    "Specify the `q` calculation engine (`engine=\"q\"`) when you create the diffractometer object.  (The default is the `hkl` engine.)  Once the object is created, the calculation engine cannot be changed."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "06bc260e",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=1.0\n",
+      "pseudos: q=0\n",
+      "reals: omega=0, chi=0, phi=0, tth=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "import hklpy2\n",
+    "\n",
+    "fourcq = hklpy2.creator(\n",
+    "    name=\"fourcq\",\n",
+    "    geometry=\"E4CV\",\n",
+    "    solver=\"hkl_soleil\",\n",
+    "    solver_kwargs=dict(engine=\"q\")\n",
+    ")\n",
+    "fourcq.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a9037101",
+   "metadata": {},
+   "source": [
+    "Test the `q` engine by calculating the angles associated with $Q=1.00$ 1/angstrom. There is only one pseudo positioner so only one value is provided to the `forward()` calculation.  Notice that only the `tth` position is computed."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "5ee944a4",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "q to angle: fourcq.forward(1) = Hklpy2DiffractometerRealPos(omega=0, chi=0, phi=0, tth=9.128558416066)\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f\"q to angle: {fourcq.forward(1) = }\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "91f450d9",
+   "metadata": {},
+   "source": [
+    "Calculate the $q$ associated with `tth=1.0` degrees.  While four real motors are defined, only `tth` is used for the calculation so only one value is provided to the `inverse()` calculation.  "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "cacda0c1",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "angle to q: fourcq.inverse(1) = Hklpy2DiffractometerPseudoPos(q=0)\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f\"angle to q: {fourcq.inverse(1) = }\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "c901a28b",
+   "metadata": {},
+   "source": [
+    "Show the position of the `fourcq` diffractometer."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "5bc787d2",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=1.0\n",
+      "pseudos: q=0\n",
+      "reals: omega=0, chi=0, phi=0, tth=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "fourcq.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "8270653e",
+   "metadata": {},
+   "source": [
+    "Move `fourcq` to $Q=1.0$ 1/Angstrom and show the settings again."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "a74459cb",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=1.0\n",
+      "pseudos: q=1.0\n",
+      "reals: omega=0, chi=0, phi=0, tth=9.1286\n"
+     ]
+    }
+   ],
+   "source": [
+    "fourcq.move(1, wait=True)\n",
+    "fourcq.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "03a1f3e7",
+   "metadata": {},
+   "source": [
+    "Show all the `fourcq` diffractometer settings."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "d24c85d9",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "diffractometer='fourcq'\n",
+      "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='q', mode='q')\n",
+      "Sample(name='sample', lattice=Lattice(a=1, system='cubic'))\n",
+      "Orienting reflections: []\n",
+      "U=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]\n",
+      "UB=[[6.2832, 0.0, 0.0], [0.0, 6.2832, 0.0], [0.0, 0.0, 6.2832]]\n",
+      "constraint: -180.0 <= omega <= 180.0\n",
+      "constraint: -180.0 <= chi <= 180.0\n",
+      "constraint: -180.0 <= phi <= 180.0\n",
+      "constraint: -180.0 <= tth <= 180.0\n",
+      "Mode: q\n",
+      "beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source', 'energy': 12.3984, 'wavelength': 1.0, 'energy_units': 'keV', 'wavelength_units': 'angstrom'}\n",
+      "pseudos: q=1.0\n",
+      "reals: omega=0, chi=0, phi=0, tth=9.1286\n"
+     ]
+    }
+   ],
+   "source": [
+    "fourcq.wh(full=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9bec27e7",
+   "metadata": {},
+   "source": [
+    "Move to a different wavelength (0.5 Angstrom) and move back to the same $Q$ of 1.000 1/Angstrom."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "63071b7a",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=0.5\n",
+      "pseudos: q=1.0\n",
+      "reals: omega=0, chi=0, phi=0, tth=4.5607\n"
+     ]
+    }
+   ],
+   "source": [
+    "fourcq.beam.wavelength.put(0.5)\n",
+    "fourcq.move(1, wait=True)\n",
+    "fourcq.wh()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "hklpy2",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.11"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

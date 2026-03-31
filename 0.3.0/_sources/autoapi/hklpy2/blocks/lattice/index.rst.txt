@@ -1,0 +1,236 @@
+hklpy2.blocks.lattice
+=====================
+
+.. py:module:: hklpy2.blocks.lattice
+
+.. autoapi-nested-parse::
+
+   Lattice parameters for a single crystal.
+
+   .. autosummary::
+
+       ~DEFAULT_LATTICE_DIGITS
+       ~Lattice
+       ~SI_LATTICE_PARAMETER
+       ~SI_LATTICE_PARAMETER_UNCERTAINTY
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hklpy2.blocks.lattice.logger
+   hklpy2.blocks.lattice.DEFAULT_LATTICE_DIGITS
+   hklpy2.blocks.lattice.SI_LATTICE_PARAMETER
+   hklpy2.blocks.lattice.SI_LATTICE_PARAMETER_UNCERTAINTY
+   hklpy2.blocks.lattice.LatticeDictType
+   hklpy2.blocks.lattice.CrystalSystem
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hklpy2.blocks.lattice.Lattice
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: DEFAULT_LATTICE_DIGITS
+   :type:  int
+   :value: 4
+
+
+   Default number of digits to display for lattice parameters.
+
+.. py:data:: SI_LATTICE_PARAMETER
+   :type:  float
+   :value: 5.431020511
+
+
+   2018 CODATA recommended lattice parameter of silicon, Angstrom.
+
+   :see: https://physics.nist.gov/cgi-bin/cuu/Value?asil
+
+.. py:data:: SI_LATTICE_PARAMETER_UNCERTAINTY
+   :type:  float
+   :value: 8.9e-08
+
+
+   2018 CODATA reported uncertainty of :data:`SI_LATTICE_PARAMETER`.
+
+.. py:data:: LatticeDictType
+
+.. py:data:: CrystalSystem
+
+.. py:class:: Lattice(a: float, b: float = None, c: float = None, alpha: float = 90.0, beta: float = None, gamma: float = None, *, angle_units: Optional[str] = None, digits: Optional[int] = None, length_units: Optional[str] = None, tol: Optional[float] = 1e-12)
+
+   Crystal lattice parameters.
+
+   If only the parameter ``a`` is given, the cell is treated as cubic: ``b``
+   and ``c`` are set equal to ``a``, and α, β, γ are 90°. Supplying the
+   nonredundant parameters for another crystal system (for example, the
+   hexagonal case below) defines that lattice.
+
+   EXAMPLE::
+
+       >>> from hklpy2.blocks.lattice import Lattice
+       >>> Lattice(4.74, c=9.515, gamma=120)
+       Lattice(a=4.74, c=9.515, gamma=120, system='hexagonal')
+
+   PARAMETERS
+
+   a, b, c : float
+       Unit cell edge lengths (default units: Angstrom unless length_units specified)
+   alpha, beta, gamma : float
+       Unit cell angles (default units: degrees unless angle_units specified)
+   angle_units : str, optional
+       Units for unit cell angles (e.g., 'degrees', 'radians')
+   digits : int, optional
+       Number of digits to display.  (default: 4)
+   length_units : str, optional
+       Units for unit cell lengths (e.g., 'angstrom', 'nm', 'pm')
+
+   .. autosummary::
+
+       ~_asdict
+       ~_fromdict
+       ~__eq__
+       ~__repr__
+       ~crystal_system
+       ~system_parameter_names
+
+
+   .. py:attribute:: a
+
+
+   .. py:attribute:: b
+
+
+   .. py:attribute:: c
+
+
+   .. py:attribute:: alpha
+      :value: 90.0
+
+
+
+   .. py:attribute:: beta
+      :value: 90.0
+
+
+
+   .. py:attribute:: gamma
+      :value: 90.0
+
+
+
+   .. py:property:: length_units
+      :type: str
+
+
+      Units for lattice lengths (e.g. 'angstrom').
+
+
+   .. py:property:: angle_units
+      :type: str
+
+
+      Units for lattice angles (e.g. 'degrees').
+
+
+   .. py:property:: digits
+      :type: int
+
+
+      Number of digits to display.
+
+
+   .. py:attribute:: tol
+      :value: 1e-12
+
+
+
+   .. py:attribute:: cartesian_lattice_matrix
+
+
+   .. py:attribute:: B
+
+
+   .. py:method:: __eq__(latt) -> bool
+
+      Compare two lattices for equality.
+
+      Equality is defined by the six canonical lattice parameters
+      (a, b, c, alpha, beta, gamma).  This method attempts to convert
+      lengths and angles to the internal units before comparison.  If
+      conversion fails for any reason, it falls back to a raw numeric
+      comparison of the parameters.
+
+      EXAMPLE::
+
+          lattice1 == lattice2
+
+
+
+   .. py:method:: __repr__() -> str
+
+      Standard representation of lattice.
+
+
+
+   .. py:method:: _asdict() -> LatticeDictType
+
+      Return a new dict which maps lattice constant names and values.
+
+
+
+   .. py:method:: _fromdict(config: LatticeDictType)
+
+      Redefine lattice from a (configuration) dictionary.
+
+
+
+   .. py:method:: compute_B(with_2pi: bool = True) -> numpy.typing.NDArray[numpy.float64]
+
+      Compute B (reciprocal lattice matrix) from the Cartesian lattice matrix.
+
+      B: matrix containing the three Cartesian reciprocal lattice vectors, b1, b2, b3.
+
+      Returns the tuple of b1, b2, b3.
+
+      If ``with_2pi=True`` (default), reciprocal vectors include factor 2π (common
+      in physics). Set ``with_2pi=False`` to get the crystallographic reciprocal
+      (no 2π).
+
+
+
+   .. py:method:: compute_cartesian_lattice() -> numpy.typing.NDArray[numpy.float64]
+
+      Transform the lattice parameters into Cartesian coordinates.
+
+      Returns the (real-space) Cartesian lattice matrix.
+
+
+
+   .. py:method:: system_parameter_names(system: str) -> LatticeDictType
+
+      Return list of lattice parameter names for this crystal system.
+
+
+
+   .. py:property:: crystal_system
+      :type: str
+
+
+      The crystal system of this lattice.  By inspection of the parameters.
+
+      .. seealso:: https://dictionary.iucr.org/Crystal_system
+
+
