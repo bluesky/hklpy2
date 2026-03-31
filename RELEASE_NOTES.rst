@@ -33,7 +33,7 @@ describe future plans.
 0.3.1
 ##########
 
-Release expected 2026-03-31.
+Released 2026-03-31.
 
 New Features
 ------------
