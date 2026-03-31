@@ -74,7 +74,7 @@ jobs:
           echo "TMP_DIR=${TMP_DIR}"
 
       - name: Sphinx
-        run: sphinx-build -M html ./docs/source "${TMP_DIR}/build"
+        run: sphinx-build -W --keep-going -M html ./docs/source "${TMP_DIR}/build"
 
       - name: Define ... HTML_DIR
         run: echo "HTML_DIR=${TMP_DIR}/build/html" >> ${GITHUB_ENV}

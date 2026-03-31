@@ -19,7 +19,7 @@ Steps to Define a Diffractometer Object
 A Diffractometer Object
 ========================
 
-na me
+name
 ----
 
 The ``name`` of a :class:`~hklpy2.diffract.DiffractometerBase()` instance is
@@ -226,11 +226,8 @@ Keep in mind these considerations:
 4. Only restore orientation reflections from a **matching**
    diffractometer geometry (such as ``E4CV``).  Mismatch will trigger an exception.
 
-----
-
 .. _diffract_axes:
 
-=========================
 Diffractometer Axis Names
 =========================
 
