@@ -67,7 +67,6 @@ class Core:
         ~add_sample
         ~assign_axes
         ~calc_UB
-        ~clear_presets
         ~forward
         ~geometries
         ~inverse
@@ -673,7 +672,7 @@ class Core:
         in the current mode.
 
         The getter returns the **live mutable dictionary** for the current
-        mode. To remove a single preset key without clearing all presets, call
+        mode. To remove a single preset key, call
         ``diffractometer.core.presets.pop("phi")``.
 
         Returns a dictionary of axis name:value pairs for the current mode.
@@ -691,12 +690,12 @@ class Core:
             >>> diffractometer.core.presets
             {}
 
-            >>> # Switch to another mode - presets are saved per mode
+            >>> # Each mode stores its own preset dict
             >>> diffractometer.core.presets = {"phi": 45.0}
             >>> diffractometer.core.mode = "constant_omega"
             >>> diffractometer.core.presets = {"omega": 30.0}
 
-            >>> # Switch back - phi preset is restored
+            >>> # Switch back — phi preset is restored
             >>> diffractometer.core.mode = "constant_phi"
             >>> diffractometer.core.presets
             {'phi': 45.0}
@@ -709,18 +708,12 @@ class Core:
     @presets.setter
     def presets(self, values: AnyAxesType) -> None:
         """
-        Set preset values for the current mode.
+        Set (replace) preset values for the current mode.
 
-        Only axes that are read-only (constant) in the current mode will be
-        stored. Values for computed axes are silently ignored.
-
-        .. important::
-
-            The setter **updates** (merges) the preset dictionary — it does
-            **not** replace it. Each call adds or overwrites individual keys
-            while leaving other existing keys unchanged. To discard existing
-            presets before setting new ones, call ``clear_presets()`` first,
-            or remove individual keys with ``presets.pop("axis")``.
+        The preset dictionary for the current mode is **replaced** by the
+        supplied values. Only axes that are read-only (constant) in the
+        current mode will be stored; values for computed axes are silently
+        ignored.
 
         .. note::
 
@@ -747,74 +740,35 @@ class Core:
             >>> diffractometer.core.presets = {"phi": 45.0}
             >>> # forward() now uses phi=45, not the motor position phi=10
 
-            >>> # The setter UPDATES — a second call accumulates entries
-            >>> diffractometer.core.presets = {"phi": 90.0}  # overwrites phi
+            >>> # Assignment replaces — not merges — the preset dict
+            >>> diffractometer.core.presets = {"phi": 90.0}
             >>> diffractometer.core.presets
             {'phi': 90.0}
 
-            >>> # To remove one preset key without clearing all:
+            >>> # To remove one preset key:
             >>> diffractometer.core.presets.pop("phi")
             90.0
             >>> diffractometer.core.presets
             {}
 
-            >>> # To replace all presets, clear first then set:
-            >>> diffractometer.core.clear_presets()
-            >>> diffractometer.core.presets = {"phi": 45.0}
+            >>> # To clear all presets for the current mode:
+            >>> diffractometer.core.presets = {}
         """
         mode = self.mode
-        if mode not in self._mode_presets:
-            self._mode_presets[mode] = {}
-
         constant_axes = self.constant_axis_names
+        new_presets: dict = {}
 
         if isinstance(values, dict):
             for axis, value in values.items():
                 if axis in constant_axes:
-                    self._mode_presets[mode][axis] = float(value)
+                    new_presets[axis] = float(value)
         else:
             standardized = self.standardize_reals(values)
             for axis, value in standardized.items():
                 if axis in constant_axes:
-                    self._mode_presets[mode][axis] = float(value)
+                    new_presets[axis] = float(value)
 
-    def clear_presets(self, mode: Optional[str] = None) -> None:
-        """
-        Clear preset values.
-
-        After clearing, ``forward()`` will use the current motor positions
-        for the constant axes.
-
-        To remove a single preset key rather than clearing all presets for a
-        mode, use ``diffractometer.core.presets.pop("axis")`` instead.
-
-        PARAMETERS
-
-        mode str or None:
-            If provided, clear presets only for that mode.
-            If None (default), clear presets for all modes.
-
-        EXAMPLE::
-
-            >>> diffractometer.core.presets = {"phi": 45.0}
-            >>> diffractometer.core.presets
-            {'phi': 45.0}
-
-            >>> # Remove a single key without clearing all presets:
-            >>> diffractometer.core.presets.pop("phi")
-            45.0
-
-            >>> diffractometer.core.presets = {"phi": 45.0}
-            >>> diffractometer.core.clear_presets()  # Clear all modes
-            >>> diffractometer.core.presets
-            {}
-
-            >>> diffractometer.core.clear_presets("constant_omega")  # One mode only
-        """
-        if mode is None:
-            self._mode_presets.clear()
-        elif mode in self._mode_presets:
-            del self._mode_presets[mode]
+        self._mode_presets[mode] = new_presets
 
     @property
     def constant_axis_names(self) -> list[str]:

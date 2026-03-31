@@ -46,9 +46,13 @@ describe future plans.
     ------------
 
     * Add ``preset`` Glossary entry; alphabetize Glossary entries. (:issue:`202`)
-    * Document ``presets`` setter update (merge) behavior, per-mode storage, and
+    * ``presets`` setter now **replaces** the preset dictionary for the current
+      mode (standard Python assignment semantics) rather than merging into it.
+      Use ``presets = {}`` to clear; ``clear_presets()`` is removed.
+      (:issue:`219`)
+    * Document ``presets`` setter replace behavior, per-mode storage, and
       effect on ``forward()`` solutions. Add how-to guide and Core concepts
-      summary table. (:issue:`200`)
+      summary table. (:issue:`200`, :issue:`219`)
     * Improve Sphinx Index consistency: primary ``!term`` entries now point to
       the most substantive page for each term rather than the Glossary.
       (:issue:`202`)

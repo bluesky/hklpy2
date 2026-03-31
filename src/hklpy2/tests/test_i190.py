@@ -174,37 +174,35 @@ def test_forward_with_presets(e4cv, parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                clear_mode="constant_phi",
-            ),
+            dict(first={"phi": 45.0}, second={"phi": 90.0}, expected={"phi": 90.0}),
             does_not_raise(),
-            id="clear presets for mode",
+            id="second assignment replaces first",
+        ),
+        pytest.param(
+            dict(first={"phi": 45.0}, second={}, expected={}),
+            does_not_raise(),
+            id="assign empty dict clears presets",
         ),
         pytest.param(
             dict(
-                clear_mode=None,
+                first={"phi": 45.0},
+                second={"phi": 90.0, "omega": 10.0},
+                expected={"phi": 90.0},
             ),
             does_not_raise(),
-            id="clear all presets",
+            id="non-constant axes silently dropped on replace",
         ),
     ],
 )
-def test_clear_presets(e4cv, parms, context):
+def test_presets_replace_semantics(e4cv, parms, context):
     """
-    Test that clear_presets() removes presets.
+    Test that the presets setter replaces (not merges) the dict.
     """
     with context:
         e4cv.core.mode = "constant_phi"
-        e4cv.core.presets = {"phi": 45.0}
-
-        assert len(e4cv.core.presets) > 0
-
-        e4cv.core.clear_presets(parms["clear_mode"])
-
-        if parms["clear_mode"] is None:
-            assert len(e4cv.core._mode_presets) == 0
-        else:
-            assert parms["clear_mode"] not in e4cv.core._mode_presets
+        e4cv.core.presets = parms["first"]
+        e4cv.core.presets = parms["second"]
+        assert e4cv.core.presets == parms["expected"]
 
 
 @pytest.mark.parametrize(
