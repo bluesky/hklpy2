@@ -66,6 +66,9 @@ describe future plans.
     Fixes
     -----
 
+    * ``%wa`` bluesky magic raises ``TypeError`` for diffractometers under
+      numpy 2.x; this is a bluesky upstream bug triggered by numpy 2.0
+      tightening ``ndarray.__format__``. (:issue:`201`)
     * ``cahkl()`` now returns solutions at motor positions that previously
       yielded no results. (:issue:`193`)
     * ``calc_UB()`` now raises a clear ``ValueError`` with diagnostic hints
