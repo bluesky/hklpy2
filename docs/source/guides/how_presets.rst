@@ -68,9 +68,8 @@ Only the constant-axis values are stored; the rest are silently dropped.
 
 .. important::
 
-    The setter **replaces** the preset dictionary for the current mode — it
-    does **not** merge with existing presets.  Each assignment is a fresh
-    replacement.
+    The setter **replaces** the preset dictionary for the current mode.
+    Each assignment is a fresh replacement.
 
 ::
 
