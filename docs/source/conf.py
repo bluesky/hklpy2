@@ -43,6 +43,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.coverage",
+    "sphinx.ext.extlinks",
     "sphinx.ext.inheritance_diagram",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
@@ -156,6 +157,11 @@ autodoc_mock_imports = """
     tiled
     tqdm
 """.split()
+
+extlinks = {
+    "issue": (f"{github_url}/issues/%s", "issue #%s"),
+    "pr": (f"{github_url}/pull/%s", "PR #%s"),
+}
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
