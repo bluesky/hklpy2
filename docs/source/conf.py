@@ -105,6 +105,13 @@ html_theme_options = {
     "github_url": "https://github.com/bluesky/hklpy2",
     "use_edit_page_button": True,
     "navbar_align": "content",
+    "navbar_end": ["version-switcher", "navbar-icon-links"],
+    "switcher": {
+        # Always load from 'latest' so all versions see the same list.
+        "json_url": "https://bluesky.github.io/hklpy2/latest/_static/switcher.json",
+        "version_match": release,
+    },
+    "check_switcher": False,
 }
 
 rst_prolog = """

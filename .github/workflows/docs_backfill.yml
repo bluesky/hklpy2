@@ -1,0 +1,132 @@
+name: Backfill Docs for a Tagged Version
+
+# Use this workflow to publish docs for a tag that was released before
+# versioned docs were introduced.  Run manually from the Actions tab.
+#
+# Usage:
+#   1. Go to Actions -> "Backfill Docs for a Tagged Version"
+#   2. Click "Run workflow"
+#   3. Enter the tag (e.g. "0.3.1") in the input field
+#   4. Click "Run workflow"
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and publish (e.g. 0.3.1)'
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+
+  backfill:
+    name: Backfill docs for tag ${{ github.event.inputs.tag }}
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Deploy Information
+        run: |
+          echo "Building and publishing docs for tag: ${{ github.event.inputs.tag }}"
+
+      - name: Set timezone
+        uses: szenius/set-timezone@v2.0
+        with:
+          timezoneLinux: "America/Chicago"
+
+      - name: Make Temporary Directory
+        run: |
+          echo "TMP_DIR=$(mktemp -d)" >> ${GITHUB_ENV}
+          echo "DOC_VERSION=${{ github.event.inputs.tag }}" >> ${GITHUB_ENV}
+
+      - name: install pandoc
+        run: |
+          set -vxeuo pipefail
+          sudo apt-get update && sudo apt-get -y install pandoc
+
+      - name: Checkout tag
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.inputs.tag }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install package and doc requirements
+        run: pip install -e .[doc] -v
+
+      - name: Build docs
+        run: |
+          HTML_DIR="${TMP_DIR}/build/${DOC_VERSION}"
+          echo "HTML_DIR=${HTML_DIR}" >> ${GITHUB_ENV}
+          sphinx-build -W --keep-going -b html ./docs/source "${HTML_DIR}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: hklpy2-docs-${{ env.DOC_VERSION }}
+          path: ${{ env.HTML_DIR }}
+
+      - name: Deploy to gh-pages/<version>/
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ${{ env.HTML_DIR }}
+          destination_dir: ${{ env.DOC_VERSION }}
+          keep_files: true
+
+      - name: Update switcher.json on gh-pages
+        run: |
+          set -euo pipefail
+          VERSION="${DOC_VERSION}"
+          BASE_URL="https://bluesky.github.io/hklpy2"
+
+          git clone --branch gh-pages --depth 1 \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" \
+            gh-pages-clone
+
+          SWITCHER="gh-pages-clone/latest/_static/switcher.json"
+
+          if [ ! -f "${SWITCHER}" ]; then
+            echo "switcher.json not found at ${SWITCHER} — skipping update"
+            exit 0
+          fi
+
+          python3 - <<PYEOF
+          import json, os
+
+          version = os.environ["VERSION"]
+          base_url = os.environ["BASE_URL"]
+          switcher_path = os.environ["SWITCHER"]
+
+          with open(switcher_path) as f:
+              entries = json.load(f)
+
+          versions = [e["version"] for e in entries]
+          if version not in versions:
+              new_entry = {"version": version, "url": f"{base_url}/{version}/"}
+              entries.insert(1, new_entry)  # after "latest"
+              with open(switcher_path, "w") as f:
+                  json.dump(entries, f, indent=4)
+              print(f"Added {version} to switcher.json")
+          else:
+              print(f"{version} already in switcher.json — no change")
+          PYEOF
+        env:
+          SWITCHER: gh-pages-clone/latest/_static/switcher.json
+
+      - name: Commit updated switcher.json
+        run: |
+          cd gh-pages-clone
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add latest/_static/switcher.json
+          git diff --cached --quiet || git commit -m "ci: add ${DOC_VERSION} to switcher.json (backfill)"
+          git push
