@@ -33,7 +33,7 @@ It could be re-organized.
     * [x] Solver: python-wrapped components from `libhkl`
     * [ ] Solver: SPEC
     * [ ] easy to switch between solvers at run time so that new things can be validated
-  * [ ] [analyzers and polarizers](https://github.com/bluesky/hklpy/issues/92)
+  * [ ] [analyzers and polarizers](https://github.com/bluesky/hklpy/issues/92) (:issue:`222`)
   * Reflections
     * [x] [reflection is a Python class](https://github.com/bluesky/hklpy/issues/189)
     * [x] [`addReflection()`, when to use current positions](https://github.com/bluesky/hklpy/issues/219)
@@ -115,8 +115,8 @@ It could be re-organized.
   * [x] transformation : forward (pseudos -> reals)
   * [x] transformation : inverse (reals -> pseudos)
 * [ ] Performance
-  * [ ] minimum 2,000 `inverse()` operations/second
-  * [ ] minimum 2,000 `forward()` operations/second
+  * [ ] minimum 2,000 `inverse()` operations/second (:issue:`223`)
+  * [ ] minimum 2,000 `forward()` operations/second (:issue:`221`)
 * [ ] Backends - feature support
   * [ ] *ad hoc* geometries
   * [ ] diffcalc_dls
