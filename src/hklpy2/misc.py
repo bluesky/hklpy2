@@ -30,6 +30,7 @@ Miscellaneous Support.
     ~pick_closest_solution
     ~pick_first_solution
     ~roundoff
+    ~creator_from_config
     ~solver_factory
     ~solvers
     ~unique_name
@@ -1146,6 +1147,109 @@ def solvers() -> Mapping[str, "SolverBase"]:
     }
     # fmt: on
     return entries
+
+
+def creator_from_config(config: Union[dict, str, pathlib.Path]):
+    """
+    Create a simulated diffractometer from a saved configuration.
+
+    Parses the configuration for the solver, geometry, and axis names, then
+    constructs a simulator (all axes are soft positioners — no hardware
+    connection) and restores the full orientation (samples, reflections, UB
+    matrix, wavelength, constraints) from the configuration.
+
+    PARAMETERS
+
+    config : dict, str, or pathlib.Path
+        Configuration dictionary, or path to a YAML configuration file
+        previously saved with ``diffractometer.export()``.
+
+    RETURNS
+
+    DiffractometerBase
+        A fully configured simulated diffractometer instance.
+
+    EXAMPLE::
+
+        >>> import hklpy2
+        >>> sim = hklpy2.creator_from_config("e4cv-config.yml")
+        >>> sim.wh()
+
+    SEE ALSO
+
+        :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
+    """
+    from .diffract import creator
+
+    if isinstance(config, (str, pathlib.Path)):
+        config = load_yaml_file(config)
+    if not isinstance(config, dict):
+        raise TypeError(
+            f"Expected a dict or path to a YAML file. Received: {type(config)!r}"
+        )
+    if "_header" not in config:
+        raise KeyError("Configuration is missing '_header' key.")
+
+    solver_cfg = config.get("solver", {})
+    solver_name = solver_cfg.get("name", "hkl_soleil")
+    geometry = solver_cfg.get("geometry", "E4CV")
+
+    solver_kwargs: dict = {}
+    engine = solver_cfg.get("engine")
+    if engine is not None:
+        solver_kwargs["engine"] = engine
+
+    axes_cfg = config.get("axes", {})
+    axes_xref = axes_cfg.get("axes_xref", {})
+    pseudo_axes = axes_cfg.get("pseudo_axes", [])
+    real_axes = [
+        ax for ax in axes_cfg.get("real_axes", []) if ax not in set(pseudo_axes)
+    ]
+
+    # Sort diffractometer real axis names into the order the solver expects,
+    # using axes_xref (diffractometer_name -> solver_canonical_name) and
+    # solver.real_axes (solver canonical order).
+    solver_real_order = solver_cfg.get("real_axes", [])
+    if solver_real_order:
+        solver_to_diff_real = {v: k for k, v in axes_xref.items() if k in real_axes}
+        real_axes = [
+            solver_to_diff_real[s]
+            for s in solver_real_order
+            if s in solver_to_diff_real
+        ]
+
+    # Sort diffractometer pseudo axis names into the order the solver expects,
+    # using axes_xref (diffractometer_name -> solver_canonical_name).
+    # The solver canonical pseudo order is derived from the xref values for pseudos.
+    pseudo_set = set(pseudo_axes)
+    solver_to_diff_pseudo = {v: k for k, v in axes_xref.items() if k in pseudo_set}
+    # Preserve the solver-canonical order already encoded in axes_xref values;
+    # fall back to the order in axes.pseudo_axes if no xref is available.
+    pseudo_solver_order = [axes_xref.get(p, p) for p in pseudo_axes]
+    pseudo_axes_ordered = [
+        solver_to_diff_pseudo[s]
+        for s in pseudo_solver_order
+        if s in solver_to_diff_pseudo
+    ] or pseudo_axes
+
+    reals = {name: None for name in real_axes}
+
+    # Pass _real and _pseudo so creator() maps axes in solver-expected order
+    # even when diffractometer names differ from solver canonical names.
+    diffractometer_name = config.get("name", geometry.lower())
+
+    sim = creator(
+        name=diffractometer_name,
+        solver=solver_name,
+        geometry=geometry,
+        solver_kwargs=solver_kwargs,
+        reals=reals,
+        _real=real_axes if real_axes else None,
+        _pseudo=pseudo_axes_ordered if pseudo_axes_ordered else None,
+    )
+
+    sim.restore(config)
+    return sim
 
 
 def unique_name(prefix: str = "", length: int = 7) -> str:
