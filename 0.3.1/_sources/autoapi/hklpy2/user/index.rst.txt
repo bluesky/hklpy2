@@ -1,0 +1,550 @@
+hklpy2.user
+===========
+
+.. py:module:: hklpy2.user
+
+.. autoapi-nested-parse::
+
+   Simplified interface for |hklpy2| diffractometer users.
+
+   .. autosummary::
+
+       ~add_reflection
+       ~add_sample
+       ~cahkl
+       ~cahkl_table
+       ~calc_UB
+       ~get_diffractometer
+       ~list_samples
+       ~or_swap
+       ~remove_reflection
+       ~pa
+       ~remove_sample
+       ~scan_extra
+       ~set_diffractometer
+       ~set_lattice
+       ~set_wavelength
+       ~setor
+       ~solver_summary
+       ~wh
+
+   .. seealso:: :ref:`user_guide.quickstart`
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hklpy2.user.__all__
+   hklpy2.user.logger
+   hklpy2.user._choice
+   hklpy2.user.add_reflection
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hklpy2.user._SelectedDiffractometer
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   hklpy2.user.add_sample
+   hklpy2.user.cahkl
+   hklpy2.user.cahkl_table
+   hklpy2.user.calc_UB
+   hklpy2.user.solver_summary
+   hklpy2.user.get_diffractometer
+   hklpy2.user.list_samples
+   hklpy2.user.or_swap
+   hklpy2.user.pa
+   hklpy2.user.remove_reflection
+   hklpy2.user.remove_sample
+   hklpy2.user.scan_extra
+   hklpy2.user.set_diffractometer
+   hklpy2.user.set_wavelength
+   hklpy2.user.set_lattice
+   hklpy2.user.setor
+   hklpy2.user.wh
+
+
+Module Contents
+---------------
+
+.. py:data:: __all__
+
+.. py:data:: logger
+
+.. py:class:: _SelectedDiffractometer
+
+   Module class to maintain the diffractometer selection.
+
+   .. autosummary::
+
+       ~_selection
+       ~diffractometer
+
+
+   .. py:attribute:: _selection
+      :value: None
+
+
+      The current diffractometer.
+
+
+   .. py:property:: diffractometer
+      :type: hklpy2.diffract.DiffractometerBase
+
+
+
+.. py:data:: _choice
+
+.. py:function:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
+
+   Add (and select) a new crystal sample.
+
+   EXAMPLE:
+
+   .. code-block:: python
+
+       >>> add_sample("example", 2, 4, 5)
+       Sample(name='example',
+           lattice=Lattice(a=2, b=4, c=5, system='orthorhombic'))
+   .. seealso:: :func:`~hklpy2.user.list_samples` :func:`~hklpy2.user.remove_sample`
+
+
+.. py:function:: cahkl(h: float, k: float, l: float) -> Union[list, str]
+
+   Calculate motor positions for specified 'h, k l' - DOES NOT MOVE motors.
+
+   Returns a 'RealPos' object or the text of the exception.
+
+   EXAMPLE:
+
+   .. code-block:: python
+
+       >>> cahkl(1,-1, 1)
+       Hklpy2DiffractometerRealPos(
+           omega=12.254918848391,
+           chi=-35.26440860898,
+           phi=45.015980687529,
+           tth=24.509837696782)
+
+
+.. py:function:: cahkl_table(*reflections: list[hklpy2.misc.AxesTuple], digits=4) -> pyRestTable.Table
+
+   Print a table with motor positions for each reflection given.
+
+   EXAMPLE:
+
+   .. code-block:: python
+       :linenos:
+
+       >>> cahkl_table((1, 1, 0), (1, 1, 1))
+       ======= = ====== ========= ====== ======
+       (hkl)   # omega  chi       phi    tth
+       ======= = ====== ========= ====== ======
+       (1 1 0) 1 45.0   45.0      90.0   90.0
+       (1 1 0) 2 -45.0  -45.0     -90.0  -90.0
+       (1 1 0) 3 45.0   135.0     -90.0  90.0
+       (1 1 0) 4 -135.0 -45.0     -90.0  90.0
+       (1 1 0) 5 -45.0  -135.0    90.0   -90.0
+       (1 1 0) 6 -135.0 -135.0    90.0   90.0
+       (1 1 1) 1 60.0   35.2644   45.0   120.0
+       (1 1 1) 2 -60.0  -35.2644  -135.0 -120.0
+       (1 1 1) 3 -60.0  -144.7356 45.0   -120.0
+       (1 1 1) 4 -120.0 -35.2644  -135.0 120.0
+       (1 1 1) 5 -120.0 -144.7356 45.0   120.0
+       (1 1 1) 6 60.0   144.7356  -135.0 120.0
+       ======= = ====== ========= ====== ======
+
+   :param reflections: This is a list of reflections where
+                       each reflection is a tuple of 3 numbers
+                       specifying (h, k, l) of the reflection
+                       to compute the ``forward()`` computation.
+
+                       Example:  ``[(1,0,0), (1,1,1)]``
+   :type reflections: list(tuple(number,number,number))
+   :param digits: Number of digits to roundoff each position
+                  value.  Default is 5.
+   :type digits: int
+
+
+.. py:function:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str], wavelength: Optional[float] = None) -> hklpy2.misc.Matrix3x3
+
+   Compute the UB matrix with two reflections.
+
+   EXAMPLE:
+
+   .. code-block:: python
+       :linenos:
+
+       >>> r400 = setor(name='r400', 4, 0, 0, omega=-145.451, chi=0, phi=0, tth=69.066)
+       >>> r004 = setor(name='r004', 0, 0, 4, omega=-145.451, chi=90, phi=0, tth=69.066)
+       >>> calc_UB(r400, r004)
+       [[-0.000279252712, 0.999999913446, -0.000279252646],
+       [0.0, -0.000279400627, -1.000000132342],
+       [-1.000000087766, -0.000280008582, 2.82915e-07]]
+
+
+
+.. py:function:: solver_summary(write=True) -> pyRestTable.Table
+
+   Table of diffractometer solver's modes, axes, ...
+
+   EXAMPLE:
+
+   .. code-block:: python
+       :linenos:
+
+       >>> import hklpy2
+       >>> from hklpy2.user import *
+       >>> e4cv = hklpy2.creator(name="e4cv")
+       >>> set_diffractometer(e4cv)
+       >>> solver_summary()
+       ========= ================== ================== ==================== ==================== ===============
+       engine    mode               pseudo(s)          real(s)              writable(s)          extra(s)
+       ========= ================== ================== ==================== ==================== ===============
+       hkl       bissector          h, k, l            omega, chi, phi, tth omega, chi, phi, tth
+       hkl       constant_omega     h, k, l            omega, chi, phi, tth chi, phi, tth
+       hkl       constant_chi       h, k, l            omega, chi, phi, tth omega, phi, tth
+       hkl       constant_phi       h, k, l            omega, chi, phi, tth omega, chi, tth
+       hkl       double_diffraction h, k, l            omega, chi, phi, tth omega, chi, phi, tth h2, k2, l2
+       hkl       psi_constant       h, k, l            omega, chi, phi, tth omega, chi, phi, tth h2, k2, l2, psi
+       psi       psi                psi                omega, chi, phi, tth omega, chi, phi, tth h2, k2, l2
+       q         q                  q                  tth                  tth
+       incidence incidence          incidence, azimuth omega, chi, phi                           x, y, z
+       emergence emergence          emergence, azimuth omega, chi, phi, tth                      x, y, z
+       ========= ================== ================== ==================== ==================== ===============
+
+   .. seealso:: :ref:`geometries.summary_tables`,
+       :meth:`hklpy2.backends.base.SolverBase.summary()`
+
+
+.. py:function:: get_diffractometer() -> Union[hklpy2.diffract.DiffractometerBase, None]
+
+   Return the currently-selected diffractometer (or ``None``).
+
+   EXAMPLE:
+
+   .. code-block:: python
+       :linenos:
+
+       >>> get_diffractometer()
+       Hklpy2Diffractometer(
+           prefix='',
+           name='e4cv',
+           settle_time=0.0,
+           timeout=None, egu='',
+           limits=(0, 0),
+           source='computed',
+           read_attrs=['h', 'h.readback', 'h.setpoint', 'k', 'k.readback', 'k.setpoint', 'l', 'l.readback', 'l.setpoint', 'omega', 'chi', 'phi', 'tth'],
+           configuration_attrs=['geometry', 'solver', 'wavelength', 'h', 'k', 'l'],
+           concurrent=True)
+
+
+.. py:function:: list_samples(full=False) -> None
+
+   Summarize diffractometer's samples.
+
+   Current sample appears first (with prefix ``"> "``).
+
+   EXAMPLE:
+
+   .. code-block:: python
+       :linenos:
+
+       >>> list_samples()
+       > Sample(name='vibranium', lattice=Lattice(a=6.2832, system='cubic'))
+       Sample(name='sample', lattice=Lattice(a=1, system='cubic'))
+
+   .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.remove_sample`
+
+
+.. py:function:: or_swap() -> hklpy2.misc.Matrix3x3
+
+   Swap the first 2 ORienting reflections, re-compute & return new [UB].
+
+   .. note:: The SPEC user community knows this function as ``or_swap``
+       (swap the first two orienting reflections).
+
+   EXAMPLE:
+
+   .. code-block:: python
+       :linenos:
+
+       >>> # define 2 reflections
+       >>> r400 = setor(4, 0, 0, tth=69.0966, omega=-145.451, chi=0, phi=0, wavelength=1.54)
+       >>> r040 = setor(0, 4, 0, tth=69.0966, omega=-145.451, chi=0, phi=90, wavelength=1.54)
+       >>> # calculate UB
+       >>> calc_UB(r400, r040)
+       >>> # swap the two reflections (and recalculate UB)
+       >>> or_swap()
+
+   .. seealso:: :func:`~hklpy2.user.setor`
+
+
+.. py:function:: pa(digits=4) -> None
+
+   Report (all) the diffractometer settings.
+
+   EXAMPLE:
+
+   .. code-block:: python
+       :linenos:
+
+       >>> pa()
+       diffractometer='e4cv'
+       HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')
+       Sample(name='vibranium', lattice=Lattice(a=6.2832, system='cubic'))
+       U=[[0.000278604397, -0.99999996119, -3.9081e-08], [1.6307e-08, 3.9086e-08, -1.0], [0.99999996119, 0.000278604397, 1.6317e-08]]
+       UB=[[0.000278604432, -0.999999952659, -1.87102e-07], [1.6307e-08, 3.9086e-08, -1.000000171333], [1.000000087947, 0.000279360313, -1.88574e-07]]
+       Reflection(name='r400', geometry='E4CV', pseudos={'h': 4, 'k': 0, 'l': 0}, reals={'omega': -145.451, 'chi': 0, 'phi': 0, 'tth': 69.066}, wavelength=1.54, digits=4)
+       Reflection(name='r040', geometry='E4CV', pseudos={'h': 0, 'k': 4, 'l': 0}, reals={'omega': -145.451, 'chi': 0, 'phi': 90, 'tth': 69.066}, wavelength=1.54, digits=4)
+       Reflection(name='r004', geometry='E4CV', pseudos={'h': 0, 'k': 0, 'l': 4}, reals={'omega': -145.451, 'chi': 90, 'phi': 0, 'tth': 69.066}, wavelength=1.54, digits=4)
+       Orienting reflections: ['r040', 'r004']
+       constraint: -180.2 <= omega <= 180.2
+       constraint: -180.2 <= chi <= 180.2
+       constraint: -180.2 <= phi <= 180.2
+       constraint: -180.2 <= tth <= 180.2
+       h=0, k=0, l=0
+       wavelength=1.54
+       omega=0, chi=0, phi=0, tth=0
+
+   .. seealso:: :func:`~hklpy2.user.wh`
+
+
+.. py:function:: remove_reflection(name: str, error: bool = True) -> None
+
+   Pop the named reflection and remove it from list of orienting reflections.
+
+   EXAMPLE:
+
+   .. code-block:: python
+
+       >>> remove_reflection("r100")
+
+   PARAMETERS
+
+   name: str
+       Reflection name to be removed.
+   error: bool
+       When ``True`` (default), ``KeyError`` is raised
+       if ``name`` is not found.  Provide ``error=False`` to skip the exception.
+
+   .. seealso:: :func:`~hklpy2.user.add_reflection`,
+       :func:`~hklpy2.user.or_swap`,
+       :func:`~hklpy2.user.setor`
+
+
+.. py:function:: remove_sample(name: str, error: bool = True) -> None
+
+   Pop the named sample, set "selected" sample name to a valid one.
+
+   EXAMPLE:
+
+   .. code-block:: python
+
+       >>> remove_sample("sample")
+
+   PARAMETERS
+
+   name: str
+       Sample name to be removed.
+   error: bool
+       When ``error=True`` (default):
+
+       =============================   =============
+       and                             will raise
+       =============================   =============
+       ``name`` is not found.          ``KeyError``
+       ``name`` is the only sample.    :class:`~hklpy2.ops.CoreError`
+       =============================   =============
+
+       Provide ``error=False`` to avoid raising an exception.
+
+   .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.list_samples`
+
+
+.. py:function:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.misc.BlueskyPlanType
+
+   Scan diffractometer parameter(s) at constant pseudos or reals.
+
+   Uses selected diffractometer.
+
+   Example
+
+   .. code-block:: python
+       :linenos:
+
+       >>> import hklpy2
+       >>> from hklpy2.user import *
+       >>> e6c = hklpy2.creator(name="e6c", geometry="E6C")
+       >>> set_diffractometer(e6c)
+       >>> e6c.core.mode = "psi_constant_vertical"
+       >>> RE(
+           scan_extra(
+               [noisy_det, e6c],
+               "psi", 0, 150,
+               num=15,
+               pseudos=dict(h=0, k=0, l=2),
+               extras=dict(h2=1, k2=2, l2=0)
+           )
+       )
+
+   Parameters
+
+   detectors: Iterable[Readable]
+       List of readable objects.
+   args: Any
+       Specification of scan axes.  The specification is a repeating
+       pattern of axis (str), start (float), stop (float).
+
+       In general:
+
+       .. code-block:: python
+
+           axis1, start1, stop1,
+           axis2, start2, stop2,
+           ...,
+           axisN, startN, stopN
+
+       Axis is any extra axis name supported by the current diffractometer
+       geometry and mode.
+   num: int
+       Number of points.
+   pseudos: dict
+       Dictionary of pseudo axes positions to be held constant during the scan.
+   reals: dict
+       Dictionary of real axes positions to be held constant during the scan.
+   extras: dict
+       Dictionary of extra axes positions to be held constant during the scan.
+   fail_on_exception: bool
+       When True (deafult: False), scan will raise any exceptions.
+       When False, all exceptions during the scan will be printed to console.
+   md: dict
+       Dictionary of user-supplied metadata.
+
+
+
+.. py:function:: set_diffractometer(diffractometer: Optional[hklpy2.diffract.DiffractometerBase] = None) -> None
+
+   Declare the diffractometer to be used.
+
+   EXAMPLE:
+
+   .. code-block:: python
+
+       >>> set_diffractometer(e4cv)
+
+   .. seealso:: :func:`~hklpy2.user.get_diffractometer`
+
+
+.. py:function:: set_wavelength(value: float, units=None) -> None
+
+   Set the wavelength; if Signal has write access, changes control system.
+
+   EXAMPLE:
+
+   .. code-block:: python
+
+       >>> set_wavelength(123.45, units="pm")
+
+
+.. py:function:: set_lattice(a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4) -> None
+
+   Redefine the sample's lattice.
+
+   EXAMPLE:
+
+   .. code-block:: python
+
+       >>> set_lattice(3, c=4, gamma=120)
+
+
+.. py:function:: setor(h, k, l, *reals: hklpy2.misc.AnyAxesType, wavelength=None, name=None, **kwreals: hklpy2.misc.AxesDict) -> hklpy2.blocks.reflection.Reflection
+
+   Define an ORienting reflection.
+
+   Aliases: :func:`~hklpy2.user.add_reflection`, :func:`~hklpy2.user.setor`
+
+   A reflection is defined by its reciprocal space coordinates (pseudos) and
+   its motor positions (reals).  For convenience of the user, each reflection
+   is named.
+
+   .. note:: The SPEC user community knows this function as ``setor``.
+
+   EXAMPLES::
+
+       >>> setor(4, 0, 0)
+       Reflection(name='r_4ad1', geometry='E4CV', pseudos={'h': 4, 'k': 0, 'l': 0},
+           reals={'omega': -145.451, 'chi': 0, 'phi': 0, 'tth': 69.0966}, wavelength=1.54, digits=4)
+
+       >>> setor(0, 4, 0, -145.451, 0, 90, 69.0966, name="r040")
+       Reflection(name='r040', geometry='E4CV', pseudos={'h': 0, 'k': 4, 'l': 0},
+           reals={'omega': -145.451, 'chi': 0, 'phi': 90, 'tth': 69.0966}, wavelength=1.54, digits=4)
+
+       >>> setor(0, 0, 4, omega=-145.451, chi=90, phi=0, tth=69.0966, name="r004")
+       Reflection(name='r004', geometry='E4CV', pseudos={'h': 0, 'k': 0, 'l': 4},
+           reals={'omega': -145.451, 'chi': 90, 'phi': 0, 'tth': 69.0966}, wavelength=1.54, digits=4)
+
+   PARAMETERS
+
+   h, k, l: float
+       Reciprocal-space coordinates of this reflection.
+   reals: AnyAxesType
+       (optional)
+       Real-space values of this reflection.  Must provide all values in the
+       order expected by the geometry.
+       See *Positions* tip below.
+   kwreals: AxesDict
+       (optional)
+       Real-space axis names and values of this reflection.  Must provide all
+       axes expected by the geometry.
+       See *Positions* tip below.
+   wavelength: float
+       (optional)
+       Wavelength of this reflection.
+       When not specified, use the current diffractometer value.
+   name: str
+       (optional)
+       Reference text identifying this reflection.
+       When not specified, a unique name will be assigned.
+
+   .. tip:: Positions (``reals``, ``kwreals``, **or** omitted entirely):
+
+     * Specified by values (in ``reals``).  Must use expected order.  Will
+       skip ``kwreals`` if also provided.
+     * Specified by names (in ``kwreals``).  Axes, can appear in any order.
+     * ``reals`` and ``kwreals`` can be omitted entirely (use current values
+       from diffractometer)
+
+     See the examples above.
+
+
+.. py:function:: wh(digits=4) -> None
+
+   Report (brief) where is the diffractometer.
+
+   EXAMPLE:
+
+   .. code-block:: python
+       :linenos:
+
+       >>> wh()
+       h=0, k=0, l=0
+       wavelength=1.0
+       omega=0, chi=0, phi=0, tth=0
+
+   .. seealso:: :func:`~hklpy2.user.pa`
+
+
+.. py:data:: add_reflection
+
