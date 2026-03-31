@@ -54,6 +54,9 @@ describe future plans.
       (:issue:`202`)
     * Trim ``concepts/diffract.rst`` to a brief concept overview; move
       guide and example content to ``guides/diffract.rst``. (:issue:`204`)
+    * Trim ``concepts/solvers.rst`` to a brief concept overview; move
+      how-to content to new ``guides/solvers.rst``; add ``entry point``
+      Glossary entry. (:issue:`205`)
     * Use US spelling throughout docs and source. (:issue:`202`)
 
     Fixes
