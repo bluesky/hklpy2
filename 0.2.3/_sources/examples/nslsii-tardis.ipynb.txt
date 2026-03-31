@@ -1,0 +1,632 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# **NSLS-II** **tardis** diffractometer\n",
+    "\n",
+    "The steps to setup *TARDIS* in **hklpy2** are described below. Includes adding a\n",
+    "sample and orienting it with the method of Busing & Levy, Acta Cryst 22 (1967)\n",
+    "457, then calculating and moving in {math}`hkl`.\n",
+    "\n",
+    "*TARDIS* is an environmental chamber with a 3-axis diffractometer (see\n",
+    "*hkl_soleil, E6C* geometry in the [tables](../diffractometers.rst)).  Some of\n",
+    "the real axes are\n",
+    "[renamed](https://github.com/NSLS-II-CSX/profile_collection/blob/fc5d2bc5c542d83c2593b4f5066f52a5b04d748d/startup/csx1/startup/tardis.py#L31-L37).\n",
+    "Some E6C axes do not exist in *TARDIS*; they are fixed at zero.\n",
+    "\n",
+    "The *TARDIS* axes, in the order expected by the E6C geometry:\n",
+    "\n",
+    "TARDIS axis | E6C axis | limit(s)\n",
+    "--- | --- | ---\n",
+    "theta | mu | -181 .. 181\n",
+    "mu | omega | 0\n",
+    "chi | chi | 0\n",
+    "phi | phi | 0\n",
+    "delta | gamma | -5 .. 180\n",
+    "gamma | delta | -5 .. 180\n",
+    "\n",
+    "The next schematic shows the *TARDIS* axes in the E6C geometry.  Energy units\n",
+    "are *eV*, wavelength units are *angstrom*.\n",
+    "\n",
+    "![tardis schematic](../_static/nslsii-tardis.png)\n",
+    "\n",
+    "## Experimental data for comparison\n",
+    "\n",
+    "This example uses data from @cmazzoli's ESRF notes.\n",
+    "\n",
+    "```text\n",
+    "# sample lattice parameters: a=9.069, b=9.069, c=10.390, alpha=90, beta=90, gamma=120\n",
+    "\n",
+    "# Experimentally found reflections @ Lambda = 1.61198 A\n",
+    "#  h, k, l     delta   theta            gamma\n",
+    "# (3, 3, 0) = [64.449, 25.285, 0, 0, 0, -0.871]\n",
+    "# (5, 2, 0) = [79.712, 46.816, 0, 0, 0, -1.374]\n",
+    "# (4, 4, 0) = [90.628, 38.373, 0, 0, 0, -1.156]\n",
+    "# (4, 1, 0) = [56.100, 40.220, 0, 0, 0, -1.091]\n",
+    "# @ Lambda = 1.60911\n",
+    "# (6, 0, 0) = [75.900, 61.000, 0, 0, 0, -1.637]\n",
+    "# @ Lambda = 1.60954\n",
+    "# (3, 2, 0) = [53.090, 26.144, 0, 0, 0, -.933]\n",
+    "# (5, 4, 0) = [106.415, 49.900, 0, 0, 0, -1.535]\n",
+    "# (4, 5, 0) = [106.403, 42.586, 0, 0, 0, -1.183]\n",
+    "```\n",
+    "\n",
+    "## Create the `tardis` object."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import hklpy2\n",
+    "from hklpy2.user import add_sample, calc_UB, cahkl, cahkl_table, pa, set_diffractometer, setor, wh\n",
+    "\n",
+    "tardis = hklpy2.creator(\n",
+    "    name=\"tardis\",\n",
+    "    geometry=\"E6C\",\n",
+    "    solver=\"hkl_soleil\",\n",
+    "    reals=dict(  # Use TARDIS names, in order expected by E6C\n",
+    "        theta=None,  # Replace 'None' with an EPICS motor PV (e.g., \"ioc:m1\").\n",
+    "        mu=None,\n",
+    "        chi=None,\n",
+    "        phi=None,\n",
+    "        delta=None,\n",
+    "        gamma=None,\n",
+    "    ),\n",
+    "    labels=[\"tardis\"],\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Configure some basic operating parameters.\n",
+    "\n",
+    "**NOTE**: Length units are *angstrom*, angles are *degrees*, and energy (when available) is *eV*."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tardis.beam.wavelength_units.put(\"angstrom\")\n",
+    "tardis.beam.energy_units.put(\"eV\")\n",
+    "\n",
+    "tardis.core.constraints[\"theta\"].limits = -181, 181\n",
+    "tardis.core.constraints[\"mu\"].limits = 0, 0\n",
+    "tardis.core.constraints[\"chi\"].limits = 0, 0\n",
+    "tardis.core.constraints[\"phi\"].limits = 0, 0\n",
+    "tardis.core.constraints[\"delta\"].limits = -5, 180\n",
+    "tardis.core.constraints[\"gamma\"].limits = -5, 180"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Set the operating mode."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tardis.core.mode = \"lifting_detector_mu\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Add a sample\n",
+    "\n",
+    "Set this is the default diffractometer.  Then add the sample."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Sample(name='cmazzoli', lattice=Lattice(a=9.069, c=10.39, gamma=120.0, system='hexagonal'))"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "set_diffractometer(tardis)\n",
+    "add_sample(\"cmazzoli\", a=9.069, c=10.390, gamma=120.0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Set the wavelength of the source."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tardis.beam.wavelength.put(1.61198)  # ophyd signal, use .put()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Orient the sample\n",
+    "\n",
+    "Add two observed reflections and the motor positions associated with those *hkl*\n",
+    "values.\n",
+    "\n",
+    "We specify the motors by name (keyword arguments) so they can be specified in\n",
+    "any order we choose."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r1 = setor(\n",
+    "    3, 3, 0,\n",
+    "    delta=64.449, gamma=-0.871, theta=25.285, mu=0, chi=0, phi=0,\n",
+    "    name=\"r1\",\n",
+    ")\n",
+    "r2 = setor(\n",
+    "    5, 2, 0,\n",
+    "    delta=79.712, gamma=-1.374, theta=46.816, mu=0, chi=0, phi=0,\n",
+    "    name=\"r2\",\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Calculate the {math}`UB` (orientation) matrix."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[0.313235509421, -0.480759304678, 0.011136539049],\n",
+       " [0.735907238528, 0.639427042267, 0.010037733273],\n",
+       " [-0.017988976072, -0.001760659657, 0.604548030557]]"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "calc_UB(r1, r2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Save the orientation to a file"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tardis.export(\n",
+    "    \"dev_tardis-cmazzoli.yml\",\n",
+    "    comment=\"NSLS-II tardis with oriented sample from @cmazzoli\",\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Show that configuration."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001b[38;5;66;03m#hklpy2 configuration file\u001b[39;00m\n",
+      "\n",
+      "_header:\n",
+      "  datetime: \u001b[33m'2025-07-21 15:04:58.354664'\u001b[39m\n",
+      "  hklpy2_version: \u001b[32m0.1\u001b[39m\u001b[32m.5\u001b[39m.dev11+ge32ca9e.d20250721\n",
+      "  python_class: Hklpy2Diffractometer\n",
+      "  file: dev_tardis-cmazzoli.yml\n",
+      "  comment: NSLS-II tardis \u001b[38;5;28;01mwith\u001b[39;00m oriented sample \u001b[38;5;28;01mfrom\u001b[39;00m @cmazzoli\n",
+      "name: tardis\n",
+      "axes:\n",
+      "  pseudo_axes:\n",
+      "  - h\n",
+      "  - k\n",
+      "  - l\n",
+      "  real_axes:\n",
+      "  - theta\n",
+      "  - mu\n",
+      "  - chi\n",
+      "  - phi\n",
+      "  - delta\n",
+      "  - gamma\n",
+      "  axes_xref:\n",
+      "    h: h\n",
+      "    k: k\n",
+      "    l: l\n",
+      "    theta: mu\n",
+      "    mu: omega\n",
+      "    chi: chi\n",
+      "    phi: phi\n",
+      "    delta: gamma\n",
+      "    gamma: delta\n",
+      "  extra_axes:\n",
+      "    h2: \u001b[32m0\u001b[39m\n",
+      "    k2: \u001b[32m0\u001b[39m\n",
+      "    l2: \u001b[32m0\u001b[39m\n",
+      "    psi: \u001b[32m0\u001b[39m\n",
+      "sample_name: cmazzoli\n",
+      "samples:\n",
+      "  sample:\n",
+      "    name: sample\n",
+      "    lattice:\n",
+      "      a: \u001b[32m1\u001b[39m\n",
+      "      b: \u001b[32m1\u001b[39m\n",
+      "      c: \u001b[32m1\u001b[39m\n",
+      "      alpha: \u001b[32m90.0\u001b[39m\n",
+      "      beta: \u001b[32m90.0\u001b[39m\n",
+      "      gamma: \u001b[32m90.0\u001b[39m\n",
+      "    reflections: {}\n",
+      "    reflections_order: []\n",
+      "    U:\n",
+      "    - - \u001b[32m1\u001b[39m\n",
+      "      - \u001b[32m0\u001b[39m\n",
+      "      - \u001b[32m0\u001b[39m\n",
+      "    - - \u001b[32m0\u001b[39m\n",
+      "      - \u001b[32m1\u001b[39m\n",
+      "      - \u001b[32m0\u001b[39m\n",
+      "    - - \u001b[32m0\u001b[39m\n",
+      "      - \u001b[32m0\u001b[39m\n",
+      "      - \u001b[32m1\u001b[39m\n",
+      "    UB:\n",
+      "    - - \u001b[32m6.283185307179586\u001b[39m\n",
+      "      - \u001b[32m0.0\u001b[39m\n",
+      "      - \u001b[32m0.0\u001b[39m\n",
+      "    - - \u001b[32m0.0\u001b[39m\n",
+      "      - \u001b[32m6.283185307179586\u001b[39m\n",
+      "      - \u001b[32m0.0\u001b[39m\n",
+      "    - - \u001b[32m0.0\u001b[39m\n",
+      "      - \u001b[32m0.0\u001b[39m\n",
+      "      - \u001b[32m6.283185307179586\u001b[39m\n",
+      "    digits: \u001b[32m4\u001b[39m\n",
+      "  cmazzoli:\n",
+      "    name: cmazzoli\n",
+      "    lattice:\n",
+      "      a: \u001b[32m9.069\u001b[39m\n",
+      "      b: \u001b[32m9.069\u001b[39m\n",
+      "      c: \u001b[32m10.39\u001b[39m\n",
+      "      alpha: \u001b[32m90\u001b[39m\n",
+      "      beta: \u001b[32m90\u001b[39m\n",
+      "      gamma: \u001b[32m120.0\u001b[39m\n",
+      "    reflections:\n",
+      "      r1:\n",
+      "        name: r1\n",
+      "        geometry: E6C\n",
+      "        pseudos:\n",
+      "          h: \u001b[32m3\u001b[39m\n",
+      "          k: \u001b[32m3\u001b[39m\n",
+      "          l: \u001b[32m0\u001b[39m\n",
+      "        reals:\n",
+      "          theta: \u001b[32m25.285\u001b[39m\n",
+      "          mu: \u001b[32m0\u001b[39m\n",
+      "          chi: \u001b[32m0\u001b[39m\n",
+      "          phi: \u001b[32m0\u001b[39m\n",
+      "          delta: \u001b[32m64.449\u001b[39m\n",
+      "          gamma: -\u001b[32m0.871\u001b[39m\n",
+      "        wavelength: \u001b[32m1.61198\u001b[39m\n",
+      "        digits: \u001b[32m4\u001b[39m\n",
+      "      r2:\n",
+      "        name: r2\n",
+      "        geometry: E6C\n",
+      "        pseudos:\n",
+      "          h: \u001b[32m5\u001b[39m\n",
+      "          k: \u001b[32m2\u001b[39m\n",
+      "          l: \u001b[32m0\u001b[39m\n",
+      "        reals:\n",
+      "          theta: \u001b[32m46.816\u001b[39m\n",
+      "          mu: \u001b[32m0\u001b[39m\n",
+      "          chi: \u001b[32m0\u001b[39m\n",
+      "          phi: \u001b[32m0\u001b[39m\n",
+      "          delta: \u001b[32m79.712\u001b[39m\n",
+      "          gamma: -\u001b[32m1.374\u001b[39m\n",
+      "        wavelength: \u001b[32m1.61198\u001b[39m\n",
+      "        digits: \u001b[32m4\u001b[39m\n",
+      "    reflections_order:\n",
+      "    - r1\n",
+      "    - r2\n",
+      "    U:\n",
+      "    - - \u001b[32m0.391544524019\u001b[39m\n",
+      "      - -\u001b[32m0.919974864499\u001b[39m\n",
+      "      - \u001b[32m0.018415602128\u001b[39m\n",
+      "    - - \u001b[32m0.919884370594\u001b[39m\n",
+      "      - \u001b[32m0.391838271968\u001b[39m\n",
+      "      - \u001b[32m0.016598595077\u001b[39m\n",
+      "    - - -\u001b[32m0.022486227972\u001b[39m\n",
+      "      - \u001b[32m0.010441135564\u001b[39m\n",
+      "      - \u001b[32m0.999692628881\u001b[39m\n",
+      "    UB:\n",
+      "    - - \u001b[32m0.313235509421\u001b[39m\n",
+      "      - -\u001b[32m0.480759304678\u001b[39m\n",
+      "      - \u001b[32m0.011136539049\u001b[39m\n",
+      "    - - \u001b[32m0.735907238528\u001b[39m\n",
+      "      - \u001b[32m0.639427042267\u001b[39m\n",
+      "      - \u001b[32m0.010037733273\u001b[39m\n",
+      "    - - -\u001b[32m0.017988976072\u001b[39m\n",
+      "      - -\u001b[32m0.001760659657\u001b[39m\n",
+      "      - \u001b[32m0.604548030557\u001b[39m\n",
+      "    digits: \u001b[32m4\u001b[39m\n",
+      "constraints:\n",
+      "  theta:\n",
+      "    label: theta\n",
+      "    low_limit: -\u001b[32m181.0\u001b[39m\n",
+      "    high_limit: \u001b[32m181.0\u001b[39m\n",
+      "    \u001b[38;5;28;01mclass\u001b[39;00m: LimitsConstraint\n",
+      "  mu:\n",
+      "    label: mu\n",
+      "    low_limit: \u001b[32m0.0\u001b[39m\n",
+      "    high_limit: \u001b[32m0.0\u001b[39m\n",
+      "    \u001b[38;5;28;01mclass\u001b[39;00m: LimitsConstraint\n",
+      "  chi:\n",
+      "    label: chi\n",
+      "    low_limit: \u001b[32m0.0\u001b[39m\n",
+      "    high_limit: \u001b[32m0.0\u001b[39m\n",
+      "    \u001b[38;5;28;01mclass\u001b[39;00m: LimitsConstraint\n",
+      "  phi:\n",
+      "    label: phi\n",
+      "    low_limit: \u001b[32m0.0\u001b[39m\n",
+      "    high_limit: \u001b[32m0.0\u001b[39m\n",
+      "    \u001b[38;5;28;01mclass\u001b[39;00m: LimitsConstraint\n",
+      "  delta:\n",
+      "    label: delta\n",
+      "    low_limit: -\u001b[32m5.0\u001b[39m\n",
+      "    high_limit: \u001b[32m180.0\u001b[39m\n",
+      "    \u001b[38;5;28;01mclass\u001b[39;00m: LimitsConstraint\n",
+      "  gamma:\n",
+      "    label: gamma\n",
+      "    low_limit: -\u001b[32m5.0\u001b[39m\n",
+      "    high_limit: \u001b[32m180.0\u001b[39m\n",
+      "    \u001b[38;5;28;01mclass\u001b[39;00m: LimitsConstraint\n",
+      "solver:\n",
+      "  name: hkl_soleil\n",
+      "  description: HklSolver(name=\u001b[33m'hkl_soleil'\u001b[39m, version=\u001b[33m'5.1.2'\u001b[39m, geometry=\u001b[33m'E6C'\u001b[39m, engine_name=\u001b[33m'hkl'\u001b[39m,\n",
+      "    mode=\u001b[33m'bissector_vertical'\u001b[39m)\n",
+      "  geometry: E6C\n",
+      "  real_axes:\n",
+      "  - mu\n",
+      "  - omega\n",
+      "  - chi\n",
+      "  - phi\n",
+      "  - gamma\n",
+      "  - delta\n",
+      "  version: \u001b[32m5.1\u001b[39m\u001b[32m.2\u001b[39m\n",
+      "  engine: hkl\n",
+      "beam:\n",
+      "  \u001b[38;5;28;01mclass\u001b[39;00m: WavelengthXray\n",
+      "  source_type: Synchrotron X-ray Source\n",
+      "  energy: \u001b[32m7691.422873644113\u001b[39m\n",
+      "  wavelength: \u001b[32m1.61198\u001b[39m\n",
+      "  energy_units: eV\n",
+      "  wavelength_units: angstrom\n"
+     ]
+    }
+   ],
+   "source": [
+    "%pycat dev_tardis-cmazzoli.yml"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Calculate motor positions for *hkl*\n",
+    "\n",
+    "**Just** calculate the motor positions.  These commands do not move the motors."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Hklpy2DiffractometerRealPos(theta=47.298769610172, mu=0, chi=0, phi=0, delta=48.462235401856, gamma=-1.057775860103)"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "cahkl(4, 0, 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "======= = ======= == === === ======= =======\n",
+      "(hkl)   # theta   mu chi phi delta   gamma  \n",
+      "======= = ======= == === === ======= =======\n",
+      "(4 0 0) 1 47.2988 0  0   0   48.4622 -1.0578\n",
+      "(4 4 0) 1 38.3762 0  0   0   90.6303 -1.1613\n",
+      "======= = ======= == === === ======= =======\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "cahkl_table((4, 0, 0), (4, 4, 0))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Move\n",
+    "\n",
+    "... to $Q= (4 \\  1 \\  0)$"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "MoveStatus(done=True, pos=tardis, elapsed=0.0, success=True, settle_time=0.0)"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "tardis.move(4, 1, 0)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Where is the *tardis* now?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=1.612\n",
+      "pseudos: h=4.0, k=1.0, l=0\n",
+      "reals: theta=40.2199, mu=0, chi=0, phi=0, delta=56.097, gamma=-1.0837\n"
+     ]
+    }
+   ],
+   "source": [
+    "wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Show more details."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "diffractometer='tardis'\n",
+      "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E6C', engine_name='hkl', mode='lifting_detector_mu')\n",
+      "Sample(name='cmazzoli', lattice=Lattice(a=9.069, c=10.39, gamma=120.0, system='hexagonal'))\n",
+      "Reflection(name='r1', h=3, k=3, l=0)\n",
+      "Reflection(name='r2', h=5, k=2, l=0)\n",
+      "Orienting reflections: ['r1', 'r2']\n",
+      "U=[[0.3915, 0.92, 0.0184], [0.9199, 0.3918, 0.0166], [0.0225, 0.0104, 0.9997]]\n",
+      "UB=[[0.3132, 0.4808, 0.0111], [0.7359, 0.6394, 0.01], [0.018, 0.0018, 0.6045]]\n",
+      "constraint: -181.0 <= theta <= 181.0\n",
+      "constraint: 0.0 <= mu <= 0.0\n",
+      "constraint: 0.0 <= chi <= 0.0\n",
+      "constraint: 0.0 <= phi <= 0.0\n",
+      "constraint: -5.0 <= delta <= 180.0\n",
+      "constraint: -5.0 <= gamma <= 180.0\n",
+      "Mode: lifting_detector_mu\n",
+      "beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source', 'energy': 7691.4229, 'wavelength': 1.612, 'energy_units': 'eV', 'wavelength_units': 'angstrom'}\n",
+      "pseudos: h=4.0, k=1.0, l=0\n",
+      "reals: theta=40.2199, mu=0, chi=0, phi=0, delta=56.097, gamma=-1.0837\n"
+     ]
+    }
+   ],
+   "source": [
+    "pa()"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "hklpy2",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.11"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

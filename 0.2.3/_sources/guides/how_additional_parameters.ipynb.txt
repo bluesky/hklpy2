@@ -1,0 +1,204 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "digital-oriental",
+   "metadata": {},
+   "source": [
+    "# Diffractometer Extra Solver Parameters\n",
+    "\n",
+    "Some diffractometer _modes_ use extra parameters.  The {ref}`E4CV\n",
+    "<geometries-hkl_soleil-e4cv>` geometry, for example, has a `double_diffraction` mode which requires a reference {math}`hkl_2` vector.  The vector is set as a Python dictionary:\n",
+    "\n",
+    "action  | `E4CV` method\n",
+    ":---    | :---\n",
+    "read    | `e4cv.core.extras`\n",
+    "write   | `e4cv.core.extras =` dictionary\n",
+    "\n",
+    "**Objective**\n",
+    "\n",
+    "Show how to use the `double_diffraction` mode in the `E4CV` geometry."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "assigned-length",
+   "metadata": {},
+   "source": [
+    "## `E4CV`, `hkl`, `double_diffraction`\n",
+    "\n",
+    "term | value\n",
+    ":--- | :---\n",
+    "geometry | `E4CV`\n",
+    "engine | `hkl`\n",
+    "mode | `double_diffraction`\n",
+    "\n",
+    "Using the standard `E4CV` geometry with simulated motors, we copy the [E4CV setup for the *LNO_LAO* sample](https://github.com/bluesky/hklpy/tree/main/docs/source/examples/notebooks/tst_e4cv_fourc.html#read-the-spec-scan-from-the-data-file).  Using a kwarg, we can automatically compute the UB matrix once we define the second reflection.  (This means we do not have to call `compute_UB()` on a separate line.)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "adapted-minnesota",
+   "metadata": {
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "diffractometer='e4cv'\n",
+      "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')\n",
+      "Sample(name='LNO_LAO', lattice=Lattice(a=3.7817, b=3.7914, c=3.7989, alpha=90.2546, beta=90.0182, gamma=89.8997, system='triclinic'))\n",
+      "Reflection(name='r_85d9', h=0.0, k=0.0, l=2.0)\n",
+      "Reflection(name='r_bca7', h=1.0, k=1.0, l=3.0)\n",
+      "Orienting reflections: ['r_85d9', 'r_bca7']\n",
+      "U=[[0.0575, 0.9983, 0.0059], [0.0002, 0.0059, 1.0], [0.9983, 0.0575, 0.0002]]\n",
+      "UB=[[0.0955, -1.6543, 0.0024], [0.0003, 0.0098, 1.654], [-1.6587, 0.0982, 0.0004]]\n",
+      "constraint: -180 <= omega <= 180.0\n",
+      "constraint: -180 <= chi <= 180.0\n",
+      "constraint: -50 <= phi <= 100.0\n",
+      "constraint: -2 <= tth <= 180.0\n",
+      "Mode: bissector\n",
+      "beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source', 'energy': 10.0034, 'wavelength': 1.2394, 'energy_units': 'keV', 'wavelength_units': 'angstrom'}\n",
+      "pseudos: h=0, k=0, l=0\n",
+      "reals: omega=0, chi=0, phi=0, tth=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "import hklpy2\n",
+    "\n",
+    "e4cv = hklpy2.creator(name=\"e4cv\")\n",
+    "e4cv.restore(\"e4cv-LNO_LAO.yml\")\n",
+    "e4cv.wh(full=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "manual-harmony",
+   "metadata": {},
+   "source": [
+    "Set the `double_diffraction` mode."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "twelve-gathering",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "e4cv.core.mode='double_diffraction'\n",
+      "e4cv.core.extras={'h2': 0, 'k2': 0, 'l2': 0}\n"
+     ]
+    }
+   ],
+   "source": [
+    "e4cv.core.mode = \"double_diffraction\"\n",
+    "print(f\"{e4cv.core.mode=!r}\")\n",
+    "print(f\"{e4cv.core.extras=!r}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "crucial-virus",
+   "metadata": {},
+   "source": [
+    "Set $hkl_2=(2\\ 2\\ 0)$."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "insured-petite",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "e4cv.core.extras = {'h2': 2.0, 'k2': 2.0, 'l2': 0}"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "detected-collapse",
+   "metadata": {},
+   "source": [
+    "## Calculate (002) with (220) as second diffracting plane"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "advance-there",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "e4cv.core.extras={'h2': 2.0, 'k2': 2.0, 'l2': 0}\n",
+      "(002) : Hklpy2DiffractometerRealPos(omega=19.125950225128, chi=89.985287878118, phi=19.056580793553, tth=38.084060865636)\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f\"{e4cv.core.extras=!r}\")\n",
+    "print(\"(002) :\", e4cv.forward(0, 0, 2))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "adolescent-trust",
+   "metadata": {},
+   "source": [
+    "## Calculate (002) with (222) as second diffracting plane"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "proprietary-spray",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "e4cv.core.extras={'h2': 2.0, 'k2': 2.0, 'l2': 2}\n",
+      "(002) : Hklpy2DiffractometerRealPos(omega=19.125989212654, chi=89.985511048367, phi=18.904237611193, tth=38.084060993071)\n"
+     ]
+    }
+   ],
+   "source": [
+    "e4cv.core.extras = {'h2': 2.0, 'k2': 2.0, 'l2': 2}\n",
+    "print(f\"{e4cv.core.extras=}\")\n",
+    "print(\"(002) :\", e4cv.forward(0, 0, 2))"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "hklpy2",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.11"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

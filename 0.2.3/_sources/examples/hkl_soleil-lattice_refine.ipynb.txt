@@ -1,0 +1,227 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# **hkl_soleil** Refine lattice from 3 reflections\n",
+    "\n",
+    "The lattice parameters of a sample can be computed from a set of 3 or more\n",
+    "reflections if the **solver** provides such a method.  The hkl_soleil solver\n",
+    "uses a simplex.  The computed lattice is likely the lowest symmetry since the\n",
+    "parameters are refined to meet best the observed reflections."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Create a diffractometer object\n",
+    "\n",
+    "First, create a diffractometer object that uses the `\"hkl_soleil\"` solver with\n",
+    "the `\"hkl\"` computation engine.  This solver provides support for many\n",
+    "diffractometer geometries.  This example will use the simulated 4-circle\n",
+    "geometry from the solver's `\"E4CV\"`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import hklpy2\n",
+    "\n",
+    "diffractometer = hklpy2.creator(name=\"diffractometer\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Defaults\n",
+    "\n",
+    "The diffractometer object starts with a default sample.  The structure is cubic ($a=b=c$, 90 degree corners)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Sample(name='sample', lattice=Lattice(a=1, system='cubic'))"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.sample"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Add 3 reflections\n",
+    "\n",
+    "At least three reflections are needed to refine the lattice parameters.  Since we do not specify the wavelength, the support assumes the diffractometer's current wavelength."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1.0"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.beam.wavelength.get()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Add three non-parallel reflections.  Here, just the values of the pseudos and reals are\n",
+    "specified as Python tuples, in the exact order expected by the *solver*\n",
+    "geometry."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "r100 = diffractometer.add_reflection((1, 0, 0), (-145.451, 5, -5, 69.0966), name=\"(100)\")\n",
+    "r010 = diffractometer.add_reflection((0, 1, 0), (-145.451, 5, 85, 69.0966), name=\"(010)\")\n",
+    "r001 = diffractometer.add_reflection((0, 0, 1), (-145.451, -85, -95, 69.0966), name=\"(001)\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Compute refined lattice\n",
+    "\n",
+    "Compute the lattice refined with these three reflections.  Since all lattice\n",
+    "parameters may be refined, the symmetry of a refined lattice is very likely to\n",
+    "be triclinic.  Such is the situation here."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Lattice(a=0.885, b=0.8953, c=0.8987, alpha=79.9999, beta=85.0196, gamma=89.5632, system='triclinic')"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "lattice = diffractometer.core.refine_lattice(r100, r010, r001)\n",
+    "lattice"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The `refine_lattice()` method returns the refined lattice but does not actually change the sample lattice:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Lattice(a=1, system='cubic')"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.sample.lattice"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Change the sample lattice\n",
+    "\n",
+    "The sample lattice can be changed with the refined lattice:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Lattice(a=0.885, b=0.8953, c=0.8987, alpha=79.9999, beta=85.0196, gamma=89.5632, system='triclinic')"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "diffractometer.sample.lattice = lattice\n",
+    "diffractometer.sample.lattice"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "hklpy2",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.11"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

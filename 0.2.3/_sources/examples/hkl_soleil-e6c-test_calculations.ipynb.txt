@@ -1,0 +1,446 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# **hkl_soleil** E6C test of calculations\n",
+    "\n",
+    "Non-exhaustive tests of *hkl_soleil* {ref}`E6C <geometries-hkl_soleil-e6c>` computations of orientation, U, UB,\n",
+    "and rotation directions, with the aid of Yong Chu's mental math.\n",
+    "\n",
+    "[TL;DR](https://www.merriam-webster.com/dictionary/TL%3BDR) E6C appears to function\n",
+    "as documented and as expected."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Create a simulated diffractometer for calculations\n",
+    "\n",
+    "These tests use a simulated diffractometer to test the solver's calculation."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import hklpy2\n",
+    "\n",
+    "e6c = hklpy2.creator(name=\"e6c\", geometry=\"E6C\")\n",
+    "e6c.core.mode = 'constant_chi_vertical'\n",
+    "e6c.beam.wavelength.put(1.)  # Angstrom"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Setup the crystal lattice\n",
+    "\n",
+    "Use the default `sample`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "e6c.sample=Sample(name='sample', lattice=Lattice(a=1, system='cubic'))\n",
+      "wavelength=1.0\n",
+      "pseudos: h=0, k=0, l=0\n",
+      "reals: mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f\"{e6c.sample=}\")\n",
+    "e6c.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Compute the **UB** matrix from two reflections"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[6.283183866345, 2.367192e-06, 0.0],\n",
+       " [0.0, 6.28318625087, 0.0],\n",
+       " [2.66395e-07, -1.611768e-06, 6.283184307075]]"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# checking orientation of delta\n",
+    "r1p = dict(mu=0.0, omega=30.0, chi=0.0, phi=0.0, gamma=0., delta=60.)\n",
+    "r1 = e6c.add_reflection((0, 0, 1), r1p)\n",
+    "r2p = dict(mu=0.0, omega=120.0, chi=0.0, phi=0.0, gamma=0, delta=60.)\n",
+    "r2 = e6c.add_reflection((1, 0, 0), r2p)\n",
+    "e6c.core.calc_UB(r1, r2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Show the computed **U** matrix\n",
+    "\n",
+    "**Note**:  Here, {math}`U=I`, where {math}`I` is the identity matrix."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[1.0, 0.0, -4.2398e-08],\n",
+       " [0.0, 1.0, 2.56521e-07],\n",
+       " [4.2398e-08, -2.56521e-07, 1.0]]"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "e6c.sample.U"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Show the computed **UB** matrix\n",
+    "\n",
+    "**Note**:  Here, {math}`UB=2\\pi\\cdot I`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[[6.283183866345, 2.367192e-06, 0.0],\n",
+       " [0.0, 6.28318625087, 0.0],\n",
+       " [2.66395e-07, -1.611768e-06, 6.283184307075]]"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "e6c.sample.UB"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Calculate various (_hkl_) given motor positions\n",
+    "\n",
+    "This is the `inverse()` transformation.\n",
+    "\n",
+    "### (010)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "expecting (0,1,0)= Hklpy2DiffractometerPseudoPos(h=-3.7675e-07, k=0.999999849807, l=2.56521e-07)\n"
+     ]
+    }
+   ],
+   "source": [
+    "pos = e6c.inverse(dict(mu=0.0, omega=30.0, chi=90.0, phi=0.0, gamma=0, delta=60.))\n",
+    "print('expecting (0,1,0)=', pos)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "expecting (0,1,0)= Hklpy2DiffractometerPseudoPos(h=-3.7675e-07, k=0.999999849807, l=2.56521e-07)\n"
+     ]
+    }
+   ],
+   "source": [
+    "# alternate settings for same reflection\n",
+    "pos = e6c.inverse(dict(mu=30.0, omega=0.0, chi=0.0, phi=0.0, gamma=60., delta=0.))\n",
+    "print('expecting (0,1,0)=', pos)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### (0 -1 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "expecting (0,-1,0)= Hklpy2DiffractometerPseudoPos(h=3.7675e-07, k=-0.999999849807, l=-2.56521e-07)\n"
+     ]
+    }
+   ],
+   "source": [
+    "pos = e6c.inverse(dict(mu=0, omega=30., chi=-90.0, phi=0.0, gamma=0., delta=60.))\n",
+    "print('expecting (0,-1,0)=', pos)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### (-1 0 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "expecting (-1,0,0)= Hklpy2DiffractometerPseudoPos(h=-1.000000229316, k=0, l=4.2398e-08)\n"
+     ]
+    }
+   ],
+   "source": [
+    "pos = e6c.inverse(dict(mu=0.0, omega=-60.0, chi=0.0, phi=0.0, gamma=0, delta=60.))\n",
+    "print('expecting (-1,0,0)=', pos)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Diffracting upside-down now\n",
+    "\n",
+    "Note that omega and phi only need to sum to +/-120\n",
+    "($\\omega+\\varphi = \\pm |120|$), which reflects what\n",
+    "the inverse calculations from the library give."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### (100)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "expecting (1,0,0)= Hklpy2DiffractometerPseudoPos(h=1.000000229316, k=0, l=-4.2398e-08)\n",
+      "expecting (1,0,0)= Hklpy2DiffractometerPseudoPos(h=1.000000229316, k=0, l=-4.2398e-08)\n",
+      "expecting (1,0,0)= Hklpy2DiffractometerPseudoPos(h=1.000000229316, k=0, l=-4.2398e-08)\n"
+     ]
+    }
+   ],
+   "source": [
+    "pos = e6c.inverse(dict(mu=0.0, omega=-50.0, chi=0.0, phi=-70.0, gamma=0, delta=-60.))\n",
+    "print('expecting (1,0,0)=', pos)\n",
+    "\n",
+    "pos = e6c.inverse(dict(mu=0.0, omega=-100.0, chi=0.0, phi=-20.0, gamma=0, delta=-60.))\n",
+    "print('expecting (1,0,0)=', pos)\n",
+    "\n",
+    "pos = e6c.inverse(dict(mu=0.0, omega=100.0, chi=0.0, phi=-220.0, gamma=0, delta=-60.))\n",
+    "print('expecting (1,0,0)=', pos)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### (011)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "expecting (0,1,1)= Hklpy2DiffractometerPseudoPos(h=-3.7675e-07, k=0.999999849807, l=1.000000415693)\n"
+     ]
+    }
+   ],
+   "source": [
+    "pos = e6c.inverse(dict(mu=0.0, omega=45.0, chi=45.0, phi=0.0, gamma=0, delta=90.))\n",
+    "print('expecting (0,1,1)=', pos)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Verify that $\\omega+\\varphi = \\pm 120$ is kept.\n",
+    "\n",
+    "Calculate all allowed combinations of motor positions, given $hkl$."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {
+    "collapsed": false,
+    "jupyter": {
+     "outputs_hidden": false
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "expecting either omega+phi = 120 or -120 (approximately)\n",
+      "0 Hklpy2DiffractometerRealPos(mu=0, omega=119.999992124449, chi=45.0, phi=-2.429236e-06, gamma=0, delta=59.999984419525)\n",
+      "1 Hklpy2DiffractometerRealPos(mu=0, omega=-119.999992124449, chi=45.0, phi=-2.429236e-06, gamma=0, delta=-59.999984419525)\n",
+      "2 Hklpy2DiffractometerRealPos(mu=0, omega=-60.000007875551, chi=45.0, phi=-179.999997570764, gamma=0, delta=59.999984419525)\n",
+      "3 Hklpy2DiffractometerRealPos(mu=0, omega=60.000007875551, chi=45.0, phi=-179.999997570764, gamma=0, delta=-59.999984419525)\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"expecting either omega+phi = 120 or -120 (approximately)\")\n",
+    "solutions = e6c.core.forward([1, 0, 0])\n",
+    "for i, sol in enumerate(solutions):\n",
+    "    print(i, sol)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "hklpy2",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.11"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
