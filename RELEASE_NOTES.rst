@@ -33,13 +33,14 @@ describe future plans.
     0.3.2
     ##########
 
-    Release expected TBD.
+    Release expected 2026-H1.
 
-    Enhancements
+    New Features
     ------------
 
-    Fixes
-    -----
+    * Add :func:`~hklpy2.misc.creator_from_config` to create a simulated
+      diffractometer (no hardware) from a saved configuration file or dict.
+      (:issue:`210`)
 
     Maintenance
     -----------
