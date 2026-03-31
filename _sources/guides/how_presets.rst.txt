@@ -68,15 +68,14 @@ Only the constant-axis values are stored; the rest are silently dropped.
 
 .. important::
 
-    The setter **updates** (merges) the existing preset dictionary — it does
-    **not** replace it.  Each call adds or overwrites individual keys while
-    leaving other keys untouched.
+    The setter **replaces** the preset dictionary for the current mode.
+    Each assignment is a fresh replacement.
 
 ::
 
     >>> e4cv.core.mode = "constant_phi"
     >>> e4cv.core.presets = {"phi": 45.0}
-    >>> e4cv.core.presets = {"phi": 90.0}   # overwrites phi
+    >>> e4cv.core.presets = {"phi": 90.0}   # replaces previous assignment
     >>> e4cv.core.presets
     {'phi': 90.0}
 
@@ -99,6 +98,24 @@ presets; switching back restores them::
     >>> e4cv.core.presets          # phi preset restored
     {'phi': 45.0}
 
+Updating a single preset key
+-----------------------------
+
+Because the setter replaces the entire dictionary, update a single key by
+modifying the live dict returned by the getter directly::
+
+    >>> e4cv.core.mode = "constant_phi"
+    >>> e4cv.core.presets = {"phi": 45.0}
+    >>> e4cv.core.presets["phi"] = 90.0   # update one key in place
+    >>> e4cv.core.presets
+    {'phi': 90.0}
+
+Or use a read-modify-write pattern when building from the current state::
+
+    >>> new = dict(e4cv.core.presets)     # copy current presets
+    >>> new["phi"] = 90.0                 # change one entry
+    >>> e4cv.core.presets = new           # replace with updated dict
+
 .. _how_presets.pop:
 
 Removing a single preset key
@@ -113,45 +130,16 @@ Use ``.pop()`` on the live dictionary returned by the getter::
     >>> e4cv.core.presets
     {}
 
-Clearing all presets
---------------------
+Clearing all presets for the current mode
+------------------------------------------
 
-Use :meth:`~hklpy2.ops.Core.clear_presets` to erase presets.
-
-Clear every mode at once::
-
-    >>> e4cv.core.presets = {"phi": 45.0}
-    >>> e4cv.core.clear_presets()
-    >>> e4cv.core.presets
-    {}
-
-Clear only one specific mode, leaving other modes' presets intact::
+Assign an empty dictionary::
 
     >>> e4cv.core.mode = "constant_phi"
     >>> e4cv.core.presets = {"phi": 45.0}
-    >>> e4cv.core.mode = "constant_omega"
-    >>> e4cv.core.presets = {"omega": 30.0}
-
-    >>> e4cv.core.clear_presets("constant_phi")   # only constant_phi cleared
-
-    >>> e4cv.core.mode = "constant_phi"
-    >>> e4cv.core.presets    # cleared
-    {}
-    >>> e4cv.core.mode = "constant_omega"
-    >>> e4cv.core.presets    # still set
-    {'omega': 30.0}
-
-Replacing all presets (clear then set)
----------------------------------------
-
-Because the setter merges rather than replaces, clear the mode's presets
-first when you want a clean slate::
-
-    >>> e4cv.core.clear_presets("constant_phi")
-    >>> e4cv.core.mode = "constant_phi"
-    >>> e4cv.core.presets = {"phi": 10.0}
+    >>> e4cv.core.presets = {}
     >>> e4cv.core.presets
-    {'phi': 10.0}
+    {}
 
 Checking presets with ``wh()``
 -------------------------------

@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=b07bcd18"></script>
+    <script src="../_static/documentation_options.js?v=7a27140c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -492,13 +492,12 @@ presets. Values supplied for computed axes are silently ignored.</p>
 <p>Only the constant-axis values are stored; the rest are silently dropped.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The setter <strong>updates</strong> (merges) the existing preset dictionary — it does
-<strong>not</strong> replace it.  Each call adds or overwrites individual keys while
-leaving other keys untouched.</p>
+<p>The setter <strong>replaces</strong> the preset dictionary for the current mode.
+Each assignment is a fresh replacement.</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">}</span>   <span class="c1"># overwrites phi</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">}</span>   <span class="c1"># replaces previous assignment</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
 <span class="go">{&#39;phi&#39;: 90.0}</span>
 </pre></div>
@@ -523,6 +522,24 @@ presets; switching back restores them:</p>
 </pre></div>
 </div>
 </section>
+<section id="updating-a-single-preset-key">
+<h2>Updating a single preset key<a class="headerlink" href="#updating-a-single-preset-key" title="Link to this heading">#</a></h2>
+<p>Because the setter replaces the entire dictionary, update a single key by
+modifying the live dict returned by the getter directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">90.0</span>   <span class="c1"># update one key in place</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
+<span class="go">{&#39;phi&#39;: 90.0}</span>
+</pre></div>
+</div>
+<p>Or use a read-modify-write pattern when building from the current state:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="p">)</span>     <span class="c1"># copy current presets</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">90.0</span>                 <span class="c1"># change one entry</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="n">new</span>           <span class="c1"># replace with updated dict</span>
+</pre></div>
+</div>
+</section>
 <section id="removing-a-single-preset-key">
 <span id="how-presets-pop"></span><h2>Removing a single preset key<a class="headerlink" href="#removing-a-single-preset-key" title="Link to this heading">#</a></h2>
 <p>Use <code class="docutils literal notranslate"><span class="pre">.pop()</span></code> on the live dictionary returned by the getter:</p>
@@ -535,42 +552,14 @@ presets; switching back restores them:</p>
 </pre></div>
 </div>
 </section>
-<section id="clearing-all-presets">
-<h2>Clearing all presets<a class="headerlink" href="#clearing-all-presets" title="Link to this heading">#</a></h2>
-<p>Use <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.clear_presets" title="hklpy2.ops.Core.clear_presets"><code class="xref py py-meth docutils literal notranslate"><span class="pre">clear_presets()</span></code></a> to erase presets.</p>
-<p>Clear every mode at once:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clear_presets</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
-<span class="go">{}</span>
-</pre></div>
-</div>
-<p>Clear only one specific mode, leaving other modes’ presets intact:</p>
+<section id="clearing-all-presets-for-the-current-mode">
+<h2>Clearing all presets for the current mode<a class="headerlink" href="#clearing-all-presets-for-the-current-mode" title="Link to this heading">#</a></h2>
+<p>Assign an empty dictionary:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_omega&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">}</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clear_presets</span><span class="p">(</span><span class="s2">&quot;constant_phi&quot;</span><span class="p">)</span>   <span class="c1"># only constant_phi cleared</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>    <span class="c1"># cleared</span>
-<span class="go">{}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_omega&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>    <span class="c1"># still set</span>
-<span class="go">{&#39;omega&#39;: 30.0}</span>
-</pre></div>
-</div>
-</section>
-<section id="replacing-all-presets-clear-then-set">
-<h2>Replacing all presets (clear then set)<a class="headerlink" href="#replacing-all-presets-clear-then-set" title="Link to this heading">#</a></h2>
-<p>Because the setter merges rather than replaces, clear the mode’s presets
-first when you want a clean slate:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">clear_presets</span><span class="p">(</span><span class="s2">&quot;constant_phi&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
-<span class="go">{&#39;phi&#39;: 10.0}</span>
+<span class="go">{}</span>
 </pre></div>
 </div>
 </section>
@@ -646,9 +635,9 @@ first when you want a clean slate:</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#which-axes-can-have-presets">Which axes can have presets?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-a-preset">Setting a preset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#presets-are-per-mode">Presets are per-mode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-a-single-preset-key">Updating a single preset key</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#removing-a-single-preset-key">Removing a single preset key</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clearing-all-presets">Clearing all presets</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#replacing-all-presets-clear-then-set">Replacing all presets (clear then set)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clearing-all-presets-for-the-current-mode">Clearing all presets for the current mode</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-presets-with-wh">Checking presets with <code class="docutils literal notranslate"><span class="pre">wh()</span></code></a></li>
 </ul>
   </nav></div>

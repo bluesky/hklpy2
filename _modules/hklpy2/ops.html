@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=b07bcd18"></script>
+    <script src="../../_static/documentation_options.js?v=7a27140c"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -435,7 +435,6 @@
 <span class="sd">        ~add_sample</span>
 <span class="sd">        ~assign_axes</span>
 <span class="sd">        ~calc_UB</span>
-<span class="sd">        ~clear_presets</span>
 <span class="sd">        ~forward</span>
 <span class="sd">        ~geometries</span>
 <span class="sd">        ~inverse</span>
@@ -1136,7 +1135,7 @@
 <span class="sd">        in the current mode.</span>
 
 <span class="sd">        The getter returns the **live mutable dictionary** for the current</span>
-<span class="sd">        mode. To remove a single preset key without clearing all presets, call</span>
+<span class="sd">        mode. To remove a single preset key, call</span>
 <span class="sd">        ``diffractometer.core.presets.pop(&quot;phi&quot;)``.</span>
 
 <span class="sd">        Returns a dictionary of axis name:value pairs for the current mode.</span>
@@ -1154,12 +1153,12 @@
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.presets</span>
 <span class="sd">            {}</span>
 
-<span class="sd">            &gt;&gt;&gt; # Switch to another mode - presets are saved per mode</span>
+<span class="sd">            &gt;&gt;&gt; # Each mode stores its own preset dict</span>
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.presets = {&quot;phi&quot;: 45.0}</span>
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.mode = &quot;constant_omega&quot;</span>
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.presets = {&quot;omega&quot;: 30.0}</span>
 
-<span class="sd">            &gt;&gt;&gt; # Switch back - phi preset is restored</span>
+<span class="sd">            &gt;&gt;&gt; # Switch back — phi preset is restored</span>
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.mode = &quot;constant_phi&quot;</span>
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.presets</span>
 <span class="sd">            {&#39;phi&#39;: 45.0}</span>
@@ -1173,18 +1172,12 @@
     <span class="nd">@presets</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">presets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set preset values for the current mode.</span>
+<span class="sd">        Set (replace) preset values for the current mode.</span>
 
-<span class="sd">        Only axes that are read-only (constant) in the current mode will be</span>
-<span class="sd">        stored. Values for computed axes are silently ignored.</span>
-
-<span class="sd">        .. important::</span>
-
-<span class="sd">            The setter **updates** (merges) the preset dictionary — it does</span>
-<span class="sd">            **not** replace it. Each call adds or overwrites individual keys</span>
-<span class="sd">            while leaving other existing keys unchanged. To discard existing</span>
-<span class="sd">            presets before setting new ones, call ``clear_presets()`` first,</span>
-<span class="sd">            or remove individual keys with ``presets.pop(&quot;axis&quot;)``.</span>
+<span class="sd">        The preset dictionary for the current mode is **replaced** by the</span>
+<span class="sd">        supplied values. Only axes that are read-only (constant) in the</span>
+<span class="sd">        current mode will be stored; values for computed axes are silently</span>
+<span class="sd">        ignored.</span>
 
 <span class="sd">        .. note::</span>
 
@@ -1211,77 +1204,35 @@
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.presets = {&quot;phi&quot;: 45.0}</span>
 <span class="sd">            &gt;&gt;&gt; # forward() now uses phi=45, not the motor position phi=10</span>
 
-<span class="sd">            &gt;&gt;&gt; # The setter UPDATES — a second call accumulates entries</span>
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.presets = {&quot;phi&quot;: 90.0}  # overwrites phi</span>
+<span class="sd">            &gt;&gt;&gt; # Assignment replaces — not merges — the preset dict</span>
+<span class="sd">            &gt;&gt;&gt; diffractometer.core.presets = {&quot;phi&quot;: 90.0}</span>
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.presets</span>
 <span class="sd">            {&#39;phi&#39;: 90.0}</span>
 
-<span class="sd">            &gt;&gt;&gt; # To remove one preset key without clearing all:</span>
+<span class="sd">            &gt;&gt;&gt; # To remove one preset key:</span>
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.presets.pop(&quot;phi&quot;)</span>
 <span class="sd">            90.0</span>
 <span class="sd">            &gt;&gt;&gt; diffractometer.core.presets</span>
 <span class="sd">            {}</span>
 
-<span class="sd">            &gt;&gt;&gt; # To replace all presets, clear first then set:</span>
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.clear_presets()</span>
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.presets = {&quot;phi&quot;: 45.0}</span>
+<span class="sd">            &gt;&gt;&gt; # To clear all presets for the current mode:</span>
+<span class="sd">            &gt;&gt;&gt; diffractometer.core.presets = {}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
-        <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
         <span class="n">constant_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant_axis_names</span>
+        <span class="n">new_presets</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">constant_axes</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="p">[</span><span class="n">mode</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="n">new_presets</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">standardized</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standardize_reals</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">standardized</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">constant_axes</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="p">[</span><span class="n">mode</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="n">new_presets</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Core.clear_presets">
-<a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.clear_presets">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">clear_presets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Clear preset values.</span>
-
-<span class="sd">        After clearing, ``forward()`` will use the current motor positions</span>
-<span class="sd">        for the constant axes.</span>
-
-<span class="sd">        To remove a single preset key rather than clearing all presets for a</span>
-<span class="sd">        mode, use ``diffractometer.core.presets.pop(&quot;axis&quot;)`` instead.</span>
-
-<span class="sd">        PARAMETERS</span>
-
-<span class="sd">        mode str or None:</span>
-<span class="sd">            If provided, clear presets only for that mode.</span>
-<span class="sd">            If None (default), clear presets for all modes.</span>
-
-<span class="sd">        EXAMPLE::</span>
-
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.presets = {&quot;phi&quot;: 45.0}</span>
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.presets</span>
-<span class="sd">            {&#39;phi&#39;: 45.0}</span>
-
-<span class="sd">            &gt;&gt;&gt; # Remove a single key without clearing all presets:</span>
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.presets.pop(&quot;phi&quot;)</span>
-<span class="sd">            45.0</span>
-
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.presets = {&quot;phi&quot;: 45.0}</span>
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.clear_presets()  # Clear all modes</span>
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.presets</span>
-<span class="sd">            {}</span>
-
-<span class="sd">            &gt;&gt;&gt; diffractometer.core.clear_presets(&quot;constant_omega&quot;)  # One mode only</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">mode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="p">:</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_presets</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Core.constant_axis_names">

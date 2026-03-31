@@ -125,7 +125,7 @@ To release all presets at once:
 .. code-block:: python
    :linenos:
 
-   >>> sixc.core.clear_presets()               # remove all presets
+   >>> sixc.core.presets = {}                  # remove all presets for current mode
 
 .. seealso::
 

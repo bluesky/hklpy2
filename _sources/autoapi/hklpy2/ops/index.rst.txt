@@ -49,7 +49,6 @@ Module Contents
        ~add_sample
        ~assign_axes
        ~calc_UB
-       ~clear_presets
        ~forward
        ~geometries
        ~inverse
@@ -315,7 +314,7 @@ Module Contents
       in the current mode.
 
       The getter returns the **live mutable dictionary** for the current
-      mode. To remove a single preset key without clearing all presets, call
+      mode. To remove a single preset key, call
       ``diffractometer.core.presets.pop("phi")``.
 
       Returns a dictionary of axis name:value pairs for the current mode.
@@ -333,50 +332,15 @@ Module Contents
           >>> diffractometer.core.presets
           {}
 
-          >>> # Switch to another mode - presets are saved per mode
+          >>> # Each mode stores its own preset dict
           >>> diffractometer.core.presets = {"phi": 45.0}
           >>> diffractometer.core.mode = "constant_omega"
           >>> diffractometer.core.presets = {"omega": 30.0}
 
-          >>> # Switch back - phi preset is restored
+          >>> # Switch back — phi preset is restored
           >>> diffractometer.core.mode = "constant_phi"
           >>> diffractometer.core.presets
           {'phi': 45.0}
-
-
-   .. py:method:: clear_presets(mode: Optional[str] = None) -> None
-
-      Clear preset values.
-
-      After clearing, ``forward()`` will use the current motor positions
-      for the constant axes.
-
-      To remove a single preset key rather than clearing all presets for a
-      mode, use ``diffractometer.core.presets.pop("axis")`` instead.
-
-      PARAMETERS
-
-      mode str or None:
-          If provided, clear presets only for that mode.
-          If None (default), clear presets for all modes.
-
-      EXAMPLE::
-
-          >>> diffractometer.core.presets = {"phi": 45.0}
-          >>> diffractometer.core.presets
-          {'phi': 45.0}
-
-          >>> # Remove a single key without clearing all presets:
-          >>> diffractometer.core.presets.pop("phi")
-          45.0
-
-          >>> diffractometer.core.presets = {"phi": 45.0}
-          >>> diffractometer.core.clear_presets()  # Clear all modes
-          >>> diffractometer.core.presets
-          {}
-
-          >>> diffractometer.core.clear_presets("constant_omega")  # One mode only
-
 
 
    .. py:property:: constant_axis_names
