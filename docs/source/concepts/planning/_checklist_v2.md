@@ -28,11 +28,11 @@ It could be re-organized.
   * Solver API
     * [x] a structure (dict or struct) describing a geometry (motors, reference positions, and constraints)
     * [x] observed mapping between real and reciprocal space to give you the "U" of the UB matrix
-    * [ ] the crystallography to give you the "B"
+    * [ ] the crystallography to give you the "B" (:issue:`129`)
     * [x] Solver: custom project
     * [x] Solver: python-wrapped components from `libhkl`
-    * [ ] Solver: SPEC
-    * [ ] easy to switch between solvers at run time so that new things can be validated
+    * [ ] Solver: SPEC (:issue:`9`)
+    * [ ] easy to switch between solvers at run time so that new things can be validated (:issue:`187`)
   * [ ] [analyzers and polarizers](https://github.com/bluesky/hklpy/issues/92) (:issue:`222`)
   * Reflections
     * [x] [reflection is a Python class](https://github.com/bluesky/hklpy/issues/189)
@@ -48,13 +48,13 @@ It could be re-organized.
     * [x] [crystallographic *zones*](https://github.com/bluesky/hklpy/issues/291)
 * [ ] Solvers
   * [x] `libhkl`
-  * [ ] [*ad-hoc* geometries](https://github.com/bluesky/hklpy/issues/244)
-  * [ ] [diffcalc](https://github.com/bluesky/hklpy/issues/163)
-  * [ ] [SPEC server](https://certif.com/spec_help/server.html)
+  * [ ] [*ad-hoc* geometries](https://github.com/bluesky/hklpy/issues/244) (:issue:`96`)
+  * [ ] [diffcalc](https://github.com/bluesky/hklpy/issues/163) (:issue:`10`)
+  * [ ] [SPEC server](https://certif.com/spec_help/server.html) (:issue:`9`)
   * [x] [TwoC unknown](https://github.com/bluesky/hklpy/issues/165)
-  * [ ] [xrayutilities](https://github.com/bluesky/hklpy/issues/162)
+  * [ ] [xrayutilities](https://github.com/bluesky/hklpy/issues/162) (:issue:`95`)
 * [ ] Documentation
-  * [ ] Choosing the default `forward()` solution.
+  * [ ] Choosing the default `forward()` solution. (:issue:`71`, :issue:`224`)
   * [x] documentation from hklpy.
   * [x] How to calculate UB from 2 reflections.
   * [x] How to hold axes fixed during `forward()` transformation.
@@ -118,8 +118,8 @@ It could be re-organized.
   * [ ] minimum 2,000 `inverse()` operations/second (:issue:`223`)
   * [ ] minimum 2,000 `forward()` operations/second (:issue:`221`)
 * [ ] Backends - feature support
-  * [ ] *ad hoc* geometries
-  * [ ] diffcalc_dls
+  * [ ] *ad hoc* geometries (:issue:`96`)
+  * [ ] diffcalc_dls (:issue:`10`)
   * [x] hkl_soleil (libhkl)
     * [x] axes : expected pseudos
     * [x] axes : expected reals
@@ -144,7 +144,7 @@ It could be re-organized.
     * [x] transformation : forward (pseudos -> reals)
     * [x] transformation : inverse (reals -> pseudos)
   * [x] no_op
-  * [ ] SPEC server
+  * [ ] SPEC server (:issue:`9`)
   * [x] th_tth
     * axes : expected
       * [x] pseudos
@@ -167,4 +167,4 @@ It could be re-organized.
       * [x] forward (pseudos -> reals)
       * [x] inverse (reals -> pseudos)
     * [x] wavelength : set
-  * [ ] xrayutilities
+  * [ ] xrayutilities (:issue:`95`)
