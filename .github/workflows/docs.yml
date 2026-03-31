@@ -19,6 +19,9 @@ on:
         required: true
         default: false
 
+permissions:
+  contents: write
+
 defaults:
   run:
     shell: bash -l {0}
@@ -26,9 +29,6 @@ defaults:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
-permissions:
-  contents: write
 
 jobs:
 
