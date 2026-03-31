@@ -107,15 +107,15 @@ Choose a mode where the axis is constant, then set a preset:
    >>> sixc.core.mode = "bissector_vertical"   # mu and gamma are constant
    >>> sixc.core.constant_axis_names
    ['mu', 'gamma']
-   >>> sixc.core.presets = {"mu": 0}           # solver uses mu=0
-   >>> sixc.forward(1, 0, 0)                   # no motor is moved
+   >>> sixc.core.presets = {"gamma": 0}         # solver uses gamma=0
+   >>> sixc.forward(1, 0, 0)                    # no motor is moved
 
 To release a single preset (|spec| ``unfreeze``):
 
 .. code-block:: python
    :linenos:
 
-   >>> sixc.core.presets.pop("mu")             # remove one preset
+   >>> sixc.core.presets.pop("gamma")           # remove one preset
    0
    >>> sixc.core.presets
    {}
