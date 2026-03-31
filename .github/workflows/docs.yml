@@ -35,6 +35,11 @@ jobs:
 
     steps:
 
+      - name: Deploy Information
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'true'
+        run: |
+          echo "The docs will be published from this workflow run."
+
       - name: Set timezone
         uses: szenius/set-timezone@v2.0
         with:
