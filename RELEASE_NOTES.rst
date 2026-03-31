@@ -52,6 +52,8 @@ describe future plans.
     * Improve Sphinx Index consistency: primary ``!term`` entries now point to
       the most substantive page for each term rather than the Glossary.
       (:issue:`202`)
+    * Trim ``concepts/diffract.rst`` to a brief concept overview; move
+      guide and example content to ``guides/diffract.rst``. (:issue:`204`)
     * Use US spelling throughout docs and source. (:issue:`202`)
 
     Fixes
