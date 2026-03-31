@@ -223,6 +223,20 @@ The `Makefile` `pre` target also exports this variable automatically.
 
 - Aim for 100% coverage, but prioritize meaningful tests over simply hitting every line.
 
+## Release Tags and Versioned Docs
+
+When a new release tag is pushed:
+
+1. The docs CI workflow (`docs.yml`) automatically:
+   - Builds and publishes docs to `gh-pages/<tag>/`.
+   - Updates `gh-pages/latest/_static/switcher.json`: adds the new version
+     entry and moves `"preferred": true` to the new tag (removing it from any
+     previous entry).
+2. Update `docs/source/_static/switcher.json` in the repo to match, so the
+   source stays in sync with what is live on `gh-pages`.
+3. The `"preferred"` entry in `switcher.json` should always point to the
+   latest **tagged** release — not to `"latest"` (the main branch).
+
 ## Git Issues, Branches, Commits, and Pull Requests
 
 All non-trivial work follows this lifecycle: **Issue -> Branch -> Commits ->

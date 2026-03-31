@@ -112,15 +112,23 @@ jobs:
           with open(switcher_path) as f:
               entries = json.load(f)
 
+          # Remove preferred from all existing entries
+          for e in entries:
+              e.pop("preferred", None)
+
           versions = [e["version"] for e in entries]
           if version not in versions:
-              new_entry = {"version": version, "url": f"{base_url}/{version}/"}
+              new_entry = {"version": version, "url": f"{base_url}/{version}/", "preferred": True}
               entries.insert(1, new_entry)  # after "latest"
-              with open(switcher_path, "w") as f:
-                  json.dump(entries, f, indent=4)
               print(f"Added {version} to switcher.json")
           else:
-              print(f"{version} already in switcher.json — no change")
+              for e in entries:
+                  if e["version"] == version:
+                      e["preferred"] = True
+              print(f"{version} already in switcher.json — marked preferred")
+
+          with open(switcher_path, "w") as f:
+              json.dump(entries, f, indent=4)
           PYEOF
         env:
           SWITCHER: gh-pages-clone/latest/_static/switcher.json

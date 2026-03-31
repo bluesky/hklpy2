@@ -130,9 +130,9 @@ jobs:
             cp docs/source/_static/switcher.json "${SWITCHER}"
           fi
 
-          # Add new version entry if not already present
+          # Add new version entry and mark it preferred
           python3 - <<'PYEOF'
-          import json, os, sys
+          import json, os
 
           version = os.environ["VERSION"]
           switcher_path = os.environ["SWITCHER"]
@@ -141,17 +141,25 @@ jobs:
           with open(switcher_path) as f:
               entries = json.load(f)
 
+          # Remove preferred from all existing entries
+          for e in entries:
+              e.pop("preferred", None)
+
           versions = [e["version"] for e in entries]
           if version not in versions:
               # Insert after "latest" entry
-              new_entry = {"version": version, "url": f"{base_url}/{version}/"}
-              insert_at = 1  # after "latest"
-              entries.insert(insert_at, new_entry)
-              with open(switcher_path, "w") as f:
-                  json.dump(entries, f, indent=4)
+              new_entry = {"version": version, "url": f"{base_url}/{version}/", "preferred": True}
+              entries.insert(1, new_entry)
               print(f"Added {version} to switcher.json")
           else:
-              print(f"{version} already in switcher.json")
+              # Mark existing entry as preferred
+              for e in entries:
+                  if e["version"] == version:
+                      e["preferred"] = True
+              print(f"{version} already in switcher.json; marked preferred")
+
+          with open(switcher_path, "w") as f:
+              json.dump(entries, f, indent=4)
           PYEOF
         env:
           SWITCHER: gh-pages-clone/latest/_static/switcher.json
