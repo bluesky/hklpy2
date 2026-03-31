@@ -40,12 +40,19 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=4621528c"></script>
+    <script src="../../_static/documentation_options.js?v=3df79b6a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/misc';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://bluesky.github.io/hklpy2/latest/_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -173,12 +180,24 @@
       
       
         <div class="navbar-item">
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
       
         <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -278,12 +297,24 @@
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
         
           <div class="navbar-item"><ul class="navbar-icon-links"
     aria-label="Icon Links">
@@ -396,6 +427,7 @@
 <span class="sd">    ~pick_closest_solution</span>
 <span class="sd">    ~pick_first_solution</span>
 <span class="sd">    ~roundoff</span>
+<span class="sd">    ~creator_from_config</span>
 <span class="sd">    ~solver_factory</span>
 <span class="sd">    ~solvers</span>
 <span class="sd">    ~unique_name</span>
@@ -1730,6 +1762,112 @@
     <span class="p">}</span>
     <span class="c1"># fmt: on</span>
     <span class="k">return</span> <span class="n">entries</span></div>
+
+
+
+<div class="viewcode-block" id="creator_from_config">
+<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.creator_from_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">creator_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a simulated diffractometer from a saved configuration.</span>
+
+<span class="sd">    Parses the configuration for the solver, geometry, and axis names, then</span>
+<span class="sd">    constructs a simulator (all axes are soft positioners — no hardware</span>
+<span class="sd">    connection) and restores the full orientation (samples, reflections, UB</span>
+<span class="sd">    matrix, wavelength, constraints) from the configuration.</span>
+
+<span class="sd">    PARAMETERS</span>
+
+<span class="sd">    config : dict, str, or pathlib.Path</span>
+<span class="sd">        Configuration dictionary, or path to a YAML configuration file</span>
+<span class="sd">        previously saved with ``diffractometer.export()``.</span>
+
+<span class="sd">    RETURNS</span>
+
+<span class="sd">    DiffractometerBase</span>
+<span class="sd">        A fully configured simulated diffractometer instance.</span>
+
+<span class="sd">    EXAMPLE::</span>
+
+<span class="sd">        &gt;&gt;&gt; import hklpy2</span>
+<span class="sd">        &gt;&gt;&gt; sim = hklpy2.creator_from_config(&quot;e4cv-config.yml&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; sim.wh()</span>
+
+<span class="sd">    SEE ALSO</span>
+
+<span class="sd">        :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">creator</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">load_yaml_file</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Expected a dict or path to a YAML file. Received: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;_header&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Configuration is missing &#39;_header&#39; key.&quot;</span><span class="p">)</span>
+
+    <span class="n">solver_cfg</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solver&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">solver_name</span> <span class="o">=</span> <span class="n">solver_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;hkl_soleil&quot;</span><span class="p">)</span>
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">solver_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;E4CV&quot;</span><span class="p">)</span>
+
+    <span class="n">solver_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">solver_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">engine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">solver_kwargs</span><span class="p">[</span><span class="s2">&quot;engine&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">engine</span>
+
+    <span class="n">axes_cfg</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;axes&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">axes_xref</span> <span class="o">=</span> <span class="n">axes_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;axes_xref&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">pseudo_axes</span> <span class="o">=</span> <span class="n">axes_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pseudo_axes&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">real_axes</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ax</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;real_axes&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">ax</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">pseudo_axes</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Sort diffractometer real axis names into the order the solver expects,</span>
+    <span class="c1"># using axes_xref (diffractometer_name -&gt; solver_canonical_name) and</span>
+    <span class="c1"># solver.real_axes (solver canonical order).</span>
+    <span class="n">solver_real_order</span> <span class="o">=</span> <span class="n">solver_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;real_axes&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">if</span> <span class="n">solver_real_order</span><span class="p">:</span>
+        <span class="n">solver_to_diff_real</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">axes_xref</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">real_axes</span><span class="p">}</span>
+        <span class="n">real_axes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">solver_to_diff_real</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solver_real_order</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solver_to_diff_real</span>
+        <span class="p">]</span>
+
+    <span class="c1"># Sort diffractometer pseudo axis names into the order the solver expects,</span>
+    <span class="c1"># using axes_xref (diffractometer_name -&gt; solver_canonical_name).</span>
+    <span class="c1"># The solver canonical pseudo order is derived from the xref values for pseudos.</span>
+    <span class="n">pseudo_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pseudo_axes</span><span class="p">)</span>
+    <span class="n">solver_to_diff_pseudo</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">axes_xref</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pseudo_set</span><span class="p">}</span>
+    <span class="c1"># Preserve the solver-canonical order already encoded in axes_xref values;</span>
+    <span class="c1"># fall back to the order in axes.pseudo_axes if no xref is available.</span>
+    <span class="n">pseudo_solver_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">axes_xref</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">pseudo_axes</span><span class="p">]</span>
+    <span class="n">pseudo_axes_ordered</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">solver_to_diff_pseudo</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pseudo_solver_order</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solver_to_diff_pseudo</span>
+    <span class="p">]</span> <span class="ow">or</span> <span class="n">pseudo_axes</span>
+
+    <span class="n">reals</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">real_axes</span><span class="p">}</span>
+
+    <span class="c1"># Pass _real and _pseudo so creator() maps axes in solver-expected order</span>
+    <span class="c1"># even when diffractometer names differ from solver canonical names.</span>
+    <span class="n">diffractometer_name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">creator</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">diffractometer_name</span><span class="p">,</span>
+        <span class="n">solver</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span>
+        <span class="n">solver_kwargs</span><span class="o">=</span><span class="n">solver_kwargs</span><span class="p">,</span>
+        <span class="n">reals</span><span class="o">=</span><span class="n">reals</span><span class="p">,</span>
+        <span class="n">_real</span><span class="o">=</span><span class="n">real_axes</span> <span class="k">if</span> <span class="n">real_axes</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">_pseudo</span><span class="o">=</span><span class="n">pseudo_axes_ordered</span> <span class="k">if</span> <span class="n">pseudo_axes_ordered</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">sim</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sim</span></div>
 
 
 

@@ -36,6 +36,7 @@ hklpy2.misc
        ~pick_closest_solution
        ~pick_first_solution
        ~roundoff
+       ~creator_from_config
        ~solver_factory
        ~solvers
        ~unique_name
@@ -164,6 +165,7 @@ Functions
    hklpy2.misc.roundoff
    hklpy2.misc.solver_factory
    hklpy2.misc.solvers
+   hklpy2.misc.creator_from_config
    hklpy2.misc.unique_name
    hklpy2.misc.validate_and_canonical_unit
 
@@ -837,6 +839,37 @@ Module Contents
 
        import hklpy2
        print(hklpy2.solvers())
+
+
+.. py:function:: creator_from_config(config: Union[dict, str, pathlib.Path])
+
+   Create a simulated diffractometer from a saved configuration.
+
+   Parses the configuration for the solver, geometry, and axis names, then
+   constructs a simulator (all axes are soft positioners — no hardware
+   connection) and restores the full orientation (samples, reflections, UB
+   matrix, wavelength, constraints) from the configuration.
+
+   PARAMETERS
+
+   config : dict, str, or pathlib.Path
+       Configuration dictionary, or path to a YAML configuration file
+       previously saved with ``diffractometer.export()``.
+
+   RETURNS
+
+   DiffractometerBase
+       A fully configured simulated diffractometer instance.
+
+   EXAMPLE::
+
+       >>> import hklpy2
+       >>> sim = hklpy2.creator_from_config("e4cv-config.yml")
+       >>> sim.wh()
+
+   SEE ALSO
+
+       :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
 
 
 .. py:function:: unique_name(prefix: str = '', length: int = 7) -> str
