@@ -1,0 +1,1770 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hklpy2.diffract &#8212; hklpy2 0.3</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=28763382"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/diffract';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://bluesky.github.io/hklpy2/latest/_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.3.2.dev13+g99be97f34';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.3</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../hklpy2.html" class="nav-link">hklpy2</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">hklpy2.diffract</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for hklpy2.diffract</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Base class for all diffractometers</span>
+
+<span class="sd">.. autosummary::</span>
+
+<span class="sd">    ~creator</span>
+<span class="sd">    ~diffractometer_class_factory</span>
+<span class="sd">    ~DiffractometerBase</span>
+<span class="sd">    ~Hklpy2PseudoAxis</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">cast</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Movable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Readable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cytoolz</span><span class="w"> </span><span class="kn">import</span> <span class="n">partition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Cpt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Kind</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PositionerBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PseudoPositioner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PseudoSingle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Signal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.device</span><span class="w"> </span><span class="kn">import</span> <span class="n">required_for_connection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.pseudopos</span><span class="w"> </span><span class="kn">import</span> <span class="n">pseudo_position_argument</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.pseudopos</span><span class="w"> </span><span class="kn">import</span> <span class="n">real_position_argument</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.reflection</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reflection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.sample</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.incident</span><span class="w"> </span><span class="kn">import</span> <span class="n">WavelengthXray</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_DIGITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyAxesType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlueskyPlanType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_yaml_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">pick_first_solution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">roundoff</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_and_canonical_unit</span>
+
+<div class="viewcode-block" id="__all__">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.__all__">[docs]</a>
+<span class="n">__all__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    DiffractometerBase</span>
+<span class="s2">    diffractometer_class_factory</span>
+<span class="s2">    creator</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="logger">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.logger">[docs]</a>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DEFAULT_PHOTON_ENERGY_KEV">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DEFAULT_PHOTON_ENERGY_KEV">[docs]</a>
+<span class="n">DEFAULT_PHOTON_ENERGY_KEV</span> <span class="o">=</span> <span class="mf">8.0</span></div>
+
+<div class="viewcode-block" id="H_OR_N">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.H_OR_N">[docs]</a>
+<span class="n">H_OR_N</span> <span class="o">=</span> <span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span> <span class="o">|</span> <span class="n">Kind</span><span class="o">.</span><span class="n">normal</span></div>
+
+<div class="viewcode-block" id="T">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.T">[docs]</a>
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Hklpy2PseudoAxis">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.Hklpy2PseudoAxis">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Hklpy2PseudoAxis</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Override to allow auxiliary pseudos.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Hklpy2PseudoAxis.position">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.Hklpy2PseudoAxis.position">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The current position of the positioner in its engineering units</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        position</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position</span>  <span class="c1"># This is an auxiliary pseudo axis.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idx</span><span class="p">]</span></div>
+
+
+    <span class="nd">@required_for_connection</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{device.name}</span><span class="s2"> readback subscription&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Hklpy2PseudoAxis._sub_proxy_readback">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.Hklpy2PseudoAxis._sub_proxy_readback">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sub_proxy_readback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override allows (and ignores) auxiliary pseudos.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__getitem__&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_idx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># auxiliary pseudos are ignored here.</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_idx</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_subs</span><span class="p">(</span><span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DiffractometerBase">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DiffractometerBase</span><span class="p">(</span><span class="n">PseudoPositioner</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for all diffractometers.</span>
+
+<span class="sd">    PARAMETERS</span>
+
+<span class="sd">    solver : str</span>
+<span class="sd">        Name of |solver| library.</span>
+<span class="sd">        (default: unspecified)</span>
+<span class="sd">    geometry : str</span>
+<span class="sd">        Name of |solver| geometry.</span>
+<span class="sd">        (default: unspecified)</span>
+<span class="sd">    solver_kwargs : Dict(str, Any)</span>
+<span class="sd">        Any additional keyword arguments needed by |solver| library.</span>
+<span class="sd">        (default: empty)</span>
+<span class="sd">    pseudos : List[str]</span>
+<span class="sd">        List of diffractometer axis names to be used</span>
+<span class="sd">        as pseudo axes. (default: unspecified)</span>
+<span class="sd">    reals : List[str]</span>
+<span class="sd">        List of diffractometer axis names to be used as</span>
+<span class="sd">        real axes. (default: unspecified)</span>
+<span class="sd">    forward_solution_function : Callable</span>
+<span class="sd">        Function to pick one solution from list of possibilities.</span>
+<span class="sd">        Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.</span>
+<span class="sd">        (default: :func:`~hklpy2.misc.pick_first_solution`)</span>
+<span class="sd">    reals_units : str</span>
+<span class="sd">        The units for the real axes. (default: &quot;degrees&quot;)</span>
+
+<span class="sd">    .. rubric:: (ophyd) Components</span>
+
+<span class="sd">    .. rubric:: Python Attributes</span>
+
+<span class="sd">    .. autosummary::</span>
+
+<span class="sd">        ~_forward_solution</span>
+
+<span class="sd">    .. rubric:: Python Methods</span>
+
+<span class="sd">    .. autosummary::</span>
+
+<span class="sd">        ~add_reflection</span>
+<span class="sd">        ~add_sample</span>
+<span class="sd">        ~export</span>
+<span class="sd">        ~forward</span>
+<span class="sd">        ~full_position</span>
+<span class="sd">        ~inverse</span>
+<span class="sd">        ~move_dict</span>
+<span class="sd">        ~move_forward_with_extras</span>
+<span class="sd">        ~move_inverse_with_extras</span>
+<span class="sd">        ~move_reals</span>
+<span class="sd">        ~restore</span>
+<span class="sd">        ~scan_extra</span>
+<span class="sd">        ~wh</span>
+
+<span class="sd">    .. rubric:: Python Properties</span>
+
+<span class="sd">    .. autosummary::</span>
+<span class="sd">        ~auxiliary_axis_names</span>
+<span class="sd">        ~configuration</span>
+<span class="sd">        ~pseudo_axis_names</span>
+<span class="sd">        ~real_axis_names</span>
+<span class="sd">        ~reals_units</span>
+<span class="sd">        ~sample</span>
+<span class="sd">        ~samples</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DiffractometerBase.beam">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.beam">[docs]</a>
+    <span class="n">beam</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">WavelengthXray</span><span class="p">)</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Incident monochromatic beam.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DiffractometerBase._forward_solution">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase._forward_solution">[docs]</a>
+    <span class="n">_forward_solution</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="n">pick_first_solution</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pick a solution from solution(s) of  :meth:`~hklpy2.ops.Core.forward`.</span>
+
+<span class="sd">    Choices include:</span>
+
+<span class="sd">    * (default) :func:`hklpy2.misc.pick_first_solution`</span>
+<span class="sd">    * :func:`hklpy2.misc.pick_closest_solution`</span>
+<span class="sd">    * User-supplied function matching the same interface.</span>
+
+<span class="sd">    .. seealso::</span>
+<span class="sd">        :meth:`hklpy2.diffract.DiffractometerBase.forward`,</span>
+<span class="sd">        :meth:`hklpy2.ops.Core.forward`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">solver</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">solver_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">pseudos</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">reals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">reals_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">forward_solution_function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">Core</span>
+
+<div class="viewcode-block" id="DiffractometerBase._backend">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase._backend">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_solution</span> <span class="o">=</span> <span class="n">forward_solution_function</span> <span class="ow">or</span> <span class="n">pick_first_solution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reals_units</span> <span class="o">=</span> <span class="n">reals_units</span> <span class="ow">or</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
+
+<div class="viewcode-block" id="DiffractometerBase.core">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.core">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span> <span class="o">=</span> <span class="n">Core</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Instance-level attribute (default from class attribute)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="o">=</span> <span class="n">DEFAULT_DIGITS</span>
+
+        <span class="c1"># After __init__, Core syncs solver with the diffractometer wavelength.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">set_solver</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">solver_kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pseudos</span> <span class="o">=</span> <span class="p">[</span><span class="n">axis</span><span class="o">.</span><span class="n">attr_name</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pseudo</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">reals</span> <span class="o">=</span> <span class="p">[</span><span class="n">axis</span><span class="o">.</span><span class="n">attr_name</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">assign_axes</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength_updated_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span>
+
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxiliary_axis_names</span><span class="p">:</span>  <span class="c1"># auxiliary</span>
+            <span class="n">component</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">Hklpy2PseudoAxis</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">component</span><span class="o">.</span><span class="n">position</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Set position of all uninitialized auxiliary pseudo axes.</span>
+                    <span class="n">component</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<div class="viewcode-block" id="DiffractometerBase.add_reflection">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.add_reflection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_reflection</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pseudos</span><span class="p">,</span>
+        <span class="n">reals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">wavelength_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Reflection</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new reflection with this geometry to the selected sample.</span>
+
+<span class="sd">        PARAMETERS</span>
+
+<span class="sd">        pseudos various:</span>
+<span class="sd">            Pseudo-space axes and values.</span>
+<span class="sd">        reals various:</span>
+<span class="sd">            Dictionary of real-space axes and values.</span>
+<span class="sd">        wavelength float:</span>
+<span class="sd">            Wavelength of incident radiation. If ``None``, diffractometer&#39;s</span>
+<span class="sd">            current wavelength will be assigned.</span>
+<span class="sd">        wavelength_units str:</span>
+<span class="sd">            Optional units for the supplied ``wavelength`` (e.g. &quot;angstrom&quot;).</span>
+<span class="sd">            If ``None``, the diffractometer&#39;s current beam units are used.</span>
+<span class="sd">        name str:</span>
+<span class="sd">            Reference name for this reflection.</span>
+<span class="sd">            If ``None``, a random name will be assigned.</span>
+<span class="sd">        replace bool:</span>
+<span class="sd">            If ``True``, replace existing reflection matching this name.</span>
+<span class="sd">            (default: ``False``)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span>
+            <span class="n">pseudos</span><span class="p">,</span>
+            <span class="n">reals</span><span class="p">,</span>
+            <span class="n">wavelength</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="n">wavelength_units</span><span class="o">=</span><span class="n">wavelength_units</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DiffractometerBase.add_sample">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.add_sample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_sample</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">b</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">c</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">90.0</span><span class="p">,</span>  <span class="c1"># degrees</span>
+        <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># degrees</span>
+        <span class="n">gamma</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># degrees</span>
+        <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sample</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new sample.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span>
+            <span class="n">a</span><span class="p">,</span>
+            <span class="n">b</span><span class="p">,</span>
+            <span class="n">c</span><span class="p">,</span>
+            <span class="n">alpha</span><span class="p">,</span>
+            <span class="n">beta</span><span class="p">,</span>
+            <span class="n">gamma</span><span class="p">,</span>
+            <span class="n">digits</span><span class="p">,</span>
+            <span class="n">replace</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DiffractometerBase.configuration">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.configuration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Diffractometer configuration (orientation).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span></div>
+
+
+    <span class="nd">@configuration</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Diffractometer configuration (orientation).</span>
+
+<span class="sd">        PARAMETERS</span>
+
+<span class="sd">        config: dict</span>
+<span class="sd">            Dictionary of diffractometer configuration, geometry, constraints,</span>
+<span class="sd">            samples, reflections, orientations, solver, ...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DiffractometerBase.export">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.export">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Export the diffractometer configuration to a YAML file.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            import hklpy2</span>
+
+<span class="sd">            e4cv = hklpy2.creator(name=&quot;e4cv&quot;)</span>
+<span class="sd">            e4cv.export(&quot;e4cv-config.yml&quot;, comment=&quot;example&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configuration</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;_header&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">comment</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">comment</span><span class="p">)))</span>
+        <span class="n">dump</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">y</span><span class="p">:</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#hklpy2 configuration file</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">y</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">dump</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DiffractometerBase.restore">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.restore">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">,</span>
+        <span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">restore_constraints</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">restore_wavelength</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Restore diffractometer configuration.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            import hklpy2</span>
+
+<span class="sd">            e4cv = hklpy2.creator(name=&quot;e4cv&quot;)</span>
+<span class="sd">            e4cv.restore(&quot;e4cv-config.yml&quot;)</span>
+
+<span class="sd">        PARAMETERS</span>
+
+<span class="sd">        config : dict, str, or pathlib object</span>
+<span class="sd">            Dictionary with configuration, or name (str or pathlib object) of</span>
+<span class="sd">            diffractometer configuration YAML file.</span>
+<span class="sd">        clear : bool</span>
+<span class="sd">            If ``True`` (default), remove any previous configuration of the</span>
+<span class="sd">            diffractometer and reset it to default values before restoring the</span>
+<span class="sd">            configuration.</span>
+
+<span class="sd">            If ``False``, sample reflections will be append with all reflections</span>
+<span class="sd">            included in the configuration data for that sample.  Existing</span>
+<span class="sd">            reflections will not be changed.  The user may need to edit the</span>
+<span class="sd">            list of reflections after ``restore(clear=False)``.</span>
+<span class="sd">        restore_constraints : bool</span>
+<span class="sd">            If ``True`` (default), restore any constraints provided.</span>
+<span class="sd">        restore_wavelength : bool</span>
+<span class="sd">            If ``True`` (default), restore wavelength.</span>
+
+<span class="sd">        Note: Can&#39;t name this method &quot;import&quot;, it&#39;s a reserved Python word.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)):</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">load_yaml_file</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized configuration: </span><span class="si">{</span><span class="n">config</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_header&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Configuration is missing &#39;_header&#39; key.&quot;</span><span class="p">)</span>
+        <span class="c1"># Note: python_class key is not testable, could be anything.</span>
+
+        <span class="n">bcfg</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;beam&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">restore_wavelength</span><span class="p">:</span>
+            <span class="n">bcfg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">bcfg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;wavelength&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bcfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">bcfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wavelength&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Don&#39;t restore BOTH energy &amp; wavelength</span>
+            <span class="n">bcfg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">bcfg</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span><span class="n">bcfg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">clear</span><span class="o">=</span><span class="n">clear</span><span class="p">,</span>
+            <span class="n">restore_constraints</span><span class="o">=</span><span class="n">restore_constraints</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@pseudo_position_argument</span>
+<div class="viewcode-block" id="DiffractometerBase.forward">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.forward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute real-space coordinates from pseudos (hkl -&gt; angles).&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;forward: pseudos=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span>
+        <span class="n">solutions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">wavelength</span><span class="o">=</span><span class="n">wavelength</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward_solution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real_position</span><span class="p">,</span> <span class="n">solutions</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DiffractometerBase.full_position">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.full_position">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dict with positions of pseudos, reals, &amp; extras.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">roundoff</span>
+
+        <span class="n">pdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>
+        <span class="n">pdict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real_position</span><span class="o">.</span><span class="n">_asdict</span><span class="p">())</span>
+        <span class="n">pdict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pdict</span><span class="p">:</span>
+            <span class="n">pdict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">roundoff</span><span class="p">(</span><span class="n">pdict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">digits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pdict</span></div>
+
+
+    <span class="nd">@real_position_argument</span>
+<div class="viewcode-block" id="DiffractometerBase.inverse">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.inverse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute pseudo-space coordinates from reals (angles -&gt; hkl).&quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;inverse: reals=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reals</span><span class="p">)</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">reals</span><span class="p">,</span> <span class="n">wavelength</span><span class="o">=</span><span class="n">wavelength</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PseudoPosition</span><span class="p">(</span><span class="o">**</span><span class="n">pos</span><span class="p">)</span>  <span class="c1"># as created by namedtuple</span></div>
+
+
+    <span class="nd">@plan</span>
+<div class="viewcode-block" id="DiffractometerBase.move_dict">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">:</span> <span class="n">AxesDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;(plan) Move diffractometer axes to positions in &#39;axes&#39;.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan_stubs</span> <span class="k">as</span> <span class="n">bps</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">flatten_lists</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">):</span>
+            <span class="c1"># Convert namedtuple to dict</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>
+
+        <span class="c1"># Transform axes dict to args for bps.mv(position, value)</span>
+        <span class="n">moves</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="n">flatten_lists</span><span class="p">(</span>
+                <span class="p">[[</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">axes</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+            <span class="p">)</span>  <span class="c1"># move the diffractometer axes</span>
+        <span class="p">)</span>
+        <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="o">*</span><span class="n">moves</span><span class="p">)</span></div>
+
+
+    <span class="nd">@plan</span>
+<div class="viewcode-block" id="DiffractometerBase.move_forward_with_extras">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_forward_with_extras">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move_forward_with_extras</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pseudos</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span>
+        <span class="n">extras</span><span class="p">:</span> <span class="n">AxesDict</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (plan stub) Compute forward solution at fixed pseudos and extras.</span>
+
+<span class="sd">        EXAMPLE::</span>
+
+<span class="sd">            RE(</span>
+<span class="sd">                diffractometer.move_forward_with_extras(</span>
+<span class="sd">                    pseudos=dict(h=2, k=1, l=0),</span>
+<span class="sd">                    extras=dict(h2=2, k2=2, l2=0, psi=25),</span>
+<span class="sd">                )</span>
+<span class="sd">            )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="n">extras</span>  <span class="c1"># before forward()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
+        <span class="n">solution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">standardize_pseudos</span><span class="p">(</span><span class="n">pseudos</span><span class="p">))</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_dict</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span></div>
+
+
+    <span class="nd">@plan</span>
+<div class="viewcode-block" id="DiffractometerBase.move_inverse_with_extras">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_inverse_with_extras">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move_inverse_with_extras</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">reals</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span>
+        <span class="n">extras</span><span class="p">:</span> <span class="n">AxesDict</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        (plan stub) Compute inverse solution at fixed reals and extras.</span>
+
+<span class="sd">        EXAMPLE::</span>
+
+<span class="sd">            RE(</span>
+<span class="sd">                move_inverse_with_extras(</span>
+<span class="sd">                    diffractometer,</span>
+<span class="sd">                    reals=dict(omega=10, chi=0, phi=0, phi=20),</span>
+<span class="sd">                    extras=dict(h2=2, k2=2, l2=0, psi=25),</span>
+<span class="sd">                )</span>
+<span class="sd">            )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="n">extras</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
+        <span class="n">pseudos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">standardize_reals</span><span class="p">(</span><span class="n">reals</span><span class="p">))</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_dict</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span></div>
+
+
+    <span class="nd">@real_position_argument</span>
+<div class="viewcode-block" id="DiffractometerBase.move_reals">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_reals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move_reals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;(not a plan) Move the real-space axes as specified in &#39;real_positions&#39;.&quot;&quot;&quot;</span>
+        <span class="n">reals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">standardize_reals</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">axis_name</span><span class="p">,</span> <span class="n">position</span> <span class="ow">in</span> <span class="n">reals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">hkl_axis</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis_name</span><span class="p">)</span>
+            <span class="n">hkl_axis</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">position</span><span class="p">)</span></div>
+
+
+    <span class="nd">@plan</span>
+<div class="viewcode-block" id="DiffractometerBase.scan_extra">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.scan_extra">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">scan_extra</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">detectors</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Readable</span><span class="p">],</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Movable</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>  <span class="c1"># axis, start, finish, [...]</span>
+        <span class="n">num</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">pseudos</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># h, k, l</span>
+        <span class="n">reals</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># angles</span>
+        <span class="n">extras</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">fail_on_exception</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">md</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Scan extra diffractometer parameter(s), such as &#39;psi&#39;.</span>
+
+<span class="sd">        * iterate extra positions as described:</span>
+<span class="sd">            * set extras</span>
+<span class="sd">            * solution = forward(pseudos)</span>
+<span class="sd">            * move to solution</span>
+<span class="sd">            * acquire (trigger) all controls</span>
+<span class="sd">            * read and record all controls</span>
+
+<span class="sd">        Parameters</span>
+
+<span class="sd">        detectors: Iterable[Readable]</span>
+<span class="sd">            List of readable objects.</span>
+<span class="sd">        args: Any</span>
+<span class="sd">            Specification of scan axes.</span>
+
+<span class="sd">            The &#39;args&#39; specification is a repeating pattern of axis (str), start</span>
+<span class="sd">            (float), stop (float).</span>
+
+<span class="sd">            In general:</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                axis1, start1, stop1, axis2, start2, stop2, ..., axisN, startN,</span>
+<span class="sd">                stopN</span>
+
+<span class="sd">            Axis is any extra axis name supported by the current diffractometer</span>
+<span class="sd">            geometry and mode.</span>
+<span class="sd">        num: int</span>
+<span class="sd">            Number of points.</span>
+<span class="sd">        pseudos: dict</span>
+<span class="sd">            Dictionary of pseudo axes positions to be held constant during the</span>
+<span class="sd">            scan.</span>
+<span class="sd">        reals: dict</span>
+<span class="sd">            Dictionary of real axes positions to be held constant during the</span>
+<span class="sd">            scan.</span>
+<span class="sd">        extras: dict</span>
+<span class="sd">            Dictionary of extra axes positions to be held constant during the</span>
+<span class="sd">            scan.</span>
+<span class="sd">        fail_on_exception: bool</span>
+<span class="sd">            When True (deafult: False), scan will raise any exceptions. When</span>
+<span class="sd">            False, all exceptions during the scan will be printed to console.</span>
+<span class="sd">        md: dict</span>
+<span class="sd">            Dictionary of user-supplied metadata.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan_stubs</span> <span class="k">as</span> <span class="n">bps</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">preprocessors</span> <span class="k">as</span> <span class="n">bpp</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">position_series</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+            <span class="k">yield from</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
+
+        <span class="c1"># validate</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must specify scan axes in groups of 3, received </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="n">movers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">finish</span> <span class="ow">in</span> <span class="n">partition</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">axis</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_extra_axis_names</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">axis</span><span class="si">!r}</span><span class="s2"> not in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_extra_axis_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">movers</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Extra axis may only be used once, received </span><span class="si">{</span><span class="n">args</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pseudos</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">reals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must define either pseudos or reals.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pseudos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">reals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot define both pseudos and reals.&quot;</span><span class="p">)</span>
+            <span class="n">movers</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">series</span><span class="o">=</span><span class="n">position_series</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">num</span><span class="p">),</span>
+                <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+                <span class="n">finish</span><span class="o">=</span><span class="n">finish</span><span class="p">,</span>
+                <span class="n">signal</span><span class="o">=</span><span class="n">Signal</span><span class="p">(</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_extras_</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">extras</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">start</span>
+
+        <span class="n">_md</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;diffractometer&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;solver_signature&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_signature</span><span class="p">,</span>
+                <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+                <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
+                <span class="s2">&quot;extra_axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_extra_axis_names</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">axis</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">finish</span><span class="o">=</span><span class="n">finish</span><span class="p">)</span>
+                <span class="c1">#</span>
+                <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">finish</span> <span class="ow">in</span> <span class="n">partition</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;num&quot;</span><span class="p">:</span> <span class="n">num</span><span class="p">,</span>
+            <span class="s2">&quot;pseudos&quot;</span><span class="p">:</span> <span class="n">pseudos</span><span class="p">,</span>
+            <span class="s2">&quot;reals&quot;</span><span class="p">:</span> <span class="n">reals</span><span class="p">,</span>
+            <span class="s2">&quot;extras&quot;</span><span class="p">:</span> <span class="n">extras</span><span class="p">,</span>
+            <span class="s2">&quot;transformation&quot;</span><span class="p">:</span> <span class="s2">&quot;forward&quot;</span> <span class="k">if</span> <span class="n">reals</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;inverse&quot;</span><span class="p">,</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">md</span> <span class="ow">or</span> <span class="p">{})</span>
+
+        <span class="n">all_controls</span> <span class="o">=</span> <span class="n">detectors</span>
+        <span class="n">all_controls</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">movers</span><span class="p">[</span><span class="n">axis</span><span class="p">][</span><span class="s2">&quot;signal&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">movers</span><span class="p">])</span>
+        <span class="n">all_controls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">all_controls</span><span class="p">))</span>
+
+        <span class="nd">@bpp</span><span class="o">.</span><span class="n">stage_decorator</span><span class="p">(</span><span class="n">detectors</span><span class="p">)</span>
+        <span class="nd">@bpp</span><span class="o">.</span><span class="n">run_decorator</span><span class="p">(</span><span class="n">md</span><span class="o">=</span><span class="n">_md</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_inner</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">&quot;series&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">movers</span><span class="o">.</span><span class="n">values</span><span class="p">())):</span>
+
+                <span class="k">def</span><span class="w"> </span><span class="nf">move_axes</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span><span class="p">,</span> <span class="n">extras</span><span class="p">):</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;Move extras, then reals or pseudos, move to the solution.&quot;&quot;&quot;</span>
+                    <span class="k">if</span> <span class="n">reals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_forward_with_extras</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_inverse_with_extras</span><span class="p">(</span><span class="n">reals</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span>
+
+                <span class="k">def</span><span class="w"> </span><span class="nf">acquire</span><span class="p">(</span><span class="n">objects</span><span class="p">):</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;Tell each object to acquire its data.&quot;&quot;&quot;</span>
+                    <span class="n">group</span> <span class="o">=</span> <span class="s2">&quot;trigger_control_objects&quot;</span>
+                    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+                        <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+                    <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
+
+                <span class="k">def</span><span class="w"> </span><span class="nf">record</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span><span class="p">):</span>
+<span class="w">                    </span><span class="sd">&quot;&quot;&quot;Read &amp; record each object.&quot;&quot;&quot;</span>
+                    <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+                        <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                    <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+                <span class="c1"># update with new position(s), will report later</span>
+                <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">movers</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">positions</span><span class="p">):</span>
+                    <span class="n">extras</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="n">movers</span><span class="p">[</span><span class="n">axis</span><span class="p">][</span><span class="s2">&quot;signal&quot;</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">yield from</span> <span class="n">move_axes</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span><span class="p">,</span> <span class="n">extras</span><span class="p">)</span>
+                    <span class="k">yield from</span> <span class="n">acquire</span><span class="p">(</span><span class="n">all_controls</span><span class="p">)</span>
+                    <span class="k">yield from</span> <span class="n">record</span><span class="p">(</span><span class="n">all_controls</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">reason</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">fail_on_exception</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">reason</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Scan axis beyond limits will trigger this code.</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FAIL: </span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Inform the user!</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="k">yield from</span> <span class="n">_inner</span><span class="p">())</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="DiffractometerBase._format_value_for_repr">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase._format_value_for_repr">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_value_for_repr</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">],</span>
+        <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format numeric values for display without changing them.</span>
+
+<span class="sd">        - Floats: fixed-point with `digits` decimals, trailing zeros</span>
+<span class="sd">          removed but at least one decimal retained (e.g. 4 -&gt; 4.0).</span>
+<span class="sd">        - Other types: fall back to built-in repr.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="n">digits</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="s2">&quot;.0&quot;</span>
+            <span class="k">return</span> <span class="n">s</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="DiffractometerBase._make_wrapped_namedtuple_class">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase._make_wrapped_namedtuple_class">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_wrapped_namedtuple_class</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">orig_cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]],</span>
+        <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a lightweight subclass of ``orig_cls`` with concise repr.</span>
+
+<span class="sd">        Avoid re-wrapping when the same digit count is already applied.</span>
+<span class="sd">        Supports control of displayed numerical precision in position tuples.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">orig_cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">existing_digits</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">orig_cls</span><span class="p">,</span> <span class="s2">&quot;_hklpy2_wrapped_digits&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">orig_cls</span><span class="p">,</span> <span class="s2">&quot;_hklpy2_wrapped&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="c1">#</span>
+            <span class="ow">and</span> <span class="n">existing_digits</span> <span class="o">==</span> <span class="n">digits</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">orig_cls</span><span class="p">)</span>
+
+        <span class="n">orig_name</span> <span class="o">=</span> <span class="n">orig_cls</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">pairs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">,</span> <span class="p">()):</span>  <span class="c1"># namedtuple fields</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_format_value_for_repr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">orig_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+        <span class="n">new_cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span>
+            <span class="n">orig_name</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">orig_cls</span><span class="p">,),</span>
+            <span class="p">{</span><span class="s2">&quot;__repr__&quot;</span><span class="p">:</span> <span class="fm">__repr__</span><span class="p">,</span> <span class="s2">&quot;__str__&quot;</span><span class="p">:</span> <span class="fm">__str__</span><span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">new_cls</span><span class="p">,</span> <span class="s2">&quot;_hklpy2_wrapped&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">new_cls</span><span class="p">,</span> <span class="s2">&quot;_hklpy2_wrapped_digits&quot;</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_cls</span></div>
+
+
+    <span class="c1"># ---- get/set properties</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DiffractometerBase.auxiliary_axis_names">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.auxiliary_axis_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">auxiliary_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Names of all auxiliary positioners, in order of appearance.</span>
+
+<span class="sd">        Auxiliary axes are all components using (subclasses of</span>
+<span class="sd">        &#39;ophyd.PositionerBase&#39;) that are not pseudos or reals.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; fourc.auxiliary_axis_names</span>
+<span class="sd">            [&#39;h2&#39;, &#39;k2&#39;, &#39;l2&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pseudos_and_reals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="c1"># Names of any auxiliary positioners not described above.</span>
+            <span class="n">attr</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">component_names</span>
+            <span class="k">if</span> <span class="n">attr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pseudos_and_reals</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">),</span> <span class="n">PositionerBase</span><span class="p">)</span>
+        <span class="p">]</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DiffractometerBase.digits">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.digits">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">digits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of decimal digits used when rendering position tuples.</span>
+
+<span class="sd">        This is a per-instance property. Reading returns the instance value if</span>
+<span class="sd">        set, otherwise the class default. Setting updates the instance value</span>
+<span class="sd">        and re-wraps the instance&#39;s PseudoPosition/RealPosition classes so the</span>
+<span class="sd">        new digit count is used for their string representations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_repr_digits</span></div>
+
+
+    <span class="nd">@digits</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">digits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">digits</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">digits</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Digits must be a non-negative integer, received </span><span class="si">{</span><span class="n">digits</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_repr_digits</span> <span class="o">=</span> <span class="n">digits</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;PseudoPosition&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">PseudoPosition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_wrapped_namedtuple_class</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">PseudoPosition</span><span class="p">,</span> <span class="n">digits</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;RealPosition&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RealPosition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_wrapped_namedtuple_class</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RealPosition</span><span class="p">,</span> <span class="n">digits</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DiffractometerBase.pseudo_axis_names">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.pseudo_axis_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pseudo_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Names of all the pseudo axes, in order of appearance.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; fourc.pseudo_axis_names</span>
+<span class="sd">            [&#39;h&#39;, &#39;k&#39;, &#39;l&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">attr_name</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_positioners</span><span class="p">]</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DiffractometerBase.real_axis_names">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.real_axis_names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">real_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Names of all the real axes, in order of appearance.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            &gt;&gt;&gt; fourc.real_axis_names</span>
+<span class="sd">            [&#39;omega&#39;, &#39;chi, &#39;phi&#39;, &#39;tth&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">o</span><span class="o">.</span><span class="n">attr_name</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_positioners</span><span class="p">]</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DiffractometerBase.reals_units">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.reals_units">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reals_units</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Engineering units for the reals (rotational) axes&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_real_units&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_real_units</span> <span class="o">=</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real_units</span></div>
+
+
+    <span class="nd">@reals_units</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reals_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Units must be convertible to internal angle units.&quot;&quot;&quot;</span>
+        <span class="n">validate_and_canonical_unit</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">INTERNAL_ANGLE_UNITS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reals_units</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DiffractometerBase.samples">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.samples">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">samples</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sample</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dictionary of samples.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">samples</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="DiffractometerBase.sample">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.sample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Sample</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Current sample object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">sample</span></div>
+
+
+    <span class="nd">@sample</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="DiffractometerBase.wh">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.wh">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concise report of the current diffractometer positions.&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DiffractometerError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Diffractometer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is not connected.&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">labeled_value</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">print_axes</span><span class="p">(</span><span class="n">names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">preface</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">nm</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                <span class="c1"># Any instance of PositionerBase.</span>
+                <span class="n">component</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nm</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">position</span>
+                <span class="n">pair</span> <span class="o">=</span> <span class="n">labeled_value</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">preface</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pairs</span><span class="p">))</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">format_array</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Apply (fixed-point) digits formatting to numpy array.&quot;&quot;&quot;</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">each</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;Roundoff each float.&quot;&quot;&quot;</span>
+                <span class="c1"># return roundoff(x, digits)</span>
+                <span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.</span><span class="si">{</span><span class="n">digits</span><span class="si">}</span><span class="s2">f</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;-0.&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="c1"># Apply formatting function to each element.</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">each</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">full</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;diffractometer=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Orienting reflections: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;U=</span><span class="si">{</span><span class="n">format_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UB=</span><span class="si">{</span><span class="n">format_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;constraint: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mode: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">mode_presets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mode_presets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;presets: </span><span class="si">{</span><span class="n">mode_presets</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">beam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="s2">&quot;energy wavelength&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">beam</span><span class="p">:</span>
+                    <span class="n">beam</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">roundoff</span><span class="p">(</span><span class="n">beam</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">digits</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;beam=</span><span class="si">{</span><span class="n">beam</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;wavelength=</span><span class="si">{</span><span class="n">roundoff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="w"> </span><span class="n">digits</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">print_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">,</span> <span class="n">preface</span><span class="o">=</span><span class="s2">&quot;pseudos: &quot;</span><span class="p">)</span>
+        <span class="n">print_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span> <span class="n">preface</span><span class="o">=</span><span class="s2">&quot;reals: &quot;</span><span class="p">)</span>
+        <span class="n">extras</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extras</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">value_text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">labeled_value</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">extras</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;extras: &quot;</span> <span class="o">+</span> <span class="n">value_text</span><span class="p">)</span>
+        <span class="n">print_axes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">auxiliary_axis_names</span><span class="p">,</span> <span class="n">preface</span><span class="o">=</span><span class="s2">&quot;auxiliaries: &quot;</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="creator">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.creator">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">solver</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
+    <span class="n">beam_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">solver_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">_pseudo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">_real</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">reals</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">KeyValueMap</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">motor_labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;motors&quot;</span><span class="p">],</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;diffractometer&quot;</span><span class="p">],</span>
+    <span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Hklpy2Diffractometer&quot;</span><span class="p">,</span>
+    <span class="n">class_bases</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">DiffractometerBase</span><span class="p">],</span>
+    <span class="n">forward_solution_function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DiffractometerBase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Factory function to create a diffractometer instance.</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    Four-circle diffractometer, vertical orientation, Eulerian rotations,</span>
+<span class="sd">    canonical real axis names, EPICS motor PVs::</span>
+
+<span class="sd">        e4cv = creator(name=&quot;e4cv&quot;,</span>
+<span class="sd">            solver=&quot;hkl_soleil&quot;, geometry=&quot;E4CV&quot;,</span>
+<span class="sd">            reals=dict(omega=&quot;IOC:m1&quot;, chi=&quot;IOC:m2&quot;, phi=&quot;IOC:m3&quot;, tth=&quot;IOC:m4&quot;),</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Four-circle diffractometer, vertical orientation, Eulerian rotations,</span>
+<span class="sd">    *custom real axis names*, simulated positioners::</span>
+
+<span class="sd">        sim4c = creator(name=&quot;sim4c&quot;,</span>
+<span class="sd">            solver=&quot;hkl_soleil&quot;, geometry=&quot;E4CV&quot;,</span>
+<span class="sd">            reals=dict(uno=None, dos=None, tres=None, cuatro=None),</span>
+<span class="sd">        )</span>
+
+<span class="sd">    The same ``sim4c`` diffractometer, but the ``reals`` are specified in a</span>
+<span class="sd">    different order. In this case, ``_real`` declares the order of these axes as</span>
+<span class="sd">    expected by the solver::</span>
+
+<span class="sd">        sim4c = creator(name=&quot;sim4c&quot;,</span>
+<span class="sd">            solver=&quot;hkl_soleil&quot;, geometry=&quot;E4CV&quot;,</span>
+<span class="sd">            reals=dict(cuatro=None, dos=None, tres=None, uno=None),</span>
+<span class="sd">            _real=[&quot;uno&quot;, &quot;dos&quot;, &quot;tres&quot;, &quot;cuatro&quot;],</span>
+<span class="sd">        )</span>
+
+<span class="sd">    (Simplest case to get a simulator.)</span>
+<span class="sd">    Four-circle diffractometer, vertical orientation, Eulerian rotations,</span>
+<span class="sd">    canonical real axis names, simulated positioners (all default settings)::</span>
+
+<span class="sd">        sim4c = creator(name=&quot;sim4c&quot;)</span>
+
+<span class="sd">    Kappa six-circle diffractometer, simulated motors::</span>
+
+<span class="sd">        simk6c = creator(name=&quot;simk6c&quot;,</span>
+<span class="sd">            solver=&quot;hkl_soleil&quot;, geometry=&quot;K6C&quot;</span>
+<span class="sd">        )</span>
+
+<span class="sd">    PARAMETERS</span>
+
+<span class="sd">    prefix : str</span>
+<span class="sd">        EPICS PV prefix (default: empty string)</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the ophyd diffractometer object to be created. (default: &#39;&quot;&quot;&#39;)</span>
+<span class="sd">    solver : str</span>
+<span class="sd">        Name of the backend solver providing the geometry. (default: &#39;&quot;hkl_soleil&quot;&#39;)</span>
+<span class="sd">    geometry : str</span>
+<span class="sd">        Name of the diffractometer geometry. (default: &#39;&quot;E4CV&quot;&#39;)</span>
+<span class="sd">    beam_kwargs : dict[str, object]</span>
+<span class="sd">        Additional configuration for the incident beam.</span>
+<span class="sd">        (default: &#39;{&quot;class&quot;: &quot;hklpy2.incident.WavelengthXray&quot;}&#39;)</span>
+<span class="sd">    solver_kwargs : dict[str, object]</span>
+<span class="sd">        Additional configuration for the solver. (default: &#39;{&quot;engine&quot;: &quot;hkl&quot;}&#39;)</span>
+<span class="sd">    _pseudo: list[str]</span>
+<span class="sd">        Names which (and in what order of appearance) any of the &#39;pseudos&#39; is to</span>
+<span class="sd">        be used. The list is necessary when the &#39;pseudos&#39; are provided in an</span>
+<span class="sd">        order different than expected by the solver&#39;s &#39;forward()&#39; and</span>
+<span class="sd">        &#39;inverse()&#39; methods.</span>
+<span class="sd">    pseudos : list</span>
+<span class="sd">        Specification of the names of any pseudo axis positioners</span>
+<span class="sd">        in addition to the ones provided by the solver.</span>
+
+<span class="sd">        (default: &#39;[]&#39; which means no additional pseudo axes)</span>
+<span class="sd">    _real: list[str]</span>
+<span class="sd">        Names which (and in what order of appearance) any of the &#39;reals&#39; is to</span>
+<span class="sd">        be used. The list is necessary when the &#39;reals&#39; are provided in an</span>
+<span class="sd">        order different than expected by the solver&#39;s &#39;forward()&#39; and</span>
+<span class="sd">        &#39;inverse()&#39; methods.</span>
+<span class="sd">    reals : dict</span>
+<span class="sd">        Specification of the real axis motors.  Dictionary keys are the motor</span>
+<span class="sd">        names, values are the EPICS motor PV for that axis.  If the PV is</span>
+<span class="sd">        &#39;None&#39;, use a simulated positioner.</span>
+
+<span class="sd">        The dictionary can be empty or must have at least the canonical number of</span>
+<span class="sd">        real axes.  The order of the axes is important.  The names provided will</span>
+<span class="sd">        be mapped to the canonical order defined by the solver.  Components will</span>
+<span class="sd">        be created for any extra *reals*.</span>
+
+<span class="sd">        (default: &#39;{}&#39; which means use the canonical names for the real axes and</span>
+<span class="sd">        use simulated positioners)</span>
+<span class="sd">    motor_labels : list</span>
+<span class="sd">        Ophyd object labels for each real positioner. (default: &#39;[&quot;motors&quot;]&#39;)</span>
+<span class="sd">    labels : list</span>
+<span class="sd">        Ophyd object labels for the diffractometer object. (default: &#39;[&quot;diffractometer&quot;]&#39;)</span>
+<span class="sd">    class_name : str</span>
+<span class="sd">        Name to use for the diffractometer class.</span>
+<span class="sd">        (default: &#39;&quot;Hklpy2Diffractometer&quot;&#39;)</span>
+<span class="sd">    class_bases : list</span>
+<span class="sd">        List of base classes to use for the diffractometer class.</span>
+<span class="sd">        (default: &#39;[DiffractometerBase]&#39;)</span>
+<span class="sd">    forward_solution_function : str</span>
+<span class="sd">        Name of function to pick one solution from list of possibilities.</span>
+<span class="sd">        Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.</span>
+<span class="sd">        (default: :func:`~hklpy2.misc.pick_first_solution`)</span>
+
+<span class="sd">        Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.</span>
+<span class="sd">    kwargs : any</span>
+<span class="sd">        Additional keyword arguments will be added when constructing</span>
+<span class="sd">        the new diffractometer object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DiffractometerClass</span> <span class="o">=</span> <span class="n">diffractometer_class_factory</span><span class="p">(</span>
+        <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span>
+        <span class="n">beam_kwargs</span><span class="o">=</span><span class="n">beam_kwargs</span><span class="p">,</span>
+        <span class="n">solver_kwargs</span><span class="o">=</span><span class="n">solver_kwargs</span><span class="p">,</span>
+        <span class="n">_pseudo</span><span class="o">=</span><span class="n">_pseudo</span><span class="p">,</span>
+        <span class="n">pseudos</span><span class="o">=</span><span class="n">pseudos</span><span class="p">,</span>
+        <span class="n">_real</span><span class="o">=</span><span class="n">_real</span><span class="p">,</span>
+        <span class="n">reals</span><span class="o">=</span><span class="n">reals</span><span class="p">,</span>
+        <span class="n">motor_labels</span><span class="o">=</span><span class="n">motor_labels</span><span class="p">,</span>
+        <span class="n">class_name</span><span class="o">=</span><span class="n">class_name</span><span class="p">,</span>
+        <span class="n">class_bases</span><span class="o">=</span><span class="n">class_bases</span><span class="p">,</span>
+        <span class="n">forward_solution_function</span><span class="o">=</span><span class="n">forward_solution_function</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">DiffractometerClass</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="diffractometer_class_factory">
+<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.diffractometer_class_factory">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">diffractometer_class_factory</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">solver</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
+    <span class="n">beam_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">solver_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;hkl&quot;</span><span class="p">},</span>
+    <span class="n">_pseudo</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">_real</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">reals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+    <span class="n">motor_labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;motors&quot;</span><span class="p">],</span>
+    <span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Hklpy2Diffractometer&quot;</span><span class="p">,</span>
+    <span class="n">class_bases</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">DiffractometerBase</span><span class="p">],</span>
+    <span class="n">forward_solution_function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DiffractometerBase</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build a custom class for this diffractometer geometry.</span>
+
+<span class="sd">    PARAMETERS</span>
+
+<span class="sd">    solver : str</span>
+<span class="sd">        Name of the backend solver providing the geometry.</span>
+<span class="sd">        (default: &#39;&quot;hkl_soleil&quot;&#39;)</span>
+<span class="sd">    geometry : str</span>
+<span class="sd">        Name of the diffractometer geometry. (default: &#39;&quot;E4CV&quot;&#39;)</span>
+<span class="sd">    beam_kwargs : dict[str, object]</span>
+<span class="sd">        Additional configuration for the incident beam.</span>
+<span class="sd">        (default: &#39;{&quot;class&quot;: &quot;hklpy2.incident.WavelengthXray&quot;}&#39;)</span>
+<span class="sd">    solver_kwargs : str</span>
+<span class="sd">        Additional configuration for the solver. (default: &#39;{&quot;engine&quot;: &quot;hkl&quot;}&#39;)</span>
+<span class="sd">    _pseudo: list[str]</span>
+<span class="sd">        Names which (and in what order of appearance) any of the &#39;pseudos&#39; is to</span>
+<span class="sd">        be used. The list is necessary when the &#39;pseudos&#39; are provided in an</span>
+<span class="sd">        order different than expected by the solver&#39;s &#39;forward()&#39; and</span>
+<span class="sd">        &#39;inverse()&#39; methods.</span>
+<span class="sd">    pseudos : list</span>
+<span class="sd">        Specification of the names of any pseudo axis positioners</span>
+<span class="sd">        in addition to the ones provided by the solver.</span>
+
+<span class="sd">        (default: &#39;[]&#39; which means no additional pseudo axes)</span>
+<span class="sd">    _real: list[str]</span>
+<span class="sd">        Names which (and in what order of appearance) any of the &#39;reals&#39; is to</span>
+<span class="sd">        be used. The list is necessary when the &#39;reals&#39; are provided in an</span>
+<span class="sd">        order different than expected by the solver&#39;s &#39;forward()&#39; and</span>
+<span class="sd">        &#39;inverse()&#39; methods.</span>
+<span class="sd">    reals : dict or list or None</span>
+<span class="sd">        Specification of the real axis motors.</span>
+
+<span class="sd">        None or empty means use the canonical names for the real axes and use</span>
+<span class="sd">        simulated positioners (``ophyd.SoftPositioner``) for each.  Otherwise,</span>
+<span class="sd">        you must specify at least the number of real axes expected by the solver</span>
+<span class="sd">        geometry.</span>
+
+<span class="sd">        list:</span>
+<span class="sd">            Specify the names of the real axis motors.  The names will be</span>
+<span class="sd">            matched, in order, to the names used by the solver.</span>
+<span class="sd">            The default class will be ``ophyd.SoftPositioner``.</span>
+<span class="sd">        dict:</span>
+<span class="sd">            Keys: The names of the real axis motors.  The names will be</span>
+<span class="sd">                matched, in order, to the names used by the solver.</span>
+<span class="sd">            Values:</span>
+<span class="sd">                * A string representing the EPICS motor PV.</span>
+<span class="sd">                * ``None`` for a simulated positioner using ``ophyd.SoftPositioner``.</span>
+<span class="sd">                * A dictionary with additional specifications for the motor constructor.</span>
+<span class="sd">                  Use this case for any case where either a string or ``None``</span>
+<span class="sd">                  are insufficient to specify all necessary parameters.</span>
+<span class="sd">    motor_labels : list</span>
+<span class="sd">        Ophyd object labels for each real positioner. (default: &#39;[&quot;motors&quot;]&#39;)</span>
+<span class="sd">    class_name : str</span>
+<span class="sd">        Name to use for the diffractometer class.</span>
+<span class="sd">        (default: &#39;&quot;Hklpy2Diffractometer&quot;&#39;)</span>
+<span class="sd">    class_bases : list</span>
+<span class="sd">        List of base classes to use for the diffractometer class.</span>
+<span class="sd">        (default: &#39;[DiffractometerBase]&#39;)</span>
+<span class="sd">    forward_solution_function : str</span>
+<span class="sd">        Name of function to pick one solution from list of possibilities.</span>
+<span class="sd">        Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.</span>
+<span class="sd">        (default: :func:`~hklpy2.misc.pick_first_solution`)</span>
+
+<span class="sd">        Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_MOTOR_LABELS</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">dynamic_import</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_component</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_factory_axes</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">solver_factory</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected a list.  Received </span><span class="si">{</span><span class="n">pseudos</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reals</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reals</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">reals</span> <span class="o">=</span> <span class="p">{</span><span class="n">axis</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">reals</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected a dict.  Received </span><span class="si">{</span><span class="n">reals</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Define Component attributes of __this__ custom class.</span>
+    <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">beam_class</span> <span class="o">=</span> <span class="n">beam_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;hklpy2.incident.WavelengthXray&quot;</span><span class="p">)</span>
+    <span class="n">maker</span> <span class="o">=</span> <span class="n">make_component</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">beam_class</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">Cpt</span>
+    <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;beam&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maker</span><span class="p">(</span><span class="n">beam_class</span><span class="p">,</span> <span class="o">**</span><span class="n">beam_kwargs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">forward_solution_function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">forward_solution_function</span> <span class="o">=</span> <span class="s2">&quot;hklpy2.misc.pick_first_solution&quot;</span>
+    <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;_forward_solution&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span>
+        <span class="n">forward_solution_function</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Find the chosen solver.  It describes its various axes.</span>
+    <span class="n">solver_object</span> <span class="o">=</span> <span class="n">solver_factory</span><span class="p">(</span><span class="n">solver</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">solver_kwargs</span><span class="p">)</span>
+    <span class="c1"># Add the axes</span>
+    <span class="n">attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">parse_factory_axes</span><span class="p">(</span>
+            <span class="n">space</span><span class="o">=</span><span class="s2">&quot;pseudos&quot;</span><span class="p">,</span>
+            <span class="n">canonical</span><span class="o">=</span><span class="n">solver_object</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">=</span><span class="n">_pseudo</span><span class="p">,</span>
+            <span class="n">axes</span><span class="o">=</span><span class="n">pseudos</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">motor_labels</span> <span class="o">=</span> <span class="n">motor_labels</span> <span class="ow">or</span> <span class="n">DEFAULT_MOTOR_LABELS</span>
+    <span class="n">attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="n">parse_factory_axes</span><span class="p">(</span>
+            <span class="n">space</span><span class="o">=</span><span class="s2">&quot;reals&quot;</span><span class="p">,</span>
+            <span class="n">canonical</span><span class="o">=</span><span class="n">solver_object</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">=</span><span class="n">_real</span><span class="p">,</span>
+            <span class="n">axes</span><span class="o">=</span><span class="n">reals</span><span class="p">,</span>
+            <span class="n">labels</span><span class="o">=</span><span class="n">motor_labels</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">constructor</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">solver</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">solver</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">geometry</span><span class="p">,</span>
+        <span class="n">solver_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">solver_kwargs</span><span class="p">,</span>
+        <span class="n">pseudos</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;_pseudo&quot;</span><span class="p">],</span>
+        <span class="n">reals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;_real&quot;</span><span class="p">],</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">DiffractometerBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span>
+            <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span>
+            <span class="n">solver_kwargs</span><span class="o">=</span><span class="n">solver_kwargs</span><span class="p">,</span>
+            <span class="n">pseudos</span><span class="o">=</span><span class="n">pseudos</span><span class="p">,</span>
+            <span class="n">reals</span><span class="o">=</span><span class="n">reals</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;__init__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">constructor</span>
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">class_name</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">class_bases</span><span class="p">),</span> <span class="n">attributes</span><span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2025, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

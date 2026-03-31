@@ -1,0 +1,221 @@
+hklpy2.backends.th_tth_q
+========================
+
+.. py:module:: hklpy2.backends.th_tth_q
+
+.. autoapi-nested-parse::
+
+   "th_tth" example solver in Python.
+
+   Transformations between :math:`\theta,2\theta` and :math:`Q`.
+
+   Example::
+
+       import hklpy2
+       SolverClass = hklpy2.get_solver("th_tth")
+       solver = SolverClass()
+
+   .. autosummary::
+
+       ~ThTthSolver
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hklpy2.backends.th_tth_q.logger
+   hklpy2.backends.th_tth_q.TH_TTH_Q_GEOMETRY
+   hklpy2.backends.th_tth_q.TH_Q_GEOMETRY
+   hklpy2.backends.th_tth_q.BISECTOR_MODE
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hklpy2.backends.th_tth_q.ThTthSolver
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:data:: TH_TTH_Q_GEOMETRY
+   :value: 'TH TTH Q'
+
+
+.. py:data:: TH_Q_GEOMETRY
+   :value: 'TH Q'
+
+
+.. py:data:: BISECTOR_MODE
+   :value: 'bissector'
+
+
+.. py:class:: ThTthSolver(geometry: str, **kwargs)
+
+   Bases: :py:obj:`hklpy2.backends.base.SolverBase`
+
+
+   ``"th_tth"`` (any OS) :math:`\theta,2\theta` and :math:`Q`.
+
+   ============== =================
+   transformation equation
+   ============== =================
+   ``forward()``  :math:`\theta = \sin^{-1}(q\lambda / 4\pi)`
+   ``inverse()``  :math:`q = (4\pi / \lambda) \sin(\theta)`
+   ============== =================
+
+   Wavelength is specified either directly (``solver.wavelength = 1.0``) or
+   by adding at least one :index:`reflection` (see
+   :class:`~hklpy2.blocks.reflection.Reflection`).  All
+   reflections must have the same :index:`wavelength`.
+
+   No orientation matrix is used in this geometry.
+
+   .. rubric:: Python Methods
+
+   .. autosummary::
+
+       ~addReflection
+       ~calculate_UB
+       ~extra_axis_names
+       ~forward
+       ~geometries
+       ~inverse
+       ~pseudo_axis_names
+       ~real_axis_names
+       ~refineLattice
+       ~removeAllReflections
+
+   .. rubric:: Python Properties
+
+   .. autosummary::
+
+       ~geometry
+       ~lattice
+       ~mode
+       ~modes
+       ~sample
+
+
+   .. py:attribute:: name
+      :value: 'th_tth'
+
+
+      Name of this Solver.
+
+
+   .. py:attribute:: version
+
+      Version of this Solver.
+
+
+   .. py:attribute:: _reflections
+      :value: []
+
+
+
+   .. py:attribute:: _wavelength
+      :value: None
+
+
+
+   .. py:method:: addReflection(value: hklpy2.misc.KeyValueMap) -> None
+
+      Add coordinates of a diffraction condition (a reflection).
+
+
+
+   .. py:method:: calculate_UB(r1: hklpy2.misc.KeyValueMap, r2: hklpy2.misc.KeyValueMap) -> hklpy2.misc.Matrix3x3
+
+      Calculate the UB (orientation) matrix with two reflections.
+
+      The method of Busing & Levy, Acta Cryst 22 (1967) 457.
+
+
+
+   .. py:property:: extra_axis_names
+      :type: List[str]
+
+
+      Ordered list of any extra axis names (such as x, y, z).
+
+
+   .. py:method:: forward(pseudos: hklpy2.misc.NamedFloatDict) -> List[hklpy2.misc.NamedFloatDict]
+
+      Transform pseudos to list of reals.
+
+
+
+   .. py:method:: geometries() -> List[str]
+      :classmethod:
+
+
+      Ordered list of the geometry names.
+
+      EXAMPLES::
+
+          >>> from hklpy2 import get_solver
+          >>> Solver = get_solver("no_op")
+          >>> Solver.geometries()
+          []
+          >>> solver = Solver("TH TTH Q")
+          >>> solver.geometries()
+          []
+
+
+
+   .. py:method:: inverse(reals: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
+
+      Transform reals to pseudos.
+
+
+
+   .. py:property:: modes
+      :type: List[str]
+
+
+      List of the geometry operating modes.
+
+
+   .. py:property:: pseudo_axis_names
+      :type: List[str]
+
+
+      Ordered list of the pseudo axis names (such as h, k, l).
+
+
+   .. py:property:: real_axis_names
+      :type: List[str]
+
+
+      Ordered list of the real axis names (such as th, tth).
+
+
+   .. py:method:: refineLattice(reflections: list[hklpy2.misc.KeyValueMap]) -> hklpy2.misc.NamedFloatDict
+
+      No lattice refinement in this |solver|.
+
+
+
+   .. py:method:: removeAllReflections() -> None
+      :abstractmethod:
+
+
+      Remove all reflections.
+
+
+
+   .. py:property:: wavelength
+      :type: float
+
+
+      Diffractometer wavelength, for forward() and inverse().
+
+

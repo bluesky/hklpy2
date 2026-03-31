@@ -1,0 +1,676 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Diffractometer creator &#8212; hklpy2 0.3</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=28763382"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'concepts/creator';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://bluesky.github.io/hklpy2/latest/_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.3.2.dev13+g99be97f34';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Diffractometer" href="diffract.html" />
+    <link rel="prev" title="Constraints" href="constraints.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.3" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.3</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../concepts.html">Concepts</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="__overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constraints.html">Constraints</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Diffractometer creator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diffract.html">Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lattice.html">Crystal Lattice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ops.html">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reflection.html">Orientation Reflection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user.html">User Friendliness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavelength.html">Wavelength</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning/_checklist_v2.html">Feature Checklist for v2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planning/_design-discussion.html">Design for hklpy2</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../diffractometers.html">Diffractometers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/_api_demo.html">Demonstrate <strong>hklpy2</strong>’s API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/aps-isn-e6c.html">APS ISN Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/constraints.html">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-creator.html">Example 4-circle diffractometer using creator()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-custom-class.html">Example 4-circle diffractometer custom Python class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4ch.html"><strong>hkl_soleil</strong> E4CH</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv.html"><strong>hkl_soleil</strong> E4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv%2Bepics.html"><strong>hkl_soleil</strong> E4CV with EPICS motors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-psi.html"><strong>hkl_soleil</strong> E6C psi axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-test_calculations.html"><strong>hkl_soleil</strong> E6C test of calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-k4cv.html"><strong>hkl_soleil</strong> K4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-lattice_refine.html"><strong>hkl_soleil</strong> Refine lattice from 3 reflections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_calc.html"><strong>hkl_soleil</strong> UB matrix : calculate from 2 reflections.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_set.html"><strong>hkl_soleil</strong> UB matrix : Set directly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/nslsii-tardis.html"><strong>NSLS-II</strong> <strong>tardis</strong> diffractometer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../examples/tst_e4cv_fourc.html">Compare <strong>hkl_soleil</strong> <strong>E4CV</strong> with <strong>SPEC</strong> <strong>fourc</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/virtual-axis.html">Virtual diffractometer axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/zone-scan.html">Zone Scan</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../guides.html">Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/diffract.html">Diffractometer How-To Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_creator_from_config.html">How to Create a Simulator from a Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_forward_solution.html">How to Choose the Default forward() Solution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_presets.html">How to Use Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/howto_write_solver.html">How to write a new Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/solvers.html">Solvers Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/spec_xref.html">SPEC commands in hklpy2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../concepts.html" class="nav-link">Concepts</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Diffractometer creator</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="diffractometer-creator">
+<span id="concepts-creator"></span><h1>Diffractometer creator<a class="headerlink" href="#diffractometer-creator" title="Link to this heading">#</a></h1>
+<p id="index-0">The <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a>, a <a class="reference external" href="https://en.wikipedia.org/wiki/Factory_(object-oriented_programming)">factory function</a>, reduces
+the effort to create all but the most complex diffractometer objects. It uses
+the <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.diffractometer_class_factory" title="hklpy2.diffract.diffractometer_class_factory"><code class="xref py py-func docutils literal notranslate"><span class="pre">diffractometer_class_factory()</span></code></a> to build the Python
+class for the chosen <strong>Solver</strong> and geometry.  Here’s an example <a class="reference internal" href="../diffractometers.html#geometries-hkl-soleil-k6c"><span class="std std-ref">6-circle</span></a> diffractometer in kappa geometry with simulated
+motors:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k6c</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;k6c&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;K6C&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>It’s always possible to define your own subclass of
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase()</span></code></a> when you need more control than
+provided by <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a>. See
+<a class="reference internal" href="../examples/example-4-circle-custom-class.html#example-e4cv-custom-class"><span class="std std-ref">Example 4-circle diffractometer custom Python class</span></a>.</p>
+</div>
+<p id="index-1">The <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.diffractometer_class_factory" title="hklpy2.diffract.diffractometer_class_factory"><code class="xref py py-func docutils literal notranslate"><span class="pre">diffractometer_class_factory()</span></code></a> gets information
+(the pseudo and real axes) from the <strong>Solver</strong> about the requested geometry, then
+constructs a Python class with this structure.  The class includes
+<code class="docutils literal notranslate"><span class="pre">ophyd.EpicsMotor</span></code> Components when EPICS PVs are provided for the real axes,
+otherwise <code class="docutils literal notranslate"><span class="pre">ophyd.SoftPositioner</span></code> (simulated motor) Components are used.  Names for
+these Components, when provided by the caller are mapped in order to the reals
+expected by the <strong>Solver</strong>.  All real axis name conversion between user-provided
+and <strong>Solver</strong>-defined is handled in the <a class="reference internal" href="ops.html#concepts-ops"><span class="std std-ref">Core Operations</span></a>.</p>
+<p id="index-2">Another factory, <a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.solver_factory" title="hklpy2.misc.solver_factory"><code class="xref py py-func docutils literal notranslate"><span class="pre">solver_factory()</span></code></a>, locates if the selected
+<strong>Solver</strong> has been installed and then creates an instance of the corresponding
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> subclass with the selected geometry
+and any additional keyword arguments provided by the caller.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>hklpy2</strong> is extensible.  A new <strong>Solver</strong> can be added to the Python
+environment using the <code class="docutils literal notranslate"><span class="pre">&quot;hklpy2.solver&quot;</span></code> <span class="target" id="index-3"></span>entry point.  (See
+<a class="reference internal" href="solvers.html#concepts-solvers"><span class="std std-ref">Solvers</span></a> for more details.)</p>
+</div>
+<p class="rubric">Examples</p>
+<p>See <a class="reference internal" href="../examples.html#examples"><span class="std std-ref">Examples</span></a> for many documents which use the
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> factory function.
+Here’s a sampler:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>diffractometer description</p></th>
+<th class="head"><p>example</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>simple</p></td>
+<td><p><a class="reference internal" href="../examples/hkl_soleil-e4cv.html"><span class="doc">hkl_soleil E4CV</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>geometry</p></td>
+<td><p><a class="reference internal" href="../examples/hkl_soleil-k4cv.html"><span class="doc">hkl_soleil K4CV</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>solver</p></td>
+<td><p><a class="reference internal" href="../examples/_api_demo.html"><span class="doc">Demonstrate hklpy2’s API</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>engine (via <code class="docutils literal notranslate"><span class="pre">solver_kwargs</span></code>)</p></td>
+<td><p><a class="reference internal" href="../guides/var_engines.html"><span class="doc">Use E4CV’s q calculation engine</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>EPICS PVs</p></td>
+<td><p><a class="reference internal" href="../examples/hkl_soleil-e4cv%2Bepics.html"><span class="doc">hkl_soleil E4CV with EPICS motors</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>renamed axes</p></td>
+<td><p><a class="reference internal" href="../examples/aps-isn-e6c.html"><span class="doc">APS ISN Diffractometer</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>additional pseudos</p></td>
+<td><p><a class="reference internal" href="../guides/diffract.html#diffract-axes-pseudos-out-of-order"><span class="std std-ref">Pseudos supplied in a different order than the solver expects</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>additional reals</p></td>
+<td><p><a class="reference internal" href="../examples/hkl_soleil-e6c-psi.html"><span class="doc">hkl_soleil E6C psi axis</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>pseudos out of order</p></td>
+<td><p><a class="reference internal" href="../guides/diffract.html#diffract-axes-pseudos-out-of-order"><span class="std std-ref">Pseudos supplied in a different order than the solver expects</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>reals out of order</p></td>
+<td><p><a class="reference internal" href="../guides/diffract.html#diffract-axes-reals-out-of-order"><span class="std std-ref">Reals supplied in a different order than the solver expects</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>extras</p></td>
+<td><p><a class="reference internal" href="../examples/hkl_soleil-e6c-psi.html"><span class="doc">hkl_soleil E6C psi axis</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="constraints.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Constraints</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="diffract.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Diffractometer</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/concepts/creator.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/concepts/creator.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2025, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
