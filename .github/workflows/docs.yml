@@ -66,7 +66,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install our package and its requirements
-        run: pip install -e .[doc] -vv
+        run: pip install -e .[doc] -v
 
       - name: Show Environment variables
         run: |
@@ -74,7 +74,7 @@ jobs:
           echo "TMP_DIR=${TMP_DIR}"
 
       - name: Sphinx
-        run: sphinx-build -M html ./docs/source "${TMP_DIR}/build"
+        run: sphinx-build -W --keep-going -b html ./docs/source "${TMP_DIR}/build/html"
 
       - name: Define ... HTML_DIR
         run: echo "HTML_DIR=${TMP_DIR}/build/html" >> ${GITHUB_ENV}
