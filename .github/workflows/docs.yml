@@ -1,8 +1,8 @@
 name: Publish Sphinx Docs to GitHub Pages
 
 on:
-  # Build the docs on pushes to main branch, PRs to main branch, and new tags.
-  # Publish only on demand.
+  # Build on pushes to main and on new tags; publish automatically.
+  # Build (but do not publish) on PRs to main.
   push:
     branches:
       - main
@@ -35,11 +35,6 @@ jobs:
 
     steps:
 
-      - name: Deploy Information
-        if: ${{ github.event.inputs.deploy }}
-        run: |
-          echo "The docs will be published from this workflow run."
-
       - name: Set timezone
         uses: szenius/set-timezone@v2.0
         with:
@@ -59,7 +54,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0 # otherwise, you will fail to push refs to dest repo
+          fetch-depth: 0
 
       - uses: actions/setup-python@v6
         with:
@@ -68,30 +63,107 @@ jobs:
       - name: Install our package and its requirements
         run: pip install -e .[doc] -v
 
-      - name: Show Environment variables
+      - name: Determine publish directory
         run: |
-          echo "SRC_DIR=${SRC_DIR}"
-          echo "TMP_DIR=${TMP_DIR}"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/}"
+          else
+            VERSION="latest"
+          fi
+          echo "DOC_VERSION=${VERSION}" >> ${GITHUB_ENV}
+          echo "HTML_DIR=${TMP_DIR}/build/${VERSION}" >> ${GITHUB_ENV}
+          echo "Publishing to: ${VERSION}"
 
       - name: Sphinx
-        run: sphinx-build -W --keep-going -b html ./docs/source "${TMP_DIR}/build/html"
-
-      - name: Define ... HTML_DIR
-        run: echo "HTML_DIR=${TMP_DIR}/build/html" >> ${GITHUB_ENV}
-
-      - name: Diagnostics
-        run: ls -lAFghR "${HTML_DIR}"
+        run: sphinx-build -W --keep-going -b html ./docs/source "${HTML_DIR}"
 
       - name: Upload Docs ZIP file as artifact
         uses: actions/upload-artifact@v7
         with:
-          name: hklpy2-docs
+          name: hklpy2-docs-${{ env.DOC_VERSION }}
           path: ${{ env.HTML_DIR }}
 
-      - name: Deploy (to gh-pages branch) only on demand
+      - name: Deploy to gh-pages (main push -> latest/)
         uses: peaceiris/actions-gh-pages@v4
-        if: ${{ github.event.inputs.deploy }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: ${{ env.HTML_DIR }}
+          destination_dir: latest
+          keep_files: true
+
+      - name: Deploy to gh-pages (tag push -> <version>/)
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ${{ env.HTML_DIR }}
+          destination_dir: ${{ env.DOC_VERSION }}
+          keep_files: true
+
+      - name: Update switcher.json on tag push
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          VERSION="${DOC_VERSION}"
+
+          # Clone gh-pages to update switcher.json
+          git clone --branch gh-pages --depth 1 \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" \
+            gh-pages-clone
+
+          SWITCHER="gh-pages-clone/latest/_static/switcher.json"
+
+          # If switcher.json doesn't exist yet, bootstrap from source
+          if [ ! -f "${SWITCHER}" ]; then
+            mkdir -p "$(dirname ${SWITCHER})"
+            cp docs/source/_static/switcher.json "${SWITCHER}"
+          fi
+
+          # Add new version entry if not already present
+          python3 - <<'PYEOF'
+          import json, os, sys
+
+          version = os.environ["VERSION"]
+          switcher_path = os.environ["SWITCHER"]
+          base_url = "https://bluesky.github.io/hklpy2"
+
+          with open(switcher_path) as f:
+              entries = json.load(f)
+
+          versions = [e["version"] for e in entries]
+          if version not in versions:
+              # Insert after "latest" entry
+              new_entry = {"version": version, "url": f"{base_url}/{version}/"}
+              insert_at = 1  # after "latest"
+              entries.insert(insert_at, new_entry)
+              with open(switcher_path, "w") as f:
+                  json.dump(entries, f, indent=4)
+              print(f"Added {version} to switcher.json")
+          else:
+              print(f"{version} already in switcher.json")
+          PYEOF
+        env:
+          SWITCHER: gh-pages-clone/latest/_static/switcher.json
+
+      - name: Commit updated switcher.json to gh-pages
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        run: |
+          cd gh-pages-clone
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add latest/_static/switcher.json
+          git diff --cached --quiet || git commit -m "ci: add ${DOC_VERSION} to switcher.json"
+          git push
+
+      - name: Deploy on manual trigger
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ${{ env.HTML_DIR }}
+          destination_dir: latest
+          keep_files: true

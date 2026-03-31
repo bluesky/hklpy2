@@ -48,6 +48,9 @@ describe future plans.
     * Add how-to guide for choosing the default ``forward()`` solution picker
       (``pick_first_solution``, ``pick_closest_solution``, or custom).
       (:issue:`224`)
+    * Publish versioned docs: ``main`` branch to ``latest/``, each tag to
+      ``<version>/``; add version-switcher dropdown to navbar; auto-update
+      ``switcher.json`` on new tags. (:issue:`213`)
 
     Maintenance
     -----------
