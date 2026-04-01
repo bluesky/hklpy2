@@ -118,6 +118,7 @@ html_theme_options = {
         "version_match": switcher_version_match,
     },
     "check_switcher": False,
+    "show_version_warning_banner": True,
 }
 
 rst_prolog = """

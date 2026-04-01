@@ -51,6 +51,8 @@ describe future plans.
     * Publish versioned docs: ``main`` branch to ``latest/``, each tag to
       ``<version>/``; add version-switcher dropdown to navbar; auto-update
       ``switcher.json`` on new tags. (:issue:`213`)
+    * Show a banner on dev/pre-release doc pages noting that a stable
+      version is available, with a link to it. (:issue:`213`)
 
     Maintenance
     -----------
