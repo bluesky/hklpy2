@@ -347,6 +347,40 @@ Module Contents
 
 
 
+   .. py:method:: _scan_extra_validate_args(args, pseudos, reals)
+
+      Validate the positional arguments for :meth:`scan_extra`.
+
+      Checks that *args* is non-empty and contains groups of three
+      ``(axis, start, finish)``, that every axis name exists in the
+      solver's extra-axis list, that no axis is repeated, and that
+      exactly one of *pseudos* / *reals* is provided.
+
+      Raises ValueError or KeyError on validation failure.
+
+
+
+   .. py:method:: _scan_extra_build_movers(args, num, extras)
+
+      Build a dict of mover descriptions for :meth:`scan_extra`.
+
+      For each ``(axis, start, finish)`` triple in *args*, creates an
+      entry with a position-series generator and an ophyd ``Signal``
+      that bluesky can read during the scan.  Also seeds *extras*
+      with each axis's start position.
+
+      Returns the ``movers`` dict keyed by axis name.
+
+
+
+   .. py:method:: _scan_extra_metadata(args, num, pseudos, reals, extras, md)
+
+      Assemble the run metadata dict for :meth:`scan_extra`.
+
+      Returns a dict suitable for ``bpp.run_decorator(md=...)``.
+
+
+
    .. py:method:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.misc.BlueskyPlanType
 
       Scan extra diffractometer parameter(s), such as 'psi'.
