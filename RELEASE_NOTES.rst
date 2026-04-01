@@ -69,6 +69,10 @@ describe future plans.
     * Backfill workflow no longer patches ``conf.py`` from ``main``; legacy
       tag builds use their own ``conf.py`` so the displayed version is correct
       and no switcher dropdown appears in builds that predate it. (:issue:`213`)
+    * Refactor ``scan_extra()`` into smaller methods: extract input validation,
+      mover construction, metadata assembly, and inner plan helpers; fix latent
+      bug where ``dict.update()`` returned ``None`` for run metadata.
+      (:issue:`229`)
 
 0.3.1
 ##########

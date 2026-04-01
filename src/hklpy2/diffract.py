@@ -489,6 +489,83 @@ class DiffractometerBase(PseudoPositioner):
             hkl_axis = getattr(self, axis_name)
             hkl_axis.move(position)
 
+    def _scan_extra_validate_args(self, args, pseudos, reals):
+        """Validate the positional arguments for :meth:`scan_extra`.
+
+        Checks that *args* is non-empty and contains groups of three
+        ``(axis, start, finish)``, that every axis name exists in the
+        solver's extra-axis list, that no axis is repeated, and that
+        exactly one of *pseudos* / *reals* is provided.
+
+        Raises ValueError or KeyError on validation failure.
+        """
+        if len(args) == 0 or len(args) % 3:
+            raise ValueError(f"Must specify scan axes in groups of 3, received {args}.")
+
+        seen: set = set()
+        for axis, _start, _finish in partition(3, args):
+            if axis not in self.core.solver_extra_axis_names:
+                raise KeyError(f"{axis!r} not in {self.core.solver_extra_axis_names}")
+            if axis in seen:
+                raise KeyError(f"Extra axis may only be used once, received {args}.")
+            seen.add(axis)
+
+        if pseudos is None and reals is None:
+            raise ValueError("Must define either pseudos or reals.")
+        if pseudos is not None and reals is not None:
+            raise ValueError("Cannot define both pseudos and reals.")
+
+    def _scan_extra_build_movers(self, args, num, extras):
+        """Build a dict of mover descriptions for :meth:`scan_extra`.
+
+        For each ``(axis, start, finish)`` triple in *args*, creates an
+        entry with a position-series generator and an ophyd ``Signal``
+        that bluesky can read during the scan.  Also seeds *extras*
+        with each axis's start position.
+
+        Returns the ``movers`` dict keyed by axis name.
+        """
+        import numpy
+
+        movers = {}
+        for axis, start, finish in partition(3, args):
+            movers[axis] = dict(
+                series=numpy.linspace(start, finish, num=num),
+                start=start,
+                finish=finish,
+                signal=Signal(
+                    value=start, kind="hinted", name=f"{self.name}_extras_{axis}"
+                ),
+            )
+            extras[axis] = start
+        return movers
+
+    def _scan_extra_metadata(self, args, num, pseudos, reals, extras, md):
+        """Assemble the run metadata dict for :meth:`scan_extra`.
+
+        Returns a dict suitable for ``bpp.run_decorator(md=...)``.
+        """
+        _md = {
+            "diffractometer": {
+                "name": self.name,
+                "solver_signature": self.core.solver_signature,
+                "geometry": self.core.geometry,
+                "mode": self.core.mode,
+                "extra_axes": self.core.solver_extra_axis_names,
+            },
+            "axes": {
+                axis: dict(start=start, finish=finish)
+                for axis, start, finish in partition(3, args)
+            },
+            "num": num,
+            "pseudos": pseudos,
+            "reals": reals,
+            "extras": extras,
+            "transformation": "forward" if reals is None else "inverse",
+        }
+        _md.update(md or {})
+        return _md
+
     @plan
     def scan_extra(
         self,
@@ -547,98 +624,52 @@ class DiffractometerBase(PseudoPositioner):
         md: dict
             Dictionary of user-supplied metadata.
         """
-        import numpy
         from bluesky import plan_stubs as bps
         from bluesky import preprocessors as bpp
 
-        def position_series(start, finish, num):
-            yield from numpy.linspace(start, finish, num=num)
-
         self.core.update_solver()
+        self._scan_extra_validate_args(args, pseudos, reals)
+        movers = self._scan_extra_build_movers(args, num, extras)
+        _md = self._scan_extra_metadata(args, num, pseudos, reals, extras, md)
 
-        # validate
-        if len(args) == 0 or len(args) % 3:
-            raise ValueError(f"Must specify scan axes in groups of 3, received {args}.")
+        all_controls = list(
+            set(list(detectors) + [movers[axis]["signal"] for axis in movers])
+        )
 
-        movers = {}
-        for axis, start, finish in partition(3, args):
-            if axis not in self.core.solver_extra_axis_names:
-                raise KeyError(f"{axis!r} not in {self.core.solver_extra_axis_names}")
-            if axis in movers:
-                raise KeyError(f"Extra axis may only be used once, received {args}.")
-            if pseudos is None and reals is None:
-                raise ValueError("Must define either pseudos or reals.")
-            if pseudos is not None and reals is not None:
-                raise ValueError("Cannot define both pseudos and reals.")
-            movers[axis] = dict(
-                series=position_series(start, finish, num),
-                start=start,
-                finish=finish,
-                signal=Signal(
-                    value=start, kind="hinted", name=f"{self.name}_extras_{axis}"
-                ),
-            )
-            extras[axis] = start
+        def _move_axes(pseudos, reals, extras):
+            """Move extras, then reals or pseudos, move to the solution."""
+            if reals is None:
+                yield from self.move_forward_with_extras(pseudos, extras)
+            else:
+                yield from self.move_inverse_with_extras(reals, extras)
 
-        _md = {
-            "diffractometer": {
-                "name": self.name,
-                "solver_signature": self.core.solver_signature,
-                "geometry": self.core.geometry,
-                "mode": self.core.mode,
-                "extra_axes": self.core.solver_extra_axis_names,
-            },
-            "axes": {
-                axis: dict(start=start, finish=finish)
-                #
-                for axis, start, finish in partition(3, args)
-            },
-            "num": num,
-            "pseudos": pseudos,
-            "reals": reals,
-            "extras": extras,
-            "transformation": "forward" if reals is None else "inverse",
-        }.update(md or {})
+        def _acquire(objects):
+            """Tell each object to acquire its data."""
+            group = "trigger_control_objects"
+            for item in objects:
+                yield from bps.trigger(item, group=group)
+            yield from bps.wait(group=group)
 
-        all_controls = detectors
-        all_controls.extend([movers[axis]["signal"] for axis in movers])
-        all_controls = list(set(all_controls))
+        def _record(objects, stream="primary"):
+            """Read & record each object."""
+            yield from bps.create(stream)
+            for item in objects:
+                yield from bps.read(item)
+            yield from bps.save()
 
         @bpp.stage_decorator(detectors)
         @bpp.run_decorator(md=_md)
         def _inner():
             for positions in zip(*(m["series"] for m in movers.values())):
-
-                def move_axes(pseudos, reals, extras):
-                    """Move extras, then reals or pseudos, move to the solution."""
-                    if reals is None:
-                        yield from self.move_forward_with_extras(pseudos, extras)
-                    else:
-                        yield from self.move_inverse_with_extras(reals, extras)
-
-                def acquire(objects):
-                    """Tell each object to acquire its data."""
-                    group = "trigger_control_objects"
-                    for item in objects:
-                        yield from bps.trigger(item, group=group)
-                    yield from bps.wait(group=group)
-
-                def record(objects, stream="primary"):
-                    """Read & record each object."""
-                    yield from bps.create(stream)
-                    for item in objects:
-                        yield from bps.read(item)
-                    yield from bps.save()
-
                 # update with new position(s), will report later
                 for axis, value in zip(movers.keys(), positions):
                     extras[axis] = float(value)
                     yield from bps.mv(movers[axis]["signal"], value)
 
                 try:
-                    yield from move_axes(pseudos, reals, extras)
-                    yield from acquire(all_controls)
-                    yield from record(all_controls)
+                    yield from _move_axes(pseudos, reals, extras)
+                    yield from _acquire(all_controls)
+                    yield from _record(all_controls)
                 except Exception as reason:
                     if fail_on_exception:
                         raise reason
