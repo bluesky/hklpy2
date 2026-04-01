@@ -104,15 +104,6 @@ Glossary
   specific directions.
 
 ..  index::
-    !definition; entry point
-    !entry point
-
-:entry point: A Python packaging mechanism that allows a package to advertise
-  a named object (such as a class or function) so other packages can discover
-  and load it without a hard-coded import.  |hklpy2| uses the
-  ``"hklpy2.solver"`` entry point group to locate installed |solver| plugins.
-
-..  index::
     !definition; engine
     !engine
 
@@ -121,6 +112,15 @@ Glossary
   such as for reflectometry or surface scattering.  The |solver| may provide
   an engine for each separate type of transformation (and related
   *pseudos*).
+
+..  index::
+    !definition; entry point
+    !entry point
+
+:entry point: A Python packaging mechanism that allows a package to advertise
+  a named object (such as a class or function) so other packages can discover
+  and load it without a hard-coded import.  |hklpy2| uses the
+  ``"hklpy2.solver"`` entry point group to locate installed |solver| plugins.
 
 ..  index::
     !definition; extra
@@ -283,10 +283,10 @@ Glossary
 
 ..  index::
     !definition; virtual
-    !real
+    !virtual
 
-:real: Virtual (computed) diffractometer **axis** (either **pseudo** or
-    **real**), computed from one or more additional **diffractometer** axes.
+:virtual: Virtual (computed) diffractometer *axis* (either *pseudo* or
+    *real*), computed from one or more additional diffractometer axes.
 
 ..  index::
     !definition; wavelength
