@@ -175,7 +175,7 @@ class Sample:
         if not np.isreal(arr).all():
             raise TypeError(f"{name} matrix must be numerical.  Received {value}")
         if arr.shape != (3, 3):
-            raise ValueError(f"{name} matrix must by 3x3. Received {value}")
+            raise ValueError(f"{name} matrix must be 3x3.  Received {value}")
         if name == "UB":
             return
         # Rows and columns of U matrix must have unit norms.

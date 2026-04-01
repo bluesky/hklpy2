@@ -626,7 +626,7 @@ def set_wavelength(value: float, units=None) -> None:
     beam = _choice.diffractometer.beam
     if not beam.wavelength.write_access:
         raise TypeError(
-            f"'set_wavelength()' not supported for {beam.wavelength.name!r},"
+            f"'set_wavelength()' not supported for {beam.wavelength.name!r}."
         )
     if units is not None:
         beam.wavelength_units.put(units)
