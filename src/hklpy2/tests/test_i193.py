@@ -170,6 +170,11 @@ USER = dict(
             does_not_raise(),
             id="user: (101) phi=-15 (has solution)",
         ),
+        pytest.param(
+            dict(hkl=(0, 0, 1), phi=-98, constraints=USER),
+            does_not_raise(),
+            id="user: (001) phi=-98 (has solution after #240 fix)",
+        ),
     ],
 )
 def test_issue_193(parms, context):
@@ -207,11 +212,8 @@ def test_issue_193(parms, context):
             does_not_raise(),
             id="user: (001) phi=-120 (no solution, constraints)",
         ),
-        pytest.param(
-            dict(hkl=(0, 0, 1), phi=-98, constraints=USER),
-            does_not_raise(),
-            id="user: (001) phi=-98 (no solution, constraints)",
-        ),
+        # phi=-98 now finds a valid solution after #240 fix;
+        # moved to test_issue_193 "has solution" group.
         pytest.param(
             dict(hkl=(0, 0, 1), phi=12, constraints=USER),
             does_not_raise(),
