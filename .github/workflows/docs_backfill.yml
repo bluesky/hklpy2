@@ -57,6 +57,13 @@ jobs:
           ref: ${{ github.event.inputs.tag }}
           fetch-depth: 0
 
+      - name: Patch conf.py from main
+        run: |
+          # Use the current conf.py (from main) so the version switcher
+          # is present even in docs built from older tags.
+          git show origin/main:docs/source/conf.py > docs/source/conf.py
+          git show origin/main:docs/source/_static/switcher.json > docs/source/_static/switcher.json
+
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
