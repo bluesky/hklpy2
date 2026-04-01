@@ -293,10 +293,15 @@ def test_flatten_lists(source, context, answer):
 @pytest.mark.parametrize(
     "solver_name, context, expected",
     [
-        ["hkl_soleil", does_not_raise(), None],
-        ["no_op", does_not_raise(), None],
-        ["th_tth", does_not_raise(), None],
-        ["no_such_thing", pytest.raises(SolverError), "unknown.  Pick one of:"],
+        pytest.param("hkl_soleil", does_not_raise(), None, id="hkl-soleil"),
+        pytest.param("no_op", does_not_raise(), None, id="no-op"),
+        pytest.param("th_tth", does_not_raise(), None, id="th-tth"),
+        pytest.param(
+            "no_such_thing",
+            pytest.raises(SolverError),
+            "unknown.  Pick one of:",
+            id="unknown-solver",
+        ),
     ],
 )
 def test_get_solver(solver_name, context, expected):
@@ -310,34 +315,38 @@ def test_get_solver(solver_name, context, expected):
 @pytest.mark.parametrize(
     "path, context, expected, keys",
     [
-        [
+        pytest.param(
             # YAML file with expected content
             HKLPY2_DIR / "tests" / "e4cv_orient.yml",
             does_not_raise(),
             None,
             ["_header", "name"],
-        ],
-        [
+            id="valid-yaml-file",
+        ),
+        pytest.param(
             # file does not exist (wrong directory)
             HKLPY2_DIR / "e4cv_orient.yml",
             pytest.raises(FileExistsError),
             "YAML file ",
             None,
-        ],
-        [
+            id="file-not-found",
+        ),
+        pytest.param(
             # Not a YAML file, empty
             HKLPY2_DIR / "__init__.py",
             pytest.raises(ParserError),
             "<scalar>",
             None,
-        ],
-        [
+            id="not-yaml-empty",
+        ),
+        pytest.param(
             # Not a YAML file, not empty
             HKLPY2_DIR / "diffract.py",
             pytest.raises(ParserError),
             "expected '<document start>', but found",
             None,
-        ],
+            id="not-yaml-nonempty",
+        ),
     ],
 )
 def test_load_yaml_file(path, context, expected, keys):
@@ -355,14 +364,14 @@ def test_load_yaml_file(path, context, expected, keys):
 @pytest.mark.parametrize(
     "value, digits, expected_text",
     [
-        [0, None, "0"],
-        [0.123456, None, "0"],
-        [0.123456, 4, "0.1235"],
-        [-0, 4, "0"],
-        [123456, 4, "123456"],
-        [123456, -4, "120000"],
-        [1.23456e-10, 4, "0"],
-        [1.23456e-10, 12, "1.23e-10"],
+        pytest.param(0, None, "0", id="zero-default-digits"),
+        pytest.param(0.123456, None, "0", id="fractional-default-digits"),
+        pytest.param(0.123456, 4, "0.1235", id="fractional-4-digits"),
+        pytest.param(-0, 4, "0", id="neg-zero-4-digits"),
+        pytest.param(123456, 4, "123456", id="integer-4-digits"),
+        pytest.param(123456, -4, "120000", id="integer-neg4-digits"),
+        pytest.param(1.23456e-10, 4, "0", id="tiny-4-digits"),
+        pytest.param(1.23456e-10, 12, "1.23e-10", id="tiny-12-digits"),
     ],
 )
 def test_roundoff(value, digits, expected_text):
@@ -373,16 +382,27 @@ def test_roundoff(value, digits, expected_text):
 @pytest.mark.parametrize(
     "devices, context",
     [
-        [[sim4c], does_not_raise()],
-        [[sim4c.chi], pytest.raises(TypeError, match=re.escape("SoftPositioner"))],
-        [[sim4c, sim6c], does_not_raise()],
-        [
+        pytest.param([sim4c], does_not_raise(), id="single-diffractometer"),
+        pytest.param(
+            [sim4c.chi],
+            pytest.raises(TypeError, match=re.escape("SoftPositioner")),
+            id="soft-positioner-rejected",
+        ),
+        pytest.param([sim4c, sim6c], does_not_raise(), id="two-diffractometers"),
+        pytest.param(
             [sim4c, sim6c.h],
             pytest.raises(TypeError, match=re.escape("Hklpy2PseudoAxis")),
-        ],
+            id="pseudo-axis-rejected",
+        ),
     ],
 )
-@pytest.mark.parametrize("enabled", [True, False])
+@pytest.mark.parametrize(
+    "enabled",
+    [
+        pytest.param(True, id="enabled"),
+        pytest.param(False, id="disabled"),
+    ],
+)
 def test_ConfigurationRunWrapper(devices, context, enabled):
     with context:
         crw = ConfigurationRunWrapper(*devices)
@@ -422,7 +442,15 @@ def test_ConfigurationRunWrapper(devices, context, enabled):
                     assert configs is None
 
 
-@pytest.mark.parametrize("devices", [[], [sim4c], [sim4c, sim6c], [sim6c]])
+@pytest.mark.parametrize(
+    "devices",
+    [
+        pytest.param([], id="no-devices"),
+        pytest.param([sim4c], id="sim4c-only"),
+        pytest.param([sim4c, sim6c], id="sim4c-and-sim6c"),
+        pytest.param([sim6c], id="sim6c-only"),
+    ],
+)
 def test_list_orientation_runs(devices, cat, RE):
     det = signal
     device_names = [d.name for d in devices]

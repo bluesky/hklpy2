@@ -38,7 +38,10 @@ def test_HklSolver():
     gname = "ESRF ID01 PSIC"
     assert solver.geometry != gname
 
-    with pytest.raises(AttributeError, match=re.escape("has no setter")):
+    with pytest.raises(
+        AttributeError,
+        match=re.escape("Cannot change 'geometry' after solver is created."),
+    ):
         solver.geometry = "E4CV"
 
     assert solver.engine_name == "hkl"

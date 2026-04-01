@@ -34,15 +34,15 @@ def test_raises():
 @pytest.mark.parametrize(
     "lo, hi, value, result",
     [
-        [None, None, 0, True],
-        [None, None, 2000, False],
-        [0, None, 0, True],
-        [0, None, -1, False],
-        [10, 20, 0, False],
-        [10, 20, 15, True],
-        [20, 10, 10, True],
-        [20, 10, 15, True],
-        [20, 10, 20, True],
+        pytest.param(None, None, 0, True, id="default-limits-zero"),
+        pytest.param(None, None, 2000, False, id="default-limits-2000"),
+        pytest.param(0, None, 0, True, id="lo-0-hi-none-val-0"),
+        pytest.param(0, None, -1, False, id="lo-0-hi-none-val-neg1"),
+        pytest.param(10, 20, 0, False, id="below-range"),
+        pytest.param(10, 20, 15, True, id="within-range"),
+        pytest.param(20, 10, 10, True, id="reversed-at-lo"),
+        pytest.param(20, 10, 15, True, id="reversed-within"),
+        pytest.param(20, 10, 20, True, id="reversed-at-hi"),
     ],
 )
 def test_LimitsConstraint(lo, hi, value, result):
@@ -60,8 +60,8 @@ def test_LimitsConstraint(lo, hi, value, result):
 @pytest.mark.parametrize(
     "reals, result",
     [
-        [{"aa": 0, "bb": 0, "cc": 0}, True],
-        [{"aa": 0, "bb": 200, "cc": 0}, False],
+        pytest.param({"aa": 0, "bb": 0, "cc": 0}, True, id="all-within-limits"),
+        pytest.param({"aa": 0, "bb": 200, "cc": 0}, False, id="bb-out-of-limits"),
     ],
 )
 def test_RealAxisConstraints(reals, result):

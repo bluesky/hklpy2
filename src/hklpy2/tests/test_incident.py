@@ -39,7 +39,7 @@ def check_keys(wl, ref, tol=0.001):
 @pytest.mark.parametrize(
     "Klass, parms, ref, context",
     [
-        [
+        pytest.param(
             _WavelengthBase,
             {},
             dict(
@@ -48,16 +48,18 @@ def check_keys(wl, ref, tol=0.001):
                 source_type=DEFAULT_SOURCE_TYPE,
             ),
             does_not_raise(),
-        ],
-        [
+            id="WavelengthBase-defaults",
+        ),
+        pytest.param(
             _WavelengthBase,
             dict(wavelength=0.5),
             {},
             pytest.raises(
                 ReadOnlyError, match=re.escape("The signal wl_wavelength is readonly.")
             ),
-        ],
-        [
+            id="WavelengthBase-readonly-error",
+        ),
+        pytest.param(
             Wavelength,
             {},
             dict(
@@ -66,8 +68,9 @@ def check_keys(wl, ref, tol=0.001):
                 source_type=DEFAULT_SOURCE_TYPE,
             ),
             does_not_raise(),
-        ],
-        [
+            id="Wavelength-defaults",
+        ),
+        pytest.param(
             Wavelength,
             dict(wavelength=2),
             dict(
@@ -76,26 +79,30 @@ def check_keys(wl, ref, tol=0.001):
                 source_type=DEFAULT_SOURCE_TYPE,
             ),
             does_not_raise(),
-        ],
-        [
+            id="Wavelength-set-wavelength-2",
+        ),
+        pytest.param(
             Wavelength,
             dict(wavelength_units="Mfurlongs"),
             dict(wavelength_units="Mfurlongs"),
             does_not_raise(),
-        ],
-        [
+            id="Wavelength-units-Mfurlongs",
+        ),
+        pytest.param(
             Wavelength,
             dict(wavelength_units="banana"),
             {},
             pytest.raises(pint.UndefinedUnitError, match=re.escape("banana")),
-        ],
-        [
+            id="Wavelength-units-banana-error",
+        ),
+        pytest.param(
             Wavelength,
             dict(source_type="unit testing"),
             dict(source_type="unit testing"),
             does_not_raise(),
-        ],
-        [
+            id="Wavelength-source-type-custom",
+        ),
+        pytest.param(
             WavelengthXray,
             {},
             dict(
@@ -106,20 +113,29 @@ def check_keys(wl, ref, tol=0.001):
                 source_type=DEFAULT_SOURCE_TYPE,
             ),
             does_not_raise(),
-        ],
-        [
+            id="WavelengthXray-defaults",
+        ),
+        pytest.param(
             WavelengthXray,
             dict(energy_units="banana"),
             {},
             pytest.raises(pint.UndefinedUnitError, match=re.escape("banana")),
-        ],
-        [
+            id="WavelengthXray-energy-units-banana-error",
+        ),
+        pytest.param(
             WavelengthXray,
             dict(energy_units="eV"),
             dict(energy_units="eV"),
             does_not_raise(),
-        ],
-        [WavelengthXray, dict(energy=10), dict(energy=10), does_not_raise()],
+            id="WavelengthXray-energy-units-eV",
+        ),
+        pytest.param(
+            WavelengthXray,
+            dict(energy=10),
+            dict(energy=10),
+            does_not_raise(),
+            id="WavelengthXray-energy-10",
+        ),
     ],
 )
 def test_constructors(Klass, parms, ref, context):
@@ -132,53 +148,66 @@ def test_constructors(Klass, parms, ref, context):
 @pytest.mark.parametrize(
     "Klass, input, context",
     [
-        [Wavelength, {}, does_not_raise()],
-        [
+        pytest.param(
+            Wavelength,
+            {},
+            does_not_raise(),
+            id="Wavelength-empty-dict",
+        ),
+        pytest.param(
             Wavelength,
             {"wavelength": 2},  # missing "class='Wavelength'" key.
             pytest.raises(AssertionError, match=re.escape("isclose")),
-        ],
-        [
+            id="Wavelength-missing-class-key-error",
+        ),
+        pytest.param(
             Wavelength,
             {"class": "Wavelength", "wavelength": 2},
             does_not_raise(),
-        ],
-        [
+            id="Wavelength-set-wavelength-2",
+        ),
+        pytest.param(
             Wavelength,
             {"class": "Wavelength", "wavelength_units": "kg"},  # incompatible
             pytest.raises(
                 pint.DimensionalityError, match=re.escape(INTERNAL_LENGTH_UNITS)
             ),
-        ],
-        [
+            id="Wavelength-incompatible-units-kg-error",
+        ),
+        pytest.param(
             Wavelength,
             {"class": "Wavelength", "wavelength_units": "banana"},
             pytest.raises(pint.UndefinedUnitError, match=re.escape("banana")),
-        ],
-        [
+            id="Wavelength-undefined-units-banana-error",
+        ),
+        pytest.param(
             Wavelength,
             {"class": "Wavelength", "energy_units": "pg"},
             pytest.raises(
                 pint.DimensionalityError, match=re.escape("kiloelectron_volt")
             ),
-        ],
-        [
+            id="Wavelength-energy-units-pg-error",
+        ),
+        pytest.param(
             WavelengthXray,
             {"class": "WavelengthXray", "energy": 20},
             does_not_raise(),
-        ],
-        [
+            id="WavelengthXray-energy-20",
+        ),
+        pytest.param(
             WavelengthXray,
             {"class": "WavelengthXray", "energy_units": "eV"},
             does_not_raise(),
-        ],
-        [
+            id="WavelengthXray-energy-units-eV",
+        ),
+        pytest.param(
             WavelengthXray,
             {"class": "WavelengthXray", "source_type": "unit testing"},
             pytest.raises(
                 AssertionError, match=re.escape(DEFAULT_SOURCE_TYPE)
             ),  # Can't change after constructor.
-        ],
+            id="WavelengthXray-source-type-immutable-error",
+        ),
     ],
 )
 def test__fromdict(Klass, input, context):
@@ -192,30 +221,34 @@ def test__fromdict(Klass, input, context):
 @pytest.mark.parametrize(
     "Klass, input, ref, context",
     [
-        [
+        pytest.param(
             EpicsWavelengthRO,
             dict(prefix=IOC_PREFIX, pv_wavelength="wavelength"),
             {"class": "EpicsWavelengthRO", "wavelength": 1.0},
             does_not_raise(),
-        ],
-        [
+            id="EpicsWavelengthRO-valid",
+        ),
+        pytest.param(
             EpicsMonochromatorRO,
             dict(prefix=IOC_PREFIX, pv_energy="energy", pv_wavelength="wavelength"),
             {"class": "EpicsMonochromatorRO", "energy": 12.3984, "wavelength": 1.0},
             does_not_raise(),
-        ],
-        [
+            id="EpicsMonochromatorRO-valid",
+        ),
+        pytest.param(
             EpicsWavelengthRO,
             dict(prefix=IOC_PREFIX, pv_wavelength="wrong_pv"),
             {},
             pytest.raises(TimeoutError, match=re.escape(f"{IOC_PREFIX}wrong_pv")),
-        ],
-        [
+            id="EpicsWavelengthRO-wrong-pv-error",
+        ),
+        pytest.param(
             EpicsWavelengthRO,
             dict(prefix=IOC_PREFIX, pv_wavelength="force:pytest.skip"),
             {},
             does_not_raise(),
-        ],
+            id="EpicsWavelengthRO-force-skip",
+        ),
     ],
 )
 def test_EpicsClasses(Klass, input, ref, context):
@@ -233,7 +266,7 @@ def test_EpicsClasses(Klass, input, ref, context):
 @pytest.mark.parametrize(
     "parms, moves, context",
     [
-        [
+        pytest.param(
             {
                 "class": WavelengthXray,
                 "wavelength_deadband": DEFAULT_WAVELENGTH_DEADBAND,
@@ -244,8 +277,9 @@ def test_EpicsClasses(Klass, input, ref, context):
                 (1.100111, True),
             ],
             does_not_raise(),
-        ],
-        [
+            id="WavelengthXray-default-deadband",
+        ),
+        pytest.param(
             {"class": Wavelength, "wavelength_deadband": 0.01},
             [
                 (1.1, True),
@@ -257,7 +291,8 @@ def test_EpicsClasses(Klass, input, ref, context):
                 (1.0, True),
             ],
             does_not_raise(),
-        ],
+            id="Wavelength-custom-deadband-0.01",
+        ),
     ],
 )
 def test_wavelength_update(parms, moves, context):
@@ -274,7 +309,7 @@ def test_wavelength_update(parms, moves, context):
 @pytest.mark.parametrize(
     "parms, moves, context",
     [
-        [
+        pytest.param(
             {
                 "class": WavelengthXray,
                 "wavelength_deadband": DEFAULT_WAVELENGTH_DEADBAND,
@@ -285,7 +320,8 @@ def test_wavelength_update(parms, moves, context):
                 (1.100111, True),
             ],
             does_not_raise(),
-        ],
+            id="WavelengthXray-cleanup-subscriptions",
+        ),
     ],
 )
 def test_cleanup(parms, moves, context):

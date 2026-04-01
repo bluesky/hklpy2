@@ -32,30 +32,129 @@ fourc = creator()
 @pytest.mark.parametrize(
     "geometry, solver, name, keypath, value",
     [
-        ["E4CV", "hkl_soleil", "fourc", "_header", SKIP_EXACT_VALUE_TEST],
-        ["E4CV", "hkl_soleil", "fourc", "_header.datetime", SKIP_EXACT_VALUE_TEST],
-        ["E4CV", "hkl_soleil", "fourc", "beam.wavelength", SKIP_EXACT_VALUE_TEST],
-        ["E4CV", "hkl_soleil", "fourc", "name", "fourc"],
-        ["E4CV", "hkl_soleil", "fourc", "solver.geometry", "E4CV"],
-        ["E4CV", "hkl_soleil", "fourc", "solver.name", "hkl_soleil"],
-        ["E4CV", "hkl_soleil", "fourc", "samples", SKIP_EXACT_VALUE_TEST],
-        ["E4CV", "hkl_soleil", "fourc", "solver.version", SKIP_EXACT_VALUE_TEST],
+        pytest.param(
+            "E4CV",
+            "hkl_soleil",
+            "fourc",
+            "_header",
+            SKIP_EXACT_VALUE_TEST,
+            id="e4cv-header",
+        ),
+        pytest.param(
+            "E4CV",
+            "hkl_soleil",
+            "fourc",
+            "_header.datetime",
+            SKIP_EXACT_VALUE_TEST,
+            id="e4cv-header-datetime",
+        ),
+        pytest.param(
+            "E4CV",
+            "hkl_soleil",
+            "fourc",
+            "beam.wavelength",
+            SKIP_EXACT_VALUE_TEST,
+            id="e4cv-beam-wavelength",
+        ),
+        pytest.param("E4CV", "hkl_soleil", "fourc", "name", "fourc", id="e4cv-name"),
+        pytest.param(
+            "E4CV",
+            "hkl_soleil",
+            "fourc",
+            "solver.geometry",
+            "E4CV",
+            id="e4cv-solver-geometry",
+        ),
+        pytest.param(
+            "E4CV",
+            "hkl_soleil",
+            "fourc",
+            "solver.name",
+            "hkl_soleil",
+            id="e4cv-solver-name",
+        ),
+        pytest.param(
+            "E4CV",
+            "hkl_soleil",
+            "fourc",
+            "samples",
+            SKIP_EXACT_VALUE_TEST,
+            id="e4cv-samples",
+        ),
+        pytest.param(
+            "E4CV",
+            "hkl_soleil",
+            "fourc",
+            "solver.version",
+            SKIP_EXACT_VALUE_TEST,
+            id="e4cv-solver-version",
+        ),
         #
-        ["TH TTH Q", "th_tth", "t2t", "_header", SKIP_EXACT_VALUE_TEST],
-        ["TH TTH Q", "th_tth", "t2t", "_header.datetime", SKIP_EXACT_VALUE_TEST],
-        ["TH TTH Q", "th_tth", "t2t", "beam.wavelength", SKIP_EXACT_VALUE_TEST],
-        ["TH TTH Q", "th_tth", "t2t", "name", "t2t"],
-        [
+        pytest.param(
+            "TH TTH Q",
+            "th_tth",
+            "t2t",
+            "_header",
+            SKIP_EXACT_VALUE_TEST,
+            id="thtthq-header",
+        ),
+        pytest.param(
+            "TH TTH Q",
+            "th_tth",
+            "t2t",
+            "_header.datetime",
+            SKIP_EXACT_VALUE_TEST,
+            id="thtthq-header-datetime",
+        ),
+        pytest.param(
+            "TH TTH Q",
+            "th_tth",
+            "t2t",
+            "beam.wavelength",
+            SKIP_EXACT_VALUE_TEST,
+            id="thtthq-beam-wavelength",
+        ),
+        pytest.param("TH TTH Q", "th_tth", "t2t", "name", "t2t", id="thtthq-name"),
+        pytest.param(
             "TH TTH Q",
             "th_tth",
             "t2t",
             "axes.axes_xref",
             {"q": "q", "th": "th", "tth": "tth"},
-        ],
-        ["TH TTH Q", "th_tth", "t2t", "axes.pseudo_axes", ["q"]],
-        ["TH TTH Q", "th_tth", "t2t", "axes.real_axes", ["th", "tth"]],
-        ["TH TTH Q", "th_tth", "t2t", "solver.geometry", "TH TTH Q"],
-        ["TH TTH Q", "th_tth", "t2t", "solver.name", "th_tth"],
+            id="thtthq-axes-xref",
+        ),
+        pytest.param(
+            "TH TTH Q",
+            "th_tth",
+            "t2t",
+            "axes.pseudo_axes",
+            ["q"],
+            id="thtthq-pseudo-axes",
+        ),
+        pytest.param(
+            "TH TTH Q",
+            "th_tth",
+            "t2t",
+            "axes.real_axes",
+            ["th", "tth"],
+            id="thtthq-real-axes",
+        ),
+        pytest.param(
+            "TH TTH Q",
+            "th_tth",
+            "t2t",
+            "solver.geometry",
+            "TH TTH Q",
+            id="thtthq-solver-geometry",
+        ),
+        pytest.param(
+            "TH TTH Q",
+            "th_tth",
+            "t2t",
+            "solver.name",
+            "th_tth",
+            id="thtthq-solver-name",
+        ),
     ],
 )
 def test_asdict(geometry, solver, name, keypath, value):
@@ -395,9 +494,9 @@ def test_reset_samples():
 @pytest.mark.parametrize(
     "solver, geometry",
     [
-        ["hkl_soleil", "APS POLAR"],
-        ["hkl_soleil", "E4CV"],
-        ["th_tth", "TH TTH Q"],
+        pytest.param("hkl_soleil", "APS POLAR", id="aps-polar"),
+        pytest.param("hkl_soleil", "E4CV", id="e4cv"),
+        pytest.param("th_tth", "TH TTH Q", id="th-tth-q"),
     ],
 )
 def test_signature(solver: str, geometry: str):
@@ -413,9 +512,11 @@ def test_signature(solver: str, geometry: str):
 @pytest.mark.parametrize(
     "solver, geometry, mode",
     [
-        ["hkl_soleil", "E4CV", "bissector"],
-        ["hkl_soleil", "E4CV", "double_diffraction"],
-        ["th_tth", "TH TTH Q", "bissector"],
+        pytest.param("hkl_soleil", "E4CV", "bissector", id="e4cv-bissector"),
+        pytest.param(
+            "hkl_soleil", "E4CV", "double_diffraction", id="e4cv-double-diffraction"
+        ),
+        pytest.param("th_tth", "TH TTH Q", "bissector", id="thtthq-bissector"),
     ],
 )
 def test_modes(solver: str, geometry: str, mode: str):
@@ -432,9 +533,9 @@ def test_modes(solver: str, geometry: str, mode: str):
 @pytest.mark.parametrize(
     "solver, geometry",
     [
-        ["hkl_soleil", "E4CV"],
-        ["hkl_soleil", "APS POLAR"],
-        ["th_tth", "TH TTH Q"],
+        pytest.param("hkl_soleil", "E4CV", id="e4cv"),
+        pytest.param("hkl_soleil", "APS POLAR", id="aps-polar"),
+        pytest.param("th_tth", "TH TTH Q", id="th-tth-q"),
     ],
 )
 def test_solver_summary(solver: str, geometry: str):
@@ -447,16 +548,25 @@ def test_solver_summary(solver: str, geometry: str):
 @pytest.mark.parametrize(
     "solver, geometry, solver_kwargs, expected",
     [
-        ["hkl_soleil", "E4CV", {}, "h2 k2 l2 psi".split()],
-        [
+        pytest.param("hkl_soleil", "E4CV", {}, "h2 k2 l2 psi".split(), id="e4cv"),
+        pytest.param(
             "hkl_soleil",
             "K6C",
             {},
             "azimuth chi h2 incidence k2 l2 omega phi psi x y z".split(),
-        ],
-        ["hkl_soleil", "APS POLAR", {}, "h2 k2 l2 psi".split()],
-        ["hkl_soleil", "APS POLAR", {"engine": "psi"}, "h2 k2 l2".split()],
-        ["th_tth", "TH TTH Q", {}, []],
+            id="k6c",
+        ),
+        pytest.param(
+            "hkl_soleil", "APS POLAR", {}, "h2 k2 l2 psi".split(), id="aps-polar"
+        ),
+        pytest.param(
+            "hkl_soleil",
+            "APS POLAR",
+            {"engine": "psi"},
+            "h2 k2 l2".split(),
+            id="aps-polar-psi",
+        ),
+        pytest.param("th_tth", "TH TTH Q", {}, [], id="th-tth-q"),
     ],
 )
 def test_all_extras(solver, geometry, solver_kwargs, expected):
@@ -473,30 +583,42 @@ def test_all_extras(solver, geometry, solver_kwargs, expected):
 @pytest.mark.parametrize(
     "solver, geometry, solver_kwargs, mode, expected",
     [
-        ["hkl_soleil", "E4CV", {}, "bissector", []],
-        [
+        pytest.param("hkl_soleil", "E4CV", {}, "bissector", [], id="e4cv-bissector"),
+        pytest.param(
             "hkl_soleil",
             "K6C",
             {},
             "constant_incidence",
             "x y z incidence azimuth".split(),
-        ],
-        [
+            id="k6c-constant-incidence",
+        ),
+        pytest.param(
             "hkl_soleil",
             "K6C",
             {"engine": "eulerians"},
             "eulerians",
             ["solutions"],
-        ],
-        ["hkl_soleil", "APS POLAR", {}, "lifting detector tau", []],
-        [
+            id="k6c-eulerians",
+        ),
+        pytest.param(
+            "hkl_soleil",
+            "APS POLAR",
+            {},
+            "lifting detector tau",
+            [],
+            id="aps-polar-lifting-detector",
+        ),
+        pytest.param(
             "hkl_soleil",
             "APS POLAR",
             {"engine": "psi"},
             "psi_vertical",
             "h2 k2 l2".split(),
-        ],
-        ["th_tth", "TH TTH Q", {}, "bissector", []],
+            id="aps-polar-psi-vertical",
+        ),
+        pytest.param(
+            "th_tth", "TH TTH Q", {}, "bissector", [], id="th-tth-q-bissector"
+        ),
     ],
 )
 def test_extras_getter(solver, geometry, solver_kwargs, mode, expected):

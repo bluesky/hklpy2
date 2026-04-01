@@ -18,9 +18,9 @@ sim4c = creator(name="sim4c")
 @pytest.mark.parametrize(
     "start",
     [
-        dict(h=1.2, k=1.2, l=0.001),
-        dict(h=1, k=0, l=0),
-        dict(h=1, k=1, l=1),
+        pytest.param(dict(h=1.2, k=1.2, l=0.001), id="hkl-1.2-1.2-0.001"),
+        pytest.param(dict(h=1, k=0, l=0), id="hkl-1-0-0"),
+        pytest.param(dict(h=1, k=1, l=1), id="hkl-1-1-1"),
     ],
 )
 @pytest.mark.parametrize("h", np.arange(0.9, 1.1, 0.1))
@@ -29,7 +29,7 @@ sim4c = creator(name="sim4c")
 @pytest.mark.parametrize(
     "digits, context",
     [
-        [3, does_not_raise()],
+        pytest.param(3, does_not_raise(), id="3-digits"),
     ],
 )
 def test_pseudos_move(start, h, k, l, digits, context):  # noqa: E741
@@ -55,16 +55,18 @@ def test_pseudos_move(start, h, k, l, digits, context):  # noqa: E741
 @pytest.mark.parametrize(
     "ppos, rpos, context",
     [
-        [
+        pytest.param(
             dict(h=0, k=0, l=0.3473),
             dict(omega=10, chi=0, phi=0, tth=20),
             does_not_raise(),
-        ],
-        [
+            id="hkl-0-0-0.3473",
+        ),
+        pytest.param(
             dict(h=-0.6260, k=0.3808, l=1.5694),
             dict(omega=10, chi=20, phi=30, tth=120),
             does_not_raise(),
-        ],
+            id="hkl-neg0.626-0.381-1.569",
+        ),
     ],
 )
 def test_inverse(ppos, rpos, context):
@@ -85,18 +87,20 @@ def test_inverse(ppos, rpos, context):
 @pytest.mark.parametrize(
     "parms, context",
     [
-        [[sim4c.tth, 10, 20, 3], does_not_raise()],
-        [[sim4c.k, 1, 0, 1], does_not_raise()],
-        [
+        pytest.param([sim4c.tth, 10, 20, 3], does_not_raise(), id="scan-tth"),
+        pytest.param([sim4c.k, 1, 0, 1], does_not_raise(), id="scan-k"),
+        pytest.param(
             [sim4c.tth, 10, 20, sim4c.k, 0, 0, 3],
             pytest.raises(ValueError, match=re.escape("mix of real and pseudo axis")),
-        ],
-        [
+            id="mixed-real-pseudo-axes",
+        ),
+        pytest.param(
             [sim4c.tth, 10_000, 10_002, 3],
             pytest.raises(
                 ophyd.utils.errors.LimitError, match=re.escape("not within limits")
             ),
-        ],
+            id="beyond-limits",
+        ),
     ],
 )
 def test_scan(parms, context):

@@ -25,44 +25,98 @@ twopi = 2 * math.pi
 @pytest.mark.parametrize(
     "keypath, value",
     [
-        ["_header.datetime", None],
-        ["_header.hklpy2_version", __version__],
-        ["_header.python_class", e4cv.__class__.__name__],
-        ["axes.axes_xref", e4cv.core.axes_xref],
-        ["axes.extra_axes", e4cv.core.all_extras],
-        ["axes.pseudo_axes", e4cv.pseudo_axis_names],
-        ["axes.real_axes", e4cv.real_axis_names],
-        ["beam.energy_units", e4cv.beam.energy_units.get()],
-        ["beam.energy", e4cv.beam.energy.get()],
-        ["beam.source_type", e4cv.beam.source_type.get()],
-        ["beam.wavelength_units", e4cv.beam.wavelength_units.get()],
-        ["beam.wavelength", e4cv.beam.wavelength.get()],
-        ["constraints.chi.high_limit", 180.2],
-        ["constraints.omega.label", "omega"],
-        ["constraints.tth.low_limit", -180.2],
-        ["name", e4cv.name],
-        ["sample_name", e4cv.sample.name],
-        ["samples.sample.lattice.a", 1],
-        ["samples.sample.lattice.alpha", 90],
-        ["samples.sample.name", "sample"],
-        ["samples.sample.reflections_order", []],
-        ["samples.sample.reflections", {}],
-        ["samples.sample.U", [[1, 0, 0], [0, 1, 0], [0, 0, 1]]],
-        ["samples.sample.UB", [[twopi, 0, 0], [0, twopi, 0], [0, 0, twopi]]],
-        ["samples.vibranium.name", "vibranium"],
-        ["samples.vibranium.reflections_order", "r040 r004".split()],
-        ["samples.vibranium.reflections_order", "r040 r004".split()],
-        ["samples.vibranium.reflections.r004.name", "r004"],
-        ["samples.vibranium.reflections.r004.pseudos.h", 0],
-        ["samples.vibranium.reflections.r004.pseudos.k", 0],
-        ["samples.vibranium.reflections.r004.pseudos.l", 4],
-        ["samples.vibranium.reflections.r004.reals.chi", 90],
-        ["samples.vibranium.U", e4cv.sample.U],
-        ["samples.vibranium.UB", e4cv.sample.UB],
-        ["solver.engine", e4cv.core.solver.engine_name],
-        ["solver.geometry", e4cv.core.geometry],
-        ["solver.name", e4cv.core.solver_name],
-        ["solver.real_axes", e4cv.core.solver_real_axis_names],
+        pytest.param("_header.datetime", None, id="header-datetime"),
+        pytest.param("_header.hklpy2_version", __version__, id="header-hklpy2-version"),
+        pytest.param(
+            "_header.python_class", e4cv.__class__.__name__, id="header-python-class"
+        ),
+        pytest.param("axes.axes_xref", e4cv.core.axes_xref, id="axes-xref"),
+        pytest.param("axes.extra_axes", e4cv.core.all_extras, id="axes-extra"),
+        pytest.param("axes.pseudo_axes", e4cv.pseudo_axis_names, id="axes-pseudo"),
+        pytest.param("axes.real_axes", e4cv.real_axis_names, id="axes-real"),
+        pytest.param(
+            "beam.energy_units", e4cv.beam.energy_units.get(), id="beam-energy-units"
+        ),
+        pytest.param("beam.energy", e4cv.beam.energy.get(), id="beam-energy"),
+        pytest.param(
+            "beam.source_type", e4cv.beam.source_type.get(), id="beam-source-type"
+        ),
+        pytest.param(
+            "beam.wavelength_units",
+            e4cv.beam.wavelength_units.get(),
+            id="beam-wavelength-units",
+        ),
+        pytest.param(
+            "beam.wavelength", e4cv.beam.wavelength.get(), id="beam-wavelength"
+        ),
+        pytest.param(
+            "constraints.chi.high_limit", 180.2, id="constraint-chi-high-limit"
+        ),
+        pytest.param("constraints.omega.label", "omega", id="constraint-omega-label"),
+        pytest.param(
+            "constraints.tth.low_limit", -180.2, id="constraint-tth-low-limit"
+        ),
+        pytest.param("name", e4cv.name, id="diffractometer-name"),
+        pytest.param("sample_name", e4cv.sample.name, id="sample-name"),
+        pytest.param("samples.sample.lattice.a", 1, id="sample-lattice-a"),
+        pytest.param("samples.sample.lattice.alpha", 90, id="sample-lattice-alpha"),
+        pytest.param("samples.sample.name", "sample", id="sample-default-name"),
+        pytest.param(
+            "samples.sample.reflections_order", [], id="sample-reflections-order-empty"
+        ),
+        pytest.param("samples.sample.reflections", {}, id="sample-reflections-empty"),
+        pytest.param(
+            "samples.sample.U",
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            id="sample-U-identity",
+        ),
+        pytest.param(
+            "samples.sample.UB",
+            [[twopi, 0, 0], [0, twopi, 0], [0, 0, twopi]],
+            id="sample-UB-default",
+        ),
+        pytest.param("samples.vibranium.name", "vibranium", id="vibranium-name"),
+        pytest.param(
+            "samples.vibranium.reflections_order",
+            "r040 r004".split(),
+            id="vibranium-reflections-order-1",
+        ),
+        pytest.param(
+            "samples.vibranium.reflections_order",
+            "r040 r004".split(),
+            id="vibranium-reflections-order-2",
+        ),
+        pytest.param(
+            "samples.vibranium.reflections.r004.name", "r004", id="vibranium-r004-name"
+        ),
+        pytest.param(
+            "samples.vibranium.reflections.r004.pseudos.h",
+            0,
+            id="vibranium-r004-pseudo-h",
+        ),
+        pytest.param(
+            "samples.vibranium.reflections.r004.pseudos.k",
+            0,
+            id="vibranium-r004-pseudo-k",
+        ),
+        pytest.param(
+            "samples.vibranium.reflections.r004.pseudos.l",
+            4,
+            id="vibranium-r004-pseudo-l",
+        ),
+        pytest.param(
+            "samples.vibranium.reflections.r004.reals.chi",
+            90,
+            id="vibranium-r004-real-chi",
+        ),
+        pytest.param("samples.vibranium.U", e4cv.sample.U, id="vibranium-U-matrix"),
+        pytest.param("samples.vibranium.UB", e4cv.sample.UB, id="vibranium-UB-matrix"),
+        pytest.param("solver.engine", e4cv.core.solver.engine_name, id="solver-engine"),
+        pytest.param("solver.geometry", e4cv.core.geometry, id="solver-geometry"),
+        pytest.param("solver.name", e4cv.core.solver_name, id="solver-name"),
+        pytest.param(
+            "solver.real_axes", e4cv.core.solver_real_axis_names, id="solver-real-axes"
+        ),
     ],
 )
 def test_Configuration(keypath, value):

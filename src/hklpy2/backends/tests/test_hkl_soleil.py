@@ -98,19 +98,34 @@ def test_HklSolver():
 @pytest.mark.parametrize(
     "gname, ename, reals",
     [
-        ["E4CV", "hkl", ["omega", "chi", "phi", "tth"]],
-        ["E4CH", "hkl", ["omega", "chi", "phi", "tth"]],
-        ["E6C", "hkl", ["mu", "omega", "chi", "phi", "gamma", "delta"]],
-        ["K4CV", "hkl", ["komega", "kappa", "kphi", "tth"]],
-        ["K6C", "hkl", ["mu", "komega", "kappa", "kphi", "gamma", "delta"]],
-        ["PETRA3 P09 EH2", "hkl", ["mu", "omega", "chi", "phi", "delta", "gamma"]],
-        ["PETRA3 P23 4C", "hkl", ["omega_t", "mu", "gamma", "delta"]],
-        [
+        pytest.param("E4CV", "hkl", ["omega", "chi", "phi", "tth"], id="E4CV"),
+        pytest.param("E4CH", "hkl", ["omega", "chi", "phi", "tth"], id="E4CH"),
+        pytest.param(
+            "E6C", "hkl", ["mu", "omega", "chi", "phi", "gamma", "delta"], id="E6C"
+        ),
+        pytest.param("K4CV", "hkl", ["komega", "kappa", "kphi", "tth"], id="K4CV"),
+        pytest.param(
+            "K6C", "hkl", ["mu", "komega", "kappa", "kphi", "gamma", "delta"], id="K6C"
+        ),
+        pytest.param(
+            "PETRA3 P09 EH2",
+            "hkl",
+            ["mu", "omega", "chi", "phi", "delta", "gamma"],
+            id="PETRA3-P09-EH2",
+        ),
+        pytest.param(
+            "PETRA3 P23 4C",
+            "hkl",
+            ["omega_t", "mu", "gamma", "delta"],
+            id="PETRA3-P23-4C",
+        ),
+        pytest.param(
             "PETRA3 P23 6C",
             "hkl",
             ["omega_t", "mu", "omega", "chi", "phi", "gamma", "delta"],
-        ],
-        ["ZAXIS", "hkl", ["mu", "omega", "delta", "gamma"]],
+            id="PETRA3-P23-6C",
+        ),
+        pytest.param("ZAXIS", "hkl", ["mu", "omega", "delta", "gamma"], id="ZAXIS"),
     ],
 )
 def test_engine(gname, ename, reals):
@@ -237,7 +252,13 @@ def test_summary():
     assert isinstance(summary, Table)
 
 
-@pytest.mark.parametrize("geometry", ["APS POLAR", "ZAXIS"])
+@pytest.mark.parametrize(
+    "geometry",
+    [
+        pytest.param("APS POLAR", id="APS-POLAR"),
+        pytest.param("ZAXIS", id="ZAXIS"),
+    ],
+)
 def test__details(geometry):
     from ... import creator
 

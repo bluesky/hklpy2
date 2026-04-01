@@ -45,49 +45,56 @@ from .models import TwoC
 @pytest.mark.parametrize(
     "pseudos, reals, positioner_class, context",
     [
-        [
+        pytest.param(
             [],
             dict(omega="IOC:m1", chi="IOC:m2", phi="IOC:m3", tth="IOC:m4"),
             EpicsMotor,
             does_not_raise(),
-        ],
-        [
+            id="epics reals",
+        ),
+        pytest.param(
             [],
             dict(aaa=None, bbb=None, ccc=None),
             SoftPositioner,
             pytest.raises(KeyError, match=re.escape("tth")),
-        ],
-        [
+            id="3 soft reals missing tth",
+        ),
+        pytest.param(
             [],
             dict(aaa=None, bbb=None, ccc=None, ddd=None),
             SoftPositioner,
             does_not_raise(),
-        ],
-        [
+            id="4 soft reals",
+        ),
+        pytest.param(
             [],
             dict(aaa=None, bbb=None, ccc=None, ddd=None, eee=None),
             SoftPositioner,
             does_not_raise(),
-        ],
-        [
+            id="5 soft reals",
+        ),
+        pytest.param(
             [],
             dict(aaa="IOC:m1", bbb=None, ccc=None, ddd=None, eee=None),
             (EpicsMotor, SoftPositioner),
             does_not_raise(),
-        ],
-        [[], {}, SoftPositioner, does_not_raise()],
-        [
+            id="mixed epics and soft reals",
+        ),
+        pytest.param([], {}, SoftPositioner, does_not_raise(), id="empty reals dict"),
+        pytest.param(
             "h k".split(),
             {},
             SoftPositioner,
             pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
-        ],
-        [
+            id="pseudo axis mismatch h k",
+        ),
+        pytest.param(
             "h2 k2 l2 psi alpha beta".split(),
             {},
             SoftPositioner,
             pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
-        ],
+            id="pseudo axis mismatch 6 pseudos",
+        ),
     ],
 )
 def test_creator_reals(pseudos, reals, positioner_class, context, config_file):
@@ -104,22 +111,29 @@ def test_creator_reals(pseudos, reals, positioner_class, context, config_file):
 @pytest.mark.parametrize(
     "setup, context",
     [
-        [{}, does_not_raise()],
-        [dict(forward_solution_function=None), does_not_raise()],
-        [
+        pytest.param({}, does_not_raise(), id="default setup"),
+        pytest.param(
+            dict(forward_solution_function=None),
+            does_not_raise(),
+            id="solution func None",
+        ),
+        pytest.param(
             dict(forward_solution_function="hklpy2.misc.pick_closest_solution"),
             does_not_raise(),
-        ],
-        [
+            id="pick closest solution",
+        ),
+        pytest.param(
             dict(forward_solution_function="hklpy2.misc.pick_first_solution"),
             does_not_raise(),
-        ],
-        [
+            id="pick first solution",
+        ),
+        pytest.param(
             dict(forward_solution_function="cannot.find.this.function"),
             pytest.raises(
                 ModuleNotFoundError, match=re.escape("No module named 'cannot'")
             ),
-        ],
+            id="invalid module raises",
+        ),
     ],
 )
 def test_creator_setup(setup, context):
@@ -137,12 +151,20 @@ def test_DiffractometerBase():
 @pytest.mark.parametrize(
     "value, context",
     [
-        [-1, does_not_raise()],
-        [1, does_not_raise()],
-        [-1.2, does_not_raise()],
-        [1.2, does_not_raise()],
-        [12, pytest.raises(NoForwardSolutions, match=re.escape("No solutions."))],
-        [-12, pytest.raises(NoForwardSolutions, match=re.escape("No solutions."))],
+        pytest.param(-1, does_not_raise(), id="negative int"),
+        pytest.param(1, does_not_raise(), id="positive int"),
+        pytest.param(-1.2, does_not_raise(), id="negative float"),
+        pytest.param(1.2, does_not_raise(), id="positive float"),
+        pytest.param(
+            12,
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="large positive no solution",
+        ),
+        pytest.param(
+            -12,
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="large negative no solution",
+        ),
     ],
 )
 def test_limits(axis, value, context):
@@ -157,14 +179,21 @@ def test_limits(axis, value, context):
 @pytest.mark.parametrize(
     "base, pseudos, reals, context",
     [
-        [Fourc, "h k l".split(), "omega chi phi tth".split(), does_not_raise()],
-        [
+        pytest.param(
+            Fourc,
+            "h k l".split(),
+            "omega chi phi tth".split(),
+            does_not_raise(),
+            id="Fourc",
+        ),
+        pytest.param(
             AugmentedFourc,
             "h k l".split(),
             "omega chi phi tth".split(),
             does_not_raise(),
-        ],
-        [
+            id="AugmentedFourc",
+        ),
+        pytest.param(
             MultiAxis99NoSolver,
             "p1 p2".split(),
             "r1 r2 r3 r4".split(),
@@ -172,15 +201,21 @@ def test_limits(axis, value, context):
                 AssertionError,
                 match=re.escape("where False = isinstance(None, SolverBase)"),
             ),
-        ],
-        [
+            id="MultiAxis99NoSolver raises",
+        ),
+        pytest.param(
             MultiAxis99,
             "p1 p2".split(),
             "r1 r2 r3 r4".split(),
             does_not_raise(),
-        ],
-        [NoOpTh2Th, "q".split(), "th tth".split(), does_not_raise()],
-        [TwoC, "q".split(), "theta ttheta".split(), does_not_raise()],
+            id="MultiAxis99",
+        ),
+        pytest.param(
+            NoOpTh2Th, "q".split(), "th tth".split(), does_not_raise(), id="NoOpTh2Th"
+        ),
+        pytest.param(
+            TwoC, "q".split(), "theta ttheta".split(), does_not_raise(), id="TwoC"
+        ),
     ],
 )
 def test_diffractometer_class_models(base, pseudos, reals, context):
@@ -216,7 +251,7 @@ def test_diffractometer_class_models(base, pseudos, reals, context):
 @pytest.mark.parametrize(
     "specs, full, digits, mode, config_file, output, context",
     [
-        [
+        pytest.param(
             {},
             False,
             4,
@@ -228,8 +263,9 @@ def test_diffractometer_class_models(base, pseudos, reals, context):
                 "reals: omega=0, chi=0, phi=0, tth=0",
             ],
             does_not_raise(),
-        ],
-        [
+            id="brief default",
+        ),
+        pytest.param(
             {},
             True,
             3,
@@ -254,8 +290,9 @@ def test_diffractometer_class_models(base, pseudos, reals, context):
                 "extras: h2=0 k2=0 l2=0 psi=0",
             ],
             does_not_raise(),
-        ],
-        [
+            id="full psi_constant mode",
+        ),
+        pytest.param(
             {},
             True,
             4,
@@ -281,8 +318,9 @@ def test_diffractometer_class_models(base, pseudos, reals, context):
                 "reals: omega=0, chi=0, phi=0, tth=0",
             ],
             does_not_raise(),
-        ],
-        [
+            id="full e4cv 4 digits",
+        ),
+        pytest.param(
             {},
             True,
             2,
@@ -308,8 +346,9 @@ def test_diffractometer_class_models(base, pseudos, reals, context):
                 "reals: omega=0, chi=0, phi=0, tth=0",
             ],
             does_not_raise(),
-        ],
-        [
+            id="full e4cv 2 digits",
+        ),
+        pytest.param(
             {"reals": "omega chi phi tth huey dewey louie".split()},
             False,
             4,
@@ -322,7 +361,8 @@ def test_diffractometer_class_models(base, pseudos, reals, context):
                 "auxiliaries: huey=0, dewey=0, louie=0",
             ],
             does_not_raise(),
-        ],
+            id="brief with auxiliaries",
+        ),
     ],
 )
 def test_diffractometer_wh(
@@ -467,24 +507,31 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
 @pytest.mark.parametrize(
     "pos, context",
     [
-        [(1, 2, 3, 4), does_not_raise()],
-        [{"omega": 1, "chi": 2, "phi": 3, "tth": 4}, does_not_raise()],
-        [
+        pytest.param((1, 2, 3, 4), does_not_raise(), id="tuple position"),
+        pytest.param(
+            {"omega": 1, "chi": 2, "phi": 3, "tth": 4},
+            does_not_raise(),
+            id="dict position",
+        ),
+        pytest.param(
             namedtuple(
                 "RealTuple", "omega chi phi tth".split(), defaults=[1, 2, 3, 4]
             )(),
             does_not_raise(),
-        ],
-        [
+            id="namedtuple position",
+        ),
+        pytest.param(
             (1, 2, 3, 4, 5, 6),
             pytest.raises(ValueError, match=re.escape("too many args")),
-        ],
-        [
+            id="too many args raises",
+        ),
+        pytest.param(
             {"omega": 1, "chi": 2, "phi": 3, "delta": -4},
             pytest.raises(
                 TypeError, match=re.escape("unexpected keyword argument 'delta'")
             ),
-        ],
+            id="unknown axis raises",
+        ),
     ],
 )
 def test_move_reals(pos, context):
@@ -596,8 +643,17 @@ def test_remove_sample():
 @pytest.mark.parametrize(
     "name, pseudos, reals, wavelength, replace, num, context",
     [
-        ["(100)", (1, 0, 0), (10, 0, 0, 20), 1, True, 1, does_not_raise()],
-        [
+        pytest.param(
+            "(100)",
+            (1, 0, 0),
+            (10, 0, 0, 20),
+            1,
+            True,
+            1,
+            does_not_raise(),
+            id="replace same name",
+        ),
+        pytest.param(
             "(100)",
             (1, 0, 0),
             (10, 0, 0, 20),
@@ -607,12 +663,49 @@ def test_remove_sample():
             pytest.raises(
                 ReflectionError, match=re.escape("Use 'replace=True' to overwrite.")
             ),
-        ],
-        ["r2", (1, 0, 0), (10, 0, 0, 20), 1, True, 1, does_not_raise()],
-        ["r2", (2, 0, 0), (10, 0, 0, 20), 1, False, 2, does_not_raise()],
-        ["r2", (1, 0, 0), (10, 10, 0, 20), 1, False, 2, does_not_raise()],
-        ["(100)", (1, 0, 0), (10, 10, 0, 20), 1, True, 1, does_not_raise()],
-        [
+            id="duplicate name no replace raises",
+        ),
+        pytest.param(
+            "r2",
+            (1, 0, 0),
+            (10, 0, 0, 20),
+            1,
+            True,
+            1,
+            does_not_raise(),
+            id="r2 replace",
+        ),
+        pytest.param(
+            "r2",
+            (2, 0, 0),
+            (10, 0, 0, 20),
+            1,
+            False,
+            2,
+            does_not_raise(),
+            id="r2 different pseudos",
+        ),
+        pytest.param(
+            "r2",
+            (1, 0, 0),
+            (10, 10, 0, 20),
+            1,
+            False,
+            2,
+            does_not_raise(),
+            id="r2 different reals",
+        ),
+        pytest.param(
+            "(100)",
+            (1, 0, 0),
+            (10, 10, 0, 20),
+            1,
+            True,
+            1,
+            does_not_raise(),
+            id="replace with different reals",
+        ),
+        pytest.param(
             "r2",  # different name
             (1, 0, 0),  # same data
             (10, 0, 0, 20),  # same data
@@ -622,8 +715,9 @@ def test_remove_sample():
             pytest.raises(
                 ReflectionError, match=re.escape("Use 'replace=True' to overwrite.")
             ),
-        ],
-        [
+            id="same data different name raises",
+        ),
+        pytest.param(
             "r2",  # different name
             (1, 0, 0),  # same data
             (10, 0, 0, 20),  # same data
@@ -631,7 +725,8 @@ def test_remove_sample():
             False,
             2,
             does_not_raise(),
-        ],
+            id="different wavelength adds",
+        ),
     ],
 )
 def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, context):
@@ -660,7 +755,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
 @pytest.mark.parametrize(
     "scan_args, scan_kwargs, mode, context",
     [
-        [
+        pytest.param(
             [[noisy_det], "psi", 5, 10],
             dict(
                 num=3,
@@ -671,8 +766,9 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             ),
             "psi_constant",
             does_not_raise(),
-        ],
-        [
+            id="scan psi with pseudos",
+        ),
+        pytest.param(
             [[noisy_det], "psi", 5, 10],
             dict(
                 num=3,
@@ -683,8 +779,9 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             ),
             "psi_constant",
             pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
-        ],
-        [
+            id="unreachable l raises",
+        ),
+        pytest.param(
             [[noisy_det], "psi", 5, 10],
             dict(
                 num=3,
@@ -695,8 +792,9 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             ),
             "psi_constant",
             does_not_raise(),
-        ],
-        [
+            id="ignore forward exception",
+        ),
+        pytest.param(
             [[noisy_det], "psi", 5, 10],
             dict(
                 num=3,
@@ -707,8 +805,9 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             ),
             "psi_constant",
             does_not_raise(),
-        ],
-        [
+            id="scan psi with reals",
+        ),
+        pytest.param(
             [noisy_det],
             {},
             "psi_constant",
@@ -716,8 +815,9 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
                 ValueError,
                 match=re.escape("Must specify scan axes in groups of 3, received ()"),
             ),
-        ],
-        [
+            id="no scan axes raises",
+        ),
+        pytest.param(
             [[noisy_det], "oddball"],
             {},
             "psi_constant",
@@ -727,8 +827,9 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
                     "Must specify scan axes in groups of 3, received ('oddball',)"
                 ),
             ),
-        ],
-        [
+            id="incomplete axis group raises",
+        ),
+        pytest.param(
             [[noisy_det], "psi"],
             dict(pseudos=None, reals=None),
             "psi_constant",
@@ -738,16 +839,18 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
                     "Must specify scan axes in groups of 3, received ('psi',)"
                 ),
             ),
-        ],
-        [
+            id="psi only no range raises",
+        ),
+        pytest.param(
             [[noisy_det], "psi", 0, 1],
             dict(pseudos=None, reals=None),
             "psi_constant",
             pytest.raises(
                 ValueError, match=re.escape("Must define either pseudos or reals.")
             ),
-        ],
-        [
+            id="no pseudos or reals raises",
+        ),
+        pytest.param(
             [[noisy_det], "psi", 0, 1],
             dict(
                 pseudos=dict(h=2, k=-1, l=0),
@@ -757,8 +860,9 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             pytest.raises(
                 ValueError, match=re.escape("Cannot define both pseudos and reals.")
             ),
-        ],
-        [
+            id="both pseudos and reals raises",
+        ),
+        pytest.param(
             [[noisy_det], "psi", 0, 1, "psi", 1, 2],
             dict(
                 pseudos=dict(h=2, k=-1, l=0),
@@ -767,8 +871,9 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             pytest.raises(
                 KeyError, match=re.escape("Extra axis may only be used once,")
             ),
-        ],
-        [
+            id="duplicate scan axis raises",
+        ),
+        pytest.param(
             [[noisy_det], "h2", 1.9, 2.1, "k2", 1.9, 2.1],
             dict(
                 num=3,
@@ -779,7 +884,8 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             ),
             "psi_constant",
             does_not_raise(),
-        ],
+            id="scan two extras with reals",
+        ),
         pytest.param(
             [[noisy_det], "NO_SUCH_SCAN_AXIS", 1.9, 2.1],
             dict(
@@ -807,7 +913,7 @@ def test_scan_extra(scan_args, scan_kwargs, mode, context):
 @pytest.mark.parametrize(
     "scan_args, scan_kwargs, mode, context",
     [
-        [
+        pytest.param(
             [[noisy_det], "psi", -5, 555],  # expect to fail at psi=0
             dict(
                 num=2,
@@ -818,7 +924,8 @@ def test_scan_extra(scan_args, scan_kwargs, mode, context):
             ),
             "psi_constant",
             does_not_raise(),
-        ],
+            id="print fail on unreachable psi",
+        ),
     ],
 )
 def test_scan_extra_print_fail(scan_args, scan_kwargs, mode, context, capsys):
@@ -896,51 +1003,64 @@ def test_e4cv_constant_phi():
 @pytest.mark.parametrize(
     "miller, context",
     [
-        [(1, 2, 3), does_not_raise()],
-        [dict(h=1, k=2, l=3), does_not_raise()],
-        [[1.0, 2.0, 3.0], does_not_raise()],
-        [
+        pytest.param((1, 2, 3), does_not_raise(), id="tuple"),
+        pytest.param(dict(h=1, k=2, l=3), does_not_raise(), id="dict"),
+        pytest.param([1.0, 2.0, 3.0], does_not_raise(), id="float list"),
+        pytest.param(
             None,
             pytest.raises(
                 TypeError, match=re.escape("Pseudos must be tuple, list, or dict.")
             ),
-        ],
-        [
+            id="None raises TypeError",
+        ),
+        pytest.param(
             # Tests that h, k, l was omitted, only a position was supplied.
             # This is one of the problems reported.
             namedtuple("PseudoTuple", "a b c d".split())(1, 2, 3, 4),
             pytest.raises(ValueError, match=re.escape("Expected 3 pseudos, received ")),
-        ],
-        [
+            id="wrong count namedtuple",
+        ),
+        pytest.param(
             # Tests that wrong name(s) were supplied.
             namedtuple("PseudoTuple", "three wrong names".split())(1, 2, 4),
             pytest.raises(ValueError, match=re.escape("Wrong axis names")),
-        ],
-        [
+            id="wrong axis names",
+        ),
+        pytest.param(
             ("1", 2, 3),
             pytest.raises(TypeError, match=re.escape("Must be number, received ")),
-        ],
-        [
+            id="string h raises",
+        ),
+        pytest.param(
             (1, 2, "3"),
             pytest.raises(TypeError, match=re.escape("Must be number, received ")),
-        ],
-        [
+            id="string l raises",
+        ),
+        pytest.param(
             ([1], 2, 3),
             pytest.raises(TypeError, match=re.escape("Must be number, received ")),
-        ],
-        [
+            id="list as h raises",
+        ),
+        pytest.param(
             (object, 2, 3),
             pytest.raises(TypeError, match=re.escape("Must be number, received ")),
-        ],
-        [
+            id="object as h raises",
+        ),
+        pytest.param(
             (None, 2, 3),
             pytest.raises(TypeError, match=re.escape("Must be number, received ")),
-        ],
-        [
+            id="None as h raises",
+        ),
+        pytest.param(
             ((1,), 2, 3),
             pytest.raises(TypeError, match=re.escape("Must be number, received ")),
-        ],
-        [deque(), pytest.raises(TypeError, match=re.escape("Unexpected data type"))],
+            id="tuple as h raises",
+        ),
+        pytest.param(
+            deque(),
+            pytest.raises(TypeError, match=re.escape("Unexpected data type")),
+            id="deque raises",
+        ),
     ],
 )
 def test_miller_args(miller, context):
@@ -954,16 +1074,18 @@ def test_miller_args(miller, context):
 @pytest.mark.parametrize(
     "input, ref, context",
     [
-        [
+        pytest.param(
             dict(restore_wavelength=False),
             dict(energy=12.3984, wavelength=1.0),
             does_not_raise(),
-        ],
-        [
+            id="keep current wavelength",
+        ),
+        pytest.param(
             dict(restore_wavelength=True),
             dict(energy=8.0509, wavelength=1.54),
             does_not_raise(),
-        ],
+            id="restore saved wavelength",
+        ),
     ],
 )
 def test_restore(input, ref, context):
@@ -1023,13 +1145,16 @@ def test_failed_restore():
 @pytest.mark.parametrize(
     "specs, context",
     [
-        [{}, does_not_raise()],
-        [
+        pytest.param({}, does_not_raise(), id="default factory"),
+        pytest.param(
             {"pseudos": "axis"},
             pytest.raises(TypeError, match=re.escape("Expected a list")),
-        ],
-        [{"reals": "omega chi phi tth".split()}, does_not_raise()],
-        [
+            id="pseudos string raises",
+        ),
+        pytest.param(
+            {"reals": "omega chi phi tth".split()}, does_not_raise(), id="reals list"
+        ),
+        pytest.param(
             {
                 "reals": dict(
                     omega=None,
@@ -1039,11 +1164,13 @@ def test_failed_restore():
                 )
             },
             does_not_raise(),
-        ],
-        [
+            id="reals dict",
+        ),
+        pytest.param(
             {"reals": "axis"},
             pytest.raises(TypeError, match=re.escape("Expected a dict")),
-        ],
+            id="reals string raises",
+        ),
         pytest.param(
             dict(_pseudo="h k l".split()),
             does_not_raise(),
@@ -1086,15 +1213,20 @@ def test_wh_virtual_issue_114():
 @pytest.mark.parametrize(
     "specs, context",
     [
-        [{}, does_not_raise()],
-        [{"pseudos": "h k l ralph".split()}, does_not_raise()],
-        [
+        pytest.param({}, does_not_raise(), id="default"),
+        pytest.param(
+            {"pseudos": "h k l ralph".split()},
+            does_not_raise(),
+            id="extra pseudo ralph",
+        ),
+        pytest.param(
             dict(
                 pseudos="h k l h2 k2 l2".split(),
                 reals="theta chi phi ttheta psi temperature".split(),
             ),
             does_not_raise(),
-        ],
+            id="6 pseudos 6 reals",
+        ),
     ],
 )
 def test_TypeError_issue_120(specs, context):

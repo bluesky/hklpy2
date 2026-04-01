@@ -145,5 +145,8 @@ def test_SolverBase_abstractmethods():
     assert isinstance(summary, pyRestTable.Table)
     assert str(summary).strip() == expected
 
-    with pytest.raises(AttributeError, match=re.escape("geometry")):
+    with pytest.raises(
+        AttributeError,
+        match=re.escape("Cannot change 'geometry' after solver is created."),
+    ):
         solver.geometry = TH_TTH_Q_GEOMETRY

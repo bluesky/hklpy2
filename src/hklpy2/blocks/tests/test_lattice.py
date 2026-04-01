@@ -62,13 +62,17 @@ def test_repr(system, a, others, context):
 @pytest.mark.parametrize(
     "args, kwargs, expected",
     [
-        [[5], {}, (5, 5, 5, 90, 90, 90)],  # cubic
-        [[4], dict(c=3.0, gamma=120), (4, 4, 3, 90, 90, 120)],  # hexagonal
-        [[4], dict(alpha=80.1), (4, 4, 4, 80.1, 80.1, 80.1)],  # rhombohedral
-        [[4], dict(c=3), (4, 4, 3, 90, 90, 90)],  # tetragonal
-        [[4, 5, 3], {}, (4, 5, 3, 90, 90, 90)],  # orthorhombic
-        [[4, 5, 3], dict(beta=75), (4, 5, 3, 90, 75, 90)],  # monoclinic
-        [[4, 5, 3, 75, 85, 95], {}, (4, 5, 3, 75, 85, 95)],  # triclinic
+        pytest.param([5], {}, (5, 5, 5, 90, 90, 90), id="cubic"),
+        pytest.param(
+            [4], dict(c=3.0, gamma=120), (4, 4, 3, 90, 90, 120), id="hexagonal"
+        ),
+        pytest.param(
+            [4], dict(alpha=80.1), (4, 4, 4, 80.1, 80.1, 80.1), id="rhombohedral"
+        ),
+        pytest.param([4], dict(c=3), (4, 4, 3, 90, 90, 90), id="tetragonal"),
+        pytest.param([4, 5, 3], {}, (4, 5, 3, 90, 90, 90), id="orthorhombic"),
+        pytest.param([4, 5, 3], dict(beta=75), (4, 5, 3, 90, 75, 90), id="monoclinic"),
+        pytest.param([4, 5, 3, 75, 85, 95], {}, (4, 5, 3, 75, 85, 95), id="triclinic"),
     ],
 )
 def test_crystal_classes(args, kwargs, expected):
@@ -164,8 +168,8 @@ def test_fromdict(config, context):
 @pytest.mark.parametrize(
     "set_value, context, expected",
     [
-        ("angstrom", does_not_raise(), "angstrom"),
-        ("not_a_unit", pytest.raises(Exception), None),
+        pytest.param("angstrom", does_not_raise(), "angstrom", id="valid-angstrom"),
+        pytest.param("not_a_unit", pytest.raises(Exception), None, id="invalid-unit"),
     ],
 )
 def test_length_units_property_and_validation(set_value, context, expected):
@@ -183,8 +187,8 @@ def test_length_units_property_and_validation(set_value, context, expected):
 @pytest.mark.parametrize(
     "set_value, context, expected",
     [
-        ("degrees", does_not_raise(), "degrees"),
-        ("not_a_unit", pytest.raises(Exception), None),
+        pytest.param("degrees", does_not_raise(), "degrees", id="valid-degrees"),
+        pytest.param("not_a_unit", pytest.raises(Exception), None, id="invalid-unit"),
     ],
 )
 def test_angle_units_property_and_validation(set_value, context, expected):
@@ -257,10 +261,11 @@ def test_lattice_defensive_check(params, context):
 @pytest.mark.parametrize(
     "params, context, expected",
     [
-        (
+        pytest.param(
             {"a": 1.0, "b": 1.0, "c": 1.0, "alpha": 1.0, "beta": 179.0, "gamma": 1e-6},
             pytest.raises(ValueError),
             "Inconsistent lattice parameters produce imaginary 'c_z'",
+            id="imaginary-cz",
         ),
     ],
 )
@@ -303,9 +308,9 @@ def test_compute_B_invalid_shape_raises():
 @pytest.mark.parametrize(
     "angle_units, context, expected",
     [
-        ("degrees", does_not_raise(), "degrees"),
-        ("radians", does_not_raise(), "radians"),
-        ("not_a_unit", pytest.raises(Exception), None),
+        pytest.param("degrees", does_not_raise(), "degrees", id="valid-degrees"),
+        pytest.param("radians", does_not_raise(), "radians", id="valid-radians"),
+        pytest.param("not_a_unit", pytest.raises(Exception), None, id="invalid-unit"),
     ],
 )
 def test_angle_units_validation_in_init(angle_units, context, expected):
@@ -324,9 +329,9 @@ def test_angle_units_validation_in_init(angle_units, context, expected):
 @pytest.mark.parametrize(
     "length_units, context, expected",
     [
-        ("angstrom", does_not_raise(), "angstrom"),
-        ("nm", does_not_raise(), "nm"),
-        ("not_a_unit", pytest.raises(Exception), None),
+        pytest.param("angstrom", does_not_raise(), "angstrom", id="valid-angstrom"),
+        pytest.param("nm", does_not_raise(), "nm", id="valid-nm"),
+        pytest.param("not_a_unit", pytest.raises(Exception), None, id="invalid-unit"),
     ],
 )
 def test_length_units_validation_in_init(length_units, context, expected):
@@ -344,33 +349,33 @@ def test_length_units_validation_in_init(length_units, context, expected):
 @pytest.mark.parametrize(
     "l1_kwargs, l2_kwargs, context, expect_equal",
     [
-        # equal via unit conversion: 10 angstrom == 1 nm
-        (
+        pytest.param(
             {"a": 10.0, "length_units": "angstrom"},
             {"a": 1.0, "length_units": "nm"},
             does_not_raise(),
             True,
+            id="equal-angstrom-to-nm",
         ),
-        # not equal via unit conversion: 10 angstrom != 2 nm
-        (
+        pytest.param(
             {"a": 10.0, "length_units": "angstrom"},
             {"a": 2.0, "length_units": "nm"},
             does_not_raise(),
             False,
+            id="unequal-angstrom-to-nm",
         ),
-        # angles expressed in different units but equal: 90 deg == pi/2 rad
-        (
+        pytest.param(
             {"a": 1.0, "alpha": 90.0, "angle_units": "degrees"},
             {"a": 1.0, "alpha": np.pi / 2, "angle_units": "radians"},
             does_not_raise(),
             True,
+            id="equal-deg-to-rad",
         ),
-        # slightly different values should not be equal with default digits
-        (
+        pytest.param(
             {"a": 4.0001, "length_units": "angstrom"},
             {"a": 4.0, "length_units": "angstrom"},
             does_not_raise(),
             False,
+            id="slightly-different-values",
         ),
     ],
 )
@@ -389,18 +394,17 @@ def test_equality_within_context(l1_kwargs, l2_kwargs, context, expect_equal):
 @pytest.mark.parametrize(
     "params, context",
     [
-        # Valid cubic lattice: should not raise
-        (
+        pytest.param(
             dict(a=1.0, b=1.0, c=1.0, alpha=90.0, beta=90.0, gamma=90.0, tol=1e-12),
             does_not_raise(),
+            id="valid-cubic",
         ),
-        # Parameters chosen to produce an inconsistent (imaginary) c_z
-        # Use small gamma so sin(gamma) small and alpha/beta large to produce negative c_z_sq beyond limit.
-        (
+        pytest.param(
             dict(a=1.0, b=1.0, c=1.0, alpha=160.0, beta=160.0, gamma=1.0, tol=1e-6),
             pytest.raises(
                 ValueError, match=re.escape("Inconsistent lattice parameters")
             ),
+            id="inconsistent-imaginary-cz",
         ),
     ],
 )
@@ -416,10 +420,15 @@ def test_constructor_detects_inconsistent_cartesian(params, context):
 @pytest.mark.parametrize(
     "cart_a, context",
     [
-        (np.eye(2), pytest.raises(ValueError, match=re.escape("Matrix must be 3x3"))),
-        (
+        pytest.param(
+            np.eye(2),
+            pytest.raises(ValueError, match=re.escape("Matrix must be 3x3")),
+            id="2x2-matrix",
+        ),
+        pytest.param(
             np.zeros((3, 3)),
             pytest.raises(ValueError, match=re.escape("Unit cell volume too small")),
+            id="zero-volume",
         ),
     ],
 )

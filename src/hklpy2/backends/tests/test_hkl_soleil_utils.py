@@ -11,7 +11,7 @@ from ...misc import SolverError
 @pytest.mark.parametrize(
     "system, library, version, context",
     [
-        [
+        pytest.param(
             "Darwin",
             "Hkl",
             "5.0",
@@ -19,9 +19,10 @@ from ...misc import SolverError
                 SolverError,
                 match=re.escape("'hkl_soleil' only available for linux 64-bit"),
             ),
-        ],
-        ["Linux", "Hkl", "5.0", does_not_raise()],
-        [
+            id="Darwin-unsupported",
+        ),
+        pytest.param("Linux", "Hkl", "5.0", does_not_raise(), id="Linux-valid"),
+        pytest.param(
             "Windows",
             "Hkl",
             "5.0",
@@ -29,19 +30,22 @@ from ...misc import SolverError
                 SolverError,
                 match=re.escape("'hkl_soleil' only available for linux 64-bit"),
             ),
-        ],
-        [
+            id="Windows-unsupported",
+        ),
+        pytest.param(
             "Linux",
             "NOT FOUND",
             "5.0",
             pytest.raises(SolverError, match=re.escape("Cannot load 'gi' library:")),
-        ],
-        [
+            id="library-not-found",
+        ),
+        pytest.param(
             "Linux",
             "Hkl",
             "5.00",
             pytest.raises(SolverError, match=re.escape("Cannot load 'gi' library:")),
-        ],
+            id="wrong-version",
+        ),
     ],
 )
 def test_gi_require_library(system, library, version, context):

@@ -30,33 +30,45 @@ def test_sample_constructor_no_core(context):
 @pytest.mark.parametrize(
     "lattice, sname, context, expect",
     [
-        [Lattice(4), "sample name", does_not_raise(), None],
-        [Lattice(4), None, does_not_raise(), None],
-        [None, None, pytest.raises(TypeError), "Must supply Lattice"],
-        [
+        pytest.param(
+            Lattice(4), "sample name", does_not_raise(), None, id="valid-named"
+        ),
+        pytest.param(Lattice(4), None, does_not_raise(), None, id="valid-unnamed"),
+        pytest.param(
+            None,
+            None,
+            pytest.raises(TypeError),
+            "Must supply Lattice",
+            id="none-lattice",
+        ),
+        pytest.param(
             None,  # <-- not a Lattice
             None,
             pytest.raises(TypeError),
             "Must supply Lattice() object,",
-        ],
-        [
+            id="none-not-lattice",
+        ),
+        pytest.param(
             (1, 2),  # <-- not a Lattice
             None,
             pytest.raises(TypeError),
             "Must supply Lattice() object,",
-        ],
-        [
+            id="tuple-not-lattice",
+        ),
+        pytest.param(
             dict(a=1, b=2, c=3, alpha=4, beta=5, gamma=6),  # <-- dict is acceptable
             None,
             does_not_raise(),
             None,
-        ],
-        [
+            id="dict-lattice",
+        ),
+        pytest.param(
             Lattice(4),
             12345,  # <-- not a str
             pytest.raises(TypeError),
             "Must supply str,",
-        ],
+            id="int-name",
+        ),
     ],
 )
 def test_sample_constructor(lattice, sname, context, expect):
