@@ -39,7 +39,6 @@ from ..user import wh
 from .common import PV_ENERGY
 from .common import PV_WAVELENGTH
 from .common import TESTS_DIR
-from .common import assert_context_result
 
 
 @pytest.fixture(scope="function")
@@ -49,28 +48,28 @@ def fourc():
 
 
 @pytest.mark.parametrize(
-    "name, a, parms, lattice_str, context, expected",
+    "name, a, parms, lattice_str, context",
     [
-        [
+        pytest.param(
             "sample",  # This sample already exists.
             2,
             {"gamma": 120},
             "Lattice(a=1, system='cubic')",  # Existing is not modified.
             does_not_raise(),  # Only warns via logger.
-            None,
-        ],
-        [
+            id="existing-sample",
+        ),
+        pytest.param(
             "NIST silicon standard",
             SI_LATTICE_PARAMETER,
             {},
             "Lattice(a=5.431, system='cubic')",
             does_not_raise(),
-            None,
-        ],
+            id="NIST-silicon",
+        ),
     ],
 )
-def test_add_sample(fourc, name, a, parms, lattice_str, context, expected):
-    with context as reason:
+def test_add_sample(fourc, name, a, parms, lattice_str, context):
+    with context:
         set_diffractometer(fourc)
         diffractometer = get_diffractometer()
         assert diffractometer == fourc
@@ -81,8 +80,6 @@ def test_add_sample(fourc, name, a, parms, lattice_str, context, expected):
 
         lattice = diffractometer.sample.lattice
         assert str(lattice) == lattice_str
-
-    assert_context_result(expected, reason)
 
 
 def test_add_sample_exists(fourc, caplog):
@@ -177,28 +174,31 @@ def test_list_samples(fourc, capsys):
 
 
 @pytest.mark.parametrize(
-    "file, sample, nrefs, or_refs, context, expected",
+    "file, sample, nrefs, or_refs, context",
     [
-        [
+        pytest.param(
             TESTS_DIR / "e4cv_orient.yml",
             "vibranium",
             3,
             "r040 r004".split(),
             does_not_raise(),
-            None,
-        ],
-        [
+            id="swap-vibranium",
+        ),
+        pytest.param(
             TESTS_DIR / "e4cv_orient.yml",
             "sample",
             0,
             [],
-            pytest.raises(ReflectionError),
-            "Need at least two reflections to swap.",
-        ],
+            pytest.raises(
+                ReflectionError,
+                match=re.escape("Need at least two reflections to swap."),
+            ),
+            id="too-few-reflections",
+        ),
     ],
 )
-def test_or_swap(fourc, file, sample, nrefs, or_refs, context, expected):
-    with context as reason:
+def test_or_swap(fourc, file, sample, nrefs, or_refs, context):
+    with context:
         fourc.restore(file)
         set_diffractometer(fourc)
         diffractometer = get_diffractometer()
@@ -216,8 +216,6 @@ def test_or_swap(fourc, file, sample, nrefs, or_refs, context, expected):
         UB = or_swap()
         assert diffractometer.sample.reflections.order == or_refs
         assert UB != UB0
-
-    assert_context_result(expected, reason)
 
 
 def test_pa(fourc, capsys):
@@ -258,47 +256,73 @@ def test_pa(fourc, capsys):
 
 
 @pytest.mark.parametrize(
-    "name, error, config, context, expected",
+    "name, error, config, context",
     [
-        ["r400", True, TESTS_DIR / "e4cv_orient.yml", does_not_raise(), None],
-        ["r400", True, None, pytest.raises(KeyError), "not found"],
-        ["r400", False, None, does_not_raise(), None],
+        pytest.param(
+            "r400",
+            True,
+            TESTS_DIR / "e4cv_orient.yml",
+            does_not_raise(),
+            id="remove-existing",
+        ),
+        pytest.param(
+            "r400",
+            True,
+            None,
+            pytest.raises(KeyError, match=re.escape("not found")),
+            id="missing-raises",
+        ),
+        pytest.param("r400", False, None, does_not_raise(), id="missing-no-error"),
     ],
 )
-def test_remove_reflection(fourc, name, error, config, context, expected):
-    with context as reason:
+def test_remove_reflection(fourc, name, error, config, context):
+    with context:
         if config is not None:
             fourc.restore(config)
         set_diffractometer(fourc)
         remove_reflection(name, error=error)
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "config, pop_sample, next_sample, context, expected",
+    "config, pop_sample, next_sample, context",
     [
-        [TESTS_DIR / "e4cv_orient.yml", "vibranium", "sample", does_not_raise(), None],
-        [TESTS_DIR / "e4cv_orient.yml", "sample", "vibranium", does_not_raise(), None],
-        [
+        pytest.param(
+            TESTS_DIR / "e4cv_orient.yml",
+            "vibranium",
+            "sample",
+            does_not_raise(),
+            id="remove-vibranium",
+        ),
+        pytest.param(
+            TESTS_DIR / "e4cv_orient.yml",
+            "sample",
+            "vibranium",
+            does_not_raise(),
+            id="remove-sample",
+        ),
+        pytest.param(
             None,
             "sample",
             None,
-            pytest.raises(CoreError),
-            "Cannot remove last sample.",
-        ],
-        [None, "vibranium", None, pytest.raises(KeyError), "'vibranium' not in "],
+            pytest.raises(CoreError, match=re.escape("Cannot remove last sample.")),
+            id="last-sample-error",
+        ),
+        pytest.param(
+            None,
+            "vibranium",
+            None,
+            pytest.raises(KeyError, match=re.escape("'vibranium' not in ")),
+            id="missing-sample-error",
+        ),
     ],
 )
-def test_remove_sample(fourc, config, pop_sample, next_sample, context, expected):
-    with context as reason:
+def test_remove_sample(fourc, config, pop_sample, next_sample, context):
+    with context:
         if config is not None:
             fourc.restore(config)
         set_diffractometer(fourc)
         remove_sample(pop_sample)
         assert fourc.sample.name == next_sample
-
-    assert_context_result(expected, reason)
 
 
 def test_set_diffractometer(fourc):
@@ -308,10 +332,10 @@ def test_set_diffractometer(fourc):
     set_diffractometer(fourc)
     assert get_diffractometer() == fourc
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(
+        TypeError, match=re.escape("must be an hklpy2 'DiffractometerBase' subclass")
+    ):
         set_diffractometer(object())
-    expected = "must be an hklpy2 'DiffractometerBase' subclass"
-    assert_context_result(expected, reason)
 
 
 def test_set_lattice(fourc):
@@ -326,12 +350,24 @@ def test_set_lattice(fourc):
 
 
 @pytest.mark.parametrize(
-    "beam_kwargs, wavelength, units, context, expected",
+    "beam_kwargs, wavelength, units, context",
     [
-        [{"class": WavelengthXray}, 1.5, "angstrom", does_not_raise(), None],
-        [{"class": WavelengthXray}, 1.54, "angstrom", does_not_raise(), None],
-        [{"class": WavelengthXray}, 120, "pm", does_not_raise(), None],
-        [{"class": WavelengthXray}, 121, "pm", does_not_raise(), None],
+        pytest.param(
+            {"class": WavelengthXray}, 1.5, "angstrom", does_not_raise(), id="xray-1.5A"
+        ),
+        pytest.param(
+            {"class": WavelengthXray},
+            1.54,
+            "angstrom",
+            does_not_raise(),
+            id="xray-1.54A",
+        ),
+        pytest.param(
+            {"class": WavelengthXray}, 120, "pm", does_not_raise(), id="xray-120pm"
+        ),
+        pytest.param(
+            {"class": WavelengthXray}, 121, "pm", does_not_raise(), id="xray-121pm"
+        ),
         pytest.param(
             {
                 "class": "hklpy2.incident.EpicsWavelengthRO",
@@ -339,8 +375,9 @@ def test_set_lattice(fourc):
             },
             2,
             "angstrom",
-            pytest.raises(TypeError),
-            "'set_wavelength()' not supported",
+            pytest.raises(
+                TypeError, match=re.escape("'set_wavelength()' not supported")
+            ),
             id="TypeError: set_wavelength(2), EpicsWavelengthRO",
         ),
         pytest.param(
@@ -351,11 +388,12 @@ def test_set_lattice(fourc):
             },
             2,
             "angstrom",
-            pytest.raises(TypeError),
-            "'set_wavelength()' not supported",
+            pytest.raises(
+                TypeError, match=re.escape("'set_wavelength()' not supported")
+            ),
             id="TypeError: set_wavelength, EpicsMonochromatorRO",
         ),
-        [
+        pytest.param(
             {
                 "class": "hklpy2.incident.EpicsWavelengthRO",
                 "pv_wavelength": "skip_test:no_such_pv:cannot_connect",
@@ -363,8 +401,8 @@ def test_set_lattice(fourc):
             None,
             None,
             does_not_raise(),
-            None,
-        ],
+            id="skip-no-pv",
+        ),
         pytest.param(
             {
                 "class": "hklpy2.incident.EpicsWavelengthRO",
@@ -376,13 +414,12 @@ def test_set_lattice(fourc):
                 TypeError,
                 match=re.escape("'set_wavelength()' not supported"),
             ),
-            None,
             id="TypeError: set_wavelength(None), EpicsWavelengthRO",
         ),
     ],
 )
-def test_set_wavelength(beam_kwargs, wavelength, units, context, expected):
-    with context as reason:
+def test_set_wavelength(beam_kwargs, wavelength, units, context):
+    with context:
         try:
             set_diffractometer(creator(beam_kwargs=beam_kwargs))
         except TimeoutError as exinfo:
@@ -394,7 +431,6 @@ def test_set_wavelength(beam_kwargs, wavelength, units, context, expected):
         set_wavelength(wavelength, units=units)
         assert beam.wavelength_units.get() == units
         numpy.testing.assert_approx_equal(beam.wavelength.get(), wavelength)
-    assert_context_result(expected, reason)
 
 
 def test_setor(fourc):
@@ -474,45 +510,43 @@ def test_solver_summary(fourc, capsys):
 
 
 @pytest.mark.parametrize(
-    "specs, mode, pseudos, text, context, expected",
+    "specs, mode, pseudos, text, context",
     [
-        [{}, None, (1, 0, 0), "RealPos(", does_not_raise(), None],
-        [
+        pytest.param({}, None, (1, 0, 0), "RealPos(", does_not_raise(), id="E4CV-100"),
+        pytest.param(
             {},
             None,
             (1, 0, 11_110),  # A reflection far beyond the Ewald sphere.
             "No solutions for",
             does_not_raise(),
-            None,
-        ],
-        [
+            id="E4CV-beyond-ewald",
+        ),
+        pytest.param(
             dict(geometry="APS POLAR"),
             None,
             (1, 0, 0),
             "RealPos(",
             does_not_raise(),
-            None,
-        ],
-        [
+            id="POLAR-100",
+        ),
+        pytest.param(
             dict(geometry="APS POLAR"),
             "psi constant vertical",
             (1, 0, 0),
             "No solutions for",
             does_not_raise(),
-            None,
-        ],
+            id="POLAR-psi-no-solution",
+        ),
     ],
 )
-def test_cahkl_no_solutions(specs, mode, pseudos, text, context, expected):
-    with context as reason:
+def test_cahkl_no_solutions(specs, mode, pseudos, text, context):
+    with context:
         sim = creator(**specs)
         if mode is not None:
             sim.core.mode = mode
         set_diffractometer(sim)
         result = cahkl(*pseudos)
         assert text in str(result), f"{text=!r}  {str(result)=}"
-
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(

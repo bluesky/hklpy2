@@ -70,6 +70,10 @@ describe future plans.
 
     * Add ``re.escape()`` to all ``pytest.raises(match=...)`` calls that were
       using raw strings. (:issue:`232`)
+    * Remove deprecated ``assert_context_result()`` helper and all 117 call
+      sites; fold error message strings into ``match=re.escape(...)`` on
+      ``pytest.raises()``; convert bare list param sets to ``pytest.param()``
+      with ``id=``. (:issue:`232`)
     * Backfill workflow no longer patches ``conf.py`` from ``main``; legacy
       tag builds use their own ``conf.py`` so the displayed version is correct
       and no switcher dropdown appears in builds that predate it. (:issue:`213`)

@@ -1,10 +1,10 @@
 from contextlib import nullcontext as does_not_raise
 
+import re
 import pytest
 
 from ...diffract import creator
 from ...misc import ConfigurationError
-from ...tests.common import assert_context_result
 from ..constraints import ConstraintBase
 from ..constraints import ConstraintsError
 from ..constraints import LimitsConstraint
@@ -34,15 +34,15 @@ def test_raises():
 @pytest.mark.parametrize(
     "lo, hi, value, result",
     [
-        [None, None, 0, True],
-        [None, None, 2000, False],
-        [0, None, 0, True],
-        [0, None, -1, False],
-        [10, 20, 0, False],
-        [10, 20, 15, True],
-        [20, 10, 10, True],
-        [20, 10, 15, True],
-        [20, 10, 20, True],
+        pytest.param(None, None, 0, True, id="default-limits-zero"),
+        pytest.param(None, None, 2000, False, id="default-limits-2000"),
+        pytest.param(0, None, 0, True, id="lo-0-hi-none-val-0"),
+        pytest.param(0, None, -1, False, id="lo-0-hi-none-val-neg1"),
+        pytest.param(10, 20, 0, False, id="below-range"),
+        pytest.param(10, 20, 15, True, id="within-range"),
+        pytest.param(20, 10, 10, True, id="reversed-at-lo"),
+        pytest.param(20, 10, 15, True, id="reversed-within"),
+        pytest.param(20, 10, 20, True, id="reversed-at-hi"),
     ],
 )
 def test_LimitsConstraint(lo, hi, value, result):
@@ -60,8 +60,8 @@ def test_LimitsConstraint(lo, hi, value, result):
 @pytest.mark.parametrize(
     "reals, result",
     [
-        [{"aa": 0, "bb": 0, "cc": 0}, True],
-        [{"aa": 0, "bb": 200, "cc": 0}, False],
+        pytest.param({"aa": 0, "bb": 0, "cc": 0}, True, id="all-within-limits"),
+        pytest.param({"aa": 0, "bb": 200, "cc": 0}, False, id="bb-out-of-limits"),
     ],
 )
 def test_RealAxisConstraints(reals, result):
@@ -72,28 +72,31 @@ def test_RealAxisConstraints(reals, result):
 
 
 @pytest.mark.parametrize(
-    "supplied, kwargs, context, expected",
+    "supplied, kwargs, context",
     [
-        ["you me".split(), dict(you=0, me=0), does_not_raise(), None],
-        [
+        pytest.param(
+            "you me".split(), dict(you=0, me=0), does_not_raise(), id="matching-keys"
+        ),
+        pytest.param(
             "tinker evers chance".split(),
             dict(you=0, me=0),
-            pytest.raises(ConstraintsError),
-            "did not include this constraint",
-        ],
+            pytest.raises(
+                ConstraintsError, match=re.escape("did not include this constraint")
+            ),
+            id="mismatched-keys",
+        ),
     ],
 )
-def test_RealAxisConstraintsKeys(supplied, kwargs, context, expected):
+def test_RealAxisConstraintsKeys(supplied, kwargs, context):
     ac = RealAxisConstraints(supplied)
-    with context as reason:
+    with context:
         ac.valid(**kwargs)
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
-    "config, context, expected",
+    "config, context",
     [
-        [
+        pytest.param(
             {
                 "th": {
                     "class": "LimitsConstraint",
@@ -109,9 +112,9 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context, expected):
                 },
             },
             does_not_raise(),
-            None,
-        ],
-        [
+            id="valid-config",
+        ),
+        pytest.param(
             {
                 "omega": {
                     "class": "LimitsConstraint",
@@ -120,10 +123,10 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context, expected):
                     "low_limit": 30.0,
                 },
             },
-            pytest.raises(KeyError),
-            "omega",
-        ],
-        [
+            pytest.raises(KeyError, match=re.escape("omega")),
+            id="unknown-axis-omega",
+        ),
+        pytest.param(
             {
                 "tth": {
                     "class": "LimitsConstraint",
@@ -132,10 +135,12 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context, expected):
                     "low_limit": 30.0,
                 },
             },
-            pytest.raises(ConfigurationError),
-            "Missing key for LimitsConstraint",
-        ],
-        [
+            pytest.raises(
+                ConfigurationError, match=re.escape("Missing key for LimitsConstraint")
+            ),
+            id="missing-high-limit",
+        ),
+        pytest.param(
             {
                 "tth": {
                     "class": "LimitsConstraint",
@@ -144,10 +149,12 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context, expected):
                     # "low_limit": 30.0,
                 },
             },
-            pytest.raises(ConfigurationError),
-            "Missing key for LimitsConstraint",
-        ],
-        [
+            pytest.raises(
+                ConfigurationError, match=re.escape("Missing key for LimitsConstraint")
+            ),
+            id="missing-low-limit",
+        ),
+        pytest.param(
             {
                 "tth": {
                     "class": "LimitsConstraint",
@@ -156,10 +163,12 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context, expected):
                     "low_limit": 30.0,
                 },
             },
-            pytest.raises(ConfigurationError),
-            " Expected key: 'label'.",
-        ],
-        [
+            pytest.raises(
+                ConfigurationError, match=re.escape(" Expected key: 'label'.")
+            ),
+            id="missing-label",
+        ),
+        pytest.param(
             {
                 "tth": {
                     # "class": "LimitsConstraint",
@@ -168,10 +177,10 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context, expected):
                     "low_limit": 30.0,
                 },
             },
-            pytest.raises(KeyError),
-            "class",
-        ],
-        [
+            pytest.raises(KeyError, match=re.escape("class")),
+            id="missing-class",
+        ),
+        pytest.param(
             {
                 "tth": {
                     "class": "WrongClassLimitsConstraint",
@@ -180,10 +189,10 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context, expected):
                     "low_limit": 30.0,
                 },
             },
-            pytest.raises(ConfigurationError),
-            "class",
-        ],
-        [
+            pytest.raises(ConfigurationError, match=re.escape("class")),
+            id="wrong-class",
+        ),
+        pytest.param(
             {
                 "tth": {
                     "class": "LimitsConstraint",
@@ -193,12 +202,12 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context, expected):
                 },
             },
             does_not_raise(),
-            None,
-        ],
+            id="wrong-label-no-error",
+        ),
     ],
 )
-def test_fromdict(config, context, expected):
-    with context as reason:
+def test_fromdict(config, context):
+    with context:
         assert isinstance(config, dict)
         sim2c = creator(name="sim2c", solver="th_tth", geometry="TH TTH Q")
         ac = sim2c.core.constraints
@@ -207,8 +216,6 @@ def test_fromdict(config, context, expected):
             assert axis in ac
             assert ac[axis].low_limit == config[axis]["low_limit"]
             assert ac[axis].high_limit == config[axis]["high_limit"]
-
-    assert_context_result(expected, reason)
 
 
 def test_fromdict_KeyError():
@@ -219,16 +226,15 @@ def test_fromdict_KeyError():
         "label": "incoming",
         "low_limit": 30.0,
     }
-    context = pytest.raises(KeyError)
-    expected = " not found in diffractometer reals: "
-    with context as reason:
+    with pytest.raises(
+        KeyError, match=re.escape(" not found in diffractometer reals: ")
+    ):
         e4cv = creator(
             name="e4cv",
             reals=dict(aaa=None, bbb=None, ccc=None, ddd=None),
         )
         constraint = e4cv.core.constraints["aaa"]
         constraint._fromdict(config, core=e4cv.core)
-    assert_context_result(expected, reason)
 
 
 def test_repr():
@@ -247,15 +253,12 @@ def test_limits_property():
     constraint.limits = 0, 20.1
     assert constraint.limits == (0, 20.1)
 
-    expected = "Use exactly two values"
-    with pytest.raises(ConstraintsError) as reason:
+    with pytest.raises(ConstraintsError, match=re.escape("Use exactly two values")):
         constraint.limits = 0, 20.1, 3
-    assert_context_result(expected, reason)
 
 
 def test_ConstraintsBase():
-    expected = None
-    with does_not_raise() as reason:
+    with does_not_raise():
         constraint = PlainConstraint()
         assert constraint.valid(key="ignored", also="ignored")
 
@@ -263,5 +266,3 @@ def test_ConstraintsBase():
         assert rep.startswith("PlainConstraint(")
         assert "class=" in rep
         assert rep.endswith(")")
-
-    assert_context_result(expected, reason)

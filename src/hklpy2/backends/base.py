@@ -231,6 +231,13 @@ class SolverBase(ABC):
         """
         return self._gname
 
+    @geometry.setter
+    def geometry(self, value: str) -> None:
+        raise AttributeError(
+            "Cannot change 'geometry' after solver is created."
+            "  Make a new solver for each geometry."
+        )
+
     @abstractmethod
     def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
         """Compute dict of pseudos from reals (angles -> hkl)."""

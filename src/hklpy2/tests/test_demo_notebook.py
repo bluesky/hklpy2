@@ -1,3 +1,4 @@
+import re
 from math import pi
 
 import pytest
@@ -5,7 +6,6 @@ import pytest
 import hklpy2
 
 from ..ops import DEFAULT_SAMPLE_NAME
-from .common import assert_context_result
 
 
 @pytest.fixture
@@ -72,10 +72,8 @@ def test_as_in_demo_notebook(fourc):
     assert len(fourc.samples) == 1
     assert fourc.sample.name == DEFAULT_SAMPLE_NAME
 
-    try:
+    with pytest.raises(KeyError, match=re.escape("not in sample list")):
         fourc.core.remove_sample("vibranium")
-    except KeyError as reason:
-        assert_context_result("not in sample list", reason)
     assert len(fourc.samples) == 1
 
     fourc.add_sample("vibranium", 2 * pi, digits=3, replace=True)

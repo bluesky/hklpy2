@@ -1,5 +1,6 @@
 from contextlib import nullcontext as does_not_raise
 
+import re
 import numpy as np
 import pytest
 
@@ -7,7 +8,6 @@ from ...misc import IDENTITY_MATRIX_3X3
 from ...misc import SolverError
 from ...misc import get_solver
 from ...misc import solver_factory
-from ...tests.common import assert_context_result
 from ..base import SolverBase
 from ..th_tth_q import BISECTOR_MODE
 from ..th_tth_q import TH_TTH_Q_GEOMETRY
@@ -35,57 +35,135 @@ def test_solver():
     solver.mode = BISECTOR_MODE
     assert solver.mode == BISECTOR_MODE
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply dict")):
         solver.forward([0])
-    assert_context_result("Must supply dict", reason)
 
-    with pytest.raises(SolverError) as reason:
+    with pytest.raises(SolverError, match=re.escape("'q' not defined.")):
         solver.forward({})
-    assert_context_result("'q' not defined.", reason)
 
-    with pytest.raises(SolverError) as reason:
+    with pytest.raises(SolverError, match=re.escape("Wavelength is not set.")):
         solver.forward(dict(q=0.1))
-    assert_context_result("Wavelength is not set.", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply dict")):
         solver.inverse([0, 20])
-    assert_context_result("Must supply dict", reason)
 
-    with pytest.raises(SolverError) as reason:
+    with pytest.raises(SolverError, match=re.escape("'tth' not defined.")):
         solver.inverse(dict(th=0))
-    assert_context_result("'tth' not defined.", reason)
 
-    with pytest.raises(SolverError) as reason:
+    with pytest.raises(
+        SolverError, match=re.escape("Wavelength is not set. Add a reflection")
+    ):
         solver.inverse(dict(th=0, tth=20))
-    assert_context_result("Wavelength is not set. Add a reflection", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply number")):
         solver.wavelength = "-1"
-    assert_context_result("Must supply number", reason)
 
-    with pytest.raises(ValueError) as reason:
+    with pytest.raises(ValueError, match=re.escape("Must supply positive number")):
         solver.wavelength = -1
-    assert_context_result("Must supply positive number", reason)
 
-    with pytest.raises(NotImplementedError) as reason:
+    with pytest.raises(NotImplementedError):
         solver.removeAllReflections()
 
 
 @pytest.mark.parametrize(
     "transform, wavelength, inputs, outputs, tol",
     [
-        ["inverse", 0.5, {"th": 60, "tth": 120}, {"q": 21.7655924}, 0.0001],
-        ["forward", 0.5, {"q": 21.7655924}, {"th": 60, "tth": 120}, 0.0001],
-        ["inverse", 1.0, {"th": 5, "tth": 10}, {"q": 1.095231}, 0.0001],
-        ["forward", 1.0, {"q": 1.095231}, {"th": 5, "tth": 10}, 0.0001],
-        ["inverse", 1.54, {"th": 14.9131, "tth": 29.8262}, {"q": 2.1}, 0.0001],
-        ["forward", 1.54, {"q": 2.1}, {"th": 14.9131, "tth": 29.8262}, 0.0001],
-        ["inverse", 2.1, {"th": 1, "tth": 2}, {"q": 0.104435}, 0.0001],
-        ["forward", 2.1, {"q": 0.104435}, {"th": 1, "tth": 2}, 0.0001],
-        ["inverse", 2.1, {"th": 0.1, "tth": 0.2}, {"q": 0.0104440}, 0.0001],
-        ["forward", 2.1, {"q": 0.0104440}, {"th": 0.1, "tth": 0.2}, 0.0001],
-        ["inverse", 2.1, {"th": 0.01, "tth": 0.02}, {"q": 0.00104440}, 0.0001],
-        ["forward", 2.1, {"q": 0.00104440}, {"th": 0.01, "tth": 0.02}, 0.0001],
+        pytest.param(
+            "inverse",
+            0.5,
+            {"th": 60, "tth": 120},
+            {"q": 21.7655924},
+            0.0001,
+            id="inv-wl0.5-tth120",
+        ),
+        pytest.param(
+            "forward",
+            0.5,
+            {"q": 21.7655924},
+            {"th": 60, "tth": 120},
+            0.0001,
+            id="fwd-wl0.5-q21.77",
+        ),
+        pytest.param(
+            "inverse",
+            1.0,
+            {"th": 5, "tth": 10},
+            {"q": 1.095231},
+            0.0001,
+            id="inv-wl1.0-tth10",
+        ),
+        pytest.param(
+            "forward",
+            1.0,
+            {"q": 1.095231},
+            {"th": 5, "tth": 10},
+            0.0001,
+            id="fwd-wl1.0-q1.10",
+        ),
+        pytest.param(
+            "inverse",
+            1.54,
+            {"th": 14.9131, "tth": 29.8262},
+            {"q": 2.1},
+            0.0001,
+            id="inv-wl1.54-tth29.83",
+        ),
+        pytest.param(
+            "forward",
+            1.54,
+            {"q": 2.1},
+            {"th": 14.9131, "tth": 29.8262},
+            0.0001,
+            id="fwd-wl1.54-q2.1",
+        ),
+        pytest.param(
+            "inverse",
+            2.1,
+            {"th": 1, "tth": 2},
+            {"q": 0.104435},
+            0.0001,
+            id="inv-wl2.1-tth2",
+        ),
+        pytest.param(
+            "forward",
+            2.1,
+            {"q": 0.104435},
+            {"th": 1, "tth": 2},
+            0.0001,
+            id="fwd-wl2.1-q0.10",
+        ),
+        pytest.param(
+            "inverse",
+            2.1,
+            {"th": 0.1, "tth": 0.2},
+            {"q": 0.0104440},
+            0.0001,
+            id="inv-wl2.1-tth0.2",
+        ),
+        pytest.param(
+            "forward",
+            2.1,
+            {"q": 0.0104440},
+            {"th": 0.1, "tth": 0.2},
+            0.0001,
+            id="fwd-wl2.1-q0.010",
+        ),
+        pytest.param(
+            "inverse",
+            2.1,
+            {"th": 0.01, "tth": 0.02},
+            {"q": 0.00104440},
+            0.0001,
+            id="inv-wl2.1-tth0.02",
+        ),
+        pytest.param(
+            "forward",
+            2.1,
+            {"q": 0.00104440},
+            {"th": 0.01, "tth": 0.02},
+            0.0001,
+            id="fwd-wl2.1-q0.001",
+        ),
     ],
 )
 def test_transforms(transform, wavelength, inputs, outputs, tol):
@@ -110,7 +188,7 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
 
 
 @pytest.mark.parametrize(
-    "value, context, expected",
+    "value, context",
     [
         pytest.param(
             dict(
@@ -123,13 +201,13 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
                 real_axis_names=["th", "tth"],
             ),
             does_not_raise(),
-            None,
             id="standard case",
         ),
         pytest.param(
             "wrong object",
-            pytest.raises(TypeError),
-            "Must supply SolverReflection (dict)",
+            pytest.raises(
+                TypeError, match=re.escape("Must supply SolverReflection (dict)")
+            ),
             id="Wrong object type",
         ),
         pytest.param(
@@ -142,14 +220,16 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
                 pseudo_axis_names=["q"],
                 real_axis_names=["th", "tth"],
             ),
-            pytest.raises(SolverError),
-            "All reflections must have same wavelength",
+            pytest.raises(
+                SolverError,
+                match=re.escape("All reflections must have same wavelength"),
+            ),
             id="Different reflection wavelengths",
         ),
     ],
 )
-def test_reflections(value, context, expected):
-    with context as reason:
+def test_reflections(value, context):
+    with context:
         solver = solver_factory("th_tth", "TH TTH Q")
         r0 = dict(
             name="r0",
@@ -162,4 +242,3 @@ def test_reflections(value, context, expected):
         )
         solver.addReflection(r0)  # pre-existing
         solver.addReflection(value)
-    assert_context_result(expected, reason)

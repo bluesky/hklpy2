@@ -8,7 +8,6 @@ from pyRestTable import Table
 
 from ...misc import IDENTITY_MATRIX_3X3
 from ...ops import Core
-from ...tests.common import assert_context_result
 from .. import hkl_soleil
 
 
@@ -71,52 +70,62 @@ def test_HklSolver():
     assert solver.UB == IDENTITY_MATRIX_3X3
     assert solver.calculate_UB(None, None) is None
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.addReflection(1.0)
-    assert_context_result("Must supply", reason)
 
-    with pytest.raises(KeyError) as reason:
+    with pytest.raises(KeyError, match=re.escape("Unexpected dictionary key received")):
         solver.extras = dict(trombone=0)
-    assert_context_result("Unexpected dictionary key received", reason)
 
-    with pytest.raises(ValueError) as reason:
+    with pytest.raises(ValueError, match=re.escape("Wrong dictionary keys received")):
         solver.inverse(dict(a=1, b=2, c=3, d=4))
-    assert_context_result("Wrong dictionary keys received", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("All values must be numbers")):
         solver.inverse(dict(omega="1", chi=0, phi=0, tth=0))
-    assert_context_result("All values must be numbers", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.lattice = 1.0
-    assert_context_result("Must supply", reason)
 
-    with pytest.raises(ValueError) as reason:
+    with pytest.raises(
+        ValueError, match=re.escape("Must provide 3 or more reflections")
+    ):
         solver.refineLattice([])
-    assert_context_result("Must provide 3 or more reflections", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.sample = "kryptonite"
-    assert_context_result("Must supply", reason)
     solver._sample = kryptonite()
 
 
 @pytest.mark.parametrize(
     "gname, ename, reals",
     [
-        ["E4CV", "hkl", ["omega", "chi", "phi", "tth"]],
-        ["E4CH", "hkl", ["omega", "chi", "phi", "tth"]],
-        ["E6C", "hkl", ["mu", "omega", "chi", "phi", "gamma", "delta"]],
-        ["K4CV", "hkl", ["komega", "kappa", "kphi", "tth"]],
-        ["K6C", "hkl", ["mu", "komega", "kappa", "kphi", "gamma", "delta"]],
-        ["PETRA3 P09 EH2", "hkl", ["mu", "omega", "chi", "phi", "delta", "gamma"]],
-        ["PETRA3 P23 4C", "hkl", ["omega_t", "mu", "gamma", "delta"]],
-        [
+        pytest.param("E4CV", "hkl", ["omega", "chi", "phi", "tth"], id="E4CV"),
+        pytest.param("E4CH", "hkl", ["omega", "chi", "phi", "tth"], id="E4CH"),
+        pytest.param(
+            "E6C", "hkl", ["mu", "omega", "chi", "phi", "gamma", "delta"], id="E6C"
+        ),
+        pytest.param("K4CV", "hkl", ["komega", "kappa", "kphi", "tth"], id="K4CV"),
+        pytest.param(
+            "K6C", "hkl", ["mu", "komega", "kappa", "kphi", "gamma", "delta"], id="K6C"
+        ),
+        pytest.param(
+            "PETRA3 P09 EH2",
+            "hkl",
+            ["mu", "omega", "chi", "phi", "delta", "gamma"],
+            id="PETRA3-P09-EH2",
+        ),
+        pytest.param(
+            "PETRA3 P23 4C",
+            "hkl",
+            ["omega_t", "mu", "gamma", "delta"],
+            id="PETRA3-P23-4C",
+        ),
+        pytest.param(
             "PETRA3 P23 6C",
             "hkl",
             ["omega_t", "mu", "omega", "chi", "phi", "gamma", "delta"],
-        ],
-        ["ZAXIS", "hkl", ["mu", "omega", "delta", "gamma"]],
+            id="PETRA3-P23-6C",
+        ),
+        pytest.param("ZAXIS", "hkl", ["mu", "omega", "delta", "gamma"], id="ZAXIS"),
     ],
 )
 def test_engine(gname, ename, reals):
@@ -243,7 +252,13 @@ def test_summary():
     assert isinstance(summary, Table)
 
 
-@pytest.mark.parametrize("geometry", ["APS POLAR", "ZAXIS"])
+@pytest.mark.parametrize(
+    "geometry",
+    [
+        pytest.param("APS POLAR", id="APS-POLAR"),
+        pytest.param("ZAXIS", id="ZAXIS"),
+    ],
+)
 def test__details(geometry):
     from ... import creator
 
