@@ -565,7 +565,7 @@ def test_cahkl_forward_raises(parms, context):
                 extras=dict(h4=2, k4=2, l4=0),
                 fail_on_exception=True,
             ),
-            pytest.raises(KeyError, match='"Unexpected extra axis name'),
+            pytest.raises(KeyError, match=re.escape("Unexpected extra axis name")),
             id="no hkl_4 extras",
         ),
     ],

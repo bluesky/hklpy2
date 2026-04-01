@@ -34,7 +34,7 @@ def sim4c2():
             {},
             None,
             True,
-            pytest.raises(ValueError, match="zone axis is undefined"),
+            pytest.raises(ValueError, match=re.escape("zone axis is undefined")),
             id="ValueError: No kwargs, zone axis is undefined",
         ),
         pytest.param(
@@ -154,7 +154,7 @@ def test_OrthonormalZone_repr(parms, result, context):
         pytest.param(
             dict(axis=(0, 0, 1)),
             1,
-            pytest.raises(ValueError, match="vector must be 1-D array-like"),
+            pytest.raises(ValueError, match=re.escape("vector must be 1-D array-like")),
             id="vector shape !=(3,)",
         ),
         pytest.param(
@@ -162,7 +162,7 @@ def test_OrthonormalZone_repr(parms, result, context):
             dict(),
             pytest.raises(
                 ValueError,
-                match="Cannot create vector from empty dictionary",
+                match=re.escape("Cannot create vector from empty dictionary"),
             ),
             id="empty dict",
         ),

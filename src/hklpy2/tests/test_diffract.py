@@ -1,6 +1,7 @@
 """Test the hklpy2.diffract module."""
 
 import math
+import re
 from collections import deque
 from collections import namedtuple
 from contextlib import nullcontext as does_not_raise
@@ -806,7 +807,7 @@ def test_repeated_reflections(
                 pseudos=dict(h2=2, k2=-1, l2=0),
             ),
             "psi_constant",
-            pytest.raises(KeyError, match="'NO_SUCH_SCAN_AXIS' not in "),
+            pytest.raises(KeyError, match=re.escape("'NO_SUCH_SCAN_AXIS' not in ")),
             None,
             id="KeyError in diffract..scan_extra()",
         ),
