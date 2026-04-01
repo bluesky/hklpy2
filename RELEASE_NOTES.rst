@@ -58,9 +58,6 @@ describe future plans.
     * Backfill workflow no longer patches ``conf.py`` from ``main``; legacy
       tag builds use their own ``conf.py`` so the displayed version is correct
       and no switcher dropdown appears in builds that predate it. (:issue:`213`)
-    * Root URL (``https://blueskyproject.io/hklpy2/``) now redirects to the
-      preferred stable version instead of serving the ``main`` dev build
-      directly; redirect is updated automatically on tag push. (:issue:`213`)
 
 0.3.1
 ##########
