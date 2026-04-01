@@ -51,7 +51,6 @@ from ..misc import pick_closest_solution
 from ..misc import pick_first_solution
 from ..misc import roundoff
 from ..tests.common import HKLPY2_DIR
-from ..tests.common import assert_context_result
 
 sim4c = creator(name="sim4c")
 sim6c = creator(name="sim6c", geometry="E6C")
@@ -87,109 +86,161 @@ def RE(cat):
 
 @pytest.mark.filterwarnings("error")
 @pytest.mark.parametrize(
-    "input, names, context, expected",
+    "input, names, context",
     [
-        [
+        pytest.param(
             [0, 0, 0],
             "h k l",
-            pytest.raises(TypeError),
-            "Expected a list of names",
-        ],
-        [
+            pytest.raises(TypeError, match=re.escape("Expected a list of names")),
+            id="names-not-list",
+        ),
+        pytest.param(
             [0, 0, 0],
             [0, 0, 0],
-            pytest.raises(TypeError),
-            "Each name should be text,",
-        ],
-        [dict(h=0, k=0, l=0), "h k l".split(), does_not_raise(), None],
-        [
+            pytest.raises(TypeError, match=re.escape("Each name should be text,")),
+            id="names-not-text",
+        ),
+        pytest.param(
+            dict(h=0, k=0, l=0),
+            "h k l".split(),
+            does_not_raise(),
+            id="dict-input",
+        ),
+        pytest.param(
             dict(a=0, k=0, l=0),
             "h k l".split(),
-            pytest.raises(KeyError),
-            "Missing axis 'h'",
-        ],
-        [
+            pytest.raises(KeyError, match=re.escape("Missing axis 'h'")),
+            id="missing-axis-h",
+        ),
+        pytest.param(
             namedtuple("PseudoTuple", "h k l".split())(0, 0, 0),
             "h k l".split(),
             does_not_raise(),
-            None,
-        ],
-        [np.array([0, 1, -1]), "h k l".split(), does_not_raise(), None],
-        ["123", "h k l".split(), pytest.raises(TypeError), "Unexpected type"],
-        [
+            id="namedtuple-input",
+        ),
+        pytest.param(
+            np.array([0, 1, -1]),
+            "h k l".split(),
+            does_not_raise(),
+            id="ndarray-input",
+        ),
+        pytest.param(
+            "123",
+            "h k l".split(),
+            pytest.raises(TypeError, match=re.escape("Unexpected type")),
+            id="string-input",
+        ),
+        pytest.param(
             (1, 2),
             "h k l".split(),
-            pytest.raises(ValueError),
-            "Expected at least 3 axes, received 2",
-        ],
-        [
+            pytest.raises(
+                ValueError, match=re.escape("Expected at least 3 axes, received 2")
+            ),
+            id="too-few-axes",
+        ),
+        pytest.param(
             (1, 2, 3, 4),
             "h k l".split(),
-            pytest.raises(UserWarning),
-            " Extra inputs will be ignored. Expected 3.",
-        ],
-        [[0, 1, -1], "aa bb cc".split(), does_not_raise(), None],
-        [
+            pytest.raises(
+                UserWarning,
+                match=re.escape(" Extra inputs will be ignored. Expected 3."),
+            ),
+            id="too-many-axes",
+        ),
+        pytest.param(
+            [0, 1, -1],
+            "aa bb cc".split(),
+            does_not_raise(),
+            id="custom-names",
+        ),
+        pytest.param(
             [1.1, 2.2, 3.3, 4, 5],
             "able baker charlie delta echo".split(),
             does_not_raise(),
-            None,
-        ],
-        [
+            id="five-element-list",
+        ),
+        pytest.param(
             [1.1, 2.2, 3.3, 4, "text"],
             "able baker charlie delta echo".split(),
-            pytest.raises(TypeError),
-            "Expected a number. Received: 'text'",
-        ],
-        [
+            pytest.raises(
+                TypeError, match=re.escape("Expected a number. Received: 'text'")
+            ),
+            id="non-numeric-element",
+        ),
+        pytest.param(
             "1 2 3".split(),
             "h k l".split(),
-            pytest.raises(TypeError),
-            "Expected 'AnyAxesType'.",
-        ],
+            pytest.raises(TypeError, match=re.escape("Expected 'AnyAxesType'.")),
+            id="list-of-strings",
+        ),
     ],
 )
-def test_axes_to_dict(input, names, context, expected):
-    with context as reason:
+def test_axes_to_dict(input, names, context):
+    with context:
         axes = axes_to_dict(input, names)
         assert isinstance(axes, dict)
         for name in names:
             for name in names:
                 assert isinstance(axes.get(name), numbers.Real)
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "a1, a2, tol, equal, context, expected",
+    "a1, a2, tol, equal, context",
     [
-        [{}, {}, 0.1, True, does_not_raise(), None],
-        [{"a": 0.1}, {"a": 0.1}, 0.1, True, does_not_raise(), None],
-        [{"a": 0.1}, {"a": 1.1}, 0.1, False, does_not_raise(), None],
-        [{"a": 0.1}, {"b": 0.1}, 0.1, False, does_not_raise(), None],
-        [{"a": 0.1}, {}, 0.1, False, does_not_raise(), None],
-        [{}, {}, -0.1, False, pytest.raises(ValueError), "should be tol >0"],
-        [{"a": 0.11}, {"a": 0.12}, 1, True, does_not_raise(), None],
-        [{"a": 0.11}, {"a": 0.12}, 2, False, does_not_raise(), None],
+        pytest.param({}, {}, 0.1, True, does_not_raise(), id="empty-dicts"),
+        pytest.param(
+            {"a": 0.1}, {"a": 0.1}, 0.1, True, does_not_raise(), id="equal-values"
+        ),
+        pytest.param(
+            {"a": 0.1}, {"a": 1.1}, 0.1, False, does_not_raise(), id="unequal-values"
+        ),
+        pytest.param(
+            {"a": 0.1}, {"b": 0.1}, 0.1, False, does_not_raise(), id="different-keys"
+        ),
+        pytest.param({"a": 0.1}, {}, 0.1, False, does_not_raise(), id="one-empty"),
+        pytest.param(
+            {},
+            {},
+            -0.1,
+            False,
+            pytest.raises(ValueError, match=re.escape("should be tol >0")),
+            id="negative-tol",
+        ),
+        pytest.param(
+            {"a": 0.11}, {"a": 0.12}, 1, True, does_not_raise(), id="within-tol"
+        ),
+        pytest.param(
+            {"a": 0.11}, {"a": 0.12}, 2, False, does_not_raise(), id="outside-tol"
+        ),
     ],
 )
-def test_compare_float_dicts(a1, a2, tol, equal, context, expected):
-    with context as reason:
+def test_compare_float_dicts(a1, a2, tol, equal, context):
+    with context:
         assert compare_float_dicts(a1, a2, tol=tol) == equal
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "data, context, expected",
+    "data, context",
     [
-        [{"aa": 1, "bb": "two"}, does_not_raise(), None],
-        [1, pytest.raises(AttributeError), "object has no attribute 'items'"],
-        [[1], pytest.raises(AttributeError), "object has no attribute 'items'"],
+        pytest.param({"aa": 1, "bb": "two"}, does_not_raise(), id="valid-dict"),
+        pytest.param(
+            1,
+            pytest.raises(
+                AttributeError, match=re.escape("object has no attribute 'items'")
+            ),
+            id="int-input",
+        ),
+        pytest.param(
+            [1],
+            pytest.raises(
+                AttributeError, match=re.escape("object has no attribute 'items'")
+            ),
+            id="list-input",
+        ),
     ],
 )
-def test_dict_device_factory(data, context, expected):
-    with context as reason:
+def test_dict_device_factory(data, context):
+    with context:
         device_class = dict_device_factory(data)
         assert issubclass(device_class, Device)
         assert device_class.__class__.__name__ == "type"
@@ -210,28 +261,33 @@ def test_dict_device_factory(data, context, expected):
             assert isinstance(signal, Signal), f"{signal=}"
             assert signal.get() == v
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "source, context, expected, answer",
+    "source, context, answer",
     [
-        [[[1], [2, 3, 4]], does_not_raise(), None, [1, 2, 3, 4]],
-        [[[1, 2], [3, 4]], does_not_raise(), None, [1, 2, 3, 4]],
-        [[1, 2, 3, 4], does_not_raise(), None, [1, 2, 3, 4]],
-        [[], does_not_raise(), None, []],
-        [1, pytest.raises(TypeError), "object is not iterable", 1],
+        pytest.param(
+            [[1], [2, 3, 4]], does_not_raise(), [1, 2, 3, 4], id="nested-sublists"
+        ),
+        pytest.param(
+            [[1, 2], [3, 4]], does_not_raise(), [1, 2, 3, 4], id="equal-sublists"
+        ),
+        pytest.param([1, 2, 3, 4], does_not_raise(), [1, 2, 3, 4], id="flat-list"),
+        pytest.param([], does_not_raise(), [], id="empty-list"),
+        pytest.param(
+            1,
+            pytest.raises(TypeError, match=re.escape("object is not iterable")),
+            1,
+            id="not-iterable",
+        ),
     ],
 )
-def test_flatten_lists(source, context, expected, answer):
-    with context as reason:
+def test_flatten_lists(source, context, answer):
+    with context:
         result = flatten_lists(source)
         assert isinstance(result, types.GeneratorType)
 
         result = list(result)
         assert result == answer, f"{source=} {answer=} {result=}"
-
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
@@ -244,10 +300,8 @@ def test_flatten_lists(source, context, expected, answer):
     ],
 )
 def test_get_solver(solver_name, context, expected):
-    with context as reason:
+    with context:
         solver = get_solver(solver_name)
-
-    assert_context_result(expected, reason)
 
     if expected is None:
         assert solver is not None
@@ -288,10 +342,8 @@ def test_get_solver(solver_name, context, expected):
 )
 def test_load_yaml_file(path, context, expected, keys):
     assert isinstance(path, (pathlib.Path, str))
-    with context as reason:
+    with context:
         contents = load_yaml_file(path)
-
-    assert_context_result(expected, reason)
 
     if expected is None:
         # test keys
@@ -319,17 +371,20 @@ def test_roundoff(value, digits, expected_text):
 
 
 @pytest.mark.parametrize(
-    "devices, context, expected",
+    "devices, context",
     [
-        [[sim4c], does_not_raise(), None],
-        [[sim4c.chi], pytest.raises(TypeError), "SoftPositioner"],
-        [[sim4c, sim6c], does_not_raise(), None],
-        [[sim4c, sim6c.h], pytest.raises(TypeError), "Hklpy2PseudoAxis"],
+        [[sim4c], does_not_raise()],
+        [[sim4c.chi], pytest.raises(TypeError, match=re.escape("SoftPositioner"))],
+        [[sim4c, sim6c], does_not_raise()],
+        [
+            [sim4c, sim6c.h],
+            pytest.raises(TypeError, match=re.escape("Hklpy2PseudoAxis")),
+        ],
     ],
 )
 @pytest.mark.parametrize("enabled", [True, False])
-def test_ConfigurationRunWrapper(devices, context, expected, enabled):
-    with context as reason:
+def test_ConfigurationRunWrapper(devices, context, enabled):
+    with context:
         crw = ConfigurationRunWrapper(*devices)
         for dev in devices:
             assert dev in crw.devices
@@ -365,8 +420,6 @@ def test_ConfigurationRunWrapper(devices, context, expected, enabled):
                         assert message is None, f"{dev.name=!r} {configs[dev.name]=}"
                 else:
                     assert configs is None
-
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize("devices", [[], [sim4c], [sim4c, sim6c], [sim6c]])
@@ -412,173 +465,225 @@ def test_list_orientation_runs(devices, cat, RE):
 
 
 @pytest.mark.parametrize(
-    "value, annotation, context, expected",
+    "value, annotation, context",
     [
-        [{"h": 1.2, "k": 1, "l": -1}, AxesDict, does_not_raise(), None],
-        [
+        pytest.param(
+            {"h": 1.2, "k": 1, "l": -1}, AxesDict, does_not_raise(), id="dict-AxesDict"
+        ),
+        pytest.param(
             namedtuple("Position", "a b c d".split())(1, 2, 3, 4),
             AxesTuple,
             does_not_raise(),
-            None,
-        ],
-        [[1, 2, 3], AxesList, does_not_raise(), None],
-        [(1, 2, 3), AxesTuple, does_not_raise(), None],
-        [np.array((1, 2, 3, 4, 5)), AxesArray, does_not_raise(), None],
-        [{"h": 1.2, "k": 1, "l": -1}, AnyAxesType, does_not_raise(), None],
-        [
+            id="namedtuple-AxesTuple",
+        ),
+        pytest.param([1, 2, 3], AxesList, does_not_raise(), id="list-AxesList"),
+        pytest.param((1, 2, 3), AxesTuple, does_not_raise(), id="tuple-AxesTuple"),
+        pytest.param(
+            np.array((1, 2, 3, 4, 5)),
+            AxesArray,
+            does_not_raise(),
+            id="ndarray-AxesArray",
+        ),
+        pytest.param(
+            {"h": 1.2, "k": 1, "l": -1},
+            AnyAxesType,
+            does_not_raise(),
+            id="dict-AnyAxesType",
+        ),
+        pytest.param(
             namedtuple("Position", "a b c d".split())(1, 2, 3, 4),
             AnyAxesType,
             does_not_raise(),
+            id="namedtuple-AnyAxesType",
+        ),
+        pytest.param([1, 2, 3], AnyAxesType, does_not_raise(), id="list-AnyAxesType"),
+        pytest.param((1, 2, 3), AnyAxesType, does_not_raise(), id="tuple-AnyAxesType"),
+        pytest.param(
+            np.array((1, 2, 3, 4, 5)),
+            AnyAxesType,
+            does_not_raise(),
+            id="ndarray-AnyAxesType",
+        ),
+        pytest.param(
+            None, Union[AnyAxesType, None], does_not_raise(), id="None-Optional"
+        ),
+        pytest.param(
             None,
-        ],
-        [[1, 2, 3], AnyAxesType, does_not_raise(), None],
-        [(1, 2, 3), AnyAxesType, does_not_raise(), None],
-        [np.array((1, 2, 3, 4, 5)), AnyAxesType, does_not_raise(), None],
-        [None, Union[AnyAxesType, None], does_not_raise(), None],
-        [None, AnyAxesType, pytest.raises(AssertionError), "False"],
-        [1.234, AnyAxesType, pytest.raises(AssertionError), "False"],
-        ["text", AnyAxesType, pytest.raises(AssertionError), "False"],
-        [sim4c, AnyAxesType, pytest.raises(AssertionError), "False"],
+            AnyAxesType,
+            pytest.raises(AssertionError, match=re.escape("False")),
+            id="None-AnyAxesType",
+        ),
+        pytest.param(
+            1.234,
+            AnyAxesType,
+            pytest.raises(AssertionError, match=re.escape("False")),
+            id="float-AnyAxesType",
+        ),
+        pytest.param(
+            "text",
+            AnyAxesType,
+            pytest.raises(AssertionError, match=re.escape("False")),
+            id="str-AnyAxesType",
+        ),
+        pytest.param(
+            sim4c,
+            AnyAxesType,
+            pytest.raises(AssertionError, match=re.escape("False")),
+            id="device-AnyAxesType",
+        ),
     ],
 )
-def test_axes_type_annotations(value, annotation, context, expected):
-    with context as reason:
+def test_axes_type_annotations(value, annotation, context):
+    with context:
         assert istype(value, annotation)
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "name, context, expected",
+    "name, context",
     [
-        ["ophyd.EpicsMotor", does_not_raise(), None],
-        ["hklpy2.diffract.creator", does_not_raise(), None],
-        [
+        pytest.param("ophyd.EpicsMotor", does_not_raise(), id="EpicsMotor"),
+        pytest.param("hklpy2.diffract.creator", does_not_raise(), id="creator"),
+        pytest.param(
             "hklpy2.diffract.does_not_exist",
-            pytest.raises(AttributeError),
-            "has no attribute 'does_not_exist'",
-        ],
-        [
+            pytest.raises(
+                AttributeError, match=re.escape("has no attribute 'does_not_exist'")
+            ),
+            id="missing-attr",
+        ),
+        pytest.param(
             "does.not.exist",
-            pytest.raises(ModuleNotFoundError),
-            "No module named 'does'",
-        ],
-        ["LocalName", pytest.raises(ValueError), "Must use a dotted path"],
-        [
+            pytest.raises(
+                ModuleNotFoundError, match=re.escape("No module named 'does'")
+            ),
+            id="missing-module",
+        ),
+        pytest.param(
+            "LocalName",
+            pytest.raises(ValueError, match=re.escape("Must use a dotted path")),
+            id="no-dots",
+        ),
+        pytest.param(
             ".test_utils.CATALOG",
-            pytest.raises(ValueError),
-            "Must use absolute path, no relative imports",
-        ],
+            pytest.raises(
+                ValueError,
+                match=re.escape("Must use absolute path, no relative imports"),
+            ),
+            id="relative-import",
+        ),
     ],
 )
-def test_dynamic_import(name, context, expected):
-    with context as reason:
+def test_dynamic_import(name, context):
+    with context:
         dynamic_import(name)
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "value, units1, units2, ref, context, expected",
+    "value, units1, units2, ref, context",
     [
-        [32, "fahrenheit", "celsius", 0, does_not_raise(), None],
-        [100, "pm", "angstrom", 1, does_not_raise(), None],
-        [0.1, "nm", "angstrom", 1, does_not_raise(), None],
-        [12400, "eV", "keV", 12.4, does_not_raise(), None],
-        [0.1, "nm", "banana", 1, pytest.raises(pint.UndefinedUnitError), "'banana'"],
+        pytest.param(32, "fahrenheit", "celsius", 0, does_not_raise(), id="F-to-C"),
+        pytest.param(100, "pm", "angstrom", 1, does_not_raise(), id="pm-to-angstrom"),
+        pytest.param(0.1, "nm", "angstrom", 1, does_not_raise(), id="nm-to-angstrom"),
+        pytest.param(12400, "eV", "keV", 12.4, does_not_raise(), id="eV-to-keV"),
+        pytest.param(
+            0.1,
+            "nm",
+            "banana",
+            1,
+            pytest.raises(pint.UndefinedUnitError, match=re.escape("'banana'")),
+            id="undefined-unit",
+        ),
     ],
 )
-def test_convert_units(value, units1, units2, ref, context, expected):
-    with context as reason:
+def test_convert_units(value, units1, units2, ref, context):
+    with context:
         assert math.isclose(convert_units(value, units1, units2), ref, abs_tol=0.01)
-
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
-    "pos1, pos2, dist, tol, context, expected",
+    "pos1, pos2, dist, tol, context",
     [
-        [
+        pytest.param(
             namedtuple("Position", "a b c".split())(0, 0, 0),
             namedtuple("Position", "a b c".split())(1, 1, 1),
             1,
             1e-6,
             does_not_raise(),
-            None,
-        ],
-        [
+            id="unit-distance",
+        ),
+        pytest.param(
             namedtuple("Position", "a b c".split())(0, 0, 0),
             namedtuple("NameIgnored", "a b c".split())(1, 0, 0),
             math.sqrt(1 / 3),
             1e-6,
             does_not_raise(),
-            None,
-        ],
-        [
+            id="partial-offset",
+        ),
+        pytest.param(
             namedtuple("Position", "x y z".split())(0, 0, 0),
             namedtuple("Position", "a b c".split())(1, 1, 1),
             1,
             1e-6,
-            pytest.raises(AttributeError),
-            "'Position' object has no attribute 'x'",
-        ],
-        [
+            pytest.raises(
+                AttributeError,
+                match=re.escape("'Position' object has no attribute 'x'"),
+            ),
+            id="mismatched-fields",
+        ),
+        pytest.param(
             namedtuple("Position", "d e".split())(0, 0),
             namedtuple("Position", "a b c".split())(1, 1, 1),
             1,
             1e-6,
-            pytest.raises(AttributeError),
-            "are not the same length.",
-        ],
-        [
+            pytest.raises(AttributeError, match=re.escape("are not the same length.")),
+            id="different-lengths",
+        ),
+        pytest.param(
             (),
             namedtuple("Ignored", "a b c".split())(1, 0, 0),
             0,
             1e-6,
-            pytest.raises(AttributeError),
-            "are not the same length.",
-        ],
-        [
+            pytest.raises(AttributeError, match=re.escape("are not the same length.")),
+            id="empty-vs-nonempty",
+        ),
+        pytest.param(
             (),
             (),
             0,
             1e-6,
             does_not_raise(),
-            None,
-        ],
+            id="both-empty",
+        ),
     ],
 )
-def test_distance_between_pos_tuples(pos1, pos2, dist, tol, context, expected):
-    with context as reason:
+def test_distance_between_pos_tuples(pos1, pos2, dist, tol, context):
+    with context:
         assert math.isclose(
             distance_between_pos_tuples(pos1, pos2),
             dist,
             abs_tol=tol,
         )
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "pos, possibilities, function, selected, context, expected",
+    "pos, possibilities, function, selected, context",
     [
-        [
+        pytest.param(
             (),
             "a b c".split(),
             pick_first_solution,
             "a",
             does_not_raise(),
-            None,
-        ],
-        [
+            id="pick-first",
+        ),
+        pytest.param(
             "a b c".split(),
             (),
             pick_first_solution,
             None,
-            pytest.raises(NoForwardSolutions),
-            "No solutions.",
-        ],
-        [
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="pick-first-empty",
+        ),
+        pytest.param(
             namedtuple("Position", "a b c".split())(0, 0, 0),
             [
                 namedtuple("Position", "a b c".split())(1, -1, 1),
@@ -588,66 +693,76 @@ def test_distance_between_pos_tuples(pos1, pos2, dist, tol, context, expected):
             pick_closest_solution,
             namedtuple("Position", "a b c".split())(1, -1, 1),  # first, closest
             does_not_raise(),
-            None,
-        ],
-        [
+            id="pick-closest",
+        ),
+        pytest.param(
             namedtuple("Position", "a b c".split())(0, 0, 0),
             [],
             pick_closest_solution,
             None,
-            pytest.raises(NoForwardSolutions),
-            "No solutions.",
-        ],
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="pick-closest-empty",
+        ),
     ],
 )
-def test_choice_function(pos, possibilities, function, selected, context, expected):
-    with context as reason:
+def test_choice_function(pos, possibilities, function, selected, context):
+    with context:
         choice = function(pos, possibilities)
         assert choice == selected
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "specs, context, expected",
+    "specs, context",
     [
-        [{}, pytest.raises(ValueError), "Must provide a value for 'physical_name'."],
-        [
+        pytest.param(
+            {},
+            pytest.raises(
+                ValueError, match=re.escape("Must provide a value for 'physical_name'.")
+            ),
+            id="missing-physical-name",
+        ),
+        pytest.param(
             {"physical_name": "guess"},
-            pytest.raises(AttributeError),
-            "'NoneType' object has no attribute 'guess'",
-        ],
+            pytest.raises(
+                AttributeError,
+                match=re.escape("'NoneType' object has no attribute 'guess'"),
+            ),
+            id="invalid-physical-name",
+        ),
     ],
 )
-def test_VirtualPositionerBase(specs, context, expected):
-    with context as reason:
+def test_VirtualPositionerBase(specs, context):
+    with context:
         VirtualPositionerBase(name="gonio", **specs)
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "specs, context, expected",
+    "specs, context",
     [
-        [
+        pytest.param(
             dict(init_pos=0, physical_name="linear", kind="hinted"),
             does_not_raise(),
-            None,
-        ],
-        [
+            id="valid-specs",
+        ),
+        pytest.param(
             dict(),
-            pytest.raises(ValueError),
-            "Must provide a value for 'physical_name'.",
-        ],
-        [
+            pytest.raises(
+                ValueError, match=re.escape("Must provide a value for 'physical_name'.")
+            ),
+            id="missing-physical-name",
+        ),
+        pytest.param(
             # Compare with 'guess' test case above.
             dict(init_pos=0, physical_name="guess"),
-            pytest.raises(RuntimeError),
-            "AttributeError while instantiating component: tth",
-        ],
+            pytest.raises(
+                RuntimeError,
+                match=re.escape("AttributeError while instantiating component: tth"),
+            ),
+            id="invalid-physical-name",
+        ),
     ],
 )
-def test_virtual_axis(specs, context, expected):
+def test_virtual_axis(specs, context):
     GoniometerBase = diffractometer_class_factory(
         solver="hkl_soleil",
         geometry="E4CV",
@@ -668,7 +783,7 @@ def test_virtual_axis(specs, context, expected):
             super().__init__(*args, **kwargs)
             self.tth._finish_setup()
 
-    with context as reason:
+    with context:
         gonio = Goniometer(name="gonio")
         gonio.add_sample("vibranium", 2 * math.pi)
         gonio.wh()
@@ -688,24 +803,26 @@ def test_virtual_axis(specs, context, expected):
             abs_tol=0.01,
         )
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "klass, specs, context, expected",
+    "klass, specs, context",
     [
-        [EpicsMotor, dict(prefix="IOC:m1"), does_not_raise(), None],
-        [MyPVPositioner, dict(), does_not_raise(), None],
-        [SoftPositioner, dict(), does_not_raise(), None],
-        [
+        pytest.param(
+            EpicsMotor, dict(prefix="IOC:m1"), does_not_raise(), id="EpicsMotor"
+        ),
+        pytest.param(MyPVPositioner, dict(), does_not_raise(), id="PVPositioner"),
+        pytest.param(SoftPositioner, dict(), does_not_raise(), id="SoftPositioner"),
+        pytest.param(
             Signal,
             dict(),
-            pytest.raises(TypeError),
-            "Unknown 'readback' for 'gonio_linear'.",
-        ],
+            pytest.raises(
+                TypeError, match=re.escape("Unknown 'readback' for 'gonio_linear'.")
+            ),
+            id="Signal-invalid",
+        ),
     ],
 )
-def test_virtual_axis_physical(klass, specs, context, expected):
+def test_virtual_axis_physical(klass, specs, context):
     GoniometerBase = diffractometer_class_factory(
         solver="hkl_soleil",
         geometry="E4CV",
@@ -726,14 +843,12 @@ def test_virtual_axis_physical(klass, specs, context, expected):
             super().__init__(*args, **kwargs)
             self.tth._finish_setup()
 
-    with context as reason:
+    with context:
         gonio = Goniometer(name="gonio")
         gonio.tth._finish_setup()
         gonio.tth.move(-2)
         if gonio.connected:
             assert math.isclose(gonio.linear.position or -1, -1, abs_tol=0.01)
-
-    assert_context_result(expected, reason)
 
 
 def test_virtual_axis_finish_setup_trigger():

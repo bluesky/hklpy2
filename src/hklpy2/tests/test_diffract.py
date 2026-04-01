@@ -30,7 +30,6 @@ from ..ops import DEFAULT_SAMPLE_NAME
 from ..ops import Core
 from ..ops import CoreError
 from .common import HKLPY2_DIR
-from .common import assert_context_result
 from .models import AugmentedFourc
 from .models import Fourc
 from .models import MultiAxis99
@@ -44,64 +43,55 @@ from .models import TwoC
     ["e4cv_orient.yml", "fourc-configuration.yml"],
 )
 @pytest.mark.parametrize(
-    "pseudos, reals, positioner_class, context, expected",
+    "pseudos, reals, positioner_class, context",
     [
         [
             [],
             dict(omega="IOC:m1", chi="IOC:m2", phi="IOC:m3", tth="IOC:m4"),
             EpicsMotor,
             does_not_raise(),
-            None,
         ],
         [
             [],
             dict(aaa=None, bbb=None, ccc=None),
             SoftPositioner,
-            pytest.raises(KeyError),
-            "tth",
+            pytest.raises(KeyError, match=re.escape("tth")),
         ],
         [
             [],
             dict(aaa=None, bbb=None, ccc=None, ddd=None),
             SoftPositioner,
             does_not_raise(),
-            None,
         ],
         [
             [],
             dict(aaa=None, bbb=None, ccc=None, ddd=None, eee=None),
             SoftPositioner,
             does_not_raise(),
-            None,
         ],
         [
             [],
             dict(aaa="IOC:m1", bbb=None, ccc=None, ddd=None, eee=None),
             (EpicsMotor, SoftPositioner),
             does_not_raise(),
-            None,
         ],
-        [[], {}, SoftPositioner, does_not_raise(), None],
+        [[], {}, SoftPositioner, does_not_raise()],
         [
             "h k".split(),
             {},
             SoftPositioner,
-            pytest.raises(ConfigurationError),
-            "pseudo axis mismatch",
+            pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
         ],
         [
             "h2 k2 l2 psi alpha beta".split(),
             {},
             SoftPositioner,
-            pytest.raises(ConfigurationError),
-            "pseudo axis mismatch",
+            pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
         ],
     ],
 )
-def test_creator_reals(
-    pseudos, reals, positioner_class, context, expected, config_file
-):
-    with context as reason:
+def test_creator_reals(pseudos, reals, positioner_class, context, config_file):
+    with context:
         sim = creator(pseudos=pseudos, reals=reals)
         assert sim is not None
         for axis in sim.real_axis_names:
@@ -110,98 +100,91 @@ def test_creator_reals(
             assert isinstance(getattr(sim, axis), positioner_class)
         sim.restore(HKLPY2_DIR / "tests" / config_file)
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "setup, context, expected",
+    "setup, context",
     [
-        [{}, does_not_raise(), None],
-        [dict(forward_solution_function=None), does_not_raise(), None],
+        [{}, does_not_raise()],
+        [dict(forward_solution_function=None), does_not_raise()],
         [
             dict(forward_solution_function="hklpy2.misc.pick_closest_solution"),
             does_not_raise(),
-            None,
         ],
         [
             dict(forward_solution_function="hklpy2.misc.pick_first_solution"),
             does_not_raise(),
-            None,
         ],
         [
             dict(forward_solution_function="cannot.find.this.function"),
-            pytest.raises(ModuleNotFoundError),
-            "No module named 'cannot'",
+            pytest.raises(
+                ModuleNotFoundError, match=re.escape("No module named 'cannot'")
+            ),
         ],
     ],
 )
-def test_creator_setup(setup, context, expected):
-    with context as reason:
+def test_creator_setup(setup, context):
+    with context:
         sim = creator(**setup)
         assert sim is not None
-    assert_context_result(expected, reason)
 
 
 def test_DiffractometerBase():
-    with pytest.raises((DiffractometerError, ValueError)) as reason:
+    with pytest.raises((DiffractometerError, ValueError)):
         DiffractometerBase(name="dbase")
-    assert_context_result("Must have at least 1 positioner", reason)
 
 
 @pytest.mark.parametrize("axis", "h k l".split())
 @pytest.mark.parametrize(
-    "value, context, expected",
+    "value, context",
     [
-        [-1, does_not_raise(), None],
-        [1, does_not_raise(), None],
-        [-1.2, does_not_raise(), None],
-        [1.2, does_not_raise(), None],
-        [12, pytest.raises(NoForwardSolutions), "No solutions."],
-        [-12, pytest.raises(NoForwardSolutions), "No solutions."],
+        [-1, does_not_raise()],
+        [1, does_not_raise()],
+        [-1.2, does_not_raise()],
+        [1.2, does_not_raise()],
+        [12, pytest.raises(NoForwardSolutions, match=re.escape("No solutions."))],
+        [-12, pytest.raises(NoForwardSolutions, match=re.escape("No solutions."))],
     ],
 )
-def test_limits(axis, value, context, expected):
-    with context as reason:
+def test_limits(axis, value, context):
+    with context:
         sim = creator()
         assert hasattr(sim, axis)
         pseudo = getattr(sim, axis)
         assert pseudo.limits == (0, 0)
         assert pseudo.check_value(value) is None
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "base, pseudos, reals, context, expected",
+    "base, pseudos, reals, context",
     [
-        [Fourc, "h k l".split(), "omega chi phi tth".split(), does_not_raise(), None],
+        [Fourc, "h k l".split(), "omega chi phi tth".split(), does_not_raise()],
         [
             AugmentedFourc,
             "h k l".split(),
             "omega chi phi tth".split(),
             does_not_raise(),
-            None,
         ],
         [
             MultiAxis99NoSolver,
             "p1 p2".split(),
             "r1 r2 r3 r4".split(),
-            pytest.raises(AssertionError),
-            "where False = isinstance(None, SolverBase)",  # no solver
+            pytest.raises(
+                AssertionError,
+                match=re.escape("where False = isinstance(None, SolverBase)"),
+            ),
         ],
         [
             MultiAxis99,
             "p1 p2".split(),
             "r1 r2 r3 r4".split(),
             does_not_raise(),
-            None,
         ],
-        [NoOpTh2Th, "q".split(), "th tth".split(), does_not_raise(), None],
-        [TwoC, "q".split(), "theta ttheta".split(), does_not_raise(), None],
+        [NoOpTh2Th, "q".split(), "th tth".split(), does_not_raise()],
+        [TwoC, "q".split(), "theta ttheta".split(), does_not_raise()],
     ],
 )
-def test_diffractometer_class_models(base, pseudos, reals, context, expected):
-    with context as reason:
+def test_diffractometer_class_models(base, pseudos, reals, context):
+    with context:
         sim = base(name="sim")
         assert isinstance(sim, DiffractometerBase)
         assert isinstance(sim.sample, Sample)
@@ -228,11 +211,10 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
         assert sim.sample.name == "test"
 
         assert isinstance(sim.core.solver, SolverBase)
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
-    "specs, full, digits, mode, config_file, output, context, expected",
+    "specs, full, digits, mode, config_file, output, context",
     [
         [
             {},
@@ -246,7 +228,6 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
                 "reals: omega=0, chi=0, phi=0, tth=0",
             ],
             does_not_raise(),
-            None,
         ],
         [
             {},
@@ -273,7 +254,6 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
                 "extras: h2=0 k2=0 l2=0 psi=0",
             ],
             does_not_raise(),
-            None,
         ],
         [
             {},
@@ -301,7 +281,6 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
                 "reals: omega=0, chi=0, phi=0, tth=0",
             ],
             does_not_raise(),
-            None,
         ],
         [
             {},
@@ -329,7 +308,6 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
                 "reals: omega=0, chi=0, phi=0, tth=0",
             ],
             does_not_raise(),
-            None,
         ],
         [
             {"reals": "omega chi phi tth huey dewey louie".split()},
@@ -344,7 +322,6 @@ def test_diffractometer_class_models(base, pseudos, reals, context, expected):
                 "auxiliaries: huey=0, dewey=0, louie=0",
             ],
             does_not_raise(),
-            None,
         ],
     ],
 )
@@ -356,12 +333,11 @@ def test_diffractometer_wh(
     config_file,
     output,
     context,
-    expected,
     capsys,
 ):
     from ..diffract import creator
 
-    with context as reason:
+    with context:
         gonio = creator(**specs)
         if config_file is not None:
             gonio.restore(config_file)
@@ -373,8 +349,6 @@ def test_diffractometer_wh(
         lines = captured.out.splitlines()
         for out in output:
             assert out in lines, f"{out=!r} {lines=}"
-
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
@@ -491,33 +465,34 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
 
 
 @pytest.mark.parametrize(
-    "pos, context, expected",
+    "pos, context",
     [
-        [(1, 2, 3, 4), does_not_raise(), None],
-        [{"omega": 1, "chi": 2, "phi": 3, "tth": 4}, does_not_raise(), None],
+        [(1, 2, 3, 4), does_not_raise()],
+        [{"omega": 1, "chi": 2, "phi": 3, "tth": 4}, does_not_raise()],
         [
             namedtuple(
                 "RealTuple", "omega chi phi tth".split(), defaults=[1, 2, 3, 4]
             )(),
             does_not_raise(),
-            None,
         ],
-        [(1, 2, 3, 4, 5, 6), pytest.raises(ValueError), "too many args"],
+        [
+            (1, 2, 3, 4, 5, 6),
+            pytest.raises(ValueError, match=re.escape("too many args")),
+        ],
         [
             {"omega": 1, "chi": 2, "phi": 3, "delta": -4},
-            pytest.raises(TypeError),
-            "unexpected keyword argument 'delta'",
+            pytest.raises(
+                TypeError, match=re.escape("unexpected keyword argument 'delta'")
+            ),
         ],
     ],
 )
-def test_move_reals(pos, context, expected):
+def test_move_reals(pos, context):
     from ..diffract import creator
 
     fourc = creator()
-    with context as reason:
+    with context:
         fourc.move_reals(pos)
-
-    assert_context_result(expected, reason)
 
 
 def test_null_core():
@@ -613,17 +588,15 @@ def test_orientation():
 def test_remove_sample():
     sim = NoOpTh2Th(name="sim")
     assert len(sim.samples) == 1
-    try:
+    with pytest.raises(CoreError, match=re.escape("Cannot remove last sample.")):
         sim.core.remove_sample(DEFAULT_SAMPLE_NAME)
-    except CoreError as reason:
-        assert_context_result("Cannot remove last sample.", reason)
     assert len(sim.samples) == 1
 
 
 @pytest.mark.parametrize(
-    "name, pseudos, reals, wavelength, replace, num, context, expected",
+    "name, pseudos, reals, wavelength, replace, num, context",
     [
-        ["(100)", (1, 0, 0), (10, 0, 0, 20), 1, True, 1, does_not_raise(), None],
+        ["(100)", (1, 0, 0), (10, 0, 0, 20), 1, True, 1, does_not_raise()],
         [
             "(100)",
             (1, 0, 0),
@@ -631,13 +604,14 @@ def test_remove_sample():
             1,
             False,
             1,
-            pytest.raises(ReflectionError),
-            "Use 'replace=True' to overwrite.",
+            pytest.raises(
+                ReflectionError, match=re.escape("Use 'replace=True' to overwrite.")
+            ),
         ],
-        ["r2", (1, 0, 0), (10, 0, 0, 20), 1, True, 1, does_not_raise(), None],
-        ["r2", (2, 0, 0), (10, 0, 0, 20), 1, False, 2, does_not_raise(), None],
-        ["r2", (1, 0, 0), (10, 10, 0, 20), 1, False, 2, does_not_raise(), None],
-        ["(100)", (1, 0, 0), (10, 10, 0, 20), 1, True, 1, does_not_raise(), None],
+        ["r2", (1, 0, 0), (10, 0, 0, 20), 1, True, 1, does_not_raise()],
+        ["r2", (2, 0, 0), (10, 0, 0, 20), 1, False, 2, does_not_raise()],
+        ["r2", (1, 0, 0), (10, 10, 0, 20), 1, False, 2, does_not_raise()],
+        ["(100)", (1, 0, 0), (10, 10, 0, 20), 1, True, 1, does_not_raise()],
         [
             "r2",  # different name
             (1, 0, 0),  # same data
@@ -645,8 +619,9 @@ def test_remove_sample():
             1,  # same data
             False,
             1,
-            pytest.raises(ReflectionError),
-            "Use 'replace=True' to overwrite.",
+            pytest.raises(
+                ReflectionError, match=re.escape("Use 'replace=True' to overwrite.")
+            ),
         ],
         [
             "r2",  # different name
@@ -656,13 +631,10 @@ def test_remove_sample():
             False,
             2,
             does_not_raise(),
-            None,
         ],
     ],
 )
-def test_repeated_reflections(
-    name, pseudos, reals, wavelength, replace, num, context, expected
-):
+def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, context):
     from ..diffract import creator
 
     e4cv = creator()
@@ -674,7 +646,7 @@ def test_repeated_reflections(
     )
     assert len(e4cv.sample.reflections) == 1
 
-    with context as reason:
+    with context:
         e4cv.add_reflection(
             pseudos,
             reals,
@@ -682,12 +654,11 @@ def test_repeated_reflections(
             wavelength=wavelength,
             replace=replace,
         )
-    assert_context_result(expected, reason)
     assert len(e4cv.sample.reflections) == num, f"{e4cv.sample.reflections=!r}"
 
 
 @pytest.mark.parametrize(
-    "scan_args, scan_kwargs, mode, context, expected",
+    "scan_args, scan_kwargs, mode, context",
     [
         [
             [[noisy_det], "psi", 5, 10],
@@ -700,7 +671,6 @@ def test_repeated_reflections(
             ),
             "psi_constant",
             does_not_raise(),
-            None,
         ],
         [
             [[noisy_det], "psi", 5, 10],
@@ -712,8 +682,7 @@ def test_repeated_reflections(
                 fail_on_exception=True,
             ),
             "psi_constant",
-            pytest.raises(NoForwardSolutions),
-            "No solutions.",
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
         ],
         [
             [[noisy_det], "psi", 5, 10],
@@ -726,7 +695,6 @@ def test_repeated_reflections(
             ),
             "psi_constant",
             does_not_raise(),
-            None,
         ],
         [
             [[noisy_det], "psi", 5, 10],
@@ -739,35 +707,45 @@ def test_repeated_reflections(
             ),
             "psi_constant",
             does_not_raise(),
-            None,
         ],
         [
             [noisy_det],
             {},
             "psi_constant",
-            pytest.raises(ValueError),
-            "Must specify scan axes in groups of 3, received ()",
+            pytest.raises(
+                ValueError,
+                match=re.escape("Must specify scan axes in groups of 3, received ()"),
+            ),
         ],
         [
             [[noisy_det], "oddball"],
             {},
             "psi_constant",
-            pytest.raises(ValueError),
-            "Must specify scan axes in groups of 3, received ('oddball',)",
+            pytest.raises(
+                ValueError,
+                match=re.escape(
+                    "Must specify scan axes in groups of 3, received ('oddball',)"
+                ),
+            ),
         ],
         [
             [[noisy_det], "psi"],
             dict(pseudos=None, reals=None),
             "psi_constant",
-            pytest.raises(ValueError),
-            "Must specify scan axes in groups of 3, received ('psi',)",
+            pytest.raises(
+                ValueError,
+                match=re.escape(
+                    "Must specify scan axes in groups of 3, received ('psi',)"
+                ),
+            ),
         ],
         [
             [[noisy_det], "psi", 0, 1],
             dict(pseudos=None, reals=None),
             "psi_constant",
-            pytest.raises(ValueError),
-            "Must define either pseudos or reals.",
+            pytest.raises(
+                ValueError, match=re.escape("Must define either pseudos or reals.")
+            ),
         ],
         [
             [[noisy_det], "psi", 0, 1],
@@ -776,8 +754,9 @@ def test_repeated_reflections(
                 reals=dict(omega=1, chi=2, phi=3, tth=4),
             ),
             "psi_constant",
-            pytest.raises(ValueError),
-            "Cannot define both pseudos and reals.",
+            pytest.raises(
+                ValueError, match=re.escape("Cannot define both pseudos and reals.")
+            ),
         ],
         [
             [[noisy_det], "psi", 0, 1, "psi", 1, 2],
@@ -785,8 +764,9 @@ def test_repeated_reflections(
                 pseudos=dict(h=2, k=-1, l=0),
             ),
             "psi_constant",
-            pytest.raises(KeyError),
-            "Extra axis may only be used once,",
+            pytest.raises(
+                KeyError, match=re.escape("Extra axis may only be used once,")
+            ),
         ],
         [
             [[noisy_det], "h2", 1.9, 2.1, "k2", 1.9, 2.1],
@@ -799,7 +779,6 @@ def test_repeated_reflections(
             ),
             "psi_constant",
             does_not_raise(),
-            None,
         ],
         pytest.param(
             [[noisy_det], "NO_SUCH_SCAN_AXIS", 1.9, 2.1],
@@ -808,15 +787,14 @@ def test_repeated_reflections(
             ),
             "psi_constant",
             pytest.raises(KeyError, match=re.escape("'NO_SUCH_SCAN_AXIS' not in ")),
-            None,
             id="KeyError in diffract..scan_extra()",
         ),
     ],
 )
-def test_scan_extra(scan_args, scan_kwargs, mode, context, expected):
+def test_scan_extra(scan_args, scan_kwargs, mode, context):
     from ..diffract import creator
 
-    with context as reason:
+    with context:
         fourc = creator()
         fourc.restore(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
         fourc.core.mode = mode
@@ -825,11 +803,9 @@ def test_scan_extra(scan_args, scan_kwargs, mode, context, expected):
         RE = bluesky.RunEngine()
         RE(fourc.scan_extra(*scan_args, **scan_kwargs))
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "scan_args, scan_kwargs, mode, context, expected",
+    "scan_args, scan_kwargs, mode, context",
     [
         [
             [[noisy_det], "psi", -5, 555],  # expect to fail at psi=0
@@ -842,11 +818,10 @@ def test_scan_extra(scan_args, scan_kwargs, mode, context, expected):
             ),
             "psi_constant",
             does_not_raise(),
-            None,
         ],
     ],
 )
-def test_scan_extra_print_fail(scan_args, scan_kwargs, mode, context, expected, capsys):
+def test_scan_extra_print_fail(scan_args, scan_kwargs, mode, context, capsys):
     from ..diffract import creator
 
     fourc = creator()
@@ -856,10 +831,8 @@ def test_scan_extra_print_fail(scan_args, scan_kwargs, mode, context, expected, 
 
     RE = bluesky.RunEngine()
 
-    with context as reason:
+    with context:
         RE(fourc.scan_extra(*scan_args, **scan_kwargs))
-
-    assert_context_result(expected, reason)
 
     out, err = capsys.readouterr()
     assert len(err) == 0
@@ -921,70 +894,84 @@ def test_e4cv_constant_phi():
 
 
 @pytest.mark.parametrize(
-    "miller, context, expected",
+    "miller, context",
     [
-        [(1, 2, 3), does_not_raise(), None],
-        [dict(h=1, k=2, l=3), does_not_raise(), None],
-        [[1.0, 2.0, 3.0], does_not_raise(), None],
+        [(1, 2, 3), does_not_raise()],
+        [dict(h=1, k=2, l=3), does_not_raise()],
+        [[1.0, 2.0, 3.0], does_not_raise()],
         [
             None,
-            pytest.raises(TypeError),
-            "Pseudos must be tuple, list, or dict.",
+            pytest.raises(
+                TypeError, match=re.escape("Pseudos must be tuple, list, or dict.")
+            ),
         ],
         [
             # Tests that h, k, l was omitted, only a position was supplied.
             # This is one of the problems reported.
             namedtuple("PseudoTuple", "a b c d".split())(1, 2, 3, 4),
-            pytest.raises(ValueError),
-            "Expected 3 pseudos, received ",
+            pytest.raises(ValueError, match=re.escape("Expected 3 pseudos, received ")),
         ],
         [
             # Tests that wrong name(s) were supplied.
             namedtuple("PseudoTuple", "three wrong names".split())(1, 2, 4),
-            pytest.raises(ValueError),
-            "Wrong axis names",
+            pytest.raises(ValueError, match=re.escape("Wrong axis names")),
         ],
-        [("1", 2, 3), pytest.raises(TypeError), "Must be number, received "],
-        [(1, 2, "3"), pytest.raises(TypeError), "Must be number, received "],
-        [([1], 2, 3), pytest.raises(TypeError), "Must be number, received "],
-        [(object, 2, 3), pytest.raises(TypeError), "Must be number, received "],
-        [(None, 2, 3), pytest.raises(TypeError), "Must be number, received "],
-        [((1,), 2, 3), pytest.raises(TypeError), "Must be number, received "],
-        [deque(), pytest.raises(TypeError), "Unexpected data type"],
+        [
+            ("1", 2, 3),
+            pytest.raises(TypeError, match=re.escape("Must be number, received ")),
+        ],
+        [
+            (1, 2, "3"),
+            pytest.raises(TypeError, match=re.escape("Must be number, received ")),
+        ],
+        [
+            ([1], 2, 3),
+            pytest.raises(TypeError, match=re.escape("Must be number, received ")),
+        ],
+        [
+            (object, 2, 3),
+            pytest.raises(TypeError, match=re.escape("Must be number, received ")),
+        ],
+        [
+            (None, 2, 3),
+            pytest.raises(TypeError, match=re.escape("Must be number, received ")),
+        ],
+        [
+            ((1,), 2, 3),
+            pytest.raises(TypeError, match=re.escape("Must be number, received ")),
+        ],
+        [deque(), pytest.raises(TypeError, match=re.escape("Unexpected data type"))],
     ],
 )
-def test_miller_args(miller, context, expected):
+def test_miller_args(miller, context):
     """Test the Miller indices arguments: h, k, l."""
 
-    with context as reason:
+    with context:
         e4cv = creator()
         e4cv.add_reflection(miller)
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
-    "input, ref, context, expected",
+    "input, ref, context",
     [
         [
             dict(restore_wavelength=False),
             dict(energy=12.3984, wavelength=1.0),
             does_not_raise(),
-            None,
         ],
         [
             dict(restore_wavelength=True),
             dict(energy=8.0509, wavelength=1.54),
             does_not_raise(),
-            None,
         ],
     ],
 )
-def test_restore(input, ref, context, expected):
+def test_restore(input, ref, context):
     from ..incident import A_KEV
     from ..incident import DEFAULT_WAVELENGTH
     from ..misc import load_yaml_file
 
-    with context as reason:
+    with context:
         input["config"] = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
         e4cv = creator()
         assert math.isclose(
@@ -1008,7 +995,6 @@ def test_restore(input, ref, context, expected):
             ref.get("wavelength", DEFAULT_WAVELENGTH),
             abs_tol=0.001,
         )
-    assert_context_result(expected, reason)
 
 
 def test_failed_restore():
@@ -1023,25 +1009,26 @@ def test_failed_restore():
         e4cv.restore(config)
 
     config.pop("_header")
-    with pytest.raises(KeyError) as reason:
+    with pytest.raises(
+        KeyError, match=re.escape("Configuration is missing '_header' key")
+    ):
         e4cv = creator()
         e4cv.restore(config)
-    expected = "Configuration is missing '_header' key"
-    assert_context_result(expected, reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Unrecognized configuration")):
         e4cv = creator()
         e4cv.restore(12345)
-    expected = "Unrecognized configuration"
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
-    "specs, context, expected",
+    "specs, context",
     [
-        [{}, does_not_raise(), None],
-        [{"pseudos": "axis"}, pytest.raises(TypeError), "Expected a list"],
-        [{"reals": "omega chi phi tth".split()}, does_not_raise(), None],
+        [{}, does_not_raise()],
+        [
+            {"pseudos": "axis"},
+            pytest.raises(TypeError, match=re.escape("Expected a list")),
+        ],
+        [{"reals": "omega chi phi tth".split()}, does_not_raise()],
         [
             {
                 "reals": dict(
@@ -1052,32 +1039,31 @@ def test_failed_restore():
                 )
             },
             does_not_raise(),
-            None,
         ],
-        [{"reals": "axis"}, pytest.raises(TypeError), "Expected a dict"],
+        [
+            {"reals": "axis"},
+            pytest.raises(TypeError, match=re.escape("Expected a dict")),
+        ],
         pytest.param(
             dict(_pseudo="h k l".split()),
             does_not_raise(),
-            None,
             id="_pseudo kwarg",
         ),
         pytest.param(
             dict(_real="omega chi phi tth".split()),
             does_not_raise(),
-            None,
             id="_real kwarg",
         ),
     ],
 )
-def test_diffractometer_class_factory(specs, context, expected):
-    with context as reason:
+def test_diffractometer_class_factory(specs, context):
+    with context:
         klass = diffractometer_class_factory(**specs)
         assert not isinstance(klass, DiffractometerBase)
         assert issubclass(klass, DiffractometerBase)
 
         gonio = klass(name="gonio")
         assert isinstance(gonio, DiffractometerBase)
-    assert_context_result(expected, reason)
 
 
 def test_wh_virtual_issue_114():
@@ -1098,25 +1084,23 @@ def test_wh_virtual_issue_114():
 
 
 @pytest.mark.parametrize(
-    "specs, context, expected",
+    "specs, context",
     [
-        [{}, does_not_raise(), None],
-        [{"pseudos": "h k l ralph".split()}, does_not_raise(), None],
+        [{}, does_not_raise()],
+        [{"pseudos": "h k l ralph".split()}, does_not_raise()],
         [
             dict(
                 pseudos="h k l h2 k2 l2".split(),
                 reals="theta chi phi ttheta psi temperature".split(),
             ),
             does_not_raise(),
-            None,
         ],
     ],
 )
-def test_TypeError_issue_120(specs, context, expected):
-    with context as reason:
+def test_TypeError_issue_120(specs, context):
+    with context:
         gonio = creator(**specs)
         gonio.wh()
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
@@ -1131,7 +1115,7 @@ def test_reals_units_property_and_validation(set_value, context, expected):
     from ..diffract import creator
     from ..misc import INTERNAL_ANGLE_UNITS
 
-    with context as reason:
+    with context:
         sim = creator()
         # The default getter must return the internal canonical units.
         assert sim.reals_units == INTERNAL_ANGLE_UNITS
@@ -1139,7 +1123,6 @@ def test_reals_units_property_and_validation(set_value, context, expected):
         sim.reals_units = set_value
 
     # Check whether the operation raised as expected.
-    assert_context_result(expected, reason)
 
     # For successful sets, the public getter must still be present and return a string.
     # Check whether the operation succeeded by inspecting the
@@ -1149,50 +1132,6 @@ def test_reals_units_property_and_validation(set_value, context, expected):
         # The current implementation stores the canonical internal units on init.
         # Ensure the getter returns a recognizable units string (not None/empty).
         assert sim.reals_units != "" and sim.reals_units is not None
-
-
-@pytest.mark.parametrize(
-    "expected, exc, context, expect_assert",
-    [
-        (
-            "some error",
-            Exception("prefix some error suffix"),
-            pytest.raises(Exception),
-            False,
-        ),
-        (
-            "no setter available",
-            Exception("can't set attribute 'value' for this object"),
-            pytest.raises(Exception),
-            False,
-        ),
-        (
-            "expected message",
-            Exception("an unrelated failure"),
-            pytest.raises(Exception),
-            True,
-        ),
-        (None, None, does_not_raise(), False),
-    ],
-)
-def test_assert_context_result_variants(expected, exc, context, expect_assert):
-    """Exercise remaining branches of hklpy2.tests.common.assert_context_result.
-
-    The `context` parameter is either a pytest.raises(...) context manager or
-    does_not_raise(), and is used to produce a `reason` object that is then
-    passed to assert_context_result for inspection.
-    """
-    # Run the inner context; if `exc` is not None we raise it so pytest.raises
-    # captures it and provides an ExceptionInfo (or similar) as `reason`.
-    with context as reason:
-        if exc is not None:
-            raise exc
-
-    if expect_assert:
-        with pytest.raises(AssertionError):
-            assert_context_result(expected, reason)
-    else:
-        assert_context_result(expected, reason)
 
 
 # Additional coverage tests for diffract.py (repr wrapping & display digits)

@@ -1,3 +1,4 @@
+import re
 import math
 import pathlib
 from contextlib import nullcontext as does_not_raise
@@ -9,7 +10,6 @@ from ...diffract import DiffractometerBase
 from ...diffract import creator
 from ...misc import ConfigurationError
 from ...misc import load_yaml_file
-from ...tests.common import assert_context_result
 from ...tests.models import E4CV_CONFIG_FILE
 from ...tests.models import add_oriented_vibranium_to_e4cv
 from ...tests.models import e4cv_config
@@ -186,35 +186,55 @@ def test_fromdict():
 
 
 @pytest.mark.parametrize(
-    "diffractometer, clear, restore, file, context, expected",
+    "diffractometer, clear, restore, file, context",
     [
-        [e4cv, True, True, E4CV_CONFIG_FILE, does_not_raise(), None],
-        [e4cv, True, False, E4CV_CONFIG_FILE, does_not_raise(), None],
-        [
+        pytest.param(
+            e4cv,
+            True,
+            True,
+            E4CV_CONFIG_FILE,
+            does_not_raise(),
+            id="e4cv-clear-restore",
+        ),
+        pytest.param(
+            e4cv,
+            True,
+            False,
+            E4CV_CONFIG_FILE,
+            does_not_raise(),
+            id="e4cv-clear-no-restore",
+        ),
+        pytest.param(
             sim2c,
             True,
             True,
             E4CV_CONFIG_FILE,
-            pytest.raises(ConfigurationError),
-            "solver mismatch",
-        ],
-        [
+            pytest.raises(ConfigurationError, match=re.escape("solver mismatch")),
+            id="sim2c-solver-mismatch",
+        ),
+        pytest.param(
             sim2c,
             True,
             True,
             "this file does not exist",
-            pytest.raises(FileExistsError),
-            "this file does not exist",
-        ],
-        [None, True, True, E4CV_CONFIG_FILE, pytest.raises(AssertionError), "False"],
+            pytest.raises(FileExistsError, match=re.escape("this file does not exist")),
+            id="sim2c-file-not-exist",
+        ),
+        pytest.param(
+            None,
+            True,
+            True,
+            E4CV_CONFIG_FILE,
+            pytest.raises(AssertionError, match=re.escape("False")),
+            id="none-diffractometer",
+        ),
     ],
 )
-def test_restore(diffractometer, clear, restore, file, context, expected):
-    with context as reason:
+def test_restore(diffractometer, clear, restore, file, context):
+    with context:
         assert isinstance(diffractometer, DiffractometerBase)
         diffractometer.restore(
             file,
             clear=clear,
             restore_constraints=restore,
         )
-    assert_context_result(expected, reason)

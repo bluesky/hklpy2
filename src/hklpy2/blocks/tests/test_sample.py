@@ -1,5 +1,6 @@
 from contextlib import nullcontext as does_not_raise
 
+import re
 import pytest
 
 from ...diffract import creator
@@ -7,7 +8,6 @@ from ...misc import IDENTITY_MATRIX_3X3
 from ...misc import CoreError
 from ...misc import load_yaml
 from ...misc import unique_name
-from ...tests.common import assert_context_result
 from ...tests.models import add_oriented_vibranium_to_e4cv
 from ..lattice import Lattice
 from ..reflection import ReflectionsDict
@@ -15,15 +15,16 @@ from ..sample import Sample
 
 
 @pytest.mark.parametrize(
-    "context, expected",
+    "context",
     [
-        [pytest.raises(TypeError), "expected Core"],
+        pytest.param(
+            pytest.raises(TypeError, match=re.escape("expected Core")), id="no-core"
+        ),
     ],
 )
-def test_sample_constructor_no_core(context, expected):
-    with context as reason:
+def test_sample_constructor_no_core(context):
+    with context:
         Sample(None, "test", Lattice(4))
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
@@ -99,16 +100,18 @@ def test_repr():
 
 
 @pytest.mark.parametrize(
-    "context, expected",
+    "context",
     [
-        [pytest.raises(TypeError), "Must supply ReflectionsDict"],
+        pytest.param(
+            pytest.raises(TypeError, match=re.escape("Must supply ReflectionsDict")),
+            id="wrong-type",
+        ),
     ],
 )
-def test_reflections_fail(context, expected):
+def test_reflections_fail(context):
     sim = creator(name="sim", solver="th_tth", geometry="TH TTH Q")
-    with context as reason:
+    with context:
         sim.sample.reflections = None
-    assert_context_result(expected, reason)
 
 
 def test_fromdict():
@@ -218,71 +221,89 @@ def test_fromdict():
 
 
 @pytest.mark.parametrize(
-    "remove, context, expected",
+    "remove, context",
     [
-        [None, does_not_raise(), None],
-        ["r004", pytest.raises(CoreError), ""],
-        ["wrong", pytest.raises(KeyError), ""],
+        pytest.param(None, does_not_raise(), id="all-reflections"),
+        pytest.param("r004", pytest.raises(CoreError), id="remove-r004"),
+        pytest.param("wrong", pytest.raises(KeyError), id="remove-nonexistent"),
     ],
 )
-def test_refine_lattice(remove, context, expected):
-    with context as reason:
+def test_refine_lattice(remove, context):
+    with context:
         e4cv = creator(name="e4cv")
         add_oriented_vibranium_to_e4cv(e4cv)
         if remove is not None:
             e4cv.sample.reflections.pop(remove)
         e4cv.sample.refine_lattice()
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "rname, context, expected",
+    "rname, context",
     [
-        ["r400", does_not_raise(), None],
-        ["r1", pytest.raises(KeyError), "Reflection 'r1' is not found"],
+        pytest.param("r400", does_not_raise(), id="existing-reflection"),
+        pytest.param(
+            "r1",
+            pytest.raises(KeyError, match=re.escape("Reflection 'r1' is not found")),
+            id="missing-reflection",
+        ),
     ],
 )
-def test_remove_reflection(rname, context, expected):
-    with context as reason:
+def test_remove_reflection(rname, context):
+    with context:
         e4cv = creator(name="e4cv")
         add_oriented_vibranium_to_e4cv(e4cv)
         e4cv.core.calc_UB("r040", "r400")
         e4cv.sample.remove_reflection(rname)
         assert rname not in e4cv.sample.reflections.order
 
-    assert_context_result(expected, reason)
-
 
 @pytest.mark.parametrize(
-    "name, value, context, expected",
+    "name, value, context",
     [
-        [
+        pytest.param(
             "U",
             [[1, 0, 0], [1, 0, 0], [1, 0, 0]],
-            pytest.raises(ValueError),
-            "columns must be normalized",
-        ],
-        [
+            pytest.raises(ValueError, match=re.escape("columns must be normalized")),
+            id="U-cols-not-normalized",
+        ),
+        pytest.param(
             "U",
             [[1, 1, 0], [1, 0, 0], [1, 0, 0]],
-            pytest.raises(ValueError),
-            "rows must be normalized",
-        ],
-        ["U", [1, 2, "3"], pytest.raises(TypeError), "must be numerical"],
-        ["U", [1, 2, 3], pytest.raises(ValueError), "must be 3x3."],
-        ["U", IDENTITY_MATRIX_3X3, does_not_raise(), None],
-        ["UB", [1, 2, "3"], pytest.raises(TypeError), "must be numerical"],
-        ["UB", [1, 2, 3], pytest.raises(ValueError), "must be 3x3."],
-        ["UB", IDENTITY_MATRIX_3X3, does_not_raise(), None],
+            pytest.raises(ValueError, match=re.escape("rows must be normalized")),
+            id="U-rows-not-normalized",
+        ),
+        pytest.param(
+            "U",
+            [1, 2, "3"],
+            pytest.raises(TypeError, match=re.escape("must be numerical")),
+            id="U-non-numerical",
+        ),
+        pytest.param(
+            "U",
+            [1, 2, 3],
+            pytest.raises(ValueError, match=re.escape("must be 3x3.")),
+            id="U-not-3x3",
+        ),
+        pytest.param("U", IDENTITY_MATRIX_3X3, does_not_raise(), id="U-identity"),
+        pytest.param(
+            "UB",
+            [1, 2, "3"],
+            pytest.raises(TypeError, match=re.escape("must be numerical")),
+            id="UB-non-numerical",
+        ),
+        pytest.param(
+            "UB",
+            [1, 2, 3],
+            pytest.raises(ValueError, match=re.escape("must be 3x3.")),
+            id="UB-not-3x3",
+        ),
+        pytest.param("UB", IDENTITY_MATRIX_3X3, does_not_raise(), id="UB-identity"),
     ],
 )
-def test_matrix_validation(name, value, context, expected):
-    with context as reason:
+def test_matrix_validation(name, value, context):
+    with context:
         e4cv = creator(name="e4cv")
         if name == "U":
             e4cv.sample.U = value
         else:
             e4cv.sample.UB = value
-
-    assert_context_result(expected, reason)

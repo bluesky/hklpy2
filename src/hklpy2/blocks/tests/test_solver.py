@@ -1,9 +1,9 @@
+import re
 import inspect
 
 import pytest
 
 from ...misc import get_solver
-from ...tests.common import assert_context_result
 
 
 @pytest.mark.parametrize(
@@ -38,9 +38,8 @@ def test_HklSolver():
     gname = "ESRF ID01 PSIC"
     assert solver.geometry != gname
 
-    with pytest.raises(AttributeError) as reason:
+    with pytest.raises(AttributeError, match=re.escape("has no setter")):
         solver.geometry = "E4CV"
-    assert_context_result("has no setter", reason)
 
     assert solver.engine_name == "hkl"
 

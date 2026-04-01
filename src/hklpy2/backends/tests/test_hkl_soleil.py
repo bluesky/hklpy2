@@ -8,7 +8,6 @@ from pyRestTable import Table
 
 from ...misc import IDENTITY_MATRIX_3X3
 from ...ops import Core
-from ...tests.common import assert_context_result
 from .. import hkl_soleil
 
 
@@ -71,33 +70,28 @@ def test_HklSolver():
     assert solver.UB == IDENTITY_MATRIX_3X3
     assert solver.calculate_UB(None, None) is None
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.addReflection(1.0)
-    assert_context_result("Must supply", reason)
 
-    with pytest.raises(KeyError) as reason:
+    with pytest.raises(KeyError, match=re.escape("Unexpected dictionary key received")):
         solver.extras = dict(trombone=0)
-    assert_context_result("Unexpected dictionary key received", reason)
 
-    with pytest.raises(ValueError) as reason:
+    with pytest.raises(ValueError, match=re.escape("Wrong dictionary keys received")):
         solver.inverse(dict(a=1, b=2, c=3, d=4))
-    assert_context_result("Wrong dictionary keys received", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("All values must be numbers")):
         solver.inverse(dict(omega="1", chi=0, phi=0, tth=0))
-    assert_context_result("All values must be numbers", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.lattice = 1.0
-    assert_context_result("Must supply", reason)
 
-    with pytest.raises(ValueError) as reason:
+    with pytest.raises(
+        ValueError, match=re.escape("Must provide 3 or more reflections")
+    ):
         solver.refineLattice([])
-    assert_context_result("Must provide 3 or more reflections", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.sample = "kryptonite"
-    assert_context_result("Must supply", reason)
     solver._sample = kryptonite()
 
 

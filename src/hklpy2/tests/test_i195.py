@@ -19,56 +19,51 @@ from the current diffractometer real-axis positions.
 
 from contextlib import nullcontext as does_not_raise
 
+import re
 import pytest
 from numpy.testing import assert_almost_equal
 
 from ..blocks.lattice import SI_LATTICE_PARAMETER
 from ..diffract import creator
 from ..misc import NoForwardSolutions
-from .common import assert_context_result
 
 
 @pytest.mark.parametrize(
-    "phi_current, phi_limits, context, expected",
+    "phi_current, phi_limits, context",
     [
         pytest.param(
             0.0,
             (-180, 180),
             does_not_raise(),
-            None,
             id="phi=0 (matches or1)",
         ),
         pytest.param(
             45.0,
             (-180, 180),
             does_not_raise(),
-            None,
             id="phi=45 (between or1 and or2 — primary bug case)",
         ),
         pytest.param(
             90.0,
             (-180, 180),
             does_not_raise(),
-            None,
             id="phi=90 (matches or2)",
         ),
         pytest.param(
             -30.0,
             (-180, 180),
             does_not_raise(),
-            None,
             id="phi=-30 (outside or1/or2 range)",
         ),
         pytest.param(
             45.0,
             (80, 100),  # phi=45 is excluded by this constraint
-            pytest.raises(NoForwardSolutions),
-            "No solutions.",
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
             id="NoForwardSolutions: phi excluded by constraints",
         ),
     ],
 )
-def test_issue_195(phi_current, phi_limits, context, expected):
+def test_issue_195(phi_current, phi_limits, context):
     """
     forward() must use the current diffractometer phi in constant_phi mode,
     not the phi value of either orientation reflection (issue #195).
@@ -85,7 +80,7 @@ def test_issue_195(phi_current, phi_limits, context, expected):
     - ``diffractometer.forward()`` (single picked solution).
     - ``NoForwardSolutions`` when the phi constraint excludes all solutions.
     """
-    with context as reason:
+    with context:
         e4cv = creator()
         e4cv.add_sample("silicon", SI_LATTICE_PARAMETER)
         e4cv.beam.wavelength.put(1.54)
@@ -122,5 +117,3 @@ def test_issue_195(phi_current, phi_limits, context, expected):
         # constraint filters out every solution (the failure case).
         position = e4cv.forward(dict(h=1, k=1, l=1))
         assert_almost_equal(position.phi, phi_current, decimal=4)
-
-    assert_context_result(expected, reason)

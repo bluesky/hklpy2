@@ -2,13 +2,13 @@
 
 # Many features are tested, albeit indrectly, in specific solvers.
 
+import re
 import pyRestTable
 import pytest
 
 from ...blocks.lattice import Lattice
 from ...blocks.reflection import Reflection
 from ...misc import IDENTITY_MATRIX_3X3
-from ...tests.common import assert_context_result
 from ..base import SolverBase
 from ..th_tth_q import TH_TTH_Q_GEOMETRY
 from ..th_tth_q import ThTthSolver
@@ -119,15 +119,13 @@ def test_SolverBase():
     assert isinstance(summary, pyRestTable.Table)
     assert str(summary).strip() == expected
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.lattice = 1.0
-    assert_context_result("Must supply", reason)
     solver.lattice = dict(a=1, b=2, c=3, alpha=90, beta=90, gamma=90)
     assert solver.lattice == dict(a=1, b=2, c=3, alpha=90, beta=90, gamma=90)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.sample = 1.0
-    assert_context_result("Must supply", reason)
 
 
 def test_SolverBase_abstractmethods():
@@ -147,6 +145,5 @@ def test_SolverBase_abstractmethods():
     assert isinstance(summary, pyRestTable.Table)
     assert str(summary).strip() == expected
 
-    with pytest.raises(AttributeError) as reason:
+    with pytest.raises(AttributeError, match=re.escape("geometry")):
         solver.geometry = TH_TTH_Q_GEOMETRY
-    assert_context_result("geometry", reason)

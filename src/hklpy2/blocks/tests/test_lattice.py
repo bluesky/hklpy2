@@ -1,51 +1,62 @@
 from contextlib import nullcontext as does_not_raise
 
+import re
 import numpy as np
 import pytest
 
 from ...misc import LatticeError
-from ...tests.common import assert_context_result
 from ..lattice import Lattice
 
 
 @pytest.mark.parametrize(
-    "system, a, others, context, expected",
+    "system, a, others, context",
     [
-        ["cubic", 5, dict(), does_not_raise(), None],
-        ["hexagonal", 4, dict(c=3, gamma=120), does_not_raise(), None],
-        ["rhombohedral", 4, dict(alpha=80.2), does_not_raise(), None],
-        ["rhombohedral", 4, dict(alpha=120), does_not_raise(), None],
-        ["tetragonal", 4, dict(c=3), does_not_raise(), None],
-        ["orthorhombic", 4, dict(b=5, c=3), does_not_raise(), None],
-        ["monoclinic", 4, dict(b=5, c=3, beta=75), does_not_raise(), None],
-        [
+        pytest.param("cubic", 5, dict(), does_not_raise(), id="cubic"),
+        pytest.param(
+            "hexagonal", 4, dict(c=3, gamma=120), does_not_raise(), id="hexagonal"
+        ),
+        pytest.param(
+            "rhombohedral", 4, dict(alpha=80.2), does_not_raise(), id="rhombohedral-80"
+        ),
+        pytest.param(
+            "rhombohedral", 4, dict(alpha=120), does_not_raise(), id="rhombohedral-120"
+        ),
+        pytest.param("tetragonal", 4, dict(c=3), does_not_raise(), id="tetragonal"),
+        pytest.param(
+            "orthorhombic", 4, dict(b=5, c=3), does_not_raise(), id="orthorhombic"
+        ),
+        pytest.param(
+            "monoclinic", 4, dict(b=5, c=3, beta=75), does_not_raise(), id="monoclinic"
+        ),
+        pytest.param(
             "triclinic",
             4,
             dict(b=5, c=3, alpha=75, beta=85, gamma=95),
             does_not_raise(),
-            None,
-        ],
-        [
+            id="triclinic",
+        ),
+        pytest.param(
             "hexagonal",
             4,
             dict(gamma=120),  # hexagonal needs a != c
-            pytest.raises(LatticeError),
-            "Unrecognized crystal system:",
-        ],
+            pytest.raises(
+                LatticeError, match=re.escape("Unrecognized crystal system:")
+            ),
+            id="hexagonal-needs-a-ne-c",
+        ),
     ],
 )
-def test_repr(system, a, others, context, expected):
+def test_repr(system, a, others, context):
     lattice = Lattice(a, **others)
     assert lattice is not None
 
-    with context as reason:
+    with context:
         rep = repr(lattice)
         assert rep.startswith("Lattice(")
         assert "a=" in rep
         assert "system=" in rep
         assert repr(system) in rep, f"{system=!r} lattice={rep!r}"
         assert rep.endswith(")")
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
@@ -86,9 +97,9 @@ def test_equal():
 
 
 @pytest.mark.parametrize(
-    "config, context, expected",
+    "config, context",
     [
-        [
+        pytest.param(
             dict(
                 a=3,
                 b=4,
@@ -98,9 +109,9 @@ def test_equal():
                 gamma=95.0,
             ),
             does_not_raise(),
-            None,
-        ],
-        [
+            id="valid-triclinic",
+        ),
+        pytest.param(
             dict(
                 a=3,
                 b=4,
@@ -109,10 +120,10 @@ def test_equal():
                 beta=85.0,
                 # gamma=95.0,
             ),
-            pytest.raises(KeyError),
-            "gamma",
-        ],
-        [
+            pytest.raises(KeyError, match=re.escape("gamma")),
+            id="missing-gamma",
+        ),
+        pytest.param(
             dict(
                 a=3,
                 b=4,
@@ -123,9 +134,9 @@ def test_equal():
                 delta=1,  # ignored, no error
             ),
             does_not_raise(),
-            None,
-        ],
-        [
+            id="extra-key-ignored",
+        ),
+        pytest.param(
             dict(
                 able=3,
                 baker=4,
@@ -134,13 +145,13 @@ def test_equal():
                 foxtrot=85.0,
                 # gamma=95.0,
             ),
-            pytest.raises(KeyError),
-            "'a'",
-        ],
+            pytest.raises(KeyError, match=re.escape("'a'")),
+            id="wrong-keys",
+        ),
     ],
 )
-def test_fromdict(config, context, expected):
-    with context as reason:
+def test_fromdict(config, context):
+    with context:
         assert isinstance(config, dict)
         lattice = Lattice(1)
         for k in "a b c alpha beta gamma".split():
@@ -148,8 +159,6 @@ def test_fromdict(config, context, expected):
         lattice._fromdict(config)
         for k in "a b c alpha beta gamma".split():
             assert getattr(lattice, k) == config[k], f"{k=!r}  {lattice=!r}"
-
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
@@ -211,9 +220,9 @@ def test_lattice_eq_fallback_raw_comparison(monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "params, context, expected",
+    "params, context",
     [
-        (
+        pytest.param(
             {
                 "a": 1.0,
                 "b": 1.0,
@@ -223,26 +232,26 @@ def test_lattice_eq_fallback_raw_comparison(monkeypatch):
                 "gamma": 1.0,
                 "tol": 1e-6,
             },
-            pytest.raises(ValueError),
-            "Inconsistent lattice parameters",
+            pytest.raises(
+                ValueError, match=re.escape("Inconsistent lattice parameters")
+            ),
+            id="inconsistent-params",
         ),
-        (
+        pytest.param(
             {"a": 3.0},
             does_not_raise(),
-            None,
+            id="valid-cubic",
         ),
     ],
 )
-def test_lattice_defensive_check(params, context, expected):
+def test_lattice_defensive_check(params, context):
     """
     Defensive check in Lattice.__init__ that raises for the specific
     pathological regime (alpha>150, beta>150, gamma<2 with small tol).
     Also verify a normal construction succeeds.
     """
-    with context as reason:
+    with context:
         _lat = Lattice(**params)
-
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
@@ -268,7 +277,7 @@ def test_compute_cartesian_inconsistent_cz_raises(params, context, expected):
     compute_cartesian_lattice() invocation in the test body is reached and
     that the expected exception is raised there.
     """
-    with context as reason:
+    with context:
         # Start from a safe lattice so construction does not raise.
         lat = Lattice(1.0, b=1.0, c=1.0, alpha=90.0, beta=90.0, gamma=90.0)
         # Overwrite attributes to the pathological regime used to trigger the
@@ -279,20 +288,16 @@ def test_compute_cartesian_inconsistent_cz_raises(params, context, expected):
         # Now call the method that is expected to raise.
         lat.compute_cartesian_lattice()
 
-    assert_context_result(expected, reason)
-
 
 def test_compute_B_invalid_shape_raises():
     """
     Force an invalid cartesian matrix shape to exercise the shape check in
     compute_B(). Execution follows the required context-manager pattern.
     """
-    with pytest.raises(ValueError) as reason:
+    with pytest.raises(ValueError, match=re.escape("Matrix must be 3x3")):
         lat = Lattice(2.0)
         lat.cartesian_lattice_matrix = np.zeros((2, 2))
         lat.compute_B()
-
-    assert_context_result("Matrix must be 3x3", reason)
 
 
 @pytest.mark.parametrize(
@@ -308,14 +313,12 @@ def test_angle_units_validation_in_init(angle_units, context, expected):
     Setting angle_units during construction should validate via the setter.
     Construction and any potential exception are executed inside the context.
     """
-    with context as ctx:
+    with context:
         lat = Lattice(3.0, angle_units=angle_units)
         # access property to ensure setter produced the internal canonical value
         _ = lat.angle_units
-
-    assert_context_result(expected, ctx)
-    if expected is not None:
-        assert lat.angle_units == expected
+        if expected is not None:
+            assert lat.angle_units == expected
 
 
 @pytest.mark.parametrize(
@@ -331,13 +334,11 @@ def test_length_units_validation_in_init(length_units, context, expected):
     Setting length_units during construction should validate via the setter.
     Construction and any potential exception are executed inside the context.
     """
-    with context as ctx:
+    with context:
         lat = Lattice(3.0, length_units=length_units)
         _ = lat.length_units
-
-    assert_context_result(expected, ctx)
-    if expected is not None:
-        assert lat.length_units == expected
+        if expected is not None:
+            assert lat.length_units == expected
 
 
 @pytest.mark.parametrize(
@@ -378,61 +379,59 @@ def test_equality_within_context(l1_kwargs, l2_kwargs, context, expect_equal):
     __eq__ should perform unit conversion; both construction and comparison
     are executed inside the provided context.
     """
-    with context as ctx:
+    with context:
         l1 = Lattice(**l1_kwargs)
         l2 = Lattice(**l2_kwargs)
         result = l1 == l2
-
-    assert_context_result(None, ctx)
-    assert result is expect_equal
+        assert result is expect_equal
 
 
 @pytest.mark.parametrize(
-    "params, context, expected_msg",
+    "params, context",
     [
         # Valid cubic lattice: should not raise
         (
             dict(a=1.0, b=1.0, c=1.0, alpha=90.0, beta=90.0, gamma=90.0, tol=1e-12),
             does_not_raise(),
-            None,
         ),
         # Parameters chosen to produce an inconsistent (imaginary) c_z
         # Use small gamma so sin(gamma) small and alpha/beta large to produce negative c_z_sq beyond limit.
         (
             dict(a=1.0, b=1.0, c=1.0, alpha=160.0, beta=160.0, gamma=1.0, tol=1e-6),
-            pytest.raises(ValueError),
-            "Inconsistent lattice parameters",
+            pytest.raises(
+                ValueError, match=re.escape("Inconsistent lattice parameters")
+            ),
         ),
     ],
 )
-def test_constructor_detects_inconsistent_cartesian(params, context, expected_msg):
+def test_constructor_detects_inconsistent_cartesian(params, context):
     """
     Constructing lattices that would produce an imaginary c_z should raise
     during initialization. Construction is executed inside the parametrized context.
     """
-    with context as ctx:
+    with context:
         Lattice(**params)
-
-    assert_context_result(expected_msg, ctx)
 
 
 @pytest.mark.parametrize(
-    "cart_a, context, expected_msg",
+    "cart_a, context",
     [
-        (np.eye(2), pytest.raises(ValueError), "Matrix must be 3x3"),
-        (np.zeros((3, 3)), pytest.raises(ValueError), "Unit cell volume too small"),
+        (np.eye(2), pytest.raises(ValueError, match=re.escape("Matrix must be 3x3"))),
+        (
+            np.zeros((3, 3)),
+            pytest.raises(ValueError, match=re.escape("Unit cell volume too small")),
+        ),
     ],
 )
-def test_compute_B_rejects_bad_internal_A(cart_a, context, expected_msg):
+def test_compute_B_rejects_bad_internal_A(cart_a, context):
     """
     compute_B validates the internal cartesian matrix shape and determinant.
     We replace the instance attribute and call compute_B inside the context.
     """
     lat = Lattice(2.0)
-    with context as ctx:
+    with context:
         lat.cartesian_lattice_matrix = cart_a
         lat.compute_B()
-    assert_context_result(expected_msg, ctx)
 
 
 def test_compute_cartesian_and_B_on_cubic_inside_context():
@@ -440,7 +439,7 @@ def test_compute_cartesian_and_B_on_cubic_inside_context():
     Basic functional test on a cubic lattice: compute_cartesian_lattice
     and compute_B are executed inside a success context.
     """
-    with does_not_raise() as ctx:
+    with does_not_raise():
         lat = Lattice(1.0)
         A = lat.compute_cartesian_lattice()
         assert A.shape == (3, 3)
@@ -449,63 +448,79 @@ def test_compute_cartesian_and_B_on_cubic_inside_context():
         B1 = lat.compute_B(with_2pi=True)
         B2 = lat.compute_B(with_2pi=False)
         assert np.allclose(B1, 2.0 * np.pi * B2)
-    assert_context_result(None, ctx)
 
 
 @pytest.mark.parametrize(
-    "params, context, expected",
+    "params, context",
     [
-        ({"a": 0.0}, pytest.raises(ValueError), "Lattice lengths must be positive."),
-        ({"a": -1.0}, pytest.raises(ValueError), "Lattice lengths must be positive."),
+        pytest.param(
+            {"a": 0.0},
+            pytest.raises(
+                ValueError, match=re.escape("Lattice lengths must be positive.")
+            ),
+            id="zero-length",
+        ),
+        pytest.param(
+            {"a": -1.0},
+            pytest.raises(
+                ValueError, match=re.escape("Lattice lengths must be positive.")
+            ),
+            id="negative-length",
+        ),
     ],
 )
-def test_invalid_lengths(params, context, expected):
+def test_invalid_lengths(params, context):
     """Lattice lengths must be positive."""
-    with context as reason:
+    with context:
         _lat = Lattice(**params)
-
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
-    "params, context, expected",
+    "params, context",
     [
-        (
+        pytest.param(
             {"a": 1.0, "alpha": 0.0},
-            pytest.raises(ValueError),
-            "Lattice angles must be within range 0 .. 180.",
+            pytest.raises(
+                ValueError,
+                match=re.escape("Lattice angles must be within range 0 .. 180."),
+            ),
+            id="angle-zero",
         ),
-        (
+        pytest.param(
             {"a": 1.0, "alpha": 180.0},
-            pytest.raises(ValueError),
-            "Lattice angles must be within range 0 .. 180.",
+            pytest.raises(
+                ValueError,
+                match=re.escape("Lattice angles must be within range 0 .. 180."),
+            ),
+            id="angle-180",
         ),
     ],
 )
-def test_invalid_angles_range(params, context, expected):
+def test_invalid_angles_range(params, context):
     """Angles must be within (0,180)."""
-    with context as reason:
+    with context:
         _lat = Lattice(**params)
-
-    assert_context_result(expected, reason)
 
 
 @pytest.mark.parametrize(
-    "gamma, context, expected",
+    "gamma, context",
     [
-        (
+        pytest.param(
             1e-13,
-            pytest.raises(ValueError),
-            "Lattice gamma angle is too close to 0 or 180 degrees.",
+            pytest.raises(
+                ValueError,
+                match=re.escape(
+                    "Lattice gamma angle is too close to 0 or 180 degrees."
+                ),
+            ),
+            id="gamma-near-zero",
         ),
     ],
 )
-def test_gamma_too_close(gamma, context, expected):
+def test_gamma_too_close(gamma, context):
     """Gamma values with sin(gamma) smaller than tol should raise."""
-    with context as reason:
+    with context:
         _lat = Lattice(1.0, gamma=gamma)
-
-    assert_context_result(expected, reason)
 
 
 def test_init_handles_float_conversion_exception(monkeypatch):
@@ -534,10 +549,9 @@ def test_init_handles_float_conversion_exception(monkeypatch):
 
     from contextlib import nullcontext as does_not_raise
 
-    with does_not_raise() as reason:
+    with does_not_raise():
         lat = lattice_mod.Lattice(
             3.0, b=3.0, c=3.0, alpha=100.0, beta=100.0, gamma=100.0
         )
 
-    assert_context_result(None, reason)
     assert isinstance(lat, lattice_mod.Lattice)
