@@ -171,6 +171,9 @@ NamedFloatDict = Mapping[str, NUMERIC]
 IDENTITY_MATRIX_3X3: Matrix3x3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 """Identity matrix, 2-D, 3 rows, 3 columns."""
 
+MISSING_HEADER_KEY_MSG: str = "Configuration is missing '_header' key."
+"""Error message for missing _header key in configuration dicts."""
+
 SOLVER_ENTRYPOINT_GROUP: str = "hklpy2.solver"
 """Name by which |hklpy2| |solver| classes are grouped."""
 
@@ -592,7 +595,7 @@ def compare_float_dicts(a1, a2, tol=1e-4) -> bool:
     Compare two dictionaries.  Values are all floats.
     """
     if tol <= 0:
-        raise ValueError(f"received {tol=}, should be tol >0")
+        raise ValueError(f"Received {tol=}, should be tol >0.")
 
     if sorted(a1.keys()) != sorted(a2.keys()):
         return False
@@ -1188,7 +1191,7 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
             f"Expected a dict or path to a YAML file. Received: {type(config)!r}"
         )
     if "_header" not in config:
-        raise KeyError("Configuration is missing '_header' key.")
+        raise KeyError(MISSING_HEADER_KEY_MSG)
 
     solver_cfg = config.get("solver", {})
     solver_name = solver_cfg.get("name", "hkl_soleil")

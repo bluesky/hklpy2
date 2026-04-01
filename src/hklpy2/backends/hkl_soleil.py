@@ -427,7 +427,7 @@ class HklSolver(SolverBase):
             return solutions
 
         except GLib.GError as exc:
-            raise NoForwardSolutions("No forward solutions found.") from exc
+            raise NoForwardSolutions("No solutions.") from exc
 
     @classmethod
     def geometries(cls) -> list[str]:
@@ -634,7 +634,7 @@ class HklSolver(SolverBase):
 
         if False in [isinstance(v, (float, int)) for v in _r]:
             raise TypeError(
-                "All values must be numbers.  Received: {reals!r}",
+                f"All values must be numbers.  Received: {reals!r}",
             )
 
         self._hkl_geometry.axis_values_set(_r, LIBHKL_USER_UNITS)

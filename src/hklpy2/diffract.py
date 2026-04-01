@@ -48,6 +48,7 @@ from .misc import AxesDict
 from .misc import BlueskyPlanType
 from .misc import DiffractometerError
 from .misc import KeyValueMap
+from .misc import MISSING_HEADER_KEY_MSG
 from .misc import load_yaml_file
 from .misc import pick_first_solution
 from .misc import roundoff
@@ -370,7 +371,7 @@ class DiffractometerBase(PseudoPositioner):
             raise TypeError(f"Unrecognized configuration: {config=}")
         header = config.get("_header")
         if header is None:
-            raise KeyError("Configuration is missing '_header' key.")
+            raise KeyError(MISSING_HEADER_KEY_MSG)
         # Note: python_class key is not testable, could be anything.
 
         bcfg = config["beam"].copy()

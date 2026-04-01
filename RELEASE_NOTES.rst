@@ -54,6 +54,15 @@ describe future plans.
     * Show a banner on dev/pre-release doc pages noting that a stable
       version is available, with a link to it. (:issue:`213`)
 
+    Fixes
+    -----
+
+    * Fix error message bugs: missing f-string prefix in ``hkl_soleil.py``,
+      typo ``"must by"`` → ``"must be"`` in ``sample.py``, trailing comma in
+      ``user.py`` ``set_wavelength()`` message; standardize
+      ``NoForwardSolutions`` message; deduplicate ``_header`` key message
+      into a constant; fix capitalization inconsistency. (:issue:`199`)
+
     Maintenance
     -----------
 

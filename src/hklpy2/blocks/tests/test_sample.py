@@ -270,10 +270,10 @@ def test_remove_reflection(rname, context, expected):
             "rows must be normalized",
         ],
         ["U", [1, 2, "3"], pytest.raises(TypeError), "must be numerical"],
-        ["U", [1, 2, 3], pytest.raises(ValueError), "must by 3x3."],
+        ["U", [1, 2, 3], pytest.raises(ValueError), "must be 3x3."],
         ["U", IDENTITY_MATRIX_3X3, does_not_raise(), None],
         ["UB", [1, 2, "3"], pytest.raises(TypeError), "must be numerical"],
-        ["UB", [1, 2, 3], pytest.raises(ValueError), "must by 3x3."],
+        ["UB", [1, 2, 3], pytest.raises(ValueError), "must be 3x3."],
         ["UB", IDENTITY_MATRIX_3X3, does_not_raise(), None],
     ],
 )
