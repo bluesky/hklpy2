@@ -68,6 +68,8 @@ describe future plans.
     Maintenance
     -----------
 
+    * Add ``re.escape()`` to all ``pytest.raises(match=...)`` calls that were
+      using raw strings. (:issue:`232`)
     * Backfill workflow no longer patches ``conf.py`` from ``main``; legacy
       tag builds use their own ``conf.py`` so the displayed version is correct
       and no switcher dropdown appears in builds that predate it. (:issue:`213`)

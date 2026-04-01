@@ -825,7 +825,7 @@ def test_istype_with_numpy_scalar_and_none():
                 order="aa bb cc dd".split(),
                 canonical="h k l".split(),
             ),
-            pytest.raises(ValueError, match="Too many axes specified"),
+            pytest.raises(ValueError, match=re.escape("Too many axes specified")),
             id="ValueError: \"Too many axes specified in order=['aa', 'bb', 'cc', 'dd']. Expected 3.\"",
         ),
         pytest.param(
@@ -834,7 +834,7 @@ def test_istype_with_numpy_scalar_and_none():
                 order="aa bb cc".split(),
                 canonical="h k l".split(),
             ),
-            pytest.raises(KeyError, match="Unknown axis_name="),
+            pytest.raises(KeyError, match=re.escape("Unknown axis_name=")),
             id="KeyError: Unknown axis_name=",
         ),
         pytest.param(
@@ -844,12 +844,12 @@ def test_istype_with_numpy_scalar_and_none():
                 order="h h l".split(),
                 canonical="h k l".split(),
             ),
-            pytest.raises(ValueError, match="Duplicates in order="),
+            pytest.raises(ValueError, match=re.escape("Duplicates in order=")),
             id="ValueError: Duplicates in order=",
         ),
         pytest.param(
             dict(space="not recognized"),
-            pytest.raises(KeyError, match="Unknown space='not recognized'"),
+            pytest.raises(KeyError, match=re.escape("Unknown space='not recognized'")),
             id="KeyError: Unknown space='not recognized'",
         ),
         pytest.param(
@@ -966,6 +966,6 @@ def test_make_dynamic_instance_raises():
     non_callable = "hklpy2.misc.DEFAULT_MOTOR_LABELS"
     with pytest.raises(
         TypeError,
-        match=f"{non_callable!r} is not callable",
+        match=re.escape(f"{non_callable!r} is not callable"),
     ):
         make_dynamic_instance(non_callable)
