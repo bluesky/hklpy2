@@ -101,13 +101,41 @@ jobs:
           destination_dir: latest
           keep_files: true
 
-      - name: Deploy to gh-pages (main push -> root, for custom domain)
+      - name: Deploy redirect index.html to gh-pages root (main push)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/root-redirect
+          python3 - <<'PYEOF'
+          import json, pathlib, textwrap
+          switcher = json.loads(pathlib.Path("docs/source/_static/switcher.json").read_text())
+          preferred = next((e for e in switcher if e.get("preferred")), None)
+          url = preferred["url"] if preferred else "https://blueskyproject.io/hklpy2/latest/"
+          lines = [
+              "<!DOCTYPE html>",
+              "<html>",
+              "  <head>",
+              '    <meta charset="utf-8">',
+              f'    <meta http-equiv="refresh" content="0; url={url}">',
+              f'    <link rel="canonical" href="{url}">',
+              f"    <title>Redirecting to {url}</title>",
+              "  </head>",
+              "  <body>",
+              f'    <p>Redirecting to <a href="{url}">{url}</a>...</p>',
+              "  </body>",
+              "</html>",
+          ]
+          pathlib.Path("/tmp/root-redirect/index.html").write_text("\n".join(lines) + "\n")
+          print(f"Root redirect -> {url}")
+          PYEOF
+
+      - name: Push redirect index.html to gh-pages root
         uses: peaceiris/actions-gh-pages@v4
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ${{ env.HTML_DIR }}
+          publish_dir: /tmp/root-redirect
           destination_dir: .
           keep_files: true
 
@@ -175,14 +203,41 @@ jobs:
           SWITCHER: gh-pages-clone/latest/_static/switcher.json
           VERSION: ${{ env.DOC_VERSION }}
 
+      - name: Update root redirect index.html on gh-pages (tag push)
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          python3 - <<'PYEOF'
+          import json, pathlib
+          switcher = json.loads(pathlib.Path("gh-pages-clone/latest/_static/switcher.json").read_text())
+          preferred = next((e for e in switcher if e.get("preferred")), None)
+          url = preferred["url"] if preferred else "https://blueskyproject.io/hklpy2/latest/"
+          lines = [
+              "<!DOCTYPE html>",
+              "<html>",
+              "  <head>",
+              '    <meta charset="utf-8">',
+              f'    <meta http-equiv="refresh" content="0; url={url}">',
+              f'    <link rel="canonical" href="{url}">',
+              f"    <title>Redirecting to {url}</title>",
+              "  </head>",
+              "  <body>",
+              f'    <p>Redirecting to <a href="{url}">{url}</a>...</p>',
+              "  </body>",
+              "</html>",
+          ]
+          pathlib.Path("gh-pages-clone/index.html").write_text("\n".join(lines) + "\n")
+          print(f"Root redirect -> {url}")
+          PYEOF
+
       - name: Commit updated switcher.json to gh-pages
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         run: |
           cd gh-pages-clone
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add latest/_static/switcher.json
-          git diff --cached --quiet || git commit -m "ci: add ${DOC_VERSION} to switcher.json"
+          git add latest/_static/switcher.json index.html
+          git diff --cached --quiet || git commit -m "ci: add ${DOC_VERSION} to switcher.json and update root redirect"
           git push
 
       - name: Deploy on manual trigger
