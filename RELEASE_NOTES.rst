@@ -55,6 +55,10 @@ describe future plans.
     Maintenance
     -----------
 
+    * Backfill workflow no longer patches ``conf.py`` from ``main``; legacy
+      tag builds use their own ``conf.py`` so the displayed version is correct
+      and no switcher dropdown appears in builds that predate it. (:issue:`213`)
+
 0.3.1
 ##########
 
