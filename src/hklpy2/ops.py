@@ -1109,10 +1109,14 @@ class Core:
             except AttributeError:
                 pass  # Some solvers have no setter for extras
 
-            try:
-                self.solver.U = self.sample.U
-                self.solver.UB = self.sample.UB
-            except AttributeError:
-                pass  # Some solvers have no setter for U & UB
+            # Only restore U & UB when the cached values are still valid.
+            # After a lattice change without a new calc_UB(), the cached UB
+            # is stale and must not overwrite the solver's matrices.  (#240)
+            if not self.sample._lattice_changed_since_UB:
+                try:
+                    self.solver.U = self.sample.U
+                    self.solver.UB = self.sample.UB
+                except AttributeError:
+                    pass  # Some solvers have no setter for U & UB
 
             self.request_solver_update(False)

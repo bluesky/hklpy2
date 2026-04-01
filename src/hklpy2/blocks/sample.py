@@ -78,9 +78,10 @@ class Sample:
             raise TypeError(f"Unexpected type {core=!r}, expected Core")
         self.name = name or unique_name()
         self.core = core
+        self._lattice_changed_since_UB = False
         self.lattice = lattice
         self.U = IDENTITY_MATRIX_3X3
-        # Consider: UB = self.U @ self.lattice.B
+        # Initial UB placeholder until calc_UB() is called.
         self.UB = ((2 * math.pi / self.lattice.a) * np.array(self.U)).tolist()
         self.core._solver_needs_update = True
         self.reflections = ReflectionsDict()
@@ -146,6 +147,12 @@ class Sample:
         if not isinstance(value, Lattice):
             raise TypeError(f"Must supply Lattice() object, received {value!r}")
         self._lattice = value
+
+        # Flag the solver for update so it receives the new lattice (#240).
+        # Guard: during __init__, core may not be fully wired yet.
+        if hasattr(self, "_U"):
+            self._lattice_changed_since_UB = True
+            self.core._solver_needs_update = True
 
     @property
     def name(self) -> str:
@@ -214,4 +221,5 @@ class Sample:
         self._validate_matrices(value, "UB")
 
         self._UB = value
+        self._lattice_changed_since_UB = False
         self.core._solver_needs_update = True

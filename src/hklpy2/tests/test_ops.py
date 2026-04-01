@@ -9,6 +9,7 @@ from contextlib import nullcontext as does_not_raise
 import pyRestTable
 import pytest
 
+from ..blocks.lattice import Lattice
 from ..diffract import DiffractometerBase
 from ..diffract import creator
 from ..misc import ConfigurationError
@@ -1079,3 +1080,72 @@ def test_refine_lattice(rnames, context):
         add_oriented_vibranium_to_e4cv(e4cv)
         reflections = [e4cv.sample.reflections[key] for key in rnames]
         e4cv.core.refine_lattice(*reflections)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                new_lattice=Lattice(5.43, 5.43, 5.43),
+                assign_method="setter",
+            ),
+            does_not_raise(),
+            id="set-lattice-object",
+        ),
+        pytest.param(
+            dict(
+                new_lattice=Lattice(5.43, 5.43, 5.43),
+                assign_method="add_sample",
+            ),
+            does_not_raise(),
+            id="add-sample-new-lattice",
+        ),
+    ],
+)
+def test_lattice_change_propagates_to_inverse(parms, context):
+    """Regression test for #240: stale lattice after changing parameters."""
+    with context:
+        # Create a diffractometer with a known cubic lattice (a=2*pi).
+        e4cv = creator()
+        add_oriented_vibranium_to_e4cv(e4cv)
+
+        # Record inverse result with the original lattice.
+        reals_400 = dict(omega=-145.451, chi=0, phi=0, tth=69.066)
+        pseudos_before = e4cv.core.inverse(reals_400)
+
+        # Change the lattice.
+        new_lattice = parms["new_lattice"]
+        if parms["assign_method"] == "setter":
+            e4cv.sample.lattice = new_lattice
+            # The solver MUST be flagged for update immediately.
+            assert e4cv.core._solver_needs_update, (
+                "solver_needs_update should be True after lattice change"
+            )
+        elif parms["assign_method"] == "add_sample":
+            # add_sample creates a fresh sample with new lattice
+            e4cv.add_sample(
+                "si", new_lattice.a, new_lattice.b, new_lattice.c, replace=True
+            )
+            e4cv.beam.wavelength.put(1.54)
+            e4cv.add_reflection((4, 0, 0), reals_400, name="r400")
+            r040 = e4cv.add_reflection(
+                (0, 4, 0), (-145.451, 0, 90, 69.066), name="r040"
+            )
+            r004 = e4cv.add_reflection(
+                (0, 0, 4), (-145.451, 90, 0, 69.066), name="r004"
+            )
+            e4cv.core.calc_UB(r040, r004)
+
+        # After changing the lattice, the solver should use the new parameters.
+        # The inverse calculation should give different hkl values because
+        # the lattice constant changed from 2*pi to 5.43.
+        pseudos_after = e4cv.core.inverse(reals_400)
+
+        # The hkl values must change because the lattice changed.
+        assert not math.isclose(
+            pseudos_after["h"], pseudos_before["h"], abs_tol=0.01
+        ), (
+            f"hkl should change after lattice change: "
+            f"before={pseudos_before}, after={pseudos_after}"
+        )

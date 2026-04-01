@@ -272,6 +272,10 @@ class Lattice:
         if "angle_units" in config:
             self.angle_units = config["angle_units"]
 
+        # Recompute derived matrices from the updated parameters (#240).
+        self.cartesian_lattice_matrix = self.compute_cartesian_lattice()
+        self.B = self.compute_B(with_2pi=True)
+
     def compute_B(self, with_2pi: bool = True) -> npt.NDArray[np.float64]:
         """
         Compute B (reciprocal lattice matrix) from the Cartesian lattice matrix.

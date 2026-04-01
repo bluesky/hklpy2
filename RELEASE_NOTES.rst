@@ -62,6 +62,10 @@ describe future plans.
       ``user.py`` ``set_wavelength()`` message; standardize
       ``NoForwardSolutions`` message; deduplicate ``_header`` key message
       into a constant; fix capitalization inconsistency. (:issue:`199`)
+    * Fix stale lattice parameters not propagated to UB matrix calculation;
+      ``Lattice._fromdict()`` now recomputes ``B``, ``Sample.lattice`` setter
+      flags solver update, and ``update_solver()`` skips stale UB.
+      (:issue:`240`)
     * Sort glossary alphabetically; fix ``:real:`` → ``:virtual:`` typo in
       glossary entry. (:issue:`235`)
 

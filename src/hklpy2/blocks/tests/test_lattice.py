@@ -166,6 +166,41 @@ def test_fromdict(config, context):
 
 
 @pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                initial=dict(a=1),
+                updated=dict(a=5, b=5, c=5, alpha=90, beta=90, gamma=90),
+            ),
+            does_not_raise(),
+            id="fromdict-recomputes-B",
+        ),
+    ],
+)
+def test_fromdict_recomputes_B(parms, context):
+    """Regression test for #240: _fromdict must recompute B matrix."""
+    with context:
+        lattice = Lattice(**parms["initial"])
+        B_before = lattice.B.copy()
+
+        lattice._fromdict(parms["updated"])
+
+        B_after = lattice.B
+        # B must differ after lattice parameters changed.
+        assert not np.allclose(B_before, B_after), (
+            f"B matrix should change after _fromdict: "
+            f"before={B_before}, after={B_after}"
+        )
+        # B should match a freshly constructed Lattice with the same params.
+        fresh = Lattice(**parms["updated"])
+        assert np.allclose(B_after, fresh.B), (
+            f"B matrix after _fromdict should match fresh construction: "
+            f"got {B_after}, expected {fresh.B}"
+        )
+
+
+@pytest.mark.parametrize(
     "set_value, context, expected",
     [
         pytest.param("angstrom", does_not_raise(), "angstrom", id="valid-angstrom"),
