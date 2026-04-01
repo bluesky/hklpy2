@@ -62,6 +62,8 @@ describe future plans.
       ``user.py`` ``set_wavelength()`` message; standardize
       ``NoForwardSolutions`` message; deduplicate ``_header`` key message
       into a constant; fix capitalization inconsistency. (:issue:`199`)
+    * Sort glossary alphabetically; fix ``:real:`` → ``:virtual:`` typo in
+      glossary entry. (:issue:`235`)
 
     Maintenance
     -----------

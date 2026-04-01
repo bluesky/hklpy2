@@ -201,6 +201,14 @@ The `Makefile` `pre` target also exports this variable automatically.
   Features, Enhancements, Fixes, Maintenance, Deprecations, New Contributors.
 - Sort entries alphabetically within each subsection.
 
+## Documentation: Glossary
+
+- Keep glossary entries in `docs/source/glossary.rst` sorted alphabetically
+  (case-insensitive).
+- Each entry consists of an `.. index::` directive followed by a `:term:`
+  definition.  When adding or moving entries, keep the index directive and
+  definition together as a unit.
+
 ## Documentation: Sphinx Index entries
 
 - Each term should have **at most one primary index entry** (`!term`) across the
