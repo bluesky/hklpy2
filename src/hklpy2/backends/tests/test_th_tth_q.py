@@ -1,5 +1,6 @@
 from contextlib import nullcontext as does_not_raise
 
+import re
 import numpy as np
 import pytest
 
@@ -7,7 +8,6 @@ from ...misc import IDENTITY_MATRIX_3X3
 from ...misc import SolverError
 from ...misc import get_solver
 from ...misc import solver_factory
-from ...tests.common import assert_context_result
 from ..base import SolverBase
 from ..th_tth_q import BISECTOR_MODE
 from ..th_tth_q import TH_TTH_Q_GEOMETRY
@@ -35,39 +35,33 @@ def test_solver():
     solver.mode = BISECTOR_MODE
     assert solver.mode == BISECTOR_MODE
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply dict")):
         solver.forward([0])
-    assert_context_result("Must supply dict", reason)
 
-    with pytest.raises(SolverError) as reason:
+    with pytest.raises(SolverError, match=re.escape("'q' not defined.")):
         solver.forward({})
-    assert_context_result("'q' not defined.", reason)
 
-    with pytest.raises(SolverError) as reason:
+    with pytest.raises(SolverError, match=re.escape("Wavelength is not set.")):
         solver.forward(dict(q=0.1))
-    assert_context_result("Wavelength is not set.", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply dict")):
         solver.inverse([0, 20])
-    assert_context_result("Must supply dict", reason)
 
-    with pytest.raises(SolverError) as reason:
+    with pytest.raises(SolverError, match=re.escape("'tth' not defined.")):
         solver.inverse(dict(th=0))
-    assert_context_result("'tth' not defined.", reason)
 
-    with pytest.raises(SolverError) as reason:
+    with pytest.raises(
+        SolverError, match=re.escape("Wavelength is not set. Add a reflection")
+    ):
         solver.inverse(dict(th=0, tth=20))
-    assert_context_result("Wavelength is not set. Add a reflection", reason)
 
-    with pytest.raises(TypeError) as reason:
+    with pytest.raises(TypeError, match=re.escape("Must supply number")):
         solver.wavelength = "-1"
-    assert_context_result("Must supply number", reason)
 
-    with pytest.raises(ValueError) as reason:
+    with pytest.raises(ValueError, match=re.escape("Must supply positive number")):
         solver.wavelength = -1
-    assert_context_result("Must supply positive number", reason)
 
-    with pytest.raises(NotImplementedError) as reason:
+    with pytest.raises(NotImplementedError):
         solver.removeAllReflections()
 
 
@@ -110,7 +104,7 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
 
 
 @pytest.mark.parametrize(
-    "value, context, expected",
+    "value, context",
     [
         pytest.param(
             dict(
@@ -123,13 +117,13 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
                 real_axis_names=["th", "tth"],
             ),
             does_not_raise(),
-            None,
             id="standard case",
         ),
         pytest.param(
             "wrong object",
-            pytest.raises(TypeError),
-            "Must supply SolverReflection (dict)",
+            pytest.raises(
+                TypeError, match=re.escape("Must supply SolverReflection (dict)")
+            ),
             id="Wrong object type",
         ),
         pytest.param(
@@ -142,14 +136,16 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
                 pseudo_axis_names=["q"],
                 real_axis_names=["th", "tth"],
             ),
-            pytest.raises(SolverError),
-            "All reflections must have same wavelength",
+            pytest.raises(
+                SolverError,
+                match=re.escape("All reflections must have same wavelength"),
+            ),
             id="Different reflection wavelengths",
         ),
     ],
 )
-def test_reflections(value, context, expected):
-    with context as reason:
+def test_reflections(value, context):
+    with context:
         solver = solver_factory("th_tth", "TH TTH Q")
         r0 = dict(
             name="r0",
@@ -162,4 +158,3 @@ def test_reflections(value, context, expected):
         )
         solver.addReflection(r0)  # pre-existing
         solver.addReflection(value)
-    assert_context_result(expected, reason)
