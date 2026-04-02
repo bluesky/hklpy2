@@ -310,18 +310,9 @@ def test_i240_libhkl():
 
 
 @pytest.mark.skip(
-    """
-    Need to explore this ValueError from ``calc_UB()`` separately.
-    Suspicious of new ``creator_from_config()`` function.
-
-    UB calculation produced a degenerate U matrix
-    (row norms=[0.819918, 0.185264, 0.541675]).
-    Check that the 'reals' dict passed to creator() lists
-    axes in the same order as the solver expects, or supply
-    '_real' to declare the correct solver axis order independently
-    of the 'reals' dict key order. If the axis mapping is
-    correct, choose two reflections that are well separated
-    in reciprocal space."""
+    "Skipped pending fix for issue #243: creator_from_config restores "
+    "reflection reals in alphabetical axis order instead of physical order, "
+    "causing calc_UB() to fail with a degenerate U matrix."
 )
 def test_i240_from_config(polar):
     """Test using configuration file."""
