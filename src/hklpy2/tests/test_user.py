@@ -125,6 +125,9 @@ def test_cahkl_table(fourc, capsys):
 
     # After #240, the solver preserves the lattice when UB is set,
     # so more valid solutions are found for (0,1,0).
+    # After #242, ENDPOINT_TOLERANCE is wider so chi=180 (solver fp result)
+    # is no longer rejected at limit=180; both chi=180 and chi=-180 solutions
+    # appear (they are physically identical but the solver returns both).
     expected = "\n".join(
         [
             "======= = ===== ==== ====== ===",
@@ -133,7 +136,8 @@ def test_cahkl_table(fourc, capsys):
             "(1 0 0) 1 30    0    90     60 ",
             "(1 0 0) 2 -150  0    -90    60 ",
             "(1 0 0) 3 30    180  -90    60 ",
-            "(1 0 0) 4 -150  -180 90     60 ",
+            "(1 0 0) 4 -150  180  90     60 ",
+            "(1 0 0) 5 -150  -180 90     60 ",
             "(0 1 0) 1 30    90   68.3   60 ",
             "(0 1 0) 2 30    90   -68.3  60 ",
             "(0 1 0) 3 30    90   111.7  60 ",

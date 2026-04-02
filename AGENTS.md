@@ -315,6 +315,61 @@ Agent: OpenCode (claudeopus46)
 docs #15 update AGENTS.md with branching workflow
 ```
 
+### Project Status
+
+When starting work on an issue, set its project card status to **"In progress"**
+and move it to **"In review"** when the PR is opened.  Use the GitHub GraphQL
+API via `gh api graphql`.
+
+**Step 1 – look up the project item ID and Status field option IDs:**
+
+```bash
+gh api graphql -f query='
+{ repository(owner:"bluesky", name:"hklpy2") {
+    issue(number:NNN) {
+      projectItems(first:5) { nodes {
+        id
+        project { id title
+          fields(first:20) { nodes {
+            ... on ProjectV2SingleSelectField { id name options { id name } }
+          }}
+        }
+      }}
+    }
+  }
+}'
+```
+
+Note the `itemId`, `projectId`, `fieldId` (for the **Status** field), and the
+`singleSelectOptionId` for the desired status (e.g. `"In progress"`).
+
+**Step 2 – set the status:**
+
+```bash
+gh api graphql -f query='
+mutation {
+  updateProjectV2ItemFieldValue(input: {
+    projectId: "<projectId>"
+    itemId:    "<itemId>"
+    fieldId:   "<fieldId>"
+    value: { singleSelectOptionId: "<optionId>" }
+  }) { projectV2Item { id } }
+}'
+```
+
+For the **hklpy2 v1.0** project the IDs are stable:
+
+| Status | `singleSelectOptionId` |
+|--------|------------------------|
+| Backlog | `f75ad846` |
+| Ready | `61e4505c` |
+| In progress | `47fc9ee4` |
+| In review | `df73e18b` |
+| Done | `98236657` |
+
+- `projectId`: `PVT_kwDOAtd7Hc4BFQ_A`
+- `fieldId` (Status): `PVTSSF_lADOAtd7Hc4BFQ_Azg2p0U4`
+
 ### Pull Requests
 
 A Pull Request (PR) describes *how* an issue has been (or will be) addressed.

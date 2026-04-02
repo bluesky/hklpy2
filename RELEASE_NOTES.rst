@@ -57,6 +57,9 @@ describe future plans.
     Fixes
     -----
 
+    * Fix ``LimitsConstraint.valid()`` rejecting solver solutions that land just
+      outside a limit boundary due to floating-point arithmetic; increase
+      ``ENDPOINT_TOLERANCE`` from ``1e-7`` to ``1e-4``. (:issue:`242`)
     * Fix :func:`~hklpy2.misc.creator_from_config` restoring reflections with
       wrong axis values when YAML serialises ``reals`` dict keys alphabetically
       instead of in physical axis order. (:issue:`243`)
