@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=34329593"></script>
+    <script src="../../../_static/documentation_options.js?v=6c2dea84"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -1282,7 +1282,12 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">UB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Matrix3x3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;UB.setter(): value=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="c1"># Save and restore lattice: libhkl&#39;s UB_set() internally</span>
+            <span class="c1"># recomputes the lattice from UB, overwriting the current</span>
+            <span class="c1"># lattice parameters.  (#240)</span>
+            <span class="n">saved_lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="o">.</span><span class="n">lattice_get</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="o">.</span><span class="n">UB_set</span><span class="p">(</span><span class="n">to_hkl</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="o">.</span><span class="n">lattice_set</span><span class="p">(</span><span class="n">saved_lattice</span><span class="p">)</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="HklSolver.wavelength">
