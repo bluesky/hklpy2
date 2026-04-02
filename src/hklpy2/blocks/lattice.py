@@ -180,8 +180,19 @@ class Lattice:
             # Message expected by tests
             raise ValueError("Inconsistent lattice parameters")
 
+        self._on_change = None  # optional callback, set by Sample (#240)
         self.cartesian_lattice_matrix = self.compute_cartesian_lattice()
         self.B = self.compute_B(with_2pi=True)
+
+    def __setattr__(self, name, value):
+        """Intercept lattice parameter changes to recompute derived matrices."""
+        super().__setattr__(name, value)
+        # Recompute B when a lattice parameter changes (after init).
+        if name in ("a", "b", "c", "alpha", "beta", "gamma") and hasattr(self, "B"):
+            self.cartesian_lattice_matrix = self.compute_cartesian_lattice()
+            super().__setattr__("B", self.compute_B(with_2pi=True))
+            if self._on_change is not None:
+                self._on_change()
 
     def __eq__(self, latt) -> bool:
         """
@@ -261,8 +272,10 @@ class Lattice:
 
     def _fromdict(self, config: LatticeDictType):
         """Redefine lattice from a (configuration) dictionary."""
+        # Use object.__setattr__ to avoid repeated recomputation of B
+        # during bulk update; recompute once at the end.
         for k in "a b c alpha beta gamma".split():
-            setattr(self, k, config[k])
+            object.__setattr__(self, k, config[k])
 
         # Restore optional properties if present
         if "digits" in config:
@@ -271,6 +284,12 @@ class Lattice:
             self.length_units = config["length_units"]
         if "angle_units" in config:
             self.angle_units = config["angle_units"]
+
+        # Recompute derived matrices once (#240).
+        self.cartesian_lattice_matrix = self.compute_cartesian_lattice()
+        object.__setattr__(self, "B", self.compute_B(with_2pi=True))
+        if self._on_change is not None:
+            self._on_change()
 
     def compute_B(self, with_2pi: bool = True) -> npt.NDArray[np.float64]:
         """

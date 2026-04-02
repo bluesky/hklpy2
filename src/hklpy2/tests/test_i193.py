@@ -17,12 +17,14 @@ It also verifies that narrow constraints correctly exclude solutions where
 a computed axis falls outside the allowed range.
 """
 
+import re
 from contextlib import nullcontext as does_not_raise
 
 import pytest
 from numpy.testing import assert_almost_equal
 
 from ..diffract import creator
+from ..misc import NoForwardSolutions
 
 
 def _make_e4cv(constraints=None):
@@ -73,12 +75,13 @@ USER = dict(
     tth=(-1.0, 180.0),
 )
 
+_NO_SOLUTIONS = re.escape("No solutions.")
+
 
 @pytest.mark.parametrize(
     "parms, context",
     [
-        # Wide constraints: solutions at EVERY phi, including the user's
-        # breakpoint phi values.  These confirm libhkl solver succeeds.
+        # --- Wide constraints: solutions at EVERY phi ---
         pytest.param(
             dict(hkl=(0, 0, 1), phi=-2.465, constraints=WIDE),
             does_not_raise(),
@@ -144,11 +147,11 @@ USER = dict(
             does_not_raise(),
             id="wide: (101) phi=80 (user has no solution)",
         ),
-        # User constraints: solutions exist at some phi values.
+        # --- User constraints: solutions exist at some phi values ---
         pytest.param(
             dict(hkl=(0, 0, 1), phi=-2.465, constraints=USER),
             does_not_raise(),
-            id="user: (001) phi=-2.465 (orientation, has solution)",
+            id="user: (001) phi=-2.465 (has solution)",
         ),
         pytest.param(
             dict(hkl=(0, 0, 1), phi=-50, constraints=USER),
@@ -170,86 +173,55 @@ USER = dict(
             does_not_raise(),
             id="user: (101) phi=-15 (has solution)",
         ),
-    ],
-)
-def test_issue_193(parms, context):
-    """
-    forward() must return solutions in constant_phi mode across a range of
-    phi positions.  With wide constraints, solutions exist at every phi.
-    """
-    with context:
-        e4cv = _make_e4cv(constraints=parms["constraints"])
-        e4cv.phi.move(parms["phi"])
-
-        solutions = e4cv.core.forward(
-            dict(h=parms["hkl"][0], k=parms["hkl"][1], l=parms["hkl"][2])
-        )
-
-        assert len(solutions) > 0, (
-            f"No solutions for hkl={parms['hkl']}"
-            f" at phi={parms['phi']}"
-            f" with constraints={parms['constraints']}"
-        )
-
-        # Every solution must hold phi constant at the requested value.
-        for sol in solutions:
-            assert_almost_equal(sol.phi, parms["phi"], decimal=4)
-
-
-@pytest.mark.parametrize(
-    "parms, context",
-    [
-        # User constraints: phi values where solutions SHOULD be rejected.
-        # Verified by sweep: solver returns solutions but constraints
-        # exclude them (omega or tth goes negative).
-        pytest.param(
-            dict(hkl=(0, 0, 1), phi=-120, constraints=USER),
-            does_not_raise(),
-            id="user: (001) phi=-120 (no solution, constraints)",
-        ),
         pytest.param(
             dict(hkl=(0, 0, 1), phi=-98, constraints=USER),
             does_not_raise(),
-            id="user: (001) phi=-98 (no solution, constraints)",
+            id="user: (001) phi=-98 (has solution after #240 fix)",
+        ),
+        # --- User constraints: narrow limits reject all solutions ---
+        pytest.param(
+            dict(hkl=(0, 0, 1), phi=-120, constraints=USER),
+            pytest.raises(NoForwardSolutions, match=_NO_SOLUTIONS),
+            id="user: (001) phi=-120 (no solution, constraints)",
         ),
         pytest.param(
             dict(hkl=(0, 0, 1), phi=12, constraints=USER),
-            does_not_raise(),
+            pytest.raises(NoForwardSolutions, match=_NO_SOLUTIONS),
             id="user: (001) phi=12 (no solution, constraints)",
         ),
         pytest.param(
             dict(hkl=(0, 0, 1), phi=96, constraints=USER),
-            does_not_raise(),
+            pytest.raises(NoForwardSolutions, match=_NO_SOLUTIONS),
             id="user: (001) phi=96 (no solution, constraints)",
         ),
         pytest.param(
             dict(hkl=(1, 0, 1), phi=-6, constraints=USER),
-            does_not_raise(),
+            pytest.raises(NoForwardSolutions, match=_NO_SOLUTIONS),
             id="user: (101) phi=-6 (no solution, constraints)",
         ),
         pytest.param(
             dict(hkl=(1, 0, 1), phi=0, constraints=USER),
-            does_not_raise(),
+            pytest.raises(NoForwardSolutions, match=_NO_SOLUTIONS),
             id="user: (101) phi=0 (no solution, constraints)",
         ),
         pytest.param(
             dict(hkl=(1, 0, 1), phi=-100, constraints=USER),
-            does_not_raise(),
+            pytest.raises(NoForwardSolutions, match=_NO_SOLUTIONS),
             id="user: (101) phi=-100 (no solution, constraints)",
         ),
         pytest.param(
             dict(hkl=(1, 0, 1), phi=80, constraints=USER),
-            does_not_raise(),
+            pytest.raises(NoForwardSolutions, match=_NO_SOLUTIONS),
             id="user: (101) phi=80 (no solution, constraints)",
         ),
     ],
 )
-def test_issue_193_no_solution_with_narrow_constraints(parms, context):
+def test_issue_193(parms, context):
     """
-    forward() returns an empty list when user's narrow constraints reject
-    all solver solutions.  With wide constraints, these same phi values
-    DO have solutions (tested above), confirming the issue is constraint
-    filtering, not solver failure.
+    forward() in constant_phi mode: with wide constraints, solutions exist
+    at every phi.  With narrow user constraints, some phi values have no
+    solutions because the computed axes fall outside the allowed range;
+    NoForwardSolutions is raised to signal this to the caller.
     """
     with context:
         e4cv = _make_e4cv(constraints=parms["constraints"])
@@ -259,8 +231,9 @@ def test_issue_193_no_solution_with_narrow_constraints(parms, context):
             dict(h=parms["hkl"][0], k=parms["hkl"][1], l=parms["hkl"][2])
         )
 
-        assert len(solutions) == 0, (
-            f"Expected no solutions for hkl={parms['hkl']}"
-            f" at phi={parms['phi']} with narrow constraints,"
-            f" but got {len(solutions)}"
-        )
+        if not solutions:
+            raise NoForwardSolutions("No solutions.")
+
+        # Every solution must hold phi constant at the requested value.
+        for sol in solutions:
+            assert_almost_equal(sol.phi, parms["phi"], decimal=4)

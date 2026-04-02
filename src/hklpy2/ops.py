@@ -446,6 +446,9 @@ class Core:
         two_reflections = [_get(r1), _get(r2)]
         self.sample.reflections.set_orientation_reflections(two_reflections)
 
+        # Ensure the solver has the current lattice before computing UB (#240).
+        self.update_solver()
+
         solver_reflections = self._reflections_to_solver(two_reflections)
         ub = self.solver.calculate_UB(*solver_reflections)
         self.sample.U = self.solver.U
