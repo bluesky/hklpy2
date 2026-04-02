@@ -960,6 +960,12 @@ def test_set_UB():
     )
 
     e = 6.25
+    # Set lattice consistent with this UB so the solver uses
+    # matching parameters.  a = 2*pi/e.  (#240)
+    a = 2 * math.pi / e
+    fourc.sample.lattice.a = a
+    fourc.sample.lattice.b = a
+    fourc.sample.lattice.c = a
     UBe = e * np.eye(3)
     fourc.sample.UB = UBe
     assert np.allclose(fourc.sample.UB, UBe, atol=0.000_01)

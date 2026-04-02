@@ -739,7 +739,12 @@ class HklSolver(SolverBase):
     def UB(self, value: Matrix3x3) -> None:
         if self._sample is not None:
             logger.debug("UB.setter(): value=%s", value)
+            # Save and restore lattice: libhkl's UB_set() internally
+            # recomputes the lattice from UB, overwriting the current
+            # lattice parameters.  (#240)
+            saved_lattice = self._sample.lattice_get()
             self._sample.UB_set(to_hkl(value))
+            self._sample.lattice_set(saved_lattice)
 
     @property
     def wavelength(self) -> float:

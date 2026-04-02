@@ -147,6 +147,19 @@ class Sample:
             raise TypeError(f"Must supply Lattice() object, received {value!r}")
         self._lattice = value
 
+        # Wire callback so direct parameter changes (e.g. lattice.a = 5)
+        # also flag the solver for update (#240).
+        value._on_change = self._lattice_changed
+
+        # Flag the solver for update so it receives the new lattice (#240).
+        # Guard: during __init__, core is not yet fully wired.
+        if hasattr(self, "_U"):
+            self.core._solver_needs_update = True
+
+    def _lattice_changed(self):
+        """Called by Lattice.__setattr__ when a parameter changes (#240)."""
+        self.core._solver_needs_update = True
+
     @property
     def name(self) -> str:
         """Sample name."""

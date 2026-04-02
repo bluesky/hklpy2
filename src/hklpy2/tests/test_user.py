@@ -123,18 +123,26 @@ def test_cahkl_table(fourc, capsys):
     out, err = capsys.readouterr()
     assert len(err) == 0
 
+    # After #240, the solver preserves the lattice when UB is set,
+    # so more valid solutions are found for (0,1,0).
     expected = "\n".join(
         [
-            "======= = ===== ==== === ===",
-            "(hkl)   # omega chi  phi tth",
-            "======= = ===== ==== === ===",
-            "(1 0 0) 1 30    0    90  60 ",
-            "(1 0 0) 2 -150  0    -90 60 ",
-            "(1 0 0) 3 30    180  -90 60 ",
-            "(1 0 0) 4 -150  -180 90  60 ",
-            "(0 1 0) 1 30    90   0   60 ",
-            "(0 1 0) 2 -150  -90  0   60 ",
-            "======= = ===== ==== === ===",
+            "======= = ===== ==== ====== ===",
+            "(hkl)   # omega chi  phi    tth",
+            "======= = ===== ==== ====== ===",
+            "(1 0 0) 1 30    0    90     60 ",
+            "(1 0 0) 2 -150  0    -90    60 ",
+            "(1 0 0) 3 30    180  -90    60 ",
+            "(1 0 0) 4 -150  -180 90     60 ",
+            "(0 1 0) 1 30    90   68.3   60 ",
+            "(0 1 0) 2 30    90   -68.3  60 ",
+            "(0 1 0) 3 30    90   111.7  60 ",
+            "(0 1 0) 4 30    90   -111.7 60 ",
+            "(0 1 0) 5 -150  -90  68.3   60 ",
+            "(0 1 0) 6 -150  -90  -68.3  60 ",
+            "(0 1 0) 7 -150  -90  111.7  60 ",
+            "(0 1 0) 8 -150  -90  -111.7 60 ",
+            "======= = ===== ==== ====== ===",
         ]
     )
     assert expected == out.strip(), f"{out.strip()}"
@@ -215,7 +223,9 @@ def test_or_swap(fourc, file, sample, nrefs, or_refs, context):
 
         UB = or_swap()
         assert diffractometer.sample.reflections.order == or_refs
-        assert UB != UB0
+        # Double-swap restores the original UB.  (#240: calc_UB now
+        # re-applies the lattice, making UB computation deterministic.)
+        assert np.allclose(UB, UB0, atol=1e-6), f"{UB=} {UB0=}"
 
 
 def test_pa(fourc, capsys):
