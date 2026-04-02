@@ -1,7 +1,6 @@
 """Test issue #240"""
 
 import pathlib
-import pytest
 import numpy as np
 import uuid
 import yaml
@@ -309,12 +308,7 @@ def test_i240_libhkl():
     )
 
 
-@pytest.mark.skip(
-    "Skipped pending fix for issue #243: creator_from_config restores "
-    "reflection reals in alphabetical axis order instead of physical order, "
-    "causing calc_UB() to fail with a degenerate U matrix."
-)
-def test_i240_from_config(polar):
+def test_i240_from_config():
     """Test using configuration file."""
     from .. import creator_from_config
 
@@ -350,5 +344,5 @@ def test_i240_from_config(polar):
     )
 
     # Are they different?
-    assert not np.isclose(ub0, ub1, atol=TOL)
+    assert not np.isclose(ub0, ub1, atol=TOL).all()
     assert not np.isclose(norm0, norm1, atol=TOL)

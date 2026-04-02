@@ -407,7 +407,9 @@ class ReflectionsDict(dict):
         return {v.name: v._asdict() for v in self.values()}
 
     def _fromdict(
-        self, config: Mapping[str, Union[float, int, str]], core=None
+        self,
+        config: Mapping[str, Union[float, int, str]],
+        core=None,
     ) -> None:
         """Add or redefine reflections from a (configuration) dictionary."""
         from ..ops import Core

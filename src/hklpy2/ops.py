@@ -177,6 +177,22 @@ class Core:
         if isinstance(digits, int) and 0 <= digits:
             self.diffractometer.digits = digits
 
+        # Fix #243: YAML serialises reals dict keys alphabetically.  Reorder
+        # each reflection's reals by key using the saved config's real_axes
+        # (physical order, saved local names) and axes_xref (local→solver),
+        # so values reach the correct axes regardless of YAML key ordering.
+        saved_real_axes = config.get("axes", {}).get("real_axes") or []
+        saved_axes_xref = config.get("axes", {}).get("axes_xref") or {}
+        if saved_real_axes and saved_axes_xref:
+            for sample in config["samples"].values():
+                for refl in sample.get("reflections", {}).values():
+                    saved = refl["reals"]
+                    refl["reals"] = {
+                        saved_axes_xref[local]: saved[local]
+                        for local in saved_real_axes
+                        if local in saved_axes_xref and local in saved
+                    }
+
         for key, sample in config["samples"].items():
             sample_object = self.add_sample(key, 1, replace=True)
             sample_object._fromdict(sample, core=self)
