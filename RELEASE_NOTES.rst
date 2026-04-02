@@ -57,6 +57,9 @@ describe future plans.
     Fixes
     -----
 
+    * Fix :func:`~hklpy2.misc.creator_from_config` restoring reflections with
+      wrong axis values when YAML serialises ``reals`` dict keys alphabetically
+      instead of in physical axis order. (:issue:`243`)
     * Fix error message bugs: missing f-string prefix in ``hkl_soleil.py``,
       typo ``"must by"`` → ``"must be"`` in ``sample.py``, trailing comma in
       ``user.py`` ``set_wavelength()`` message; standardize

@@ -5,11 +5,14 @@ Test creator_from_config(): create a simulated diffractometer from a
 saved configuration file or dict, with no hardware connections.
 """
 
+import copy
 import pathlib
 import re
 from contextlib import nullcontext as does_not_raise
 
+import numpy as np
 import pytest
+import yaml
 
 import hklpy2
 from hklpy2.misc import creator_from_config
@@ -233,3 +236,85 @@ def test_simulator_pseudo_order(parms, context):
     with context:
         sim = creator_from_config(parms["config"])
         assert sim.pseudo_axis_names == parms["expected_pseudo_axes"]
+
+
+# ---------------------------------------------------------------------------
+# Issue #243: creator_from_config restores reflections with wrong axis values
+# when YAML serialises reals dict keys in alphabetical order.
+# ---------------------------------------------------------------------------
+
+_I243_CONFIG_FILE = TESTS_DIR / "configuration_i240.yml"
+with open(_I243_CONFIG_FILE) as _f:
+    _I243_CONFIG = yaml.safe_load(_f)
+
+# Physical axis order from the config (tau, mu, chi, phi, gamma, delta).
+_I243_REAL_AXES = list(_I243_CONFIG["axes"]["real_axes"])
+_I243_SAMPLE = _I243_CONFIG["samples"][_I243_CONFIG["sample_name"]]
+_I243_LATTICE_A = _I243_SAMPLE["lattice"]["a"]
+
+# Expected ||UB|| for a cubic crystal: 2*pi*sqrt(3)/a
+_I243_UB_NORM_EXPECTED = 2 * np.pi * np.sqrt(3) / _I243_LATTICE_A
+_I243_TOL = 0.001
+
+
+def _config_with_positionally_wrong_reals():
+    """Return a copy of the i243 config with reals mis-assigned as the old
+    (broken) code did: values taken positionally from the alphabetically-sorted
+    YAML dict and zipped onto the solver's physical-order axis names.
+
+    This simulates the pre-#243 bug: YAML loads keys alphabetically
+    (chi, delta, gamma, mu, phi, tau) but the solver expects physical order
+    (tau, mu, chi, phi, gamma, delta).  Positional zip swaps the values onto
+    the wrong axes.
+    """
+    config = copy.deepcopy(_I243_CONFIG)
+    real_axes = config["axes"]["real_axes"]  # physical order
+    axes_xref = config["axes"]["axes_xref"]
+    solver_names = [axes_xref[a] for a in real_axes]  # solver names, physical order
+    for sample in config["samples"].values():
+        for refl in sample["reflections"].values():
+            # alphabetical key order — what YAML loads
+            alpha_values = list(dict(sorted(refl["reals"].items())).values())
+            # positional zip: old broken behaviour
+            refl["reals"] = dict(zip(solver_names, alpha_values))
+    return config
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(config=_I243_CONFIG_FILE),
+            does_not_raise(),
+            id="from file: correct UB norm",
+        ),
+        pytest.param(
+            dict(config=_I243_CONFIG),
+            does_not_raise(),
+            id="from dict: correct UB norm",
+        ),
+        pytest.param(
+            dict(config=_config_with_positionally_wrong_reals()),
+            pytest.raises(ValueError, match=re.escape("degenerate U matrix")),
+            id="pre-#243 positional mis-assignment: degenerate U matrix",
+        ),
+    ],
+)
+def test_creator_from_config_reflection_axis_order(parms, context):
+    """Regression test for #243: reals must be assigned by key, not position.
+
+    YAML serialises dict keys alphabetically.  Before the fix, restoring a
+    config caused calc_UB() to receive wrong axis values (positionally
+    assigned from the alphabetically-sorted YAML dict), producing a degenerate
+    U matrix.  The bad-case parameter supplies a pre-mangled config that
+    directly injects those wrong values so the test does not depend on the
+    internal implementation path.
+    """
+    with context:
+        sim = creator_from_config(parms["config"])
+        r1, r2 = list(sim.core.sample.reflections)[:2]
+        ub = sim.core.calc_UB(r1, r2)
+        norm = np.linalg.norm(ub)
+        assert np.isclose(norm, _I243_UB_NORM_EXPECTED, atol=_I243_TOL), (
+            f"Expected ||UB||≈{_I243_UB_NORM_EXPECTED:.4f}, got {norm:.4f}"
+        )
