@@ -5,6 +5,7 @@ import pytest
 
 from ...diffract import creator
 from ...misc import ConfigurationError
+from ..constraints import ENDPOINT_TOLERANCE
 from ..constraints import ConstraintBase
 from ..constraints import ConstraintsError
 from ..constraints import LimitsConstraint
@@ -43,6 +44,20 @@ def test_raises():
         pytest.param(20, 10, 10, True, id="reversed-at-lo"),
         pytest.param(20, 10, 15, True, id="reversed-within"),
         pytest.param(20, 10, 20, True, id="reversed-at-hi"),
+        # floating-point boundary cases (issue #242): solver may return
+        # values like 180.0000001 which must still be accepted at limit=180
+        pytest.param(
+            -180, 180, 180 + ENDPOINT_TOLERANCE * 0.5, True, id="fp-at-hi-within-tol"
+        ),
+        pytest.param(
+            -180, 180, -180 - ENDPOINT_TOLERANCE * 0.5, True, id="fp-at-lo-within-tol"
+        ),
+        pytest.param(
+            -180, 180, 180 + ENDPOINT_TOLERANCE * 2, False, id="fp-beyond-hi-tol"
+        ),
+        pytest.param(
+            -180, 180, -180 - ENDPOINT_TOLERANCE * 2, False, id="fp-beyond-lo-tol"
+        ),
     ],
 )
 def test_LimitsConstraint(lo, hi, value, result):
