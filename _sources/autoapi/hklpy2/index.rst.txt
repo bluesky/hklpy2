@@ -65,6 +65,8 @@ Functions
    hklpy2.scan_zone
    hklpy2.creator
    hklpy2.diffractometer_class_factory
+   hklpy2.get_run_orientation
+   hklpy2.list_orientation_runs
    hklpy2.creator_from_config
    hklpy2.get_solver
    hklpy2.solver_factory
@@ -1196,6 +1198,112 @@ Package Contents
           crw = ConfigurationRunWrapper(e4cv)
           RE.preprocessors.append(crw.wrapper)
 
+
+
+.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> KeyValueMap
+
+   Return the orientation information dictionary from a run.
+
+   EXAMPLE::
+
+       In [3]: get_run_orientation(cat[9752], name="sim4c2")
+       Out[3]:
+       {'_header': {'datetime': '2025-02-27 15:54:33.364719',
+       'hklpy2_version': '0.0.26.dev72+gcf9a65a.d20250227',
+       'python_class': 'Hklpy2Diffractometer',
+       'source_type': 'X-ray',
+       'energy_units': 'keV',
+       'energy': 12.398419843856837,
+       'wavelength_units': 'angstrom',
+       'wavelength': 1.0},
+       'name': 'sim4c2',
+       'axes': {'pseudo_axes': ['h', 'k', 'l'],
+       'real_axes': ['omega', 'chi', 'phi', 'tth'],
+       'axes_xref': {'h': 'h',
+       'k': 'k',
+       'l': 'l',
+       'omega': 'omega',
+       'chi': 'chi',
+       'phi': 'phi',
+       'tth': 'tth'},
+       'extra_axes': {}},
+       'sample_name': 'sample',
+       'samples': {'sample': {'name': 'sample',
+       'lattice': {'a': 1,
+           'b': 1,
+           'c': 1,
+           'alpha': 90.0,
+           'beta': 90.0,
+           'gamma': 90.0},
+       'reflections': {},
+       'reflections_order': [],
+       'U': [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+       'UB': [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+       'digits': 4}},
+       'constraints': {'omega': {'label': 'omega',
+       'low_limit': -180.0,
+       'high_limit': 180.0,
+       'class': 'LimitsConstraint'},
+       'chi': {'label': 'chi',
+       'low_limit': -180.0,
+       'high_limit': 180.0,
+       'class': 'LimitsConstraint'},
+       'phi': {'label': 'phi',
+       'low_limit': -180.0,
+       'high_limit': 180.0,
+       'class': 'LimitsConstraint'},
+       'tth': {'label': 'tth',
+       'low_limit': -180.0,
+       'high_limit': 180.0,
+       'class': 'LimitsConstraint'}},
+       'solver': {'name': 'hkl_soleil',
+       'description': "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
+       'geometry': 'E4CV',
+       'real_axes': ['omega', 'chi', 'phi', 'tth'],
+       'version': '5.1.2',
+       'engine': 'hkl'}}
+
+
+   :param run: Bluesky run object.
+   :type run: object
+   :param name: (optional)
+                Name of the diffractometer. (default=None, returns all available.)
+   :type name: str
+   :param start_key: Metadata key where the orientation information is stored in the start
+                     document.  (default="diffractometers")
+   :type start_key: str
+
+
+.. py:function:: list_orientation_runs(catalog: Any, limit: int = 10, start_key: str = DEFAULT_START_KEY, **kwargs: Mapping) -> pandas.DataFrame
+
+   List the runs with orientation information.
+
+   EXAMPLE::
+
+       In [42]: list_orientation_runs(cat, limit=5, date="_header.datetime")
+       Out[42]:
+           scan_id      uid  sample diffractometer geometry      solver                        date
+       0      9752  41f71e9  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:54:33.364719
+       1      9751  36e38bc  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:54:33.364719
+       2      9750  62e425d  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:54:33.364719
+       3      9749  18b11f0  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:53:55.958929
+       4      9748  bf9912f  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:53:55.958929
+
+   :returns: **Table of orientation runs**
+   :rtype: Pandas DataFrame object
+
+   :param catalog: Catalog of bluesky runs.
+   :type catalog: object
+   :param limit: Limit the list to at most ``limit`` runs. (default=10)
+                 It could take a long time to search an entire catalog.
+   :type limit: int
+   :param start_key: Metadata key where the orientation information is stored in the start
+                     document.  (default="diffractometers")
+   :type start_key: str
+   :param \*\*kwargs: Keyword parameters describing data column names to be displayed. The
+                      value of each column name is the dotted path to the orientation
+                      information (in the start document's metadata).
+   :type \*\*kwargs: dict[str:str]
 
 
 .. py:exception:: SolverError
