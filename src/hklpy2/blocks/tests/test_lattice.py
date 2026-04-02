@@ -285,13 +285,11 @@ def test_compute_cartesian_inconsistent_cz_raises(params, context, expected):
     with context:
         # Start from a safe lattice so construction does not raise.
         lat = Lattice(1.0, b=1.0, c=1.0, alpha=90.0, beta=90.0, gamma=90.0)
-        # Overwrite attributes to the pathological regime used to trigger the
-        # c_z inconsistency in compute_cartesian_lattice().
-        lat.alpha = params["alpha"]
-        lat.beta = params["beta"]
-        lat.gamma = params["gamma"]
-        # Now call the method that is expected to raise.
-        lat.compute_cartesian_lattice()
+        # Bypass __setattr__ for the non-triggering parameters so that only
+        # the final assignment causes the ValueError via recomputation.  (#240)
+        object.__setattr__(lat, "alpha", params["alpha"])
+        object.__setattr__(lat, "beta", params["beta"])
+        lat.gamma = params["gamma"]  # triggers recompute; raises ValueError
 
 
 def test_compute_B_invalid_shape_raises():
