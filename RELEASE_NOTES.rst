@@ -45,6 +45,10 @@ describe future plans.
     Enhancements
     ------------
 
+    * Export :func:`~hklpy2.misc.get_run_orientation` and
+      :func:`~hklpy2.misc.list_orientation_runs` at the top-level ``hklpy2``
+      namespace, consistent with :class:`~hklpy2.misc.ConfigurationRunWrapper`.
+      (:issue:`231`)
     * Add how-to guide for choosing the default ``forward()`` solution picker
       (``pick_first_solution``, ``pick_closest_solution``, or custom).
       (:issue:`224`)
@@ -56,6 +60,11 @@ describe future plans.
 
     Fixes
     -----
+
+    * Fix ``diffractometer.configuration = config`` setter to delegate to
+      :meth:`~hklpy2.diffract.DiffractometerBase.restore`, applying geometry
+      validation, beam/wavelength restoration, and state clearing consistently
+      with calling ``restore()`` directly. (:issue:`231`)
 
     * Fix ``LimitsConstraint.valid()`` rejecting solver solutions that land just
       outside a limit boundary due to floating-point arithmetic; increase
