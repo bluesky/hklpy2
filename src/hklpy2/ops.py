@@ -1112,14 +1112,15 @@ class Core:
             except AttributeError:
                 pass  # Some solvers have no setter for extras
 
-            # Only restore U & UB when the cached values are still valid.
-            # After a lattice change without a new calc_UB(), the cached UB
-            # is stale and must not overwrite the solver's matrices.  (#240)
-            if not self.sample._lattice_changed_since_UB:
-                try:
-                    self.solver.U = self.sample.U
-                    self.solver.UB = self.sample.UB
-                except AttributeError:
-                    pass  # Some solvers have no setter for U & UB
+            try:
+                self.solver.U = self.sample.U
+                self.solver.UB = self.sample.UB
+            except AttributeError:
+                pass  # Some solvers have no setter for U & UB
+
+            # Re-apply the lattice after setting UB because libhkl's
+            # UB_set() internally recomputes the lattice from UB,
+            # overwriting the lattice we set via solver.sample above.  (#240)
+            self.solver.lattice = std["sample"]["lattice"]
 
             self.request_solver_update(False)

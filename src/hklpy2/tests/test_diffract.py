@@ -17,6 +17,7 @@ from ophyd.sim import noisy_det
 
 from ..backends.base import SolverBase
 from ..backends.hkl_soleil import LIBHKL_USER_UNITS
+from ..blocks.lattice import Lattice
 from ..blocks.reflection import ReflectionError
 from ..blocks.sample import Sample
 from ..diffract import DiffractometerBase
@@ -961,6 +962,11 @@ def test_set_UB():
 
     e = 6.25
     UBe = e * np.eye(3)
+    # Set the lattice to match this UB (a = 2*pi/6.25) so the solver
+    # lattice and UB are consistent.  (#240: lattice is authoritative,
+    # libhkl's UB_set recomputes lattice internally.)
+    a = 2 * math.pi / e
+    fourc.sample.lattice = Lattice(a)
     fourc.sample.UB = UBe
     assert np.allclose(fourc.sample.UB, UBe, atol=0.000_01)
 
