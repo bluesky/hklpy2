@@ -1329,3 +1329,74 @@ def test_digits_property(value, context):
             raise Exception("force except for coverage")
         except Exception:
             pass
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(restore_wavelength=True),
+            does_not_raise(),
+            id="setter restores wavelength",
+        ),
+        pytest.param(
+            dict(restore_wavelength=False),
+            does_not_raise(),
+            id="setter with default wavelength (no-op for setter)",
+        ),
+    ],
+)
+def test_configuration_setter_delegates_to_restore(parms, context):
+    """Configuration setter must delegate to restore(), applying geometry
+    validation, beam/wavelength restoration, and state clearing."""
+    import math
+
+    from ..incident import DEFAULT_WAVELENGTH
+    from ..misc import load_yaml_file
+
+    with context:
+        config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
+        e4cv = creator()
+        assert math.isclose(
+            e4cv.beam.wavelength.get(), DEFAULT_WAVELENGTH, abs_tol=0.001
+        )
+        # Use the property setter – should behave identically to restore()
+        e4cv.configuration = config
+        # Wavelength in e4cv_orient.yml is 1.54
+        assert math.isclose(e4cv.beam.wavelength.get(), 1.54, abs_tol=0.001)
+        # Verify geometry validation: a mis-matched config raises ConfigurationError
+        bad_config = dict(config)
+        bad_config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
+        bad_config["solver"]["geometry"] = "NONEXISTENT_GEOMETRY"
+    with pytest.raises(Exception):
+        e4cv2 = creator()
+        e4cv2.configuration = bad_config
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(name="get_run_orientation"),
+            does_not_raise(),
+            id="get_run_orientation exported",
+        ),
+        pytest.param(
+            dict(name="list_orientation_runs"),
+            does_not_raise(),
+            id="list_orientation_runs exported",
+        ),
+        pytest.param(
+            dict(name="ConfigurationRunWrapper"),
+            does_not_raise(),
+            id="ConfigurationRunWrapper exported",
+        ),
+    ],
+)
+def test_namespace_orientation_exports(parms, context):
+    """get_run_orientation and list_orientation_runs must be in hklpy2 namespace."""
+    import hklpy2
+
+    with context:
+        obj = getattr(hklpy2, parms["name"])
+        assert callable(obj)

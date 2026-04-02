@@ -291,9 +291,13 @@ class DiffractometerBase(PseudoPositioner):
         return self.core._asdict()
 
     @configuration.setter
-    def configuration(self, config: KeyValueMap) -> KeyValueMap:
+    def configuration(self, config: KeyValueMap) -> None:
         """
         Diffractometer configuration (orientation).
+
+        Delegates to :meth:`restore` so that geometry validation,
+        wavelength/beam restoration, and state clearing are all applied
+        consistently, identical to calling ``restore()`` directly.
 
         PARAMETERS
 
@@ -301,7 +305,7 @@ class DiffractometerBase(PseudoPositioner):
             Dictionary of diffractometer configuration, geometry, constraints,
             samples, reflections, orientations, solver, ...
         """
-        return self.core._fromdict(config)
+        self.restore(config)
 
     def export(self, file, comment="") -> None:
         """
