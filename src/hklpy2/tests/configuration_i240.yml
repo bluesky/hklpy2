@@ -1,0 +1,199 @@
+_header:
+  datetime: '2026-04-01 17:18:46.799850'
+  hklpy2_version: 0.3.2.dev42+gd62d70fb1
+  python_class: CradleDiffractometer
+axes:
+  axes_xref:
+    chi: chi
+    delta: delta
+    gamma: gamma
+    h: h
+    k: k
+    l: l
+    mu: mu
+    phi: phi
+    tau: tau
+  extra_axes:
+    h2: 0
+    k2: 0
+    l2: 0
+    psi: 0
+  pseudo_axes:
+  - h
+  - k
+  - l
+  real_axes:
+  - tau
+  - mu
+  - chi
+  - phi
+  - gamma
+  - delta
+beam:
+  class: EpicsMonochromatorRO
+  energy: 12.648515270509348
+  energy_PV: 4idVDCM:BraggERdbkAO
+  energy_units: keV
+  source_type: Simulated read-only EPICS Monochromator
+  wavelength: 0.9802276500315853
+  wavelength_PV: 4idVDCM:BraggLambdaRdbkAO
+  wavelength_units: angstrom
+constraints:
+  chi:
+    class: LimitsConstraint
+    high_limit: 180.0
+    label: chi
+    low_limit: -180.0
+  delta:
+    class: LimitsConstraint
+    high_limit: 180.0
+    label: delta
+    low_limit: -180.0
+  gamma:
+    class: LimitsConstraint
+    high_limit: 180.0
+    label: gamma
+    low_limit: -180.0
+  mu:
+    class: LimitsConstraint
+    high_limit: 180.0
+    label: mu
+    low_limit: -180.0
+  phi:
+    class: LimitsConstraint
+    high_limit: 180.0
+    label: phi
+    low_limit: -180.0
+  tau:
+    class: LimitsConstraint
+    high_limit: 180.0
+    label: tau
+    low_limit: -180.0
+digits: 4
+name: huber_euler_2
+presets:
+  4-circles constant phi horizontal: {}
+sample_name: test
+samples:
+  sample:
+    U:
+    - - 1
+      - 0
+      - 0
+    - - 0
+      - 1
+      - 0
+    - - 0
+      - 0
+      - 1
+    UB:
+    - - 6.283185307179586
+      - 0.0
+      - 0.0
+    - - 0.0
+      - 6.283185307179586
+      - 0.0
+    - - 0.0
+      - 0.0
+      - 6.283185307179586
+    digits: 4
+    lattice:
+      a: 1
+      alpha: 90.0
+      angle_units: degrees
+      b: 1
+      beta: 90.0
+      c: 1
+      digits: 4
+      gamma: 90.0
+      length_units: angstrom
+    name: sample
+    reflections: {}
+    reflections_order: []
+  test:
+    U:
+    - - 0.983381239497
+      - 0.181552575871
+      - 6.1803e-08
+    - - 0.181552575871
+      - -0.983381239497
+      - 2.4713e-08
+    - - 6.5263e-08
+      - -1.3082e-08
+      - -1.0
+    UB:
+    - - 1.235753235216
+      - 0.22814567186
+      - -0.0
+    - - 0.228145681434
+      - -1.235753254693
+      - 0.0
+    - - 8.2012e-08
+      - -1.6439e-08
+      - -1.256637165399
+    digits: 4
+    lattice:
+      a: 2.0
+      alpha: 90.0
+      angle_units: degrees
+      b: 2.0
+      beta: 90.0
+      c: 2.0
+      digits: 4
+      gamma: 90.0
+      length_units: angstrom
+    name: test
+    reflections:
+      6857e45:
+        digits: 4
+        geometry: APS POLAR
+        name: 6857e45
+        pseudos:
+          h: 0
+          k: 0
+          l: 2
+        reals:
+          chi: 90
+          delta: 0
+          gamma: 40
+          mu: 20
+          phi: 0
+          tau: 0
+        reals_units: angstrom
+        wavelength: 0.9802276500315853
+        wavelength_units: angstrom
+      99b60e8:
+        digits: 4
+        geometry: APS POLAR
+        name: 99b60e8
+        pseudos:
+          h: 2
+          k: 0
+          l: 0
+        reals:
+          chi: 0
+          delta: 0
+          gamma: 40
+          mu: 20
+          phi: 0
+          tau: 0
+        reals_units: angstrom
+        wavelength: 0.9802276500315853
+        wavelength_units: angstrom
+    reflections_order:
+    - 6857e45
+    - 99b60e8
+solver:
+  description: HklSolver(name='hkl_soleil', version='5.1.3', geometry='APS POLAR',
+    engine_name='hkl', mode='4-circles constant phi horizontal')
+  engine: hkl
+  geometry: APS POLAR
+  name: hkl_soleil
+  real_axes:
+  - tau
+  - mu
+  - chi
+  - phi
+  - gamma
+  - delta
+  version: 5.1.3
