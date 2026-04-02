@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../../_static/documentation_options.js?v=34329593"></script>
+    <script src="../../../_static/documentation_options.js?v=6c2dea84"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -618,6 +618,10 @@
             <span class="c1"># Message expected by tests</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Inconsistent lattice parameters&quot;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Lattice._on_change">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice._on_change">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_on_change</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># optional callback, set by Sample (#240)</span></div>
+
 <div class="viewcode-block" id="Lattice.cartesian_lattice_matrix">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.cartesian_lattice_matrix">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">cartesian_lattice_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_cartesian_lattice</span><span class="p">()</span></div>
@@ -625,6 +629,19 @@
 <div class="viewcode-block" id="Lattice.B">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.B">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_B</span><span class="p">(</span><span class="n">with_2pi</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Lattice.__setattr__">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice.__setattr__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Intercept lattice parameter changes to recompute derived matrices.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="c1"># Recompute B when a lattice parameter changes (after init).</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cartesian_lattice_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_cartesian_lattice</span><span class="p">()</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_B</span><span class="p">(</span><span class="n">with_2pi</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_on_change</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Lattice.__eq__">
@@ -716,8 +733,10 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice._fromdict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">LatticeDictType</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Redefine lattice from a (configuration) dictionary.&quot;&quot;&quot;</span>
+        <span class="c1"># Use object.__setattr__ to avoid repeated recomputation of B</span>
+        <span class="c1"># during bulk update; recompute once at the end.</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s2">&quot;a b c alpha beta gamma&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
 
         <span class="c1"># Restore optional properties if present</span>
         <span class="k">if</span> <span class="s2">&quot;digits&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
@@ -725,7 +744,13 @@
         <span class="k">if</span> <span class="s2">&quot;length_units&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">length_units</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;length_units&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;angle_units&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">angle_units</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;angle_units&quot;</span><span class="p">]</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">angle_units</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;angle_units&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Recompute derived matrices once (#240).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cartesian_lattice_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_cartesian_lattice</span><span class="p">()</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_B</span><span class="p">(</span><span class="n">with_2pi</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_change</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_change</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Lattice.compute_B">
