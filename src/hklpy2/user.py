@@ -41,7 +41,6 @@ from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .diffract import DiffractometerBase
 from .misc import NUMERIC
-from .misc import AnyAxesType
 from .misc import AxesDict
 from .misc import AxesTuple
 from .misc import BlueskyPlanType
@@ -666,7 +665,7 @@ def setor(
     h,
     k,
     l,  # noqa: E741
-    *reals: AnyAxesType,
+    *reals: NUMERIC,
     wavelength=None,
     name=None,
     **kwreals: AxesDict,
@@ -700,7 +699,7 @@ def setor(
 
     h, k, l: float
         Reciprocal-space coordinates of this reflection.
-    reals: AnyAxesType
+    reals: NUMERIC
         (optional)
         Real-space values of this reflection.  Must provide all values in the
         order expected by the geometry.

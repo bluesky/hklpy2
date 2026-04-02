@@ -88,7 +88,6 @@ from importlib.metadata import entry_points
 from typing import TYPE_CHECKING
 from typing import Any
 from typing import Iterator
-from typing import List
 from typing import Mapping
 from typing import NamedTuple
 from typing import Optional
@@ -160,7 +159,7 @@ ordered tuple   (0, 1, -1)                  AxesTuple
 =============   =========================   ====================
 """
 
-Matrix3x3 = List[List[float]]
+Matrix3x3 = list[list[float]]
 """Python type annotation: mutable orientation & rotation matrices."""
 
 NamedFloatDict = Mapping[str, NUMERIC]
@@ -652,7 +651,7 @@ def define_real_axis(
     return class_name, args, kwargs
 
 
-def dict_device_factory(data: KeyValueMap, **kwargs: KeyValueMap) -> type:
+def dict_device_factory(data: KeyValueMap, **kwargs: Any) -> type:
     """
     Create a ``DictionaryDevice()`` class using the supplied dictionary.
 

@@ -85,6 +85,11 @@ describe future plans.
 
     * Add ``re.escape()`` to all ``pytest.raises(match=...)`` calls that were
       using raw strings. (:issue:`232`)
+    * Fix type annotations: ``*reals`` in :func:`~hklpy2.user.setor` from
+      ``AnyAxesType`` to ``NUMERIC``; ``**kwargs`` in
+      :func:`~hklpy2.misc.dict_device_factory` from ``KeyValueMap`` to ``Any``;
+      ``Matrix3x3`` from deprecated ``typing.List`` to built-in ``list``.
+      (:issue:`230`)
     * Remove deprecated ``assert_context_result()`` helper and all 117 call
       sites; fold error message strings into ``match=re.escape(...)`` on
       ``pytest.raises()``; convert bare list param sets to ``pytest.param()``
