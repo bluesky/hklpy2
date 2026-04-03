@@ -225,7 +225,7 @@ def test_solver_metadata_dict_construct(parms, context):
 
 
 # ---------------------------------------------------------------------------
-# Package-level imports (backends types only)
+# Module-level imports
 # ---------------------------------------------------------------------------
 
 
@@ -235,24 +235,24 @@ def test_solver_metadata_dict_construct(parms, context):
         pytest.param(
             dict(name="ReflectionDict"),
             does_not_raise(),
-            id="ReflectionDict importable from hklpy2",
+            id="ReflectionDict importable from hklpy2.backends.typing",
         ),
         pytest.param(
             dict(name="SampleDict"),
             does_not_raise(),
-            id="SampleDict importable from hklpy2",
+            id="SampleDict importable from hklpy2.backends.typing",
         ),
         pytest.param(
             dict(name="SolverMetadataDict"),
             does_not_raise(),
-            id="SolverMetadataDict importable from hklpy2",
+            id="SolverMetadataDict importable from hklpy2.backends.typing",
         ),
     ],
 )
-def test_public_exports(parms, context):
-    """Backend TypedDict classes are available from the top-level hklpy2 package."""
+def test_module_exports(parms, context):
+    """Backend TypedDict classes are importable from hklpy2.backends.typing."""
     with context:
-        import hklpy2
+        import hklpy2.backends.typing as bt
 
-        obj = getattr(hklpy2, parms["name"])
+        obj = getattr(bt, parms["name"])
         assert obj is not None

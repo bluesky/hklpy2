@@ -19,11 +19,11 @@ from pyRestTable import Table
 from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import INTERNAL_ANGLE_UNITS
 from ..misc import INTERNAL_LENGTH_UNITS
-from ..misc import KeyValueMap
-from ..misc import Matrix3x3
-from ..misc import NamedFloatDict
 from ..misc import istype
 from ..misc import validate_and_canonical_unit
+from ..typing import KeyValueMap
+from ..typing import Matrix3x3
+from ..typing import NamedFloatDict
 from .typing import ReflectionDict
 from .typing import SampleDict
 from .typing import SolverMetadataDict

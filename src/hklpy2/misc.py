@@ -43,17 +43,9 @@ Miscellaneous Support.
     ~SOLVER_ENTRYPOINT_GROUP
 
 .. rubric: Custom Data Types
-.. autosummary::
 
-    ~AnyAxesType
-    ~AxesArray
-    ~AxesDict
-    ~AxesList
-    ~AxesTuple
-    ~Matrix3x3
-    ~INPUT_VECTOR
-    ~NamedFloatDict
-    ~NUMERIC
+Type aliases previously defined here have moved to :mod:`hklpy2.typing`
+and are re-exported from this module for backward compatibility.
 
 .. rubric: Custom Preprocessors
 .. autosummary::
@@ -96,12 +88,10 @@ from typing import Type
 from typing import Union
 
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
 import pint
 import tqdm
 import yaml
-from bluesky.utils import Msg
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsMotor
@@ -110,60 +100,81 @@ from ophyd import SoftPositioner
 
 logger = logging.getLogger(__name__)
 
-# Custom data types
+# Type aliases -- defined in hklpy2.typing; re-exported here for backward
+# compatibility.  Import from hklpy2.typing directly in new code.
+# They are intentionally excluded from __all__ so that Sphinx AutoAPI
+# documents them only in hklpy2.typing, their canonical location.
 
 if TYPE_CHECKING:
     from .backends.base import SolverBase
 
-BlueskyPlanType = Iterator[Sequence[Msg]]
-"""Type of a bluesky plan."""
+from .typing import AnyAxesType  # noqa: E402, F401
+from .typing import AxesArray  # noqa: E402, F401
+from .typing import AxesDict  # noqa: E402, F401
+from .typing import AxesList  # noqa: E402, F401
+from .typing import AxesTuple  # noqa: E402, F401
+from .typing import BlueskyPlanType  # noqa: E402, F401
+from .typing import INPUT_VECTOR  # noqa: E402, F401
+from .typing import KeyValueMap  # noqa: E402, F401
+from .typing import Matrix3x3  # noqa: E402, F401
+from .typing import NamedFloatDict  # noqa: E402, F401
+from .typing import NUMERIC  # noqa: E402, F401
 
-KeyValueMap = Mapping[str, Any]
-"""Dictionary for configuration and other."""
-
-NUMERIC = Union[float, int]
-"""Either integer or real number."""
-
-INPUT_VECTOR = Union[
-    list[NUMERIC],
-    Mapping[str, NUMERIC],
-    npt.NDArray[np.floating],
-    Sequence[NUMERIC],
+__all__ = [
+    # Constants
+    "DEFAULT_DIGITS",
+    "DEFAULT_MOTOR_LABELS",
+    "DEFAULT_START_KEY",
+    "IDENTITY_MATRIX_3X3",
+    "INTERNAL_ANGLE_UNITS",
+    "INTERNAL_LENGTH_UNITS",
+    "INTERNAL_XRAY_ENERGY_UNITS",
+    "MISSING_HEADER_KEY_MSG",
+    "PINT_ERRORS",
+    "SOLVER_ENTRYPOINT_GROUP",
+    "UREG",
+    # Exceptions
+    "ConfigurationError",
+    "ConstraintsError",
+    "CoreError",
+    "DiffractometerError",
+    "Hklpy2Error",
+    "LatticeError",
+    "NoForwardSolutions",
+    "ReflectionError",
+    "SampleError",
+    "SolverError",
+    # Classes
+    "ConfigurationRunWrapper",
+    "VirtualPositionerBase",
+    # Functions
+    "axes_to_dict",
+    "check_value_in_list",
+    "compare_float_dicts",
+    "convert_units",
+    "creator_from_config",
+    "define_real_axis",
+    "dict_device_factory",
+    "distance_between_pos_tuples",
+    "dynamic_import",
+    "flatten_lists",
+    "get_run_orientation",
+    "get_solver",
+    "istype",
+    "list_orientation_runs",
+    "load_yaml",
+    "load_yaml_file",
+    "make_component",
+    "make_dynamic_instance",
+    "parse_factory_axes",
+    "pick_closest_solution",
+    "pick_first_solution",
+    "roundoff",
+    "solver_factory",
+    "solvers",
+    "unique_name",
+    "validate_and_canonical_unit",
 ]
-"""Acceptable forms of vector input for zones, ..."""
-
-AxesArray = npt.NDArray[np.floating]
-"""Numpy array of axes values."""
-
-AxesDict = dict[str, NUMERIC]
-"""Dictionary of axes names and values."""
-
-AxesList = list[NUMERIC]
-"""List of axes values."""
-
-AxesTuple = tuple[NUMERIC, ...]
-"""Tuple of axes values."""
-
-AnyAxesType = Union[AxesArray, AxesDict, AxesList, AxesTuple]
-"""
-Any of these types are used to describe both pseudo and real axes.
-
-=============   =========================   ====================
-description     example                     type annotation
-=============   =========================   ====================
-dict            {"h": 0, "k": 1, "l": -1}   AxesDict
-namedtuple      (h=0.0, k=1.0, l=-1.0)      AxesTuple
-numpy array     numpy.array([0, 1, -1])     AxesArray
-ordered list    [0, 1, -1]                  AxesList
-ordered tuple   (0, 1, -1)                  AxesTuple
-=============   =========================   ====================
-"""
-
-Matrix3x3 = list[list[float]]
-"""Python type annotation: mutable orientation & rotation matrices."""
-
-NamedFloatDict = Mapping[str, NUMERIC]
-"""Python type annotation: dictionary of named floats."""
 
 # Constants and Structures
 

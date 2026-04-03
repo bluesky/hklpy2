@@ -18,7 +18,7 @@ import logging
 from typing import Any
 
 from ..misc import ConfigurationError
-from ..misc import KeyValueMap
+from ..typing import KeyValueMap
 
 logger = logging.getLogger(__name__)
 

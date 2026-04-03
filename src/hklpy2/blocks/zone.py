@@ -30,9 +30,9 @@ from numpy.typing import NDArray
 from pyRestTable import Table
 
 from ..diffract import DiffractometerBase
-from ..misc import INPUT_VECTOR
-from ..misc import BlueskyPlanType
 from ..misc import NoForwardSolutions
+from ..typing import BlueskyPlanType
+from ..typing import INPUT_VECTOR
 
 logger = logging.getLogger(__name__)
 

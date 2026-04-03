@@ -54,10 +54,6 @@ if __name__ == "__main__":
     sys.exit()
 
 from .backends import SolverBase  # noqa: E402, F401
-from .backends import ReflectionDict  # noqa: E402, F401
-from .backends import SampleDict  # noqa: E402, F401
-from .backends import SolverMetadataDict  # noqa: E402, F401
-from .typing import ConfigHeaderDict  # noqa: E402, F401
 from .blocks.configure import Configuration  # noqa: E402, F401
 from .blocks.lattice import SI_LATTICE_PARAMETER  # noqa: E402, F401
 from .blocks.zone import scan_zone  # noqa: E402, F401, F403

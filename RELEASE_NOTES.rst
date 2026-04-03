@@ -53,6 +53,11 @@ describe future plans.
       ``hklpy2/typing.py``; and ``HklSolverMetadataDict`` in
       ``hkl_soleil.py`` as the pattern for solver-specific metadata
       extensions. (:issue:`233`)
+    * Consolidate type aliases (``KeyValueMap``, ``NamedFloatDict``,
+      ``Matrix3x3``, ``NUMERIC``, ``AxesDict``, ``AxesArray``, ``AxesList``,
+      ``AxesTuple``, ``AnyAxesType``, ``BlueskyPlanType``, ``INPUT_VECTOR``)
+      from :mod:`hklpy2.misc` into :mod:`hklpy2.typing`; backward-compatible
+      re-exports remain in :mod:`hklpy2.misc`. (:issue:`252`)
     * Export :func:`~hklpy2.misc.get_run_orientation` and
       :func:`~hklpy2.misc.list_orientation_runs` at the top-level ``hklpy2``
       namespace, consistent with :class:`~hklpy2.misc.ConfigurationRunWrapper`.
