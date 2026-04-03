@@ -70,6 +70,3 @@ from .misc import creator_from_config  # noqa: E402, F401
 from .misc import get_solver  # noqa: E402, F401
 from .misc import solver_factory  # noqa: E402, F401
 from .misc import solvers  # noqa: E402, F401
-
-# TODO implement scan_extra in diffract, refactor user.scan_extra
-# from .user import scan_extra  # noqa: E402, F401, F403
