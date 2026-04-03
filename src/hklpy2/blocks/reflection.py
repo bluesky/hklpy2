@@ -20,8 +20,8 @@ from typing import Union
 
 from ..misc import INTERNAL_LENGTH_UNITS
 from ..misc import ConfigurationError
-from ..misc import NamedFloatDict
 from ..misc import ReflectionError
+from ..typing import NamedFloatDict
 from ..misc import check_value_in_list
 from ..misc import compare_float_dicts
 from ..misc import convert_units

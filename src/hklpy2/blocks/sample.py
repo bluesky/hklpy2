@@ -14,8 +14,8 @@ from typing import Union
 import numpy as np
 from numpy.linalg import norm
 
-from ..misc import Matrix3x3
 from ..misc import unique_name
+from ..typing import Matrix3x3
 from .lattice import Lattice
 from .lattice import LatticeDictType
 from .reflection import Reflection

@@ -24,12 +24,12 @@ from yaml.parser import ParserError
 
 from ..diffract import creator
 from ..diffract import diffractometer_class_factory
-from ..misc import AnyAxesType
-from ..misc import AxesArray
-from ..misc import AxesDict
-from ..misc import AxesList
-from ..misc import AxesTuple
 from ..misc import ConfigurationRunWrapper
+from ..typing import AnyAxesType
+from ..typing import AxesArray
+from ..typing import AxesDict
+from ..typing import AxesList
+from ..typing import AxesTuple
 from ..misc import NoForwardSolutions
 from ..misc import SolverError
 from ..misc import VirtualPositionerBase

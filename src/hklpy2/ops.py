@@ -24,17 +24,17 @@ from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
-from .misc import AnyAxesType
-from .misc import AxesDict
 from .misc import CoreError
-from .misc import KeyValueMap
-from .misc import Matrix3x3
-from .misc import NamedFloatDict
 from .misc import NoForwardSolutions
 from .misc import axes_to_dict
 from .misc import convert_units
 from .misc import solver_factory
 from .misc import unique_name
+from .typing import AnyAxesType
+from .typing import AxesDict
+from .typing import KeyValueMap
+from .typing import Matrix3x3
+from .typing import NamedFloatDict
 
 __all__ = ["Core"]
 

@@ -49,9 +49,9 @@ from numpy import typing as npt
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
-from ..misc import Matrix3x3
-from ..misc import NamedFloatDict
 from ..misc import NoForwardSolutions
+from ..typing import Matrix3x3
+from ..typing import NamedFloatDict
 from ..misc import check_value_in_list
 from ..misc import istype
 from ..misc import roundoff

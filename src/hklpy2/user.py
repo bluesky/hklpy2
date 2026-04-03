@@ -40,13 +40,13 @@ from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .diffract import DiffractometerBase
-from .misc import NUMERIC
-from .misc import AxesDict
-from .misc import AxesTuple
-from .misc import BlueskyPlanType
-from .misc import Matrix3x3
-from .misc import NamedFloatDict
 from .misc import NoForwardSolutions
+from .typing import AxesDict
+from .typing import AxesTuple
+from .typing import BlueskyPlanType
+from .typing import Matrix3x3
+from .typing import NamedFloatDict
+from .typing import NUMERIC
 from .ops import CoreError
 
 __all__ = """
