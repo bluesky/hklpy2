@@ -458,7 +458,9 @@ class DiffractometerBase(PseudoPositioner):
         """
         self.core.extras = extras  # before forward()
         self.core.update_solver()
-        solution = self.forward(self.core.standardize_pseudos(pseudos))
+        # forward() is decorated with @pseudo_position_argument, which already
+        # normalises dict/list/tuple/namedtuple input; no pre-conversion needed.
+        solution = self.forward(pseudos)
         yield from self.move_dict(solution)
 
     @plan
@@ -482,14 +484,18 @@ class DiffractometerBase(PseudoPositioner):
         """
         self.core.extras = extras
         self.core.update_solver()
-        pseudos = self.inverse(self.core.standardize_reals(reals))
+        # inverse() is decorated with @real_position_argument, which already
+        # normalises dict/list/tuple/namedtuple input; no pre-conversion needed.
+        pseudos = self.inverse(reals)
         yield from self.move_dict(pseudos)
 
     @real_position_argument
     def move_reals(self, reals: AnyAxesType) -> None:
         """(not a plan) Move the real-space axes as specified in 'real_positions'."""
-        reals = self.core.standardize_reals(reals)
-        for axis_name, position in reals.items():
+        # @real_position_argument has already converted reals to a RealPosition
+        # namedtuple; use ._asdict() directly rather than re-normalising via
+        # standardize_reals().
+        for axis_name, position in reals._asdict().items():
             hkl_axis = getattr(self, axis_name)
             hkl_axis.move(position)
 
