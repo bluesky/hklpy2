@@ -140,33 +140,62 @@ jobs:
             cp docs/source/_static/switcher.json "${SWITCHER}"
           fi
 
-          # Add new version entry and mark it preferred
+          # Update switcher.json.
+          # Pre-releases (rcN, aN, bN) appear in the switcher but do not steal
+          # "preferred" from the current stable release.
+          # Stable releases also prune all pre-release entries for the same
+          # base version (e.g. finalising 0.4.1 removes 0.4.1rc1, 0.4.1a1, …).
           python3 - <<'PYEOF'
-          import json, os
+          import json, os, re
 
           version = os.environ["VERSION"]
           switcher_path = os.environ["SWITCHER"]
           base_url = "https://blueskyproject.io/hklpy2"
 
+          is_prerelease = bool(re.search(r'(a|b|rc)\d+$', version))
+
           with open(switcher_path) as f:
               entries = json.load(f)
 
-          # Remove preferred from all existing entries
-          for e in entries:
-              e.pop("preferred", None)
-
           versions = [e["version"] for e in entries]
-          if version not in versions:
-              # Insert after "latest" entry
-              new_entry = {"version": version, "url": f"{base_url}/{version}/", "preferred": True}
-              entries.insert(1, new_entry)
-              print(f"Added {version} to switcher.json")
-          else:
-              # Mark existing entry as preferred
+          insert_pos = next(
+              (i + 1 for i, e in enumerate(entries) if e.get("version") == "latest"),
+              1,
+          )
+
+          if not is_prerelease:
+              # Remove all pre-release entries for this base version.
+              prerelease_pat = re.compile(r'^' + re.escape(version) + r'(a|b|rc)\d+$')
+              pruned = [e["version"] for e in entries if prerelease_pat.match(e["version"])]
+              entries = [e for e in entries if not prerelease_pat.match(e["version"])]
+              for v in pruned:
+                  print(f"Removed pre-release {v} from switcher.json")
+              # Recalculate insert position after pruning.
+              insert_pos = next(
+                  (i + 1 for i, e in enumerate(entries) if e.get("version") == "latest"),
+                  1,
+              )
+              versions = [e["version"] for e in entries]
+              # Clear preferred everywhere, then mark this stable version.
               for e in entries:
-                  if e["version"] == version:
-                      e["preferred"] = True
-              print(f"{version} already in switcher.json; marked preferred")
+                  e.pop("preferred", None)
+              if version in versions:
+                  for e in entries:
+                      if e["version"] == version:
+                          e["preferred"] = True
+                  print(f"{version} already present; marked preferred")
+              else:
+                  new_entry = {"version": version, "url": f"{base_url}/{version}/", "preferred": True}
+                  entries.insert(insert_pos, new_entry)
+                  print(f"Added {version} to switcher.json and marked preferred")
+          else:
+              # Pre-release: add without touching preferred.
+              if version in versions:
+                  print(f"{version} already present (pre-release; preferred unchanged)")
+              else:
+                  new_entry = {"version": version, "url": f"{base_url}/{version}/"}
+                  entries.insert(insert_pos, new_entry)
+                  print(f"Added pre-release {version} to switcher.json (preferred unchanged)")
 
           with open(switcher_path, "w") as f:
               json.dump(entries, f, indent=4)
@@ -175,14 +204,42 @@ jobs:
           SWITCHER: gh-pages-clone/latest/_static/switcher.json
           VERSION: ${{ env.DOC_VERSION }}
 
-      - name: Commit updated switcher.json to gh-pages
+      - name: Remove pre-release doc directories from gh-pages on stable tag
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          VERSION="${DOC_VERSION}"
+
+          # Only act on stable (non-pre-release) tags.
+          if echo "${VERSION}" | grep -qE '(a|b|rc)[0-9]+$'; then
+            echo "Pre-release tag ${VERSION} — skipping directory pruning."
+            exit 0
+          fi
+
+          # Delete gh-pages/<base>rcN, <base>aN, <base>bN directories if present.
+          PRUNED=()
+          for dir in gh-pages-clone/${VERSION}{a,b,rc}*/; do
+            [ -d "${dir}" ] || continue
+            rm -rf "${dir}"
+            PRUNED+=("${dir}")
+            echo "Removed directory: ${dir}"
+          done
+
+          if [[ ${#PRUNED[@]} -eq 0 ]]; then
+            echo "No pre-release directories found for ${VERSION}."
+          fi
+
+      - name: Commit switcher.json and pruned directories to gh-pages
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
         run: |
           cd gh-pages-clone
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add latest/_static/switcher.json
-          git diff --cached --quiet || git commit -m "ci: add ${DOC_VERSION} to switcher.json"
+          git add -A
+          git diff --cached --quiet || git commit -m "ci: release ${DOC_VERSION}: update switcher.json, prune pre-release docs"
+          # Pull with rebase before pushing to avoid "fetch first" rejection
+          # when the earlier gh-pages deploy step has already pushed to the branch.
+          git pull --rebase origin gh-pages
           git push
 
       - name: Deploy on manual trigger
