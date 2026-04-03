@@ -134,7 +134,7 @@ def test_i240_hkl_soleil():
     solver.addReflection(r2)
 
     # Calculate UB matrix with original lattice
-    ub_original = solver.calculate_UB(r1, r2)  # TODO confirm
+    ub_original = solver.calculate_UB(r1, r2)
     assert np.isclose(
         np.linalg.norm(ub_original),
         2 * np.pi * np.sqrt(3) / SAMPLE_LATTICE_ORIGINAL,
