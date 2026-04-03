@@ -52,10 +52,6 @@ Classes
 .. autoapisummary::
 
    hklpy2.SolverBase
-   hklpy2.ReflectionDict
-   hklpy2.SampleDict
-   hklpy2.SolverMetadataDict
-   hklpy2.ConfigHeaderDict
    hklpy2.Configuration
    hklpy2.DiffractometerBase
    hklpy2.ConfigurationRunWrapper
@@ -261,7 +257,7 @@ Package Contents
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.misc.Matrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.typing.Matrix3x3
       :abstractmethod:
 
 
@@ -281,13 +277,13 @@ Package Contents
 
 
    .. py:property:: extras
-      :type: hklpy2.misc.KeyValueMap
+      :type: hklpy2.typing.KeyValueMap
 
 
       Ordered dictionary of any extra parameters.
 
 
-   .. py:method:: forward(pseudos: hklpy2.misc.NamedFloatDict) -> List[hklpy2.misc.NamedFloatDict]
+   .. py:method:: forward(pseudos: hklpy2.typing.NamedFloatDict) -> List[hklpy2.typing.NamedFloatDict]
       :abstractmethod:
 
 
@@ -325,7 +321,7 @@ Package Contents
       for each geometry.
 
 
-   .. py:method:: inverse(reals: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: inverse(reals: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
       :abstractmethod:
 
 
@@ -334,7 +330,7 @@ Package Contents
 
 
    .. py:property:: lattice
-      :type: hklpy2.misc.NamedFloatDict
+      :type: hklpy2.typing.NamedFloatDict
 
 
       Crystal lattice parameters.  (Not used by this |solver|.)
@@ -367,7 +363,7 @@ Package Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: List[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: refineLattice(reflections: List[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.typing.NamedFloatDict
       :abstractmethod:
 
 
@@ -391,7 +387,7 @@ Package Contents
 
 
    .. py:property:: _summary_dict
-      :type: hklpy2.misc.KeyValueMap
+      :type: hklpy2.typing.KeyValueMap
 
 
       Return a summary of the geometry (modes, axes)
@@ -408,167 +404,10 @@ Package Contents
 
 
    .. py:property:: UB
-      :type: hklpy2.misc.Matrix3x3
+      :type: hklpy2.typing.Matrix3x3
 
 
       Orientation matrix (3x3).
-
-
-.. py:class:: ReflectionDict
-
-   Bases: :py:obj:`TypedDict`
-
-
-   Typed structure for a single diffraction reflection.
-
-   Keys
-   ----
-   name : str
-       Label for this reflection (e.g. ``"r1"``).
-   pseudos : Dict[str, float]
-       Pseudo-axis values at this reflection, keyed by pseudo axis name
-       (e.g. ``{"h": 1.0, "k": 0.0, "l": 0.0}``).
-   reals : Dict[str, float]
-       Real-axis values at this reflection, keyed by solver axis name
-       (e.g. ``{"omega": 10.0, "chi": 0.0, "phi": 0.0, "tth": 20.0}``).
-   wavelength : float
-       Incident wavelength (Å) used when the reflection was measured.
-
-
-   .. py:attribute:: name
-      :type:  str
-
-
-   .. py:attribute:: pseudos
-      :type:  Dict[str, float]
-
-
-   .. py:attribute:: reals
-      :type:  Dict[str, float]
-
-
-   .. py:attribute:: wavelength
-      :type:  float
-
-
-.. py:class:: SampleDict
-
-   Bases: :py:obj:`TypedDict`
-
-
-   Typed structure for a crystalline sample.
-
-   Keys
-   ----
-   name : str
-       Human-readable label for the sample.
-   lattice : Dict[str, float]
-       Unit-cell parameters ``{"a", "b", "c", "alpha", "beta", "gamma"}``.
-   reflections : Dict[str, ReflectionDict]
-       Mapping of reflection name → :class:`ReflectionDict`.
-   order : List[str]
-       Reflection names in the order they should be added to the solver
-       (controls which two are used for UB calculation).
-
-
-   .. py:attribute:: name
-      :type:  str
-
-
-   .. py:attribute:: lattice
-      :type:  Dict[str, float]
-
-
-   .. py:attribute:: reflections
-      :type:  Dict[str, ReflectionDict]
-
-
-   .. py:attribute:: order
-      :type:  List[str]
-
-
-.. py:class:: SolverMetadataDict
-
-   Bases: :py:obj:`TypedDict`
-
-
-   Typed structure for the **common** solver summary metadata.
-
-   Returned by :attr:`~hklpy2.backends.base.SolverBase._metadata` and
-   stored under the ``"solver"`` key in the configuration dictionary.
-
-   This class defines only the keys that every solver is required to
-   provide.  Solver-specific extra fields should be added by subclassing
-   with ``total=False`` in the solver's own module.  Example::
-
-       # in backends/hkl_soleil.py
-       class HklSolverMetadataDict(SolverMetadataDict, total=False):
-           engine: str
-
-   Keys
-   ----
-   name : str
-       Solver name (e.g. ``"no_op"``, ``"hkl_soleil"``).
-   description : str
-       Human-readable repr string.
-   geometry : str
-       Selected geometry name (e.g. ``"E4CV"``).
-   real_axes : List[str]
-       Ordered list of real axis names.
-   version : str
-       Version string for the solver library.
-
-
-   .. py:attribute:: name
-      :type:  str
-
-
-   .. py:attribute:: description
-      :type:  str
-
-
-   .. py:attribute:: geometry
-      :type:  str
-
-
-   .. py:attribute:: real_axes
-      :type:  List[str]
-
-
-   .. py:attribute:: version
-      :type:  str
-
-
-.. py:class:: ConfigHeaderDict
-
-   Bases: :py:obj:`TypedDict`
-
-
-   Typed structure for the configuration ``_header`` block.
-
-   Written by :meth:`~hklpy2.ops.Core._asdict` to record provenance
-   information alongside saved diffractometer configurations.
-
-   Keys
-   ----
-   datetime : str
-       ISO-8601 timestamp when the configuration was saved.
-   hklpy2_version : str
-       Version of |hklpy2| used to write the configuration.
-   python_class : str
-       ``__class__.__name__`` of the diffractometer.
-
-
-   .. py:attribute:: datetime
-      :type:  str
-
-
-   .. py:attribute:: hklpy2_version
-      :type:  str
-
-
-   .. py:attribute:: python_class
-      :type:  str
 
 
 .. py:class:: Configuration(diffractometer: object)
@@ -585,19 +424,19 @@ Package Contents
    .. py:attribute:: diffractometer
 
 
-   .. py:method:: _asdict() -> hklpy2.misc.KeyValueMap
+   .. py:method:: _asdict() -> hklpy2.typing.KeyValueMap
 
       Return diffractometer's configuration as a dict.
 
 
 
-   .. py:method:: _fromdict(config: hklpy2.misc.KeyValueMap, clear: bool = True, restore_constraints: bool = True) -> None
+   .. py:method:: _fromdict(config: hklpy2.typing.KeyValueMap, clear: bool = True, restore_constraints: bool = True) -> None
 
       Restore diffractometer's configuration from a dict.
 
 
 
-   .. py:method:: _valid(config: hklpy2.misc.KeyValueMap) -> bool
+   .. py:method:: _valid(config: hklpy2.typing.KeyValueMap) -> bool
 
       Validate incoming configuration for current diffractometer.
 
@@ -612,7 +451,7 @@ Package Contents
 
    :see: https://physics.nist.gov/cgi-bin/cuu/Value?asil
 
-.. py:function:: scan_zone(detectors: Sequence[bluesky.protocols.Readable], diffractometer: hklpy2.diffract.DiffractometerBase, start: hklpy2.misc.INPUT_VECTOR, finish: hklpy2.misc.INPUT_VECTOR, num: int, md: Optional[Mapping[str, Any]] = None) -> hklpy2.misc.BlueskyPlanType
+.. py:function:: scan_zone(detectors: Sequence[bluesky.protocols.Readable], diffractometer: hklpy2.diffract.DiffractometerBase, start: hklpy2.typing.INPUT_VECTOR, finish: hklpy2.typing.INPUT_VECTOR, num: int, md: Optional[Mapping[str, Any]] = None) -> hklpy2.typing.BlueskyPlanType
 
    Perform a zone scan on a diffractometer.
 
@@ -801,7 +640,7 @@ Package Contents
 
 
    .. py:property:: configuration
-      :type: hklpy2.misc.KeyValueMap
+      :type: hklpy2.typing.KeyValueMap
 
 
       Diffractometer configuration (orientation).
@@ -860,7 +699,7 @@ Package Contents
 
 
 
-   .. py:method:: full_position(digits=4) -> hklpy2.misc.KeyValueMap
+   .. py:method:: full_position(digits=4) -> hklpy2.typing.KeyValueMap
 
       Return dict with positions of pseudos, reals, & extras.
 
@@ -872,13 +711,13 @@ Package Contents
 
 
 
-   .. py:method:: move_dict(axes: hklpy2.misc.AxesDict) -> hklpy2.misc.BlueskyPlanType
+   .. py:method:: move_dict(axes: hklpy2.typing.AxesDict) -> hklpy2.typing.BlueskyPlanType
 
       (plan) Move diffractometer axes to positions in 'axes'.
 
 
 
-   .. py:method:: move_forward_with_extras(pseudos: hklpy2.misc.AnyAxesType, extras: hklpy2.misc.AxesDict) -> hklpy2.misc.BlueskyPlanType
+   .. py:method:: move_forward_with_extras(pseudos: hklpy2.typing.AnyAxesType, extras: hklpy2.typing.AxesDict) -> hklpy2.typing.BlueskyPlanType
 
       (plan stub) Compute forward solution at fixed pseudos and extras.
 
@@ -893,7 +732,7 @@ Package Contents
 
 
 
-   .. py:method:: move_inverse_with_extras(reals: hklpy2.misc.AnyAxesType, extras: hklpy2.misc.AxesDict) -> hklpy2.misc.BlueskyPlanType
+   .. py:method:: move_inverse_with_extras(reals: hklpy2.typing.AnyAxesType, extras: hklpy2.typing.AxesDict) -> hklpy2.typing.BlueskyPlanType
 
       (plan stub) Compute inverse solution at fixed reals and extras.
 
@@ -909,7 +748,7 @@ Package Contents
 
 
 
-   .. py:method:: move_reals(reals: hklpy2.misc.AnyAxesType) -> None
+   .. py:method:: move_reals(reals: hklpy2.typing.AnyAxesType) -> None
 
       (not a plan) Move the real-space axes as specified in 'real_positions'.
 
@@ -949,7 +788,7 @@ Package Contents
 
 
 
-   .. py:method:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.misc.BlueskyPlanType
+   .. py:method:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.typing.BlueskyPlanType
 
       Scan extra diffractometer parameter(s), such as 'psi'.
 
@@ -1080,7 +919,7 @@ Package Contents
 
 
 
-.. py:function:: creator(*, prefix: str = '', name: str = '', solver: str = 'hkl_soleil', geometry: str = 'E4CV', beam_kwargs: dict[str, object] = {}, solver_kwargs: dict[str, object] = {}, _pseudo: Optional[Sequence[str]] = None, pseudos: list = [], _real: Optional[Sequence[str]] = None, reals: Optional[Union[Sequence[str], hklpy2.misc.KeyValueMap]] = {}, motor_labels: Optional[Sequence[str]] = ['motors'], labels: list = ['diffractometer'], class_name: str = 'Hklpy2Diffractometer', class_bases: list = [DiffractometerBase], forward_solution_function: Optional[str] = None, **kwargs) -> DiffractometerBase
+.. py:function:: creator(*, prefix: str = '', name: str = '', solver: str = 'hkl_soleil', geometry: str = 'E4CV', beam_kwargs: dict[str, object] = {}, solver_kwargs: dict[str, object] = {}, _pseudo: Optional[Sequence[str]] = None, pseudos: list = [], _real: Optional[Sequence[str]] = None, reals: Optional[Union[Sequence[str], hklpy2.typing.KeyValueMap]] = {}, motor_labels: Optional[Sequence[str]] = ['motors'], labels: list = ['diffractometer'], class_name: str = 'Hklpy2Diffractometer', class_bases: list = [DiffractometerBase], forward_solution_function: Optional[str] = None, **kwargs) -> DiffractometerBase
 
    Factory function to create a diffractometer instance.
 
@@ -1362,7 +1201,7 @@ Package Contents
 
 
 
-.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> KeyValueMap
+.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> hklpy2.typing.KeyValueMap
 
    Return the orientation information dictionary from a run.
 

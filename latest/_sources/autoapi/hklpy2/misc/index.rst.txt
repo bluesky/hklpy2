@@ -49,17 +49,9 @@ hklpy2.misc
        ~SOLVER_ENTRYPOINT_GROUP
 
    .. rubric: Custom Data Types
-   .. autosummary::
 
-       ~AnyAxesType
-       ~AxesArray
-       ~AxesDict
-       ~AxesList
-       ~AxesTuple
-       ~Matrix3x3
-       ~INPUT_VECTOR
-       ~NamedFloatDict
-       ~NUMERIC
+   Type aliases previously defined here have moved to :mod:`hklpy2.typing`
+   and are re-exported from this module for backward compatibility.
 
    .. rubric: Custom Preprocessors
    .. autosummary::
@@ -87,18 +79,6 @@ Attributes
 
 .. autoapisummary::
 
-   hklpy2.misc.logger
-   hklpy2.misc.BlueskyPlanType
-   hklpy2.misc.KeyValueMap
-   hklpy2.misc.NUMERIC
-   hklpy2.misc.INPUT_VECTOR
-   hklpy2.misc.AxesArray
-   hklpy2.misc.AxesDict
-   hklpy2.misc.AxesList
-   hklpy2.misc.AxesTuple
-   hklpy2.misc.AnyAxesType
-   hklpy2.misc.Matrix3x3
-   hklpy2.misc.NamedFloatDict
    hklpy2.misc.IDENTITY_MATRIX_3X3
    hklpy2.misc.MISSING_HEADER_KEY_MSG
    hklpy2.misc.SOLVER_ENTRYPOINT_GROUP
@@ -174,68 +154,8 @@ Functions
 Module Contents
 ---------------
 
-.. py:data:: logger
-
-.. py:data:: BlueskyPlanType
-
-   Type of a bluesky plan.
-
-.. py:data:: KeyValueMap
-
-   Dictionary for configuration and other.
-
-.. py:data:: NUMERIC
-
-   Either integer or real number.
-
-.. py:data:: INPUT_VECTOR
-
-   Acceptable forms of vector input for zones, ...
-
-.. py:data:: AxesArray
-
-   Numpy array of axes values.
-
-.. py:data:: AxesDict
-
-   Dictionary of axes names and values.
-
-.. py:data:: AxesList
-
-   List of axes values.
-
-.. py:data:: AxesTuple
-
-   Tuple of axes values.
-
-.. py:data:: AnyAxesType
-
-   Any of these types are used to describe both pseudo and real axes.
-
-   =============   =========================   ====================
-   description     example                     type annotation
-   =============   =========================   ====================
-   dict            {"h": 0, "k": 1, "l": -1}   AxesDict
-   namedtuple      (h=0.0, k=1.0, l=-1.0)      AxesTuple
-   numpy array     numpy.array([0, 1, -1])     AxesArray
-   ordered list    [0, 1, -1]                  AxesList
-   ordered tuple   (0, 1, -1)                  AxesTuple
-   =============   =========================   ====================
-
-.. py:data:: Matrix3x3
-
-   mutable orientation & rotation matrices.
-
-   :type: Python type annotation
-
-.. py:data:: NamedFloatDict
-
-   dictionary of named floats.
-
-   :type: Python type annotation
-
 .. py:data:: IDENTITY_MATRIX_3X3
-   :type:  Matrix3x3
+   :type:  hklpy2.typing.Matrix3x3
    :value: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 
 
@@ -560,7 +480,7 @@ Module Contents
 
 
 
-.. py:function:: axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict
+.. py:function:: axes_to_dict(input: hklpy2.typing.AnyAxesType, names: list[str]) -> hklpy2.typing.AxesDict
 
    Convert any acceptable axes input to standard form (dict).
 
@@ -594,12 +514,12 @@ Module Contents
    Convert 'value' from old units to new.
 
 
-.. py:function:: define_real_axis(specs: Union[None, str, KeyValueMap], kwargs: KeyValueMap) -> tuple[str, Sequence, Mapping]
+.. py:function:: define_real_axis(specs: Union[None, str, hklpy2.typing.KeyValueMap], kwargs: hklpy2.typing.KeyValueMap) -> tuple[str, Sequence, Mapping]
 
    Return class and kwargs of a real axis from its 'specs'.
 
 
-.. py:function:: dict_device_factory(data: KeyValueMap, **kwargs: Any) -> type
+.. py:function:: dict_device_factory(data: hklpy2.typing.KeyValueMap, **kwargs: Any) -> type
 
    Create a ``DictionaryDevice()`` class using the supplied dictionary.
 
@@ -628,7 +548,7 @@ Module Contents
    From the `apstools <https://github.com/BCDA-APS/apstools>`_ package.
 
 
-.. py:function:: flatten_lists(xs: Sequence[Union[bytes, collections.abc.Iterable, str]]) -> BlueskyPlanType
+.. py:function:: flatten_lists(xs: Sequence[Union[bytes, collections.abc.Iterable, str]]) -> hklpy2.typing.BlueskyPlanType
 
    Convert nested lists into single list.
 
@@ -646,7 +566,7 @@ Module Contents
        libhkl_solver = SolverClass()
 
 
-.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> KeyValueMap
+.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> hklpy2.typing.KeyValueMap
 
    Return the orientation information dictionary from a run.
 
@@ -782,7 +702,7 @@ Module Contents
    Return an instance of the Python 'call_name'.
 
 
-.. py:function:: parse_factory_axes(*, space: Optional[str] = None, axes: Union[KeyValueMap, None, Sequence[str]] = None, order: Optional[Sequence[str]] = None, canonical: Optional[Sequence[str]] = None, labels: Optional[Sequence[str]] = None, **_ignored: Any) -> Mapping[str, Union[ophyd.Component, Sequence[str]]]
+.. py:function:: parse_factory_axes(*, space: Optional[str] = None, axes: Union[hklpy2.typing.KeyValueMap, None, Sequence[str]] = None, order: Optional[Sequence[str]] = None, canonical: Optional[Sequence[str]] = None, labels: Optional[Sequence[str]] = None, **_ignored: Any) -> Mapping[str, Union[ophyd.Component, Sequence[str]]]
 
    Parse a set of axis specifications, return Device class attributes.
 

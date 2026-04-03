@@ -125,43 +125,43 @@ Module Contents
 
 
 
-   .. py:method:: _asdict() -> hklpy2.misc.KeyValueMap
+   .. py:method:: _asdict() -> hklpy2.typing.KeyValueMap
 
       Describe the diffractometer as a dictionary.
 
 
 
-   .. py:method:: _axes_names_s2d(axis_dict: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: _axes_names_s2d(axis_dict: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
 
       Convert keys of axis dictionary from solver to diffractometer.
 
 
 
-   .. py:method:: _axes_names_d2s(axis_dict: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: _axes_names_d2s(axis_dict: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
 
       Convert keys of axis dictionary from diffractometer to solver.
 
 
 
-   .. py:method:: _fromdict(config: hklpy2.misc.KeyValueMap) -> None
+   .. py:method:: _fromdict(config: hklpy2.typing.KeyValueMap) -> None
 
       Redefine diffractometer from a (configuration) dictionary.
 
 
 
-   .. py:method:: _validate_extras(values: hklpy2.misc.NamedFloatDict, expected: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: _validate_extras(values: hklpy2.typing.NamedFloatDict, expected: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
 
       Validate that the supplied extras are acceptable.
 
 
 
-   .. py:method:: _validate_pseudos(pseudos: Union[collections.abc.Iterable, hklpy2.misc.NamedFloatDict]) -> bool
+   .. py:method:: _validate_pseudos(pseudos: Union[collections.abc.Iterable, hklpy2.typing.NamedFloatDict]) -> bool
 
       Validate that the supplied pseudos are acceptable.
 
 
 
-   .. py:method:: add_reflection(pseudos: hklpy2.misc.AnyAxesType, reals: Union[hklpy2.misc.AnyAxesType, None] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
+   .. py:method:: add_reflection(pseudos: hklpy2.typing.AnyAxesType, reals: Union[hklpy2.typing.AnyAxesType, None] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
 
       Add a new reflection.
 
@@ -221,7 +221,7 @@ Module Contents
       Map axis names from solver to diffractometer.
 
 
-   .. py:method:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str]) -> hklpy2.misc.Matrix3x3
+   .. py:method:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str]) -> hklpy2.typing.Matrix3x3
 
       Calculate and return the UB (orientation) matrix with two reflections.
 
@@ -236,7 +236,7 @@ Module Contents
       Ordered dictionary of |solver| extra parameters in current mode.
 
 
-   .. py:method:: forward(pseudos: hklpy2.misc.AnyAxesType, wavelength: Optional[float] = None) -> list
+   .. py:method:: forward(pseudos: hklpy2.typing.AnyAxesType, wavelength: Optional[float] = None) -> list
 
       Compute [{names:reals}] from {names: pseudos} (hkl -> angles).
 
@@ -255,7 +255,7 @@ Module Contents
       Return the |solver| geometry.
 
 
-   .. py:method:: inverse(reals: Union[hklpy2.misc.AnyAxesType, None], wavelength: Optional[float] = None) -> hklpy2.misc.AxesDict
+   .. py:method:: inverse(reals: Union[hklpy2.typing.AnyAxesType, None], wavelength: Optional[float] = None) -> hklpy2.typing.AxesDict
 
       Compute (pseudos) from {names: reals} (angles -> hkl).
 
@@ -296,7 +296,7 @@ Module Contents
 
 
    .. py:property:: presets
-      :type: hklpy2.misc.NamedFloatDict
+      :type: hklpy2.typing.NamedFloatDict
 
 
       Preset values for constant-axis modes.
@@ -510,7 +510,7 @@ Module Contents
 
 
 
-   .. py:method:: standardize_pseudos(pseudos: hklpy2.misc.AnyAxesType) -> hklpy2.misc.AxesDict
+   .. py:method:: standardize_pseudos(pseudos: hklpy2.typing.AnyAxesType) -> hklpy2.typing.AxesDict
 
       Convert user-supplied pseudos into dictionary in solver's order.
 
@@ -523,7 +523,7 @@ Module Contents
 
 
 
-   .. py:method:: standardize_reals(reals: Union[hklpy2.misc.AnyAxesType, None]) -> hklpy2.misc.AxesDict
+   .. py:method:: standardize_reals(reals: Union[hklpy2.typing.AnyAxesType, None]) -> hklpy2.typing.AxesDict
 
       Convert user-supplied reals into dictionary in solver's order.
 

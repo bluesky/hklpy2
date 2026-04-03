@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=bbb4dfe5"></script>
+    <script src="../../_static/documentation_options.js?v=b311f7ac"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -401,13 +401,30 @@
                   
   <h1>Source code for hklpy2.typing</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Package-level typed dictionary structures for |hklpy2|.</span>
+<span class="sd">Package-level type aliases and typed dictionary structures for |hklpy2|.</span>
 
-<span class="sd">This module is the future consolidation point for all type aliases and</span>
-<span class="sd">``TypedDict`` subclasses currently scattered across the codebase (see</span>
-<span class="sd">:issue:`252` for the full ``misc.py`` migration plan).</span>
+<span class="sd">Consolidates the type aliases previously defined in :mod:`hklpy2.misc` (see</span>
+<span class="sd">:issue:`252`) alongside the ``TypedDict`` subclasses introduced in</span>
+<span class="sd">:issue:`233`.  :mod:`hklpy2.misc` re-exports everything defined here for</span>
+<span class="sd">backward compatibility.</span>
 
-<span class="sd">At present it holds structures that belong above the backends layer:</span>
+<span class="sd">.. rubric:: Simple type aliases</span>
+
+<span class="sd">.. autosummary::</span>
+
+<span class="sd">    ~AnyAxesType</span>
+<span class="sd">    ~AxesArray</span>
+<span class="sd">    ~AxesDict</span>
+<span class="sd">    ~AxesList</span>
+<span class="sd">    ~AxesTuple</span>
+<span class="sd">    ~BlueskyPlanType</span>
+<span class="sd">    ~INPUT_VECTOR</span>
+<span class="sd">    ~KeyValueMap</span>
+<span class="sd">    ~Matrix3x3</span>
+<span class="sd">    ~NamedFloatDict</span>
+<span class="sd">    ~NUMERIC</span>
+
+<span class="sd">.. rubric:: TypedDict structures</span>
 
 <span class="sd">.. autosummary::</span>
 
@@ -419,15 +436,127 @@
 <span class="sd">in the solver&#39;s own module (e.g. :mod:`hklpy2.backends.hkl_soleil`).</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Msg</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;AnyAxesType&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AxesArray&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AxesDict&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AxesList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AxesTuple&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BlueskyPlanType&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ConfigHeaderDict&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;INPUT_VECTOR&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;KeyValueMap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Matrix3x3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NamedFloatDict&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NUMERIC&quot;</span><span class="p">,</span>
 <span class="p">]</span>
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Simple type aliases</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="BlueskyPlanType">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.BlueskyPlanType">[docs]</a>
+<span class="n">BlueskyPlanType</span> <span class="o">=</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Msg</span><span class="p">]]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Type of a bluesky plan.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="KeyValueMap">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.KeyValueMap">[docs]</a>
+<span class="n">KeyValueMap</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Dictionary for configuration and other.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NUMERIC">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.NUMERIC">[docs]</a>
+<span class="n">NUMERIC</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Either integer or real number.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="INPUT_VECTOR">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.INPUT_VECTOR">[docs]</a>
+<span class="n">INPUT_VECTOR</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
+    <span class="nb">list</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">],</span>
+    <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">],</span>
+    <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">],</span>
+    <span class="n">Sequence</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">],</span>
+<span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Acceptable forms of vector input for zones, ...&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AxesArray">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.AxesArray">[docs]</a>
+<span class="n">AxesArray</span> <span class="o">=</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Numpy array of axes values.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AxesDict">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.AxesDict">[docs]</a>
+<span class="n">AxesDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Dictionary of axes names and values.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AxesList">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.AxesList">[docs]</a>
+<span class="n">AxesList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;List of axes values.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AxesTuple">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.AxesTuple">[docs]</a>
+<span class="n">AxesTuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Tuple of axes values.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AnyAxesType">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.AnyAxesType">[docs]</a>
+<span class="n">AnyAxesType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">AxesArray</span><span class="p">,</span> <span class="n">AxesDict</span><span class="p">,</span> <span class="n">AxesList</span><span class="p">,</span> <span class="n">AxesTuple</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Any of these types are used to describe both pseudo and real axes.</span>
+
+<span class="sd">=============   =========================   ====================</span>
+<span class="sd">description     example                     type annotation</span>
+<span class="sd">=============   =========================   ====================</span>
+<span class="sd">dict            {&quot;h&quot;: 0, &quot;k&quot;: 1, &quot;l&quot;: -1}   AxesDict</span>
+<span class="sd">namedtuple      (h=0.0, k=1.0, l=-1.0)      AxesTuple</span>
+<span class="sd">numpy array     numpy.array([0, 1, -1])     AxesArray</span>
+<span class="sd">ordered list    [0, 1, -1]                  AxesList</span>
+<span class="sd">ordered tuple   (0, 1, -1)                  AxesTuple</span>
+<span class="sd">=============   =========================   ====================</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Matrix3x3">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.Matrix3x3">[docs]</a>
+<span class="n">Matrix3x3</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Python type annotation: mutable orientation &amp; rotation matrices.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NamedFloatDict">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.NamedFloatDict">[docs]</a>
+<span class="n">NamedFloatDict</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">]</span></div>
+
+<span class="sd">&quot;&quot;&quot;Python type annotation: dictionary of named floats.&quot;&quot;&quot;</span>
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># TypedDict structures</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
 
 
 <div class="viewcode-block" id="ConfigHeaderDict">
-<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.ConfigHeaderDict">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.ConfigHeaderDict">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfigHeaderDict</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Typed structure for the configuration ``_header`` block.</span>
@@ -446,15 +575,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ConfigHeaderDict.datetime">
-<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.ConfigHeaderDict.datetime">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.ConfigHeaderDict.datetime">[docs]</a>
     <span class="n">datetime</span><span class="p">:</span> <span class="nb">str</span></div>
 
 <div class="viewcode-block" id="ConfigHeaderDict.hklpy2_version">
-<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.ConfigHeaderDict.hklpy2_version">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.ConfigHeaderDict.hklpy2_version">[docs]</a>
     <span class="n">hklpy2_version</span><span class="p">:</span> <span class="nb">str</span></div>
 
 <div class="viewcode-block" id="ConfigHeaderDict.python_class">
-<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.ConfigHeaderDict.python_class">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.ConfigHeaderDict.python_class">[docs]</a>
     <span class="n">python_class</span><span class="p">:</span> <span class="nb">str</span></div>
 </div>
 

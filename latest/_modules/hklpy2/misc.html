@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=bbb4dfe5"></script>
+    <script src="../../_static/documentation_options.js?v=b311f7ac"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -445,17 +445,9 @@
 <span class="sd">    ~SOLVER_ENTRYPOINT_GROUP</span>
 
 <span class="sd">.. rubric: Custom Data Types</span>
-<span class="sd">.. autosummary::</span>
 
-<span class="sd">    ~AnyAxesType</span>
-<span class="sd">    ~AxesArray</span>
-<span class="sd">    ~AxesDict</span>
-<span class="sd">    ~AxesList</span>
-<span class="sd">    ~AxesTuple</span>
-<span class="sd">    ~Matrix3x3</span>
-<span class="sd">    ~INPUT_VECTOR</span>
-<span class="sd">    ~NamedFloatDict</span>
-<span class="sd">    ~NUMERIC</span>
+<span class="sd">Type aliases previously defined here have moved to :mod:`hklpy2.typing`</span>
+<span class="sd">and are re-exported from this module for backward compatibility.</span>
 
 <span class="sd">.. rubric: Custom Preprocessors</span>
 <span class="sd">.. autosummary::</span>
@@ -498,110 +490,93 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pint</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tqdm</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Msg</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpicsMotor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PVPositioner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoftPositioner</span>
 
-<div class="viewcode-block" id="logger">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.logger">[docs]</a>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-
-<span class="c1"># Custom data types</span>
+<span class="c1"># Type aliases -- defined in hklpy2.typing; re-exported here for backward</span>
+<span class="c1"># compatibility.  Import from hklpy2.typing directly in new code.</span>
+<span class="c1"># They are intentionally excluded from __all__ so that Sphinx AutoAPI</span>
+<span class="c1"># documents them only in hklpy2.typing, their canonical location.</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
 
-<div class="viewcode-block" id="BlueskyPlanType">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.BlueskyPlanType">[docs]</a>
-<span class="n">BlueskyPlanType</span> <span class="o">=</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Msg</span><span class="p">]]</span></div>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyAxesType</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesArray</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesDict</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesList</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesTuple</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlueskyPlanType</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">INPUT_VECTOR</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>  <span class="c1"># noqa: E402, F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NUMERIC</span>  <span class="c1"># noqa: E402, F401</span>
 
-<span class="sd">&quot;&quot;&quot;Type of a bluesky plan.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="KeyValueMap">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.KeyValueMap">[docs]</a>
-<span class="n">KeyValueMap</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Dictionary for configuration and other.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="NUMERIC">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.NUMERIC">[docs]</a>
-<span class="n">NUMERIC</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Either integer or real number.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="INPUT_VECTOR">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.INPUT_VECTOR">[docs]</a>
-<span class="n">INPUT_VECTOR</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
-    <span class="nb">list</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">],</span>
-    <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">],</span>
-    <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">],</span>
-    <span class="n">Sequence</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">],</span>
-<span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Acceptable forms of vector input for zones, ...&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="AxesArray">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesArray">[docs]</a>
-<span class="n">AxesArray</span> <span class="o">=</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Numpy array of axes values.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="AxesDict">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesDict">[docs]</a>
-<span class="n">AxesDict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Dictionary of axes names and values.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="AxesList">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesList">[docs]</a>
-<span class="n">AxesList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;List of axes values.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="AxesTuple">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AxesTuple">[docs]</a>
-<span class="n">AxesTuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Tuple of axes values.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="AnyAxesType">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.AnyAxesType">[docs]</a>
-<span class="n">AnyAxesType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">AxesArray</span><span class="p">,</span> <span class="n">AxesDict</span><span class="p">,</span> <span class="n">AxesList</span><span class="p">,</span> <span class="n">AxesTuple</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Any of these types are used to describe both pseudo and real axes.</span>
-
-<span class="sd">=============   =========================   ====================</span>
-<span class="sd">description     example                     type annotation</span>
-<span class="sd">=============   =========================   ====================</span>
-<span class="sd">dict            {&quot;h&quot;: 0, &quot;k&quot;: 1, &quot;l&quot;: -1}   AxesDict</span>
-<span class="sd">namedtuple      (h=0.0, k=1.0, l=-1.0)      AxesTuple</span>
-<span class="sd">numpy array     numpy.array([0, 1, -1])     AxesArray</span>
-<span class="sd">ordered list    [0, 1, -1]                  AxesList</span>
-<span class="sd">ordered tuple   (0, 1, -1)                  AxesTuple</span>
-<span class="sd">=============   =========================   ====================</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="Matrix3x3">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.Matrix3x3">[docs]</a>
-<span class="n">Matrix3x3</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Python type annotation: mutable orientation &amp; rotation matrices.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="NamedFloatDict">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.NamedFloatDict">[docs]</a>
-<span class="n">NamedFloatDict</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">]</span></div>
-
-<span class="sd">&quot;&quot;&quot;Python type annotation: dictionary of named floats.&quot;&quot;&quot;</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># Constants</span>
+    <span class="s2">&quot;DEFAULT_DIGITS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DEFAULT_MOTOR_LABELS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DEFAULT_START_KEY&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;IDENTITY_MATRIX_3X3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;INTERNAL_ANGLE_UNITS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;INTERNAL_LENGTH_UNITS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;INTERNAL_XRAY_ENERGY_UNITS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MISSING_HEADER_KEY_MSG&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PINT_ERRORS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SOLVER_ENTRYPOINT_GROUP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UREG&quot;</span><span class="p">,</span>
+    <span class="c1"># Exceptions</span>
+    <span class="s2">&quot;ConfigurationError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ConstraintsError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CoreError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DiffractometerError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Hklpy2Error&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LatticeError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NoForwardSolutions&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ReflectionError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SampleError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SolverError&quot;</span><span class="p">,</span>
+    <span class="c1"># Classes</span>
+    <span class="s2">&quot;ConfigurationRunWrapper&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;VirtualPositionerBase&quot;</span><span class="p">,</span>
+    <span class="c1"># Functions</span>
+    <span class="s2">&quot;axes_to_dict&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;check_value_in_list&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;compare_float_dicts&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;convert_units&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;creator_from_config&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;define_real_axis&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dict_device_factory&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;distance_between_pos_tuples&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dynamic_import&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;flatten_lists&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_run_orientation&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_solver&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;istype&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;list_orientation_runs&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;load_yaml&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;load_yaml_file&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;make_component&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;make_dynamic_instance&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;parse_factory_axes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pick_closest_solution&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pick_first_solution&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;roundoff&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;solver_factory&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;solvers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;unique_name&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;validate_and_canonical_unit&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="c1"># Constants and Structures</span>
 
