@@ -328,8 +328,12 @@ python3 -m json.tool "${SWITCHER_JSON}"
 # ---------------------------------------------------------------------------
 step 4 "Run pre-commit / style checks"
 export PRE_COMMIT_HOME="${PRE_COMMIT_HOME:-/tmp/pre-commit-JEMIAN}"
+# Pass --color never when stdout is not a terminal so pre-commit does not
+# emit its own ANSI escape codes into pipes or log files.
+_PRECOMMIT_COLOR_ARG="auto"
+[ -t 1 ] || _PRECOMMIT_COLOR_ARG="never"
 info "Running: pre-commit run --all-files"
-pre-commit run --all-files || {
+pre-commit run --all-files --color "${_PRECOMMIT_COLOR_ARG}" || {
     warn "pre-commit reported issues. Fix them before continuing."
     confirm "Issues fixed?" || abort "Aborted."
 }
