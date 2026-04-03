@@ -1,0 +1,76 @@
+hklpy2.blocks.configure
+=======================
+
+.. py:module:: hklpy2.blocks.configure
+
+.. autoapi-nested-parse::
+
+   Export and restore sample UB matrix and other diffractometer configuration.
+
+   .. autosummary::
+
+       ~Configuration
+
+   From **hklpy**, these TODO items:
+
+   - bluesky runs support
+   - stack support
+   - set constraints
+
+   .. seealso:: # https://pyyaml.org/wiki/PyYAMLDocumentation
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hklpy2.blocks.configure.logger
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hklpy2.blocks.configure.Configuration
+
+
+Module Contents
+---------------
+
+.. py:data:: logger
+
+.. py:class:: Configuration(diffractometer: object)
+
+   Manage diffractometer configurations.
+
+   .. autosummary::
+
+       ~_asdict
+       ~_fromdict
+       ~_valid
+
+
+   .. py:attribute:: diffractometer
+
+
+   .. py:method:: _asdict() -> hklpy2.typing.KeyValueMap
+
+      Return diffractometer's configuration as a dict.
+
+
+
+   .. py:method:: _fromdict(config: hklpy2.typing.KeyValueMap, clear: bool = True, restore_constraints: bool = True) -> None
+
+      Restore diffractometer's configuration from a dict.
+
+
+
+   .. py:method:: _valid(config: hklpy2.typing.KeyValueMap) -> bool
+
+      Validate incoming configuration for current diffractometer.
+
+
+
