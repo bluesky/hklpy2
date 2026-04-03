@@ -5,12 +5,6 @@ Export and restore sample UB matrix and other diffractometer configuration.
 
     ~Configuration
 
-From **hklpy**, these TODO items:
-
-- bluesky runs support
-- stack support
-- set constraints
-
 .. seealso:: # https://pyyaml.org/wiki/PyYAMLDocumentation
 """
 

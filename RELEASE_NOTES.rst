@@ -35,6 +35,12 @@ describe future plans.
 
     Release expected by 2026-H1.
 
+    Maintenance
+    -----------
+
+    * Review TODO & FIXME markers: remove resolved comments, open new issues
+      for remaining concerns. (:issue:`260`)
+
 0.4.1
 #####
 
