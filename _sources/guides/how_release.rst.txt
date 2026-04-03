@@ -125,27 +125,36 @@ Steps performed
 Pre-release and stable tags
 ===========================
 
-A version is treated as **pre-release** if it has an ``rc``, ``a``, or
-``b`` suffix (e.g. ``0.4.1rc1``, ``0.4.1a1``) **or** if its major
-version is ``0`` (e.g. ``0.4.1``, ``0.3.1``).  A version is **stable**
-only when its major version is ``1`` or greater (e.g. ``1.0.0``).
+Two independent rules apply:
 
-Pre-release tags (``0.4.1rc1``, ``0.4.1``, ``0.3.1``, etc.)
-    - Docs published to the corresponding ``gh-pages/<version>/``
-      directory.
-    - Added to the version switcher **without** ``"preferred": true``
-      — the current preferred version is unchanged.
-    - GitHub Release created with ``--prerelease --no-latest``.
+**Version switcher** (``switcher.json``)
+    A tag with an ``rc``, ``a``, or ``b`` suffix is a candidate release
+    and is added to the switcher *without* ``"preferred": true`` — the
+    current preferred version is unchanged.  A final tag (no suffix,
+    e.g. ``0.4.1``) becomes the new preferred version and causes all
+    candidate entries for the same base version to be removed from the
+    switcher and their ``gh-pages`` directories deleted.
 
-Stable tags (``1.0.0`` and above)
+**GitHub Release pre-release flag**
+    Any version whose major number is ``0`` (e.g. ``0.4.1``,
+    ``0.4.1rc1``) is marked ``--prerelease --latest=false`` on GitHub,
+    regardless of whether it has a suffix.  Only versions ``>= 1.0.0``
+    are marked ``--latest``.
+
+rc/alpha/beta tags (``0.4.1rc1``, ``0.4.1a1``, etc.)
     - Docs published to ``gh-pages/<version>/``.
-    - All pre-release directories for the same base version
-      (e.g. ``1.0.0rc1/``) are **deleted** from ``gh-pages``
-      automatically by ``docs.yml``.
-    - Corresponding entries removed from the live ``switcher.json``
-      on ``gh-pages``.
-    - ``"preferred": true`` moved to the new stable version.
-    - GitHub Release created with ``--latest``.
+    - Added to switcher without ``"preferred": true``.
+    - GitHub Release: ``--prerelease --latest=false``.
+
+Final tags with major version 0 (``0.4.1``, ``0.3.1``, etc.)
+    - Docs published to ``gh-pages/<version>/``.
+    - Becomes ``"preferred": true`` in switcher; rc entries pruned.
+    - GitHub Release: ``--prerelease --latest=false``.
+
+Final tags with major version >= 1 (``1.0.0``, etc.)
+    - Docs published to ``gh-pages/<version>/``.
+    - Becomes ``"preferred": true`` in switcher; rc entries pruned.
+    - GitHub Release: ``--generate-notes --latest``.
 
 Piping output
 =============

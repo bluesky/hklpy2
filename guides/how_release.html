@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=5e91d31e"></script>
+    <script src="../_static/documentation_options.js?v=7ac8e9b6"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -613,28 +613,36 @@ doc directories and switcher entries for the same base version.</p></td>
 </section>
 <section id="pre-release-and-stable-tags">
 <h2>Pre-release and stable tags<a class="headerlink" href="#pre-release-and-stable-tags" title="Link to this heading">#</a></h2>
-<p>A version is treated as <strong>pre-release</strong> if it has an <code class="docutils literal notranslate"><span class="pre">rc</span></code>, <code class="docutils literal notranslate"><span class="pre">a</span></code>, or
-<code class="docutils literal notranslate"><span class="pre">b</span></code> suffix (e.g. <code class="docutils literal notranslate"><span class="pre">0.4.1rc1</span></code>, <code class="docutils literal notranslate"><span class="pre">0.4.1a1</span></code>) <strong>or</strong> if its major
-version is <code class="docutils literal notranslate"><span class="pre">0</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">0.4.1</span></code>, <code class="docutils literal notranslate"><span class="pre">0.3.1</span></code>).  A version is <strong>stable</strong>
-only when its major version is <code class="docutils literal notranslate"><span class="pre">1</span></code> or greater (e.g. <code class="docutils literal notranslate"><span class="pre">1.0.0</span></code>).</p>
+<p>Two independent rules apply:</p>
 <dl class="simple">
-<dt>Pre-release tags (<code class="docutils literal notranslate"><span class="pre">0.4.1rc1</span></code>, <code class="docutils literal notranslate"><span class="pre">0.4.1</span></code>, <code class="docutils literal notranslate"><span class="pre">0.3.1</span></code>, etc.)</dt><dd><ul class="simple">
-<li><p>Docs published to the corresponding <code class="docutils literal notranslate"><span class="pre">gh-pages/&lt;version&gt;/</span></code>
-directory.</p></li>
-<li><p>Added to the version switcher <strong>without</strong> <code class="docutils literal notranslate"><span class="pre">&quot;preferred&quot;:</span> <span class="pre">true</span></code>
-— the current preferred version is unchanged.</p></li>
-<li><p>GitHub Release created with <code class="docutils literal notranslate"><span class="pre">--prerelease</span> <span class="pre">--no-latest</span></code>.</p></li>
+<dt><strong>Version switcher</strong> (<code class="docutils literal notranslate"><span class="pre">switcher.json</span></code>)</dt><dd><p>A tag with an <code class="docutils literal notranslate"><span class="pre">rc</span></code>, <code class="docutils literal notranslate"><span class="pre">a</span></code>, or <code class="docutils literal notranslate"><span class="pre">b</span></code> suffix is a candidate release
+and is added to the switcher <em>without</em> <code class="docutils literal notranslate"><span class="pre">&quot;preferred&quot;:</span> <span class="pre">true</span></code> — the
+current preferred version is unchanged.  A final tag (no suffix,
+e.g. <code class="docutils literal notranslate"><span class="pre">0.4.1</span></code>) becomes the new preferred version and causes all
+candidate entries for the same base version to be removed from the
+switcher and their <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> directories deleted.</p>
+</dd>
+<dt><strong>GitHub Release pre-release flag</strong></dt><dd><p>Any version whose major number is <code class="docutils literal notranslate"><span class="pre">0</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">0.4.1</span></code>,
+<code class="docutils literal notranslate"><span class="pre">0.4.1rc1</span></code>) is marked <code class="docutils literal notranslate"><span class="pre">--prerelease</span> <span class="pre">--latest=false</span></code> on GitHub,
+regardless of whether it has a suffix.  Only versions <code class="docutils literal notranslate"><span class="pre">&gt;=</span> <span class="pre">1.0.0</span></code>
+are marked <code class="docutils literal notranslate"><span class="pre">--latest</span></code>.</p>
+</dd>
+<dt>rc/alpha/beta tags (<code class="docutils literal notranslate"><span class="pre">0.4.1rc1</span></code>, <code class="docutils literal notranslate"><span class="pre">0.4.1a1</span></code>, etc.)</dt><dd><ul class="simple">
+<li><p>Docs published to <code class="docutils literal notranslate"><span class="pre">gh-pages/&lt;version&gt;/</span></code>.</p></li>
+<li><p>Added to switcher without <code class="docutils literal notranslate"><span class="pre">&quot;preferred&quot;:</span> <span class="pre">true</span></code>.</p></li>
+<li><p>GitHub Release: <code class="docutils literal notranslate"><span class="pre">--prerelease</span> <span class="pre">--latest=false</span></code>.</p></li>
 </ul>
 </dd>
-<dt>Stable tags (<code class="docutils literal notranslate"><span class="pre">1.0.0</span></code> and above)</dt><dd><ul class="simple">
+<dt>Final tags with major version 0 (<code class="docutils literal notranslate"><span class="pre">0.4.1</span></code>, <code class="docutils literal notranslate"><span class="pre">0.3.1</span></code>, etc.)</dt><dd><ul class="simple">
 <li><p>Docs published to <code class="docutils literal notranslate"><span class="pre">gh-pages/&lt;version&gt;/</span></code>.</p></li>
-<li><p>All pre-release directories for the same base version
-(e.g. <code class="docutils literal notranslate"><span class="pre">1.0.0rc1/</span></code>) are <strong>deleted</strong> from <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code>
-automatically by <code class="docutils literal notranslate"><span class="pre">docs.yml</span></code>.</p></li>
-<li><p>Corresponding entries removed from the live <code class="docutils literal notranslate"><span class="pre">switcher.json</span></code>
-on <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&quot;preferred&quot;:</span> <span class="pre">true</span></code> moved to the new stable version.</p></li>
-<li><p>GitHub Release created with <code class="docutils literal notranslate"><span class="pre">--latest</span></code>.</p></li>
+<li><p>Becomes <code class="docutils literal notranslate"><span class="pre">&quot;preferred&quot;:</span> <span class="pre">true</span></code> in switcher; rc entries pruned.</p></li>
+<li><p>GitHub Release: <code class="docutils literal notranslate"><span class="pre">--prerelease</span> <span class="pre">--latest=false</span></code>.</p></li>
+</ul>
+</dd>
+<dt>Final tags with major version &gt;= 1 (<code class="docutils literal notranslate"><span class="pre">1.0.0</span></code>, etc.)</dt><dd><ul class="simple">
+<li><p>Docs published to <code class="docutils literal notranslate"><span class="pre">gh-pages/&lt;version&gt;/</span></code>.</p></li>
+<li><p>Becomes <code class="docutils literal notranslate"><span class="pre">&quot;preferred&quot;:</span> <span class="pre">true</span></code> in switcher; rc entries pruned.</p></li>
+<li><p>GitHub Release: <code class="docutils literal notranslate"><span class="pre">--generate-notes</span> <span class="pre">--latest</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
