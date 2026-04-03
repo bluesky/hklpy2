@@ -192,16 +192,16 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
     fi
 fi
 
-# Must be up-to-date with origin
-info "Fetching from origin..."
-git fetch origin
-LOCAL_SHA="$(git rev-parse HEAD)"
-REMOTE_SHA="$(git rev-parse "origin/${CURRENT_BRANCH}" 2>/dev/null || echo '')"
-if [[ -n "${REMOTE_SHA}" && "${LOCAL_SHA}" != "${REMOTE_SHA}" ]]; then
-    warn "Local branch is not in sync with origin/${CURRENT_BRANCH}."
-    if [[ "${DRY_RUN}" == "true" ]]; then
-        warn "[DRY-RUN] ignoring sync check."
-    else
+# Must be up-to-date with origin (skipped in dry-run to avoid network dependency)
+if [[ "${DRY_RUN}" == "true" ]]; then
+    dryrun "git fetch origin  (skipped: network calls omitted in dry-run)"
+else
+    info "Fetching from origin..."
+    git fetch origin
+    LOCAL_SHA="$(git rev-parse HEAD)"
+    REMOTE_SHA="$(git rev-parse "origin/${CURRENT_BRANCH}" 2>/dev/null || echo '')"
+    if [[ -n "${REMOTE_SHA}" && "${LOCAL_SHA}" != "${REMOTE_SHA}" ]]; then
+        warn "Local branch is not in sync with origin/${CURRENT_BRANCH}."
         confirm "Continue anyway?" || abort "Aborted. Pull or push changes first."
     fi
 fi
