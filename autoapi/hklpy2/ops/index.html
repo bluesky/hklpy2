@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=b311f7ac"></script>
+    <script src="../../../_static/documentation_options.js?v=48ea40fc"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -1012,9 +1012,22 @@ mode.</p>
 <ul class="simple">
 <li><p>dict: {“h”: 0, “k”: 1, “l”: -1}</p></li>
 <li><p>namedtuple: (h=0.0, k=1.0, l=-1.0)</p></li>
+<li><p>numpy array: numpy.array([0, 1, -1])</p></li>
 <li><p>ordered list: [0, 1, -1]  (for h, k, l)</p></li>
 <li><p>ordered tuple: (0, 1, -1)  (for h, k, l)</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method operates at the <strong>solver / Core layer</strong> and returns an
+ordered <a class="reference internal" href="../typing/index.html#hklpy2.typing.AxesDict" title="hklpy2.typing.AxesDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesDict</span></code></a> keyed by solver axis names.
+It is complementary to — not a replacement for — the ophyd
+<code class="docutils literal notranslate"><span class="pre">&#64;pseudo_position_argument</span></code> decorator used on
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code>.  That decorator
+normalises flexible user input into an ophyd <code class="docutils literal notranslate"><span class="pre">PseudoPosition</span></code>
+namedtuple at the <em>diffractometer</em> layer; this method converts any
+of those forms (plus numpy arrays) into the <code class="docutils literal notranslate"><span class="pre">AxesDict</span></code> that the
+solver expects.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1023,12 +1036,26 @@ mode.</p>
 <dd><p>Convert user-supplied reals into dictionary in solver’s order.</p>
 <p>User could provide reals in several forms:</p>
 <ul class="simple">
-<li><p>None: current positions</p></li>
+<li><p>None: current positions (read from the diffractometer)</p></li>
 <li><p>dict: {“omega”: 120, “chi”: 35.3, “phi”: 45, “tth”: -120}</p></li>
 <li><p>namedtuple: (omega=120, chi=35.3, phi=45, tth=-120)</p></li>
+<li><p>numpy array: numpy.array([120, 35.3, 45, -120])</p></li>
 <li><p>ordered list: [120, 35.3, 45, -120]  (for omega, chi, phi, tth)</p></li>
 <li><p>ordered tuple: (120, 35.3, 45, -120)  (for omega, chi, phi, tth)</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method operates at the <strong>solver / Core layer</strong> and returns an
+ordered <a class="reference internal" href="../typing/index.html#hklpy2.typing.AxesDict" title="hklpy2.typing.AxesDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AxesDict</span></code></a> keyed by solver axis names.
+It is complementary to — not a replacement for — the ophyd
+<code class="docutils literal notranslate"><span class="pre">&#64;real_position_argument</span></code> decorator used on
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code> and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">move_reals()</span></code>.  That decorator
+normalises flexible user input into an ophyd <code class="docutils literal notranslate"><span class="pre">RealPosition</span></code>
+namedtuple at the <em>diffractometer</em> layer; this method converts any
+of those forms (plus <code class="docutils literal notranslate"><span class="pre">None</span></code> and numpy arrays) into the
+<code class="docutils literal notranslate"><span class="pre">AxesDict</span></code> that the solver expects.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
