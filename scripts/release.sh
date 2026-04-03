@@ -461,7 +461,7 @@ if [[ "${DRY_RUN}" == "true" ]]; then
     if [[ "${IS_PRERELEASE}" == "true" ]]; then
         dryrun "gh release create ${VERSION} --title ${VERSION} --prerelease --latest=false"
     else
-        dryrun "gh release create ${VERSION} --title ${VERSION} --latest"
+        dryrun "gh release create ${VERSION} --title ${VERSION} --generate-notes --latest"
     fi
 elif confirm "Create GitHub Release for ${VERSION} now?"; then
     if [[ "${IS_PRERELEASE}" == "true" ]]; then
@@ -473,7 +473,7 @@ elif confirm "Create GitHub Release for ${VERSION} now?"; then
     else
         gh release create "${VERSION}" \
             --title "${VERSION}" \
-            --notes "See [RELEASE_NOTES.rst](https://github.com/bluesky/hklpy2/blob/main/RELEASE_NOTES.rst) for details." \
+            --generate-notes \
             --latest
     fi
     success "GitHub Release created."
