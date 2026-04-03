@@ -159,6 +159,16 @@ fi
 # Strip a leading 'v' if present
 VERSION="${VERSION#v}"
 
+# Determine whether this is a pre-release:
+#   - any rc/a/b suffix (e.g. 0.4.1rc1, 0.4.1a1, 0.4.1b2)
+#   - any version with major version 0 (e.g. 0.4.1, 0.3.1)
+IS_PRERELEASE="false"
+if echo "${VERSION}" | grep -qE '(a|b|rc)[0-9]+$'; then
+    IS_PRERELEASE="true"
+elif echo "${VERSION}" | grep -qE '^0\.'; then
+    IS_PRERELEASE="true"
+fi
+
 if [[ "${DRY_RUN}" == "true" ]]; then
     echo -e "${MAGENTA}${BOLD}*** DRY-RUN MODE: no files will be written, no commits, pushes, or tags created ***${RESET}"
 fi
@@ -257,7 +267,7 @@ pause "Update RELEASE_NOTES.rst, then press Enter."
 # ---------------------------------------------------------------------------
 step 3 "Update docs/source/_static/switcher.json"
 
-export DRY_RUN
+export DRY_RUN IS_PRERELEASE
 python3 - <<PYEOF
 import json, os, re
 
@@ -266,8 +276,9 @@ switcher_path = "${SWITCHER_JSON}"
 base_url = "${BASE_URL}"
 dry_run = os.environ.get("DRY_RUN") == "true"
 
-# A pre-release has a suffix like rc1, a1, b2, etc.
-is_prerelease = bool(re.search(r'(a|b|rc)\d+$', version))
+# Use the pre-release determination already made by the shell:
+# rc/a/b suffixes OR major version 0.
+is_prerelease = os.environ.get("IS_PRERELEASE") == "true"
 
 with open(switcher_path) as f:
     entries = json.load(f)
@@ -410,7 +421,7 @@ step 9 "Create and push tag ${VERSION}"
 echo ""
 warn "Pushing the tag will trigger:"
 echo "  - docs.yml  : build and publish versioned docs, update switcher.json on gh-pages"
-if echo "${VERSION}" | grep -qE '(a|b|rc)[0-9]+$'; then
+if [[ "${IS_PRERELEASE}" == "true" ]]; then
     echo "              (pre-release: added to switcher without changing 'preferred')"
 else
     echo "              (stable: pre-release docs/switcher entries for ${VERSION} will be pruned)"
@@ -440,15 +451,31 @@ fi
 # Step 10: Create GitHub Release
 # ---------------------------------------------------------------------------
 step 10 "Create GitHub Release"
-echo "  This marks the release as non-pre-release on GitHub."
+if [[ "${IS_PRERELEASE}" == "true" ]]; then
+    echo "  Pre-release: will be marked --prerelease and --no-latest on GitHub."
+else
+    echo "  Stable release: will be marked --latest on GitHub."
+fi
 echo ""
 if [[ "${DRY_RUN}" == "true" ]]; then
-    dryrun "gh release create ${VERSION} --title ${VERSION} --latest"
+    if [[ "${IS_PRERELEASE}" == "true" ]]; then
+        dryrun "gh release create ${VERSION} --title ${VERSION} --prerelease --no-latest"
+    else
+        dryrun "gh release create ${VERSION} --title ${VERSION} --latest"
+    fi
 elif confirm "Create GitHub Release for ${VERSION} now?"; then
-    gh release create "${VERSION}" \
-        --title "${VERSION}" \
-        --notes "See [RELEASE_NOTES.rst](https://github.com/bluesky/hklpy2/blob/main/RELEASE_NOTES.rst) for details." \
-        --latest
+    if [[ "${IS_PRERELEASE}" == "true" ]]; then
+        gh release create "${VERSION}" \
+            --title "${VERSION}" \
+            --notes "See [RELEASE_NOTES.rst](https://github.com/bluesky/hklpy2/blob/main/RELEASE_NOTES.rst) for details." \
+            --prerelease \
+            --no-latest
+    else
+        gh release create "${VERSION}" \
+            --title "${VERSION}" \
+            --notes "See [RELEASE_NOTES.rst](https://github.com/bluesky/hklpy2/blob/main/RELEASE_NOTES.rst) for details." \
+            --latest
+    fi
     success "GitHub Release created."
 else
     warn "Skipped. Create the release manually at:"
@@ -464,7 +491,7 @@ echo "    https://github.com/bluesky/hklpy2/actions"
 echo ""
   echo "  Expected outcomes:"
   echo "    docs.yml  - builds docs, publishes to gh-pages/${VERSION}/, updates switcher.json"
-  if ! echo "${VERSION}" | grep -qE '(a|b|rc)[0-9]+$'; then
+  if [[ "${IS_PRERELEASE}" == "false" ]]; then
       echo "              pre-release doc directories and switcher entries pruned automatically"
   fi
   echo "    pypi.yml  - publishes hklpy2==${VERSION} to PyPI"

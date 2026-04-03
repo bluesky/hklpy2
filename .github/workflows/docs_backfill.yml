@@ -114,7 +114,7 @@ jobs:
           base_url = os.environ["BASE_URL"]
           switcher_path = os.environ["SWITCHER"]
 
-          is_prerelease = bool(re.search(r'(a|b|rc)\d+$', version))
+          is_prerelease = bool(re.search(r'(a|b|rc)\d+$', version)) or version.startswith("0.")
 
           with open(switcher_path) as f:
               entries = json.load(f)
@@ -173,7 +173,8 @@ jobs:
           VERSION="${DOC_VERSION}"
 
           # Only act on stable (non-pre-release) tags.
-          if echo "${VERSION}" | grep -qE '(a|b|rc)[0-9]+$'; then
+          # Pre-release: rc/a/b suffix OR major version 0.
+          if echo "${VERSION}" | grep -qE '(a|b|rc)[0-9]+$' || echo "${VERSION}" | grep -qE '^0\.'; then
             echo "Pre-release tag ${VERSION} — skipping directory pruning."
             exit 0
           fi
