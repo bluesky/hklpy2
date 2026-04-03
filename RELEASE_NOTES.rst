@@ -33,7 +33,7 @@ describe future plans.
 0.4.0
 #####
 
-Release expected 2026-04-04.
+Released 2026-04-03.
 
 New Features
 ------------
