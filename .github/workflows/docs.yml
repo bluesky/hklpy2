@@ -140,33 +140,47 @@ jobs:
             cp docs/source/_static/switcher.json "${SWITCHER}"
           fi
 
-          # Add new version entry and mark it preferred
+          # Add new version entry; pre-releases (rcN, aN, bN) appear in the
+          # switcher but do not steal "preferred" from the current stable release.
           python3 - <<'PYEOF'
-          import json, os
+          import json, os, re
 
           version = os.environ["VERSION"]
           switcher_path = os.environ["SWITCHER"]
           base_url = "https://blueskyproject.io/hklpy2"
 
+          is_prerelease = bool(re.search(r'(a|b|rc)\d+$', version))
+
           with open(switcher_path) as f:
               entries = json.load(f)
 
-          # Remove preferred from all existing entries
-          for e in entries:
-              e.pop("preferred", None)
-
           versions = [e["version"] for e in entries]
-          if version not in versions:
-              # Insert after "latest" entry
-              new_entry = {"version": version, "url": f"{base_url}/{version}/", "preferred": True}
-              entries.insert(1, new_entry)
-              print(f"Added {version} to switcher.json")
+          insert_pos = next(
+              (i + 1 for i, e in enumerate(entries) if e.get("version") == "latest"),
+              1,
+          )
+
+          if version in versions:
+              if not is_prerelease:
+                  for e in entries:
+                      e.pop("preferred", None)
+                  for e in entries:
+                      if e["version"] == version:
+                          e["preferred"] = True
+                  print(f"{version} already present; marked preferred")
+              else:
+                  print(f"{version} already present (pre-release; preferred unchanged)")
           else:
-              # Mark existing entry as preferred
-              for e in entries:
-                  if e["version"] == version:
-                      e["preferred"] = True
-              print(f"{version} already in switcher.json; marked preferred")
+              if is_prerelease:
+                  new_entry = {"version": version, "url": f"{base_url}/{version}/"}
+                  entries.insert(insert_pos, new_entry)
+                  print(f"Added pre-release {version} to switcher.json (preferred unchanged)")
+              else:
+                  for e in entries:
+                      e.pop("preferred", None)
+                  new_entry = {"version": version, "url": f"{base_url}/{version}/", "preferred": True}
+                  entries.insert(insert_pos, new_entry)
+                  print(f"Added {version} to switcher.json and marked preferred")
 
           with open(switcher_path, "w") as f:
               json.dump(entries, f, indent=4)

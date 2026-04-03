@@ -23,6 +23,48 @@
 #   0  - all steps completed (or dry-run finished)
 #   1  - user aborted or a required step failed
 
+# Handle --help / -h before anything else (before set -e and git calls).
+for _arg in "$@"; do
+    case "${_arg}" in
+        -h|--help)
+            cat <<'EOF'
+Usage: bash scripts/release.sh [OPTIONS] [VERSION]
+
+Interactive release checklist for hklpy2.  Walks through every release
+step in order, automating what it can and prompting for the rest.
+
+Arguments:
+  VERSION       Release version to prepare (e.g. 0.4.1).
+                Prompted interactively if omitted.
+
+Options:
+  --dry-run     Preview all steps without making any changes.
+                Checks and read-only commands still run; file writes,
+                commits, pushes, tags, and GitHub API calls are skipped.
+  -h, --help    Show this help message and exit.
+
+Steps performed:
+  0.  Preflight checks (branch, clean tree, sync with origin, tag existence)
+  1.  Milestone and issue triage
+  2.  RELEASE_NOTES.rst review
+  3.  Update docs/source/_static/switcher.json
+  4.  Run pre-commit / style checks
+  5.  Run test suite
+  6.  Commit release preparation changes
+  7.  Push to origin
+  8.  Wait for CI to pass
+  9.  Create and push the release tag
+  10. Create GitHub Release
+  11. Monitor CI workflows (docs, PyPI)
+  12. conda-forge feedstock update
+
+Prerequisites: git, gh, python3, pre-commit
+EOF
+            exit 0
+            ;;
+    esac
+done
+
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
@@ -88,49 +130,12 @@ require_cmd() {
 # Argument / version / dry-run handling
 # ---------------------------------------------------------------------------
 
-usage() {
-    cat <<EOF
-Usage: bash scripts/release.sh [OPTIONS] [VERSION]
-
-Interactive release checklist for hklpy2.  Walks through every release
-step in order, automating what it can and prompting for the rest.
-
-Arguments:
-  VERSION       Release version to prepare (e.g. 0.4.1).
-                Prompted interactively if omitted.
-
-Options:
-  --dry-run     Preview all steps without making any changes.
-                Checks and read-only commands still run; file writes,
-                commits, pushes, tags, and GitHub API calls are skipped.
-  -h, --help    Show this help message and exit.
-
-Steps performed:
-  0.  Preflight checks (branch, clean tree, sync with origin, tag existence)
-  1.  Milestone and issue triage
-  2.  RELEASE_NOTES.rst review
-  3.  Update docs/source/_static/switcher.json
-  4.  Run pre-commit / style checks
-  5.  Run test suite
-  6.  Commit release preparation changes
-  7.  Push to origin
-  8.  Wait for CI to pass
-  9.  Create and push the release tag
-  10. Create GitHub Release
-  11. Monitor CI workflows (docs, PyPI)
-  12. conda-forge feedstock update
-
-Prerequisites: git, gh, python3, pre-commit
-EOF
-}
-
 DRY_RUN="false"
 POSITIONAL_ARGS=()
 
 for arg in "$@"; do
     case "${arg}" in
         --dry-run) DRY_RUN="true" ;;
-        -h|--help) usage; exit 0 ;;
         *) POSITIONAL_ARGS+=("${arg}") ;;
     esac
 done
@@ -249,39 +254,50 @@ step 3 "Update docs/source/_static/switcher.json"
 
 export DRY_RUN
 python3 - <<PYEOF
-import json, sys, os
+import json, os, re
 
 version = "${VERSION}"
 switcher_path = "${SWITCHER_JSON}"
 base_url = "${BASE_URL}"
 dry_run = os.environ.get("DRY_RUN") == "true"
 
+# A pre-release has a suffix like rc1, a1, b2, etc.
+is_prerelease = bool(re.search(r'(a|b|rc)\d+$', version))
+
 with open(switcher_path) as f:
     entries = json.load(f)
 
-# Remove 'preferred' from all entries
-for e in entries:
-    e.pop("preferred", None)
-
 versions = [e["version"] for e in entries]
+
 if version in versions:
-    for e in entries:
-        if e["version"] == version:
-            e["preferred"] = True
-    print(f"  '{version}' already present; marked as preferred.")
+    # Version already present: update preferred flag only for stable releases.
+    if not is_prerelease:
+        for e in entries:
+            e.pop("preferred", None)
+        for e in entries:
+            if e["version"] == version:
+                e["preferred"] = True
+        print(f"  '{version}' already present; marked as preferred.")
+    else:
+        print(f"  '{version}' already present (pre-release; preferred unchanged).")
 else:
-    new_entry = {
-        "version": version,
-        "url": f"{base_url}/{version}/",
-        "preferred": True,
-    }
-    # Insert after the first "latest" entry
+    # Insert after the "latest" entry.
     insert_pos = next(
         (i + 1 for i, e in enumerate(entries) if e.get("version") == "latest"),
         1,
     )
-    entries.insert(insert_pos, new_entry)
-    print(f"  Added '{version}' to switcher.json at position {insert_pos}.")
+    if is_prerelease:
+        # Pre-release: add entry without touching preferred on existing entries.
+        new_entry = {"version": version, "url": f"{base_url}/{version}/"}
+        entries.insert(insert_pos, new_entry)
+        print(f"  Added pre-release '{version}' to switcher.json (preferred unchanged).")
+    else:
+        # Stable release: clear preferred everywhere, mark this one preferred.
+        for e in entries:
+            e.pop("preferred", None)
+        new_entry = {"version": version, "url": f"{base_url}/{version}/", "preferred": True}
+        entries.insert(insert_pos, new_entry)
+        print(f"  Added stable '{version}' to switcher.json and marked as preferred.")
 
 if dry_run:
     print("  [DRY-RUN] would write switcher.json:")
