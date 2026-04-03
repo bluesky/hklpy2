@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=e6d37b13"></script>
+    <script src="_static/documentation_options.js?v=a68e0008"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -420,17 +420,113 @@
 <p>Project <a class="reference external" href="https://github.com/bluesky/hklpy2/milestones">milestones</a>
 describe future plans.</p>
 <section id="id1">
-<h2>0.3.1<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>Released 2026-03-31.</p>
+<h2>0.4.0<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Release expected 2026-04-04.</p>
 <section id="new-features">
 <h3>New Features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add <a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.creator_from_config" title="hklpy2.misc.creator_from_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator_from_config()</span></code></a> to create a simulated
+diffractometer (no hardware) from a saved configuration file or dict.
+(<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/210">issue #210</a>)</p></li>
+</ul>
+</section>
+<section id="enhancements">
+<h3>Enhancements<a class="headerlink" href="#enhancements" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">TypedDict</span></code> subclasses for structured solver and configuration
+dicts: <a class="reference internal" href="autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.ReflectionDict" title="hklpy2.backends.typing.ReflectionDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReflectionDict</span></code></a>,
+<a class="reference internal" href="autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.SampleDict" title="hklpy2.backends.typing.SampleDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">SampleDict</span></code></a>, and
+<a class="reference internal" href="autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.SolverMetadataDict" title="hklpy2.backends.typing.SolverMetadataDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverMetadataDict</span></code></a> in
+<code class="docutils literal notranslate"><span class="pre">backends/typing.py</span></code>; <a class="reference internal" href="autoapi/hklpy2/typing/index.html#hklpy2.typing.ConfigHeaderDict" title="hklpy2.typing.ConfigHeaderDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigHeaderDict</span></code></a> in
+<code class="docutils literal notranslate"><span class="pre">hklpy2/typing.py</span></code>; and <code class="docutils literal notranslate"><span class="pre">HklSolverMetadataDict</span></code> in
+<code class="docutils literal notranslate"><span class="pre">hkl_soleil.py</span></code> as the pattern for solver-specific metadata
+extensions. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/233">issue #233</a>)</p></li>
+<li><p>Consolidate type aliases (<code class="docutils literal notranslate"><span class="pre">KeyValueMap</span></code>, <code class="docutils literal notranslate"><span class="pre">NamedFloatDict</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Matrix3x3</span></code>, <code class="docutils literal notranslate"><span class="pre">NUMERIC</span></code>, <code class="docutils literal notranslate"><span class="pre">AxesDict</span></code>, <code class="docutils literal notranslate"><span class="pre">AxesArray</span></code>, <code class="docutils literal notranslate"><span class="pre">AxesList</span></code>,
+<code class="docutils literal notranslate"><span class="pre">AxesTuple</span></code>, <code class="docutils literal notranslate"><span class="pre">AnyAxesType</span></code>, <code class="docutils literal notranslate"><span class="pre">BlueskyPlanType</span></code>, <code class="docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code>)
+from <a class="reference internal" href="autoapi/hklpy2/misc/index.html#module-hklpy2.misc" title="hklpy2.misc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.misc</span></code></a> into <a class="reference internal" href="autoapi/hklpy2/typing/index.html#module-hklpy2.typing" title="hklpy2.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.typing</span></code></a>; backward-compatible
+re-exports remain in <a class="reference internal" href="autoapi/hklpy2/misc/index.html#module-hklpy2.misc" title="hklpy2.misc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.misc</span></code></a>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/252">issue #252</a>)</p></li>
+<li><p>Export <a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.get_run_orientation" title="hklpy2.misc.get_run_orientation"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_run_orientation()</span></code></a> and
+<a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.list_orientation_runs" title="hklpy2.misc.list_orientation_runs"><code class="xref py py-func docutils literal notranslate"><span class="pre">list_orientation_runs()</span></code></a> at the top-level <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code>
+namespace, consistent with <a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.ConfigurationRunWrapper" title="hklpy2.misc.ConfigurationRunWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a>.
+(<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/231">issue #231</a>)</p></li>
+<li><p>Add how-to guide for choosing the default <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solution picker
+(<code class="docutils literal notranslate"><span class="pre">pick_first_solution</span></code>, <code class="docutils literal notranslate"><span class="pre">pick_closest_solution</span></code>, or custom).
+(<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/224">issue #224</a>)</p></li>
+<li><p>Publish versioned docs: <code class="docutils literal notranslate"><span class="pre">main</span></code> branch to <code class="docutils literal notranslate"><span class="pre">latest/</span></code>, each tag to
+<code class="docutils literal notranslate"><span class="pre">&lt;version&gt;/</span></code>; add version-switcher dropdown to navbar; auto-update
+<code class="docutils literal notranslate"><span class="pre">switcher.json</span></code> on new tags. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/213">issue #213</a>)</p></li>
+<li><p>Show a banner on dev/pre-release doc pages noting that a stable
+version is available, with a link to it. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/213">issue #213</a>)</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h3>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">diffractometer.configuration</span> <span class="pre">=</span> <span class="pre">config</span></code> setter to delegate to
+<a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.restore" title="hklpy2.diffract.DiffractometerBase.restore"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restore()</span></code></a>, applying geometry
+validation, beam/wavelength restoration, and state clearing consistently
+with calling <code class="docutils literal notranslate"><span class="pre">restore()</span></code> directly. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/231">issue #231</a>)</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">LimitsConstraint.valid()</span></code> rejecting solver solutions that land just
+outside a limit boundary due to floating-point arithmetic; increase
+<code class="docutils literal notranslate"><span class="pre">ENDPOINT_TOLERANCE</span></code> from <code class="docutils literal notranslate"><span class="pre">1e-7</span></code> to <code class="docutils literal notranslate"><span class="pre">1e-4</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/242">issue #242</a>)</p></li>
+<li><p>Fix <a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.creator_from_config" title="hklpy2.misc.creator_from_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator_from_config()</span></code></a> restoring reflections with
+wrong axis values when YAML serialises <code class="docutils literal notranslate"><span class="pre">reals</span></code> dict keys alphabetically
+instead of in physical axis order. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/243">issue #243</a>)</p></li>
+<li><p>Fix error message bugs: missing f-string prefix in <code class="docutils literal notranslate"><span class="pre">hkl_soleil.py</span></code>,
+typo <code class="docutils literal notranslate"><span class="pre">&quot;must</span> <span class="pre">by&quot;</span></code> → <code class="docutils literal notranslate"><span class="pre">&quot;must</span> <span class="pre">be&quot;</span></code> in <code class="docutils literal notranslate"><span class="pre">sample.py</span></code>, trailing comma in
+<code class="docutils literal notranslate"><span class="pre">user.py</span></code> <code class="docutils literal notranslate"><span class="pre">set_wavelength()</span></code> message; standardize
+<code class="docutils literal notranslate"><span class="pre">NoForwardSolutions</span></code> message; deduplicate <code class="docutils literal notranslate"><span class="pre">_header</span></code> key message
+into a constant; fix capitalization inconsistency. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/199">issue #199</a>)</p></li>
+<li><p>Sort glossary alphabetically; fix <code class="docutils literal notranslate"><span class="pre">:real:</span></code> → <code class="docutils literal notranslate"><span class="pre">:virtual:</span></code> typo in
+glossary entry. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/235">issue #235</a>)</p></li>
+</ul>
+</section>
+<section id="maintenance">
+<h3>Maintenance<a class="headerlink" href="#maintenance" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">re.escape()</span></code> to all <code class="docutils literal notranslate"><span class="pre">pytest.raises(match=...)</span></code> calls that were
+using raw strings. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/232">issue #232</a>)</p></li>
+<li><p>Clarify the complementary roles of <code class="docutils literal notranslate"><span class="pre">standardize_pseudos</span></code> /
+<code class="docutils literal notranslate"><span class="pre">standardize_reals</span></code> (solver/Core layer, returns <code class="docutils literal notranslate"><span class="pre">AxesDict</span></code>) vs. the
+ophyd <code class="docutils literal notranslate"><span class="pre">&#64;pseudo_position_argument</span></code> / <code class="docutils literal notranslate"><span class="pre">&#64;real_position_argument</span></code>
+decorators (diffractometer layer, returns namedtuple); remove three
+redundant pre-normalisation calls in <code class="docutils literal notranslate"><span class="pre">diffract.py</span></code> where the ophyd
+decorator already handles flexible input. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/247">issue #247</a>)</p></li>
+<li><p>Fix type annotations: <code class="docutils literal notranslate"><span class="pre">*reals</span></code> in <a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.setor" title="hklpy2.user.setor"><code class="xref py py-func docutils literal notranslate"><span class="pre">setor()</span></code></a> from
+<code class="docutils literal notranslate"><span class="pre">AnyAxesType</span></code> to <code class="docutils literal notranslate"><span class="pre">NUMERIC</span></code>; <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> in
+<a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.dict_device_factory" title="hklpy2.misc.dict_device_factory"><code class="xref py py-func docutils literal notranslate"><span class="pre">dict_device_factory()</span></code></a> from <code class="docutils literal notranslate"><span class="pre">KeyValueMap</span></code> to <code class="docutils literal notranslate"><span class="pre">Any</span></code>;
+<code class="docutils literal notranslate"><span class="pre">Matrix3x3</span></code> from deprecated <code class="docutils literal notranslate"><span class="pre">typing.List</span></code> to built-in <code class="docutils literal notranslate"><span class="pre">list</span></code>.
+(<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/230">issue #230</a>)</p></li>
+<li><p>Remove deprecated <code class="docutils literal notranslate"><span class="pre">assert_context_result()</span></code> helper and all 117 call
+sites; fold error message strings into <code class="docutils literal notranslate"><span class="pre">match=re.escape(...)</span></code> on
+<code class="docutils literal notranslate"><span class="pre">pytest.raises()</span></code>; convert bare list param sets to <code class="docutils literal notranslate"><span class="pre">pytest.param()</span></code>
+with <code class="docutils literal notranslate"><span class="pre">id=</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/232">issue #232</a>)</p></li>
+<li><p>Backfill workflow no longer patches <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> from <code class="docutils literal notranslate"><span class="pre">main</span></code>; legacy
+tag builds use their own <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> so the displayed version is correct
+and no switcher dropdown appears in builds that predate it. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/213">issue #213</a>)</p></li>
+<li><p>Refactor <code class="docutils literal notranslate"><span class="pre">scan_extra()</span></code> into smaller methods: extract input validation,
+mover construction, metadata assembly, and inner plan helpers; fix latent
+bug where <code class="docutils literal notranslate"><span class="pre">dict.update()</span></code> returned <code class="docutils literal notranslate"><span class="pre">None</span></code> for run metadata.
+(<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/229">issue #229</a>)</p></li>
+<li><p>Remove resolved TODO comment in <code class="docutils literal notranslate"><span class="pre">__init__.py</span></code>; <code class="docutils literal notranslate"><span class="pre">scan_extra()</span></code> is
+implemented in <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a> and available
+via <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">hklpy2.user</span> <span class="pre">import</span> <span class="pre">*</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/254">issue #254</a>)</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>0.3.1<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>Released 2026-03-31.</p>
+<section id="id3">
+<h3>New Features<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">presets</span></code> dict to supply constant-axis values for <code class="docutils literal notranslate"><span class="pre">forward()</span></code>
 without moving motors; presets are stored per mode. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/190">issue #190</a>)</p></li>
 </ul>
 </section>
-<section id="enhancements">
-<h3>Enhancements<a class="headerlink" href="#enhancements" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>Enhancements<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">preset</span></code> Glossary entry; alphabetize Glossary entries. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/202">issue #202</a>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">presets</span></code> setter now <strong>replaces</strong> the preset dictionary for the current
@@ -451,8 +547,8 @@ Glossary entry. (<a class="extlink-issue reference external" href="https://githu
 <li><p>Use US spelling throughout docs and source. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/202">issue #202</a>)</p></li>
 </ul>
 </section>
-<section id="fixes">
-<h3>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>Fixes<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">%wa</span></code> bluesky magic raises <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> for diffractometers under
 numpy 2.x; this is a bluesky upstream bug triggered by numpy 2.0
@@ -469,8 +565,8 @@ cross-references to point to presets. (<a class="extlink-issue reference externa
 reflections when computing constant-axis modes. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/195">issue #195</a>)</p></li>
 </ul>
 </section>
-<section id="maintenance">
-<h3>Maintenance<a class="headerlink" href="#maintenance" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>Maintenance<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">sphinx.ext.extlinks</span></code> to Sphinx config; define <code class="docutils literal notranslate"><span class="pre">:issue:</span></code> and
 <code class="docutils literal notranslate"><span class="pre">:pr:</span></code> roles pointing to GitHub. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/203">issue #203</a>)</p></li>
@@ -479,33 +575,33 @@ reflections when computing constant-axis modes. (<a class="extlink-issue referen
 </ul>
 </section>
 </section>
-<section id="id2">
-<h2>0.3.0<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>0.3.0<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <p>Released 2026-01-12.</p>
-<section id="id3">
-<h3>New Features<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>New Features<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Support (define, scan) crystallographic zones.</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Fixes<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>Fixes<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>creator() not connecting with EPICS</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>Maintenance<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>Maintenance<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>UB computed from 2 reflections should match expected value.</p></li>
 </ul>
 </section>
 </section>
-<section id="id6">
-<h2>0.2.3<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id11">
+<h2>0.2.3<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
 <p>Released 2025-12-02.</p>
-<section id="id7">
-<h3>Maintenance<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>Maintenance<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add Python type annotations to source code.</p></li>
 <li><p>Add reference to DeepWiki site.</p></li>
@@ -514,29 +610,29 @@ reflections when computing constant-axis modes. (<a class="extlink-issue referen
 </ul>
 </section>
 </section>
-<section id="id8">
-<h2>0.2.2<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id13">
+<h2>0.2.2<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
 <p>Released 2025-11-25.</p>
-<section id="id9">
-<h3>Maintenance<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>Maintenance<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>‘creator()’ and ‘diffractometer_class_factory()’: replace ‘aliases’ with
 ‘_pseudo’ and ‘_real’.</p></li>
 </ul>
 </section>
 </section>
-<section id="id10">
-<h2>0.2.1<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>0.2.1<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <p>Released 2025-11-22.</p>
-<section id="id11">
-<h3>Fixes<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id16">
+<h3>Fixes<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Resolve inconsistent forward() results.</p></li>
 <li><p>WavelengthXray: Synchronize &amp; initialize energy when wavelength changes.</p></li>
 </ul>
 </section>
-<section id="id12">
-<h3>Maintenance<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3>Maintenance<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add APS ISN diffractometer notebook.</p></li>
 <li><p>Lattice: 0.0 and None are different.</p></li>
@@ -544,18 +640,18 @@ reflections when computing constant-axis modes. (<a class="extlink-issue referen
 </ul>
 </section>
 </section>
-<section id="id13">
-<h2>0.2.0<a class="headerlink" href="#id13" title="Link to this heading">#</a></h2>
+<section id="id18">
+<h2>0.2.0<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
 <p>Released 2025-10-10.</p>
-<section id="id14">
-<h3>New Features<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<section id="id19">
+<h3>New Features<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Compute lattice B matrix.</p></li>
 <li><p>‘&#64;crw_decorator()’:  Decorator for the ConfigurationRunWrapper</p></li>
 </ul>
 </section>
-<section id="id15">
-<h3>Fixes<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id20">
+<h3>Fixes<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Allow update of ‘.core.extras[“h2”] = 1.0’</p></li>
 <li><p>Energy was not changed initially by ‘wavelength.put(new_value)’.</p></li>
@@ -564,8 +660,8 @@ reflections when computing constant-axis modes. (<a class="extlink-issue referen
 <li><p>TypeError when diffractometer was not connected.</p></li>
 </ul>
 </section>
-<section id="id16">
-<h3>Maintenance<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<section id="id21">
+<h3>Maintenance<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add advice files for virtual AI chat agents.</p></li>
 <li><p>Add and demonstrate SPEC-style pseudoaxes.</p></li>
@@ -595,44 +691,44 @@ reflections when computing constant-axis modes. (<a class="extlink-issue referen
 </ul>
 </section>
 </section>
-<section id="id17">
-<h2>0.1.5<a class="headerlink" href="#id17" title="Link to this heading">#</a></h2>
+<section id="id22">
+<h2>0.1.5<a class="headerlink" href="#id22" title="Link to this heading">#</a></h2>
 <p>Released 2025-07-21.</p>
-<section id="id18">
-<h3>Fixes<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<section id="id23">
+<h3>Fixes<a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Resolve TypeError raised from auxiliary pseudo position.</p></li>
 </ul>
 </section>
-<section id="id19">
-<h3>Maintenance<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<section id="id24">
+<h3>Maintenance<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Cancel in-progress GHA jobs when new one is started.</p></li>
 <li><p>Remove diffractometer solver_signature component.</p></li>
 </ul>
 </section>
 </section>
-<section id="id20">
-<h2>0.1.4<a class="headerlink" href="#id20" title="Link to this heading">#</a></h2>
+<section id="id25">
+<h2>0.1.4<a class="headerlink" href="#id25" title="Link to this heading">#</a></h2>
 <p>Released 2025-07-18.</p>
-<section id="id21">
-<h3>New Features<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<section id="id26">
+<h3>New Features<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added FAQ document.</p></li>
 <li><p>Added ‘pick_closest_solution()’ as alternative ‘forward()’ decision function.</p></li>
 <li><p>Added ‘VirtualPositionerBase’ base class.</p></li>
 </ul>
 </section>
-<section id="id22">
-<h3>Maintenance<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
+<section id="id27">
+<h3>Maintenance<a class="headerlink" href="#id27" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Completed ‘refineLattice()’ method for both Core and Sample classes.</p></li>
 <li><p>Utility function ‘check_value_in_list()’ not needed at package level.</p></li>
 </ul>
 </section>
 </section>
-<section id="id23">
-<h2>0.1.3<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
+<section id="id28">
+<h2>0.1.3<a class="headerlink" href="#id28" title="Link to this heading">#</a></h2>
 <p>Released 2025-04-16.</p>
 <section id="notice">
 <h3>Notice<a class="headerlink" href="#notice" title="Link to this heading">#</a></h3>
@@ -647,18 +743,18 @@ reflections when computing constant-axis modes. (<a class="extlink-issue referen
 </li>
 </ul>
 </section>
-<section id="id24">
-<h3>Fixes<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
+<section id="id29">
+<h3>Fixes<a class="headerlink" href="#id29" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>core.add_reflection() should define when wavelength=None</p></li>
 </ul>
 </section>
 </section>
-<section id="id25">
-<h2>0.1.2<a class="headerlink" href="#id25" title="Link to this heading">#</a></h2>
+<section id="id30">
+<h2>0.1.2<a class="headerlink" href="#id30" title="Link to this heading">#</a></h2>
 <p>Released 2025-04-14.</p>
-<section id="id26">
-<h3>Fixes<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
+<section id="id31">
+<h3>Fixes<a class="headerlink" href="#id31" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Do not package unit test code.</p></li>
 <li><p>Packaging changes in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
@@ -666,12 +762,12 @@ reflections when computing constant-axis modes. (<a class="extlink-issue referen
 </ul>
 </section>
 </section>
-<section id="id27">
-<h2>0.1.0<a class="headerlink" href="#id27" title="Link to this heading">#</a></h2>
+<section id="id32">
+<h2>0.1.0<a class="headerlink" href="#id32" title="Link to this heading">#</a></h2>
 <p>Released 2025-04-14.</p>
 <p>Initial project development complete.</p>
-<section id="id28">
-<h3>Notice<a class="headerlink" href="#id28" title="Link to this heading">#</a></h3>
+<section id="id33">
+<h3>Notice<a class="headerlink" href="#id33" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Ready for relocation to Bluesky organization on GitHub.</p></li>
 <li><p>See <a class="reference internal" href="concepts.html#concepts"><span class="std std-ref">Concepts</span></a> for more details about how this works.</p></li>
@@ -729,59 +825,66 @@ reflections when computing constant-axis modes. (<a class="extlink-issue referen
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">0.3.1</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">0.4.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-features">New Features</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enhancements">Enhancements</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixes">Fixes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maintenance">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">0.3.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">0.3.1</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">New Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Fixes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Maintenance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Enhancements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">0.2.3</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Maintenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">0.3.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">New Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">0.2.2</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Maintenance</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">0.2.1</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">0.2.3</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">0.2.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">New Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Fixes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">Maintenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">0.2.2</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">0.1.5</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">Fixes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">Maintenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">0.2.1</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">0.1.4</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">New Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">Maintenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">0.2.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">New Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">0.1.3</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">0.1.5</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">Maintenance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">0.1.4</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">New Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">Maintenance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">0.1.3</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notice">Notice</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">Fixes</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">0.1.2</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">Fixes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">0.1.2</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">Fixes</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">0.1.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">Notice</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">0.1.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">Notice</a></li>
 </ul>
 </li>
 </ul>
