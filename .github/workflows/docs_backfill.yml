@@ -168,16 +168,14 @@ jobs:
           BASE_URL: https://blueskyproject.io/hklpy2
 
       - name: Remove pre-release doc directories from gh-pages on stable tag
+        if: >
+          !startsWith(env.DOC_VERSION, '0.') &&
+          !contains(env.DOC_VERSION, 'a') &&
+          !contains(env.DOC_VERSION, 'b') &&
+          !contains(env.DOC_VERSION, 'rc')
         run: |
           set -euo pipefail
           VERSION="${DOC_VERSION}"
-
-          # Only act on stable (non-pre-release) tags.
-          # Pre-release: rc/a/b suffix OR major version 0.
-          if echo "${VERSION}" | grep -qE '(a|b|rc)[0-9]+$' || echo "${VERSION}" | grep -qE '^0\.'; then
-            echo "Pre-release tag ${VERSION} — skipping directory pruning."
-            exit 0
-          fi
 
           # Delete gh-pages/<base>rcN, <base>aN, <base>bN directories if present.
           PRUNED=()
