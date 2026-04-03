@@ -30,99 +30,99 @@ describe future plans.
 
     Release expected 2026-H1.
 
-    0.3.2
-    ##########
+0.4.0
+#####
 
-    Release expected 2026-H1.
+Release expected 2026-04-04.
 
-    New Features
-    ------------
+New Features
+------------
 
-    * Add :func:`~hklpy2.misc.creator_from_config` to create a simulated
-      diffractometer (no hardware) from a saved configuration file or dict.
-      (:issue:`210`)
+* Add :func:`~hklpy2.misc.creator_from_config` to create a simulated
+  diffractometer (no hardware) from a saved configuration file or dict.
+  (:issue:`210`)
 
-    Enhancements
-    ------------
+Enhancements
+------------
 
-    * Add ``TypedDict`` subclasses for structured solver and configuration
-      dicts: :class:`~hklpy2.backends.typing.ReflectionDict`,
-      :class:`~hklpy2.backends.typing.SampleDict`, and
-      :class:`~hklpy2.backends.typing.SolverMetadataDict` in
-      ``backends/typing.py``; :class:`~hklpy2.typing.ConfigHeaderDict` in
-      ``hklpy2/typing.py``; and ``HklSolverMetadataDict`` in
-      ``hkl_soleil.py`` as the pattern for solver-specific metadata
-      extensions. (:issue:`233`)
-    * Consolidate type aliases (``KeyValueMap``, ``NamedFloatDict``,
-      ``Matrix3x3``, ``NUMERIC``, ``AxesDict``, ``AxesArray``, ``AxesList``,
-      ``AxesTuple``, ``AnyAxesType``, ``BlueskyPlanType``, ``INPUT_VECTOR``)
-      from :mod:`hklpy2.misc` into :mod:`hklpy2.typing`; backward-compatible
-      re-exports remain in :mod:`hklpy2.misc`. (:issue:`252`)
-    * Export :func:`~hklpy2.misc.get_run_orientation` and
-      :func:`~hklpy2.misc.list_orientation_runs` at the top-level ``hklpy2``
-      namespace, consistent with :class:`~hklpy2.misc.ConfigurationRunWrapper`.
-      (:issue:`231`)
-    * Add how-to guide for choosing the default ``forward()`` solution picker
-      (``pick_first_solution``, ``pick_closest_solution``, or custom).
-      (:issue:`224`)
-    * Publish versioned docs: ``main`` branch to ``latest/``, each tag to
-      ``<version>/``; add version-switcher dropdown to navbar; auto-update
-      ``switcher.json`` on new tags. (:issue:`213`)
-    * Show a banner on dev/pre-release doc pages noting that a stable
-      version is available, with a link to it. (:issue:`213`)
+* Add ``TypedDict`` subclasses for structured solver and configuration
+  dicts: :class:`~hklpy2.backends.typing.ReflectionDict`,
+  :class:`~hklpy2.backends.typing.SampleDict`, and
+  :class:`~hklpy2.backends.typing.SolverMetadataDict` in
+  ``backends/typing.py``; :class:`~hklpy2.typing.ConfigHeaderDict` in
+  ``hklpy2/typing.py``; and ``HklSolverMetadataDict`` in
+  ``hkl_soleil.py`` as the pattern for solver-specific metadata
+  extensions. (:issue:`233`)
+* Consolidate type aliases (``KeyValueMap``, ``NamedFloatDict``,
+  ``Matrix3x3``, ``NUMERIC``, ``AxesDict``, ``AxesArray``, ``AxesList``,
+  ``AxesTuple``, ``AnyAxesType``, ``BlueskyPlanType``, ``INPUT_VECTOR``)
+  from :mod:`hklpy2.misc` into :mod:`hklpy2.typing`; backward-compatible
+  re-exports remain in :mod:`hklpy2.misc`. (:issue:`252`)
+* Export :func:`~hklpy2.misc.get_run_orientation` and
+  :func:`~hklpy2.misc.list_orientation_runs` at the top-level ``hklpy2``
+  namespace, consistent with :class:`~hklpy2.misc.ConfigurationRunWrapper`.
+  (:issue:`231`)
+* Add how-to guide for choosing the default ``forward()`` solution picker
+  (``pick_first_solution``, ``pick_closest_solution``, or custom).
+  (:issue:`224`)
+* Publish versioned docs: ``main`` branch to ``latest/``, each tag to
+  ``<version>/``; add version-switcher dropdown to navbar; auto-update
+  ``switcher.json`` on new tags. (:issue:`213`)
+* Show a banner on dev/pre-release doc pages noting that a stable
+  version is available, with a link to it. (:issue:`213`)
 
-    Fixes
-    -----
+Fixes
+-----
 
-    * Fix ``diffractometer.configuration = config`` setter to delegate to
-      :meth:`~hklpy2.diffract.DiffractometerBase.restore`, applying geometry
-      validation, beam/wavelength restoration, and state clearing consistently
-      with calling ``restore()`` directly. (:issue:`231`)
+* Fix ``diffractometer.configuration = config`` setter to delegate to
+  :meth:`~hklpy2.diffract.DiffractometerBase.restore`, applying geometry
+  validation, beam/wavelength restoration, and state clearing consistently
+  with calling ``restore()`` directly. (:issue:`231`)
 
-    * Fix ``LimitsConstraint.valid()`` rejecting solver solutions that land just
-      outside a limit boundary due to floating-point arithmetic; increase
-      ``ENDPOINT_TOLERANCE`` from ``1e-7`` to ``1e-4``. (:issue:`242`)
-    * Fix :func:`~hklpy2.misc.creator_from_config` restoring reflections with
-      wrong axis values when YAML serialises ``reals`` dict keys alphabetically
-      instead of in physical axis order. (:issue:`243`)
-    * Fix error message bugs: missing f-string prefix in ``hkl_soleil.py``,
-      typo ``"must by"`` → ``"must be"`` in ``sample.py``, trailing comma in
-      ``user.py`` ``set_wavelength()`` message; standardize
-      ``NoForwardSolutions`` message; deduplicate ``_header`` key message
-      into a constant; fix capitalization inconsistency. (:issue:`199`)
-    * Sort glossary alphabetically; fix ``:real:`` → ``:virtual:`` typo in
-      glossary entry. (:issue:`235`)
+* Fix ``LimitsConstraint.valid()`` rejecting solver solutions that land just
+  outside a limit boundary due to floating-point arithmetic; increase
+  ``ENDPOINT_TOLERANCE`` from ``1e-7`` to ``1e-4``. (:issue:`242`)
+* Fix :func:`~hklpy2.misc.creator_from_config` restoring reflections with
+  wrong axis values when YAML serialises ``reals`` dict keys alphabetically
+  instead of in physical axis order. (:issue:`243`)
+* Fix error message bugs: missing f-string prefix in ``hkl_soleil.py``,
+  typo ``"must by"`` → ``"must be"`` in ``sample.py``, trailing comma in
+  ``user.py`` ``set_wavelength()`` message; standardize
+  ``NoForwardSolutions`` message; deduplicate ``_header`` key message
+  into a constant; fix capitalization inconsistency. (:issue:`199`)
+* Sort glossary alphabetically; fix ``:real:`` → ``:virtual:`` typo in
+  glossary entry. (:issue:`235`)
 
-    Maintenance
-    -----------
+Maintenance
+-----------
 
-    * Add ``re.escape()`` to all ``pytest.raises(match=...)`` calls that were
-      using raw strings. (:issue:`232`)
-    * Clarify the complementary roles of ``standardize_pseudos`` /
-      ``standardize_reals`` (solver/Core layer, returns ``AxesDict``) vs. the
-      ophyd ``@pseudo_position_argument`` / ``@real_position_argument``
-      decorators (diffractometer layer, returns namedtuple); remove three
-      redundant pre-normalisation calls in ``diffract.py`` where the ophyd
-      decorator already handles flexible input. (:issue:`247`)
-    * Fix type annotations: ``*reals`` in :func:`~hklpy2.user.setor` from
-      ``AnyAxesType`` to ``NUMERIC``; ``**kwargs`` in
-      :func:`~hklpy2.misc.dict_device_factory` from ``KeyValueMap`` to ``Any``;
-      ``Matrix3x3`` from deprecated ``typing.List`` to built-in ``list``.
-      (:issue:`230`)
-    * Remove deprecated ``assert_context_result()`` helper and all 117 call
-      sites; fold error message strings into ``match=re.escape(...)`` on
-      ``pytest.raises()``; convert bare list param sets to ``pytest.param()``
-      with ``id=``. (:issue:`232`)
-    * Backfill workflow no longer patches ``conf.py`` from ``main``; legacy
-      tag builds use their own ``conf.py`` so the displayed version is correct
-      and no switcher dropdown appears in builds that predate it. (:issue:`213`)
-    * Refactor ``scan_extra()`` into smaller methods: extract input validation,
-      mover construction, metadata assembly, and inner plan helpers; fix latent
-      bug where ``dict.update()`` returned ``None`` for run metadata.
-      (:issue:`229`)
-    * Remove resolved TODO comment in ``__init__.py``; ``scan_extra()`` is
-      implemented in :class:`~hklpy2.diffract.DiffractometerBase` and available
-      via ``from hklpy2.user import *``. (:issue:`254`)
+* Add ``re.escape()`` to all ``pytest.raises(match=...)`` calls that were
+  using raw strings. (:issue:`232`)
+* Clarify the complementary roles of ``standardize_pseudos`` /
+  ``standardize_reals`` (solver/Core layer, returns ``AxesDict``) vs. the
+  ophyd ``@pseudo_position_argument`` / ``@real_position_argument``
+  decorators (diffractometer layer, returns namedtuple); remove three
+  redundant pre-normalisation calls in ``diffract.py`` where the ophyd
+  decorator already handles flexible input. (:issue:`247`)
+* Fix type annotations: ``*reals`` in :func:`~hklpy2.user.setor` from
+  ``AnyAxesType`` to ``NUMERIC``; ``**kwargs`` in
+  :func:`~hklpy2.misc.dict_device_factory` from ``KeyValueMap`` to ``Any``;
+  ``Matrix3x3`` from deprecated ``typing.List`` to built-in ``list``.
+  (:issue:`230`)
+* Remove deprecated ``assert_context_result()`` helper and all 117 call
+  sites; fold error message strings into ``match=re.escape(...)`` on
+  ``pytest.raises()``; convert bare list param sets to ``pytest.param()``
+  with ``id=``. (:issue:`232`)
+* Backfill workflow no longer patches ``conf.py`` from ``main``; legacy
+  tag builds use their own ``conf.py`` so the displayed version is correct
+  and no switcher dropdown appears in builds that predate it. (:issue:`213`)
+* Refactor ``scan_extra()`` into smaller methods: extract input validation,
+  mover construction, metadata assembly, and inner plan helpers; fix latent
+  bug where ``dict.update()`` returned ``None`` for run metadata.
+  (:issue:`229`)
+* Remove resolved TODO comment in ``__init__.py``; ``scan_extra()`` is
+  implemented in :class:`~hklpy2.diffract.DiffractometerBase` and available
+  via ``from hklpy2.user import *``. (:issue:`254`)
 
 0.3.1
 ##########
