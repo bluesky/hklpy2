@@ -30,7 +30,7 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    0.4.1
+    0.4.2
     #####
 
     Release expected by 2026-H1.
