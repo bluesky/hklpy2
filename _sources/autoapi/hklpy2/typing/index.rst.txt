@@ -5,13 +5,30 @@ hklpy2.typing
 
 .. autoapi-nested-parse::
 
-   Package-level typed dictionary structures for |hklpy2|.
+   Package-level type aliases and typed dictionary structures for |hklpy2|.
 
-   This module is the future consolidation point for all type aliases and
-   ``TypedDict`` subclasses currently scattered across the codebase (see
-   :issue:`252` for the full ``misc.py`` migration plan).
+   Consolidates the type aliases previously defined in :mod:`hklpy2.misc` (see
+   :issue:`252`) alongside the ``TypedDict`` subclasses introduced in
+   :issue:`233`.  :mod:`hklpy2.misc` re-exports everything defined here for
+   backward compatibility.
 
-   At present it holds structures that belong above the backends layer:
+   .. rubric:: Simple type aliases
+
+   .. autosummary::
+
+       ~AnyAxesType
+       ~AxesArray
+       ~AxesDict
+       ~AxesList
+       ~AxesTuple
+       ~BlueskyPlanType
+       ~INPUT_VECTOR
+       ~KeyValueMap
+       ~Matrix3x3
+       ~NamedFloatDict
+       ~NUMERIC
+
+   .. rubric:: TypedDict structures
 
    .. autosummary::
 
@@ -24,6 +41,24 @@ hklpy2.typing
 
 
 
+Attributes
+----------
+
+.. autoapisummary::
+
+   hklpy2.typing.BlueskyPlanType
+   hklpy2.typing.KeyValueMap
+   hklpy2.typing.NUMERIC
+   hklpy2.typing.INPUT_VECTOR
+   hklpy2.typing.AxesArray
+   hklpy2.typing.AxesDict
+   hklpy2.typing.AxesList
+   hklpy2.typing.AxesTuple
+   hklpy2.typing.AnyAxesType
+   hklpy2.typing.Matrix3x3
+   hklpy2.typing.NamedFloatDict
+
+
 Classes
 -------
 
@@ -34,6 +69,64 @@ Classes
 
 Module Contents
 ---------------
+
+.. py:data:: BlueskyPlanType
+
+   Type of a bluesky plan.
+
+.. py:data:: KeyValueMap
+
+   Dictionary for configuration and other.
+
+.. py:data:: NUMERIC
+
+   Either integer or real number.
+
+.. py:data:: INPUT_VECTOR
+
+   Acceptable forms of vector input for zones, ...
+
+.. py:data:: AxesArray
+
+   Numpy array of axes values.
+
+.. py:data:: AxesDict
+
+   Dictionary of axes names and values.
+
+.. py:data:: AxesList
+
+   List of axes values.
+
+.. py:data:: AxesTuple
+
+   Tuple of axes values.
+
+.. py:data:: AnyAxesType
+
+   Any of these types are used to describe both pseudo and real axes.
+
+   =============   =========================   ====================
+   description     example                     type annotation
+   =============   =========================   ====================
+   dict            {"h": 0, "k": 1, "l": -1}   AxesDict
+   namedtuple      (h=0.0, k=1.0, l=-1.0)      AxesTuple
+   numpy array     numpy.array([0, 1, -1])     AxesArray
+   ordered list    [0, 1, -1]                  AxesList
+   ordered tuple   (0, 1, -1)                  AxesTuple
+   =============   =========================   ====================
+
+.. py:data:: Matrix3x3
+
+   mutable orientation & rotation matrices.
+
+   :type: Python type annotation
+
+.. py:data:: NamedFloatDict
+
+   dictionary of named floats.
+
+   :type: Python type annotation
 
 .. py:class:: ConfigHeaderDict
 

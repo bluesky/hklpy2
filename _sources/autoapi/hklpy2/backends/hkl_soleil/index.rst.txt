@@ -307,7 +307,7 @@ Module Contents
       Updated by 'forward()' computation.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.misc.Matrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.typing.Matrix3x3
 
       Calculate the UB (orientation) matrix with two reflections.
 
@@ -361,7 +361,7 @@ Module Contents
 
 
    .. py:property:: extras
-      :type: hklpy2.misc.NamedFloatDict
+      :type: hklpy2.typing.NamedFloatDict
 
 
       Ordered dictionary of any extra parameters.
@@ -369,7 +369,7 @@ Module Contents
       Depends on selected geometry, engine, and mode.
 
 
-   .. py:method:: forward(pseudos: hklpy2.misc.NamedFloatDict) -> List[hklpy2.misc.NamedFloatDict]
+   .. py:method:: forward(pseudos: hklpy2.typing.NamedFloatDict) -> List[hklpy2.typing.NamedFloatDict]
 
       Compute list of solutions(reals) from pseudos (hkl -> [angles]).
 
@@ -385,14 +385,14 @@ Module Contents
 
 
 
-   .. py:method:: inverse(reals: hklpy2.misc.NamedFloatDict) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: inverse(reals: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
 
       Compute tuple of pseudos from reals (angles -> hkl).
 
 
 
    .. py:property:: lattice
-      :type: hklpy2.misc.NamedFloatDict
+      :type: hklpy2.typing.NamedFloatDict
 
 
       Dictionary of crystal lattice parameters.
@@ -426,7 +426,7 @@ Module Contents
       List of defined reflections (no store reflection names in libhkl).
 
 
-   .. py:method:: refineLattice(reflections: list[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: refineLattice(reflections: list[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.typing.NamedFloatDict
 
       Refine the lattice parameters from a list of reflections.
 
@@ -447,7 +447,7 @@ Module Contents
       Crystalline sample.  libhkl's sample object.
 
 
-   .. py:method:: set_reals(reals: hklpy2.misc.NamedFloatDict) -> None
+   .. py:method:: set_reals(reals: hklpy2.typing.NamedFloatDict) -> None
 
       Set the values of all the real axes.
 
@@ -490,7 +490,7 @@ Module Contents
 
 
    .. py:property:: U
-      :type: hklpy2.misc.Matrix3x3
+      :type: hklpy2.typing.Matrix3x3
 
 
       Relative orientation of crystal on diffractometer.
@@ -499,7 +499,7 @@ Module Contents
 
 
    .. py:property:: UB
-      :type: hklpy2.misc.Matrix3x3
+      :type: hklpy2.typing.Matrix3x3
 
 
       Orientation matrix (3x3).

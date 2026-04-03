@@ -138,7 +138,7 @@ Module Contents
            tth=24.509837696782)
 
 
-.. py:function:: cahkl_table(*reflections: list[hklpy2.misc.AxesTuple], digits=4) -> pyRestTable.Table
+.. py:function:: cahkl_table(*reflections: list[hklpy2.typing.AxesTuple], digits=4) -> pyRestTable.Table
 
    Print a table with motor positions for each reflection given.
 
@@ -177,7 +177,7 @@ Module Contents
    :type digits: int
 
 
-.. py:function:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str], wavelength: Optional[float] = None) -> hklpy2.misc.Matrix3x3
+.. py:function:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str], wavelength: Optional[float] = None) -> hklpy2.typing.Matrix3x3
 
    Compute the UB matrix with two reflections.
 
@@ -268,7 +268,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.remove_sample`
 
 
-.. py:function:: or_swap() -> hklpy2.misc.Matrix3x3
+.. py:function:: or_swap() -> hklpy2.typing.Matrix3x3
 
    Swap the first 2 ORienting reflections, re-compute & return new [UB].
 
@@ -373,7 +373,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.list_samples`
 
 
-.. py:function:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.misc.BlueskyPlanType
+.. py:function:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = {}, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.typing.BlueskyPlanType
 
    Scan diffractometer parameter(s) at constant pseudos or reals.
 
@@ -469,7 +469,7 @@ Module Contents
        >>> set_lattice(3, c=4, gamma=120)
 
 
-.. py:function:: setor(h, k, l, *reals: hklpy2.misc.NUMERIC, wavelength=None, name=None, **kwreals: hklpy2.misc.AxesDict) -> hklpy2.blocks.reflection.Reflection
+.. py:function:: setor(h, k, l, *reals: hklpy2.typing.NUMERIC, wavelength=None, name=None, **kwreals: hklpy2.typing.AxesDict) -> hklpy2.blocks.reflection.Reflection
 
    Define an ORienting reflection.
 
