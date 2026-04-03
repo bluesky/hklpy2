@@ -28,12 +28,17 @@ describe future plans.
     1.0.0
     #####
 
-    Release expected 2026-H1.
+    Release expected 2026-Q3.
+
+    0.4.1
+    #####
+
+    Release expected by 2026-H1.
 
 0.4.1
 #####
 
-Release expected by 2026-04-05.
+Released 2026-04-03.
 
 Fixes
 -----
