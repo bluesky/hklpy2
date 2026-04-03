@@ -98,6 +98,12 @@ describe future plans.
 
     * Add ``re.escape()`` to all ``pytest.raises(match=...)`` calls that were
       using raw strings. (:issue:`232`)
+    * Clarify the complementary roles of ``standardize_pseudos`` /
+      ``standardize_reals`` (solver/Core layer, returns ``AxesDict``) vs. the
+      ophyd ``@pseudo_position_argument`` / ``@real_position_argument``
+      decorators (diffractometer layer, returns namedtuple); remove three
+      redundant pre-normalisation calls in ``diffract.py`` where the ophyd
+      decorator already handles flexible input. (:issue:`247`)
     * Fix type annotations: ``*reals`` in :func:`~hklpy2.user.setor` from
       ``AnyAxesType`` to ``NUMERIC``; ``**kwargs`` in
       :func:`~hklpy2.misc.dict_device_factory` from ``KeyValueMap`` to ``Any``;

@@ -1046,8 +1046,21 @@ class Core:
 
         * dict: {"h": 0, "k": 1, "l": -1}
         * namedtuple: (h=0.0, k=1.0, l=-1.0)
+        * numpy array: numpy.array([0, 1, -1])
         * ordered list: [0, 1, -1]  (for h, k, l)
         * ordered tuple: (0, 1, -1)  (for h, k, l)
+
+        .. note::
+
+            This method operates at the **solver / Core layer** and returns an
+            ordered :obj:`~hklpy2.typing.AxesDict` keyed by solver axis names.
+            It is complementary to — not a replacement for — the ophyd
+            ``@pseudo_position_argument`` decorator used on
+            :meth:`~hklpy2.diffract.Diffractometer.forward`.  That decorator
+            normalises flexible user input into an ophyd ``PseudoPosition``
+            namedtuple at the *diffractometer* layer; this method converts any
+            of those forms (plus numpy arrays) into the ``AxesDict`` that the
+            solver expects.
         """
         return axes_to_dict(pseudos, self.local_pseudo_axes)
 
@@ -1057,11 +1070,25 @@ class Core:
 
         User could provide reals in several forms:
 
-        * None: current positions
+        * None: current positions (read from the diffractometer)
         * dict: {"omega": 120, "chi": 35.3, "phi": 45, "tth": -120}
         * namedtuple: (omega=120, chi=35.3, phi=45, tth=-120)
+        * numpy array: numpy.array([120, 35.3, 45, -120])
         * ordered list: [120, 35.3, 45, -120]  (for omega, chi, phi, tth)
         * ordered tuple: (120, 35.3, 45, -120)  (for omega, chi, phi, tth)
+
+        .. note::
+
+            This method operates at the **solver / Core layer** and returns an
+            ordered :obj:`~hklpy2.typing.AxesDict` keyed by solver axis names.
+            It is complementary to — not a replacement for — the ophyd
+            ``@real_position_argument`` decorator used on
+            :meth:`~hklpy2.diffract.Diffractometer.inverse` and
+            :meth:`~hklpy2.diffract.Diffractometer.move_reals`.  That decorator
+            normalises flexible user input into an ophyd ``RealPosition``
+            namedtuple at the *diffractometer* layer; this method converts any
+            of those forms (plus ``None`` and numpy arrays) into the
+            ``AxesDict`` that the solver expects.
         """
 
         if reals is None:  # write ordered dict
