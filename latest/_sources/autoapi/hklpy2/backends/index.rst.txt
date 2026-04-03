@@ -18,6 +18,7 @@ hklpy2.backends
        ~no_op
        ~th_tth_q
        ~base
+       ~typing
 
 
 
@@ -32,6 +33,7 @@ Submodules
    /autoapi/hklpy2/backends/hkl_soleil_utils/index
    /autoapi/hklpy2/backends/no_op/index
    /autoapi/hklpy2/backends/th_tth_q/index
+   /autoapi/hklpy2/backends/typing/index
 
 
 Classes
@@ -40,6 +42,9 @@ Classes
 .. autoapisummary::
 
    hklpy2.backends.SolverBase
+   hklpy2.backends.ReflectionDict
+   hklpy2.backends.SampleDict
+   hklpy2.backends.SolverMetadataDict
 
 
 Package Contents
@@ -168,7 +173,7 @@ Package Contents
 
 
    .. py:attribute:: _sample
-      :type:  Optional[hklpy2.misc.KeyValueMap]
+      :type:  Optional[hklpy2.backends.typing.SampleDict]
       :value: None
 
 
@@ -177,13 +182,13 @@ Package Contents
 
 
    .. py:property:: _metadata
-      :type: hklpy2.misc.KeyValueMap
+      :type: hklpy2.backends.typing.SolverMetadataDict
 
 
       Dictionary with this solver's summary metadata.
 
 
-   .. py:method:: addReflection(reflection: hklpy2.misc.KeyValueMap) -> None
+   .. py:method:: addReflection(reflection: hklpy2.backends.typing.ReflectionDict) -> None
       :abstractmethod:
 
 
@@ -198,7 +203,7 @@ Package Contents
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.misc.KeyValueMap, r2: hklpy2.misc.KeyValueMap) -> hklpy2.misc.Matrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.misc.Matrix3x3
       :abstractmethod:
 
 
@@ -304,7 +309,7 @@ Package Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: List[hklpy2.misc.KeyValueMap]) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: refineLattice(reflections: List[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.misc.NamedFloatDict
       :abstractmethod:
 
 
@@ -321,7 +326,7 @@ Package Contents
 
 
    .. py:property:: sample
-      :type: Union[hklpy2.misc.KeyValueMap, None]
+      :type: Union[hklpy2.backends.typing.SampleDict, None]
 
 
       Crystalline sample.
@@ -349,5 +354,130 @@ Package Contents
 
 
       Orientation matrix (3x3).
+
+
+.. py:class:: ReflectionDict
+
+   Bases: :py:obj:`TypedDict`
+
+
+   Typed structure for a single diffraction reflection.
+
+   Keys
+   ----
+   name : str
+       Label for this reflection (e.g. ``"r1"``).
+   pseudos : Dict[str, float]
+       Pseudo-axis values at this reflection, keyed by pseudo axis name
+       (e.g. ``{"h": 1.0, "k": 0.0, "l": 0.0}``).
+   reals : Dict[str, float]
+       Real-axis values at this reflection, keyed by solver axis name
+       (e.g. ``{"omega": 10.0, "chi": 0.0, "phi": 0.0, "tth": 20.0}``).
+   wavelength : float
+       Incident wavelength (Å) used when the reflection was measured.
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: pseudos
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: reals
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: wavelength
+      :type:  float
+
+
+.. py:class:: SampleDict
+
+   Bases: :py:obj:`TypedDict`
+
+
+   Typed structure for a crystalline sample.
+
+   Keys
+   ----
+   name : str
+       Human-readable label for the sample.
+   lattice : Dict[str, float]
+       Unit-cell parameters ``{"a", "b", "c", "alpha", "beta", "gamma"}``.
+   reflections : Dict[str, ReflectionDict]
+       Mapping of reflection name → :class:`ReflectionDict`.
+   order : List[str]
+       Reflection names in the order they should be added to the solver
+       (controls which two are used for UB calculation).
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: lattice
+      :type:  Dict[str, float]
+
+
+   .. py:attribute:: reflections
+      :type:  Dict[str, ReflectionDict]
+
+
+   .. py:attribute:: order
+      :type:  List[str]
+
+
+.. py:class:: SolverMetadataDict
+
+   Bases: :py:obj:`TypedDict`
+
+
+   Typed structure for the **common** solver summary metadata.
+
+   Returned by :attr:`~hklpy2.backends.base.SolverBase._metadata` and
+   stored under the ``"solver"`` key in the configuration dictionary.
+
+   This class defines only the keys that every solver is required to
+   provide.  Solver-specific extra fields should be added by subclassing
+   with ``total=False`` in the solver's own module.  Example::
+
+       # in backends/hkl_soleil.py
+       class HklSolverMetadataDict(SolverMetadataDict, total=False):
+           engine: str
+
+   Keys
+   ----
+   name : str
+       Solver name (e.g. ``"no_op"``, ``"hkl_soleil"``).
+   description : str
+       Human-readable repr string.
+   geometry : str
+       Selected geometry name (e.g. ``"E4CV"``).
+   real_axes : List[str]
+       Ordered list of real axis names.
+   version : str
+       Version string for the solver library.
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+   .. py:attribute:: description
+      :type:  str
+
+
+   .. py:attribute:: geometry
+      :type:  str
+
+
+   .. py:attribute:: real_axes
+      :type:  List[str]
+
+
+   .. py:attribute:: version
+      :type:  str
 
 

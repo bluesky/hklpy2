@@ -56,6 +56,7 @@ Classes
 
 .. autoapisummary::
 
+   hklpy2.backends.hkl_soleil.HklSolverMetadataDict
    hklpy2.backends.hkl_soleil.HklSolver
 
 
@@ -74,6 +75,34 @@ Module Contents
 ---------------
 
 .. py:data:: logger
+
+.. py:class:: HklSolverMetadataDict
+
+   Bases: :py:obj:`hklpy2.backends.typing.SolverMetadataDict`
+
+
+   Solver metadata specific to the ``hkl_soleil`` backend.
+
+   Extends :class:`~hklpy2.backends.typing.SolverMetadataDict` with the
+   fields that are specific to the |libhkl|-based solver.  Using
+   ``total=False`` means all extra keys declared here are optional at
+   runtime; callers that only inspect the common
+   :class:`~hklpy2.backends.typing.SolverMetadataDict` contract are
+   unaffected.
+
+   Other solvers that need bespoke metadata keys should follow the same
+   pattern: subclass :class:`~hklpy2.backends.typing.SolverMetadataDict`
+   with ``total=False`` and place the subclass in that solver's own module.
+
+   Additional keys
+   ---------------
+   engine : str
+       Name of the computational engine (e.g. ``"hkl"``, ``"psi"``).
+
+
+   .. py:attribute:: engine
+      :type:  str
+
 
 .. py:data:: libhkl
 
@@ -240,7 +269,14 @@ Module Contents
    .. py:method:: __repr__() -> str
 
 
-   .. py:method:: addReflection(reflection: hklpy2.misc.KeyValueMap) -> None
+   .. py:property:: _metadata
+      :type: HklSolverMetadataDict
+
+
+      Dictionary with this solver's summary metadata, including engine.
+
+
+   .. py:method:: addReflection(reflection: hklpy2.backends.typing.ReflectionDict) -> None
 
       Add coordinates of a diffraction condition (a reflection).
 
@@ -271,7 +307,7 @@ Module Contents
       Updated by 'forward()' computation.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.misc.KeyValueMap, r2: hklpy2.misc.KeyValueMap) -> hklpy2.misc.Matrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.misc.Matrix3x3
 
       Calculate the UB (orientation) matrix with two reflections.
 
@@ -384,13 +420,13 @@ Module Contents
 
 
    .. py:property:: reflections
-      :type: Dict[str, hklpy2.misc.KeyValueMap]
+      :type: Dict[str, hklpy2.backends.typing.ReflectionDict]
 
 
       List of defined reflections (no store reflection names in libhkl).
 
 
-   .. py:method:: refineLattice(reflections: list[hklpy2.misc.KeyValueMap]) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: refineLattice(reflections: list[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.misc.NamedFloatDict
 
       Refine the lattice parameters from a list of reflections.
 
@@ -405,7 +441,7 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: hklpy2.misc.KeyValueMap
+      :type: hklpy2.backends.typing.SampleDict
 
 
       Crystalline sample.  libhkl's sample object.
