@@ -120,6 +120,9 @@ describe future plans.
       mover construction, metadata assembly, and inner plan helpers; fix latent
       bug where ``dict.update()`` returned ``None`` for run metadata.
       (:issue:`229`)
+    * Remove resolved TODO comment in ``__init__.py``; ``scan_extra()`` is
+      implemented in :class:`~hklpy2.diffract.DiffractometerBase` and available
+      via ``from hklpy2.user import *``. (:issue:`254`)
 
 0.3.1
 ##########
