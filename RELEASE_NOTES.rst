@@ -35,6 +35,22 @@ describe future plans.
 
     Release expected by 2026-04-05.
 
+    Fixes
+    -----
+
+    * Fix docs workflow race condition: ``switcher.json`` update now pulls
+      with rebase before pushing to ``gh-pages``, preventing ``fetch first``
+      push failures when a concurrent deploy has already advanced the branch.
+      (:issue:`263`)
+
+    Maintenance
+    -----------
+
+    * Add ``scripts/release.sh`` interactive release checklist: automates
+      ``switcher.json`` update, pre-commit, commit, tag, and GitHub Release
+      steps in the correct order; supports ``--dry-run`` to preview all
+      actions without making changes. (:issue:`263`)
+
 0.4.0
 #####
 
