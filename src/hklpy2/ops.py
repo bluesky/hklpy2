@@ -18,6 +18,7 @@ from typing import Optional
 from typing import Union
 
 from .backends.base import SolverBase
+from .typing import ConfigHeaderDict
 from .blocks.configure import Configuration
 from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
@@ -130,12 +131,13 @@ class Core:
         """Describe the diffractometer as a dictionary."""
         from .__init__ import __version__
 
+        header: ConfigHeaderDict = {
+            "datetime": str(datetime.datetime.now()),
+            "hklpy2_version": __version__,
+            "python_class": self.diffractometer.__class__.__name__,
+        }
         config = {
-            "_header": {
-                "datetime": str(datetime.datetime.now()),
-                "hklpy2_version": __version__,
-                "python_class": self.diffractometer.__class__.__name__,
-            },
+            "_header": header,
             "name": self.diffractometer.name,
             "axes": {
                 "pseudo_axes": self.diffractometer.pseudo_axis_names,
@@ -151,9 +153,6 @@ class Core:
             "beam": self.diffractometer.beam._asdict(),
             "presets": self._mode_presets,
         }
-
-        if "engine_name" in dir(self.solver):
-            config["solver"]["engine"] = self.solver.engine_name
 
         return config
 

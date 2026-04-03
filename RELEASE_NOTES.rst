@@ -45,6 +45,14 @@ describe future plans.
     Enhancements
     ------------
 
+    * Add ``TypedDict`` subclasses for structured solver and configuration
+      dicts: :class:`~hklpy2.backends.typing.ReflectionDict`,
+      :class:`~hklpy2.backends.typing.SampleDict`, and
+      :class:`~hklpy2.backends.typing.SolverMetadataDict` in
+      ``backends/typing.py``; :class:`~hklpy2.typing.ConfigHeaderDict` in
+      ``hklpy2/typing.py``; and ``HklSolverMetadataDict`` in
+      ``hkl_soleil.py`` as the pattern for solver-specific metadata
+      extensions. (:issue:`233`)
     * Export :func:`~hklpy2.misc.get_run_orientation` and
       :func:`~hklpy2.misc.list_orientation_runs` at the top-level ``hklpy2``
       namespace, consistent with :class:`~hklpy2.misc.ConfigurationRunWrapper`.
