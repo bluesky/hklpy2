@@ -43,17 +43,9 @@ Miscellaneous Support.
     ~SOLVER_ENTRYPOINT_GROUP
 
 .. rubric: Custom Data Types
-.. autosummary::
 
-    ~AnyAxesType
-    ~AxesArray
-    ~AxesDict
-    ~AxesList
-    ~AxesTuple
-    ~Matrix3x3
-    ~INPUT_VECTOR
-    ~NamedFloatDict
-    ~NUMERIC
+Type aliases previously defined here have moved to :mod:`hklpy2.typing`
+and are re-exported from this module for backward compatibility.
 
 .. rubric: Custom Preprocessors
 .. autosummary::
