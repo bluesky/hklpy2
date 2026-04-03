@@ -88,12 +88,49 @@ require_cmd() {
 # Argument / version / dry-run handling
 # ---------------------------------------------------------------------------
 
+usage() {
+    cat <<EOF
+Usage: bash scripts/release.sh [OPTIONS] [VERSION]
+
+Interactive release checklist for hklpy2.  Walks through every release
+step in order, automating what it can and prompting for the rest.
+
+Arguments:
+  VERSION       Release version to prepare (e.g. 0.4.1).
+                Prompted interactively if omitted.
+
+Options:
+  --dry-run     Preview all steps without making any changes.
+                Checks and read-only commands still run; file writes,
+                commits, pushes, tags, and GitHub API calls are skipped.
+  -h, --help    Show this help message and exit.
+
+Steps performed:
+  0.  Preflight checks (branch, clean tree, sync with origin, tag existence)
+  1.  Milestone and issue triage
+  2.  RELEASE_NOTES.rst review
+  3.  Update docs/source/_static/switcher.json
+  4.  Run pre-commit / style checks
+  5.  Run test suite
+  6.  Commit release preparation changes
+  7.  Push to origin
+  8.  Wait for CI to pass
+  9.  Create and push the release tag
+  10. Create GitHub Release
+  11. Monitor CI workflows (docs, PyPI)
+  12. conda-forge feedstock update
+
+Prerequisites: git, gh, python3, pre-commit
+EOF
+}
+
 DRY_RUN="false"
 POSITIONAL_ARGS=()
 
 for arg in "$@"; do
     case "${arg}" in
         --dry-run) DRY_RUN="true" ;;
+        -h|--help) usage; exit 0 ;;
         *) POSITIONAL_ARGS+=("${arg}") ;;
     esac
 done
