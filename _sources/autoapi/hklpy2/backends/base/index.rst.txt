@@ -157,7 +157,7 @@ Module Contents
 
 
    .. py:attribute:: _sample
-      :type:  Optional[hklpy2.misc.KeyValueMap]
+      :type:  Optional[hklpy2.backends.typing.SampleDict]
       :value: None
 
 
@@ -166,13 +166,13 @@ Module Contents
 
 
    .. py:property:: _metadata
-      :type: hklpy2.misc.KeyValueMap
+      :type: hklpy2.backends.typing.SolverMetadataDict
 
 
       Dictionary with this solver's summary metadata.
 
 
-   .. py:method:: addReflection(reflection: hklpy2.misc.KeyValueMap) -> None
+   .. py:method:: addReflection(reflection: hklpy2.backends.typing.ReflectionDict) -> None
       :abstractmethod:
 
 
@@ -187,7 +187,7 @@ Module Contents
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.misc.KeyValueMap, r2: hklpy2.misc.KeyValueMap) -> hklpy2.misc.Matrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.misc.Matrix3x3
       :abstractmethod:
 
 
@@ -293,7 +293,7 @@ Module Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: List[hklpy2.misc.KeyValueMap]) -> hklpy2.misc.NamedFloatDict
+   .. py:method:: refineLattice(reflections: List[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.misc.NamedFloatDict
       :abstractmethod:
 
 
@@ -310,7 +310,7 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: Union[hklpy2.misc.KeyValueMap, None]
+      :type: Union[hklpy2.backends.typing.SampleDict, None]
 
 
       Crystalline sample.
