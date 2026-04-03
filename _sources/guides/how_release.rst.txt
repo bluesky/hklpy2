@@ -125,19 +125,27 @@ Steps performed
 Pre-release and stable tags
 ===========================
 
-Pre-release tags (``0.4.1rc1``, ``0.4.1a1``, etc.)
-    - Docs published to ``gh-pages/0.4.1rc1/``.
-    - Added to the version switcher **without** ``"preferred": true``
-      — the current stable release stays preferred.
+A version is treated as **pre-release** if it has an ``rc``, ``a``, or
+``b`` suffix (e.g. ``0.4.1rc1``, ``0.4.1a1``) **or** if its major
+version is ``0`` (e.g. ``0.4.1``, ``0.3.1``).  A version is **stable**
+only when its major version is ``1`` or greater (e.g. ``1.0.0``).
 
-Stable tags (``0.4.1``)
-    - Docs published to ``gh-pages/0.4.1/``.
+Pre-release tags (``0.4.1rc1``, ``0.4.1``, ``0.3.1``, etc.)
+    - Docs published to the corresponding ``gh-pages/<version>/``
+      directory.
+    - Added to the version switcher **without** ``"preferred": true``
+      — the current preferred version is unchanged.
+    - GitHub Release created with ``--prerelease --no-latest``.
+
+Stable tags (``1.0.0`` and above)
+    - Docs published to ``gh-pages/<version>/``.
     - All pre-release directories for the same base version
-      (``0.4.1rc1/``, ``0.4.1a1/``, …) are **deleted** from
-      ``gh-pages`` automatically by ``docs.yml``.
+      (e.g. ``1.0.0rc1/``) are **deleted** from ``gh-pages``
+      automatically by ``docs.yml``.
     - Corresponding entries removed from the live ``switcher.json``
       on ``gh-pages``.
     - ``"preferred": true`` moved to the new stable version.
+    - GitHub Release created with ``--latest``.
 
 Piping output
 =============
