@@ -309,7 +309,18 @@ else:
         entries.insert(insert_pos, new_entry)
         print(f"  Added pre-release '{version}' to switcher.json (preferred unchanged).")
     else:
-        # Stable release: clear preferred everywhere, mark this one preferred.
+        # Stable release: prune rc/a/b entries for this base version,
+        # clear preferred everywhere, mark this one preferred.
+        rc_pat = re.compile(r'^' + re.escape(version) + r'(a|b|rc)\d+$')
+        pruned = [e["version"] for e in entries if rc_pat.match(e["version"])]
+        entries = [e for e in entries if not rc_pat.match(e["version"])]
+        for v in pruned:
+            print(f"  Removed rc entry '{v}' from switcher.json.")
+        # Recalculate insert position after pruning.
+        insert_pos = next(
+            (i + 1 for i, e in enumerate(entries) if e.get("version") == "latest"),
+            1,
+        )
         for e in entries:
             e.pop("preferred", None)
         new_entry = {"version": version, "url": f"{base_url}/{version}/", "preferred": True}
