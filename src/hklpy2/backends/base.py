@@ -24,6 +24,9 @@ from ..misc import Matrix3x3
 from ..misc import NamedFloatDict
 from ..misc import istype
 from ..misc import validate_and_canonical_unit
+from .typing import ReflectionDict
+from .typing import SampleDict
+from .typing import SolverMetadataDict
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +128,7 @@ class SolverBase(ABC):
         self._gname: str = geometry
         self.mode = mode
         self._all_extra_axis_names: Optional[List[str]] = None
-        self._sample: Optional[KeyValueMap] = None
+        self._sample: Optional[SampleDict] = None
 
         validate_and_canonical_unit(self.ANGLE_UNITS, INTERNAL_ANGLE_UNITS)
         validate_and_canonical_unit(self.LENGTH_UNITS, INTERNAL_LENGTH_UNITS)
@@ -142,7 +145,7 @@ class SolverBase(ABC):
         return f"{self.__class__.__name__}({', '.join(args)})"
 
     @property
-    def _metadata(self) -> KeyValueMap:
+    def _metadata(self) -> SolverMetadataDict:
         """Dictionary with this solver's summary metadata."""
         return {
             "name": self.name,
@@ -153,7 +156,7 @@ class SolverBase(ABC):
         }
 
     @abstractmethod
-    def addReflection(self, reflection: KeyValueMap) -> None:
+    def addReflection(self, reflection: ReflectionDict) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
 
     @property
@@ -173,8 +176,8 @@ class SolverBase(ABC):
     @abstractmethod
     def calculate_UB(
         self,
-        r1: KeyValueMap,
-        r2: KeyValueMap,
+        r1: ReflectionDict,
+        r2: ReflectionDict,
     ) -> Matrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
@@ -298,7 +301,7 @@ class SolverBase(ABC):
         # return []
 
     @abstractmethod
-    def refineLattice(self, reflections: List[KeyValueMap]) -> NamedFloatDict:
+    def refineLattice(self, reflections: List[ReflectionDict]) -> NamedFloatDict:
         """Refine the lattice parameters from a list of reflections."""
 
     @abstractmethod
@@ -306,15 +309,15 @@ class SolverBase(ABC):
         """Remove all reflections."""
 
     @property
-    def sample(self) -> Union[KeyValueMap, None]:
+    def sample(self) -> Union[SampleDict, None]:
         """
         Crystalline sample.
         """
         return self._sample
 
     @sample.setter
-    def sample(self, value: KeyValueMap) -> None:
-        if not istype(value, KeyValueMap):
+    def sample(self, value: SampleDict) -> None:
+        if not isinstance(value, dict):
             raise TypeError(f"Must supply dictionary, received {value!r}")
         self._sample = value
 
@@ -339,6 +342,9 @@ class SolverBase(ABC):
             description["modes"][mode] = desc
 
         return description
+
+    # NOTE: _summary_dict intentionally keeps KeyValueMap because its nested
+    # structure varies by engine and subclasses override it freely.
 
     @property
     def summary(self) -> Table:

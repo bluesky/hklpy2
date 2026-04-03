@@ -9,6 +9,8 @@ from pyRestTable import Table
 from ...misc import IDENTITY_MATRIX_3X3
 from ...ops import Core
 from .. import hkl_soleil
+from ..hkl_soleil import HklSolverMetadataDict
+from ..typing import SolverMetadataDict
 
 
 def test_version():
@@ -445,3 +447,86 @@ def test_calculate_UB_degenerate(parms, context):
         assert ub is not None
         arr = np.array(ub)
         assert arr.shape == (3, 3)
+
+
+# ---------------------------------------------------------------------------
+# HklSolverMetadataDict
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                meta=HklSolverMetadataDict(
+                    name="hkl_soleil",
+                    description="HklSolver(...)",
+                    geometry="E4CV",
+                    real_axes=["omega", "chi", "phi", "tth"],
+                    version="v5.0.0.3434",
+                    engine="hkl",
+                )
+            ),
+            does_not_raise(),
+            id="HklSolverMetadataDict hkl engine",
+        ),
+        pytest.param(
+            dict(
+                meta=HklSolverMetadataDict(
+                    name="hkl_soleil",
+                    description="HklSolver(...)",
+                    geometry="E6C",
+                    real_axes=["mu", "omega", "chi", "phi", "gamma", "delta"],
+                    version="v5.0.0.3434",
+                    engine="psi",
+                )
+            ),
+            does_not_raise(),
+            id="HklSolverMetadataDict psi engine",
+        ),
+    ],
+)
+def test_hkl_solver_metadata_dict(parms, context):
+    """HklSolverMetadataDict is a SolverMetadataDict subclass with engine."""
+    with context:
+        meta = parms["meta"]
+        assert isinstance(meta, dict)
+        # TypedDicts are plain dicts at runtime; verify that all required keys
+        # from the base class are present alongside the hkl-specific key.
+        assert set(SolverMetadataDict.__required_keys__).issubset(meta.keys())
+        assert isinstance(meta["name"], str)
+        assert isinstance(meta["description"], str)
+        assert isinstance(meta["geometry"], str)
+        assert isinstance(meta["real_axes"], list)
+        assert isinstance(meta["version"], str)
+        assert isinstance(meta["engine"], str)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry="E4CV", engine="hkl"),
+            does_not_raise(),
+            id="HklSolver._metadata returns HklSolverMetadataDict for E4CV",
+        ),
+        pytest.param(
+            dict(geometry="E6C", engine="hkl"),
+            does_not_raise(),
+            id="HklSolver._metadata returns HklSolverMetadataDict for E6C",
+        ),
+    ],
+)
+def test_hkl_solver_metadata_live(parms, context):
+    """HklSolver._metadata includes engine alongside common keys."""
+    with context:
+        solver = hkl_soleil.HklSolver(parms["geometry"], engine=parms["engine"])
+        meta = solver._metadata
+        assert isinstance(meta, dict)
+        assert set(SolverMetadataDict.__required_keys__).issubset(meta.keys())
+        assert meta["name"] == "hkl_soleil"
+        assert meta["geometry"] == parms["geometry"]
+        assert meta["engine"] == parms["engine"]
+        assert isinstance(meta["real_axes"], list)
+        assert len(meta["real_axes"]) > 0

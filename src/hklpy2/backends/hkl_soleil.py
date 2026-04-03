@@ -49,7 +49,6 @@ from numpy import typing as npt
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
-from ..misc import KeyValueMap
 from ..misc import Matrix3x3
 from ..misc import NamedFloatDict
 from ..misc import NoForwardSolutions
@@ -59,8 +58,36 @@ from ..misc import roundoff
 from ..misc import unique_name
 from .base import SolverBase
 from .hkl_soleil_utils import setup_libhkl
+from .typing import ReflectionDict
+from .typing import SampleDict
+from .typing import SolverMetadataDict
 
 logger = logging.getLogger(__name__)
+
+
+class HklSolverMetadataDict(SolverMetadataDict, total=False):
+    """
+    Solver metadata specific to the ``hkl_soleil`` backend.
+
+    Extends :class:`~hklpy2.backends.typing.SolverMetadataDict` with the
+    fields that are specific to the |libhkl|-based solver.  Using
+    ``total=False`` means all extra keys declared here are optional at
+    runtime; callers that only inspect the common
+    :class:`~hklpy2.backends.typing.SolverMetadataDict` contract are
+    unaffected.
+
+    Other solvers that need bespoke metadata keys should follow the same
+    pattern: subclass :class:`~hklpy2.backends.typing.SolverMetadataDict`
+    with ``total=False`` and place the subclass in that solver's own module.
+
+    Additional keys
+    ---------------
+    engine : str
+        Name of the computational engine (e.g. ``"hkl"``, ``"psi"``).
+    """
+
+    engine: str
+
 
 libhkl = setup_libhkl(platform.system(), "Hkl", "5.0")
 AXES_READ = 0
@@ -238,11 +265,24 @@ class HklSolver(SolverBase):
         ]
         return f"{self.__class__.__name__}({', '.join(args)})"
 
-    def addReflection(self, reflection: KeyValueMap) -> None:
+    @property
+    def _metadata(self) -> HklSolverMetadataDict:
+        """Dictionary with this solver's summary metadata, including engine."""
+        meta: HklSolverMetadataDict = {
+            "name": self.name,
+            "description": repr(self),
+            "geometry": self.geometry,
+            "real_axes": self.real_axis_names,
+            "version": self.version,
+            "engine": self.engine_name,
+        }
+        return meta
+
+    def addReflection(self, reflection: ReflectionDict) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
-        if not istype(reflection, KeyValueMap):
+        if not isinstance(reflection, dict):
             raise TypeError(
-                f"Must supply {KeyValueMap!r} object, received {reflection!r}",
+                f"Must supply a reflection dict, received {reflection!r}",
             )
 
         logger.debug("reflection: %r", reflection)
@@ -279,8 +319,8 @@ class HklSolver(SolverBase):
 
     def calculate_UB(
         self,
-        r1: KeyValueMap,
-        r2: KeyValueMap,
+        r1: ReflectionDict,
+        r2: ReflectionDict,
     ) -> Matrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
@@ -541,7 +581,7 @@ class HklSolver(SolverBase):
         return self._hkl_geometry.axis_names_get()  # Do NOT sort.
 
     @property
-    def reflections(self) -> Dict[str, KeyValueMap]:
+    def reflections(self) -> Dict[str, ReflectionDict]:
         """List of defined reflections (no store reflection names in libhkl)."""
         rlist = {}
         for refl in self._sample.reflections_get():
@@ -560,7 +600,7 @@ class HklSolver(SolverBase):
             )
         return rlist
 
-    def refineLattice(self, reflections: list[KeyValueMap]) -> NamedFloatDict:
+    def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict:
         """
         Refine the lattice parameters from a list of reflections.
 
@@ -583,21 +623,22 @@ class HklSolver(SolverBase):
             self._sample.del_reflection(ref)
 
     @property
-    def sample(self) -> KeyValueMap:
+    def sample(self) -> SampleDict:
         """
         Crystalline sample.  libhkl's sample object.
         """
-        sample = dict(
+        sample: SampleDict = dict(
             name=self._sample.name_get(),
             lattice=self.lattice,
             reflections=self.reflections,
+            order=list(self.reflections.keys()),
         )
         return sample
 
     @sample.setter
-    def sample(self, value: KeyValueMap):
-        if not istype(value, dict):
-            raise TypeError(f"Must supply {KeyValueMap} object, received {value!r}")
+    def sample(self, value: SampleDict):
+        if not isinstance(value, dict):
+            raise TypeError(f"Must supply a sample dict, received {value!r}")
 
         # Just drop the old sample and make a new one.
         # Python knows its correct name.
