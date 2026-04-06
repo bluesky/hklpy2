@@ -127,7 +127,6 @@ def test_reflections_fail(context):
 
 
 def test_fromdict():
-    sim = creator(name="sim", solver="th_tth", geometry="TH TTH Q")
     text = """
     name: vibranium
     lattice:

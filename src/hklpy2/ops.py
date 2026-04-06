@@ -865,29 +865,31 @@ class Core:
         reflections = []
         for refl in refl_list:
             if isinstance(refl, str):
-                refl = self.sample.reflections[refl]
-            refl = refl._asdict()
+                refl_obj = self.sample.reflections[refl]
+            else:
+                refl_obj = refl
+            refl_dict = refl_obj._asdict()
 
             angle_units_uc = self.diffractometer.reals_units
             angle_units_solver = self.solver.ANGLE_UNITS
             reals = {
                 axis: convert_units(
-                    refl["reals"][self.axes_xref_reversed[axis]],
+                    refl_dict["reals"][self.axes_xref_reversed[axis]],
                     angle_units_uc,
                     angle_units_solver,
                 )
                 for axis in self.solver.real_axis_names
             }
-            refl["reals"] = reals
+            refl_dict["reals"] = reals
 
             # determine the original wavelength_units from reflection or incident beam
             refl_wl_units = (
-                refl.get("wavelength_units")
+                refl_dict.get("wavelength_units")
                 or self.diffractometer.beam.wavelength_units.get()
             )
-            refl[k] = convert_units(refl[k], refl_wl_units, wl_units_solver)
+            refl_dict[k] = convert_units(refl_dict[k], refl_wl_units, wl_units_solver)
 
-            reflections.append(refl)
+            reflections.append(refl_dict)
         return reflections
 
     def remove_sample(self, name: str):

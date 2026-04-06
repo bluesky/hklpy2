@@ -255,8 +255,8 @@ def cahkl_table(*reflections: list[AxesTuple], digits=4) -> Table:
     table = Table()
     table.labels = ["(hkl)", "#"] + reals
     for r in reflections:
-        r = core.standardize_pseudos(r)
-        rstr = "(" + " ".join([str(v) for v in brief(r)]) + ")"
+        pseudos = core.standardize_pseudos(r)
+        rstr = "(" + " ".join([str(v) for v in brief(pseudos)]) + ")"
         i = 0
         for solution in core.forward(r):
             i += 1
