@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=ced7e9a8"></script>
+    <script src="../../_static/documentation_options.js?v=b1fffa06"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -508,7 +508,7 @@
 <span class="c1"># documents them only in hklpy2.typing, their canonical location.</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>  <span class="c1"># noqa: F401</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyAxesType</span>  <span class="c1"># noqa: E402, F401</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesArray</span>  <span class="c1"># noqa: E402, F401</span>
@@ -834,6 +834,9 @@
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;VirtualPositionerBase._finish_setup() completed for </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="p">)</span>
         <span class="c1"># Call &#39;self._cb_update_position&#39; when readback updates.</span>
         <span class="n">readback</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cb_update_position</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_recompute_limits</span><span class="p">()</span></div>
@@ -1212,8 +1215,7 @@
         <span class="c1"># kind=&quot;hinted&quot;,</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">}</span>
-    <span class="n">fc</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="s2">&quot;DictionaryDevice&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Device</span><span class="p">,),</span> <span class="n">component_dict</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">fc</span></div>
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="s2">&quot;DictionaryDevice&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">Device</span><span class="p">,),</span> <span class="n">component_dict</span><span class="p">)</span></div>
 
 
 
@@ -1277,6 +1279,7 @@
     <span class="n">module_name</span><span class="p">,</span> <span class="n">object_name</span> <span class="o">=</span> <span class="n">full_path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">module_object</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
     <span class="n">import_object</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module_object</span><span class="p">,</span> <span class="n">object_name</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Imported </span><span class="si">%r</span><span class="s2"> from </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">object_name</span><span class="p">,</span> <span class="n">module_name</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">import_object</span></div>
 
@@ -1314,6 +1317,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">solver_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">solvers</span><span class="p">():</span>
         <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">solver_name</span><span class="si">=!r}</span><span class="s2"> unknown.  Pick one of: </span><span class="si">{</span><span class="n">solvers</span><span class="p">()</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loading solver </span><span class="si">%r</span><span class="s2"> from entry points&quot;</span><span class="p">,</span> <span class="n">solver_name</span><span class="p">)</span>
     <span class="n">entries</span> <span class="o">=</span> <span class="n">entry_points</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">SOLVER_ENTRYPOINT_GROUP</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">entries</span><span class="p">[</span><span class="n">solver_name</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span></div>
 
@@ -1533,7 +1537,9 @@
     <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;YAML file &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">load_yaml</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loading YAML file </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">load_yaml</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
 
 
 
@@ -1724,6 +1730,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a |solver| object with geometry and axes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;Creating solver </span><span class="si">%r</span><span class="s2"> geometry=</span><span class="si">%r</span><span class="s2"> kwargs=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">solver_name</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">kwargs</span>
+    <span class="p">)</span>
     <span class="n">solver_class</span> <span class="o">=</span> <span class="n">get_solver</span><span class="p">(</span><span class="n">solver_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">solver_class</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -1740,13 +1749,7 @@
 <span class="sd">        import hklpy2</span>
 <span class="sd">        print(hklpy2.solvers())</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># fmt: off</span>
-    <span class="n">entries</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">ep</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">ep</span><span class="o">.</span><span class="n">value</span>
-        <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">entry_points</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">SOLVER_ENTRYPOINT_GROUP</span><span class="p">)</span>
-    <span class="p">}</span>
-    <span class="c1"># fmt: on</span>
-    <span class="k">return</span> <span class="n">entries</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="n">ep</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">ep</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">entry_points</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">SOLVER_ENTRYPOINT_GROUP</span><span class="p">)}</span></div>
 
 
 
@@ -1785,6 +1788,7 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">creator</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;creator_from_config: loading from file </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">load_yaml_file</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -1841,6 +1845,12 @@
     <span class="c1"># even when diffractometer names differ from solver canonical names.</span>
     <span class="n">diffractometer_name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
 
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="s2">&quot;creator_from_config: creating </span><span class="si">%r</span><span class="s2"> solver=</span><span class="si">%r</span><span class="s2"> geometry=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">diffractometer_name</span><span class="p">,</span>
+        <span class="n">solver_name</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">sim</span> <span class="o">=</span> <span class="n">creator</span><span class="p">(</span>
         <span class="n">name</span><span class="o">=</span><span class="n">diffractometer_name</span><span class="p">,</span>
         <span class="n">solver</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span>

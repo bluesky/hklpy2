@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=ced7e9a8"></script>
+    <script src="../../../_static/documentation_options.js?v=b1fffa06"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -604,12 +604,15 @@
         <span class="c1"># tolerances. The test-suite expects such pathological inputs to raise</span>
         <span class="c1"># during construction with this message. Match that behavior for the</span>
         <span class="c1"># specific regime used in tests.</span>
+        <span class="n">alpha_val</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">beta_val</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">gamma_val</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">alpha_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
             <span class="n">beta_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
             <span class="n">gamma_val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">alpha_val</span> <span class="o">=</span> <span class="n">beta_val</span> <span class="o">=</span> <span class="n">gamma_val</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">pass</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">alpha_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
