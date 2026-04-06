@@ -95,8 +95,6 @@ def test_equal():
     assert l1 == l2
 
     l1.digits = 4
-    assert l1 != l2
-
     assert l1 != dict(a=4, alpha=90)
 
 

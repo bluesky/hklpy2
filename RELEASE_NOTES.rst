@@ -57,7 +57,8 @@ describe future plans.
       ``load_yaml_file()`` by using a ``with`` block; fix mixed
       ``import`` and ``from ... import`` of ``hklpy2`` in
       ``test_isn_libhkl.py``; add ``__eq__`` to ``ReflectionsDict``
-      in ``reflection.py`` to account for added attributes.
+      in ``reflection.py`` to account for added attributes; remove
+      redundant comparison in ``test_lattice.py`` ``test_equal()``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 
