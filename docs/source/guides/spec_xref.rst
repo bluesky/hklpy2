@@ -40,8 +40,8 @@ the tools in Bluesky's |hklpy2| package.
 --               :func:`~hklpy2.user.calc_UB`                                   Compute the UB matrix with two reflections.
 ``setaz h k l``  :attr:`~hklpy2.ops.Core.extras`                                Set the azimuthal reference vector to the given :math:`h, k, l`.
 ``setsector``    ``diffractometer.core.constraints``                                          Select a sector.
-``cz``           See :meth:`~hklpy2.blocks.zone.scan_zone`                      Calculate zone from two reflections: TODO
-``mz``           See :meth:`~hklpy2.blocks.zone.scan_zone`                      Move zone: TODO
-``pl``           See :meth:`~hklpy2.blocks.zone.scan_zone`                      Set the scattering plane: TODO
-``sz``           See :meth:`~hklpy2.blocks.zone.Zone`                           Set zone: TODO
+``cz``           :class:`~hklpy2.blocks.zone.OrthonormalZone` (``b1=``, ``b2=``)  Calculate zone axis from two vectors (cross product).
+``mz``           :func:`~hklpy2.blocks.zone.move_zone`                          Move diffractometer to a position in the zone.
+``pl``           :meth:`~hklpy2.blocks.zone.OrthonormalZone.define_axis`        Set the scattering plane by defining the zone axis from two vectors.
+``sz``           :class:`~hklpy2.blocks.zone.OrthonormalZone` (``axis=``)       Set zone axis directly.
 ===============  =============================================================  ============

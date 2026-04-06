@@ -56,6 +56,8 @@ if __name__ == "__main__":
 from .backends import SolverBase  # noqa: E402, F401
 from .blocks.configure import Configuration  # noqa: E402, F401
 from .blocks.lattice import SI_LATTICE_PARAMETER  # noqa: E402, F401
+from .blocks.zone import OrthonormalZone  # noqa: E402, F401, F403
+from .blocks.zone import move_zone  # noqa: E402, F401, F403
 from .blocks.zone import scan_zone  # noqa: E402, F401, F403
 from .diffract import DiffractometerBase  # noqa: E402, F401
 from .diffract import creator  # noqa: E402, F401, F403

@@ -6,9 +6,25 @@ the *zone axis*. A *zone* is defined by a *zone axis* (a unit vector), which can
 be specified directly or computed from two vectors (normal to their respective
 *lattice* planes) using their cross product.
 
+SPEC equivalents
+----------------
+
++--------------+---------------------+-------------------------------------+
+| SPEC command | hklpy2              | Description                         |
++==============+=====================+=====================================+
+| ``cz``       | :class:`OrthonormalZone` (``b1=``, ``b2=``)   | Calculate zone axis from two vectors|
++--------------+---------------------+-------------------------------------+
+| ``mz``       | :func:`move_zone`   | Move to a position in the zone      |
++--------------+---------------------+-------------------------------------+
+| ``pl``       | :meth:`OrthonormalZone.define_axis` | Set scattering plane   |
++--------------+---------------------+-------------------------------------+
+| ``sz``       | :class:`OrthonormalZone` (``axis=``) | Set zone axis directly |
++--------------+---------------------+-------------------------------------+
+
 .. autosummary::
 
     ~OrthonormalZone
+    ~move_zone
     ~scan_zone
     ~zonespace
     ~zone_series
@@ -38,6 +54,7 @@ logger = logging.getLogger(__name__)
 
 __all__ = """
     OrthonormalZone
+    move_zone
     scan_zone
     zonespace
     zone_series
@@ -401,6 +418,43 @@ def zone_series(
 
 
 @plan
+def move_zone(
+    diffractometer: DiffractometerBase,
+    hkl: INPUT_VECTOR,
+) -> BlueskyPlanType:
+    """
+    Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).
+
+    Computes the real-axis positions corresponding to the given pseudo
+    position *hkl* via the diffractometer's forward calculation and moves
+    all real axes there.
+
+    .. rubric:: Example
+
+    .. code-block:: python
+
+        from hklpy2 import creator
+        from hklpy2.blocks.zone import move_zone
+        fourc = creator()
+        RE(move_zone(fourc, (1, 0, 0)))
+
+    Parameters
+    ----------
+    diffractometer : DiffractometerBase
+        hklpy2 diffractometer object.
+    hkl : INPUT_VECTOR
+        Target pseudo position (*h, k, l*).
+    """
+    pseudos = list(hkl) if not isinstance(hkl, dict) else hkl
+    reals = diffractometer.forward(pseudos)
+    parms = []
+    for k, v in zip(diffractometer.real_axis_names, reals):
+        parms.append(getattr(diffractometer, k))
+        parms.append(v)
+    yield from bps.mv(*parms)
+
+
+@plan
 def scan_zone(
     detectors: Sequence[Readable],
     diffractometer: DiffractometerBase,
@@ -449,7 +503,7 @@ def scan_zone(
     md : dict
         (Optional) User-supplied metadata.
     """
-    _md = dict(plan_name="scan_zone").update(md or {})
+    _md = {"plan_name": "scan_zone", **(md or {})}
 
     @bpp.stage_decorator(detectors)
     @bpp.run_decorator(md=_md)
