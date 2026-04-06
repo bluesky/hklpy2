@@ -35,9 +35,28 @@ describe future plans.
 
     Release expected by 2026-H1.
 
+    New Features
+    ------------
+
+    * Add :func:`~hklpy2.blocks.zone.move_zone` plan (SPEC ``mz`` equivalent):
+      move diffractometer to a pseudo position in the zone. (:issue:`273`)
+    * Export :class:`~hklpy2.blocks.zone.OrthonormalZone` and
+      :func:`~hklpy2.blocks.zone.move_zone` from the top-level ``hklpy2``
+      package. (:issue:`273`)
+
+    Fixes
+    -----
+
+    * Fix metadata dict bug in :func:`~hklpy2.blocks.zone.scan_zone`: the
+      ``dict(...).update(...)`` pattern always returned ``None``; replaced
+      with unpacking syntax. (:issue:`273`)
+
     Maintenance
     -----------
 
+    * Update ``spec_xref.rst`` to replace ``TODO`` placeholders for ``cz``,
+      ``mz``, ``pl``, and ``sz`` SPEC zone commands with correct hklpy2
+      references. (:issue:`273`)
     * Expand ``test_summary_dict`` and ``test_summary`` in
       ``test_hkl_soleil.py`` to assert keys, values, columns, and rows.
       (:issue:`269`)

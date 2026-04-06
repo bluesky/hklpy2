@@ -384,7 +384,7 @@ def test_ISN_Diffractometer():
     from ophyd import Component
     from ophyd import SoftPositioner
 
-    from hklpy2 import DiffractometerBase
+    from hklpy2.diffract import DiffractometerBase
     from hklpy2.diffract import Hklpy2PseudoAxis
 
     class Diffractometer(DiffractometerBase):

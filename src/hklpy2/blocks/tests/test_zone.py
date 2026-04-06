@@ -11,6 +11,7 @@ from ophyd.sim import noisy_det
 
 from ...diffract import creator
 from ..zone import OrthonormalZone
+from ..zone import move_zone
 from ..zone import scan_zone
 from ..zone import zone_series
 from ..zone import zonespace
@@ -356,3 +357,86 @@ def test_scan_zone(dets, diff, v1, v2, n, context):
         (uid,) = RE(scan_zone([noisy_det], diff, v1, v2, n))
         assert isinstance(uid, str)
         assert len(uid) > 0
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(hkl=(1, 0, 0)),
+            does_not_raise(),
+            id="move to (1,0,0) tuple",
+        ),
+        pytest.param(
+            dict(hkl=(0, 1, 0)),
+            does_not_raise(),
+            id="move to (0,1,0) tuple",
+        ),
+    ],
+)
+def test_move_zone(parms, context):
+    with context:
+        fourc = creator()
+        RE = bluesky.RunEngine()
+        RE(move_zone(fourc, parms["hkl"]))
+        # After moving, the diffractometer pseudo position should reflect the target.
+        for name, val in zip(fourc.pseudo_axis_names, parms["hkl"]):
+            assert getattr(fourc, name).get().readback == pytest.approx(val, abs=1e-3)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(md={"user": "test"}),
+            does_not_raise(),
+            id="scan_zone metadata is passed through",
+        ),
+        pytest.param(
+            dict(md=None),
+            does_not_raise(),
+            id="scan_zone metadata defaults to plan_name only",
+        ),
+    ],
+)
+def test_scan_zone_metadata(parms, context):
+    """Verify the _md fix: metadata dict is built correctly."""
+    with context:
+        fourc = creator()
+        RE = bluesky.RunEngine()
+        docs = []
+        RE.subscribe(lambda name, doc: docs.append((name, doc)))
+        RE(scan_zone([noisy_det], fourc, (1, 0, 0), (0, 1, 0), 3, md=parms["md"]))
+        starts = [doc for name, doc in docs if name == "start"]
+        assert len(starts) == 1
+        assert starts[0]["plan_name"] == "scan_zone"
+        if parms["md"]:
+            for k, v in parms["md"].items():
+                assert starts[0][k] == v
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(name="OrthonormalZone"),
+            does_not_raise(),
+            id="OrthonormalZone exported from hklpy2",
+        ),
+        pytest.param(
+            dict(name="move_zone"),
+            does_not_raise(),
+            id="move_zone exported from hklpy2",
+        ),
+        pytest.param(
+            dict(name="scan_zone"),
+            does_not_raise(),
+            id="scan_zone exported from hklpy2",
+        ),
+    ],
+)
+def test_zone_package_exports(parms, context):
+    with context:
+        import hklpy2
+
+        assert hasattr(hklpy2, parms["name"])
