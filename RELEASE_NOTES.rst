@@ -44,9 +44,10 @@ describe future plans.
       ``reflection.py``; fix mixed explicit/implicit returns and update
       return-type annotations in ``base.py``, ``hkl_soleil.py``,
       ``no_op.py``, ``ops.py``, ``th_tth_q.py``, and ``user.py``; remove
-      unused import from ``hkl_soleil-python_api.py``; fix
-      loop variables defined multiple times in ``ops.py``, ``user.py``,
-      and several test files.
+      unused import from ``hkl_soleil-python_api.py``; fix loop variables
+      defined multiple times in ``ops.py``, ``user.py``, and several test
+      files; fix modification of parameters with mutable defaults in
+      ``diffract.py``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 
