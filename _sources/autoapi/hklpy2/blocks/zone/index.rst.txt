@@ -12,9 +12,18 @@ hklpy2.blocks.zone
    be specified directly or computed from two vectors (normal to their respective
    *lattice* planes) using their cross product.
 
+   SPEC equivalents
+   ----------------
+
+   - ``cz`` — :class:`OrthonormalZone` (``b1=``, ``b2=``): calculate zone axis from two vectors.
+   - ``mz`` — :func:`move_zone`: move diffractometer to a position in the zone.
+   - ``pl`` — :meth:`OrthonormalZone.define_axis`: set the scattering plane from two vectors.
+   - ``sz`` — :class:`OrthonormalZone` (``axis=``): set zone axis directly.
+
    .. autosummary::
 
        ~OrthonormalZone
+       ~move_zone
        ~scan_zone
        ~zonespace
        ~zone_series
@@ -45,6 +54,7 @@ Functions
 
    hklpy2.blocks.zone.zonespace
    hklpy2.blocks.zone.zone_series
+   hklpy2.blocks.zone.move_zone
    hklpy2.blocks.zone.scan_zone
 
 
@@ -222,6 +232,29 @@ Module Contents
 
    >>> # Generate 5 points from (1,0,0) to (0,1,0)
    >>> zone_series(my_diffractometer, (1,0,0), (0,1,0), 5)
+
+
+.. py:function:: move_zone(diffractometer: hklpy2.diffract.DiffractometerBase, hkl: hklpy2.typing.INPUT_VECTOR) -> hklpy2.typing.BlueskyPlanType
+
+   Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).
+
+   Computes the real-axis positions corresponding to the given pseudo
+   position *hkl* via the diffractometer's forward calculation and moves
+   all real axes there.
+
+   .. rubric:: Example
+
+   .. code-block:: python
+
+       from hklpy2 import creator
+       from hklpy2.blocks.zone import move_zone
+       fourc = creator()
+       RE(move_zone(fourc, (1, 0, 0)))
+
+   :param diffractometer: hklpy2 diffractometer object.
+   :type diffractometer: DiffractometerBase
+   :param hkl: Target pseudo position (*h, k, l*).
+   :type hkl: INPUT_VECTOR
 
 
 .. py:function:: scan_zone(detectors: Sequence[bluesky.protocols.Readable], diffractometer: hklpy2.diffract.DiffractometerBase, start: hklpy2.typing.INPUT_VECTOR, finish: hklpy2.typing.INPUT_VECTOR, num: int, md: Optional[Mapping[str, Any]] = None) -> hklpy2.typing.BlueskyPlanType
