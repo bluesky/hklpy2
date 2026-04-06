@@ -451,7 +451,6 @@ def scan_zone(
     """
     _md = dict(plan_name="scan_zone").update(md or {})
 
-    # TODO: Consider refactor using cycler and using bp.scan_nd.
     @bpp.stage_decorator(detectors)
     @bpp.run_decorator(md=_md)
     def inner():
