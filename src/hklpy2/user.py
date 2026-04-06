@@ -522,7 +522,7 @@ def scan_extra(
     num: Optional[int] = 2,
     pseudos: Optional[dict] = None,  # h, k, l
     reals: Optional[dict] = None,  # angles
-    extras: Optional[dict] = {},
+    extras: Optional[dict] = None,
     fail_on_exception: Optional[bool] = False,
     md: Optional[dict] = None,
 ) -> BlueskyPlanType:

@@ -46,8 +46,10 @@ describe future plans.
       ``no_op.py``, ``ops.py``, ``th_tth_q.py``, and ``user.py``; remove
       unused import from ``hkl_soleil-python_api.py``; fix loop variables
       defined multiple times in ``ops.py``, ``user.py``, and several test
-      files; fix modification of parameters with mutable defaults in
-      ``diffract.py``.
+      files; fix modification of mutable default parameters in
+      ``diffract.py`` and ``user.py``; suppress B006 with ``# noqa`` for
+      read-only mutable defaults where changing the default would alter
+      runtime semantics.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 

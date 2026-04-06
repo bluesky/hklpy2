@@ -182,9 +182,9 @@ class DiffractometerBase(PseudoPositioner):
         *,
         solver: Optional[str] = None,
         geometry: Optional[str] = None,
-        solver_kwargs: dict = {},
-        pseudos: list[str] = [],
-        reals: list[str] = [],
+        solver_kwargs: dict = {},  # noqa: B006
+        pseudos: list[str] = [],  # noqa: B006
+        reals: list[str] = [],  # noqa: B006
         reals_units: Optional[str] = None,
         forward_solution_function: Optional[Callable] = None,
         **kwargs,
@@ -937,15 +937,15 @@ def creator(
     solver: str = "hkl_soleil",
     geometry: str = "E4CV",
     beam_kwargs: dict[str, object] = None,
-    solver_kwargs: dict[str, object] = {},
+    solver_kwargs: dict[str, object] = {},  # noqa: B006
     _pseudo: Optional[Sequence[str]] = None,
-    pseudos: list = [],
+    pseudos: list = [],  # noqa: B006
     _real: Optional[Sequence[str]] = None,
-    reals: Optional[Union[Sequence[str], KeyValueMap]] = {},
-    motor_labels: Optional[Sequence[str]] = ["motors"],
-    labels: list = ["diffractometer"],
+    reals: Optional[Union[Sequence[str], KeyValueMap]] = {},  # noqa: B006
+    motor_labels: Optional[Sequence[str]] = ["motors"],  # noqa: B006
+    labels: list = ["diffractometer"],  # noqa: B006
     class_name: str = "Hklpy2Diffractometer",
-    class_bases: list = [DiffractometerBase],
+    class_bases: list = [DiffractometerBase],  # noqa: B006
     forward_solution_function: Optional[str] = None,
     **kwargs,
 ) -> DiffractometerBase:
@@ -1078,14 +1078,14 @@ def diffractometer_class_factory(
     solver: str = "hkl_soleil",
     geometry: str = "E4CV",
     beam_kwargs: dict[str, object] = None,
-    solver_kwargs: dict[str, object] = {"engine": "hkl"},
+    solver_kwargs: dict[str, object] = {"engine": "hkl"},  # noqa: B006
     _pseudo: Optional[Sequence[str]] = None,
-    pseudos: list = [],
+    pseudos: list = [],  # noqa: B006
     _real: Optional[Sequence[str]] = None,
-    reals: list[str] | dict[str, str | None] = {},
-    motor_labels: Optional[Sequence[str]] = ["motors"],
+    reals: list[str] | dict[str, str | None] = {},  # noqa: B006
+    motor_labels: Optional[Sequence[str]] = ["motors"],  # noqa: B006
     class_name: str = "Hklpy2Diffractometer",
-    class_bases: list = [DiffractometerBase],
+    class_bases: list = [DiffractometerBase],  # noqa: B006
     forward_solution_function: Optional[str] = None,
 ) -> DiffractometerBase:
     """
