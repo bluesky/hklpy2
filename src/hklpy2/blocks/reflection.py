@@ -13,7 +13,7 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 """
 
 import logging
-from typing import TYPE_CHECKING
+from typing import Any
 from typing import Mapping
 from typing import Optional
 from typing import Union
@@ -33,10 +33,6 @@ DEFAULT_REFLECTION_DIGITS: int = 4
 
 UNUSED_REFLECTION: str = "unused"
 """Identifies an unused reflection in the ReflectionsDict."""
-
-
-if TYPE_CHECKING:
-    from ..ops import Core  # noqa: F401
 
 
 class Reflection:
@@ -89,7 +85,7 @@ class Reflection:
         pseudo_axis_names: list[str],
         real_axis_names: list[str],
         *,
-        core: Optional["Core"] = None,
+        core: Optional[Any] = None,
         digits: Optional[int] = None,
         reals_units: Optional[str] = None,
         wavelength_units: Optional[str] = None,

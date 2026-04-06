@@ -40,11 +40,16 @@ describe future plans.
 
     * Address CodeQL findings:
 
-      - Unused local variables: ``lattice.py``, ``test_lattice.py``.
+      - Unused local variables: ``lattice.py``, ``test_lattice.py``;
+        restructure try/except in ``lattice.py`` to initialize
+        ``beta_val``/``gamma_val`` before the block.
       - Unused imports: add ``# noqa: F401`` to ``TYPE_CHECKING``-guarded
-        imports in ``misc.py``, ``ops.py``, and ``reflection.py``; remove
-        unused import from ``hkl_soleil-python_api.py``; fix mixed
-        ``import`` and ``from ... import`` of ``hklpy2`` in
+        imports in ``misc.py``, ``ops.py``; remove unused
+        ``TYPE_CHECKING``/``Core`` block from ``reflection.py`` (replaced
+        annotation with ``Optional[Any]``); restore accidentally removed
+        ``INPUT_VECTOR``, ``NamedFloatDict``, ``NUMERIC`` re-exports in
+        ``misc.py``; remove unused import from ``hkl_soleil-python_api.py``;
+        fix mixed ``import`` and ``from ... import`` of ``hklpy2`` in
         ``test_isn_libhkl.py``.
       - Mixed explicit/implicit returns: update return-type annotations and
         fix fall-through returns in ``base.py``, ``hkl_soleil.py``,
