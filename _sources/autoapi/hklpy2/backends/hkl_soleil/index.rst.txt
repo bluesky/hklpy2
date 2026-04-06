@@ -307,11 +307,15 @@ Module Contents
       Updated by 'forward()' computation.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.typing.Matrix3x3
+   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.typing.Matrix3x3 | None
 
       Calculate the UB (orientation) matrix with two reflections.
 
       The method of Busing & Levy, Acta Cryst 22 (1967) 457.
+
+      :returns: The 3×3 UB orientation matrix on success, or ``None`` if no
+                sample has been set (i.e. ``_sample`` is ``None``).
+      :rtype: Matrix3x3 or None
 
       :raises ValueError: Three failure modes, each with a distinct message:
           

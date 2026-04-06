@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=ced7e9a8"></script>
+    <script src="../../_static/documentation_options.js?v=b1fffa06"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -782,12 +782,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">energy_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
             <span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">wavelength</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">convert_units</span><span class="p">(</span>
             <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">energy</span><span class="p">,</span>
             <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">wavelength</span></div>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WavelengthXray._to_energy">
@@ -801,12 +800,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
             <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">energy</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">convert_units</span><span class="p">(</span>
             <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">wavelength</span><span class="p">,</span>
             <span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">energy_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">energy</span></div>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="WavelengthXray._wavelength_changed">
