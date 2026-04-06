@@ -740,9 +740,8 @@ def test_add_type_error_for_non_reflection_operand(bad):
 )
 def test_sub_type_error_for_non_reflection_operand(bad):
     r = _make_simple_reflection("r1")
-    with pytest.raises(TypeError) as exc:
+    with pytest.raises(TypeError, match=re.escape("unsupported operand type(s) for -")):
         _ = r - bad
-    assert "Unsupported operand type(s) for -" in str(exc.value)
 
 
 def test_add_and_sub_success_case():

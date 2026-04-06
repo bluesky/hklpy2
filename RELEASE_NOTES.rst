@@ -59,7 +59,9 @@ describe future plans.
       ``test_isn_libhkl.py``; add ``__eq__`` to ``ReflectionsDict``
       in ``reflection.py`` to account for added attributes; remove
       redundant comparison in ``test_lattice.py`` ``test_equal()``; fix
-      assert with side-effect in ``test_init.py``.
+      assert with side-effect in ``test_init.py``; return
+      ``NotImplemented`` instead of raising ``TypeError`` in
+      ``Reflection.__sub__()`` in ``reflection.py``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 

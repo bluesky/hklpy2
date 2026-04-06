@@ -195,11 +195,7 @@ class Reflection:
         Subtracts the pseudos and reals of other from self.
         """
         if not isinstance(other, Reflection):
-            raise TypeError(
-                "Unsupported operand type(s) for -: 'Reflection' "
-                #
-                f"and '{type(other).__name__}'"
-            )
+            return NotImplemented
 
         # Create a new Reflection with subtracted pseudo and real values.
         new_name = f"{self.name}_minus_{other.name}"
