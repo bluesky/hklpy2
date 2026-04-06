@@ -58,7 +58,8 @@ describe future plans.
       ``import`` and ``from ... import`` of ``hklpy2`` in
       ``test_isn_libhkl.py``; add ``__eq__`` to ``ReflectionsDict``
       in ``reflection.py`` to account for added attributes; remove
-      redundant comparison in ``test_lattice.py`` ``test_equal()``.
+      redundant comparison in ``test_lattice.py`` ``test_equal()``; fix
+      assert with side-effect in ``test_init.py``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 
