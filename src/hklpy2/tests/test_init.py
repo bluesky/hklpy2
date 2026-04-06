@@ -55,7 +55,8 @@ def test_main_version(capsys):
             sys.path.append("src")
             runpy.run_module("hklpy2.__init__", run_name="__main__")
     finally:
-        assert sys.path.pop() == "src"
+        popped = sys.path.pop()
+        assert popped == "src"
         if saved_pkg is not None:
             sys.modules["hklpy2"] = saved_pkg
         if saved_init is not None:

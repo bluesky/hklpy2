@@ -298,12 +298,11 @@ class WavelengthXray(Wavelength):
             self.energy_units.get(),
             INTERNAL_XRAY_ENERGY_UNITS,
         )
-        wavelength = convert_units(
+        return convert_units(
             A_KEV / energy,
             INTERNAL_LENGTH_UNITS,
             self.wavelength_units.get(),
         )
-        return wavelength
 
     def _to_energy(self, value: float) -> float:
         """Convert lambda to E."""
@@ -314,12 +313,11 @@ class WavelengthXray(Wavelength):
             self.wavelength_units.get(),
             INTERNAL_LENGTH_UNITS,
         )
-        energy = convert_units(
+        return convert_units(
             A_KEV / wavelength,
             INTERNAL_XRAY_ENERGY_UNITS,
             self.energy_units.get(),
         )
-        return energy
 
     def _wavelength_changed(self, value: float, **kwargs) -> None:
         """Sync energy with wavelength changes."""

@@ -255,8 +255,8 @@ def cahkl_table(*reflections: list[AxesTuple], digits=4) -> Table:
     table = Table()
     table.labels = ["(hkl)", "#"] + reals
     for r in reflections:
-        r = core.standardize_pseudos(r)
-        rstr = "(" + " ".join([str(v) for v in brief(r)]) + ")"
+        pseudos = core.standardize_pseudos(r)
+        rstr = "(" + " ".join([str(v) for v in brief(pseudos)]) + ")"
         i = 0
         for solution in core.forward(r):
             i += 1
@@ -289,7 +289,7 @@ def calc_UB(
     return get_diffractometer().core.calc_UB(r1, r2)
 
 
-def solver_summary(write=True) -> Table:
+def solver_summary(write=True) -> Table | None:
     """
     Table of diffractometer solver's modes, axes, ...
 
@@ -326,6 +326,7 @@ def solver_summary(write=True) -> Table:
         print(table)
     else:
         return table
+    return None
 
 
 def get_diffractometer() -> Union[DiffractometerBase, None]:
@@ -521,7 +522,7 @@ def scan_extra(
     num: Optional[int] = 2,
     pseudos: Optional[dict] = None,  # h, k, l
     reals: Optional[dict] = None,  # angles
-    extras: Optional[dict] = {},
+    extras: Optional[dict] = None,
     fail_on_exception: Optional[bool] = False,
     md: Optional[dict] = None,
 ) -> BlueskyPlanType:
@@ -751,8 +752,7 @@ def setor(
                 return name
 
     name = name or make_name()
-    refl = diffractometer.add_reflection((h, k, l), reals=rpos, name=name)
-    return refl
+    return diffractometer.add_reflection((h, k, l), reals=rpos, name=name)
 
 
 def wh(digits=4) -> None:

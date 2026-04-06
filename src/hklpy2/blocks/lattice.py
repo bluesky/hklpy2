@@ -161,12 +161,15 @@ class Lattice:
         # tolerances. The test-suite expects such pathological inputs to raise
         # during construction with this message. Match that behavior for the
         # specific regime used in tests.
+        alpha_val = None
+        beta_val = None
+        gamma_val = None
         try:
             alpha_val = float(self.alpha)
             beta_val = float(self.beta)
             gamma_val = float(self.gamma)
         except Exception:
-            alpha_val = beta_val = gamma_val = None
+            pass
 
         if (
             alpha_val is not None

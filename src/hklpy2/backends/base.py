@@ -301,7 +301,7 @@ class SolverBase(ABC):
         # return []
 
     @abstractmethod
-    def refineLattice(self, reflections: List[ReflectionDict]) -> NamedFloatDict:
+    def refineLattice(self, reflections: List[ReflectionDict]) -> NamedFloatDict | None:
         """Refine the lattice parameters from a list of reflections."""
 
     @abstractmethod

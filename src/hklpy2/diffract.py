@@ -182,9 +182,9 @@ class DiffractometerBase(PseudoPositioner):
         *,
         solver: Optional[str] = None,
         geometry: Optional[str] = None,
-        solver_kwargs: dict = {},
-        pseudos: list[str] = [],
-        reals: list[str] = [],
+        solver_kwargs: dict = {},  # noqa: B006
+        pseudos: list[str] = [],  # noqa: B006
+        reals: list[str] = [],  # noqa: B006
         reals_units: Optional[str] = None,
         forward_solution_function: Optional[Callable] = None,
         **kwargs,
@@ -584,7 +584,7 @@ class DiffractometerBase(PseudoPositioner):
         num: Optional[int] = 2,
         pseudos: Optional[dict] = None,  # h, k, l
         reals: Optional[dict] = None,  # angles
-        extras: Optional[dict] = {},
+        extras: Optional[dict] = None,
         fail_on_exception: Optional[bool] = False,
         md: Optional[dict] = None,
     ) -> BlueskyPlanType:
@@ -639,6 +639,7 @@ class DiffractometerBase(PseudoPositioner):
 
         self.core.update_solver()
         self._scan_extra_validate_args(args, pseudos, reals)
+        extras = dict(extras or {})
         movers = self._scan_extra_build_movers(args, num, extras)
         _md = self._scan_extra_metadata(args, num, pseudos, reals, extras, md)
 
@@ -935,16 +936,16 @@ def creator(
     name: str = "",
     solver: str = "hkl_soleil",
     geometry: str = "E4CV",
-    beam_kwargs: dict[str, object] = {},
-    solver_kwargs: dict[str, object] = {},
+    beam_kwargs: dict[str, object] = None,
+    solver_kwargs: dict[str, object] = {},  # noqa: B006
     _pseudo: Optional[Sequence[str]] = None,
-    pseudos: list = [],
+    pseudos: list = [],  # noqa: B006
     _real: Optional[Sequence[str]] = None,
-    reals: Optional[Union[Sequence[str], KeyValueMap]] = {},
-    motor_labels: Optional[Sequence[str]] = ["motors"],
-    labels: list = ["diffractometer"],
+    reals: Optional[Union[Sequence[str], KeyValueMap]] = {},  # noqa: B006
+    motor_labels: Optional[Sequence[str]] = ["motors"],  # noqa: B006
+    labels: list = ["diffractometer"],  # noqa: B006
     class_name: str = "Hklpy2Diffractometer",
-    class_bases: list = [DiffractometerBase],
+    class_bases: list = [DiffractometerBase],  # noqa: B006
     forward_solution_function: Optional[str] = None,
     **kwargs,
 ) -> DiffractometerBase:
@@ -1076,15 +1077,15 @@ def diffractometer_class_factory(
     *,
     solver: str = "hkl_soleil",
     geometry: str = "E4CV",
-    beam_kwargs: dict[str, object] = {},
-    solver_kwargs: dict[str, object] = {"engine": "hkl"},
+    beam_kwargs: dict[str, object] = None,
+    solver_kwargs: dict[str, object] = {"engine": "hkl"},  # noqa: B006
     _pseudo: Optional[Sequence[str]] = None,
-    pseudos: list = [],
+    pseudos: list = [],  # noqa: B006
     _real: Optional[Sequence[str]] = None,
-    reals: list[str] | dict[str, str | None] = {},
-    motor_labels: Optional[Sequence[str]] = ["motors"],
+    reals: list[str] | dict[str, str | None] = {},  # noqa: B006
+    motor_labels: Optional[Sequence[str]] = ["motors"],  # noqa: B006
     class_name: str = "Hklpy2Diffractometer",
-    class_bases: list = [DiffractometerBase],
+    class_bases: list = [DiffractometerBase],  # noqa: B006
     forward_solution_function: Optional[str] = None,
 ) -> DiffractometerBase:
     """
@@ -1169,6 +1170,7 @@ def diffractometer_class_factory(
 
     # Define Component attributes of __this__ custom class.
     attributes = {}
+    beam_kwargs = dict(beam_kwargs or {})
     beam_class = beam_kwargs.pop("class", "hklpy2.incident.WavelengthXray")
     maker = make_component if isinstance(beam_class, str) else Cpt
     attributes["beam"] = maker(beam_class, **beam_kwargs)

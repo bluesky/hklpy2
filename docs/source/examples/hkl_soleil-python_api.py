@@ -5,7 +5,6 @@ Exercise Hkl's (libhkl) Python API.
 import gi
 import numpy
 import pyRestTable
-from gi.repository import GLib  # noqa: F401
 
 gi.require_version("Hkl", "5.0")
 from gi.repository import Hkl  # noqa: E402
@@ -22,7 +21,7 @@ class Table(pyRestTable.Table):
         if keys == self.labels:
             self.addRow(list(dd.values()))
         else:
-            KeyError(
+            raise KeyError(
                 "All rows must have same keys."
                 f"  Received {keys!r}, expected {self.labels!r}."
             )

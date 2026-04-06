@@ -106,7 +106,7 @@ logger = logging.getLogger(__name__)
 # documents them only in hklpy2.typing, their canonical location.
 
 if TYPE_CHECKING:
-    from .backends.base import SolverBase
+    from .backends.base import SolverBase  # noqa: F401
 
 from .typing import AnyAxesType  # noqa: E402, F401
 from .typing import AxesArray  # noqa: E402, F401
@@ -347,6 +347,9 @@ class VirtualPositionerBase(SoftPositioner):
             return
 
         self._setup_finished = True
+        logger.debug(
+            "VirtualPositionerBase._finish_setup() completed for %r", self.name
+        )
         # Call 'self._cb_update_position' when readback updates.
         readback.subscribe(self._cb_update_position)
         self._recompute_limits()
@@ -676,8 +679,7 @@ def dict_device_factory(data: KeyValueMap, **kwargs: Any) -> type:
         # kind="hinted",
         for k, v in data.items()
     }
-    fc = type("DictionaryDevice", (Device,), component_dict)
-    return fc
+    return type("DictionaryDevice", (Device,), component_dict)
 
 
 def distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple) -> float:
@@ -735,6 +737,7 @@ def dynamic_import(full_path: str) -> type:
     module_name, object_name = full_path.rsplit(".", 1)
     module_object = import_module(module_name)
     import_object = getattr(module_object, object_name)
+    logger.debug("Imported %r from %r", object_name, module_name)
 
     return import_object
 
@@ -766,6 +769,7 @@ def get_solver(solver_name: str) -> "SolverBase":
     """
     if solver_name not in solvers():
         raise SolverError(f"{solver_name=!r} unknown.  Pick one of: {solvers()!r}")
+    logger.debug("Loading solver %r from entry points", solver_name)
     entries = entry_points(group=SOLVER_ENTRYPOINT_GROUP)
     return entries[solver_name].load()
 
@@ -970,7 +974,9 @@ def load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping:
     path = pathlib.Path(file)
     if not path.exists():
         raise FileExistsError(f"YAML file '{path}' does not exist.")
-    return load_yaml(open(path, "r").read())
+    logger.debug("Loading YAML file %r", str(path))
+    with open(path, "r") as f:
+        return load_yaml(f.read())
 
 
 def make_component(call_name: str, *args: Any, **kwargs: Any) -> Component:
@@ -1140,6 +1146,9 @@ def solver_factory(
     """
     Create a |solver| object with geometry and axes.
     """
+    logger.debug(
+        "Creating solver %r geometry=%r kwargs=%r", solver_name, geometry, kwargs
+    )
     solver_class = get_solver(solver_name)
     return solver_class(geometry, **kwargs)
 
@@ -1153,13 +1162,7 @@ def solvers() -> Mapping[str, "SolverBase"]:
         import hklpy2
         print(hklpy2.solvers())
     """
-    # fmt: off
-    entries = {
-        ep.name: ep.value
-        for ep in entry_points(group=SOLVER_ENTRYPOINT_GROUP)
-    }
-    # fmt: on
-    return entries
+    return {ep.name: ep.value for ep in entry_points(group=SOLVER_ENTRYPOINT_GROUP)}
 
 
 def creator_from_config(config: Union[dict, str, pathlib.Path]):
@@ -1195,6 +1198,7 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
     from .diffract import creator
 
     if isinstance(config, (str, pathlib.Path)):
+        logger.debug("creator_from_config: loading from file %r", str(config))
         config = load_yaml_file(config)
     if not isinstance(config, dict):
         raise TypeError(
@@ -1251,6 +1255,12 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
     # even when diffractometer names differ from solver canonical names.
     diffractometer_name = config.get("name", geometry.lower())
 
+    logger.debug(
+        "creator_from_config: creating %r solver=%r geometry=%r",
+        diffractometer_name,
+        solver_name,
+        geometry,
+    )
     sim = creator(
         name=diffractometer_name,
         solver=solver_name,

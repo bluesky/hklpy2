@@ -1079,3 +1079,28 @@ def test_refine_lattice(rnames, context):
         add_oriented_vibranium_to_e4cv(e4cv)
         reflections = [e4cv.sample.reflections[key] for key in rnames]
         e4cv.core.refine_lattice(*reflections)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            pytest.raises(
+                CoreError,
+                match=re.escape("does not support lattice refinement"),
+            ),
+            id="th_tth solver raises CoreError for unsupported refinement",
+        ),
+    ],
+)
+def test_refine_lattice_unsupported_solver(parms, context):
+    with context:
+        sim = creator(solver="th_tth", geometry="TH TTH Q")
+        sim.wavelength = 1.0
+        # Add 3 reflections to pass the minimum-count guard.
+        for i, tth in enumerate([30, 60, 90]):
+            sim.add_reflection(
+                (tth / 2,), reals=dict(th=tth / 2, tth=tth), name=f"r{i}"
+            )
+        sim.core.refine_lattice()

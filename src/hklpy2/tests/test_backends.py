@@ -22,7 +22,7 @@ def test_solvers(solver_class, base_class, geometry):
 
     # confirm that users cannot use the base class directly
     with pytest.raises(TypeError) as reason:
-        solver = base_class()
+        base_class()
     assert "Can't instantiate abstract class" in str(reason)
 
     # test an object created from the Solver class

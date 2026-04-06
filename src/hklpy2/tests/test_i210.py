@@ -247,8 +247,6 @@ _I243_CONFIG_FILE = TESTS_DIR / "configuration_i240.yml"
 with open(_I243_CONFIG_FILE) as _f:
     _I243_CONFIG = yaml.safe_load(_f)
 
-# Physical axis order from the config (tau, mu, chi, phi, gamma, delta).
-_I243_REAL_AXES = list(_I243_CONFIG["axes"]["real_axes"])
 _I243_SAMPLE = _I243_CONFIG["samples"][_I243_CONFIG["sample_name"]]
 _I243_LATTICE_A = _I243_SAMPLE["lattice"]["a"]
 

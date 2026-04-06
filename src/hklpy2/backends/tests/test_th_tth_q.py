@@ -242,3 +242,29 @@ def test_reflections(value, context):
         )
         solver.addReflection(r0)  # pre-existing
         solver.addReflection(value)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry=TH_TTH_Q_GEOMETRY),
+            does_not_raise(),
+            id="known geometry returns bisector mode",
+        ),
+        pytest.param(
+            dict(geometry="UNKNOWN"),
+            does_not_raise(),
+            id="unknown geometry returns empty list",
+        ),
+    ],
+)
+def test_modes(parms, context):
+    with context:
+        solver = ThTthSolver(TH_TTH_Q_GEOMETRY)
+        solver._gname = parms["geometry"]
+        modes = solver.modes
+        if parms["geometry"] == TH_TTH_Q_GEOMETRY:
+            assert modes == [BISECTOR_MODE]
+        else:
+            assert modes == []

@@ -39,7 +39,7 @@ from .typing import NamedFloatDict
 __all__ = ["Core"]
 
 if TYPE_CHECKING:
-    from .diffract import DiffractometerBase
+    from .diffract import DiffractometerBase  # noqa: F401
 
 logger = logging.getLogger(__name__)
 DEFAULT_EXTRA_VALUE: float = 0
@@ -136,7 +136,7 @@ class Core:
             "hklpy2_version": __version__,
             "python_class": self.diffractometer.__class__.__name__,
         }
-        config = {
+        return {
             "_header": header,
             "name": self.diffractometer.name,
             "axes": {
@@ -153,8 +153,6 @@ class Core:
             "beam": self.diffractometer.beam._asdict(),
             "presets": self._mode_presets,
         }
-
-        return config
 
     def _axes_names_s2d(self, axis_dict: NamedFloatDict) -> NamedFloatDict:
         """Convert keys of axis dictionary from solver to diffractometer."""
@@ -475,8 +473,7 @@ class Core:
     def extras(self) -> list[str]:
         """Ordered dictionary of |solver| extra parameters in current mode."""
         every = self.all_extras
-        current = {axis: every[axis] for axis in self.solver_extra_axis_names}
-        return current
+        return {axis: every[axis] for axis in self.solver_extra_axis_names}
 
     @extras.setter
     def extras(self, values: NamedFloatDict) -> None:
@@ -829,6 +826,10 @@ class Core:
 
         logger.debug("Refining lattice using reflections %r", rnames)
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
+        if lattice is None:
+            raise CoreError(
+                f"Solver {self.solver.geometry!r} does not support lattice refinement."
+            )
 
         # apply unit conversions solver to lattice after refineLattice
         angle_units_solver = self.solver.ANGLE_UNITS
@@ -861,29 +862,31 @@ class Core:
         reflections = []
         for refl in refl_list:
             if isinstance(refl, str):
-                refl = self.sample.reflections[refl]
-            refl = refl._asdict()
+                refl_obj = self.sample.reflections[refl]
+            else:
+                refl_obj = refl
+            refl_dict = refl_obj._asdict()
 
             angle_units_uc = self.diffractometer.reals_units
             angle_units_solver = self.solver.ANGLE_UNITS
             reals = {
                 axis: convert_units(
-                    refl["reals"][self.axes_xref_reversed[axis]],
+                    refl_dict["reals"][self.axes_xref_reversed[axis]],
                     angle_units_uc,
                     angle_units_solver,
                 )
                 for axis in self.solver.real_axis_names
             }
-            refl["reals"] = reals
+            refl_dict["reals"] = reals
 
             # determine the original wavelength_units from reflection or incident beam
             refl_wl_units = (
-                refl.get("wavelength_units")
+                refl_dict.get("wavelength_units")
                 or self.diffractometer.beam.wavelength_units.get()
             )
-            refl[k] = convert_units(refl[k], refl_wl_units, wl_units_solver)
+            refl_dict[k] = convert_units(refl_dict[k], refl_wl_units, wl_units_solver)
 
-            reflections.append(refl)
+            reflections.append(refl_dict)
         return reflections
 
     def remove_sample(self, name: str):

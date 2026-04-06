@@ -38,6 +38,53 @@ describe future plans.
     Maintenance
     -----------
 
+    * Address CodeQL findings:
+
+      - Unused local variables: ``lattice.py``, ``test_lattice.py``;
+        restructure try/except in ``lattice.py`` to initialize
+        ``beta_val``/``gamma_val`` before the block.
+      - Unused imports: add ``# noqa: F401`` to ``TYPE_CHECKING``-guarded
+        imports in ``misc.py``, ``ops.py``; remove unused
+        ``TYPE_CHECKING``/``Core`` block from ``reflection.py`` (replaced
+        annotation with ``Optional[Any]``); restore accidentally removed
+        ``INPUT_VECTOR``, ``NamedFloatDict``, ``NUMERIC`` re-exports in
+        ``misc.py``; remove unused import from ``hkl_soleil-python_api.py``;
+        fix mixed ``import`` and ``from ... import`` of ``hklpy2`` in
+        ``test_isn_libhkl.py``.
+      - Mixed explicit/implicit returns: update return-type annotations and
+        fix fall-through returns in ``base.py``, ``hkl_soleil.py``,
+        ``no_op.py``, ``ops.py``, ``th_tth_q.py``, and ``user.py``.
+      - Variable defined multiple times: fix loop variables in ``ops.py``,
+        ``user.py``, ``test_backends.py``, ``test_diffract.py``, and
+        ``test_sample.py``.
+      - Modification of parameter with mutable default: fix ``beam_kwargs``
+        and ``extras`` in ``diffract.py`` and ``user.py``; suppress B006
+        with ``# noqa`` for read-only mutable defaults where changing the
+        default would alter runtime semantics.
+      - Use of return value of a procedure: drop ``tbl =`` assignment for
+        ``pa()`` and ``wh()`` calls in ``test_user.py``.
+      - Unused global variable: remove ``_I243_REAL_AXES`` from
+        ``test_i210.py``; add ``logger.debug()`` calls throughout
+        ``misc.py`` to activate the previously unused ``logger``.
+      - File not always closed: use a ``with`` block in
+        ``load_yaml_file()`` in ``misc.py``.
+      - ``__eq__`` not overridden when adding attributes: add ``__eq__``
+        to ``ReflectionsDict`` in ``reflection.py``.
+      - Redundant comparison: remove from ``test_lattice.py``
+        ``test_equal()``.
+      - Assert with side-effect: separate ``sys.path.pop()`` from
+        ``assert`` in ``test_init.py``.
+      - Non-standard exception in special method: return ``NotImplemented``
+        instead of raising ``TypeError`` in ``Reflection.__sub__()``.
+      - Unused exception object: add missing ``raise`` in
+        ``hkl_soleil-python_api.py``.
+    * Additional cleanup found during CodeQL review:
+
+      - Remove redundant outer loop in ``test_misc.py`` ``test_axes_to_dict()``.
+      - Rename overwritten loop variable ``solution`` in ``test_diffract.py``.
+      - Remove unnecessary intermediate assignments before ``return`` in
+        ``hkl_soleil.py``, ``incident.py``, ``misc.py``, ``ops.py``, and
+        ``user.py`` (RET504).
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 

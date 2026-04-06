@@ -13,7 +13,7 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 """
 
 import logging
-from typing import TYPE_CHECKING
+from typing import Any
 from typing import Mapping
 from typing import Optional
 from typing import Union
@@ -33,9 +33,6 @@ DEFAULT_REFLECTION_DIGITS: int = 4
 
 UNUSED_REFLECTION: str = "unused"
 """Identifies an unused reflection in the ReflectionsDict."""
-
-if TYPE_CHECKING:
-    from ..ops import Core  # only for type checking
 
 
 class Reflection:
@@ -88,7 +85,7 @@ class Reflection:
         pseudo_axis_names: list[str],
         real_axis_names: list[str],
         *,
-        core: Optional["Core"] = None,
+        core: Optional[Any] = None,
         digits: Optional[int] = None,
         reals_units: Optional[str] = None,
         wavelength_units: Optional[str] = None,
@@ -194,11 +191,7 @@ class Reflection:
         Subtracts the pseudos and reals of other from self.
         """
         if not isinstance(other, Reflection):
-            raise TypeError(
-                "Unsupported operand type(s) for -: 'Reflection' "
-                #
-                f"and '{type(other).__name__}'"
-            )
+            return NotImplemented
 
         # Create a new Reflection with subtracted pseudo and real values.
         new_name = f"{self.name}_minus_{other.name}"
@@ -396,6 +389,15 @@ class ReflectionsDict(dict):
         super().__init__(*args, **kwargs)
         self._order = []
         self.geometry = None
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, ReflectionsDict):
+            return NotImplemented
+        return (
+            super().__eq__(other)
+            and self._order == other._order
+            and self.geometry == other.geometry
+        )
 
     def _asdict(self) -> Mapping[str, Union[float, int, str]]:
         """

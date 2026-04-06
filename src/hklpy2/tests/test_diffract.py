@@ -996,8 +996,8 @@ def test_e4cv_constant_phi():
     assert len(solutions) > 0
     for solution in solutions:
         assert solution.__class__.__name__.endswith("RealPos")
-        solution = solution._asdict()
-        assert_almost_equal(solution["phi"], phi, 4)
+        sol_dict = solution._asdict()
+        assert_almost_equal(sol_dict["phi"], phi, 4)
 
     # Check that phi is held constant in forward()
     # Returns a position namedtuple.
@@ -1364,8 +1364,8 @@ def test_configuration_setter_delegates_to_restore(parms, context):
         e4cv.configuration = config
         # Wavelength in e4cv_orient.yml is 1.54
         assert math.isclose(e4cv.beam.wavelength.get(), 1.54, abs_tol=0.001)
-        # Verify geometry validation: a mis-matched config raises ConfigurationError
-        bad_config = dict(config)
+        # Verify geometry validation
+        dict(config)  # mis-matched config raises ConfigurationError
         bad_config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
         bad_config["solver"]["geometry"] = "NONEXISTENT_GEOMETRY"
     with pytest.raises(Exception):
