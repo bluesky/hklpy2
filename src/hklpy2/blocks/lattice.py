@@ -166,7 +166,9 @@ class Lattice:
             beta_val = float(self.beta)
             gamma_val = float(self.gamma)
         except Exception:
-            alpha_val = beta_val = gamma_val = None
+            alpha_val = None
+            beta_val = None
+            gamma_val = None
 
         if (
             alpha_val is not None

@@ -255,7 +255,7 @@ def test_lattice_defensive_check(params, context):
     Also verify a normal construction succeeds.
     """
     with context:
-        _lat = Lattice(**params)
+        Lattice(**params)
 
 
 @pytest.mark.parametrize(
@@ -479,7 +479,7 @@ def test_compute_cartesian_and_B_on_cubic_inside_context():
 def test_invalid_lengths(params, context):
     """Lattice lengths must be positive."""
     with context:
-        _lat = Lattice(**params)
+        Lattice(**params)
 
 
 @pytest.mark.parametrize(
@@ -506,7 +506,7 @@ def test_invalid_lengths(params, context):
 def test_invalid_angles_range(params, context):
     """Angles must be within (0,180)."""
     with context:
-        _lat = Lattice(**params)
+        Lattice(**params)
 
 
 @pytest.mark.parametrize(
@@ -527,7 +527,7 @@ def test_invalid_angles_range(params, context):
 def test_gamma_too_close(gamma, context):
     """Gamma values with sin(gamma) smaller than tol should raise."""
     with context:
-        _lat = Lattice(1.0, gamma=gamma)
+        Lattice(1.0, gamma=gamma)
 
 
 def test_init_handles_float_conversion_exception(monkeypatch):

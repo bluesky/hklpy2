@@ -38,6 +38,8 @@ describe future plans.
     Maintenance
     -----------
 
+    * Address CodeQL findings: remove unused local variables in
+      ``lattice.py`` and ``test_lattice.py``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 
