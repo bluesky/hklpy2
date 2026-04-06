@@ -50,7 +50,10 @@ describe future plans.
       ``diffract.py`` and ``user.py``; suppress B006 with ``# noqa`` for
       read-only mutable defaults where changing the default would alter
       runtime semantics; drop use of return value of ``pa()`` and ``wh()``
-      procedures in ``test_user.py``.
+      procedures in ``test_user.py``; remove unused global variable
+      ``_I243_REAL_AXES`` from ``test_i210.py``; add ``logger.debug()``
+      calls throughout ``misc.py`` to activate the previously unused
+      ``logger``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 
