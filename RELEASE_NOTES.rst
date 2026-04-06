@@ -49,7 +49,8 @@ describe future plans.
       files; fix modification of mutable default parameters in
       ``diffract.py`` and ``user.py``; suppress B006 with ``# noqa`` for
       read-only mutable defaults where changing the default would alter
-      runtime semantics.
+      runtime semantics; drop use of return value of ``pa()`` and ``wh()``
+      procedures in ``test_user.py``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 

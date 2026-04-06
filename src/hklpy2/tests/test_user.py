@@ -236,8 +236,7 @@ def test_pa(fourc, capsys):
     set_diffractometer(fourc)
     assert get_diffractometer() == fourc
 
-    tbl = pa()
-    assert tbl is None
+    pa()
     out, err = capsys.readouterr()
     assert len(out) > 0
     assert err == ""
@@ -483,8 +482,7 @@ def test_wh(fourc, capsys):
     set_diffractometer(fourc)
     assert get_diffractometer() == fourc
 
-    tbl = wh()
-    assert tbl is None
+    wh()
     out, err = capsys.readouterr()
     assert len(out) > 0
     assert err == ""
