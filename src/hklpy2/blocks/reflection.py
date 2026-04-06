@@ -398,6 +398,15 @@ class ReflectionsDict(dict):
         self._order = []
         self.geometry = None
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, ReflectionsDict):
+            return NotImplemented
+        return (
+            super().__eq__(other)
+            and self._order == other._order
+            and self.geometry == other.geometry
+        )
+
     def _asdict(self) -> Mapping[str, Union[float, int, str]]:
         """
         Describe the reflections list as an ordered dictionary.

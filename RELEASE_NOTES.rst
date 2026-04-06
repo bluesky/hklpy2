@@ -56,7 +56,8 @@ describe future plans.
       ``logger``; fix file not always closed in ``misc.py``
       ``load_yaml_file()`` by using a ``with`` block; fix mixed
       ``import`` and ``from ... import`` of ``hklpy2`` in
-      ``test_isn_libhkl.py``.
+      ``test_isn_libhkl.py``; add ``__eq__`` to ``ReflectionsDict``
+      in ``reflection.py`` to account for added attributes.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 
