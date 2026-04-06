@@ -59,7 +59,7 @@ from .blocks.lattice import SI_LATTICE_PARAMETER  # noqa: E402, F401
 from .blocks.zone import OrthonormalZone  # noqa: E402, F401, F403
 from .blocks.zone import move_zone  # noqa: E402, F401, F403
 from .blocks.zone import scan_zone  # noqa: E402, F401, F403
-from .diffract import DiffractometerBase  # noqa: E402, F401
+
 from .diffract import creator  # noqa: E402, F401, F403
 from .diffract import diffractometer_class_factory  # noqa: E402, F401, F403
 from .incident import A_KEV  # noqa: E402, F401
