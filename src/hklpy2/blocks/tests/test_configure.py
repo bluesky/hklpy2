@@ -223,9 +223,25 @@ def test_fromdict():
     )
 
     assert len(fourc.sample.reflections) == 3
-    for refl in fourc.sample.reflections.order:
-        assert refl in fourc.sample.reflections
-    # TODO: compare reflections
+    sample_cfg = config["samples"][config["sample_name"]]
+    for refl_name in fourc.sample.reflections.order:
+        assert refl_name in fourc.sample.reflections
+        refl = fourc.sample.reflections[refl_name]
+        cfg_refl = sample_cfg["reflections"][refl_name]
+        # Compare pseudo positions.
+        for axis, value in cfg_refl["pseudos"].items():
+            assert refl.pseudos[axis] == pytest.approx(value), (
+                f"{refl_name=!r} pseudo {axis=!r}: {refl.pseudos[axis]=} != {value=}"
+            )
+        # Compare real positions.
+        for axis, value in cfg_refl["reals"].items():
+            assert refl.reals[axis] == pytest.approx(value), (
+                f"{refl_name=!r} real {axis=!r}: {refl.reals[axis]=} != {value=}"
+            )
+        # Compare wavelength.
+        assert refl.wavelength == pytest.approx(cfg_refl["wavelength"]), (
+            f"{refl_name=!r} {refl.wavelength=} != {cfg_refl['wavelength']=}"
+        )
 
     assert len(fourc.core.constraints) == len(config["constraints"])
     for key, constraint in fourc.core.constraints.items():
