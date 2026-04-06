@@ -38,6 +38,9 @@ describe future plans.
     Maintenance
     -----------
 
+    * Expand ``test_summary_dict`` and ``test_summary`` in
+      ``test_hkl_soleil.py`` to assert keys, values, columns, and rows.
+      (:issue:`269`)
     * Address CodeQL findings:
 
       - Unused local variables: ``lattice.py``, ``test_lattice.py``;
