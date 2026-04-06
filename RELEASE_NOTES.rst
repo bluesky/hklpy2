@@ -54,7 +54,9 @@ describe future plans.
       ``_I243_REAL_AXES`` from ``test_i210.py``; add ``logger.debug()``
       calls throughout ``misc.py`` to activate the previously unused
       ``logger``; fix file not always closed in ``misc.py``
-      ``load_yaml_file()`` by using a ``with`` block.
+      ``load_yaml_file()`` by using a ``with`` block; fix mixed
+      ``import`` and ``from ... import`` of ``hklpy2`` in
+      ``test_isn_libhkl.py``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 

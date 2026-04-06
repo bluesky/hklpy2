@@ -28,7 +28,6 @@ from contextlib import nullcontext as does_not_raise
 import numpy as np
 import pytest
 
-import hklpy2
 from hklpy2.backends.hkl_soleil import LIBHKL_DETECTOR_TYPE
 from hklpy2.backends.hkl_soleil import LIBHKL_USER_UNITS
 from hklpy2.backends.hkl_soleil import HklSolver
@@ -314,8 +313,10 @@ def test_HklSolver():
 )
 def test_hklpy2(parms, context):
     """Verify the ISN geometry work as expected."""
+    from hklpy2 import creator
+
     with context:
-        psic = hklpy2.creator(**parms)
+        psic = creator(**parms)
         assert psic.core.solver.name == SOLVER
         assert psic.core.solver.engine_name == ENGINE
         assert psic.core.geometry == GEOMETRY
