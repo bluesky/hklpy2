@@ -9,17 +9,10 @@ be specified directly or computed from two vectors (normal to their respective
 SPEC equivalents
 ----------------
 
-+--------------+---------------------+-------------------------------------+
-| SPEC command | hklpy2              | Description                         |
-+==============+=====================+=====================================+
-| ``cz``       | :class:`OrthonormalZone` (``b1=``, ``b2=``)   | Calculate zone axis from two vectors|
-+--------------+---------------------+-------------------------------------+
-| ``mz``       | :func:`move_zone`   | Move to a position in the zone      |
-+--------------+---------------------+-------------------------------------+
-| ``pl``       | :meth:`OrthonormalZone.define_axis` | Set scattering plane   |
-+--------------+---------------------+-------------------------------------+
-| ``sz``       | :class:`OrthonormalZone` (``axis=``) | Set zone axis directly |
-+--------------+---------------------+-------------------------------------+
+- ``cz`` — :class:`OrthonormalZone` (``b1=``, ``b2=``): calculate zone axis from two vectors.
+- ``mz`` — :func:`move_zone`: move diffractometer to a position in the zone.
+- ``pl`` — :meth:`OrthonormalZone.define_axis`: set the scattering plane from two vectors.
+- ``sz`` — :class:`OrthonormalZone` (``axis=``): set zone axis directly.
 
 .. autosummary::
 
