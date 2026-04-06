@@ -996,8 +996,8 @@ def test_e4cv_constant_phi():
     assert len(solutions) > 0
     for solution in solutions:
         assert solution.__class__.__name__.endswith("RealPos")
-        solution = solution._asdict()
-        assert_almost_equal(solution["phi"], phi, 4)
+        sol_dict = solution._asdict()
+        assert_almost_equal(sol_dict["phi"], phi, 4)
 
     # Check that phi is held constant in forward()
     # Returns a position namedtuple.

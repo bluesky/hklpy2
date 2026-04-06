@@ -136,7 +136,7 @@ class Core:
             "hklpy2_version": __version__,
             "python_class": self.diffractometer.__class__.__name__,
         }
-        config = {
+        return {
             "_header": header,
             "name": self.diffractometer.name,
             "axes": {
@@ -153,8 +153,6 @@ class Core:
             "beam": self.diffractometer.beam._asdict(),
             "presets": self._mode_presets,
         }
-
-        return config
 
     def _axes_names_s2d(self, axis_dict: NamedFloatDict) -> NamedFloatDict:
         """Convert keys of axis dictionary from solver to diffractometer."""
@@ -475,8 +473,7 @@ class Core:
     def extras(self) -> list[str]:
         """Ordered dictionary of |solver| extra parameters in current mode."""
         every = self.all_extras
-        current = {axis: every[axis] for axis in self.solver_extra_axis_names}
-        return current
+        return {axis: every[axis] for axis in self.solver_extra_axis_names}
 
     @extras.setter
     def extras(self, values: NamedFloatDict) -> None:

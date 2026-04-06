@@ -676,8 +676,7 @@ def dict_device_factory(data: KeyValueMap, **kwargs: Any) -> type:
         # kind="hinted",
         for k, v in data.items()
     }
-    fc = type("DictionaryDevice", (Device,), component_dict)
-    return fc
+    return type("DictionaryDevice", (Device,), component_dict)
 
 
 def distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple) -> float:
@@ -1161,12 +1160,11 @@ def solvers() -> Mapping[str, "SolverBase"]:
         print(hklpy2.solvers())
     """
     # fmt: off
-    entries = {
+    return {
         ep.name: ep.value
         for ep in entry_points(group=SOLVER_ENTRYPOINT_GROUP)
     }
     # fmt: on
-    return entries
 
 
 def creator_from_config(config: Union[dict, str, pathlib.Path]):

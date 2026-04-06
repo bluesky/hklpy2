@@ -752,8 +752,7 @@ def setor(
                 return name
 
     name = name or make_name()
-    refl = diffractometer.add_reflection((h, k, l), reals=rpos, name=name)
-    return refl
+    return diffractometer.add_reflection((h, k, l), reals=rpos, name=name)
 
 
 def wh(digits=4) -> None:

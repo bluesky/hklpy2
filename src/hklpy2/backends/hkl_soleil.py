@@ -516,7 +516,7 @@ class HklSolver(SolverBase):
         self._hkl_engine_list.get()
 
         # Assemble the dictionary
-        pdict = dict(
+        return dict(
             zip(
                 self.engine.pseudo_axis_names_get(),
                 roundoff_list(
@@ -524,7 +524,6 @@ class HklSolver(SolverBase):
                 ),
             )
         )
-        return pdict
 
     @property
     def lattice(self) -> NamedFloatDict:

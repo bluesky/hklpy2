@@ -180,8 +180,7 @@ def test_axes_to_dict(input, names, context):
         axes = axes_to_dict(input, names)
         assert isinstance(axes, dict)
         for name in names:
-            for name in names:
-                assert isinstance(axes.get(name), numbers.Real)
+            assert isinstance(axes.get(name), numbers.Real)
 
 
 @pytest.mark.parametrize(
