@@ -34,8 +34,9 @@ DEFAULT_REFLECTION_DIGITS: int = 4
 UNUSED_REFLECTION: str = "unused"
 """Identifies an unused reflection in the ReflectionsDict."""
 
+
 if TYPE_CHECKING:
-    from ..ops import Core  # only for type checking
+    from ..ops import Core  # noqa: F401
 
 
 class Reflection:

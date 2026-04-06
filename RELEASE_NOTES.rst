@@ -39,7 +39,9 @@ describe future plans.
     -----------
 
     * Address CodeQL findings: remove unused local variables in
-      ``lattice.py`` and ``test_lattice.py``.
+      ``lattice.py`` and ``test_lattice.py``; add ``# noqa: F401`` to
+      ``TYPE_CHECKING``-guarded imports in ``misc.py``, ``ops.py``, and
+      ``reflection.py``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 

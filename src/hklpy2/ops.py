@@ -39,7 +39,7 @@ from .typing import NamedFloatDict
 __all__ = ["Core"]
 
 if TYPE_CHECKING:
-    from .diffract import DiffractometerBase
+    from .diffract import DiffractometerBase  # noqa: F401
 
 logger = logging.getLogger(__name__)
 DEFAULT_EXTRA_VALUE: float = 0
