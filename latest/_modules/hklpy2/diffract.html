@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=1bffb116"></script>
+    <script src="../../_static/documentation_options.js?v=95a9e260"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -518,7 +518,7 @@
 
 
 <div class="viewcode-block" id="DiffractometerBase">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiffractometerBase</span><span class="p">(</span><span class="n">PseudoPositioner</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for all diffractometers.</span>
@@ -661,7 +661,7 @@
                     <span class="n">component</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="mf">0.0</span>
 
 <div class="viewcode-block" id="DiffractometerBase.add_reflection">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.add_reflection">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.add_reflection">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_reflection</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pseudos</span><span class="p">,</span>
@@ -704,7 +704,7 @@
 
 
 <div class="viewcode-block" id="DiffractometerBase.add_sample">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.add_sample">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.add_sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_sample</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -757,7 +757,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DiffractometerBase.export">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.export">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.export">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Export the diffractometer configuration to a YAML file.</span>
@@ -784,7 +784,7 @@
 
 
 <div class="viewcode-block" id="DiffractometerBase.restore">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.restore">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.restore">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">restore</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">,</span>
@@ -851,7 +851,7 @@
 
     <span class="nd">@pseudo_position_argument</span>
 <div class="viewcode-block" id="DiffractometerBase.forward">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.forward">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute real-space coordinates from pseudos (hkl -&gt; angles).&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;forward: pseudos=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span>
@@ -860,7 +860,7 @@
 
 
 <div class="viewcode-block" id="DiffractometerBase.full_position">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.full_position">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.full_position">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">full_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dict with positions of pseudos, reals, &amp; extras.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">roundoff</span>
@@ -875,7 +875,7 @@
 
     <span class="nd">@real_position_argument</span>
 <div class="viewcode-block" id="DiffractometerBase.inverse">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.inverse">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute pseudo-space coordinates from reals (angles -&gt; hkl).&quot;&quot;&quot;</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;inverse: reals=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">reals</span><span class="p">)</span>
@@ -885,7 +885,7 @@
 
     <span class="nd">@plan</span>
 <div class="viewcode-block" id="DiffractometerBase.move_dict">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_dict">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.move_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">move_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">:</span> <span class="n">AxesDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;(plan) Move diffractometer axes to positions in &#39;axes&#39;.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan_stubs</span> <span class="k">as</span> <span class="n">bps</span>
@@ -907,7 +907,7 @@
 
     <span class="nd">@plan</span>
 <div class="viewcode-block" id="DiffractometerBase.move_forward_with_extras">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_forward_with_extras">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.move_forward_with_extras">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">move_forward_with_extras</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">pseudos</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span>
@@ -935,7 +935,7 @@
 
     <span class="nd">@plan</span>
 <div class="viewcode-block" id="DiffractometerBase.move_inverse_with_extras">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_inverse_with_extras">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.move_inverse_with_extras">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">move_inverse_with_extras</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">reals</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span>
@@ -964,7 +964,7 @@
 
     <span class="nd">@real_position_argument</span>
 <div class="viewcode-block" id="DiffractometerBase.move_reals">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.move_reals">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.move_reals">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">move_reals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;(not a plan) Move the real-space axes as specified in &#39;real_positions&#39;.&quot;&quot;&quot;</span>
         <span class="c1"># @real_position_argument has already converted reals to a RealPosition</span>
@@ -976,7 +976,7 @@
 
 
 <div class="viewcode-block" id="DiffractometerBase._scan_extra_validate_args">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase._scan_extra_validate_args">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase._scan_extra_validate_args">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_scan_extra_validate_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the positional arguments for :meth:`scan_extra`.</span>
 
@@ -1005,7 +1005,7 @@
 
 
 <div class="viewcode-block" id="DiffractometerBase._scan_extra_build_movers">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase._scan_extra_build_movers">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase._scan_extra_build_movers">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_scan_extra_build_movers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">extras</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a dict of mover descriptions for :meth:`scan_extra`.</span>
 
@@ -1033,7 +1033,7 @@
 
 
 <div class="viewcode-block" id="DiffractometerBase._scan_extra_metadata">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase._scan_extra_metadata">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase._scan_extra_metadata">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_scan_extra_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span><span class="p">,</span> <span class="n">extras</span><span class="p">,</span> <span class="n">md</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Assemble the run metadata dict for :meth:`scan_extra`.</span>
 
@@ -1063,7 +1063,7 @@
 
     <span class="nd">@plan</span>
 <div class="viewcode-block" id="DiffractometerBase.scan_extra">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.scan_extra">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.scan_extra">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">scan_extra</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">detectors</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Readable</span><span class="p">],</span>
@@ -1180,7 +1180,7 @@
 
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="DiffractometerBase._format_value_for_repr">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase._format_value_for_repr">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase._format_value_for_repr">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_format_value_for_repr</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">],</span>
         <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1203,7 +1203,7 @@
 
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="DiffractometerBase._make_wrapped_namedtuple_class">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase._make_wrapped_namedtuple_class">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase._make_wrapped_namedtuple_class">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_make_wrapped_namedtuple_class</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">orig_cls</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">]],</span>
@@ -1380,7 +1380,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="DiffractometerBase.wh">
-<a class="viewcode-back" href="../../autoapi/hklpy2/index.html#hklpy2.diffract.DiffractometerBase.wh">[docs]</a>
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.wh">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">wh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Concise report of the current diffractometer positions.&quot;&quot;&quot;</span>
 

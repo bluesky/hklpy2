@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../../_static/documentation_options.js?v=1bffb116"></script>
+    <script src="../../../../_static/documentation_options.js?v=95a9e260"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -459,23 +459,35 @@
 the <em>zone axis</em>. A <em>zone</em> is defined by a <em>zone axis</em> (a unit vector), which can
 be specified directly or computed from two vectors (normal to their respective
 <em>lattice</em> planes) using their cross product.</p>
+<section id="spec-equivalents">
+<h2>SPEC equivalents<a class="headerlink" href="#spec-equivalents" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cz</span></code> — <a class="reference internal" href="#hklpy2.blocks.zone.OrthonormalZone" title="hklpy2.blocks.zone.OrthonormalZone"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrthonormalZone</span></code></a> (<code class="docutils literal notranslate"><span class="pre">b1=</span></code>, <code class="docutils literal notranslate"><span class="pre">b2=</span></code>): calculate zone axis from two vectors.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mz</span></code> — <a class="reference internal" href="#hklpy2.blocks.zone.move_zone" title="hklpy2.blocks.zone.move_zone"><code class="xref py py-func docutils literal notranslate"><span class="pre">move_zone()</span></code></a>: move diffractometer to a position in the zone.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pl</span></code> — <a class="reference internal" href="#hklpy2.blocks.zone.OrthonormalZone.define_axis" title="hklpy2.blocks.zone.OrthonormalZone.define_axis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">OrthonormalZone.define_axis()</span></code></a>: set the scattering plane from two vectors.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sz</span></code> — <a class="reference internal" href="#hklpy2.blocks.zone.OrthonormalZone" title="hklpy2.blocks.zone.OrthonormalZone"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrthonormalZone</span></code></a> (<code class="docutils literal notranslate"><span class="pre">axis=</span></code>): set zone axis directly.</p></li>
+</ul>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.OrthonormalZone" title="hklpy2.blocks.zone.OrthonormalZone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrthonormalZone</span></code></a>(*[, axis, b1, b2])</p></td>
 <td><p>An orthonormal (Cartesian) zone defined by a <em>zone axis</em>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.scan_zone" title="hklpy2.blocks.zone.scan_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scan_zone</span></code></a>(detectors, diffractometer, start, ...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.move_zone" title="hklpy2.blocks.zone.move_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_zone</span></code></a>(diffractometer, hkl)</p></td>
+<td><p>Move diffractometer to a position in the zone (SPEC <code class="docutils literal notranslate"><span class="pre">mz</span></code> equivalent).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.scan_zone" title="hklpy2.blocks.zone.scan_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scan_zone</span></code></a>(detectors, diffractometer, start, ...)</p></td>
 <td><p>Perform a zone scan on a diffractometer.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.zonespace" title="hklpy2.blocks.zone.zonespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zonespace</span></code></a>(diff, hkl_1, hkl_2, n)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.zonespace" title="hklpy2.blocks.zone.zonespace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zonespace</span></code></a>(diff, hkl_1, hkl_2, n)</p></td>
 <td><p>Generate pseudos and reals along a crystallographic zone.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.zone_series" title="hklpy2.blocks.zone.zone_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zone_series</span></code></a>(diff, hkl_1, hkl_2, n)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.zone_series" title="hklpy2.blocks.zone.zone_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zone_series</span></code></a>(diff, hkl_1, hkl_2, n)</p></td>
 <td><p>Example: a series of diffractometer positions along a zone.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+</section>
 <section id="attributes">
 <h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
@@ -511,7 +523,10 @@ be specified directly or computed from two vectors (normal to their respective
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.zone_series" title="hklpy2.blocks.zone.zone_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zone_series</span></code></a>(→ None)</p></td>
 <td><p>Example: a series of diffractometer positions along a zone.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.scan_zone" title="hklpy2.blocks.zone.scan_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scan_zone</span></code></a>(→ hklpy2.typing.BlueskyPlanType)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.move_zone" title="hklpy2.blocks.zone.move_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">move_zone</span></code></a>(→ hklpy2.typing.BlueskyPlanType)</p></td>
+<td><p>Move diffractometer to a position in the zone (SPEC <code class="docutils literal notranslate"><span class="pre">mz</span></code> equivalent).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.zone.scan_zone" title="hklpy2.blocks.zone.scan_zone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scan_zone</span></code></a>(→ hklpy2.typing.BlueskyPlanType)</p></td>
 <td><p>Perform a zone scan on a diffractometer.</p></td>
 </tr>
 </tbody>
@@ -689,7 +704,7 @@ orthonormal zone, distributed evenly by angle.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>diff</strong> (<a class="reference internal" href="../../index.html#hklpy2.DiffractometerBase" title="hklpy2.DiffractometerBase"><em>hklpy2.DiffractometerBase</em></a>) – Diffractometer instance for sample &amp; forward() calculations.</p></li>
+<li><p><strong>diff</strong> (<em>hklpy2.DiffractometerBase</em>) – Diffractometer instance for sample &amp; forward() calculations.</p></li>
 <li><p><strong>hkl_1</strong> (<a class="reference internal" href="../../typing/index.html#hklpy2.typing.INPUT_VECTOR" title="hklpy2.typing.INPUT_VECTOR"><em>INPUT_VECTOR</em></a>) – Starting <code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code> of pseudos (<em>h,k,l</em>).</p></li>
 <li><p><strong>hkl_2</strong> (<a class="reference internal" href="../../typing/index.html#hklpy2.typing.INPUT_VECTOR" title="hklpy2.typing.INPUT_VECTOR"><em>INPUT_VECTOR</em></a>) – Ending <code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code> of pseudos (<em>h,k,l</em>).</p></li>
 <li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of interpolation points to generate (must be &gt; 0).</p></li>
@@ -719,7 +734,7 @@ space coordinates (pseudos) and real motor positions (reals).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>diff</strong> (<a class="reference internal" href="../../index.html#hklpy2.DiffractometerBase" title="hklpy2.DiffractometerBase"><em>hklpy2.DiffractometerBase</em></a>) – The diffractometer instance used for forward calculations.</p></li>
+<li><p><strong>diff</strong> (<em>hklpy2.DiffractometerBase</em>) – The diffractometer instance used for forward calculations.</p></li>
 <li><p><strong>hkl_1</strong> (<a class="reference internal" href="../../typing/index.html#hklpy2.typing.INPUT_VECTOR" title="hklpy2.typing.INPUT_VECTOR"><em>INPUT_VECTOR</em></a>) – Starting <code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code> of pseudos (<em>h,k,l</em>).</p></li>
 <li><p><strong>hkl_2</strong> (<a class="reference internal" href="../../typing/index.html#hklpy2.typing.INPUT_VECTOR" title="hklpy2.typing.INPUT_VECTOR"><em>INPUT_VECTOR</em></a>) – Ending <code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code> of pseudos (<em>h,k,l</em>).</p></li>
 <li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points to generate from hkl_1 to hkl_2 (inclusive).</p></li>
@@ -731,6 +746,30 @@ space coordinates (pseudos) and real motor positions (reals).</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">zone_series</span><span class="p">(</span><span class="n">my_diffractometer</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.blocks.zone.move_zone">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.zone.</span></span><span class="sig-name descname"><span class="pre">move_zone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diffractometer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><span class="pre">hklpy2.diffract.DiffractometerBase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">hkl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../typing/index.html#hklpy2.typing.INPUT_VECTOR" title="hklpy2.typing.INPUT_VECTOR"><span class="pre">hklpy2.typing.INPUT_VECTOR</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../typing/index.html#hklpy2.typing.BlueskyPlanType" title="hklpy2.typing.BlueskyPlanType"><span class="pre">hklpy2.typing.BlueskyPlanType</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/zone.html#move_zone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.zone.move_zone" title="Link to this definition">#</a></dt>
+<dd><p>Move diffractometer to a position in the zone (SPEC <code class="docutils literal notranslate"><span class="pre">mz</span></code> equivalent).</p>
+<p>Computes the real-axis positions corresponding to the given pseudo
+position <em>hkl</em> via the diffractometer’s forward calculation and moves
+all real axes there.</p>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">creator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.blocks.zone</span><span class="w"> </span><span class="kn">import</span> <span class="n">move_zone</span>
+<span class="n">fourc</span> <span class="o">=</span> <span class="n">creator</span><span class="p">()</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">move_zone</span><span class="p">(</span><span class="n">fourc</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diffractometer</strong> (<a class="reference internal" href="../../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><em>DiffractometerBase</em></a>) – hklpy2 diffractometer object.</p></li>
+<li><p><strong>hkl</strong> (<a class="reference internal" href="../../typing/index.html#hklpy2.typing.INPUT_VECTOR" title="hklpy2.typing.INPUT_VECTOR"><em>INPUT_VECTOR</em></a>) – Target pseudo position (<em>h, k, l</em>).</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -765,7 +804,7 @@ diffractometer, and saves the event.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>detectors</strong> (<em>Sequence</em><em>[</em><em>Readable</em><em>]</em><em>)</em>) – Ophyd devices to trigger and read at each measurement point.</p></li>
-<li><p><strong>diffractometer</strong> (<a class="reference internal" href="../../index.html#hklpy2.DiffractometerBase" title="hklpy2.DiffractometerBase"><em>hklpy2.DiffractometerBase</em></a>) – hklpy2 Diffractometer object.</p></li>
+<li><p><strong>diffractometer</strong> (<em>hklpy2.DiffractometerBase</em>) – hklpy2 Diffractometer object.</p></li>
 <li><p><strong>start</strong> (<a class="reference internal" href="../../typing/index.html#hklpy2.typing.INPUT_VECTOR" title="hklpy2.typing.INPUT_VECTOR"><em>INPUT_VECTOR</em></a>) – Starting <code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code> of pseudos (<em>h,k,l</em>).</p></li>
 <li><p><strong>finish</strong> (<a class="reference internal" href="../../typing/index.html#hklpy2.typing.INPUT_VECTOR" title="hklpy2.typing.INPUT_VECTOR"><em>INPUT_VECTOR</em></a>) – Finishing <code class="xref py py-data docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code> of pseudos (<em>h,k,l</em>).</p></li>
 <li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Number of points to sample along the zone (inclusive
@@ -826,6 +865,7 @@ of endpoints).</p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spec-equivalents">SPEC equivalents</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
@@ -845,6 +885,7 @@ of endpoints).</p></li>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.zonespace"><code class="docutils literal notranslate"><span class="pre">zonespace()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.zone_series"><code class="docutils literal notranslate"><span class="pre">zone_series()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.move_zone"><code class="docutils literal notranslate"><span class="pre">move_zone()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.zone.scan_zone"><code class="docutils literal notranslate"><span class="pre">scan_zone()</span></code></a></li>
 </ul>
 </li>

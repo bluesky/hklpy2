@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=1bffb116"></script>
+    <script src="../../../_static/documentation_options.js?v=95a9e260"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -408,9 +408,18 @@
 <span class="sd">be specified directly or computed from two vectors (normal to their respective</span>
 <span class="sd">*lattice* planes) using their cross product.</span>
 
+<span class="sd">SPEC equivalents</span>
+<span class="sd">----------------</span>
+
+<span class="sd">- ``cz`` — :class:`OrthonormalZone` (``b1=``, ``b2=``): calculate zone axis from two vectors.</span>
+<span class="sd">- ``mz`` — :func:`move_zone`: move diffractometer to a position in the zone.</span>
+<span class="sd">- ``pl`` — :meth:`OrthonormalZone.define_axis`: set the scattering plane from two vectors.</span>
+<span class="sd">- ``sz`` — :class:`OrthonormalZone` (``axis=``): set zone axis directly.</span>
+
 <span class="sd">.. autosummary::</span>
 
 <span class="sd">    ~OrthonormalZone</span>
+<span class="sd">    ~move_zone</span>
 <span class="sd">    ~scan_zone</span>
 <span class="sd">    ~zonespace</span>
 <span class="sd">    ~zone_series</span>
@@ -445,6 +454,7 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.__all__">[docs]</a>
 <span class="n">__all__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">    OrthonormalZone</span>
+<span class="s2">    move_zone</span>
 <span class="s2">    scan_zone</span>
 <span class="s2">    zonespace</span>
 <span class="s2">    zone_series</span>
@@ -453,7 +463,7 @@
 
 
 <div class="viewcode-block" id="OrthonormalZone">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone">[docs]</a>
+<a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.zone.OrthonormalZone">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OrthonormalZone</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An orthonormal (Cartesian) zone defined by a *zone axis*.</span>
@@ -505,7 +515,7 @@
             <span class="p">)</span>
 
 <div class="viewcode-block" id="OrthonormalZone.__repr__">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.__repr__">[docs]</a>
+<a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.zone.OrthonormalZone.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Text representation of a zone object.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -516,7 +526,7 @@
 
 
 <div class="viewcode-block" id="OrthonormalZone._standardize_vector">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone._standardize_vector">[docs]</a>
+<a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.zone.OrthonormalZone._standardize_vector">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_standardize_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a numpy array of 3 floats. Raise exception as needed.</span>
@@ -603,7 +613,7 @@
 
 
 <div class="viewcode-block" id="OrthonormalZone.define_axis">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.define_axis">[docs]</a>
+<a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.zone.OrthonormalZone.define_axis">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">define_axis</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
@@ -646,7 +656,7 @@
 
 
 <div class="viewcode-block" id="OrthonormalZone.in_zone">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.in_zone">[docs]</a>
+<a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.zone.OrthonormalZone.in_zone">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">in_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify if &#39;vector&#39; is in this zone.</span>
 
@@ -676,7 +686,7 @@
 
 
 <div class="viewcode-block" id="OrthonormalZone.vecspace">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.vecspace">[docs]</a>
+<a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.zone.OrthonormalZone.vecspace">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">vecspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate &#39;n&#39; vectors from &#39;b1&#39; to &#39;b2&#39; rotated around b1 x b2.</span>
@@ -842,6 +852,46 @@
 
 
 <span class="nd">@plan</span>
+<div class="viewcode-block" id="move_zone">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.zone.move_zone">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">move_zone</span><span class="p">(</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span>
+    <span class="n">hkl</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).</span>
+
+<span class="sd">    Computes the real-axis positions corresponding to the given pseudo</span>
+<span class="sd">    position *hkl* via the diffractometer&#39;s forward calculation and moves</span>
+<span class="sd">    all real axes there.</span>
+
+<span class="sd">    .. rubric:: Example</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from hklpy2 import creator</span>
+<span class="sd">        from hklpy2.blocks.zone import move_zone</span>
+<span class="sd">        fourc = creator()</span>
+<span class="sd">        RE(move_zone(fourc, (1, 0, 0)))</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    diffractometer : DiffractometerBase</span>
+<span class="sd">        hklpy2 diffractometer object.</span>
+<span class="sd">    hkl : INPUT_VECTOR</span>
+<span class="sd">        Target pseudo position (*h, k, l*).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pseudos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">hkl</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hkl</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">hkl</span>
+    <span class="n">reals</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span>
+    <span class="n">parms</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span> <span class="n">reals</span><span class="p">):</span>
+        <span class="n">parms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
+        <span class="n">parms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="o">*</span><span class="n">parms</span><span class="p">)</span></div>
+
+
+
+<span class="nd">@plan</span>
 <div class="viewcode-block" id="scan_zone">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/index.html#hklpy2.blocks.zone.scan_zone">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">scan_zone</span><span class="p">(</span>
@@ -892,7 +942,7 @@
 <span class="sd">    md : dict</span>
 <span class="sd">        (Optional) User-supplied metadata.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_md</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">plan_name</span><span class="o">=</span><span class="s2">&quot;scan_zone&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">md</span> <span class="ow">or</span> <span class="p">{})</span>
+    <span class="n">_md</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;plan_name&quot;</span><span class="p">:</span> <span class="s2">&quot;scan_zone&quot;</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">md</span> <span class="ow">or</span> <span class="p">{})}</span>
 
     <span class="nd">@bpp</span><span class="o">.</span><span class="n">stage_decorator</span><span class="p">(</span><span class="n">detectors</span><span class="p">)</span>
     <span class="nd">@bpp</span><span class="o">.</span><span class="n">run_decorator</span><span class="p">(</span><span class="n">md</span><span class="o">=</span><span class="n">_md</span><span class="p">)</span>
