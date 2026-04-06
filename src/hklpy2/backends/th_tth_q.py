@@ -150,6 +150,7 @@ class ThTthSolver(SolverBase):
     def modes(self) -> List[str]:
         if self.geometry == TH_TTH_Q_GEOMETRY:
             return [BISECTOR_MODE]
+        return []
 
     @property
     def pseudo_axis_names(self) -> List[str]:
@@ -161,7 +162,7 @@ class ThTthSolver(SolverBase):
         axes = {TH_TTH_Q_GEOMETRY: "th tth".split()}
         return axes.get(self.geometry, [])
 
-    def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict:
+    def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict | None:
         """No lattice refinement in this |solver|."""
         return None
 

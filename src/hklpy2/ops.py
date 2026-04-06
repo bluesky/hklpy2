@@ -829,6 +829,10 @@ class Core:
 
         logger.debug("Refining lattice using reflections %r", rnames)
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
+        if lattice is None:
+            raise CoreError(
+                f"Solver {self.solver.geometry!r} does not support lattice refinement."
+            )
 
         # apply unit conversions solver to lattice after refineLattice
         angle_units_solver = self.solver.ANGLE_UNITS

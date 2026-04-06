@@ -289,7 +289,7 @@ def calc_UB(
     return get_diffractometer().core.calc_UB(r1, r2)
 
 
-def solver_summary(write=True) -> Table:
+def solver_summary(write=True) -> Table | None:
     """
     Table of diffractometer solver's modes, axes, ...
 
@@ -326,6 +326,7 @@ def solver_summary(write=True) -> Table:
         print(table)
     else:
         return table
+    return None
 
 
 def get_diffractometer() -> Union[DiffractometerBase, None]:

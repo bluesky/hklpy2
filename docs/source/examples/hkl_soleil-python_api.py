@@ -5,7 +5,6 @@ Exercise Hkl's (libhkl) Python API.
 import gi
 import numpy
 import pyRestTable
-from gi.repository import GLib  # noqa: F401
 
 gi.require_version("Hkl", "5.0")
 from gi.repository import Hkl  # noqa: E402

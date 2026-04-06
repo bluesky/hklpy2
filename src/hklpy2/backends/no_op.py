@@ -97,7 +97,7 @@ class NoOpSolver(SolverBase):
     def real_axis_names(self) -> List[str]:
         return []  # no axes
 
-    def refineLattice(self, reflections: List[ReflectionDict]) -> NamedFloatDict:
+    def refineLattice(self, reflections: List[ReflectionDict]) -> NamedFloatDict | None:
         """No refinement."""
         return None
 

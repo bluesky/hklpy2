@@ -321,11 +321,17 @@ class HklSolver(SolverBase):
         self,
         r1: ReflectionDict,
         r2: ReflectionDict,
-    ) -> Matrix3x3:
+    ) -> Matrix3x3 | None:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
         The method of Busing & Levy, Acta Cryst 22 (1967) 457.
+
+        Returns
+        -------
+        Matrix3x3 or None
+            The 3×3 UB orientation matrix on success, or ``None`` if no
+            sample has been set (i.e. ``_sample`` is ``None``).
 
         Raises
         ------
@@ -346,7 +352,7 @@ class HklSolver(SolverBase):
               separated.
         """
         if self._sample is None:
-            return
+            return None
         # Remove all reflections first
         self.removeAllReflections()
         self.addReflection(r1)

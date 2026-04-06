@@ -41,7 +41,10 @@ describe future plans.
     * Address CodeQL findings: remove unused local variables in
       ``lattice.py`` and ``test_lattice.py``; add ``# noqa: F401`` to
       ``TYPE_CHECKING``-guarded imports in ``misc.py``, ``ops.py``, and
-      ``reflection.py``.
+      ``reflection.py``; fix mixed explicit/implicit returns and update
+      return-type annotations in ``base.py``, ``hkl_soleil.py``,
+      ``no_op.py``, ``ops.py``, ``th_tth_q.py``, and ``user.py``; remove
+      unused import from ``hkl_soleil-python_api.py``.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 
