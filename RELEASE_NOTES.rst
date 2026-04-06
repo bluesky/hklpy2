@@ -53,7 +53,8 @@ describe future plans.
       procedures in ``test_user.py``; remove unused global variable
       ``_I243_REAL_AXES`` from ``test_i210.py``; add ``logger.debug()``
       calls throughout ``misc.py`` to activate the previously unused
-      ``logger``.
+      ``logger``; fix file not always closed in ``misc.py``
+      ``load_yaml_file()`` by using a ``with`` block.
     * Review TODO & FIXME markers: remove resolved comments, open new issues
       for remaining concerns. (:issue:`260`)
 
