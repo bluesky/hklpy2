@@ -305,6 +305,31 @@ def test_ReflectionsDict(parms, representation, context, expected):
 @pytest.mark.parametrize(
     "parms, context",
     [
+        pytest.param(
+            dict(other=ReflectionsDict()),
+            does_not_raise(),
+            id="equal to another empty ReflectionsDict",
+        ),
+        pytest.param(
+            dict(other={}),
+            does_not_raise(),
+            id="not equal to plain dict returns NotImplemented",
+        ),
+    ],
+)
+def test_ReflectionsDict_eq(parms, context):
+    with context:
+        db = ReflectionsDict()
+        other = parms["other"]
+        if isinstance(other, ReflectionsDict):
+            assert db == other
+        else:
+            assert db.__eq__(other) is NotImplemented
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
         pytest.param([r100_parms], does_not_raise(), id="single-r100"),
         pytest.param([r010_parms], does_not_raise(), id="single-r010"),
         pytest.param([r100_parms, r010_parms], does_not_raise(), id="r100-r010"),
