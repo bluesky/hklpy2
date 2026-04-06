@@ -232,26 +232,170 @@ def test_affine():
     assert math.isclose(refined.gamma, 90, abs_tol=tol)
 
 
-def test_summary_dict():
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(key="name", expected="K4CV"),
+            does_not_raise(),
+            id="name is K4CV",
+        ),
+        pytest.param(
+            dict(key="engines", expected=dict),
+            does_not_raise(),
+            id="engines is a dict",
+        ),
+        pytest.param(
+            dict(
+                key="engines", subkey="hkl", field="pseudos", expected=["h", "k", "l"]
+            ),
+            does_not_raise(),
+            id="hkl engine pseudos are h k l",
+        ),
+        pytest.param(
+            dict(
+                key="engines",
+                subkey="hkl",
+                field="reals",
+                expected=["komega", "kappa", "kphi", "tth"],
+            ),
+            does_not_raise(),
+            id="hkl engine reals are komega kappa kphi tth",
+        ),
+        pytest.param(
+            dict(
+                key="engines",
+                subkey="hkl",
+                field="modes",
+                expected=[
+                    "bissector",
+                    "constant_omega",
+                    "constant_chi",
+                    "constant_phi",
+                    "double_diffraction",
+                    "psi_constant",
+                ],
+            ),
+            does_not_raise(),
+            id="hkl engine has expected modes",
+        ),
+        pytest.param(
+            dict(key="engines", subkey="q", field="pseudos", expected=["q"]),
+            does_not_raise(),
+            id="q engine pseudo is q",
+        ),
+        pytest.param(
+            dict(key="engines", subkey="q", field="reals", expected=["tth"]),
+            does_not_raise(),
+            id="q engine real is tth",
+        ),
+    ],
+)
+def test_summary_dict(parms, context):
     from ... import creator
 
-    k4cv = creator(name="k4cv", geometry="K4CV")
-    assert k4cv is not None
+    with context:
+        k4cv = creator(name="k4cv", geometry="K4CV")
+        summary = k4cv.core.solver._summary_dict
+        assert isinstance(summary, dict)
 
-    # TODO: expand this test
-    summary = k4cv.core.solver._summary_dict
-    assert isinstance(summary, dict)
+        key = parms["key"]
+        assert key in summary
+
+        if "subkey" not in parms:
+            # Top-level key check
+            expected = parms["expected"]
+            if isinstance(expected, type):
+                assert isinstance(summary[key], expected)
+            else:
+                assert summary[key] == expected
+        else:
+            subkey = parms["subkey"]
+            field = parms["field"]
+            assert subkey in summary[key]
+            actual = summary[key][subkey][field]
+            expected = parms["expected"]
+            if field == "modes":
+                assert sorted(actual.keys()) == sorted(expected)
+            else:
+                assert actual == expected
 
 
-def test_summary():
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(check="type"),
+            does_not_raise(),
+            id="solver_summary returns a Table",
+        ),
+        pytest.param(
+            dict(
+                check="columns",
+                expected=[
+                    "engine",
+                    "mode",
+                    "pseudo(s)",
+                    "real(s)",
+                    "writable(s)",
+                    "extra(s)",
+                ],
+            ),
+            does_not_raise(),
+            id="table has expected columns",
+        ),
+        pytest.param(
+            dict(
+                check="engine_row",
+                engine="hkl",
+                mode="bissector",
+                pseudos="h, k, l",
+                reals="komega, kappa, kphi, tth",
+            ),
+            does_not_raise(),
+            id="hkl bissector row present",
+        ),
+        pytest.param(
+            dict(check="engine_row", engine="q", mode="q", pseudos="q", reals="tth"),
+            does_not_raise(),
+            id="q engine row present",
+        ),
+        pytest.param(
+            dict(check="engine_count", engine="hkl", expected=6),
+            does_not_raise(),
+            id="hkl engine has 6 mode rows",
+        ),
+    ],
+)
+def test_summary(parms, context):
     from ... import creator
 
-    k4cv = creator(name="k4cv", geometry="K4CV")
-    assert k4cv is not None
+    with context:
+        k4cv = creator(name="k4cv", geometry="K4CV")
+        summary = k4cv.core.solver_summary
+        assert isinstance(summary, Table)
 
-    # TODO: expand this test
-    summary = k4cv.core.solver_summary
-    assert isinstance(summary, Table)
+        check = parms["check"]
+        if check == "type":
+            pass  # isinstance check above is sufficient
+        elif check == "columns":
+            assert summary.labels == parms["expected"]
+        elif check == "engine_row":
+            # Find the row matching engine+mode.
+            rows = [
+                row
+                for row in summary.rows
+                if row[0] == parms["engine"] and row[1] == parms["mode"]
+            ]
+            assert len(rows) == 1, (
+                f"Expected 1 row for {parms['engine']}/{parms['mode']}"
+            )
+            row = rows[0]
+            assert row[2] == parms["pseudos"]
+            assert row[3] == parms["reals"]
+        elif check == "engine_count":
+            count = sum(1 for row in summary.rows if row[0] == parms["engine"])
+            assert count == parms["expected"]
 
 
 @pytest.mark.parametrize(

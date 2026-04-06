@@ -38,6 +38,9 @@ describe future plans.
     Maintenance
     -----------
 
+    * Expand ``test_summary_dict`` and ``test_summary`` in
+      ``test_hkl_soleil.py`` to assert keys, values, columns, and rows.
+      (:issue:`269`)
     * Add reflection comparison assertions (pseudo, real, wavelength) in
       ``test_configure.py`` restore test. (:issue:`270`)
     * Address CodeQL findings:
