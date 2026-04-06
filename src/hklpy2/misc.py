@@ -974,8 +974,7 @@ def load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping:
         raise FileExistsError(f"YAML file '{path}' does not exist.")
     logger.debug("Loading YAML file %r", str(path))
     with open(path, "r") as f:
-        buffer = load_yaml(f.read())
-    return buffer
+        return load_yaml(f.read())
 
 
 def make_component(call_name: str, *args: Any, **kwargs: Any) -> Component:
