@@ -38,6 +38,8 @@ describe future plans.
     Maintenance
     -----------
 
+    * Add reflection comparison assertions (pseudo, real, wavelength) in
+      ``test_configure.py`` restore test. (:issue:`270`)
     * Address CodeQL findings:
 
       - Unused local variables: ``lattice.py``, ``test_lattice.py``;
