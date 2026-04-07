@@ -1,4 +1,4 @@
-.. _concepts.migration_from_hklpy_v1:
+.. _guide.migration_from_hklpy_v1:
 
 =======================
 Migration from |hklpy|

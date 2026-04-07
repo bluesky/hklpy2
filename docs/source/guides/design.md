@@ -1,3 +1,4 @@
+(guide.design)=
 # Design for hklpy2
 
 Gather the discussion points, thoughts, issues, etc. for development of

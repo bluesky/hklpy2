@@ -44,6 +44,22 @@ describe future plans.
     * Add ``Full API Reference`` card to the User Guide index. (:issue:`251`)
     * Hide ``sig-prename`` via CSS; style ``import-path`` container. (:issue:`251`)
 
+    Maintenance
+    -----------
+
+    * Add ``concepts/presets.rst`` concepts page; update ``concepts/constraints.rst``
+      with the presets/constraints distinction and mutual cross-references.
+      (:issue:`259`)
+    * Move design and checklist planning docs from ``concepts/planning/`` to
+      ``guides/``; enrich ``guides.rst`` and ``examples.rst`` landing pages
+      with categorized content tables. (:issue:`259`)
+    * Expand FAQ with units table, no-solutions diagnosis, constraints vs.
+      presets comparison, UB-matrix troubleshooting, SPEC command equivalents,
+      and azimuthal scan note. (:issue:`259`)
+    * Revise concepts documents to be brief and purely conceptual; move
+      ``migration.rst`` from ``concepts/`` to ``guides/`` and remove
+      guide-like example content from ``ops.rst``. (:issue:`259`)
+
 0.4.2
 #####
 
@@ -205,6 +221,11 @@ Fixes
   validation, beam/wavelength restoration, and state clearing consistently
   with calling ``restore()`` directly. (:issue:`231`)
 
+* Fix stale lattice parameters not reaching the solver before ``calc_UB()``
+  computes the orientation matrix; lattice changes now propagate immediately
+  via ``Lattice.__setattr__`` → ``Sample`` callback → solver update, so
+  subsequent ``forward()`` / ``inverse()`` calls use the correct lattice.
+  (:issue:`240`, :pr:`244`)
 * Fix ``LimitsConstraint.valid()`` rejecting solver solutions that land just
   outside a limit boundary due to floating-point arithmetic; increase
   ``ENDPOINT_TOLERANCE`` from ``1e-7`` to ``1e-4``. (:issue:`242`)

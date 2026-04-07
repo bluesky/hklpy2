@@ -6,27 +6,31 @@ Constraints
 
 .. index:: !constraint
 
-Computation of :meth:`~hklpy2.diffract.DiffractometerBase.forward()` can have
-many solutions.  One or more constraints
-(:class:`~hklpy2.blocks.constraints.ConstraintBase`) (a.k.a, cut points),
-together with a choice of operating **mode**, can be applied to:
+**Constraints** filter the solutions returned by a
+:meth:`~hklpy2.diffract.DiffractometerBase.forward()` computation.
 
-* Limit the range of :meth:`~hklpy2.diffract.DiffractometerBase.forward()`
-  solutions accepted for that positioner.
-* Future possibilities derived from
-  :class:`~hklpy2.blocks.constraints.ConstraintBase`
+The solver can return many candidate sets of real-axis angles for a given
+:math:`hkl` position.  One or more constraints
+(:class:`~hklpy2.blocks.constraints.ConstraintBase`), together with a choice
+of operating **mode**, narrow those candidates by:
+
+* Accepting only solutions where each real axis falls within a specified range.
 
 .. index:: cut points
 .. tip:: *Constraints* are implemented as *cut points* in other software.
-    Similar in concept yet not entirely identical in implementation.
+   Similar in concept yet not entirely identical in implementation.
 
-.. TODO: describe how the constraint class works (the ``valid()`` method)
-
-.. TODO: state clearly that LimitsConstraint label must match real axis name
-    and same name is used in the .core.constraints dictionary.
+.. tip:: Constraints act *after* the solver computes solutions.  If you want
+   the solver to *assume* a specific value for a constant axis *before*
+   computation, use :ref:`concepts.presets` instead.
 
 .. rubric:: Examples
 
 Many of the :ref:`examples` show how to adjust :ref:`constraints <examples.constraints>`.
 
-.. seealso:: :ref:`glossary`
+.. seealso::
+
+   :ref:`concepts.presets` — define constant-axis values used before
+   ``forward()`` computation.
+
+   :ref:`glossary`
