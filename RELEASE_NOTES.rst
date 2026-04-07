@@ -30,35 +30,40 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    0.4.3
+    0.5.0
     #####
 
     Release expected by 2026-H1.
 
-    Enhancements
-    ------------
+0.4.3
+#####
 
-    * Add custom autoapi templates for concise page titles (short name as
-      heading, full import path in monospace ``Import:`` line below), and add
-      ``Import:`` line for classes and functions. (:issue:`251`)
-    * Add ``Full API Reference`` card to the User Guide index. (:issue:`251`)
-    * Hide ``sig-prename`` via CSS; style ``import-path`` container. (:issue:`251`)
+Release expected by 2026-04-10.
 
-    Maintenance
-    -----------
+Enhancements
+------------
 
-    * Add ``concepts/presets.rst`` concepts page; update ``concepts/constraints.rst``
-      with the presets/constraints distinction and mutual cross-references.
-      (:issue:`259`)
-    * Move design and checklist planning docs from ``concepts/planning/`` to
-      ``guides/``; enrich ``guides.rst`` and ``examples.rst`` landing pages
-      with categorized content tables. (:issue:`259`)
-    * Expand FAQ with units table, no-solutions diagnosis, constraints vs.
-      presets comparison, UB-matrix troubleshooting, SPEC command equivalents,
-      and azimuthal scan note. (:issue:`259`)
-    * Revise concepts documents to be brief and purely conceptual; move
-      ``migration.rst`` from ``concepts/`` to ``guides/`` and remove
-      guide-like example content from ``ops.rst``. (:issue:`259`)
+* Add custom autoapi templates for concise page titles (short name as
+  heading, full import path in monospace ``Import:`` line below), and add
+  ``Import:`` line for classes and functions. (:issue:`251`)
+* Add ``Full API Reference`` card to the User Guide index. (:issue:`251`)
+* Hide ``sig-prename`` via CSS; style ``import-path`` container. (:issue:`251`)
+
+Maintenance
+-----------
+
+* Add ``concepts/presets.rst`` concepts page; update ``concepts/constraints.rst``
+  with the presets/constraints distinction and mutual cross-references.
+  (:issue:`259`)
+* Move design and checklist planning docs from ``concepts/planning/`` to
+  ``guides/``; enrich ``guides.rst`` and ``examples.rst`` landing pages
+  with categorized content tables. (:issue:`259`)
+* Expand FAQ with units table, no-solutions diagnosis, constraints vs.
+  presets comparison, UB-matrix troubleshooting, SPEC command equivalents,
+  and azimuthal scan note. (:issue:`259`)
+* Revise concepts documents to be brief and purely conceptual; move
+  ``migration.rst`` from ``concepts/`` to ``guides/`` and remove
+  guide-like example content from ``ops.rst``. (:issue:`259`)
 
 0.4.2
 #####
