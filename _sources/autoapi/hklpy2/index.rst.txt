@@ -67,10 +67,10 @@ Functions
    hklpy2.scan_zone
    hklpy2.creator
    hklpy2.diffractometer_class_factory
-   hklpy2.get_run_orientation
-   hklpy2.list_orientation_runs
    hklpy2.creator_from_config
+   hklpy2.get_run_orientation
    hklpy2.get_solver
+   hklpy2.list_orientation_runs
    hklpy2.solver_factory
    hklpy2.solvers
 
@@ -912,6 +912,45 @@ Package Contents
 
 
 
+.. py:exception:: SolverError
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   Custom exceptions from a |solver|.
+
+
+.. py:function:: creator_from_config(config: Union[dict, str, pathlib.Path])
+
+   Create a simulated diffractometer from a saved configuration.
+
+   Parses the configuration for the solver, geometry, and axis names, then
+   constructs a simulator (all axes are soft positioners — no hardware
+   connection) and restores the full orientation (samples, reflections, UB
+   matrix, wavelength, constraints) from the configuration.
+
+   PARAMETERS
+
+   config : dict, str, or pathlib.Path
+       Configuration dictionary, or path to a YAML configuration file
+       previously saved with ``diffractometer.export()``.
+
+   RETURNS
+
+   DiffractometerBase
+       A fully configured simulated diffractometer instance.
+
+   EXAMPLE::
+
+       >>> import hklpy2
+       >>> sim = hklpy2.creator_from_config("e4cv-config.yml")
+       >>> sim.wh()
+
+   SEE ALSO
+
+       :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
+
+
 .. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> hklpy2.typing.KeyValueMap
 
    Return the orientation information dictionary from a run.
@@ -986,6 +1025,17 @@ Package Contents
    :type start_key: str
 
 
+.. py:function:: get_solver(solver_name: str) -> hklpy2.backends.base.SolverBase
+
+   Load a Solver class from a named entry point.
+
+   ::
+
+       import hklpy2
+       SolverClass = hklpy2.get_solver("hkl_soleil")
+       libhkl_solver = SolverClass()
+
+
 .. py:function:: list_orientation_runs(catalog: Any, limit: int = 10, start_key: str = DEFAULT_START_KEY, **kwargs: Mapping) -> pandas.DataFrame
 
    List the runs with orientation information.
@@ -1016,56 +1066,6 @@ Package Contents
                       value of each column name is the dotted path to the orientation
                       information (in the start document's metadata).
    :type \*\*kwargs: dict[str:str]
-
-
-.. py:exception:: SolverError
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from a |solver|.
-
-
-.. py:function:: creator_from_config(config: Union[dict, str, pathlib.Path])
-
-   Create a simulated diffractometer from a saved configuration.
-
-   Parses the configuration for the solver, geometry, and axis names, then
-   constructs a simulator (all axes are soft positioners — no hardware
-   connection) and restores the full orientation (samples, reflections, UB
-   matrix, wavelength, constraints) from the configuration.
-
-   PARAMETERS
-
-   config : dict, str, or pathlib.Path
-       Configuration dictionary, or path to a YAML configuration file
-       previously saved with ``diffractometer.export()``.
-
-   RETURNS
-
-   DiffractometerBase
-       A fully configured simulated diffractometer instance.
-
-   EXAMPLE::
-
-       >>> import hklpy2
-       >>> sim = hklpy2.creator_from_config("e4cv-config.yml")
-       >>> sim.wh()
-
-   SEE ALSO
-
-       :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
-
-
-.. py:function:: get_solver(solver_name: str) -> hklpy2.backends.base.SolverBase
-
-   Load a Solver class from a named entry point.
-
-   ::
-
-       import hklpy2
-       SolverClass = hklpy2.get_solver("hkl_soleil")
-       libhkl_solver = SolverClass()
 
 
 .. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs: Mapping) -> hklpy2.backends.base.SolverBase
