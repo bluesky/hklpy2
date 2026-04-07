@@ -38,7 +38,7 @@ describe future plans.
 0.4.3
 #####
 
-Release expected by 2026-04-10.
+Released 2026-04-07.
 
 Enhancements
 ------------
