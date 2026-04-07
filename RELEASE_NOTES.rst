@@ -50,6 +50,12 @@ describe future plans.
     * Add ``concepts/presets.rst`` concepts page; update ``concepts/constraints.rst``
       with the presets/constraints distinction and mutual cross-references.
       (:issue:`259`)
+    * Move design and checklist planning docs from ``concepts/planning/`` to
+      ``guides/``; enrich ``guides.rst`` and ``examples.rst`` landing pages
+      with categorized content tables. (:issue:`259`)
+    * Expand FAQ with units table, no-solutions diagnosis, constraints vs.
+      presets comparison, UB-matrix troubleshooting, SPEC command equivalents,
+      and azimuthal scan note. (:issue:`259`)
     * Revise concepts documents to be brief and purely conceptual; move
       ``migration.rst`` from ``concepts/`` to ``guides/`` and remove
       guide-like example content from ``ops.rst``. (:issue:`259`)
