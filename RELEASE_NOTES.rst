@@ -30,96 +30,101 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    0.4.2
+    0.4.3
     #####
 
     Release expected by 2026-H1.
 
-    New Features
-    ------------
+0.4.2
+#####
 
-    * Add :func:`~hklpy2.blocks.zone.move_zone` plan (SPEC ``mz`` equivalent):
-      move diffractometer to a pseudo position in the zone. (:issue:`273`)
-    * Export :class:`~hklpy2.blocks.zone.OrthonormalZone` and
-      :func:`~hklpy2.blocks.zone.move_zone` from the top-level ``hklpy2``
-      package. (:issue:`273`)
+Release expected by 2026-04-10.
 
-    Fixes
-    -----
+New Features
+------------
 
-    * Fix :meth:`~hklpy2.backends.th_tth_q.ThTthSolver.removeAllReflections`
-      to clear reflections list and reset wavelength instead of raising
-      ``NotImplementedError``. (:issue:`267`)
-    * Remove unused ``INPUT_VECTOR`` and ``NUMERIC`` re-exports from
-      ``misc.py``; nothing imported them from there. (:issue:`267`)
-    * Fix metadata dict bug in :func:`~hklpy2.blocks.zone.scan_zone`: the
-      ``dict(...).update(...)`` pattern always returned ``None``; replaced
-      with unpacking syntax. (:issue:`273`)
+* Add :func:`~hklpy2.blocks.zone.move_zone` plan (SPEC ``mz`` equivalent):
+  move diffractometer to a pseudo position in the zone. (:issue:`273`)
+* Export :class:`~hklpy2.blocks.zone.OrthonormalZone` and
+  :func:`~hklpy2.blocks.zone.move_zone` from the top-level ``hklpy2``
+  package. (:issue:`273`)
 
-    Maintenance
-    -----------
+Fixes
+-----
 
-    * Move ``from .typing import ...`` statements in ``misc.py`` to the
-      top-level import section; drop all ``# noqa: E402, F401`` suppressions
-      from those lines; remove the backward-compatibility re-export comment
-      block and docstring mention. (:issue:`283`)
-    * Update ``spec_xref.rst`` to replace ``TODO`` placeholders for ``cz``,
-      ``mz``, ``pl``, and ``sz`` SPEC zone commands with correct hklpy2
-      references. (:issue:`273`)
-    * Expand ``test_summary_dict`` and ``test_summary`` in
-      ``test_hkl_soleil.py`` to assert keys, values, columns, and rows.
-      (:issue:`269`)
-    * Add reflection comparison assertions (pseudo, real, wavelength) in
-      ``test_configure.py`` restore test. (:issue:`270`)
-    * Address CodeQL findings:
+* Fix :meth:`~hklpy2.backends.th_tth_q.ThTthSolver.removeAllReflections`
+  to clear reflections list and reset wavelength instead of raising
+  ``NotImplementedError``. (:issue:`267`)
+* Remove unused ``INPUT_VECTOR`` and ``NUMERIC`` re-exports from
+  ``misc.py``; nothing imported them from there. (:issue:`267`)
+* Fix metadata dict bug in :func:`~hklpy2.blocks.zone.scan_zone`: the
+  ``dict(...).update(...)`` pattern always returned ``None``; replaced
+  with unpacking syntax. (:issue:`273`)
 
-      - Unused local variables: ``lattice.py``, ``test_lattice.py``;
-        restructure try/except in ``lattice.py`` to initialize
-        ``beta_val``/``gamma_val`` before the block.
-      - Unused imports: add ``# noqa: F401`` to ``TYPE_CHECKING``-guarded
-        imports in ``misc.py``, ``ops.py``; remove unused
-        ``TYPE_CHECKING``/``Core`` block from ``reflection.py`` (replaced
-        annotation with ``Optional[Any]``); restore accidentally removed
-        ``INPUT_VECTOR``, ``NamedFloatDict``, ``NUMERIC`` re-exports in
-        ``misc.py``; remove unused import from ``hkl_soleil-python_api.py``;
-        fix mixed ``import`` and ``from ... import`` of ``hklpy2`` in
-        ``test_isn_libhkl.py``.
-      - Mixed explicit/implicit returns: update return-type annotations and
-        fix fall-through returns in ``base.py``, ``hkl_soleil.py``,
-        ``no_op.py``, ``ops.py``, ``th_tth_q.py``, and ``user.py``.
-      - Variable defined multiple times: fix loop variables in ``ops.py``,
-        ``user.py``, ``test_backends.py``, ``test_diffract.py``, and
-        ``test_sample.py``.
-      - Modification of parameter with mutable default: fix ``beam_kwargs``
-        and ``extras`` in ``diffract.py`` and ``user.py``; suppress B006
-        with ``# noqa`` for read-only mutable defaults where changing the
-        default would alter runtime semantics.
-      - Use of return value of a procedure: drop ``tbl =`` assignment for
-        ``pa()`` and ``wh()`` calls in ``test_user.py``.
-      - Unused global variable: remove ``_I243_REAL_AXES`` from
-        ``test_i210.py``; add ``logger.debug()`` calls throughout
-        ``misc.py`` to activate the previously unused ``logger``.
-      - File not always closed: use a ``with`` block in
-        ``load_yaml_file()`` in ``misc.py``.
-      - ``__eq__`` not overridden when adding attributes: add ``__eq__``
-        to ``ReflectionsDict`` in ``reflection.py``.
-      - Redundant comparison: remove from ``test_lattice.py``
-        ``test_equal()``.
-      - Assert with side-effect: separate ``sys.path.pop()`` from
-        ``assert`` in ``test_init.py``.
-      - Non-standard exception in special method: return ``NotImplemented``
-        instead of raising ``TypeError`` in ``Reflection.__sub__()``.
-      - Unused exception object: add missing ``raise`` in
-        ``hkl_soleil-python_api.py``.
-    * Additional cleanup found during CodeQL review:
+Maintenance
+-----------
 
-      - Remove redundant outer loop in ``test_misc.py`` ``test_axes_to_dict()``.
-      - Rename overwritten loop variable ``solution`` in ``test_diffract.py``.
-      - Remove unnecessary intermediate assignments before ``return`` in
-        ``hkl_soleil.py``, ``incident.py``, ``misc.py``, ``ops.py``, and
-        ``user.py`` (RET504).
-    * Review TODO & FIXME markers: remove resolved comments, open new issues
-      for remaining concerns. (:issue:`260`)
+* Move ``from .typing import ...`` statements in ``misc.py`` to the
+  top-level import section; drop all ``# noqa: E402, F401`` suppressions
+  from those lines; remove the backward-compatibility re-export comment
+  block and docstring mention. (:issue:`283`)
+* Update ``spec_xref.rst`` to replace ``TODO`` placeholders for ``cz``,
+  ``mz``, ``pl``, and ``sz`` SPEC zone commands with correct hklpy2
+  references. (:issue:`273`)
+* Expand ``test_summary_dict`` and ``test_summary`` in
+  ``test_hkl_soleil.py`` to assert keys, values, columns, and rows.
+  (:issue:`269`)
+* Add reflection comparison assertions (pseudo, real, wavelength) in
+  ``test_configure.py`` restore test. (:issue:`270`)
+* Address CodeQL findings:
+
+  - Unused local variables: ``lattice.py``, ``test_lattice.py``;
+    restructure try/except in ``lattice.py`` to initialize
+    ``beta_val``/``gamma_val`` before the block.
+  - Unused imports: add ``# noqa: F401`` to ``TYPE_CHECKING``-guarded
+    imports in ``misc.py``, ``ops.py``; remove unused
+    ``TYPE_CHECKING``/``Core`` block from ``reflection.py`` (replaced
+    annotation with ``Optional[Any]``); restore accidentally removed
+    ``INPUT_VECTOR``, ``NamedFloatDict``, ``NUMERIC`` re-exports in
+    ``misc.py``; remove unused import from ``hkl_soleil-python_api.py``;
+    fix mixed ``import`` and ``from ... import`` of ``hklpy2`` in
+    ``test_isn_libhkl.py``.
+  - Mixed explicit/implicit returns: update return-type annotations and
+    fix fall-through returns in ``base.py``, ``hkl_soleil.py``,
+    ``no_op.py``, ``ops.py``, ``th_tth_q.py``, and ``user.py``.
+  - Variable defined multiple times: fix loop variables in ``ops.py``,
+    ``user.py``, ``test_backends.py``, ``test_diffract.py``, and
+    ``test_sample.py``.
+  - Modification of parameter with mutable default: fix ``beam_kwargs``
+    and ``extras`` in ``diffract.py`` and ``user.py``; suppress B006
+    with ``# noqa`` for read-only mutable defaults where changing the
+    default would alter runtime semantics.
+  - Use of return value of a procedure: drop ``tbl =`` assignment for
+    ``pa()`` and ``wh()`` calls in ``test_user.py``.
+  - Unused global variable: remove ``_I243_REAL_AXES`` from
+    ``test_i210.py``; add ``logger.debug()`` calls throughout
+    ``misc.py`` to activate the previously unused ``logger``.
+  - File not always closed: use a ``with`` block in
+    ``load_yaml_file()`` in ``misc.py``.
+  - ``__eq__`` not overridden when adding attributes: add ``__eq__``
+    to ``ReflectionsDict`` in ``reflection.py``.
+  - Redundant comparison: remove from ``test_lattice.py``
+    ``test_equal()``.
+  - Assert with side-effect: separate ``sys.path.pop()`` from
+    ``assert`` in ``test_init.py``.
+  - Non-standard exception in special method: return ``NotImplemented``
+    instead of raising ``TypeError`` in ``Reflection.__sub__()``.
+  - Unused exception object: add missing ``raise`` in
+    ``hkl_soleil-python_api.py``.
+* Additional cleanup found during CodeQL review:
+
+  - Remove redundant outer loop in ``test_misc.py`` ``test_axes_to_dict()``.
+  - Rename overwritten loop variable ``solution`` in ``test_diffract.py``.
+  - Remove unnecessary intermediate assignments before ``return`` in
+    ``hkl_soleil.py``, ``incident.py``, ``misc.py``, ``ops.py``, and
+    ``user.py`` (RET504).
+* Review TODO & FIXME markers: remove resolved comments, open new issues
+  for remaining concerns. (:issue:`260`)
 
 0.4.1
 #####
