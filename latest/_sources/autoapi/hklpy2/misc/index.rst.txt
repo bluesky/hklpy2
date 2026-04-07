@@ -140,7 +140,7 @@ Module Contents
 
 
    .. py:attribute:: devices
-      :type:  Sequence[ophyd.Device]
+      :type:  Sequence[Device]
       :value: []
 
 
@@ -155,7 +155,7 @@ Module Contents
 
 
    .. py:attribute:: known_bases
-      :type:  Sequence[ophyd.Device]
+      :type:  Sequence[Device]
       :value: []
 
 
@@ -173,7 +173,7 @@ Module Contents
       Top-level key in run's metadata dictionary.
 
 
-   .. py:method:: validate(devices: Sequence[ophyd.Device]) -> None
+   .. py:method:: validate(devices: Sequence[Device]) -> None
 
       Verify all are recognized objects.
 
@@ -262,7 +262,7 @@ Module Contents
 
 
 .. py:data:: IDENTITY_MATRIX_3X3
-   :type:  hklpy2.typing.Matrix3x3
+   :type:  Matrix3x3
    :value: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 
 
@@ -405,7 +405,7 @@ Module Contents
    .. py:attribute:: physical
 
 
-.. py:function:: axes_to_dict(input: hklpy2.typing.AnyAxesType, names: list[str]) -> hklpy2.typing.AxesDict
+.. py:function:: axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict
 
    .. container:: import-path
 
@@ -459,7 +459,7 @@ Module Contents
    Convert 'value' from old units to new.
 
 
-.. py:function:: creator_from_config(config: Union[dict, str, pathlib.Path])
+.. py:function:: creator_from_config(config: Union[dict, str, Path])
 
    .. container:: import-path
 
@@ -495,7 +495,7 @@ Module Contents
        :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
 
 
-.. py:function:: define_real_axis(specs: Union[None, str, hklpy2.typing.KeyValueMap], kwargs: hklpy2.typing.KeyValueMap) -> tuple[str, Sequence, Mapping]
+.. py:function:: define_real_axis(specs: Union[None, str, KeyValueMap], kwargs: KeyValueMap) -> tuple[str, Sequence, Mapping]
 
    .. container:: import-path
 
@@ -505,7 +505,7 @@ Module Contents
    Return class and kwargs of a real axis from its 'specs'.
 
 
-.. py:function:: dict_device_factory(data: hklpy2.typing.KeyValueMap, **kwargs: Any) -> type
+.. py:function:: dict_device_factory(data: KeyValueMap, **kwargs: Any) -> type
 
    .. container:: import-path
 
@@ -549,7 +549,7 @@ Module Contents
    From the `apstools <https://github.com/BCDA-APS/apstools>`_ package.
 
 
-.. py:function:: flatten_lists(xs: Sequence[Union[bytes, collections.abc.Iterable, str]]) -> hklpy2.typing.BlueskyPlanType
+.. py:function:: flatten_lists(xs: Sequence[Union[bytes, Iterable, str]]) -> BlueskyPlanType
 
    .. container:: import-path
 
@@ -561,7 +561,7 @@ Module Contents
    https://stackoverflow.com/questions/2158395
 
 
-.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> hklpy2.typing.KeyValueMap
+.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> KeyValueMap
 
    .. container:: import-path
 
@@ -640,7 +640,7 @@ Module Contents
    :type start_key: str
 
 
-.. py:function:: get_solver(solver_name: str) -> hklpy2.backends.base.SolverBase
+.. py:function:: get_solver(solver_name: str) -> SolverBase
 
    .. container:: import-path
 
@@ -671,7 +671,7 @@ Module Contents
        True
 
 
-.. py:function:: list_orientation_runs(catalog: Any, limit: int = 10, start_key: str = DEFAULT_START_KEY, **kwargs: Mapping) -> pandas.DataFrame
+.. py:function:: list_orientation_runs(catalog: Any, limit: int = 10, start_key: str = DEFAULT_START_KEY, **kwargs: Mapping) -> DataFrame
 
    .. container:: import-path
 
@@ -718,7 +718,7 @@ Module Contents
    Load YAML from text.
 
 
-.. py:function:: load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping
+.. py:function:: load_yaml_file(file: Union[Path, str]) -> Mapping
 
    .. container:: import-path
 
@@ -728,7 +728,7 @@ Module Contents
    Return contents of a YAML file as a Python object.
 
 
-.. py:function:: make_component(call_name: str, *args: Any, **kwargs: Any) -> ophyd.Component
+.. py:function:: make_component(call_name: str, *args: Any, **kwargs: Any) -> Component
 
    .. container:: import-path
 
@@ -748,7 +748,7 @@ Module Contents
    Return an instance of the Python 'call_name'.
 
 
-.. py:function:: parse_factory_axes(*, space: Optional[str] = None, axes: Union[hklpy2.typing.KeyValueMap, None, Sequence[str]] = None, order: Optional[Sequence[str]] = None, canonical: Optional[Sequence[str]] = None, labels: Optional[Sequence[str]] = None, **_ignored: Any) -> Mapping[str, Union[ophyd.Component, Sequence[str]]]
+.. py:function:: parse_factory_axes(*, space: Optional[str] = None, axes: Union[KeyValueMap, None, Sequence[str]] = None, order: Optional[Sequence[str]] = None, canonical: Optional[Sequence[str]] = None, labels: Optional[Sequence[str]] = None, **_ignored: Any) -> Mapping[str, Union[Component, Sequence[str]]]
 
    .. container:: import-path
 
@@ -820,7 +820,7 @@ Module Contents
    Round a number to specified precision.
 
 
-.. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs: Mapping) -> hklpy2.backends.base.SolverBase
+.. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs: Mapping) -> SolverBase
 
    .. container:: import-path
 
@@ -830,7 +830,7 @@ Module Contents
    Create a |solver| object with geometry and axes.
 
 
-.. py:function:: solvers() -> Mapping[str, hklpy2.backends.base.SolverBase]
+.. py:function:: solvers() -> Mapping[str, SolverBase]
 
    .. container:: import-path
 

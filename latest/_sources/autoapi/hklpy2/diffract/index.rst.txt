@@ -104,7 +104,7 @@ Module Contents
        ~samples
 
 
-   .. py:method:: add_reflection(pseudos, reals=None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
+   .. py:method:: add_reflection(pseudos, reals=None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> Reflection
 
       Add a new reflection with this geometry to the selected sample.
 
@@ -129,7 +129,7 @@ Module Contents
 
 
 
-   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
+   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> Sample
 
       Add a new sample.
 
@@ -156,7 +156,7 @@ Module Contents
 
 
    .. py:property:: configuration
-      :type: hklpy2.typing.KeyValueMap
+      :type: KeyValueMap
 
 
       Diffractometer configuration (orientation).
@@ -196,7 +196,7 @@ Module Contents
 
 
 
-   .. py:method:: full_position(digits=4) -> hklpy2.typing.KeyValueMap
+   .. py:method:: full_position(digits=4) -> KeyValueMap
 
       Return dict with positions of pseudos, reals, & extras.
 
@@ -208,13 +208,13 @@ Module Contents
 
 
 
-   .. py:method:: move_dict(axes: hklpy2.typing.AxesDict) -> hklpy2.typing.BlueskyPlanType
+   .. py:method:: move_dict(axes: AxesDict) -> BlueskyPlanType
 
       (plan) Move diffractometer axes to positions in 'axes'.
 
 
 
-   .. py:method:: move_forward_with_extras(pseudos: hklpy2.typing.AnyAxesType, extras: hklpy2.typing.AxesDict) -> hklpy2.typing.BlueskyPlanType
+   .. py:method:: move_forward_with_extras(pseudos: AnyAxesType, extras: AxesDict) -> BlueskyPlanType
 
       (plan stub) Compute forward solution at fixed pseudos and extras.
 
@@ -229,7 +229,7 @@ Module Contents
 
 
 
-   .. py:method:: move_inverse_with_extras(reals: hklpy2.typing.AnyAxesType, extras: hklpy2.typing.AxesDict) -> hklpy2.typing.BlueskyPlanType
+   .. py:method:: move_inverse_with_extras(reals: AnyAxesType, extras: AxesDict) -> BlueskyPlanType
 
       (plan stub) Compute inverse solution at fixed reals and extras.
 
@@ -245,7 +245,7 @@ Module Contents
 
 
 
-   .. py:method:: move_reals(reals: hklpy2.typing.AnyAxesType) -> None
+   .. py:method:: move_reals(reals: AnyAxesType) -> None
 
       (not a plan) Move the real-space axes as specified in 'real_positions'.
 
@@ -317,20 +317,20 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: Union[None, hklpy2.blocks.sample.Sample]
+      :type: Union[None, Sample]
 
 
       Current sample object.
 
 
    .. py:property:: samples
-      :type: dict[str, hklpy2.blocks.sample.Sample]
+      :type: dict[str, Sample]
 
 
       Dictionary of samples.
 
 
-   .. py:method:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = None, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.typing.BlueskyPlanType
+   .. py:method:: scan_extra(detectors: Iterable[Readable], *args: Union[Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = None, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> BlueskyPlanType
 
       Scan extra diffractometer parameter(s), such as 'psi'.
 
@@ -411,7 +411,7 @@ Module Contents
 
 .. py:data:: T
 
-.. py:function:: creator(*, prefix: str = '', name: str = '', solver: str = 'hkl_soleil', geometry: str = 'E4CV', beam_kwargs: dict[str, object] = None, solver_kwargs: dict[str, object] = {}, _pseudo: Optional[Sequence[str]] = None, pseudos: list = [], _real: Optional[Sequence[str]] = None, reals: Optional[Union[Sequence[str], hklpy2.typing.KeyValueMap]] = {}, motor_labels: Optional[Sequence[str]] = ['motors'], labels: list = ['diffractometer'], class_name: str = 'Hklpy2Diffractometer', class_bases: list = [DiffractometerBase], forward_solution_function: Optional[str] = None, **kwargs) -> DiffractometerBase
+.. py:function:: creator(*, prefix: str = '', name: str = '', solver: str = 'hkl_soleil', geometry: str = 'E4CV', beam_kwargs: dict[str, object] = None, solver_kwargs: dict[str, object] = {}, _pseudo: Optional[Sequence[str]] = None, pseudos: list = [], _real: Optional[Sequence[str]] = None, reals: Optional[Union[Sequence[str], KeyValueMap]] = {}, motor_labels: Optional[Sequence[str]] = ['motors'], labels: list = ['diffractometer'], class_name: str = 'Hklpy2Diffractometer', class_bases: list = [DiffractometerBase], forward_solution_function: Optional[str] = None, **kwargs) -> DiffractometerBase
 
    .. container:: import-path
 

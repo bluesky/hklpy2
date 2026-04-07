@@ -129,7 +129,7 @@ Module Contents
 
 
    .. py:property:: U
-      :type: hklpy2.typing.Matrix3x3
+      :type: Matrix3x3
 
 
       Relative orientation of crystal on diffractometer.
@@ -138,13 +138,13 @@ Module Contents
 
 
    .. py:property:: UB
-      :type: hklpy2.typing.Matrix3x3
+      :type: Matrix3x3
 
 
       Orientation matrix (3x3).
 
 
-   .. py:method:: addReflection(reflection: hklpy2.backends.typing.ReflectionDict) -> None
+   .. py:method:: addReflection(reflection: ReflectionDict) -> None
 
       Add coordinates of a diffraction condition (a reflection).
 
@@ -175,7 +175,7 @@ Module Contents
       Updated by 'forward()' computation.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.typing.Matrix3x3 | None
+   .. py:method:: calculate_UB(r1: ReflectionDict, r2: ReflectionDict) -> Matrix3x3 | None
 
       Calculate the UB (orientation) matrix with two reflections.
 
@@ -233,7 +233,7 @@ Module Contents
 
 
    .. py:property:: extras
-      :type: hklpy2.typing.NamedFloatDict
+      :type: NamedFloatDict
 
 
       Ordered dictionary of any extra parameters.
@@ -241,7 +241,7 @@ Module Contents
       Depends on selected geometry, engine, and mode.
 
 
-   .. py:method:: forward(pseudos: hklpy2.typing.NamedFloatDict) -> List[hklpy2.typing.NamedFloatDict]
+   .. py:method:: forward(pseudos: NamedFloatDict) -> List[NamedFloatDict]
 
       Compute list of solutions(reals) from pseudos (hkl -> [angles]).
 
@@ -257,14 +257,14 @@ Module Contents
 
 
 
-   .. py:method:: inverse(reals: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
+   .. py:method:: inverse(reals: NamedFloatDict) -> NamedFloatDict
 
       Compute tuple of pseudos from reals (angles -> hkl).
 
 
 
    .. py:property:: lattice
-      :type: hklpy2.typing.NamedFloatDict
+      :type: NamedFloatDict
 
 
       Dictionary of crystal lattice parameters.
@@ -305,7 +305,7 @@ Module Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: list[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.typing.NamedFloatDict
+   .. py:method:: refineLattice(reflections: list[ReflectionDict]) -> NamedFloatDict
 
       Refine the lattice parameters from a list of reflections.
 
@@ -314,7 +314,7 @@ Module Contents
 
 
    .. py:property:: reflections
-      :type: Dict[str, hklpy2.backends.typing.ReflectionDict]
+      :type: Dict[str, ReflectionDict]
 
 
       List of defined reflections (no store reflection names in libhkl).
@@ -327,13 +327,13 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: hklpy2.backends.typing.SampleDict
+      :type: SampleDict
 
 
       Crystalline sample.  libhkl's sample object.
 
 
-   .. py:method:: set_reals(reals: hklpy2.typing.NamedFloatDict) -> None
+   .. py:method:: set_reals(reals: NamedFloatDict) -> None
 
       Set the values of all the real axes.
 
@@ -345,7 +345,7 @@ Module Contents
 
 
    .. py:property:: summary
-      :type: pyRestTable.Table
+      :type: Table
 
 
       Table of engines, modes, & axes for this geometry.
@@ -449,7 +449,7 @@ Module Contents
    Prevent underflows and '-0' for all numbers in a list.
 
 
-.. py:function:: to_hkl(arr: numpy.typing.NDArray[numpy.float64]) -> libhkl
+.. py:function:: to_hkl(arr: NDArray[float64]) -> libhkl
 
    .. container:: import-path
 
@@ -464,7 +464,7 @@ Module Contents
    :rtype: Hkl.Matrix
 
 
-.. py:function:: to_numpy(mat: libhkl) -> numpy.typing.NDArray[numpy.float64]
+.. py:function:: to_numpy(mat: libhkl) -> NDArray[float64]
 
    .. container:: import-path
 

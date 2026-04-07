@@ -22,7 +22,7 @@ ops
 Module Contents
 ---------------
 
-.. py:class:: Core(diffractometer: hklpy2.diffract.DiffractometerBase, default_sample: bool = True)
+.. py:class:: Core(diffractometer: DiffractometerBase, default_sample: bool = True)
 
    .. container:: import-path
 
@@ -85,7 +85,7 @@ Module Contents
        ~solver_summary
 
 
-   .. py:method:: add_reflection(pseudos: hklpy2.typing.AnyAxesType, reals: Union[hklpy2.typing.AnyAxesType, None] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
+   .. py:method:: add_reflection(pseudos: AnyAxesType, reals: Union[AnyAxesType, None] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> Reflection
 
       Add a new reflection.
 
@@ -117,7 +117,7 @@ Module Contents
 
 
 
-   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
+   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> Sample
 
       Add a new sample.
 
@@ -148,7 +148,7 @@ Module Contents
       Map axis names from solver to diffractometer.
 
 
-   .. py:method:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str]) -> hklpy2.typing.Matrix3x3
+   .. py:method:: calc_UB(r1: Union[Reflection, str], r2: Union[Reflection, str]) -> Matrix3x3
 
       Calculate and return the UB (orientation) matrix with two reflections.
 
@@ -197,7 +197,7 @@ Module Contents
       Ordered dictionary of |solver| extra parameters in current mode.
 
 
-   .. py:method:: forward(pseudos: hklpy2.typing.AnyAxesType, wavelength: Optional[float] = None) -> list
+   .. py:method:: forward(pseudos: AnyAxesType, wavelength: Optional[float] = None) -> list
 
       Compute [{names:reals}] from {names: pseudos} (hkl -> angles).
 
@@ -216,7 +216,7 @@ Module Contents
       Return the |solver| geometry.
 
 
-   .. py:method:: inverse(reals: Union[hklpy2.typing.AnyAxesType, None], wavelength: Optional[float] = None) -> hklpy2.typing.AxesDict
+   .. py:method:: inverse(reals: Union[AnyAxesType, None], wavelength: Optional[float] = None) -> AxesDict
 
       Compute (pseudos) from {names: reals} (angles -> hkl).
 
@@ -257,7 +257,7 @@ Module Contents
 
 
    .. py:property:: presets
-      :type: hklpy2.typing.NamedFloatDict
+      :type: NamedFloatDict
 
 
       Preset values for constant-axis modes.
@@ -304,7 +304,7 @@ Module Contents
           {'phi': 45.0}
 
 
-   .. py:method:: refine_lattice(*reflections: list[hklpy2.blocks.reflection.Reflection]) -> hklpy2.blocks.lattice.Lattice
+   .. py:method:: refine_lattice(*reflections: list[Reflection]) -> Lattice
 
       Return the sample lattice computed from 3 or more reflections.
 
@@ -340,20 +340,20 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: hklpy2.blocks.sample.Sample
+      :type: Sample
 
 
       Current Sample (Python object).
 
 
    .. py:property:: samples
-      :type: Mapping[str, hklpy2.blocks.sample.Sample]
+      :type: Mapping[str, Sample]
 
 
       Sample dictionary.
 
 
-   .. py:method:: set_solver(name: str, geometry: str, **kwargs: dict) -> hklpy2.backends.base.SolverBase
+   .. py:method:: set_solver(name: str, geometry: str, **kwargs: dict) -> SolverBase
 
       Create an instance of the backend |solver| library and geometry.
 
@@ -369,7 +369,7 @@ Module Contents
 
 
    .. py:property:: solver
-      :type: hklpy2.backends.base.SolverBase
+      :type: SolverBase
 
 
       Backend |solver| object.
@@ -440,7 +440,7 @@ Module Contents
       mode.
 
 
-   .. py:method:: standardize_pseudos(pseudos: hklpy2.typing.AnyAxesType) -> hklpy2.typing.AxesDict
+   .. py:method:: standardize_pseudos(pseudos: AnyAxesType) -> AxesDict
 
       Convert user-supplied pseudos into dictionary in solver's order.
 
@@ -466,7 +466,7 @@ Module Contents
 
 
 
-   .. py:method:: standardize_reals(reals: Union[hklpy2.typing.AnyAxesType, None]) -> hklpy2.typing.AxesDict
+   .. py:method:: standardize_reals(reals: Union[AnyAxesType, None]) -> AxesDict
 
       Convert user-supplied reals into dictionary in solver's order.
 

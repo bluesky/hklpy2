@@ -38,7 +38,7 @@ zone
 Module Contents
 ---------------
 
-.. py:class:: OrthonormalZone(*, axis: Optional[hklpy2.typing.INPUT_VECTOR] = None, b1: Optional[hklpy2.typing.INPUT_VECTOR] = None, b2: Optional[hklpy2.typing.INPUT_VECTOR] = None)
+.. py:class:: OrthonormalZone(*, axis: Optional[INPUT_VECTOR] = None, b1: Optional[INPUT_VECTOR] = None, b2: Optional[INPUT_VECTOR] = None)
 
    .. container:: import-path
 
@@ -64,7 +64,7 @@ Module Contents
 
 
    .. py:property:: axis
-      :type: numpy.typing.NDArray[numpy.floating]
+      :type: NDArray[floating]
 
 
       Get the zone axis (unit) vector.
@@ -82,7 +82,7 @@ Module Contents
       Is the zone axis defined?
 
 
-   .. py:method:: define_axis(b1: hklpy2.typing.INPUT_VECTOR, b2: hklpy2.typing.INPUT_VECTOR, normalize: bool = False) -> numpy.typing.NDArray[numpy.floating]
+   .. py:method:: define_axis(b1: INPUT_VECTOR, b2: INPUT_VECTOR, normalize: bool = False) -> NDArray[floating]
 
       Define the zone axis from two vectors using cross product.
 
@@ -100,7 +100,7 @@ Module Contents
 
 
 
-   .. py:method:: in_zone(vector: hklpy2.typing.INPUT_VECTOR, tol: float = 1e-05) -> bool
+   .. py:method:: in_zone(vector: INPUT_VECTOR, tol: float = 1e-05) -> bool
 
       Verify if 'vector' is in this zone.
 
@@ -116,7 +116,7 @@ Module Contents
 
 
 
-   .. py:method:: vecspace(b1: hklpy2.typing.INPUT_VECTOR, b2: hklpy2.typing.INPUT_VECTOR, n: int) -> Iterator[numpy.typing.NDArray]
+   .. py:method:: vecspace(b1: INPUT_VECTOR, b2: INPUT_VECTOR, n: int) -> Iterator[NDArray]
 
       Generate 'n' vectors from 'b1' to 'b2' rotated around b1 x b2.
 
@@ -133,7 +133,7 @@ Module Contents
 
 
 
-.. py:function:: move_zone(diffractometer: hklpy2.diffract.DiffractometerBase, hkl: hklpy2.typing.INPUT_VECTOR) -> hklpy2.typing.BlueskyPlanType
+.. py:function:: move_zone(diffractometer: DiffractometerBase, hkl: INPUT_VECTOR) -> BlueskyPlanType
 
    .. container:: import-path
 
@@ -161,7 +161,7 @@ Module Contents
    :type hkl: INPUT_VECTOR
 
 
-.. py:function:: scan_zone(detectors: Sequence[bluesky.protocols.Readable], diffractometer: hklpy2.diffract.DiffractometerBase, start: hklpy2.typing.INPUT_VECTOR, finish: hklpy2.typing.INPUT_VECTOR, num: int, md: Optional[Mapping[str, Any]] = None) -> hklpy2.typing.BlueskyPlanType
+.. py:function:: scan_zone(detectors: Sequence[Readable], diffractometer: DiffractometerBase, start: INPUT_VECTOR, finish: INPUT_VECTOR, num: int, md: Optional[Mapping[str, Any]] = None) -> BlueskyPlanType
 
    .. container:: import-path
 
@@ -206,7 +206,7 @@ Module Contents
    :type md: dict
 
 
-.. py:function:: zone_series(diff: hklpy2.diffract.DiffractometerBase, hkl_1: hklpy2.typing.INPUT_VECTOR, hkl_2: hklpy2.typing.INPUT_VECTOR, n: int) -> None
+.. py:function:: zone_series(diff: DiffractometerBase, hkl_1: INPUT_VECTOR, hkl_2: INPUT_VECTOR, n: int) -> None
 
    .. container:: import-path
 
@@ -235,7 +235,7 @@ Module Contents
    >>> zone_series(my_diffractometer, (1,0,0), (0,1,0), 5)
 
 
-.. py:function:: zonespace(diff: hklpy2.diffract.DiffractometerBase, hkl_1: hklpy2.typing.INPUT_VECTOR, hkl_2: hklpy2.typing.INPUT_VECTOR, n: int) -> Iterator[tuple[Sequence[float], Sequence[float]]]
+.. py:function:: zonespace(diff: DiffractometerBase, hkl_1: INPUT_VECTOR, hkl_2: INPUT_VECTOR, n: int) -> Iterator[tuple[Sequence[float], Sequence[float]]]
 
    .. container:: import-path
 

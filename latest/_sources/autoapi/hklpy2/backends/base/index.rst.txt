@@ -113,13 +113,13 @@ Module Contents
 
 
    .. py:property:: UB
-      :type: hklpy2.typing.Matrix3x3
+      :type: Matrix3x3
 
 
       Orientation matrix (3x3).
 
 
-   .. py:method:: addReflection(reflection: hklpy2.backends.typing.ReflectionDict) -> None
+   .. py:method:: addReflection(reflection: ReflectionDict) -> None
       :abstractmethod:
 
 
@@ -134,7 +134,7 @@ Module Contents
       Unique, sorted list of extra axis names in all modes for chosen engine.
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.typing.Matrix3x3
+   .. py:method:: calculate_UB(r1: ReflectionDict, r2: ReflectionDict) -> Matrix3x3
       :abstractmethod:
 
 
@@ -154,13 +154,13 @@ Module Contents
 
 
    .. py:property:: extras
-      :type: hklpy2.typing.KeyValueMap
+      :type: KeyValueMap
 
 
       Ordered dictionary of any extra parameters.
 
 
-   .. py:method:: forward(pseudos: hklpy2.typing.NamedFloatDict) -> List[hklpy2.typing.NamedFloatDict]
+   .. py:method:: forward(pseudos: NamedFloatDict) -> List[NamedFloatDict]
       :abstractmethod:
 
 
@@ -198,7 +198,7 @@ Module Contents
       for each geometry.
 
 
-   .. py:method:: inverse(reals: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
+   .. py:method:: inverse(reals: NamedFloatDict) -> NamedFloatDict
       :abstractmethod:
 
 
@@ -207,7 +207,7 @@ Module Contents
 
 
    .. py:property:: lattice
-      :type: hklpy2.typing.NamedFloatDict
+      :type: NamedFloatDict
 
 
       Crystal lattice parameters.  (Not used by this |solver|.)
@@ -258,7 +258,7 @@ Module Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: List[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.typing.NamedFloatDict | None
+   .. py:method:: refineLattice(reflections: List[ReflectionDict]) -> NamedFloatDict | None
       :abstractmethod:
 
 
@@ -275,14 +275,14 @@ Module Contents
 
 
    .. py:property:: sample
-      :type: Union[hklpy2.backends.typing.SampleDict, None]
+      :type: Union[SampleDict, None]
 
 
       Crystalline sample.
 
 
    .. py:property:: summary
-      :type: pyRestTable.Table
+      :type: Table
 
 
       Table of this geometry (modes, axes).

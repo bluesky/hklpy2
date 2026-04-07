@@ -42,7 +42,7 @@ Module Contents
 
 .. py:data:: add_reflection
 
-.. py:function:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
+.. py:function:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> Sample
 
    .. container:: import-path
 
@@ -84,7 +84,7 @@ Module Contents
            tth=24.509837696782)
 
 
-.. py:function:: cahkl_table(*reflections: list[hklpy2.typing.AxesTuple], digits=4) -> pyRestTable.Table
+.. py:function:: cahkl_table(*reflections: list[AxesTuple], digits=4) -> Table
 
    .. container:: import-path
 
@@ -128,7 +128,7 @@ Module Contents
    :type digits: int
 
 
-.. py:function:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str], wavelength: Optional[float] = None) -> hklpy2.typing.Matrix3x3
+.. py:function:: calc_UB(r1: Union[Reflection, str], r2: Union[Reflection, str], wavelength: Optional[float] = None) -> Matrix3x3
 
    .. container:: import-path
 
@@ -151,7 +151,7 @@ Module Contents
 
 
 
-.. py:function:: get_diffractometer() -> Union[hklpy2.diffract.DiffractometerBase, None]
+.. py:function:: get_diffractometer() -> Union[DiffractometerBase, None]
 
    .. container:: import-path
 
@@ -201,7 +201,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.remove_sample`
 
 
-.. py:function:: or_swap() -> hklpy2.typing.Matrix3x3
+.. py:function:: or_swap() -> Matrix3x3
 
    .. container:: import-path
 
@@ -326,7 +326,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.list_samples`
 
 
-.. py:function:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = None, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.typing.BlueskyPlanType
+.. py:function:: scan_extra(detectors: Iterable[Readable], *args: Union[Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = None, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> BlueskyPlanType
 
    .. container:: import-path
 
@@ -392,7 +392,7 @@ Module Contents
 
 
 
-.. py:function:: set_diffractometer(diffractometer: Optional[hklpy2.diffract.DiffractometerBase] = None) -> None
+.. py:function:: set_diffractometer(diffractometer: Optional[DiffractometerBase] = None) -> None
 
    .. container:: import-path
 
@@ -442,7 +442,7 @@ Module Contents
        >>> set_wavelength(123.45, units="pm")
 
 
-.. py:function:: setor(h, k, l, *reals: hklpy2.typing.NUMERIC, wavelength=None, name=None, **kwreals: hklpy2.typing.AxesDict) -> hklpy2.blocks.reflection.Reflection
+.. py:function:: setor(h, k, l, *reals: NUMERIC, wavelength=None, name=None, **kwreals: AxesDict) -> Reflection
 
    .. container:: import-path
 
@@ -507,7 +507,7 @@ Module Contents
      See the examples above.
 
 
-.. py:function:: solver_summary(write=True) -> pyRestTable.Table | None
+.. py:function:: solver_summary(write=True) -> Table | None
 
    .. container:: import-path
 
