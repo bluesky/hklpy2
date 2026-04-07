@@ -83,7 +83,7 @@ def test_module_exports(parms, context):
 
 
 # ---------------------------------------------------------------------------
-# Also available as backward-compat re-exports from hklpy2.misc
+# Type aliases also available from hklpy2.misc (used internally there)
 # ---------------------------------------------------------------------------
 
 
@@ -94,11 +94,6 @@ def test_module_exports(parms, context):
             dict(name="KeyValueMap"),
             does_not_raise(),
             id="KeyValueMap re-exported from hklpy2.misc",
-        ),
-        pytest.param(
-            dict(name="NUMERIC"),
-            does_not_raise(),
-            id="NUMERIC re-exported from hklpy2.misc",
         ),
         pytest.param(
             dict(name="AxesDict"),
