@@ -1,0 +1,152 @@
+constraints
+===========
+
+.. py:module:: hklpy2.blocks.constraints
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.blocks.constraints``
+
+   Limitations on acceptable positions for computed 'forward()' solutions.
+
+   Computation of the real-space axis positions given a set of reciprocal-space
+   coordinates can have many solutions. One or more constraints (Constraint)
+   (a.k.a, cut points), together with a choice of operating *mode*, can:
+
+   * Limit the range of ``forward()`` solutions accepted for that positioner.
+   * Declare the value to use when the positioner should be kept constant. (not
+     implemented yet)
+
+   .. autosummary::
+
+       ~RealAxisConstraints
+       ~ConstraintBase
+       ~LimitsConstraint
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: ConstraintBase
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.constraints.ConstraintBase``
+
+
+   Bases: :py:obj:`abc.ABC`
+
+
+   Base class for all constraints for selecting 'forward()' solutions.
+
+   .. autosummary::
+
+       ~_asdict
+       ~valid
+
+
+   .. py:attribute:: label
+      :type:  str
+      :value: 'undefined'
+
+
+
+   .. py:method:: valid(**values: Dict[str, ~hklpy2.typing.NUMERIC]) -> bool
+      :abstractmethod:
+
+
+      Is this constraint satisifed by current value(s)?
+
+      PARAMETERS
+
+      values *dict*:
+          Dictionary of current 'axis: value' pairs for comparison.
+
+
+
+.. py:data:: ENDPOINT_TOLERANCE
+   :type:  float
+   :value: 0.0001
+
+
+.. py:class:: LimitsConstraint(low_limit: Optional[float] = -180, high_limit: Optional[float] = 180, label: Optional[str] = None)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.constraints.LimitsConstraint``
+
+
+   Bases: :py:obj:`ConstraintBase`
+
+
+   Value must fall between low & high limits.
+
+   :param low_limit: Lowest acceptable value for this axis when computing real-space solutions
+                     from given reciprocal-space positions.
+   :type low_limit: float
+   :param high_limit: Highest acceptable value for this axis when computing real-space solutions
+                      from given reciprocal-space positions.
+   :type high_limit: float
+   :param label: Name of the axis for these limits.
+   :type label: str
+   :param .. autosummary::: ~limits
+                            ~valid
+
+
+   .. py:attribute:: label
+      :value: None
+
+
+
+   .. py:property:: limits
+      :type: tuple[float, float]
+
+
+      Return the low and high limits of this constraint.
+
+
+   .. py:method:: valid(**values: Dict[str, ~hklpy2.typing.NUMERIC]) -> bool
+
+      True if low <= value <= high.
+
+      PARAMETERS
+
+      reals *dict*:
+          Dictionary of current 'axis: value' pairs for comparison.
+
+
+
+.. py:class:: RealAxisConstraints(reals: List[str])
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.constraints.RealAxisConstraints``
+
+
+   Bases: :py:obj:`dict`
+
+
+   Constraints for every (real) axis of the diffractometer.
+
+   .. autosummary::
+
+       ~_asdict
+       ~_fromdict
+       ~valid
+
+
+   .. py:method:: valid(**reals: Dict[str, ~hklpy2.typing.NUMERIC]) -> bool
+
+      Are all constraints satisfied?
+
+
+
+.. py:data:: UNDEFINED_LABEL
+   :type:  str
+   :value: 'undefined'
+
+
