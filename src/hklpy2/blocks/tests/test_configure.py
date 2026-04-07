@@ -79,12 +79,7 @@ twopi = 2 * math.pi
         pytest.param(
             "samples.vibranium.reflections_order",
             "r040 r004".split(),
-            id="vibranium-reflections-order-1",
-        ),
-        pytest.param(
-            "samples.vibranium.reflections_order",
-            "r040 r004".split(),
-            id="vibranium-reflections-order-2",
+            id="vibranium-reflections-order-r040-r400",
         ),
         pytest.param(
             "samples.vibranium.reflections.r004.name", "r004", id="vibranium-r004-name"

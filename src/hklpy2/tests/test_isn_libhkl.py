@@ -61,7 +61,7 @@ FORWARD_SOLUTIONS = {
         [180 - 6.18 / 2, 0.0, 0.0, 0.0, 180 - 6.18, -180.0],
         [180 - 6.18 / 2, 0.0, 0.0, 0.0, 180 - 6.18, 180.0],
     ],
-    (1, 0, 0): [],  # non-zero chi is reachable
+    (1, 0, 0): [],  # non-zero chi is unreachable
 }
 REALS_REFERENCE = (20, 0, 0, 0, 40, 0)
 
@@ -146,7 +146,7 @@ def test_libhkl():
     for reflection in (R001, R100):
         reals = reflection[1]
         geometry.axis_values_set(reals, LIBHKL_USER_UNITS)
-        engine_list.get()  # reals -> pseudos  (Odd name for this call!)
+        engine_list.get()  # reals -> pseudos: computation here
         pseudos = np.asarray(engine.pseudo_axis_values_get(LIBHKL_USER_UNITS))
         assert np.allclose(pseudos, reflection[0], atol=0.001)
 
