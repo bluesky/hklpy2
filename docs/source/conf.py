@@ -103,9 +103,29 @@ def autoapi_skip_member(app, what, name, obj, skip, options):
     return skip
 
 
+def _shorten_type_str(s: str) -> str:
+    """Replace dotted.module.ClassName with ClassName in type annotation strings.
+
+    Bare names (``str``, ``int``, ``None``) are left unchanged.
+    """
+    import re
+
+    return re.sub(
+        r"(?<![.\w])([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)+)",
+        lambda m: m.group(0).split(".")[-1],
+        s,
+    )
+
+
+def _prepare_jinja_env(jinja_env) -> None:
+    """Register custom Jinja2 filters for autoapi templates."""
+    jinja_env.filters["shorten_type"] = _shorten_type_str
+
+
 def setup(app):
-    """Connect autoapi-skip-member event."""
+    """Connect autoapi events and register Jinja2 filters."""
     app.connect("autoapi-skip-member", autoapi_skip_member)
+    app.config.autoapi_prepare_jinja_env = _prepare_jinja_env
 
 
 # -- Options for HTML output -------------------------------------------------
