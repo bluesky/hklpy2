@@ -82,16 +82,30 @@ autoapi_ignore = [
     "**/docs/*",
     "**/examples/*",
     "*tests*",
+    "**/conftest.py",
+    "**/_version.py",
 ]
+autoapi_add_toctree_entry = False  # added manually to index.rst
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+]
+autoapi_member_order = "alphabetical"
+autoapi_template_dir = "_templates/autoapi"
 
-# # where the generated rst files will be written (relative to the Sphinx source dir)
-# autoapi_output_dir = "autoapi"   # e.g. docs/source/autoapi
 
-# # KEEP the generated files (default: False)
-# autoapi_keep_files = True
+def autoapi_skip_member(app, what, name, obj, skip, options):
+    """Skip logger instances from the autoapi output."""
+    if what == "data" and name.endswith(".logger"):
+        return True
+    return skip
 
-# # optional: add the autoapi tree to the toctree
-# autoapi_add_toctree_entry = False
+
+def setup(app):
+    """Connect autoapi-skip-member event."""
+    app.connect("autoapi-skip-member", autoapi_skip_member)
+
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
