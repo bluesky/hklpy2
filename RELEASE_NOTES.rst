@@ -221,6 +221,11 @@ Fixes
   validation, beam/wavelength restoration, and state clearing consistently
   with calling ``restore()`` directly. (:issue:`231`)
 
+* Fix stale lattice parameters not reaching the solver before ``calc_UB()``
+  computes the orientation matrix; lattice changes now propagate immediately
+  via ``Lattice.__setattr__`` → ``Sample`` callback → solver update, so
+  subsequent ``forward()`` / ``inverse()`` calls use the correct lattice.
+  (:issue:`240`, :pr:`244`)
 * Fix ``LimitsConstraint.valid()`` rejecting solver solutions that land just
   outside a limit boundary due to floating-point arithmetic; increase
   ``ENDPOINT_TOLERANCE`` from ``1e-7`` to ``1e-4``. (:issue:`242`)
