@@ -59,6 +59,10 @@ describe future plans.
     Maintenance
     -----------
 
+    * Move ``from .typing import ...`` statements in ``misc.py`` to the
+      top-level import section; drop all ``# noqa: E402, F401`` suppressions
+      from those lines; remove the backward-compatibility re-export comment
+      block and docstring mention. (:issue:`283`)
     * Update ``spec_xref.rst`` to replace ``TODO`` placeholders for ``cz``,
       ``mz``, ``pl``, and ``sz`` SPEC zone commands with correct hklpy2
       references. (:issue:`273`)

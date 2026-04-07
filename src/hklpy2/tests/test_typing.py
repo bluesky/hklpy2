@@ -83,7 +83,7 @@ def test_module_exports(parms, context):
 
 
 # ---------------------------------------------------------------------------
-# Type aliases also available from hklpy2.misc (used internally there)
+# Type aliases imported by hklpy2.misc (accessible as hklpy2.misc.<name>)
 # ---------------------------------------------------------------------------
 
 
@@ -93,27 +93,22 @@ def test_module_exports(parms, context):
         pytest.param(
             dict(name="KeyValueMap"),
             does_not_raise(),
-            id="KeyValueMap re-exported from hklpy2.misc",
+            id="KeyValueMap accessible from hklpy2.misc",
         ),
         pytest.param(
             dict(name="AxesDict"),
             does_not_raise(),
-            id="AxesDict re-exported from hklpy2.misc",
+            id="AxesDict accessible from hklpy2.misc",
         ),
         pytest.param(
             dict(name="Matrix3x3"),
             does_not_raise(),
-            id="Matrix3x3 re-exported from hklpy2.misc",
-        ),
-        pytest.param(
-            dict(name="NamedFloatDict"),
-            does_not_raise(),
-            id="NamedFloatDict re-exported from hklpy2.misc",
+            id="Matrix3x3 accessible from hklpy2.misc",
         ),
     ],
 )
-def test_misc_reexports(parms, context):
-    """Key type aliases are still accessible from hklpy2.misc for backward compat."""
+def test_misc_typing_imports(parms, context):
+    """Type aliases imported by misc.py are accessible as hklpy2.misc attributes."""
     with context:
         import hklpy2.misc as hm
 

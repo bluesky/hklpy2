@@ -42,11 +42,6 @@ Miscellaneous Support.
     ~IDENTITY_MATRIX_3X3
     ~SOLVER_ENTRYPOINT_GROUP
 
-.. rubric: Custom Data Types
-
-Type aliases previously defined here have moved to :mod:`hklpy2.typing`
-and are re-exported from this module for backward compatibility.
-
 .. rubric: Custom Preprocessors
 .. autosummary::
 
@@ -98,25 +93,19 @@ from ophyd import EpicsMotor
 from ophyd import PVPositioner
 from ophyd import SoftPositioner
 
-logger = logging.getLogger(__name__)
-
-# Type aliases -- defined in hklpy2.typing; re-exported here for backward
-# compatibility.  Import from hklpy2.typing directly in new code.
-# They are intentionally excluded from __all__ so that Sphinx AutoAPI
-# documents them only in hklpy2.typing, their canonical location.
+from .typing import AnyAxesType
+from .typing import AxesArray
+from .typing import AxesDict
+from .typing import AxesList
+from .typing import AxesTuple
+from .typing import BlueskyPlanType
+from .typing import KeyValueMap
+from .typing import Matrix3x3
 
 if TYPE_CHECKING:
     from .backends.base import SolverBase  # noqa: F401
 
-from .typing import AnyAxesType  # noqa: E402, F401
-from .typing import AxesArray  # noqa: E402, F401
-from .typing import AxesDict  # noqa: E402, F401
-from .typing import AxesList  # noqa: E402, F401
-from .typing import AxesTuple  # noqa: E402, F401
-from .typing import BlueskyPlanType  # noqa: E402, F401
-from .typing import KeyValueMap  # noqa: E402, F401
-from .typing import Matrix3x3  # noqa: E402, F401
-from .typing import NamedFloatDict  # noqa: E402, F401
+logger = logging.getLogger(__name__)
 
 __all__ = [
     # Constants
