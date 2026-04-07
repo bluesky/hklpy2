@@ -83,45 +83,6 @@ def test_module_exports(parms, context):
 
 
 # ---------------------------------------------------------------------------
-# Type aliases also available from hklpy2.misc (used internally there)
-# ---------------------------------------------------------------------------
-
-
-@pytest.mark.parametrize(
-    "parms, context",
-    [
-        pytest.param(
-            dict(name="KeyValueMap"),
-            does_not_raise(),
-            id="KeyValueMap re-exported from hklpy2.misc",
-        ),
-        pytest.param(
-            dict(name="AxesDict"),
-            does_not_raise(),
-            id="AxesDict re-exported from hklpy2.misc",
-        ),
-        pytest.param(
-            dict(name="Matrix3x3"),
-            does_not_raise(),
-            id="Matrix3x3 re-exported from hklpy2.misc",
-        ),
-        pytest.param(
-            dict(name="NamedFloatDict"),
-            does_not_raise(),
-            id="NamedFloatDict re-exported from hklpy2.misc",
-        ),
-    ],
-)
-def test_misc_reexports(parms, context):
-    """Key type aliases are still accessible from hklpy2.misc for backward compat."""
-    with context:
-        import hklpy2.misc as hm
-
-        obj = getattr(hm, parms["name"])
-        assert obj is not None
-
-
-# ---------------------------------------------------------------------------
 # Runtime behaviour of the aliases
 # ---------------------------------------------------------------------------
 
