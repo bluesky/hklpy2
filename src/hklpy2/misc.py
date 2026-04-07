@@ -108,8 +108,6 @@ logger = logging.getLogger(__name__)
 if TYPE_CHECKING:
     from .backends.base import SolverBase  # noqa: F401
 
-from .typing import INPUT_VECTOR  # noqa: E402, F401
-from .typing import NUMERIC  # noqa: E402, F401
 from .typing import AnyAxesType  # noqa: E402, F401
 from .typing import AxesArray  # noqa: E402, F401
 from .typing import AxesDict  # noqa: E402, F401
