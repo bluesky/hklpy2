@@ -168,7 +168,8 @@ class ThTthSolver(SolverBase):
 
     def removeAllReflections(self) -> None:
         """Remove all reflections."""
-        raise NotImplementedError()  # TODO: implement this method
+        self._reflections.clear()
+        self._wavelength = None
 
     @property
     def wavelength(self) -> float:
