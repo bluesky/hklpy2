@@ -1,0 +1,1664 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>hklpy2.misc &#8212; hklpy2 0.4</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+
+    <script src="../../../_static/documentation_options.js?v=ff822928"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/hklpy2/misc/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.4.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="hklpy2.ops" href="../ops/index.html" />
+    <link rel="prev" title="hklpy2.incident" href="../incident/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.4" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.4</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../license.html">
+    License
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../index.html">
+    API Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">hklpy2</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../backends/index.html">hklpy2.backends</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../backends/base/index.html">hklpy2.backends.base</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/hkl_soleil/index.html">hklpy2.backends.hkl_soleil</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/hkl_soleil_utils/index.html">hklpy2.backends.hkl_soleil_utils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/no_op/index.html">hklpy2.backends.no_op</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/th_tth_q/index.html">hklpy2.backends.th_tth_q</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../backends/typing/index.html">hklpy2.backends.typing</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../blocks/index.html">hklpy2.blocks</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../blocks/configure/index.html">hklpy2.blocks.configure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks/constraints/index.html">hklpy2.blocks.constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks/lattice/index.html">hklpy2.blocks.lattice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks/reflection/index.html">hklpy2.blocks.reflection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks/sample/index.html">hklpy2.blocks.sample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks/zone/index.html">hklpy2.blocks.zone</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../diffract/index.html">hklpy2.diffract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../incident/index.html">hklpy2.incident</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">hklpy2.misc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ops/index.html">hklpy2.ops</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../typing/index.html">hklpy2.typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/index.html">hklpy2.user</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API Reference</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">hklpy2</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">hklpy2.misc</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-hklpy2.misc">
+<span id="hklpy2-misc"></span><h1>hklpy2.misc<a class="headerlink" href="#module-hklpy2.misc" title="Link to this heading">#</a></h1>
+<p>Miscellaneous Support.</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.VirtualPositionerBase" title="hklpy2.misc.VirtualPositionerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VirtualPositionerBase</span></code></a>(*[, physical_name])</p></td>
+<td><p>Base class for a diffractometer's virtual axis.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.axes_to_dict" title="hklpy2.misc.axes_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes_to_dict</span></code></a>(input, names)</p></td>
+<td><p>Convert any acceptable axes input to standard form (dict).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.check_value_in_list" title="hklpy2.misc.check_value_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_value_in_list</span></code></a>(title, value, examples)</p></td>
+<td><p>Raise ValueError exception if value is not in the list of examples.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.compare_float_dicts" title="hklpy2.misc.compare_float_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_float_dicts</span></code></a>(a1, a2[, tol])</p></td>
+<td><p>Compare two dictionaries.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.convert_units" title="hklpy2.misc.convert_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_units</span></code></a>(value, old_units, new_units)</p></td>
+<td><p>Convert 'value' from old units to new.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.define_real_axis" title="hklpy2.misc.define_real_axis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define_real_axis</span></code></a>(specs, kwargs)</p></td>
+<td><p>Return class and kwargs of a real axis from its 'specs'.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.dict_device_factory" title="hklpy2.misc.dict_device_factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict_device_factory</span></code></a>(data, **kwargs)</p></td>
+<td><p>Create a <code class="docutils literal notranslate"><span class="pre">DictionaryDevice()</span></code> class using the supplied dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.distance_between_pos_tuples" title="hklpy2.misc.distance_between_pos_tuples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_between_pos_tuples</span></code></a>(pos1, pos2)</p></td>
+<td><p>Return the RMS distance between 'pos1' and 'pos2'.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.dynamic_import" title="hklpy2.misc.dynamic_import"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dynamic_import</span></code></a>(full_path)</p></td>
+<td><p>Import the object given its import path as text.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.flatten_lists" title="hklpy2.misc.flatten_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_lists</span></code></a>(xs)</p></td>
+<td><p>Convert nested lists into single list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.get_run_orientation" title="hklpy2.misc.get_run_orientation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_run_orientation</span></code></a>(run[, name, start_key])</p></td>
+<td><p>Return the orientation information dictionary from a run.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.get_solver" title="hklpy2.misc.get_solver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solver</span></code></a>(solver_name)</p></td>
+<td><p>Load a Solver class from a named entry point.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.istype" title="hklpy2.misc.istype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">istype</span></code></a>(value, annotation)</p></td>
+<td><p>Check if 'value' matches the type 'annotation'.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.list_orientation_runs" title="hklpy2.misc.list_orientation_runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_orientation_runs</span></code></a>(catalog[, limit, ...])</p></td>
+<td><p>List the runs with orientation information.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.load_yaml" title="hklpy2.misc.load_yaml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_yaml</span></code></a>(text)</p></td>
+<td><p>Load YAML from text.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.load_yaml_file" title="hklpy2.misc.load_yaml_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_yaml_file</span></code></a>(file)</p></td>
+<td><p>Return contents of a YAML file as a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.make_component" title="hklpy2.misc.make_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_component</span></code></a>(call_name, *args, **kwargs)</p></td>
+<td><p>Create an Component for a custom ophyd Device class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.make_dynamic_instance" title="hklpy2.misc.make_dynamic_instance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_dynamic_instance</span></code></a>(call_name, *args, **kwargs)</p></td>
+<td><p>Return an instance of the Python 'call_name'.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.parse_factory_axes" title="hklpy2.misc.parse_factory_axes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_factory_axes</span></code></a>(*[, space, axes, order, ...])</p></td>
+<td><p>Parse a set of axis specifications, return Device class attributes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.pick_closest_solution" title="hklpy2.misc.pick_closest_solution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick_closest_solution</span></code></a>(position, solutions)</p></td>
+<td><p>Find the solution closest to the current real position.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.pick_first_solution" title="hklpy2.misc.pick_first_solution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick_first_solution</span></code></a>(position, solutions)</p></td>
+<td><p>Choose first solution from list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.roundoff" title="hklpy2.misc.roundoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roundoff</span></code></a>(value[, digits])</p></td>
+<td><p>Round a number to specified precision.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.creator_from_config" title="hklpy2.misc.creator_from_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creator_from_config</span></code></a>(config)</p></td>
+<td><p>Create a simulated diffractometer from a saved configuration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.solver_factory" title="hklpy2.misc.solver_factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solver_factory</span></code></a>(solver_name, geometry, **kwargs)</p></td>
+<td><p>Create a <strong>Solver</strong> object with geometry and axes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.solvers" title="hklpy2.misc.solvers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solvers</span></code></a>()</p></td>
+<td><p>Dictionary of available Solver classes, mapped by entry point name.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.unique_name" title="hklpy2.misc.unique_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique_name</span></code></a>([prefix, length])</p></td>
+<td><p>Short, unique name, first 7 (at most) characters of a unique, random uuid.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.validate_and_canonical_unit" title="hklpy2.misc.validate_and_canonical_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_and_canonical_unit</span></code></a>(value, target_units)</p></td>
+<td><p>Validate that <em>value</em> is a unit convertible to <em>target_units</em>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.IDENTITY_MATRIX_3X3" title="hklpy2.misc.IDENTITY_MATRIX_3X3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IDENTITY_MATRIX_3X3</span></code></a></p></td>
+<td><p>Identity matrix, 2-D, 3 rows, 3 columns.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.SOLVER_ENTRYPOINT_GROUP" title="hklpy2.misc.SOLVER_ENTRYPOINT_GROUP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SOLVER_ENTRYPOINT_GROUP</span></code></a></p></td>
+<td><p>Name by which <strong>hklpy2</strong> <strong>Solver</strong> classes are grouped.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper" title="hklpy2.misc.ConfigurationRunWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a>(*devices[, knowns])</p></td>
+<td><p>Write configuration of supported device(s) to a bluesky run.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p></td>
+<td><p>Any exception from the <strong>hklpy2</strong> package.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationError" title="hklpy2.misc.ConfigurationError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConfigurationError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/configure/index.html#module-hklpy2.blocks.configure" title="hklpy2.blocks.configure"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.configure</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConstraintsError" title="hklpy2.misc.ConstraintsError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConstraintsError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/constraints/index.html#module-hklpy2.blocks.constraints" title="hklpy2.blocks.constraints"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.constraints</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.CoreError" title="hklpy2.misc.CoreError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoreError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.ops.Core</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.DiffractometerError" title="hklpy2.misc.DiffractometerError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractometerError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.diffract.DiffractometerBase</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.LatticeError" title="hklpy2.misc.LatticeError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LatticeError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/lattice/index.html#module-hklpy2.blocks.lattice" title="hklpy2.blocks.lattice"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.lattice</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.NoForwardSolutions" title="hklpy2.misc.NoForwardSolutions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoForwardSolutions</span></code></a></p></td>
+<td><p>A solver did not find any <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ReflectionError" title="hklpy2.misc.ReflectionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReflectionError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/reflection/index.html#module-hklpy2.blocks.reflection" title="hklpy2.blocks.reflection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.reflection</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.SampleError" title="hklpy2.misc.SampleError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SampleError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/sample/index.html#module-hklpy2.blocks.sample" title="hklpy2.blocks.sample"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.sample</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.SolverError" title="hklpy2.misc.SolverError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SolverError</span></code></a></p></td>
+<td><p>Custom exceptions from a <strong>Solver</strong>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.IDENTITY_MATRIX_3X3" title="hklpy2.misc.IDENTITY_MATRIX_3X3"><code class="xref py py-obj docutils literal notranslate"><span class="pre">IDENTITY_MATRIX_3X3</span></code></a></p></td>
+<td><p>Identity matrix, 2-D, 3 rows, 3 columns.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.MISSING_HEADER_KEY_MSG" title="hklpy2.misc.MISSING_HEADER_KEY_MSG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MISSING_HEADER_KEY_MSG</span></code></a></p></td>
+<td><p>Error message for missing _header key in configuration dicts.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.SOLVER_ENTRYPOINT_GROUP" title="hklpy2.misc.SOLVER_ENTRYPOINT_GROUP"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SOLVER_ENTRYPOINT_GROUP</span></code></a></p></td>
+<td><p>Name by which <strong>hklpy2</strong> <strong>Solver</strong> classes are grouped.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.DEFAULT_DIGITS" title="hklpy2.misc.DEFAULT_DIGITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_DIGITS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.DEFAULT_START_KEY" title="hklpy2.misc.DEFAULT_START_KEY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_START_KEY</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.INTERNAL_ANGLE_UNITS" title="hklpy2.misc.INTERNAL_ANGLE_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTERNAL_ANGLE_UNITS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.INTERNAL_LENGTH_UNITS" title="hklpy2.misc.INTERNAL_LENGTH_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTERNAL_LENGTH_UNITS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS" title="hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INTERNAL_XRAY_ENERGY_UNITS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.UREG" title="hklpy2.misc.UREG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UREG</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.PINT_ERRORS" title="hklpy2.misc.PINT_ERRORS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PINT_ERRORS</span></code></a></p></td>
+<td><p>Exception from pint that we are trapping here.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.DEFAULT_MOTOR_LABELS" title="hklpy2.misc.DEFAULT_MOTOR_LABELS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_MOTOR_LABELS</span></code></a></p></td>
+<td><p>Default labels applied to real-axis positioners.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p></td>
+<td><p>Any exception from the <strong>hklpy2</strong> package.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationError" title="hklpy2.misc.ConfigurationError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConfigurationError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/configure/index.html#module-hklpy2.blocks.configure" title="hklpy2.blocks.configure"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.configure</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConstraintsError" title="hklpy2.misc.ConstraintsError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConstraintsError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/constraints/index.html#module-hklpy2.blocks.constraints" title="hklpy2.blocks.constraints"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.constraints</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.CoreError" title="hklpy2.misc.CoreError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CoreError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.ops.Core</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.DiffractometerError" title="hklpy2.misc.DiffractometerError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffractometerError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.diffract.DiffractometerBase</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.LatticeError" title="hklpy2.misc.LatticeError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LatticeError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/lattice/index.html#module-hklpy2.blocks.lattice" title="hklpy2.blocks.lattice"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.lattice</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.NoForwardSolutions" title="hklpy2.misc.NoForwardSolutions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NoForwardSolutions</span></code></a></p></td>
+<td><p>A solver did not find any <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ReflectionError" title="hklpy2.misc.ReflectionError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReflectionError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/reflection/index.html#module-hklpy2.blocks.reflection" title="hklpy2.blocks.reflection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.reflection</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.SampleError" title="hklpy2.misc.SampleError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SampleError</span></code></a></p></td>
+<td><p>Custom exceptions from <a class="reference internal" href="../blocks/sample/index.html#module-hklpy2.blocks.sample" title="hklpy2.blocks.sample"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.sample</span></code></a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.SolverError" title="hklpy2.misc.SolverError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SolverError</span></code></a></p></td>
+<td><p>Custom exceptions from a <strong>Solver</strong>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.VirtualPositionerBase" title="hklpy2.misc.VirtualPositionerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VirtualPositionerBase</span></code></a></p></td>
+<td><p>Base class for a diffractometer's virtual axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper" title="hklpy2.misc.ConfigurationRunWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a></p></td>
+<td><p>Write configuration of supported device(s) to a bluesky run.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.axes_to_dict" title="hklpy2.misc.axes_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes_to_dict</span></code></a>(→ hklpy2.typing.AxesDict)</p></td>
+<td><p>Convert any acceptable axes input to standard form (dict).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.check_value_in_list" title="hklpy2.misc.check_value_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_value_in_list</span></code></a>(→ None)</p></td>
+<td><p>Raise ValueError exception if value is not in the list of examples.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.compare_float_dicts" title="hklpy2.misc.compare_float_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compare_float_dicts</span></code></a>(→ bool)</p></td>
+<td><p>Compare two dictionaries.  Values are all floats.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.convert_units" title="hklpy2.misc.convert_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_units</span></code></a>(→ float)</p></td>
+<td><p>Convert 'value' from old units to new.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.define_real_axis" title="hklpy2.misc.define_real_axis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define_real_axis</span></code></a>(→ tuple[str, Sequence, Mapping])</p></td>
+<td><p>Return class and kwargs of a real axis from its 'specs'.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.dict_device_factory" title="hklpy2.misc.dict_device_factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict_device_factory</span></code></a>(→ type)</p></td>
+<td><p>Create a <code class="docutils literal notranslate"><span class="pre">DictionaryDevice()</span></code> class using the supplied dictionary.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.distance_between_pos_tuples" title="hklpy2.misc.distance_between_pos_tuples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance_between_pos_tuples</span></code></a>(→ float)</p></td>
+<td><p>Return the RMS distance between 'pos1' and 'pos2'.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.dynamic_import" title="hklpy2.misc.dynamic_import"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dynamic_import</span></code></a>(→ type)</p></td>
+<td><p>Import the object given its import path as text.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.flatten_lists" title="hklpy2.misc.flatten_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_lists</span></code></a>(→ hklpy2.typing.BlueskyPlanType)</p></td>
+<td><p>Convert nested lists into single list.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.get_solver" title="hklpy2.misc.get_solver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_solver</span></code></a>(→ hklpy2.backends.base.SolverBase)</p></td>
+<td><p>Load a Solver class from a named entry point.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.get_run_orientation" title="hklpy2.misc.get_run_orientation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_run_orientation</span></code></a>(→ hklpy2.typing.KeyValueMap)</p></td>
+<td><p>Return the orientation information dictionary from a run.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.istype" title="hklpy2.misc.istype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">istype</span></code></a>(→ bool)</p></td>
+<td><p>Check if 'value' matches the type 'annotation'.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.list_orientation_runs" title="hklpy2.misc.list_orientation_runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_orientation_runs</span></code></a>(→ pandas.DataFrame)</p></td>
+<td><p>List the runs with orientation information.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.load_yaml" title="hklpy2.misc.load_yaml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_yaml</span></code></a>(→ Mapping)</p></td>
+<td><p>Load YAML from text.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.load_yaml_file" title="hklpy2.misc.load_yaml_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_yaml_file</span></code></a>(→ Mapping)</p></td>
+<td><p>Return contents of a YAML file as a Python object.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.make_component" title="hklpy2.misc.make_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_component</span></code></a>(→ ophyd.Component)</p></td>
+<td><p>Create an Component for a custom ophyd Device class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.make_dynamic_instance" title="hklpy2.misc.make_dynamic_instance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_dynamic_instance</span></code></a>(→ Any)</p></td>
+<td><p>Return an instance of the Python 'call_name'.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.parse_factory_axes" title="hklpy2.misc.parse_factory_axes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_factory_axes</span></code></a>(→ Mapping[str, ...)</p></td>
+<td><p>Parse a set of axis specifications, return Device class attributes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.pick_closest_solution" title="hklpy2.misc.pick_closest_solution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick_closest_solution</span></code></a>(→ NamedTuple)</p></td>
+<td><p>Find the solution closest to the current real position.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.pick_first_solution" title="hklpy2.misc.pick_first_solution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick_first_solution</span></code></a>(→ NamedTuple)</p></td>
+<td><p>Choose first solution from list.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.roundoff" title="hklpy2.misc.roundoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roundoff</span></code></a>(→ float)</p></td>
+<td><p>Round a number to specified precision.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.solver_factory" title="hklpy2.misc.solver_factory"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solver_factory</span></code></a>(→ hklpy2.backends.base.SolverBase)</p></td>
+<td><p>Create a <strong>Solver</strong> object with geometry and axes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.solvers" title="hklpy2.misc.solvers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solvers</span></code></a>(→ Mapping[str, hklpy2.backends.base.SolverBase])</p></td>
+<td><p>Dictionary of available Solver classes, mapped by entry point name.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.creator_from_config" title="hklpy2.misc.creator_from_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creator_from_config</span></code></a>(config)</p></td>
+<td><p>Create a simulated diffractometer from a saved configuration.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.unique_name" title="hklpy2.misc.unique_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique_name</span></code></a>(→ str)</p></td>
+<td><p>Short, unique name, first 7 (at most) characters of a unique, random uuid.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.validate_and_canonical_unit" title="hklpy2.misc.validate_and_canonical_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_and_canonical_unit</span></code></a>(→ str)</p></td>
+<td><p>Validate that <em>value</em> is a unit convertible to <em>target_units</em>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.IDENTITY_MATRIX_3X3">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">IDENTITY_MATRIX_3X3</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../typing/index.html#hklpy2.typing.Matrix3x3" title="hklpy2.typing.Matrix3x3"><span class="pre">hklpy2.typing.Matrix3x3</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[[1,</span> <span class="pre">0,</span> <span class="pre">0],</span> <span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">0],</span> <span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">1]]</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#IDENTITY_MATRIX_3X3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.IDENTITY_MATRIX_3X3" title="Link to this definition">#</a></dt>
+<dd><p>Identity matrix, 2-D, 3 rows, 3 columns.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.MISSING_HEADER_KEY_MSG">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">MISSING_HEADER_KEY_MSG</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&quot;Configuration</span> <span class="pre">is</span> <span class="pre">missing</span> <span class="pre">'_header'</span> <span class="pre">key.&quot;</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#MISSING_HEADER_KEY_MSG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.MISSING_HEADER_KEY_MSG" title="Link to this definition">#</a></dt>
+<dd><p>Error message for missing _header key in configuration dicts.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.SOLVER_ENTRYPOINT_GROUP">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">SOLVER_ENTRYPOINT_GROUP</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'hklpy2.solver'</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#SOLVER_ENTRYPOINT_GROUP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.SOLVER_ENTRYPOINT_GROUP" title="Link to this definition">#</a></dt>
+<dd><p>Name by which <strong>hklpy2</strong> <strong>Solver</strong> classes are grouped.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.DEFAULT_DIGITS">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_DIGITS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#DEFAULT_DIGITS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.DEFAULT_DIGITS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.DEFAULT_START_KEY">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_START_KEY</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'diffractometers'</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#DEFAULT_START_KEY"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.DEFAULT_START_KEY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.INTERNAL_ANGLE_UNITS">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">INTERNAL_ANGLE_UNITS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'degrees'</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#INTERNAL_ANGLE_UNITS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.INTERNAL_ANGLE_UNITS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.INTERNAL_LENGTH_UNITS">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">INTERNAL_LENGTH_UNITS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'angstrom'</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#INTERNAL_LENGTH_UNITS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.INTERNAL_LENGTH_UNITS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">INTERNAL_XRAY_ENERGY_UNITS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'keV'</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#INTERNAL_XRAY_ENERGY_UNITS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.UREG">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">UREG</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#UREG"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.UREG" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.PINT_ERRORS">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">PINT_ERRORS</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#PINT_ERRORS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.PINT_ERRORS" title="Link to this definition">#</a></dt>
+<dd><p>Exception from pint that we are trapping here.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.misc.DEFAULT_MOTOR_LABELS">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_MOTOR_LABELS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['motors']</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#DEFAULT_MOTOR_LABELS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.DEFAULT_MOTOR_LABELS" title="Link to this definition">#</a></dt>
+<dd><p>Default labels applied to real-axis positioners.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.Hklpy2Error">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">Hklpy2Error</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#Hklpy2Error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.Hklpy2Error" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>Any exception from the <strong>hklpy2</strong> package.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">ConfigurationError</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p>
+<p>Custom exceptions from <a class="reference internal" href="../blocks/configure/index.html#module-hklpy2.blocks.configure" title="hklpy2.blocks.configure"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.configure</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.ConstraintsError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">ConstraintsError</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConstraintsError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConstraintsError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p>
+<p>Custom exceptions from <a class="reference internal" href="../blocks/constraints/index.html#module-hklpy2.blocks.constraints" title="hklpy2.blocks.constraints"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.constraints</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.CoreError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">CoreError</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#CoreError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.CoreError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p>
+<p>Custom exceptions from <a class="reference internal" href="../ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.ops.Core</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.DiffractometerError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">DiffractometerError</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#DiffractometerError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.DiffractometerError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p>
+<p>Custom exceptions from <a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.diffract.DiffractometerBase</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.LatticeError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">LatticeError</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#LatticeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.LatticeError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p>
+<p>Custom exceptions from <a class="reference internal" href="../blocks/lattice/index.html#module-hklpy2.blocks.lattice" title="hklpy2.blocks.lattice"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.lattice</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.NoForwardSolutions">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">NoForwardSolutions</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#NoForwardSolutions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.NoForwardSolutions" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p>
+<p>A solver did not find any <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.ReflectionError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">ReflectionError</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ReflectionError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ReflectionError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p>
+<p>Custom exceptions from <a class="reference internal" href="../blocks/reflection/index.html#module-hklpy2.blocks.reflection" title="hklpy2.blocks.reflection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.reflection</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.SampleError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">SampleError</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#SampleError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.SampleError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p>
+<p>Custom exceptions from <a class="reference internal" href="../blocks/sample/index.html#module-hklpy2.blocks.sample" title="hklpy2.blocks.sample"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.blocks.sample</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hklpy2.misc.SolverError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">SolverError</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#SolverError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.SolverError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hklpy2.misc.Hklpy2Error" title="hklpy2.misc.Hklpy2Error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></p>
+<p>Custom exceptions from a <strong>Solver</strong>.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">VirtualPositionerBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">physical_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ophyd.SoftPositioner</span></code></p>
+<p>Base class for a diffractometer’s virtual axis.</p>
+<p>This base class also serves as an example where the virtual axis is twice
+the value of the physical axis.  It is used as a Component of a
+‘DiffractometerBase’ definition.  The <code class="docutils literal notranslate"><span class="pre">physical_name</span></code> is the name of a
+sibling positioner attribute.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._setup_finished">
+<span class="sig-name descname"><span class="pre">_setup_finished</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._setup_finished"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._setup_finished" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase.physical">
+<span class="sig-name descname"><span class="pre">physical</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase.physical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase.physical" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._setup_move">
+<span class="sig-name descname"><span class="pre">_setup_move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._setup_move"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._setup_move" title="Link to this definition">#</a></dt>
+<dd><p>Move requested to position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">physical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase.forward" title="Link to this definition">#</a></dt>
+<dd><p>Return virtual position from physical position.</p>
+<p>Subclass should override.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">virtual</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase.inverse" title="Link to this definition">#</a></dt>
+<dd><p>Return physical position from virtual position.</p>
+<p>Subclass should override.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._cb_update_position">
+<span class="sig-name descname"><span class="pre">_cb_update_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._cb_update_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._cb_update_position" title="Link to this definition">#</a></dt>
+<dd><p>Called when physical position is changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._finish_setup">
+<span class="sig-name descname"><span class="pre">_finish_setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._finish_setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._finish_setup" title="Link to this definition">#</a></dt>
+<dd><p>Complete the axis setup after diffractometer is built.</p>
+<p>This method is crucial for ensuring that the positioner is correctly
+initialized and ready to operate within the system, handling updates and
+constraints appropriately.</p>
+<p>Update our:</p>
+<ul class="simple">
+<li><p>Position by subscription to readback changes.</p></li>
+<li><p>Limits from physical axis.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase._recompute_limits">
+<span class="sig-name descname"><span class="pre">_recompute_limits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase._recompute_limits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase._recompute_limits" title="Link to this definition">#</a></dt>
+<dd><p>Compute virtual axis limits from physical axis and refine constraints.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.VirtualPositionerBase.__getattribute__">
+<span class="sig-name descname"><span class="pre">__getattribute__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#VirtualPositionerBase.__getattribute__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.VirtualPositionerBase.__getattribute__" title="Link to this definition">#</a></dt>
+<dd><p>Run final setup automatically, on conditions.</p>
+<p>This is a special method in Python that is called
+whenever an attribute is accessed on an object. This method is
+overridden here to add custom behavior when accessing attributes,
+particularly the ‘position’ attribute.</p>
+<p>This implementation ensures that the setup process is completed before
+accessing the ‘position’ attribute, provided the object and its parent are
+connected. It adds robustness to the attribute access by handling
+potential errors gracefully and avoiding infinite recursion.</p>
+<p>This virtual positioner must subscribe to position updates of the
+physical positioner to which it is related.  Because that positioner
+might not be fully initialized and connected during construction of this
+virtual positioner, a final setup method must be called later.  The
+additional steps in this method ensure that final setup is called under
+the correct conditions.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">ConfigurationRunWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">devices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knowns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Write configuration of supported device(s) to a bluesky run.</p>
+<p>EXAMPLE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crw</span> <span class="o">=</span> <span class="n">ConfigurationRunWrapper</span><span class="p">(</span><span class="n">sim4c2</span><span class="p">)</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crw</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
+<span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">rel_scan</span><span class="p">([</span><span class="n">noisy</span><span class="p">],</span> <span class="n">m1</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Disable the preprocessor:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crw</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># &#39;True&#39; to enable</span>
+</pre></div>
+</div>
+<p>Remove the last preprocessor:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Add another diffractometer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crw</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e4cv</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.device_names" title="hklpy2.misc.ConfigurationRunWrapper.device_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">device_names</span></code></a></p></td>
+<td><p>Return list of configured device names.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.devices" title="hklpy2.misc.ConfigurationRunWrapper.devices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">devices</span></code></a></p></td>
+<td><p>List of devices to be reported.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.enable" title="hklpy2.misc.ConfigurationRunWrapper.enable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable</span></code></a></p></td>
+<td><p>Is it permitted to write device configuration?</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.known_bases" title="hklpy2.misc.ConfigurationRunWrapper.known_bases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">known_bases</span></code></a></p></td>
+<td><p>Known device base classes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.start_key" title="hklpy2.misc.ConfigurationRunWrapper.start_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_key</span></code></a></p></td>
+<td><p>Top-level key in run's metadata dictionary.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.validate" title="hklpy2.misc.ConfigurationRunWrapper.validate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate</span></code></a>(devices)</p></td>
+<td><p>Verify all are recognized objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.wrapper" title="hklpy2.misc.ConfigurationRunWrapper.wrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrapper</span></code></a>(plan)</p></td>
+<td><p>Bluesky plan wrapper (preprocessor).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.devices">
+<span class="sig-name descname"><span class="pre">devices</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">ophyd.Device</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.devices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.devices" title="Link to this definition">#</a></dt>
+<dd><p>List of devices to be reported.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.known_bases">
+<span class="sig-name descname"><span class="pre">known_bases</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">ophyd.Device</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.known_bases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.known_bases" title="Link to this definition">#</a></dt>
+<dd><p>Known device base classes.</p>
+<p>Any device (base class) that reports its configuration dictionary in
+the <cite>.read_configuration()</cite> method can be added to this tuple.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.start_key">
+<span class="sig-name descname"><span class="pre">start_key</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'diffractometers'</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.start_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.start_key" title="Link to this definition">#</a></dt>
+<dd><p>Top-level key in run’s metadata dictionary.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.enable">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">enable</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.enable" title="Link to this definition">#</a></dt>
+<dd><p>Is it permitted to write device configuration?</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.device_names">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">device_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.device_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.device_names" title="Link to this definition">#</a></dt>
+<dd><p>Return list of configured device names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">ophyd.Device</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.validate" title="Link to this definition">#</a></dt>
+<dd><p>Verify all are recognized objects.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.wrapper">
+<span class="sig-name descname"><span class="pre">wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.wrapper" title="Link to this definition">#</a></dt>
+<dd><p>Bluesky plan wrapper (preprocessor).</p>
+<p>Writes device(s) configuration to start document metadata.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crw</span> <span class="o">=</span> <span class="n">ConfigurationRunWrapper</span><span class="p">(</span><span class="n">e4cv</span><span class="p">)</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crw</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.axes_to_dict">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">axes_to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.typing.AnyAxesType" title="hklpy2.typing.AnyAxesType"><span class="pre">hklpy2.typing.AnyAxesType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../typing/index.html#hklpy2.typing.AxesDict" title="hklpy2.typing.AxesDict"><span class="pre">hklpy2.typing.AxesDict</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#axes_to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.axes_to_dict" title="Link to this definition">#</a></dt>
+<dd><p>Convert any acceptable axes input to standard form (dict).</p>
+<p>User could provide input in several forms:</p>
+<ul class="simple">
+<li><p>dict: <code class="docutils literal notranslate"><span class="pre">{&quot;h&quot;:</span> <span class="pre">0,</span> <span class="pre">&quot;k&quot;:</span> <span class="pre">1,</span> <span class="pre">&quot;l&quot;:</span> <span class="pre">-1}</span></code></p></li>
+<li><p>namedtuple: <code class="docutils literal notranslate"><span class="pre">(h=0.0,</span> <span class="pre">k=1.0,</span> <span class="pre">l=-1.0)</span></code></p></li>
+<li><p>ordered list: <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1,</span> <span class="pre">-1]</span>&#160; <span class="pre">(for</span> <span class="pre">h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></li>
+<li><p>ordered tuple: <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">1,</span> <span class="pre">-1)</span>&#160; <span class="pre">(for</span> <span class="pre">h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></li>
+</ul>
+<p>PARAMETERS:</p>
+<dl class="simple">
+<dt>input<span class="classifier">AnyAxesType</span></dt><dd><p>Positions, specified as dict, list, or tuple.</p>
+</dd>
+<dt>names<span class="classifier">[str]</span></dt><dd><p>Expected names of the axes, in order expected by the solver.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.check_value_in_list">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">check_value_in_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">examples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blank_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#check_value_in_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.check_value_in_list" title="Link to this definition">#</a></dt>
+<dd><p>Raise ValueError exception if value is not in the list of examples.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.compare_float_dicts">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">compare_float_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#compare_float_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.compare_float_dicts" title="Link to this definition">#</a></dt>
+<dd><p>Compare two dictionaries.  Values are all floats.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.convert_units">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">convert_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#convert_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.convert_units" title="Link to this definition">#</a></dt>
+<dd><p>Convert ‘value’ from old units to new.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.define_real_axis">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">define_real_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">specs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="../typing/index.html#hklpy2.typing.KeyValueMap" title="hklpy2.typing.KeyValueMap"><span class="pre">hklpy2.typing.KeyValueMap</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.typing.KeyValueMap" title="hklpy2.typing.KeyValueMap"><span class="pre">hklpy2.typing.KeyValueMap</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#define_real_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.define_real_axis" title="Link to this definition">#</a></dt>
+<dd><p>Return class and kwargs of a real axis from its ‘specs’.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.dict_device_factory">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">dict_device_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.typing.KeyValueMap" title="hklpy2.typing.KeyValueMap"><span class="pre">hklpy2.typing.KeyValueMap</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#dict_device_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.dict_device_factory" title="Link to this definition">#</a></dt>
+<dd><p>Create a <code class="docutils literal notranslate"><span class="pre">DictionaryDevice()</span></code> class using the supplied dictionary.</p>
+<span class="target" id="index-0"></span></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.distance_between_pos_tuples">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">distance_between_pos_tuples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NamedTuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NamedTuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#distance_between_pos_tuples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.distance_between_pos_tuples" title="Link to this definition">#</a></dt>
+<dd><p>Return the RMS distance between ‘pos1’ and ‘pos2’.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.dynamic_import">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">dynamic_import</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#dynamic_import"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.dynamic_import" title="Link to this definition">#</a></dt>
+<dd><p>Import the object given its import path as text.</p>
+<p>Motivated by specification of class names for plugins
+when using <code class="docutils literal notranslate"><span class="pre">apstools.devices.ad_creator()</span></code>.</p>
+<p>EXAMPLES:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">klass</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span><span class="s2">&quot;ophyd.EpicsMotor&quot;</span><span class="p">)</span>
+<span class="n">m1</span> <span class="o">=</span> <span class="n">klass</span><span class="p">(</span><span class="s2">&quot;gp:m1&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;m1&quot;</span><span class="p">)</span>
+
+<span class="n">creator</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span><span class="s2">&quot;hklpy2.diffract.creator&quot;</span><span class="p">)</span>
+<span class="n">fourc</span> <span class="o">=</span> <span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From the <a class="reference external" href="https://github.com/BCDA-APS/apstools">apstools</a> package.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.flatten_lists">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">flatten_lists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.14)"><span class="pre">collections.abc.Iterable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../typing/index.html#hklpy2.typing.BlueskyPlanType" title="hklpy2.typing.BlueskyPlanType"><span class="pre">hklpy2.typing.BlueskyPlanType</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#flatten_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.flatten_lists" title="Link to this definition">#</a></dt>
+<dd><p>Convert nested lists into single list.</p>
+<p><a class="reference external" href="https://stackoverflow.com/questions/2158395">https://stackoverflow.com/questions/2158395</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.get_solver">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">get_solver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><span class="pre">hklpy2.backends.base.SolverBase</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#get_solver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.get_solver" title="Link to this definition">#</a></dt>
+<dd><p>Load a Solver class from a named entry point.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="n">SolverClass</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">get_solver</span><span class="p">(</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">)</span>
+<span class="n">libhkl_solver</span> <span class="o">=</span> <span class="n">SolverClass</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.get_run_orientation">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">get_run_orientation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_START_KEY</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../typing/index.html#hklpy2.typing.KeyValueMap" title="hklpy2.typing.KeyValueMap"><span class="pre">hklpy2.typing.KeyValueMap</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#get_run_orientation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.get_run_orientation" title="Link to this definition">#</a></dt>
+<dd><p>Return the orientation information dictionary from a run.</p>
+<p>EXAMPLE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">get_run_orientation</span><span class="p">(</span><span class="n">cat</span><span class="p">[</span><span class="mi">9752</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim4c2&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
+<span class="p">{</span><span class="s1">&#39;_header&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-02-27 15:54:33.364719&#39;</span><span class="p">,</span>
+<span class="s1">&#39;hklpy2_version&#39;</span><span class="p">:</span> <span class="s1">&#39;0.0.26.dev72+gcf9a65a.d20250227&#39;</span><span class="p">,</span>
+<span class="s1">&#39;python_class&#39;</span><span class="p">:</span> <span class="s1">&#39;Hklpy2Diffractometer&#39;</span><span class="p">,</span>
+<span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;X-ray&#39;</span><span class="p">,</span>
+<span class="s1">&#39;energy_units&#39;</span><span class="p">:</span> <span class="s1">&#39;keV&#39;</span><span class="p">,</span>
+<span class="s1">&#39;energy&#39;</span><span class="p">:</span> <span class="mf">12.398419843856837</span><span class="p">,</span>
+<span class="s1">&#39;wavelength_units&#39;</span><span class="p">:</span> <span class="s1">&#39;angstrom&#39;</span><span class="p">,</span>
+<span class="s1">&#39;wavelength&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span>
+<span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sim4c2&#39;</span><span class="p">,</span>
+<span class="s1">&#39;axes&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;pseudo_axes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">],</span>
+<span class="s1">&#39;real_axes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;omega&#39;</span><span class="p">,</span> <span class="s1">&#39;chi&#39;</span><span class="p">,</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span> <span class="s1">&#39;tth&#39;</span><span class="p">],</span>
+<span class="s1">&#39;axes_xref&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>
+<span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span>
+<span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span>
+<span class="s1">&#39;omega&#39;</span><span class="p">:</span> <span class="s1">&#39;omega&#39;</span><span class="p">,</span>
+<span class="s1">&#39;chi&#39;</span><span class="p">:</span> <span class="s1">&#39;chi&#39;</span><span class="p">,</span>
+<span class="s1">&#39;phi&#39;</span><span class="p">:</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tth&#39;</span><span class="p">:</span> <span class="s1">&#39;tth&#39;</span><span class="p">},</span>
+<span class="s1">&#39;extra_axes&#39;</span><span class="p">:</span> <span class="p">{}},</span>
+<span class="s1">&#39;sample_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sample&#39;</span><span class="p">,</span>
+<span class="s1">&#39;samples&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;sample&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sample&#39;</span><span class="p">,</span>
+<span class="s1">&#39;lattice&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span>
+    <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span>
+    <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">},</span>
+<span class="s1">&#39;reflections&#39;</span><span class="p">:</span> <span class="p">{},</span>
+<span class="s1">&#39;reflections_order&#39;</span><span class="p">:</span> <span class="p">[],</span>
+<span class="s1">&#39;U&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+<span class="s1">&#39;UB&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+<span class="s1">&#39;digits&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}},</span>
+<span class="s1">&#39;constraints&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;omega&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;omega&#39;</span><span class="p">,</span>
+<span class="s1">&#39;low_limit&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
+<span class="s1">&#39;high_limit&#39;</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
+<span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;LimitsConstraint&#39;</span><span class="p">},</span>
+<span class="s1">&#39;chi&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;chi&#39;</span><span class="p">,</span>
+<span class="s1">&#39;low_limit&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
+<span class="s1">&#39;high_limit&#39;</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
+<span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;LimitsConstraint&#39;</span><span class="p">},</span>
+<span class="s1">&#39;phi&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span>
+<span class="s1">&#39;low_limit&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
+<span class="s1">&#39;high_limit&#39;</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
+<span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;LimitsConstraint&#39;</span><span class="p">},</span>
+<span class="s1">&#39;tth&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;tth&#39;</span><span class="p">,</span>
+<span class="s1">&#39;low_limit&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
+<span class="s1">&#39;high_limit&#39;</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
+<span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;LimitsConstraint&#39;</span><span class="p">}},</span>
+<span class="s1">&#39;solver&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hkl_soleil&#39;</span><span class="p">,</span>
+<span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s2">&quot;HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)&quot;</span><span class="p">,</span>
+<span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="s1">&#39;E4CV&#39;</span><span class="p">,</span>
+<span class="s1">&#39;real_axes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;omega&#39;</span><span class="p">,</span> <span class="s1">&#39;chi&#39;</span><span class="p">,</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span> <span class="s1">&#39;tth&#39;</span><span class="p">],</span>
+<span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;5.1.2&#39;</span><span class="p">,</span>
+<span class="s1">&#39;engine&#39;</span><span class="p">:</span> <span class="s1">&#39;hkl&#39;</span><span class="p">}}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Bluesky run object.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (optional)
+Name of the diffractometer. (default=None, returns all available.)</p></li>
+<li><p><strong>start_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Metadata key where the orientation information is stored in the start
+document.  (default=”diffractometers”)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.istype">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">istype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#istype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.istype" title="Link to this definition">#</a></dt>
+<dd><p>Check if ‘value’ matches the type ‘annotation’.</p>
+<p>EXAMPLE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">istype</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span><span class="mi">1</span><span class="p">},</span> <span class="n">AxesDict</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.list_orientation_runs">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">list_orientation_runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_START_KEY</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#list_orientation_runs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.list_orientation_runs" title="Link to this definition">#</a></dt>
+<dd><p>List the runs with orientation information.</p>
+<p>EXAMPLE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">42</span><span class="p">]:</span> <span class="n">list_orientation_runs</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s2">&quot;_header.datetime&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="p">[</span><span class="mi">42</span><span class="p">]:</span>
+    <span class="n">scan_id</span>      <span class="n">uid</span>  <span class="n">sample</span> <span class="n">diffractometer</span> <span class="n">geometry</span>      <span class="n">solver</span>                        <span class="n">date</span>
+<span class="mi">0</span>      <span class="mi">9752</span>  <span class="mi">41</span><span class="n">f71e9</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">33.364719</span>
+<span class="mi">1</span>      <span class="mi">9751</span>  <span class="mf">36e38</span><span class="n">bc</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">33.364719</span>
+<span class="mi">2</span>      <span class="mi">9750</span>  <span class="mf">62e425</span><span class="n">d</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">33.364719</span>
+<span class="mi">3</span>      <span class="mi">9749</span>  <span class="mi">18</span><span class="n">b11f0</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mf">55.958929</span>
+<span class="mi">4</span>      <span class="mi">9748</span>  <span class="n">bf9912f</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mf">55.958929</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Table of orientation runs</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pandas DataFrame object</p>
+</dd>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>catalog</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Catalog of bluesky runs.</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Limit the list to at most <code class="docutils literal notranslate"><span class="pre">limit</span></code> runs. (default=10)
+It could take a long time to search an entire catalog.</p></li>
+<li><p><strong>start_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Metadata key where the orientation information is stored in the start
+document.  (default=”diffractometers”)</p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>[</em><em>str:str</em><em>]</em>) – Keyword parameters describing data column names to be displayed. The
+value of each column name is the dotted path to the orientation
+information (in the start document’s metadata).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.load_yaml">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">load_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Mapping</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#load_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.load_yaml" title="Link to this definition">#</a></dt>
+<dd><p>Load YAML from text.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.load_yaml_file">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">load_yaml_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Mapping</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#load_yaml_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.load_yaml_file" title="Link to this definition">#</a></dt>
+<dd><p>Return contents of a YAML file as a Python object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.make_component">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">make_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ophyd.Component</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#make_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.make_component" title="Link to this definition">#</a></dt>
+<dd><p>Create an Component for a custom ophyd Device class.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.make_dynamic_instance">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">make_dynamic_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#make_dynamic_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.make_dynamic_instance" title="Link to this definition">#</a></dt>
+<dd><p>Return an instance of the Python ‘call_name’.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.parse_factory_axes">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">parse_factory_axes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">space</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.typing.KeyValueMap" title="hklpy2.typing.KeyValueMap"><span class="pre">hklpy2.typing.KeyValueMap</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canonical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">_ignored</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ophyd.Component</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#parse_factory_axes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.parse_factory_axes" title="Link to this definition">#</a></dt>
+<dd><p>Parse a set of axis specifications, return Device class attributes.</p>
+<p>Called from the diffract.diffractometer_class_factory().</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.pick_closest_solution">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">pick_closest_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NamedTuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solutions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">NamedTuple</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NamedTuple</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#pick_closest_solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.pick_closest_solution" title="Link to this definition">#</a></dt>
+<dd><p>Find the solution closest to the current real position.</p>
+<p>Used by <a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> method to pick
+a solution from a list of possible solutions.  Assign to diffractometer’s
+<a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase._forward_solution" title="hklpy2.diffract.DiffractometerBase._forward_solution"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_forward_solution</span></code></a> method.</p>
+<p>PARAMETERS</p>
+<dl class="simple">
+<dt>position tuple :</dt><dd><p>Current position.</p>
+</dd>
+<dt>solutions list[tuple] :</dt><dd><p>List of positions.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase._forward_solution" title="hklpy2.diffract.DiffractometerBase._forward_solution"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_forward_solution</span></code></a>,
+<a class="reference internal" href="#hklpy2.misc.pick_first_solution" title="hklpy2.misc.pick_first_solution"><code class="xref py py-func docutils literal notranslate"><span class="pre">pick_first_solution()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.pick_first_solution">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">pick_first_solution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NamedTuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solutions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">NamedTuple</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">NamedTuple</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#pick_first_solution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.pick_first_solution" title="Link to this definition">#</a></dt>
+<dd><p>Choose first solution from list.</p>
+<p>Used by <a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> method to pick
+a solution from a list of possible solutions.  Assign to diffractometer’s
+<a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase._forward_solution" title="hklpy2.diffract.DiffractometerBase._forward_solution"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_forward_solution</span></code></a> method.</p>
+<p>PARAMETERS</p>
+<dl class="simple">
+<dt>position tuple :</dt><dd><p>Current position.  (Required for general case, not used here.)</p>
+</dd>
+<dt>solutions list[tuple] :</dt><dd><p>List of positions.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase._forward_solution" title="hklpy2.diffract.DiffractometerBase._forward_solution"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_forward_solution</span></code></a>,
+<a class="reference internal" href="#hklpy2.misc.pick_closest_solution" title="hklpy2.misc.pick_closest_solution"><code class="xref py py-func docutils literal notranslate"><span class="pre">pick_closest_solution()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.roundoff">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">roundoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">digits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#roundoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.roundoff" title="Link to this definition">#</a></dt>
+<dd><p>Round a number to specified precision.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.solver_factory">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">solver_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><span class="pre">hklpy2.backends.base.SolverBase</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#solver_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.solver_factory" title="Link to this definition">#</a></dt>
+<dd><p>Create a <strong>Solver</strong> object with geometry and axes.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.solvers">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">solvers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><span class="pre">hklpy2.backends.base.SolverBase</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#solvers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.solvers" title="Link to this definition">#</a></dt>
+<dd><p>Dictionary of available Solver classes, mapped by entry point name.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">solvers</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.creator_from_config">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">creator_from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">pathlib.Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#creator_from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.creator_from_config" title="Link to this definition">#</a></dt>
+<dd><p>Create a simulated diffractometer from a saved configuration.</p>
+<p>Parses the configuration for the solver, geometry, and axis names, then
+constructs a simulator (all axes are soft positioners — no hardware
+connection) and restores the full orientation (samples, reflections, UB
+matrix, wavelength, constraints) from the configuration.</p>
+<p>PARAMETERS</p>
+<dl class="simple">
+<dt>config<span class="classifier">dict, str, or pathlib.Path</span></dt><dd><p>Configuration dictionary, or path to a YAML configuration file
+previously saved with <code class="docutils literal notranslate"><span class="pre">diffractometer.export()</span></code>.</p>
+</dd>
+</dl>
+<p>RETURNS</p>
+<dl class="simple">
+<dt>DiffractometerBase</dt><dd><p>A fully configured simulated diffractometer instance.</p>
+</dd>
+</dl>
+<p>EXAMPLE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator_from_config</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>SEE ALSO</p>
+<blockquote>
+<div><p><a class="reference internal" href="../diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> — create a diffractometer from scratch.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.unique_name">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">unique_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#unique_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.unique_name" title="Link to this definition">#</a></dt>
+<dd><p>Short, unique name, first 7 (at most) characters of a unique, random uuid.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.misc.validate_and_canonical_unit">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">validate_and_canonical_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#validate_and_canonical_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.validate_and_canonical_unit" title="Link to this definition">#</a></dt>
+<dd><p>Validate that <em>value</em> is a unit convertible to <em>target_units</em>.</p>
+<p>Returns a canonical string representation of the unit (via UREG).
+Raises ValueError on failure.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../incident/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">hklpy2.incident</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../ops/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">hklpy2.ops</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exceptions">Exceptions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.IDENTITY_MATRIX_3X3"><code class="docutils literal notranslate"><span class="pre">IDENTITY_MATRIX_3X3</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.MISSING_HEADER_KEY_MSG"><code class="docutils literal notranslate"><span class="pre">MISSING_HEADER_KEY_MSG</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.SOLVER_ENTRYPOINT_GROUP"><code class="docutils literal notranslate"><span class="pre">SOLVER_ENTRYPOINT_GROUP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.DEFAULT_DIGITS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_DIGITS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.DEFAULT_START_KEY"><code class="docutils literal notranslate"><span class="pre">DEFAULT_START_KEY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.INTERNAL_ANGLE_UNITS"><code class="docutils literal notranslate"><span class="pre">INTERNAL_ANGLE_UNITS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.INTERNAL_LENGTH_UNITS"><code class="docutils literal notranslate"><span class="pre">INTERNAL_LENGTH_UNITS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS"><code class="docutils literal notranslate"><span class="pre">INTERNAL_XRAY_ENERGY_UNITS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.UREG"><code class="docutils literal notranslate"><span class="pre">UREG</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.PINT_ERRORS"><code class="docutils literal notranslate"><span class="pre">PINT_ERRORS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.DEFAULT_MOTOR_LABELS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_MOTOR_LABELS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.Hklpy2Error"><code class="docutils literal notranslate"><span class="pre">Hklpy2Error</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationError"><code class="docutils literal notranslate"><span class="pre">ConfigurationError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConstraintsError"><code class="docutils literal notranslate"><span class="pre">ConstraintsError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.CoreError"><code class="docutils literal notranslate"><span class="pre">CoreError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.DiffractometerError"><code class="docutils literal notranslate"><span class="pre">DiffractometerError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.LatticeError"><code class="docutils literal notranslate"><span class="pre">LatticeError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.NoForwardSolutions"><code class="docutils literal notranslate"><span class="pre">NoForwardSolutions</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ReflectionError"><code class="docutils literal notranslate"><span class="pre">ReflectionError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.SampleError"><code class="docutils literal notranslate"><span class="pre">SampleError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.SolverError"><code class="docutils literal notranslate"><span class="pre">SolverError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._setup_finished"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._setup_finished</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase.physical"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase.physical</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._setup_move"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._setup_move()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase.forward"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase.inverse"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase.inverse()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._cb_update_position"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._cb_update_position()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._finish_setup"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._finish_setup()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase._recompute_limits"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase._recompute_limits()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.VirtualPositionerBase.__getattribute__"><code class="docutils literal notranslate"><span class="pre">VirtualPositionerBase.__getattribute__()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.devices"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.devices</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.known_bases"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.known_bases</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.start_key"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.start_key</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.enable"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.enable</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.device_names"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.device_names</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.validate"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.validate()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.wrapper"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.wrapper()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.axes_to_dict"><code class="docutils literal notranslate"><span class="pre">axes_to_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.check_value_in_list"><code class="docutils literal notranslate"><span class="pre">check_value_in_list()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.compare_float_dicts"><code class="docutils literal notranslate"><span class="pre">compare_float_dicts()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.convert_units"><code class="docutils literal notranslate"><span class="pre">convert_units()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.define_real_axis"><code class="docutils literal notranslate"><span class="pre">define_real_axis()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.dict_device_factory"><code class="docutils literal notranslate"><span class="pre">dict_device_factory()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.distance_between_pos_tuples"><code class="docutils literal notranslate"><span class="pre">distance_between_pos_tuples()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.dynamic_import"><code class="docutils literal notranslate"><span class="pre">dynamic_import()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.flatten_lists"><code class="docutils literal notranslate"><span class="pre">flatten_lists()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.get_solver"><code class="docutils literal notranslate"><span class="pre">get_solver()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.get_run_orientation"><code class="docutils literal notranslate"><span class="pre">get_run_orientation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.istype"><code class="docutils literal notranslate"><span class="pre">istype()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.list_orientation_runs"><code class="docutils literal notranslate"><span class="pre">list_orientation_runs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.load_yaml"><code class="docutils literal notranslate"><span class="pre">load_yaml()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.load_yaml_file"><code class="docutils literal notranslate"><span class="pre">load_yaml_file()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.make_component"><code class="docutils literal notranslate"><span class="pre">make_component()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.make_dynamic_instance"><code class="docutils literal notranslate"><span class="pre">make_dynamic_instance()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.parse_factory_axes"><code class="docutils literal notranslate"><span class="pre">parse_factory_axes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.pick_closest_solution"><code class="docutils literal notranslate"><span class="pre">pick_closest_solution()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.pick_first_solution"><code class="docutils literal notranslate"><span class="pre">pick_first_solution()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.roundoff"><code class="docutils literal notranslate"><span class="pre">roundoff()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.solver_factory"><code class="docutils literal notranslate"><span class="pre">solver_factory()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.solvers"><code class="docutils literal notranslate"><span class="pre">solvers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.creator_from_config"><code class="docutils literal notranslate"><span class="pre">creator_from_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.unique_name"><code class="docutils literal notranslate"><span class="pre">unique_name()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.validate_and_canonical_unit"><code class="docutils literal notranslate"><span class="pre">validate_and_canonical_unit()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/autoapi/hklpy2/misc/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../../../_sources/autoapi/hklpy2/misc/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2025, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
