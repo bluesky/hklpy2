@@ -18,7 +18,6 @@ from typing import Optional
 from typing import Union
 
 from .backends.base import SolverBase
-from .typing import ConfigHeaderDict
 from .blocks.configure import Configuration
 from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
@@ -32,6 +31,7 @@ from .misc import solver_factory
 from .misc import unique_name
 from .typing import AnyAxesType
 from .typing import AxesDict
+from .typing import ConfigHeaderDict
 from .typing import KeyValueMap
 from .typing import Matrix3x3
 from .typing import NamedFloatDict

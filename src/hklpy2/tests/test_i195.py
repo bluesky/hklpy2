@@ -17,9 +17,9 @@ explicitly calls ``solver.set_reals(presets)`` where ``presets`` are derived
 from the current diffractometer real-axis positions.
 """
 
+import re
 from contextlib import nullcontext as does_not_raise
 
-import re
 import pytest
 from numpy.testing import assert_almost_equal
 

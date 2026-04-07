@@ -1,6 +1,6 @@
+import re
 from contextlib import nullcontext as does_not_raise
 
-import re
 import numpy as np
 import pytest
 
@@ -60,9 +60,6 @@ def test_solver():
 
     with pytest.raises(ValueError, match=re.escape("Must supply positive number")):
         solver.wavelength = -1
-
-    with pytest.raises(NotImplementedError):
-        solver.removeAllReflections()
 
 
 @pytest.mark.parametrize(
@@ -268,3 +265,48 @@ def test_modes(parms, context):
             assert modes == [BISECTOR_MODE]
         else:
             assert modes == []
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(num_reflections=0),
+            does_not_raise(),
+            id="remove reflections from empty solver",
+        ),
+        pytest.param(
+            dict(num_reflections=1),
+            does_not_raise(),
+            id="remove reflections after adding one",
+        ),
+        pytest.param(
+            dict(num_reflections=2),
+            does_not_raise(),
+            id="remove reflections after adding two",
+        ),
+    ],
+)
+def test_removeAllReflections(parms, context):
+    with context:
+        solver = solver_factory("th_tth", TH_TTH_Q_GEOMETRY)
+        reflections = [
+            dict(
+                name=f"r{i}",
+                pseudos=dict(q=float(i) + 0.1),
+                reals=dict(th=float(i), tth=float(i) * 2),
+                wavelength=1.0,
+                geometry=TH_TTH_Q_GEOMETRY,
+                pseudo_axis_names=["q"],
+                real_axis_names=["th", "tth"],
+            )
+            for i in range(parms["num_reflections"])
+        ]
+        for r in reflections:
+            solver.addReflection(r)
+        assert len(solver._reflections) == parms["num_reflections"]
+        if parms["num_reflections"] > 0:
+            assert solver._wavelength is not None
+        solver.removeAllReflections()
+        assert len(solver._reflections) == 0
+        assert solver._wavelength is None

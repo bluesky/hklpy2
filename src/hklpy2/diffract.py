@@ -43,8 +43,8 @@ from .blocks.sample import Sample
 from .incident import WavelengthXray
 from .misc import DEFAULT_DIGITS
 from .misc import INTERNAL_ANGLE_UNITS
-from .misc import DiffractometerError
 from .misc import MISSING_HEADER_KEY_MSG
+from .misc import DiffractometerError
 from .misc import load_yaml_file
 from .misc import pick_first_solution
 from .misc import roundoff

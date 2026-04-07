@@ -1,8 +1,8 @@
 """Test the hkl_soleil_utils module."""
 
+import re
 from contextlib import nullcontext as does_not_raise
 
-import re
 import pytest
 
 from ...misc import SolverError

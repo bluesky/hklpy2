@@ -25,8 +25,8 @@ from typing import Optional
 
 from ..misc import ConfigurationError
 from ..misc import ConstraintsError
-from ..typing import KeyValueMap
 from ..typing import NUMERIC
+from ..typing import KeyValueMap
 
 ENDPOINT_TOLERANCE: float = 1e-4  # for comparisons, less than motion step size
 UNDEFINED_LABEL: str = "undefined"

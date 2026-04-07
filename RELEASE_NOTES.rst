@@ -47,6 +47,11 @@ describe future plans.
     Fixes
     -----
 
+    * Fix :meth:`~hklpy2.backends.th_tth_q.ThTthSolver.removeAllReflections`
+      to clear reflections list and reset wavelength instead of raising
+      ``NotImplementedError``. (:issue:`267`)
+    * Remove unused ``INPUT_VECTOR`` and ``NUMERIC`` re-exports from
+      ``misc.py``; nothing imported them from there. (:issue:`267`)
     * Fix metadata dict bug in :func:`~hklpy2.blocks.zone.scan_zone`: the
       ``dict(...).update(...)`` pattern always returned ``None``; replaced
       with unpacking syntax. (:issue:`273`)

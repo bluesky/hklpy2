@@ -40,8 +40,8 @@ from pyRestTable import Table
 
 from ..diffract import DiffractometerBase
 from ..misc import NoForwardSolutions
-from ..typing import BlueskyPlanType
 from ..typing import INPUT_VECTOR
+from ..typing import BlueskyPlanType
 
 logger = logging.getLogger(__name__)
 

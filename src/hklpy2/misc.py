@@ -114,11 +114,9 @@ from .typing import AxesDict  # noqa: E402, F401
 from .typing import AxesList  # noqa: E402, F401
 from .typing import AxesTuple  # noqa: E402, F401
 from .typing import BlueskyPlanType  # noqa: E402, F401
-from .typing import INPUT_VECTOR  # noqa: E402, F401
 from .typing import KeyValueMap  # noqa: E402, F401
 from .typing import Matrix3x3  # noqa: E402, F401
 from .typing import NamedFloatDict  # noqa: E402, F401
-from .typing import NUMERIC  # noqa: E402, F401
 
 __all__ = [
     # Constants

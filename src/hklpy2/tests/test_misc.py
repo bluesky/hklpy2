@@ -25,11 +25,6 @@ from yaml.parser import ParserError
 from ..diffract import creator
 from ..diffract import diffractometer_class_factory
 from ..misc import ConfigurationRunWrapper
-from ..typing import AnyAxesType
-from ..typing import AxesArray
-from ..typing import AxesDict
-from ..typing import AxesList
-from ..typing import AxesTuple
 from ..misc import NoForwardSolutions
 from ..misc import SolverError
 from ..misc import VirtualPositionerBase
@@ -51,6 +46,11 @@ from ..misc import pick_closest_solution
 from ..misc import pick_first_solution
 from ..misc import roundoff
 from ..tests.common import HKLPY2_DIR
+from ..typing import AnyAxesType
+from ..typing import AxesArray
+from ..typing import AxesDict
+from ..typing import AxesList
+from ..typing import AxesTuple
 
 sim4c = creator(name="sim4c")
 sim6c = creator(name="sim6c", geometry="E6C")

@@ -1,8 +1,8 @@
 """Test the incident beam module."""
 
-import re
 import logging
 import math
+import re
 from contextlib import nullcontext as does_not_raise
 
 import pint
