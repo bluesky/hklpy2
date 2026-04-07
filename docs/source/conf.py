@@ -81,17 +81,70 @@ autoapi_ignore = [
     "**/dev_*",
     "**/docs/*",
     "**/examples/*",
+    "**/scripts/**",
     "*tests*",
+    "**/conftest.py",
+    "**/_version.py",
 ]
+autoapi_add_toctree_entry = False  # added manually to index.rst
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+]
+autoapi_member_order = "alphabetical"
+autoapi_template_dir = "_templates/autoapi"
 
-# # where the generated rst files will be written (relative to the Sphinx source dir)
-# autoapi_output_dir = "autoapi"   # e.g. docs/source/autoapi
 
-# # KEEP the generated files (default: False)
-# autoapi_keep_files = True
+def autoapi_skip_member(app, what, name, obj, skip, options):
+    """Skip logger instances from the autoapi output."""
+    if what == "data" and name.endswith(".logger"):
+        return True
+    return skip
 
-# # optional: add the autoapi tree to the toctree
-# autoapi_add_toctree_entry = False
+
+def _shorten_type_str(s: str) -> str:
+    """Replace dotted.module.ClassName with ClassName in type annotation strings.
+
+    Used in literal code spans where Sphinx's domain resolver does not run.
+    Bare names (``str``, ``int``, ``None``) are left unchanged.
+    """
+    import re
+
+    return re.sub(
+        r"(?<![.\w])([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)+)",
+        lambda m: m.group(0).split(".")[-1],
+        s,
+    )
+
+
+def _tilde_type_str(s: str) -> str:
+    """Prepend ~ to dotted.module.ClassName in type annotation strings.
+
+    Used inside ``.. py:*::`` directives so Sphinx resolves the full cross-
+    reference but displays only the short name (the ``~`` prefix convention).
+    Bare names (``str``, ``int``, ``None``) are left unchanged.
+    """
+    import re
+
+    return re.sub(
+        r"(?<![.\w~])([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)+)",
+        lambda m: "~" + m.group(0),
+        s,
+    )
+
+
+def _prepare_jinja_env(jinja_env) -> None:
+    """Register custom Jinja2 filters for autoapi templates."""
+    jinja_env.filters["shorten_type"] = _shorten_type_str
+    jinja_env.filters["tilde_type"] = _tilde_type_str
+
+
+def setup(app):
+    """Connect autoapi events and register Jinja2 filters."""
+    app.connect("autoapi-skip-member", autoapi_skip_member)
+    app.config.autoapi_prepare_jinja_env = _prepare_jinja_env
+
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -99,6 +152,7 @@ autoapi_ignore = [
 html_theme = "pydata_sphinx_theme"
 html_title = f"{project} {version}"
 html_static_path = ["_static"]
+html_css_files = ["css/custom.css"]
 
 html_context = {
     "github_user": "bluesky",

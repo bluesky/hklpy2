@@ -29,3 +29,7 @@ User Guide
     .. grid-item-card:: :material-outlined:`question_mark;3em` :ref:`FAQ`
     .. grid-item-card:: :material-regular:`install_desktop;3em` :ref:`install`
     .. grid-item-card:: :material-outlined:`list;3em` :ref:`glossary`
+    .. grid-item-card:: :material-regular:`menu_book;3em` `Full API Reference <autoapi/hklpy2/index.html>`_
+
+      Complete, auto-generated reference for every public module, class,
+      function, and constant in *hklpy2*.

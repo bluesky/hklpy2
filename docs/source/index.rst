@@ -14,6 +14,7 @@ PseudoPositioners in the `Bluesky Framework <https://blueskyproject.io>`_.
 
    user_guide
    release_notes
+   autoapi/hklpy2/index
 
 .. icons: https://fonts.google.com/icons
 
@@ -21,7 +22,7 @@ PseudoPositioners in the `Bluesky Framework <https://blueskyproject.io>`_.
 
     .. grid-item-card:: :material-outlined:`summarize;3em` :ref:`user_guide`
     .. grid-item-card:: :material-regular:`install_desktop;3em`  :ref:`install`
-    .. grid-item-card:: :material-regular:`subscriptions;3em` :doc:`/autoapi/index`
+    .. grid-item-card:: :material-regular:`subscriptions;3em` `API Reference <autoapi/hklpy2/index.html>`_
     .. grid-item-card:: :material-regular:`history;3em` :ref:`release_notes`
 
 .. figure:: _static/fcc-ball-and-stick.jpg
