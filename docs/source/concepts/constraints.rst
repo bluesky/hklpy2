@@ -20,11 +20,6 @@ together with a choice of operating **mode**, can be applied to:
 .. tip:: *Constraints* are implemented as *cut points* in other software.
     Similar in concept yet not entirely identical in implementation.
 
-.. TODO: describe how the constraint class works (the ``valid()`` method)
-
-.. TODO: state clearly that LimitsConstraint label must match real axis name
-    and same name is used in the .core.constraints dictionary.
-
 .. rubric:: Examples
 
 Many of the :ref:`examples` show how to adjust :ref:`constraints <examples.constraints>`.

@@ -44,6 +44,13 @@ describe future plans.
     * Add ``Full API Reference`` card to the User Guide index. (:issue:`251`)
     * Hide ``sig-prename`` via CSS; style ``import-path`` container. (:issue:`251`)
 
+    Maintenance
+    -----------
+
+    * Revise concepts documents to be brief and purely conceptual; move
+      ``migration.rst`` from ``concepts/`` to ``guides/`` and remove
+      guide-like example content from ``ops.rst``. (:issue:`259`)
+
 0.4.2
 #####
 
