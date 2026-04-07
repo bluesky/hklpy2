@@ -54,7 +54,7 @@ home              https://blueskyproject.io/hklpy2/
 source            https://github.com/bluesky/hklpy2
 full version      |release|
 published         |today|
-copyright         (c) 2023-2025, Argonne National Laboratory
+copyright         (c) 2023-2026, Argonne National Laboratory
 license           :ref:`license`
 acknowledgement   "This product includes software produced by UChicago Argonne, LLC
                   under Contract No. DE-AC02-06CH11357 with the Department of Energy."
