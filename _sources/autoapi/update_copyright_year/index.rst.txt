@@ -1,0 +1,72 @@
+update_copyright_year
+=====================
+
+.. py:module:: update_copyright_year
+
+.. autoapi-nested-parse::
+
+   Update the copyright end year in tracked source files to the current year.
+
+   Designed to be used as a pre-commit hook (local repo hook).  Exit codes follow
+   the pre-commit convention:
+
+   * 0 – nothing changed (all files already have the correct year).
+   * 1 – one or more files were modified; pre-commit will mark the hook as
+         "failed" so the developer sees the diff and stages the updated files
+         before retrying the commit.
+
+   Files checked (paths relative to the repository root):
+
+   * pyproject.toml              – ``[tool.copyright]`` value
+   * src/hklpy2/__init__.py      – comment header
+   * docs/source/index.rst       – summary table row
+
+   The script rewrites the pattern ``<START_YEAR>-<OLD_YEAR>`` →
+   ``<START_YEAR>-<CURRENT_YEAR>`` wherever it appears in those files, leaving
+   everything else untouched.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   update_copyright_year.REPO_ROOT
+   update_copyright_year.TARGET_FILES
+   update_copyright_year.YEAR_RANGE_PATTERN
+   update_copyright_year.CURRENT_YEAR
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   update_copyright_year.update_file
+   update_copyright_year.main
+
+
+Module Contents
+---------------
+
+.. py:data:: REPO_ROOT
+
+.. py:data:: TARGET_FILES
+   :type:  list[pathlib.Path]
+
+.. py:data:: YEAR_RANGE_PATTERN
+
+.. py:data:: CURRENT_YEAR
+   :value: ''
+
+
+.. py:function:: update_file(path: pathlib.Path, current_year: str) -> bool
+
+   Replace stale end-years in *path* with *current_year*.
+
+   Returns True if the file was modified.
+
+
+.. py:function:: main() -> int
+
