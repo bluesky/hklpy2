@@ -13,7 +13,7 @@
    {% else %}
       {% if obj.annotation is not none %}
 
-   :type: {% if obj.annotation %} {{ obj.annotation | shorten_type }}{% endif %}
+   :type: {% if obj.annotation %} {{ obj.annotation | tilde_type }}{% endif %}
       {% endif %}
       {% if obj.value is not none %}
 

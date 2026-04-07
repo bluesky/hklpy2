@@ -17,10 +17,10 @@
       {% endfor %}
 
    {% endif %}
-.. py:{{ obj.type }}:: {{ obj.short_name }}{% if obj.type_params %}[{{ obj.type_params }}]{% endif %}{% if obj.args %}({{ obj.args | shorten_type }}){% endif %}
+.. py:{{ obj.type }}:: {{ obj.short_name }}{% if obj.type_params %}[{{ obj.type_params }}]{% endif %}{% if obj.args %}({{ obj.args | tilde_type }}){% endif %}
 
    {% for (args, return_annotation) in obj.overloads %}
-      {{ " " * (obj.type | length) }}   {{ obj.short_name }}{% if args %}({{ args | shorten_type }}){% endif %}
+      {{ " " * (obj.type | length) }}   {{ obj.short_name }}{% if args %}({{ args | tilde_type }}){% endif %}
 
    {% endfor %}
 

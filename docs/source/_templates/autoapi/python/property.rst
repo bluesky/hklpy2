@@ -7,7 +7,7 @@
 .. py:property:: {% if is_own_page %}{{ obj.id}}{% else %}{{ obj.short_name }}{% endif %}
    {% if obj.annotation %}
 
-   :type: {{ obj.annotation | shorten_type }}
+   :type: {{ obj.annotation | tilde_type }}
    {% endif %}
    {% for property in obj.properties %}
 

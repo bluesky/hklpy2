@@ -106,6 +106,7 @@ def autoapi_skip_member(app, what, name, obj, skip, options):
 def _shorten_type_str(s: str) -> str:
     """Replace dotted.module.ClassName with ClassName in type annotation strings.
 
+    Used in literal code spans where Sphinx's domain resolver does not run.
     Bare names (``str``, ``int``, ``None``) are left unchanged.
     """
     import re
@@ -117,9 +118,26 @@ def _shorten_type_str(s: str) -> str:
     )
 
 
+def _tilde_type_str(s: str) -> str:
+    """Prepend ~ to dotted.module.ClassName in type annotation strings.
+
+    Used inside ``.. py:*::`` directives so Sphinx resolves the full cross-
+    reference but displays only the short name (the ``~`` prefix convention).
+    Bare names (``str``, ``int``, ``None``) are left unchanged.
+    """
+    import re
+
+    return re.sub(
+        r"(?<![.\w~])([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)+)",
+        lambda m: "~" + m.group(0),
+        s,
+    )
+
+
 def _prepare_jinja_env(jinja_env) -> None:
     """Register custom Jinja2 filters for autoapi templates."""
     jinja_env.filters["shorten_type"] = _shorten_type_str
+    jinja_env.filters["tilde_type"] = _tilde_type_str
 
 
 def setup(app):
