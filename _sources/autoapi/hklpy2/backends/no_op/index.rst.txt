@@ -1,9 +1,11 @@
-hklpy2.backends.no_op
-=====================
+no_op
+=====
 
 .. py:module:: hklpy2.backends.no_op
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.backends.no_op``
 
    "no_op" solver for testing.
 
@@ -21,28 +23,16 @@ hklpy2.backends.no_op
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   hklpy2.backends.no_op.logger
-
-
-Classes
--------
-
-.. autoapisummary::
-
-   hklpy2.backends.no_op.NoOpSolver
-
 
 Module Contents
 ---------------
 
-.. py:data:: logger
-
 .. py:class:: NoOpSolver(geometry: str, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.backends.no_op.NoOpSolver``
+
 
    Bases: :py:obj:`hklpy2.backends.base.SolverBase`
 
@@ -77,25 +67,13 @@ Module Contents
        ~sample
 
 
-   .. py:attribute:: name
-      :value: 'no_op'
-
-
-      Name of this Solver.
-
-
-   .. py:attribute:: version
-
-      Version of this Solver.
-
-
-   .. py:method:: addReflection(reflection: hklpy2.backends.typing.ReflectionDict) -> None
+   .. py:method:: addReflection(reflection: ~hklpy2.backends.typing.ReflectionDict) -> None
 
       Add coordinates of a diffraction condition (a reflection).
 
 
 
-   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.typing.Matrix3x3
+   .. py:method:: calculate_UB(r1: ~hklpy2.backends.typing.ReflectionDict, r2: ~hklpy2.backends.typing.ReflectionDict) -> ~hklpy2.typing.Matrix3x3
 
       Calculate the UB (orientation) matrix with two reflections.
 
@@ -110,7 +88,7 @@ Module Contents
       Ordered list of any extra axis names (such as x, y, z).
 
 
-   .. py:method:: forward(pseudos: hklpy2.typing.NamedFloatDict) -> List[hklpy2.typing.NamedFloatDict]
+   .. py:method:: forward(pseudos: ~hklpy2.typing.NamedFloatDict) -> List[~hklpy2.typing.NamedFloatDict]
 
       Compute list of solutions(reals) from pseudos (hkl -> [angles]).
 
@@ -134,7 +112,7 @@ Module Contents
 
 
 
-   .. py:method:: inverse(reals: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
+   .. py:method:: inverse(reals: ~hklpy2.typing.NamedFloatDict) -> ~hklpy2.typing.NamedFloatDict
 
       Compute dict of pseudos from reals (angles -> hkl).
 
@@ -145,6 +123,13 @@ Module Contents
 
 
       List of the geometry operating modes.
+
+
+   .. py:attribute:: name
+      :value: 'no_op'
+
+
+      Name of this Solver.
 
 
    .. py:property:: pseudo_axis_names
@@ -161,7 +146,7 @@ Module Contents
       Ordered list of the real axis names (such as th, tth).
 
 
-   .. py:method:: refineLattice(reflections: List[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.typing.NamedFloatDict | None
+   .. py:method:: refineLattice(reflections: List[~hklpy2.backends.typing.ReflectionDict]) -> ~hklpy2.typing.NamedFloatDict | None
 
       No refinement.
 
@@ -171,5 +156,10 @@ Module Contents
 
       Remove all reflections.
 
+
+
+   .. py:attribute:: version
+
+      Version of this Solver.
 
 

@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
   <script defer src="../../../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
@@ -40,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=08e5743b"></script>
+    <script src="../../../_static/documentation_options.js?v=437b515a"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -153,15 +154,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../license.html">
-    License
+  <a class="nav-link nav-internal" href="../../../autoapi/hklpy2/index.html">
+    hklpy2
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
-    API Reference
+  <a class="nav-link nav-internal" href="../../../license.html">
+    License
   </a>
 </li>
 
@@ -279,15 +280,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../license.html">
-    License
+  <a class="nav-link nav-internal" href="../../../autoapi/hklpy2/index.html">
+    hklpy2
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../autoapi/index.html">
-    API Reference
+  <a class="nav-link nav-internal" href="../../../license.html">
+    License
   </a>
 </li>
 
@@ -379,9 +380,6 @@
     
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="../../hklpy2.html" class="nav-link">hklpy2</a></li>
-    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">hklpy2.backends.hkl_soleil</span></li>
   </ul>
 </nav>
@@ -463,10 +461,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">SampleDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverMetadataDict</span>
 
-<div class="viewcode-block" id="logger">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.logger">[docs]</a>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span></div>
-
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="HklSolverMetadataDict">
@@ -690,56 +685,33 @@
         <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>  <span class="c1"># cannot set in super(), needs engine setup (below)</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<div class="viewcode-block" id="HklSolver._hkl_engine">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver._hkl_engine">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine</span> <span class="o">=</span> <span class="kc">None</span></div>
-
-<div class="viewcode-block" id="HklSolver._sample">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver._sample">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="o">=</span> <span class="kc">None</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Preface libhkl object names with &quot;_hkl&quot;.</span>
         <span class="c1"># Note: must keep the &#39;_hkl_engine_list&#39; object as class attribute or</span>
         <span class="c1"># random core dumps, usually when accessing &#39;engine.name_get()&#39;.</span>
-<div class="viewcode-block" id="HklSolver._hkl_detector">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver._hkl_detector">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_detector</span> <span class="o">=</span> <span class="n">libhkl</span><span class="o">.</span><span class="n">Detector</span><span class="o">.</span><span class="n">factory_new</span><span class="p">(</span>
             <span class="n">libhkl</span><span class="o">.</span><span class="n">DetectorType</span><span class="p">(</span><span class="n">LIBHKL_DETECTOR_TYPE</span><span class="p">),</span>
-        <span class="p">)</span></div>
-
-<div class="viewcode-block" id="HklSolver._hkl_factory">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver._hkl_factory">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_factory</span> <span class="o">=</span> <span class="n">libhkl</span><span class="o">.</span><span class="n">factories</span><span class="p">()[</span><span class="n">geometry</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="HklSolver._hkl_engine_list">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver._hkl_engine_list">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_factory</span><span class="o">.</span><span class="n">create_new_engine_list</span><span class="p">()</span>  <span class="c1"># note!</span></div>
-
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_factory</span> <span class="o">=</span> <span class="n">libhkl</span><span class="o">.</span><span class="n">factories</span><span class="p">()[</span><span class="n">geometry</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_factory</span><span class="o">.</span><span class="n">create_new_engine_list</span><span class="p">()</span>  <span class="c1"># note!</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine_list</span><span class="o">.</span><span class="n">engine_get_by_name</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
-<div class="viewcode-block" id="HklSolver._hkl_geometry">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver._hkl_geometry">[docs]</a>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_factory</span><span class="o">.</span><span class="n">create_new_geometry</span><span class="p">()</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_factory</span><span class="o">.</span><span class="n">create_new_geometry</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
 
-<div class="viewcode-block" id="HklSolver.__repr__">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span>
             <span class="c1"># .</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="s2">&quot;name version geometry engine_name mode&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="p">]</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span></div>
-
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="HklSolver._metadata">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver._metadata">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HklSolverMetadataDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Dictionary with this solver&#39;s summary metadata, including engine.&quot;&quot;&quot;</span>
         <span class="n">meta</span><span class="p">:</span> <span class="n">HklSolverMetadataDict</span> <span class="o">=</span> <span class="p">{</span>
@@ -750,8 +722,7 @@
             <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
             <span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">engine_name</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="k">return</span> <span class="n">meta</span></div>
-
+        <span class="k">return</span> <span class="n">meta</span>
 
 <div class="viewcode-block" id="HklSolver.addReflection">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.addReflection">[docs]</a>
@@ -1230,8 +1201,6 @@
 
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="HklSolver._summary_dict">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver._summary_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_summary_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a summary of the geometry (engines, modes, axes)&quot;&quot;&quot;</span>
         <span class="n">geometry_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span>
@@ -1260,8 +1229,7 @@
                 <span class="p">}</span>
                 <span class="n">extras</span> <span class="o">+=</span> <span class="n">eng_desc</span><span class="p">[</span><span class="s2">&quot;modes&quot;</span><span class="p">][</span><span class="n">mode_name</span><span class="p">][</span><span class="s2">&quot;extras&quot;</span><span class="p">]</span>
             <span class="n">eng_desc</span><span class="p">[</span><span class="s2">&quot;extras&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">extras</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">description</span></div>
-
+        <span class="k">return</span> <span class="n">description</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="HklSolver.summary">
@@ -1362,8 +1330,6 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_geometry</span><span class="o">.</span><span class="n">wavelength_set</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">LIBHKL_USER_UNITS</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-<div class="viewcode-block" id="HklSolver._details">
-<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver._details">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">_details</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;(internal use) Current settings for diagnostic review.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
@@ -1378,7 +1344,6 @@
             <span class="n">mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
             <span class="n">extras</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extras</span><span class="p">,</span>
         <span class="p">)</span></div>
-</div>
 
 </pre></div>
 

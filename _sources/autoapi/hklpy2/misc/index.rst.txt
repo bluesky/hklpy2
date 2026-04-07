@@ -1,9 +1,11 @@
-hklpy2.misc
-===========
+misc
+====
 
 .. py:module:: hklpy2.misc
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.misc``
 
    Miscellaneous Support.
 
@@ -69,154 +71,22 @@ hklpy2.misc
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   hklpy2.misc.IDENTITY_MATRIX_3X3
-   hklpy2.misc.MISSING_HEADER_KEY_MSG
-   hklpy2.misc.SOLVER_ENTRYPOINT_GROUP
-   hklpy2.misc.DEFAULT_DIGITS
-   hklpy2.misc.DEFAULT_START_KEY
-   hklpy2.misc.INTERNAL_ANGLE_UNITS
-   hklpy2.misc.INTERNAL_LENGTH_UNITS
-   hklpy2.misc.INTERNAL_XRAY_ENERGY_UNITS
-   hklpy2.misc.UREG
-   hklpy2.misc.PINT_ERRORS
-   hklpy2.misc.DEFAULT_MOTOR_LABELS
 
 
-Exceptions
-----------
-
-.. autoapisummary::
-
-   hklpy2.misc.Hklpy2Error
-   hklpy2.misc.ConfigurationError
-   hklpy2.misc.ConstraintsError
-   hklpy2.misc.CoreError
-   hklpy2.misc.DiffractometerError
-   hklpy2.misc.LatticeError
-   hklpy2.misc.NoForwardSolutions
-   hklpy2.misc.ReflectionError
-   hklpy2.misc.SampleError
-   hklpy2.misc.SolverError
 
 
-Classes
--------
 
-.. autoapisummary::
-
-   hklpy2.misc.VirtualPositionerBase
-   hklpy2.misc.ConfigurationRunWrapper
-
-
-Functions
----------
-
-.. autoapisummary::
-
-   hklpy2.misc.axes_to_dict
-   hklpy2.misc.check_value_in_list
-   hklpy2.misc.compare_float_dicts
-   hklpy2.misc.convert_units
-   hklpy2.misc.define_real_axis
-   hklpy2.misc.dict_device_factory
-   hklpy2.misc.distance_between_pos_tuples
-   hklpy2.misc.dynamic_import
-   hklpy2.misc.flatten_lists
-   hklpy2.misc.get_solver
-   hklpy2.misc.get_run_orientation
-   hklpy2.misc.istype
-   hklpy2.misc.list_orientation_runs
-   hklpy2.misc.load_yaml
-   hklpy2.misc.load_yaml_file
-   hklpy2.misc.make_component
-   hklpy2.misc.make_dynamic_instance
-   hklpy2.misc.parse_factory_axes
-   hklpy2.misc.pick_closest_solution
-   hklpy2.misc.pick_first_solution
-   hklpy2.misc.roundoff
-   hklpy2.misc.solver_factory
-   hklpy2.misc.solvers
-   hklpy2.misc.creator_from_config
-   hklpy2.misc.unique_name
-   hklpy2.misc.validate_and_canonical_unit
 
 
 Module Contents
 ---------------
 
-.. py:data:: IDENTITY_MATRIX_3X3
-   :type:  hklpy2.typing.Matrix3x3
-   :value: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
-
-
-   Identity matrix, 2-D, 3 rows, 3 columns.
-
-.. py:data:: MISSING_HEADER_KEY_MSG
-   :type:  str
-   :value: "Configuration is missing '_header' key."
-
-
-   Error message for missing _header key in configuration dicts.
-
-.. py:data:: SOLVER_ENTRYPOINT_GROUP
-   :type:  str
-   :value: 'hklpy2.solver'
-
-
-   Name by which |hklpy2| |solver| classes are grouped.
-
-.. py:data:: DEFAULT_DIGITS
-   :type:  int
-   :value: 4
-
-
-.. py:data:: DEFAULT_START_KEY
-   :type:  str
-   :value: 'diffractometers'
-
-
-.. py:data:: INTERNAL_ANGLE_UNITS
-   :type:  str
-   :value: 'degrees'
-
-
-.. py:data:: INTERNAL_LENGTH_UNITS
-   :type:  str
-   :value: 'angstrom'
-
-
-.. py:data:: INTERNAL_XRAY_ENERGY_UNITS
-   :type:  str
-   :value: 'keV'
-
-
-.. py:data:: UREG
-
-.. py:data:: PINT_ERRORS
-
-   Exception from pint that we are trapping here.
-
-.. py:data:: DEFAULT_MOTOR_LABELS
-   :type:  Sequence[str]
-   :value: ['motors']
-
-
-   Default labels applied to real-axis positioners.
-
-.. py:exception:: Hklpy2Error
-
-   Bases: :py:obj:`Exception`
-
-
-   Any exception from the |hklpy2| package.
-
-
 .. py:exception:: ConfigurationError
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.ConfigurationError``
+
 
    Bases: :py:obj:`Hklpy2Error`
 
@@ -224,165 +94,12 @@ Module Contents
    Custom exceptions from :mod:`hklpy2.blocks.configure`.
 
 
-.. py:exception:: ConstraintsError
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :mod:`hklpy2.blocks.constraints`.
-
-
-.. py:exception:: CoreError
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :class:`hklpy2.ops.Core`.
-
-
-.. py:exception:: DiffractometerError
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`.
-
-
-.. py:exception:: LatticeError
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :mod:`hklpy2.blocks.lattice`.
-
-
-.. py:exception:: NoForwardSolutions
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   A solver did not find any ``forward()`` solutions.
-
-
-.. py:exception:: ReflectionError
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :mod:`hklpy2.blocks.reflection`.
-
-
-.. py:exception:: SampleError
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :mod:`hklpy2.blocks.sample`.
-
-
-.. py:exception:: SolverError
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from a |solver|.
-
-
-.. py:class:: VirtualPositionerBase(*, physical_name: str = '', **kwargs)
-
-   Bases: :py:obj:`ophyd.SoftPositioner`
-
-
-   Base class for a diffractometer's virtual axis.
-
-   This base class also serves as an example where the virtual axis is twice
-   the value of the physical axis.  It is used as a Component of a
-   'DiffractometerBase' definition.  The ``physical_name`` is the name of a
-   sibling positioner attribute.
-
-
-   .. py:attribute:: _setup_finished
-      :type:  bool
-      :value: False
-
-
-
-   .. py:attribute:: physical
-
-
-   .. py:method:: _setup_move(position: float, status: Any) -> None
-
-      Move requested to position.
-
-
-
-   .. py:method:: forward(physical: float) -> float
-
-      Return virtual position from physical position.
-
-      Subclass should override.
-
-
-
-   .. py:method:: inverse(virtual: float) -> float
-
-      Return physical position from virtual position.
-
-      Subclass should override.
-
-
-
-   .. py:method:: _cb_update_position(value: float, **kwargs) -> None
-
-      Called when physical position is changed.
-
-
-
-   .. py:method:: _finish_setup() -> None
-
-      Complete the axis setup after diffractometer is built.
-
-      This method is crucial for ensuring that the positioner is correctly
-      initialized and ready to operate within the system, handling updates and
-      constraints appropriately.
-
-      Update our:
-
-      * Position by subscription to readback changes.
-      * Limits from physical axis.
-
-
-
-   .. py:method:: _recompute_limits() -> None
-
-      Compute virtual axis limits from physical axis and refine constraints.
-
-
-
-   .. py:method:: __getattribute__(name: str)
-
-      Run final setup automatically, on conditions.
-
-      This is a special method in Python that is called
-      whenever an attribute is accessed on an object. This method is
-      overridden here to add custom behavior when accessing attributes,
-      particularly the 'position' attribute.
-
-      This implementation ensures that the setup process is completed before
-      accessing the 'position' attribute, provided the object and its parent are
-      connected. It adds robustness to the attribute access by handling
-      potential errors gracefully and avoiding infinite recursion.
-
-      This virtual positioner must subscribe to position updates of the
-      physical positioner to which it is related.  Because that positioner
-      might not be fully initialized and connected during construction of this
-      virtual positioner, a final setup method must be called later.  The
-      additional steps in this method ensure that final setup is called under
-      the correct conditions.
-
-
-
 .. py:class:: ConfigurationRunWrapper(*devices, knowns=None)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.ConfigurationRunWrapper``
+
 
    Write configuration of supported device(s) to a bluesky run.
 
@@ -415,16 +132,30 @@ Module Contents
        ~wrapper
 
 
+   .. py:property:: device_names
+      :type: list[str]
+
+
+      Return list of configured device names.
+
+
    .. py:attribute:: devices
-      :type:  Sequence[ophyd.Device]
+      :type:  Sequence[~ophyd.Device]
       :value: []
 
 
       List of devices to be reported.
 
 
+   .. py:property:: enable
+      :type: bool
+
+
+      Is it permitted to write device configuration?
+
+
    .. py:attribute:: known_bases
-      :type:  Sequence[ophyd.Device]
+      :type:  Sequence[~ophyd.Device]
       :value: []
 
 
@@ -442,21 +173,7 @@ Module Contents
       Top-level key in run's metadata dictionary.
 
 
-   .. py:property:: enable
-      :type: bool
-
-
-      Is it permitted to write device configuration?
-
-
-   .. py:property:: device_names
-      :type: list[str]
-
-
-      Return list of configured device names.
-
-
-   .. py:method:: validate(devices: Sequence[ophyd.Device]) -> None
+   .. py:method:: validate(devices: Sequence[~ophyd.Device]) -> None
 
       Verify all are recognized objects.
 
@@ -475,7 +192,225 @@ Module Contents
 
 
 
-.. py:function:: axes_to_dict(input: hklpy2.typing.AnyAxesType, names: list[str]) -> hklpy2.typing.AxesDict
+.. py:exception:: ConstraintsError
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.ConstraintsError``
+
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   Custom exceptions from :mod:`hklpy2.blocks.constraints`.
+
+
+.. py:exception:: CoreError
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.CoreError``
+
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   Custom exceptions from :class:`hklpy2.ops.Core`.
+
+
+.. py:data:: DEFAULT_DIGITS
+   :type:  int
+   :value: 4
+
+
+.. py:data:: DEFAULT_MOTOR_LABELS
+   :type:  Sequence[str]
+   :value: ['motors']
+
+
+   Default labels applied to real-axis positioners.
+
+.. py:data:: DEFAULT_START_KEY
+   :type:  str
+   :value: 'diffractometers'
+
+
+.. py:exception:: DiffractometerError
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.DiffractometerError``
+
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`.
+
+
+.. py:exception:: Hklpy2Error
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.Hklpy2Error``
+
+
+   Bases: :py:obj:`Exception`
+
+
+   Any exception from the |hklpy2| package.
+
+
+.. py:data:: IDENTITY_MATRIX_3X3
+   :type:  ~hklpy2.typing.Matrix3x3
+   :value: [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+
+
+   Identity matrix, 2-D, 3 rows, 3 columns.
+
+.. py:data:: INTERNAL_ANGLE_UNITS
+   :type:  str
+   :value: 'degrees'
+
+
+.. py:data:: INTERNAL_LENGTH_UNITS
+   :type:  str
+   :value: 'angstrom'
+
+
+.. py:data:: INTERNAL_XRAY_ENERGY_UNITS
+   :type:  str
+   :value: 'keV'
+
+
+.. py:exception:: LatticeError
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.LatticeError``
+
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   Custom exceptions from :mod:`hklpy2.blocks.lattice`.
+
+
+.. py:data:: MISSING_HEADER_KEY_MSG
+   :type:  str
+   :value: "Configuration is missing '_header' key."
+
+
+   Error message for missing _header key in configuration dicts.
+
+.. py:exception:: NoForwardSolutions
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.NoForwardSolutions``
+
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   A solver did not find any ``forward()`` solutions.
+
+
+.. py:data:: PINT_ERRORS
+
+   Exception from pint that we are trapping here.
+
+.. py:exception:: ReflectionError
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.ReflectionError``
+
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   Custom exceptions from :mod:`hklpy2.blocks.reflection`.
+
+
+.. py:data:: SOLVER_ENTRYPOINT_GROUP
+   :type:  str
+   :value: 'hklpy2.solver'
+
+
+   Name by which |hklpy2| |solver| classes are grouped.
+
+.. py:exception:: SampleError
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.SampleError``
+
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   Custom exceptions from :mod:`hklpy2.blocks.sample`.
+
+
+.. py:exception:: SolverError
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.SolverError``
+
+
+   Bases: :py:obj:`Hklpy2Error`
+
+
+   Custom exceptions from a |solver|.
+
+
+.. py:data:: UREG
+
+.. py:class:: VirtualPositionerBase(*, physical_name: str = '', **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.VirtualPositionerBase``
+
+
+   Bases: :py:obj:`ophyd.SoftPositioner`
+
+
+   Base class for a diffractometer's virtual axis.
+
+   This base class also serves as an example where the virtual axis is twice
+   the value of the physical axis.  It is used as a Component of a
+   'DiffractometerBase' definition.  The ``physical_name`` is the name of a
+   sibling positioner attribute.
+
+
+   .. py:method:: forward(physical: float) -> float
+
+      Return virtual position from physical position.
+
+      Subclass should override.
+
+
+
+   .. py:method:: inverse(virtual: float) -> float
+
+      Return physical position from virtual position.
+
+      Subclass should override.
+
+
+
+   .. py:attribute:: physical
+
+
+.. py:function:: axes_to_dict(input: ~hklpy2.typing.AnyAxesType, names: list[str]) -> ~hklpy2.typing.AxesDict
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.axes_to_dict``
+
 
    Convert any acceptable axes input to standard form (dict).
 
@@ -496,25 +431,86 @@ Module Contents
 
 .. py:function:: check_value_in_list(title, value, examples, blank_ok=False) -> None
 
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.check_value_in_list``
+
+
    Raise ValueError exception if value is not in the list of examples.
 
 
 .. py:function:: compare_float_dicts(a1, a2, tol=0.0001) -> bool
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.compare_float_dicts``
+
 
    Compare two dictionaries.  Values are all floats.
 
 
 .. py:function:: convert_units(value: float, old_units: str, new_units: str) -> float
 
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.convert_units``
+
+
    Convert 'value' from old units to new.
 
 
-.. py:function:: define_real_axis(specs: Union[None, str, hklpy2.typing.KeyValueMap], kwargs: hklpy2.typing.KeyValueMap) -> tuple[str, Sequence, Mapping]
+.. py:function:: creator_from_config(config: Union[dict, str, ~pathlib.Path])
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.creator_from_config``
+
+
+   Create a simulated diffractometer from a saved configuration.
+
+   Parses the configuration for the solver, geometry, and axis names, then
+   constructs a simulator (all axes are soft positioners — no hardware
+   connection) and restores the full orientation (samples, reflections, UB
+   matrix, wavelength, constraints) from the configuration.
+
+   PARAMETERS
+
+   config : dict, str, or pathlib.Path
+       Configuration dictionary, or path to a YAML configuration file
+       previously saved with ``diffractometer.export()``.
+
+   RETURNS
+
+   DiffractometerBase
+       A fully configured simulated diffractometer instance.
+
+   EXAMPLE::
+
+       >>> import hklpy2
+       >>> sim = hklpy2.creator_from_config("e4cv-config.yml")
+       >>> sim.wh()
+
+   SEE ALSO
+
+       :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
+
+
+.. py:function:: define_real_axis(specs: Union[None, str, ~hklpy2.typing.KeyValueMap], kwargs: ~hklpy2.typing.KeyValueMap) -> tuple[str, Sequence, Mapping]
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.define_real_axis``
+
 
    Return class and kwargs of a real axis from its 'specs'.
 
 
-.. py:function:: dict_device_factory(data: hklpy2.typing.KeyValueMap, **kwargs: Any) -> type
+.. py:function:: dict_device_factory(data: ~hklpy2.typing.KeyValueMap, **kwargs: Any) -> type
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.dict_device_factory``
+
 
    Create a ``DictionaryDevice()`` class using the supplied dictionary.
 
@@ -522,10 +518,20 @@ Module Contents
 
 .. py:function:: distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple) -> float
 
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.distance_between_pos_tuples``
+
+
    Return the RMS distance between 'pos1' and 'pos2'.
 
 
 .. py:function:: dynamic_import(full_path: str) -> type
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.dynamic_import``
+
 
    Import the object given its import path as text.
 
@@ -543,25 +549,24 @@ Module Contents
    From the `apstools <https://github.com/BCDA-APS/apstools>`_ package.
 
 
-.. py:function:: flatten_lists(xs: Sequence[Union[bytes, collections.abc.Iterable, str]]) -> hklpy2.typing.BlueskyPlanType
+.. py:function:: flatten_lists(xs: Sequence[Union[bytes, ~collections.abc.Iterable, str]]) -> ~hklpy2.typing.BlueskyPlanType
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.flatten_lists``
+
 
    Convert nested lists into single list.
 
    https://stackoverflow.com/questions/2158395
 
 
-.. py:function:: get_solver(solver_name: str) -> hklpy2.backends.base.SolverBase
+.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> ~hklpy2.typing.KeyValueMap
 
-   Load a Solver class from a named entry point.
+   .. container:: import-path
 
-   ::
+      Import: ``hklpy2.misc.get_run_orientation``
 
-       import hklpy2
-       SolverClass = hklpy2.get_solver("hkl_soleil")
-       libhkl_solver = SolverClass()
-
-
-.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> hklpy2.typing.KeyValueMap
 
    Return the orientation information dictionary from a run.
 
@@ -635,7 +640,28 @@ Module Contents
    :type start_key: str
 
 
+.. py:function:: get_solver(solver_name: str) -> ~hklpy2.backends.base.SolverBase
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.get_solver``
+
+
+   Load a Solver class from a named entry point.
+
+   ::
+
+       import hklpy2
+       SolverClass = hklpy2.get_solver("hkl_soleil")
+       libhkl_solver = SolverClass()
+
+
 .. py:function:: istype(value: Any, annotation: Type) -> bool
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.istype``
+
 
    Check if 'value' matches the type 'annotation'.
 
@@ -645,7 +671,12 @@ Module Contents
        True
 
 
-.. py:function:: list_orientation_runs(catalog: Any, limit: int = 10, start_key: str = DEFAULT_START_KEY, **kwargs: Mapping) -> pandas.DataFrame
+.. py:function:: list_orientation_runs(catalog: Any, limit: int = 10, start_key: str = DEFAULT_START_KEY, **kwargs: Mapping) -> ~pandas.DataFrame
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.list_orientation_runs``
+
 
    List the runs with orientation information.
 
@@ -679,25 +710,50 @@ Module Contents
 
 .. py:function:: load_yaml(text: str) -> Mapping
 
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.load_yaml``
+
+
    Load YAML from text.
 
 
-.. py:function:: load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping
+.. py:function:: load_yaml_file(file: Union[~pathlib.Path, str]) -> Mapping
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.load_yaml_file``
+
 
    Return contents of a YAML file as a Python object.
 
 
-.. py:function:: make_component(call_name: str, *args: Any, **kwargs: Any) -> ophyd.Component
+.. py:function:: make_component(call_name: str, *args: Any, **kwargs: Any) -> ~ophyd.Component
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.make_component``
+
 
    Create an Component for a custom ophyd Device class.
 
 
 .. py:function:: make_dynamic_instance(call_name: str, *args: Any, **kwargs: Any) -> Any
 
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.make_dynamic_instance``
+
+
    Return an instance of the Python 'call_name'.
 
 
-.. py:function:: parse_factory_axes(*, space: Optional[str] = None, axes: Union[hklpy2.typing.KeyValueMap, None, Sequence[str]] = None, order: Optional[Sequence[str]] = None, canonical: Optional[Sequence[str]] = None, labels: Optional[Sequence[str]] = None, **_ignored: Any) -> Mapping[str, Union[ophyd.Component, Sequence[str]]]
+.. py:function:: parse_factory_axes(*, space: Optional[str] = None, axes: Union[~hklpy2.typing.KeyValueMap, None, Sequence[str]] = None, order: Optional[Sequence[str]] = None, canonical: Optional[Sequence[str]] = None, labels: Optional[Sequence[str]] = None, **_ignored: Any) -> Mapping[str, Union[~ophyd.Component, Sequence[str]]]
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.parse_factory_axes``
+
 
    Parse a set of axis specifications, return Device class attributes.
 
@@ -705,6 +761,11 @@ Module Contents
 
 
 .. py:function:: pick_closest_solution(position: NamedTuple, solutions: list[NamedTuple]) -> NamedTuple
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.pick_closest_solution``
+
 
    Find the solution closest to the current real position.
 
@@ -726,6 +787,11 @@ Module Contents
 
 .. py:function:: pick_first_solution(position: NamedTuple, solutions: list[NamedTuple]) -> NamedTuple
 
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.pick_first_solution``
+
+
    Choose first solution from list.
 
    Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward()` method to pick
@@ -746,15 +812,30 @@ Module Contents
 
 .. py:function:: roundoff(value: float, digits=4) -> float
 
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.roundoff``
+
+
    Round a number to specified precision.
 
 
-.. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs: Mapping) -> hklpy2.backends.base.SolverBase
+.. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs: Mapping) -> ~hklpy2.backends.base.SolverBase
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.solver_factory``
+
 
    Create a |solver| object with geometry and axes.
 
 
-.. py:function:: solvers() -> Mapping[str, hklpy2.backends.base.SolverBase]
+.. py:function:: solvers() -> Mapping[str, ~hklpy2.backends.base.SolverBase]
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.solvers``
+
 
    Dictionary of available Solver classes, mapped by entry point name.
 
@@ -764,43 +845,22 @@ Module Contents
        print(hklpy2.solvers())
 
 
-.. py:function:: creator_from_config(config: Union[dict, str, pathlib.Path])
-
-   Create a simulated diffractometer from a saved configuration.
-
-   Parses the configuration for the solver, geometry, and axis names, then
-   constructs a simulator (all axes are soft positioners — no hardware
-   connection) and restores the full orientation (samples, reflections, UB
-   matrix, wavelength, constraints) from the configuration.
-
-   PARAMETERS
-
-   config : dict, str, or pathlib.Path
-       Configuration dictionary, or path to a YAML configuration file
-       previously saved with ``diffractometer.export()``.
-
-   RETURNS
-
-   DiffractometerBase
-       A fully configured simulated diffractometer instance.
-
-   EXAMPLE::
-
-       >>> import hklpy2
-       >>> sim = hklpy2.creator_from_config("e4cv-config.yml")
-       >>> sim.wh()
-
-   SEE ALSO
-
-       :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
-
-
 .. py:function:: unique_name(prefix: str = '', length: int = 7) -> str
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.unique_name``
+
 
    Short, unique name, first 7 (at most) characters of a unique, random uuid.
 
 
 .. py:function:: validate_and_canonical_unit(value: str, target_units: str) -> str
+
+   .. container:: import-path
+
+      Import: ``hklpy2.misc.validate_and_canonical_unit``
+
 
    Validate that *value* is a unit convertible to *target_units*.
 

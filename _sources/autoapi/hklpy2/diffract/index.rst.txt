@@ -1,9 +1,11 @@
-hklpy2.diffract
-===============
+diffract
+========
 
 .. py:module:: hklpy2.diffract
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.diffract``
 
    Base class for all diffractometers
 
@@ -16,75 +18,24 @@ hklpy2.diffract
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   hklpy2.diffract.__all__
-   hklpy2.diffract.logger
-   hklpy2.diffract.DEFAULT_PHOTON_ENERGY_KEV
-   hklpy2.diffract.H_OR_N
-   hklpy2.diffract.T
 
 
-Classes
--------
 
-.. autoapisummary::
-
-   hklpy2.diffract.Hklpy2PseudoAxis
-   hklpy2.diffract.DiffractometerBase
-
-
-Functions
----------
-
-.. autoapisummary::
-
-   hklpy2.diffract.creator
-   hklpy2.diffract.diffractometer_class_factory
 
 
 Module Contents
 ---------------
 
-.. py:data:: __all__
-
-.. py:data:: logger
-
 .. py:data:: DEFAULT_PHOTON_ENERGY_KEV
    :value: 8.0
 
 
-.. py:data:: H_OR_N
-
-.. py:data:: T
-
-.. py:class:: Hklpy2PseudoAxis(prefix='', *, limits=None, egu='', parent=None, name=None, source='computed', target_initial_position=False, **kwargs)
-
-   Bases: :py:obj:`ophyd.PseudoSingle`
-
-
-   Override to allow auxiliary pseudos.
-
-
-   .. py:property:: position
-      :type: NamedTuple
-
-
-      The current position of the positioner in its engineering units
-
-      :rtype: position
-
-
-   .. py:method:: _sub_proxy_readback(obj=None, value=None, **kwargs) -> Any
-
-      Override allows (and ignores) auxiliary pseudos.
-
-
-
 .. py:class:: DiffractometerBase(prefix: str = '', *, solver: Optional[str] = None, geometry: Optional[str] = None, solver_kwargs: dict = {}, pseudos: list[str] = [], reals: list[str] = [], reals_units: Optional[str] = None, forward_solution_function: Optional[Callable] = None, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.diffract.DiffractometerBase``
+
 
    Bases: :py:obj:`ophyd.PseudoPositioner`
 
@@ -153,55 +104,7 @@ Module Contents
        ~samples
 
 
-   .. py:attribute:: beam
-
-      Incident monochromatic beam.
-
-
-   .. py:attribute:: _forward_solution
-      :type:  Callable
-
-      Pick a solution from solution(s) of  :meth:`~hklpy2.ops.Core.forward`.
-
-      Choices include:
-
-      * (default) :func:`hklpy2.misc.pick_first_solution`
-      * :func:`hklpy2.misc.pick_closest_solution`
-      * User-supplied function matching the same interface.
-
-      .. seealso::
-          :meth:`hklpy2.diffract.DiffractometerBase.forward`,
-          :meth:`hklpy2.ops.Core.forward`
-
-
-   .. py:attribute:: _backend
-      :value: None
-
-
-
-   .. py:property:: reals_units
-      :type: str
-
-
-      Engineering units for the reals (rotational) axes
-
-
-   .. py:attribute:: core
-
-
-   .. py:property:: digits
-      :type: int
-
-
-      Number of decimal digits used when rendering position tuples.
-
-      This is a per-instance property. Reading returns the instance value if
-      set, otherwise the class default. Setting updates the instance value
-      and re-wraps the instance's PseudoPosition/RealPosition classes so the
-      new digit count is used for their string representations.
-
-
-   .. py:method:: add_reflection(pseudos, reals=None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
+   .. py:method:: add_reflection(pseudos, reals=None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> ~hklpy2.blocks.reflection.Reflection
 
       Add a new reflection with this geometry to the selected sample.
 
@@ -226,17 +129,52 @@ Module Contents
 
 
 
-   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
+   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> ~hklpy2.blocks.sample.Sample
 
       Add a new sample.
 
 
 
+   .. py:property:: auxiliary_axis_names
+      :type: list[str]
+
+
+      Names of all auxiliary positioners, in order of appearance.
+
+      Auxiliary axes are all components using (subclasses of
+      'ophyd.PositionerBase') that are not pseudos or reals.
+
+      Example::
+
+          >>> fourc.auxiliary_axis_names
+          ['h2', 'k2', 'l2']
+
+
+   .. py:attribute:: beam
+
+      Incident monochromatic beam.
+
+
    .. py:property:: configuration
-      :type: hklpy2.typing.KeyValueMap
+      :type: ~hklpy2.typing.KeyValueMap
 
 
       Diffractometer configuration (orientation).
+
+
+   .. py:attribute:: core
+
+
+   .. py:property:: digits
+      :type: int
+
+
+      Number of decimal digits used when rendering position tuples.
+
+      This is a per-instance property. Reading returns the instance value if
+      set, otherwise the class default. Setting updates the instance value
+      and re-wraps the instance's PseudoPosition/RealPosition classes so the
+      new digit count is used for their string representations.
 
 
    .. py:method:: export(file, comment='') -> None
@@ -250,6 +188,98 @@ Module Contents
           e4cv = hklpy2.creator(name="e4cv")
           e4cv.export("e4cv-config.yml", comment="example")
 
+
+
+   .. py:method:: forward(pseudos: dict, wavelength: Optional[float] = None) -> NamedTuple
+
+      Compute real-space coordinates from pseudos (hkl -> angles).
+
+
+
+   .. py:method:: full_position(digits=4) -> ~hklpy2.typing.KeyValueMap
+
+      Return dict with positions of pseudos, reals, & extras.
+
+
+
+   .. py:method:: inverse(reals: tuple, wavelength: Optional[float] = None) -> NamedTuple
+
+      Compute pseudo-space coordinates from reals (angles -> hkl).
+
+
+
+   .. py:method:: move_dict(axes: ~hklpy2.typing.AxesDict) -> ~hklpy2.typing.BlueskyPlanType
+
+      (plan) Move diffractometer axes to positions in 'axes'.
+
+
+
+   .. py:method:: move_forward_with_extras(pseudos: ~hklpy2.typing.AnyAxesType, extras: ~hklpy2.typing.AxesDict) -> ~hklpy2.typing.BlueskyPlanType
+
+      (plan stub) Compute forward solution at fixed pseudos and extras.
+
+      EXAMPLE::
+
+          RE(
+              diffractometer.move_forward_with_extras(
+                  pseudos=dict(h=2, k=1, l=0),
+                  extras=dict(h2=2, k2=2, l2=0, psi=25),
+              )
+          )
+
+
+
+   .. py:method:: move_inverse_with_extras(reals: ~hklpy2.typing.AnyAxesType, extras: ~hklpy2.typing.AxesDict) -> ~hklpy2.typing.BlueskyPlanType
+
+      (plan stub) Compute inverse solution at fixed reals and extras.
+
+      EXAMPLE::
+
+          RE(
+              move_inverse_with_extras(
+                  diffractometer,
+                  reals=dict(omega=10, chi=0, phi=0, phi=20),
+                  extras=dict(h2=2, k2=2, l2=0, psi=25),
+              )
+          )
+
+
+
+   .. py:method:: move_reals(reals: ~hklpy2.typing.AnyAxesType) -> None
+
+      (not a plan) Move the real-space axes as specified in 'real_positions'.
+
+
+
+   .. py:property:: pseudo_axis_names
+      :type: None
+
+
+      Names of all the pseudo axes, in order of appearance.
+
+      Example::
+
+          >>> fourc.pseudo_axis_names
+          ['h', 'k', 'l']
+
+
+   .. py:property:: real_axis_names
+      :type: None
+
+
+      Names of all the real axes, in order of appearance.
+
+      Example::
+
+          >>> fourc.real_axis_names
+          ['omega', 'chi, 'phi', 'tth']
+
+
+   .. py:property:: reals_units
+      :type: str
+
+
+      Engineering units for the reals (rotational) axes
 
 
    .. py:method:: restore(config, clear=True, restore_constraints=True, restore_wavelength=True) -> None
@@ -286,102 +316,21 @@ Module Contents
 
 
 
-   .. py:method:: forward(pseudos: dict, wavelength: Optional[float] = None) -> NamedTuple
-
-      Compute real-space coordinates from pseudos (hkl -> angles).
-
+   .. py:property:: sample
+      :type: Union[None, ~hklpy2.blocks.sample.Sample]
 
 
-   .. py:method:: full_position(digits=4) -> hklpy2.typing.KeyValueMap
-
-      Return dict with positions of pseudos, reals, & extras.
+      Current sample object.
 
 
-
-   .. py:method:: inverse(reals: tuple, wavelength: Optional[float] = None) -> NamedTuple
-
-      Compute pseudo-space coordinates from reals (angles -> hkl).
+   .. py:property:: samples
+      :type: dict[str, ~hklpy2.blocks.sample.Sample]
 
 
-
-   .. py:method:: move_dict(axes: hklpy2.typing.AxesDict) -> hklpy2.typing.BlueskyPlanType
-
-      (plan) Move diffractometer axes to positions in 'axes'.
+      Dictionary of samples.
 
 
-
-   .. py:method:: move_forward_with_extras(pseudos: hklpy2.typing.AnyAxesType, extras: hklpy2.typing.AxesDict) -> hklpy2.typing.BlueskyPlanType
-
-      (plan stub) Compute forward solution at fixed pseudos and extras.
-
-      EXAMPLE::
-
-          RE(
-              diffractometer.move_forward_with_extras(
-                  pseudos=dict(h=2, k=1, l=0),
-                  extras=dict(h2=2, k2=2, l2=0, psi=25),
-              )
-          )
-
-
-
-   .. py:method:: move_inverse_with_extras(reals: hklpy2.typing.AnyAxesType, extras: hklpy2.typing.AxesDict) -> hklpy2.typing.BlueskyPlanType
-
-      (plan stub) Compute inverse solution at fixed reals and extras.
-
-      EXAMPLE::
-
-          RE(
-              move_inverse_with_extras(
-                  diffractometer,
-                  reals=dict(omega=10, chi=0, phi=0, phi=20),
-                  extras=dict(h2=2, k2=2, l2=0, psi=25),
-              )
-          )
-
-
-
-   .. py:method:: move_reals(reals: hklpy2.typing.AnyAxesType) -> None
-
-      (not a plan) Move the real-space axes as specified in 'real_positions'.
-
-
-
-   .. py:method:: _scan_extra_validate_args(args, pseudos, reals)
-
-      Validate the positional arguments for :meth:`scan_extra`.
-
-      Checks that *args* is non-empty and contains groups of three
-      ``(axis, start, finish)``, that every axis name exists in the
-      solver's extra-axis list, that no axis is repeated, and that
-      exactly one of *pseudos* / *reals* is provided.
-
-      Raises ValueError or KeyError on validation failure.
-
-
-
-   .. py:method:: _scan_extra_build_movers(args, num, extras)
-
-      Build a dict of mover descriptions for :meth:`scan_extra`.
-
-      For each ``(axis, start, finish)`` triple in *args*, creates an
-      entry with a position-series generator and an ophyd ``Signal``
-      that bluesky can read during the scan.  Also seeds *extras*
-      with each axis's start position.
-
-      Returns the ``movers`` dict keyed by axis name.
-
-
-
-   .. py:method:: _scan_extra_metadata(args, num, pseudos, reals, extras, md)
-
-      Assemble the run metadata dict for :meth:`scan_extra`.
-
-      Returns a dict suitable for ``bpp.run_decorator(md=...)``.
-
-
-
-   .. py:method:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = None, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.typing.BlueskyPlanType
+   .. py:method:: scan_extra(detectors: ~collections.abc.Iterable[~bluesky.protocols.Readable], *args: Union[~bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = None, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> ~hklpy2.typing.BlueskyPlanType
 
       Scan extra diffractometer parameter(s), such as 'psi'.
 
@@ -430,89 +379,44 @@ Module Contents
 
 
 
-   .. py:method:: _format_value_for_repr(x: Union[float, numpy.floating], digits: int) -> str
-      :staticmethod:
-
-
-      Format numeric values for display without changing them.
-
-      - Floats: fixed-point with `digits` decimals, trailing zeros
-        removed but at least one decimal retained (e.g. 4 -> 4.0).
-      - Other types: fall back to built-in repr.
-
-
-
-   .. py:method:: _make_wrapped_namedtuple_class(orig_cls: Optional[Type[T]], digits: int) -> Optional[Type[T]]
-      :classmethod:
-
-
-      Return a lightweight subclass of ``orig_cls`` with concise repr.
-
-      Avoid re-wrapping when the same digit count is already applied.
-      Supports control of displayed numerical precision in position tuples.
-
-
-
-   .. py:property:: auxiliary_axis_names
-      :type: list[str]
-
-
-      Names of all auxiliary positioners, in order of appearance.
-
-      Auxiliary axes are all components using (subclasses of
-      'ophyd.PositionerBase') that are not pseudos or reals.
-
-      Example::
-
-          >>> fourc.auxiliary_axis_names
-          ['h2', 'k2', 'l2']
-
-
-   .. py:property:: pseudo_axis_names
-      :type: None
-
-
-      Names of all the pseudo axes, in order of appearance.
-
-      Example::
-
-          >>> fourc.pseudo_axis_names
-          ['h', 'k', 'l']
-
-
-   .. py:property:: real_axis_names
-      :type: None
-
-
-      Names of all the real axes, in order of appearance.
-
-      Example::
-
-          >>> fourc.real_axis_names
-          ['omega', 'chi, 'phi', 'tth']
-
-
-   .. py:property:: samples
-      :type: dict[str, hklpy2.blocks.sample.Sample]
-
-
-      Dictionary of samples.
-
-
-   .. py:property:: sample
-      :type: Union[None, hklpy2.blocks.sample.Sample]
-
-
-      Current sample object.
-
-
    .. py:method:: wh(digits=4, full=False) -> None
 
       Concise report of the current diffractometer positions.
 
 
 
-.. py:function:: creator(*, prefix: str = '', name: str = '', solver: str = 'hkl_soleil', geometry: str = 'E4CV', beam_kwargs: dict[str, object] = None, solver_kwargs: dict[str, object] = {}, _pseudo: Optional[Sequence[str]] = None, pseudos: list = [], _real: Optional[Sequence[str]] = None, reals: Optional[Union[Sequence[str], hklpy2.typing.KeyValueMap]] = {}, motor_labels: Optional[Sequence[str]] = ['motors'], labels: list = ['diffractometer'], class_name: str = 'Hklpy2Diffractometer', class_bases: list = [DiffractometerBase], forward_solution_function: Optional[str] = None, **kwargs) -> DiffractometerBase
+.. py:data:: H_OR_N
+
+.. py:class:: Hklpy2PseudoAxis(prefix='', *, limits=None, egu='', parent=None, name=None, source='computed', target_initial_position=False, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.diffract.Hklpy2PseudoAxis``
+
+
+   Bases: :py:obj:`ophyd.PseudoSingle`
+
+
+   Override to allow auxiliary pseudos.
+
+
+   .. py:property:: position
+      :type: NamedTuple
+
+
+      The current position of the positioner in its engineering units
+
+      :rtype: position
+
+
+.. py:data:: T
+
+.. py:function:: creator(*, prefix: str = '', name: str = '', solver: str = 'hkl_soleil', geometry: str = 'E4CV', beam_kwargs: dict[str, object] = None, solver_kwargs: dict[str, object] = {}, _pseudo: Optional[Sequence[str]] = None, pseudos: list = [], _real: Optional[Sequence[str]] = None, reals: Optional[Union[Sequence[str], ~hklpy2.typing.KeyValueMap]] = {}, motor_labels: Optional[Sequence[str]] = ['motors'], labels: list = ['diffractometer'], class_name: str = 'Hklpy2Diffractometer', class_bases: list = [DiffractometerBase], forward_solution_function: Optional[str] = None, **kwargs) -> DiffractometerBase
+
+   .. container:: import-path
+
+      Import: ``hklpy2.diffract.creator``
+
 
    Factory function to create a diffractometer instance.
 
@@ -620,6 +524,11 @@ Module Contents
 
 
 .. py:function:: diffractometer_class_factory(*, solver: str = 'hkl_soleil', geometry: str = 'E4CV', beam_kwargs: dict[str, object] = None, solver_kwargs: dict[str, object] = {'engine': 'hkl'}, _pseudo: Optional[Sequence[str]] = None, pseudos: list = [], _real: Optional[Sequence[str]] = None, reals: list[str] | dict[str, str | None] = {}, motor_labels: Optional[Sequence[str]] = ['motors'], class_name: str = 'Hklpy2Diffractometer', class_bases: list = [DiffractometerBase], forward_solution_function: Optional[str] = None) -> DiffractometerBase
+
+   .. container:: import-path
+
+      Import: ``hklpy2.diffract.diffractometer_class_factory``
+
 
    Build a custom class for this diffractometer geometry.
 

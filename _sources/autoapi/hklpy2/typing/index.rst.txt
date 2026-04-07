@@ -1,9 +1,11 @@
-hklpy2.typing
-=============
+typing
+======
 
 .. py:module:: hklpy2.typing
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.typing``
 
    Package-level type aliases and typed dictionary structures for |hklpy2|.
 
@@ -41,50 +43,25 @@ hklpy2.typing
 
 
 
-Attributes
-----------
 
-.. autoapisummary::
-
-   hklpy2.typing.BlueskyPlanType
-   hklpy2.typing.KeyValueMap
-   hklpy2.typing.NUMERIC
-   hklpy2.typing.INPUT_VECTOR
-   hklpy2.typing.AxesArray
-   hklpy2.typing.AxesDict
-   hklpy2.typing.AxesList
-   hklpy2.typing.AxesTuple
-   hklpy2.typing.AnyAxesType
-   hklpy2.typing.Matrix3x3
-   hklpy2.typing.NamedFloatDict
-
-
-Classes
--------
-
-.. autoapisummary::
-
-   hklpy2.typing.ConfigHeaderDict
 
 
 Module Contents
 ---------------
 
-.. py:data:: BlueskyPlanType
+.. py:data:: AnyAxesType
 
-   Type of a bluesky plan.
+   Any of these types are used to describe both pseudo and real axes.
 
-.. py:data:: KeyValueMap
-
-   Dictionary for configuration and other.
-
-.. py:data:: NUMERIC
-
-   Either integer or real number.
-
-.. py:data:: INPUT_VECTOR
-
-   Acceptable forms of vector input for zones, ...
+   =============   =========================   ====================
+   description     example                     type annotation
+   =============   =========================   ====================
+   dict            {"h": 0, "k": 1, "l": -1}   AxesDict
+   namedtuple      (h=0.0, k=1.0, l=-1.0)      AxesTuple
+   numpy array     numpy.array([0, 1, -1])     AxesArray
+   ordered list    [0, 1, -1]                  AxesList
+   ordered tuple   (0, 1, -1)                  AxesTuple
+   =============   =========================   ====================
 
 .. py:data:: AxesArray
 
@@ -102,33 +79,16 @@ Module Contents
 
    Tuple of axes values.
 
-.. py:data:: AnyAxesType
+.. py:data:: BlueskyPlanType
 
-   Any of these types are used to describe both pseudo and real axes.
-
-   =============   =========================   ====================
-   description     example                     type annotation
-   =============   =========================   ====================
-   dict            {"h": 0, "k": 1, "l": -1}   AxesDict
-   namedtuple      (h=0.0, k=1.0, l=-1.0)      AxesTuple
-   numpy array     numpy.array([0, 1, -1])     AxesArray
-   ordered list    [0, 1, -1]                  AxesList
-   ordered tuple   (0, 1, -1)                  AxesTuple
-   =============   =========================   ====================
-
-.. py:data:: Matrix3x3
-
-   mutable orientation & rotation matrices.
-
-   :type: Python type annotation
-
-.. py:data:: NamedFloatDict
-
-   dictionary of named floats.
-
-   :type: Python type annotation
+   Type of a bluesky plan.
 
 .. py:class:: ConfigHeaderDict
+
+   .. container:: import-path
+
+      Import: ``hklpy2.typing.ConfigHeaderDict``
+
 
    Bases: :py:obj:`TypedDict`
 
@@ -159,4 +119,28 @@ Module Contents
    .. py:attribute:: python_class
       :type:  str
 
+
+.. py:data:: INPUT_VECTOR
+
+   Acceptable forms of vector input for zones, ...
+
+.. py:data:: KeyValueMap
+
+   Dictionary for configuration and other.
+
+.. py:data:: Matrix3x3
+
+   mutable orientation & rotation matrices.
+
+   :type: Python type annotation
+
+.. py:data:: NUMERIC
+
+   Either integer or real number.
+
+.. py:data:: NamedFloatDict
+
+   dictionary of named floats.
+
+   :type: Python type annotation
 
