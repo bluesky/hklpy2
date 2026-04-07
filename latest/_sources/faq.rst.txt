@@ -8,26 +8,233 @@ FAQ
 
 .. rubric:: Frequently Asked Questions
 
-#. Is |hklpy2| ophyd v1 only, or can it be used with with ophyd async?
+**General**
 
-   hklpy2 is ophyd v1 (sync, not async) only
+#. :ref:`faq.ophyd-version`
+#. :ref:`faq.simulation`
+#. :ref:`faq.units`
+#. :ref:`faq.import-gi`
 
-#. Is there a way to use it in some kind of simulation mode?
+**Computation**
 
-   Simulators are easy to create for any defined solver and geometry. This
-   notebook demonstrates an :doc:`example </examples/hkl_soleil-e4cv>` of a
-   4-circle diffractometer that might be used at a synchrotron beam line.
+5. :ref:`faq.no-solutions`
+#. :ref:`faq.constraints-vs-presets`
+#. :ref:`faq.ub-wrong`
 
-#. `import gi` raises an `ImportError` exception when starting in the bluesky queueserver.
+**SPEC users**
 
-   Tracked this `problem <https://github.com/bluesky/hklpy2/issues/69>`_
-   to a situation (on linux 64-bit OS).  Either of these approaches were
-   able to work around this problem until it is resolved upstream:
+8. :ref:`faq.spec-wh-pa`
+#. :ref:`faq.azimuthal`
 
-   1. Set an environment variable when starting the queue-server::
+----
+
+.. _faq.ophyd-version:
+
+Is |hklpy2| ophyd v1 only, or can it be used with ophyd async?
+---------------------------------------------------------------
+
+|hklpy2| uses ophyd v1 (synchronous).  Ophyd async (v2) is not yet supported.
+
+----
+
+.. _faq.simulation:
+
+Is there a way to use |hklpy2| without real hardware?
+------------------------------------------------------
+
+Yes.  Simulators are easy to create for any defined solver and geometry.
+Use :func:`~hklpy2.diffract.creator` without supplying EPICS PV names — all
+real axes default to soft (simulated) positioners::
+
+    import hklpy2
+    e4cv = hklpy2.creator(name="e4cv")
+
+See :doc:`/examples/example-4-circle-creator` for a worked example.
+
+----
+
+.. _faq.units:
+
+What units does |hklpy2| use?
+------------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 30 40
+
+   * - Quantity
+     - Default unit
+     - Notes
+   * - Wavelength
+     - Å (angstroms)
+     - Configurable; energy conversion available for X-rays via
+       :class:`~hklpy2.incident.WavelengthXray`.
+   * - Real axes (angles)
+     - degrees
+     - All motor positions reported and accepted in degrees.
+   * - Reciprocal-space axes (h, k, l)
+     - reciprocal of wavelength unit (Å\ :sup:`-1`)
+     - Dimensionless Miller indices when wavelength is in Å.
+   * - Lattice parameters (a, b, c)
+     - Å (angstroms)
+     - Must match the wavelength unit.
+   * - Lattice angles (α, β, γ)
+     - degrees
+     - —
+
+----
+
+.. _faq.import-gi:
+
+``import gi`` raises an ``ImportError`` when starting the bluesky queue-server.
+--------------------------------------------------------------------------------
+
+This is tracked as :issue:`69`.  The problem occurs on linux 64-bit systems
+when the ``libgobject`` shared library is not on ``LD_LIBRARY_PATH``.  Either
+of these approaches works around it until it is resolved upstream:
+
+1. Set the environment variable when starting the queue-server::
 
        LD_LIBRARY_PATH=${CONDA_PREFIX}/lib start-re-manager <options>
 
-   2. Configure the conda environment to set this on activation::
+2. Configure the conda environment to set this on activation::
 
        conda env config vars set LD_LIBRARY_PATH="${CONDA_PREFIX}/lib"
+
+----
+
+.. _faq.no-solutions:
+
+``forward()`` (or ``cahkl()``) returns no solutions when I expect some.
+------------------------------------------------------------------------
+
+The most common causes, in order of likelihood:
+
+1. **Constraints are too narrow.**  Check ``diffractometer.core.constraints``.
+   Each real axis has a ``low_limit`` and ``high_limit``; the solver silently
+   discards any candidate solution where an axis falls outside those limits.
+   Widen the range for the blocking axis::
+
+       e4cv.core.constraints["omega"].limits = -180, 180
+
+   See :ref:`examples.constraints` for worked examples.
+
+2. **The requested** :math:`hkl` **is outside the Ewald sphere** at the current
+   wavelength.  Use a shorter wavelength (higher energy) or request a lower-angle
+   reflection.
+
+3. **Axes out of order in** ``axes_xref``\ **.**  If you supplied real-axis names
+   in a different order than the solver expects, the cross-reference map silently
+   swaps axes.  A swapped detector angle and sample rotation angle will produce
+   Q = 0, yielding no valid solutions.  Inspect
+   ``diffractometer.core.axes_xref`` and, if necessary, supply
+   ``_real=["name1", "name2", ...]`` to :func:`~hklpy2.diffract.creator` in
+   solver order.  See :ref:`diffract_axes.reals-out-of-order`.
+
+.. seealso:: :ref:`concepts.constraints`, :ref:`concepts.presets`
+
+----
+
+.. _faq.constraints-vs-presets:
+
+What is the difference between constraints and presets?
+--------------------------------------------------------
+
+Both involve holding real axes at specific values, but they act at different
+points in the ``forward()`` computation:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 40 40
+
+   * -
+     - :ref:`Presets <concepts.presets>`
+     - :ref:`Constraints <concepts.constraints>`
+   * - **When**
+     - *Before* computation — the solver *assumes* this value for a constant
+       axis instead of the current motor position.
+     - *After* computation — solutions where an axis falls outside the allowed
+       range are discarded.
+   * - **Effect on motors**
+     - None — no motor moves.
+     - None — no motor moves.
+   * - **Typical use**
+     - SPEC ``freeze``: hold ``phi=0`` while the solver finds ``omega``,
+       ``chi``, ``tth``.
+     - Restrict ``chi`` to ±90° to avoid sample collision.
+
+----
+
+.. _faq.ub-wrong:
+
+The UB matrix looks wrong, or ``pa()`` and ``configuration`` show different values.
+------------------------------------------------------------------------------------
+
+Two common causes:
+
+1. **Axis mapping is swapped.**  If ``axes_xref`` has detector angles wired to
+   sample-rotation slots (or vice versa), the UB calculation receives the wrong
+   angles and produces a degenerate or incorrect matrix.  Verify
+   ``diffractometer.core.axes_xref`` matches your physical wiring.
+   See :ref:`diffract_axes.reals-out-of-order`.
+
+2. **Display precision.**  ``pa()`` rounds values for readability; the stored
+   matrix retains full floating-point precision.  A sign difference (e.g.
+   ``+0.0101`` vs. ``-0.0101``) on a near-zero element is a display rounding
+   artefact.  Retrieve the full matrix via ``diffractometer.sample.UB``.
+
+----
+
+.. _faq.spec-wh-pa:
+
+What are the |hklpy2| equivalents of SPEC's ``wh`` and ``pa``?
+---------------------------------------------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 40 40
+
+   * - SPEC command
+     - |hklpy2| equivalent
+     - Notes
+   * - ``wh``
+     - ``diffractometer.wh()``
+     - Shows current pseudos and reals.  Pass ``full=True`` for more detail.
+   * - ``pa``
+     - ``diffractometer.core.pa()``
+     - Full orientation report: lattice, reflections, UB matrix, constraints,
+       presets.
+   * - ``freeze`` / ``unfreeze``
+     - :ref:`how_presets`
+     - Use ``diffractometer.core.presets``.
+   * - ``cuts`` (cut points)
+     - :ref:`concepts.constraints`
+     - Use ``diffractometer.core.constraints``.
+   * - ``ca`` / ``cahkl``
+     - ``diffractometer.forward(h, k, l)``
+     - Returns all solutions; the diffractometer's ``forward()`` picks one.
+   * - ``ubr`` / ``or0`` / ``or1``
+     - :meth:`~hklpy2.diffract.DiffractometerBase.add_reflection`
+     - Record an orientation reflection.
+
+See :ref:`spec_commands_map` for a comprehensive cross-reference.
+
+----
+
+.. _faq.azimuthal:
+
+Can I perform azimuthal (ψ) scans?
+------------------------------------
+
+Azimuthal scans — rotating the sample about the scattering vector
+:math:`\mathbf{Q}` at fixed :math:`hkl` — are not yet directly supported
+as a built-in plan (:issue:`188`).
+
+With ``hkl_soleil`` geometries that include a ``psi`` extra parameter
+(such as E6C), you can scan the ``psi`` axis using the standard
+:func:`bluesky.plans.scan` over ``diffractometer.psi``.  See
+:doc:`/examples/hkl_soleil-e6c-psi` for an example of the psi extra axis.
+
+For other geometries, a workaround is to compute the required motor angles
+externally (using ``forward()`` at each azimuthal step) and drive the motors
+to each position.

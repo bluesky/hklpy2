@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=437b515a"></script>
+    <script src="_static/documentation_options.js?v=e19b818d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -367,15 +367,13 @@
 <li class="toctree-l2"><a class="reference internal" href="concepts/creator.html">Diffractometer creator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/diffract.html">Diffractometer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/lattice.html">Crystal Lattice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/ops.html">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/presets.html">Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/reflection.html">Orientation Reflection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/sample.html">Sample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/solvers.html">Solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/user.html">User Friendliness</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/wavelength.html">Wavelength</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/planning/_checklist_v2.html">Feature Checklist for v2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/planning/_design-discussion.html">Design for hklpy2</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="diffractometers.html">Diffractometers</a></li>
@@ -403,6 +401,7 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="guides.html">Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="guides/configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/design.html">Design for hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/diffract.html">Diffractometer How-To Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_creator_from_config.html">How to Create a Simulator from a Config</a></li>
@@ -411,9 +410,11 @@
 <li class="toctree-l2"><a class="reference internal" href="guides/how_presets.html">How to Use Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_release.html">How to Make a Release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/howto_write_solver.html">How to write a new Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/solvers.html">Solvers Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/spec_xref.html">SPEC commands in hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/z_checklist_v2.html">Feature Checklist for v2</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
@@ -486,6 +487,180 @@ available for download from the source code website:
 <a class="reference external" href="https://github.com/bluesky/hklpy2/docs/source/examples">https://github.com/bluesky/hklpy2/docs/source/examples</a>.</p>
 <div class="toctree-wrapper compound">
 </div>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/example-4-circle-creator.html"><span class="doc">Example 4-circle diffractometer using creator()</span></a></p></td>
+<td><p>Simulated 4-circle diffractometer built with <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="examples/example-4-circle-custom-class.html"><span class="doc">Example 4-circle diffractometer custom Python class</span></a></p></td>
+<td><p>Same diffractometer built as a custom Python subclass.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/_api_demo.html"><span class="doc">Demonstrate hklpy2’s API</span></a></p></td>
+<td><p>Quick tour of the <strong>hklpy2</strong> API.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="eulerian-geometries-hkl-soleil">
+<h2>Eulerian geometries (hkl_soleil)<a class="headerlink" href="#eulerian-geometries-hkl-soleil" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/hkl_soleil-e4ch.html"><span class="doc">hkl_soleil E4CH</span></a></p></td>
+<td><p>E4CH (horizontal scattering) 4-circle geometry.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="examples/hkl_soleil-e4cv.html"><span class="doc">hkl_soleil E4CV</span></a></p></td>
+<td><p>E4CV (vertical scattering) 4-circle geometry.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/hkl_soleil-e4cv%2Bepics.html"><span class="doc">hkl_soleil E4CV with EPICS motors</span></a></p></td>
+<td><p>E4CV with real EPICS motor PVs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="examples/hkl_soleil-e6c-psi.html"><span class="doc">hkl_soleil E6C psi axis</span></a></p></td>
+<td><p>E6C with the extra <code class="docutils literal notranslate"><span class="pre">psi</span></code> axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/hkl_soleil-e6c-test_calculations.html"><span class="doc">hkl_soleil E6C test of calculations</span></a></p></td>
+<td><p>E6C forward/inverse calculation validation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="kappa-geometries-hkl-soleil">
+<h2>Kappa geometries (hkl_soleil)<a class="headerlink" href="#kappa-geometries-hkl-soleil" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/hkl_soleil-k4cv.html"><span class="doc">hkl_soleil K4CV</span></a></p></td>
+<td><p>K4CV kappa 4-circle geometry.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="orientation-matrix">
+<h2>Orientation matrix<a class="headerlink" href="#orientation-matrix" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/hkl_soleil-ub_calc.html"><span class="doc">hkl_soleil UB matrix : calculate from 2 reflections.</span></a></p></td>
+<td><p>Calculate the UB matrix from two orientation reflections.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="examples/hkl_soleil-ub_set.html"><span class="doc">hkl_soleil UB matrix : Set directly</span></a></p></td>
+<td><p>Set the UB matrix directly.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/hkl_soleil-lattice_refine.html"><span class="doc">hkl_soleil Refine lattice from 3 reflections</span></a></p></td>
+<td><p>Refine lattice parameters from three or more reflections.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="constraints">
+<h2>Constraints<a class="headerlink" href="#constraints" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/constraints.html#examples-constraints"><span class="std std-ref">Constraints</span></a></p></td>
+<td><p>Filter <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions by real-axis range; use presets to
+hold axes fixed during computation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="advanced-topics">
+<h2>Advanced topics<a class="headerlink" href="#advanced-topics" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/virtual-axis.html"><span class="doc">Virtual diffractometer axis</span></a></p></td>
+<td><p>Add a virtual (computed) axis to a diffractometer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="examples/zone-scan.html"><span class="doc">Zone Scan</span></a></p></td>
+<td><p>Scan along a crystallographic zone axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/tst_e4cv_fourc.html"><span class="doc">Compare hkl_soleil E4CV with SPEC fourc</span></a></p></td>
+<td><p>Cross-validate <strong>hklpy2</strong> results against SPEC <code class="docutils literal notranslate"><span class="pre">fourc</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="real-instrument-examples">
+<h2>Real instrument examples<a class="headerlink" href="#real-instrument-examples" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Example</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="examples/aps-isn-e6c.html"><span class="doc">APS ISN Diffractometer</span></a></p></td>
+<td><p>APS ISN 6-circle diffractometer with renamed axes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="examples/nslsii-tardis.html"><span class="doc">NSLS-II tardis diffractometer</span></a></p></td>
+<td><p>NSLS-II TARDIS diffractometer.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 </section>
 
 
@@ -526,6 +701,24 @@ available for download from the source code website:
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting started</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#eulerian-geometries-hkl-soleil">Eulerian geometries (hkl_soleil)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kappa-geometries-hkl-soleil">Kappa geometries (hkl_soleil)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#orientation-matrix">Orientation matrix</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constraints">Constraints</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-topics">Advanced topics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#real-instrument-examples">Real instrument examples</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

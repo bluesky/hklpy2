@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=437b515a"></script>
+    <script src="_static/documentation_options.js?v=e19b818d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -367,15 +367,13 @@
 <li class="toctree-l2"><a class="reference internal" href="concepts/creator.html">Diffractometer creator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/diffract.html">Diffractometer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/lattice.html">Crystal Lattice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/ops.html">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/presets.html">Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/reflection.html">Orientation Reflection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/sample.html">Sample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/solvers.html">Solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/user.html">User Friendliness</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/wavelength.html">Wavelength</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/planning/_checklist_v2.html">Feature Checklist for v2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/planning/_design-discussion.html">Design for hklpy2</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="diffractometers.html">Diffractometers</a></li>
@@ -403,6 +401,7 @@
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Guides</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="guides/configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/design.html">Design for hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/diffract.html">Diffractometer How-To Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_creator_from_config.html">How to Create a Simulator from a Config</a></li>
@@ -411,9 +410,11 @@
 <li class="toctree-l2"><a class="reference internal" href="guides/how_presets.html">How to Use Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_release.html">How to Make a Release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/howto_write_solver.html">How to write a new Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/solvers.html">Solvers Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/spec_xref.html">SPEC commands in hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/z_checklist_v2.html">Feature Checklist for v2</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
@@ -484,6 +485,137 @@
 <div class="toctree-wrapper compound">
 </div>
 <p>Guides, how-to documents, notebooks and tutorials.</p>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Guide</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="guides/diffract.html#guide-diffract"><span class="std std-ref">Diffractometer How-To Guide</span></a></p></td>
+<td><p>Define a diffractometer class, connect it to a solver, and use it
+with the bluesky RunEngine.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="guides/solvers.html#guide-solvers"><span class="std std-ref">Solvers Guide</span></a></p></td>
+<td><p>List, select, and instantiate solvers; understand solver entry points.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="diffractometer-axes">
+<h2>Diffractometer axes<a class="headerlink" href="#diffractometer-axes" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Guide</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="guides/how_extra_reals_and_pseudos.html"><span class="doc">Diffractometer Extra Motors and/or Pseudos</span></a></p></td>
+<td><p>Add extra real motors or pseudo axes beyond the solver defaults.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="guides/how_additional_parameters.html"><span class="doc">Diffractometer Extra Solver Parameters</span></a></p></td>
+<td><p>Pass extra solver parameters (e.g. <code class="docutils literal notranslate"><span class="pre">psi</span></code>) to the backend.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="computation">
+<h2>Computation<a class="headerlink" href="#computation" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Guide</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="guides/how_forward_solution.html#how-forward-solution"><span class="std std-ref">How to Choose the Default forward() Solution</span></a></p></td>
+<td><p>Choose which <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solution the diffractometer uses by default.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="guides/how_presets.html#how-presets"><span class="std std-ref">How to Use Presets</span></a></p></td>
+<td><p>Hold a real axis at a fixed value during <code class="docutils literal notranslate"><span class="pre">forward()</span></code> without moving
+any motor (SPEC <code class="docutils literal notranslate"><span class="pre">freeze</span></code>/<code class="docutils literal notranslate"><span class="pre">unfreeze</span></code> equivalent).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="guides/var_engines.html"><span class="doc">Use E4CV’s q calculation engine</span></a></p></td>
+<td><p>Switch between calculation engines (e.g. <code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">q</span></code>) on the same
+geometry.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="configuration-and-solvers">
+<h2>Configuration and solvers<a class="headerlink" href="#configuration-and-solvers" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Guide</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="guides/configuration_save_restore.html"><span class="doc">Diffractometer Configuration – Save and Restore</span></a></p></td>
+<td><p>Save a full diffractometer configuration (orientation, samples,
+reflections) and restore it later.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="guides/how_creator_from_config.html#how-creator-from-config"><span class="std std-ref">How to Create a Simulator from a Config</span></a></p></td>
+<td><p>Create a simulated diffractometer directly from a saved config file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="guides/howto_write_solver.html#howto-solvers-write"><span class="std std-ref">How to write a new Solver</span></a></p></td>
+<td><p>Write and register a new solver plugin using Python entry points.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="reference-and-background">
+<h2>Reference and background<a class="headerlink" href="#reference-and-background" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Guide</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="guides/spec_xref.html#spec-commands-map"><span class="std std-ref">SPEC commands in hklpy2</span></a></p></td>
+<td><p>Cross-reference of common SPEC commands to their <strong>hklpy2</strong> equivalents.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="guides/migration.html#guide-migration-from-hklpy-v1"><span class="std std-ref">Migration from hklpy (v1)</span></a></p></td>
+<td><p>How code written for <strong>hklpy (v1)</strong> (v1) maps to <strong>hklpy2</strong>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="guides/design.html#guide-design"><span class="std std-ref">Design for hklpy2</span></a></p></td>
+<td><p>Design rationale and architectural decisions behind <strong>hklpy2</strong>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="guides/z_checklist_v2.html#v2-checklist"><span class="std std-ref">Feature Checklist for v2</span></a></p></td>
+<td><p>Feature checklist tracking the v2 build (historical reference).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 </section>
 
 
@@ -524,6 +656,22 @@
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting started</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffractometer-axes">Diffractometer axes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#computation">Computation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-and-solvers">Configuration and solvers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-and-background">Reference and background</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
