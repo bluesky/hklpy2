@@ -35,6 +35,15 @@ describe future plans.
 
     Release expected by 2026-H1.
 
+    Enhancements
+    ------------
+
+    * Add custom autoapi templates for concise page titles (short name as
+      heading, full import path in monospace ``Import:`` line below), and add
+      ``Import:`` line for classes and functions. (:issue:`251`)
+    * Add ``Full API Reference`` card to the User Guide index. (:issue:`251`)
+    * Hide ``sig-prename`` via CSS; style ``import-path`` container. (:issue:`251`)
+
 0.4.2
 #####
 
