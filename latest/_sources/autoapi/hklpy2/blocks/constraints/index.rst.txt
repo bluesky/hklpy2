@@ -1,9 +1,11 @@
-hklpy2.blocks.constraints
-=========================
+constraints
+===========
 
 .. py:module:: hklpy2.blocks.constraints
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.blocks.constraints``
 
    Limitations on acceptable positions for computed 'forward()' solutions.
 
@@ -23,39 +25,18 @@ hklpy2.blocks.constraints
 
 
 
-Attributes
-----------
 
-.. autoapisummary::
-
-   hklpy2.blocks.constraints.ENDPOINT_TOLERANCE
-   hklpy2.blocks.constraints.UNDEFINED_LABEL
-
-
-Classes
--------
-
-.. autoapisummary::
-
-   hklpy2.blocks.constraints.ConstraintBase
-   hklpy2.blocks.constraints.LimitsConstraint
-   hklpy2.blocks.constraints.RealAxisConstraints
 
 
 Module Contents
 ---------------
 
-.. py:data:: ENDPOINT_TOLERANCE
-   :type:  float
-   :value: 0.0001
-
-
-.. py:data:: UNDEFINED_LABEL
-   :type:  str
-   :value: 'undefined'
-
-
 .. py:class:: ConstraintBase
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.constraints.ConstraintBase``
+
 
    Bases: :py:obj:`abc.ABC`
 
@@ -68,33 +49,9 @@ Module Contents
        ~valid
 
 
-   .. py:attribute:: _fields
-      :type:  List[str]
-      :value: []
-
-
-
    .. py:attribute:: label
       :type:  str
       :value: 'undefined'
-
-
-
-   .. py:method:: __repr__() -> str
-
-      Return a nicely-formatted string.
-
-
-
-   .. py:method:: _asdict() -> hklpy2.typing.KeyValueMap
-
-      Return a new dict which maps field names to their values.
-
-
-
-   .. py:method:: _fromdict(config: hklpy2.typing.KeyValueMap, core: Optional[Any] = None)
-
-      Redefine this constraint from a (configuration) dictionary.
 
 
 
@@ -111,7 +68,17 @@ Module Contents
 
 
 
+.. py:data:: ENDPOINT_TOLERANCE
+   :type:  float
+   :value: 0.0001
+
+
 .. py:class:: LimitsConstraint(low_limit: Optional[float] = -180, high_limit: Optional[float] = 180, label: Optional[str] = None)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.constraints.LimitsConstraint``
+
 
    Bases: :py:obj:`ConstraintBase`
 
@@ -135,15 +102,6 @@ Module Contents
 
 
 
-   .. py:attribute:: _fields
-
-
-   .. py:method:: __repr__() -> str
-
-      Return a nicely-formatted string.
-
-
-
    .. py:property:: limits
       :type: tuple[float, float]
 
@@ -164,6 +122,11 @@ Module Contents
 
 .. py:class:: RealAxisConstraints(reals: List[str])
 
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.constraints.RealAxisConstraints``
+
+
    Bases: :py:obj:`dict`
 
 
@@ -176,27 +139,14 @@ Module Contents
        ~valid
 
 
-   .. py:method:: __repr__() -> str
-
-      Return a nicely-formatted string.
-
-
-
-   .. py:method:: _asdict() -> hklpy2.typing.KeyValueMap
-
-      Return all constraints as a dictionary.
-
-
-
-   .. py:method:: _fromdict(config: hklpy2.typing.KeyValueMap, core=None) -> None
-
-      Redefine existing constraints from a (configuration) dictionary.
-
-
-
    .. py:method:: valid(**reals: Dict[str, hklpy2.typing.NUMERIC]) -> bool
 
       Are all constraints satisfied?
 
+
+
+.. py:data:: UNDEFINED_LABEL
+   :type:  str
+   :value: 'undefined'
 
 

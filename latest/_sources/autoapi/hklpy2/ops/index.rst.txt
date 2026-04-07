@@ -1,9 +1,11 @@
-hklpy2.ops
-==========
+ops
+===
 
 .. py:module:: hklpy2.ops
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.ops``
 
    Operate the diffractometer using a |solver| library and geometry.
 
@@ -16,18 +18,16 @@ hklpy2.ops
 
 
 
-Classes
--------
-
-.. autoapisummary::
-
-   hklpy2.ops.Core
-
 
 Module Contents
 ---------------
 
 .. py:class:: Core(diffractometer: hklpy2.diffract.DiffractometerBase, default_sample: bool = True)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.ops.Core``
+
 
    Core operations of a diffractometer, coordinating with sample & |solver|.
 
@@ -85,82 +85,6 @@ Module Contents
        ~solver_summary
 
 
-   .. py:attribute:: axes_xref
-
-
-   .. py:attribute:: diffractometer
-
-
-   .. py:attribute:: _extras
-
-
-   .. py:attribute:: _mode
-      :value: None
-
-
-
-   .. py:attribute:: _mode_presets
-
-
-   .. py:attribute:: _sample_name
-      :value: None
-
-
-
-   .. py:attribute:: _samples
-
-
-   .. py:attribute:: _solver
-      :value: None
-
-
-
-   .. py:attribute:: constraints
-      :value: None
-
-
-
-   .. py:attribute:: configuration
-      :value: None
-
-
-
-   .. py:method:: _asdict() -> hklpy2.typing.KeyValueMap
-
-      Describe the diffractometer as a dictionary.
-
-
-
-   .. py:method:: _axes_names_s2d(axis_dict: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
-
-      Convert keys of axis dictionary from solver to diffractometer.
-
-
-
-   .. py:method:: _axes_names_d2s(axis_dict: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
-
-      Convert keys of axis dictionary from diffractometer to solver.
-
-
-
-   .. py:method:: _fromdict(config: hklpy2.typing.KeyValueMap) -> None
-
-      Redefine diffractometer from a (configuration) dictionary.
-
-
-
-   .. py:method:: _validate_extras(values: hklpy2.typing.NamedFloatDict, expected: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
-
-      Validate that the supplied extras are acceptable.
-
-
-
-   .. py:method:: _validate_pseudos(pseudos: Union[collections.abc.Iterable, hklpy2.typing.NamedFloatDict]) -> bool
-
-      Validate that the supplied pseudos are acceptable.
-
-
-
    .. py:method:: add_reflection(pseudos: hklpy2.typing.AnyAxesType, reals: Union[hklpy2.typing.AnyAxesType, None] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> hklpy2.blocks.reflection.Reflection
 
       Add a new reflection.
@@ -214,6 +138,9 @@ Module Contents
 
 
 
+   .. py:attribute:: axes_xref
+
+
    .. py:property:: axes_xref_reversed
       :type: Mapping[str, str]
 
@@ -227,6 +154,40 @@ Module Contents
 
       The method of Busing & Levy, Acta Cryst 22 (1967) 457.
 
+
+
+   .. py:attribute:: configuration
+      :value: None
+
+
+
+   .. py:property:: constant_axis_names
+      :type: list[str]
+
+
+      List of axis names (diffractometer names) that are held constant
+      in the current mode.
+
+      These are the axes that will use preset values (or current motor
+      positions if no presets are set) when computing ``forward()``
+      solutions.
+
+      EXAMPLE::
+
+          >>> diffractometer.core.mode = "constant_phi"
+          >>> diffractometer.core.constant_axis_names
+          ['phi']
+          >>> diffractometer.core.mode = "bissector"
+          >>> diffractometer.core.constant_axis_names
+          []
+
+
+   .. py:attribute:: constraints
+      :value: None
+
+
+
+   .. py:attribute:: diffractometer
 
 
    .. py:property:: extras
@@ -343,42 +304,11 @@ Module Contents
           {'phi': 45.0}
 
 
-   .. py:property:: constant_axis_names
-      :type: list[str]
-
-
-      List of axis names (diffractometer names) that are held constant
-      in the current mode.
-
-      These are the axes that will use preset values (or current motor
-      positions if no presets are set) when computing ``forward()``
-      solutions.
-
-      EXAMPLE::
-
-          >>> diffractometer.core.mode = "constant_phi"
-          >>> diffractometer.core.constant_axis_names
-          ['phi']
-          >>> diffractometer.core.mode = "bissector"
-          >>> diffractometer.core.constant_axis_names
-          []
-
-
    .. py:method:: refine_lattice(*reflections: list[hklpy2.blocks.reflection.Reflection]) -> hklpy2.blocks.lattice.Lattice
 
       Return the sample lattice computed from 3 or more reflections.
 
       Do not change the sample lattice.  Let the user decide that.
-
-
-
-   .. py:method:: _reflections_to_solver(refl_list: list) -> dict
-
-      (internal) Convert list of reflections to dict for solver.
-
-      Each :class:`~hklpy2.blocks.reflection.Reflection` carries its
-      own units for real axis angles and wavelength.  Convert these to
-      the solver's internal units.
 
 
 
@@ -423,11 +353,39 @@ Module Contents
       Sample dictionary.
 
 
+   .. py:method:: set_solver(name: str, geometry: str, **kwargs: dict) -> hklpy2.backends.base.SolverBase
+
+      Create an instance of the backend |solver| library and geometry.
+
+      PARAMETERS
+
+      solver str:
+          Name of the |solver| library.
+      geometry str:
+          Name of the |solver| geometry.
+      kwargs dict:
+          Any keyword arguments needed by the |solver|.
+
+
+
    .. py:property:: solver
       :type: hklpy2.backends.base.SolverBase
 
 
       Backend |solver| object.
+
+
+   .. py:property:: solver_constant_axis_names
+      :type: list[str]
+
+
+      Ordered list of |solver| real axis names that are constant in the current mode.
+
+      These are axes that are read (not written) by the solver in the current
+      mode. They will use preset values (or current motor positions if no
+      presets are set) when computing ``forward()`` solutions.
+
+      Constant axes are computed as: all real axis names - written axis names.
 
 
    .. py:property:: solver_extra_axis_names
@@ -458,29 +416,6 @@ Module Contents
       Ordered list of |solver| real axis names.
 
 
-   .. py:property:: solver_constant_axis_names
-      :type: list[str]
-
-
-      Ordered list of |solver| real axis names that are constant in the current mode.
-
-      These are axes that are read (not written) by the solver in the current
-      mode. They will use preset values (or current motor positions if no
-      presets are set) when computing ``forward()`` solutions.
-
-      Constant axes are computed as: all real axis names - written axis names.
-
-
-   .. py:property:: solver_written_axis_names
-      :type: list[str]
-
-
-      Ordered list of |solver| real axis names that are solved in the current mode.
-
-      These are axes that are written (computed) by the solver in the current
-      mode.
-
-
    .. py:property:: solver_signature
       :type: str
 
@@ -495,19 +430,14 @@ Module Contents
       Return table of solver's geometry (modes, axes)..
 
 
-   .. py:method:: set_solver(name: str, geometry: str, **kwargs: dict) -> hklpy2.backends.base.SolverBase
+   .. py:property:: solver_written_axis_names
+      :type: list[str]
 
-      Create an instance of the backend |solver| library and geometry.
 
-      PARAMETERS
+      Ordered list of |solver| real axis names that are solved in the current mode.
 
-      solver str:
-          Name of the |solver| library.
-      geometry str:
-          Name of the |solver| geometry.
-      kwargs dict:
-          Any keyword arguments needed by the |solver|.
-
+      These are axes that are written (computed) by the solver in the current
+      mode.
 
 
    .. py:method:: standardize_pseudos(pseudos: hklpy2.typing.AnyAxesType) -> hklpy2.typing.AxesDict

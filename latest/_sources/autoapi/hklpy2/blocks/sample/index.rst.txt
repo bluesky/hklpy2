@@ -1,9 +1,11 @@
-hklpy2.blocks.sample
-====================
+sample
+======
 
 .. py:module:: hklpy2.blocks.sample
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.blocks.sample``
 
    A Crystalline Sample.
 
@@ -13,31 +15,18 @@ hklpy2.blocks.sample
 
 
 
-Attributes
-----------
 
-.. autoapisummary::
-
-   hklpy2.blocks.sample.logger
-   hklpy2.blocks.sample.SampleDictType
-
-
-Classes
--------
-
-.. autoapisummary::
-
-   hklpy2.blocks.sample.Sample
 
 
 Module Contents
 ---------------
 
-.. py:data:: logger
-
-.. py:data:: SampleDictType
-
 .. py:class:: Sample(core: object, name: str, lattice: hklpy2.blocks.lattice.Lattice)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.sample.Sample``
+
 
    A crystalline sample mounted on a diffractometer.
 
@@ -66,23 +55,6 @@ Module Contents
        ~UB
 
 
-   .. py:property:: name
-      :type: str
-
-
-      Sample name.
-
-
-   .. py:attribute:: core
-
-
-   .. py:property:: lattice
-      :type: hklpy2.blocks.lattice.Lattice
-
-
-      Sample crystal lattice.
-
-
    .. py:property:: U
       :type: hklpy2.typing.Matrix3x3
 
@@ -101,41 +73,7 @@ Module Contents
       * :math:`U` - rotation matrix, relative orientation of crystal on diffractometer
 
 
-   .. py:property:: reflections
-      :type: hklpy2.blocks.reflection.ReflectionsDict
-
-
-      Ordered dictionary of orientation reflections.
-
-
-   .. py:method:: __repr__() -> str
-
-      Brief text representation.
-
-
-
-   .. py:method:: _asdict() -> SampleDictType
-
-      Describe the sample as a dictionary.
-
-
-
-   .. py:method:: _fromdict(config: SampleDictType, core=None)
-
-      Redefine sample from a (configuration) dictionary.
-
-
-
-   .. py:method:: refine_lattice() -> None
-
-      Refine the lattice parameters from 3 or more reflections.
-
-
-
-   .. py:method:: remove_reflection(name: str) -> None
-
-      Remove the named reflection.
-
+   .. py:attribute:: core
 
 
    .. py:property:: digits
@@ -145,15 +83,38 @@ Module Contents
       Sample crystal lattice.
 
 
-   .. py:method:: _lattice_changed()
-
-      Called by Lattice.__setattr__ when a parameter changes (#240).
-
+   .. py:property:: lattice
+      :type: hklpy2.blocks.lattice.Lattice
 
 
-   .. py:method:: _validate_matrices(value: hklpy2.typing.Matrix3x3, name: str) -> None
-
-      (internal) Validate U & UB matrices.
+      Sample crystal lattice.
 
 
+   .. py:property:: name
+      :type: str
+
+
+      Sample name.
+
+
+   .. py:method:: refine_lattice() -> None
+
+      Refine the lattice parameters from 3 or more reflections.
+
+
+
+   .. py:property:: reflections
+      :type: hklpy2.blocks.reflection.ReflectionsDict
+
+
+      Ordered dictionary of orientation reflections.
+
+
+   .. py:method:: remove_reflection(name: str) -> None
+
+      Remove the named reflection.
+
+
+
+.. py:data:: SampleDictType
 

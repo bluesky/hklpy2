@@ -1,9 +1,11 @@
-hklpy2.user
-===========
+user
+====
 
 .. py:module:: hklpy2.user
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.user``
 
    Simplified interface for |hklpy2| diffractometer users.
 
@@ -32,81 +34,20 @@ hklpy2.user
 
 
 
-Attributes
-----------
 
-.. autoapisummary::
-
-   hklpy2.user.__all__
-   hklpy2.user.logger
-   hklpy2.user._choice
-   hklpy2.user.add_reflection
-
-
-Classes
--------
-
-.. autoapisummary::
-
-   hklpy2.user._SelectedDiffractometer
-
-
-Functions
----------
-
-.. autoapisummary::
-
-   hklpy2.user.add_sample
-   hklpy2.user.cahkl
-   hklpy2.user.cahkl_table
-   hklpy2.user.calc_UB
-   hklpy2.user.solver_summary
-   hklpy2.user.get_diffractometer
-   hklpy2.user.list_samples
-   hklpy2.user.or_swap
-   hklpy2.user.pa
-   hklpy2.user.remove_reflection
-   hklpy2.user.remove_sample
-   hklpy2.user.scan_extra
-   hklpy2.user.set_diffractometer
-   hklpy2.user.set_wavelength
-   hklpy2.user.set_lattice
-   hklpy2.user.setor
-   hklpy2.user.wh
 
 
 Module Contents
 ---------------
 
-.. py:data:: __all__
-
-.. py:data:: logger
-
-.. py:class:: _SelectedDiffractometer
-
-   Module class to maintain the diffractometer selection.
-
-   .. autosummary::
-
-       ~_selection
-       ~diffractometer
-
-
-   .. py:attribute:: _selection
-      :value: None
-
-
-      The current diffractometer.
-
-
-   .. py:property:: diffractometer
-      :type: hklpy2.diffract.DiffractometerBase
-
-
-
-.. py:data:: _choice
+.. py:data:: add_reflection
 
 .. py:function:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> hklpy2.blocks.sample.Sample
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.add_sample``
+
 
    Add (and select) a new crystal sample.
 
@@ -121,6 +62,11 @@ Module Contents
 
 
 .. py:function:: cahkl(h: float, k: float, l: float) -> Union[list, str]
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.cahkl``
+
 
    Calculate motor positions for specified 'h, k l' - DOES NOT MOVE motors.
 
@@ -139,6 +85,11 @@ Module Contents
 
 
 .. py:function:: cahkl_table(*reflections: list[hklpy2.typing.AxesTuple], digits=4) -> pyRestTable.Table
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.cahkl_table``
+
 
    Print a table with motor positions for each reflection given.
 
@@ -179,6 +130,11 @@ Module Contents
 
 .. py:function:: calc_UB(r1: Union[hklpy2.blocks.reflection.Reflection, str], r2: Union[hklpy2.blocks.reflection.Reflection, str], wavelength: Optional[float] = None) -> hklpy2.typing.Matrix3x3
 
+   .. container:: import-path
+
+      Import: ``hklpy2.user.calc_UB``
+
+
    Compute the UB matrix with two reflections.
 
    EXAMPLE:
@@ -195,40 +151,12 @@ Module Contents
 
 
 
-.. py:function:: solver_summary(write=True) -> pyRestTable.Table | None
-
-   Table of diffractometer solver's modes, axes, ...
-
-   EXAMPLE:
-
-   .. code-block:: python
-       :linenos:
-
-       >>> import hklpy2
-       >>> from hklpy2.user import *
-       >>> e4cv = hklpy2.creator(name="e4cv")
-       >>> set_diffractometer(e4cv)
-       >>> solver_summary()
-       ========= ================== ================== ==================== ==================== ===============
-       engine    mode               pseudo(s)          real(s)              writable(s)          extra(s)
-       ========= ================== ================== ==================== ==================== ===============
-       hkl       bissector          h, k, l            omega, chi, phi, tth omega, chi, phi, tth
-       hkl       constant_omega     h, k, l            omega, chi, phi, tth chi, phi, tth
-       hkl       constant_chi       h, k, l            omega, chi, phi, tth omega, phi, tth
-       hkl       constant_phi       h, k, l            omega, chi, phi, tth omega, chi, tth
-       hkl       double_diffraction h, k, l            omega, chi, phi, tth omega, chi, phi, tth h2, k2, l2
-       hkl       psi_constant       h, k, l            omega, chi, phi, tth omega, chi, phi, tth h2, k2, l2, psi
-       psi       psi                psi                omega, chi, phi, tth omega, chi, phi, tth h2, k2, l2
-       q         q                  q                  tth                  tth
-       incidence incidence          incidence, azimuth omega, chi, phi                           x, y, z
-       emergence emergence          emergence, azimuth omega, chi, phi, tth                      x, y, z
-       ========= ================== ================== ==================== ==================== ===============
-
-   .. seealso:: :ref:`geometries.summary_tables`,
-       :meth:`hklpy2.backends.base.SolverBase.summary()`
-
-
 .. py:function:: get_diffractometer() -> Union[hklpy2.diffract.DiffractometerBase, None]
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.get_diffractometer``
+
 
    Return the currently-selected diffractometer (or ``None``).
 
@@ -252,6 +180,11 @@ Module Contents
 
 .. py:function:: list_samples(full=False) -> None
 
+   .. container:: import-path
+
+      Import: ``hklpy2.user.list_samples``
+
+
    Summarize diffractometer's samples.
 
    Current sample appears first (with prefix ``"> "``).
@@ -269,6 +202,11 @@ Module Contents
 
 
 .. py:function:: or_swap() -> hklpy2.typing.Matrix3x3
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.or_swap``
+
 
    Swap the first 2 ORienting reflections, re-compute & return new [UB].
 
@@ -292,6 +230,11 @@ Module Contents
 
 
 .. py:function:: pa(digits=4) -> None
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.pa``
+
 
    Report (all) the diffractometer settings.
 
@@ -323,6 +266,11 @@ Module Contents
 
 .. py:function:: remove_reflection(name: str, error: bool = True) -> None
 
+   .. container:: import-path
+
+      Import: ``hklpy2.user.remove_reflection``
+
+
    Pop the named reflection and remove it from list of orienting reflections.
 
    EXAMPLE:
@@ -345,6 +293,11 @@ Module Contents
 
 
 .. py:function:: remove_sample(name: str, error: bool = True) -> None
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.remove_sample``
+
 
    Pop the named sample, set "selected" sample name to a valid one.
 
@@ -374,6 +327,11 @@ Module Contents
 
 
 .. py:function:: scan_extra(detectors: collections.abc.Iterable[bluesky.protocols.Readable], *args: Union[bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = None, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> hklpy2.typing.BlueskyPlanType
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.scan_extra``
+
 
    Scan diffractometer parameter(s) at constant pseudos or reals.
 
@@ -436,6 +394,11 @@ Module Contents
 
 .. py:function:: set_diffractometer(diffractometer: Optional[hklpy2.diffract.DiffractometerBase] = None) -> None
 
+   .. container:: import-path
+
+      Import: ``hklpy2.user.set_diffractometer``
+
+
    Declare the diffractometer to be used.
 
    EXAMPLE:
@@ -447,18 +410,12 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.get_diffractometer`
 
 
-.. py:function:: set_wavelength(value: float, units=None) -> None
-
-   Set the wavelength; if Signal has write access, changes control system.
-
-   EXAMPLE:
-
-   .. code-block:: python
-
-       >>> set_wavelength(123.45, units="pm")
-
-
 .. py:function:: set_lattice(a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4) -> None
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.set_lattice``
+
 
    Redefine the sample's lattice.
 
@@ -469,7 +426,28 @@ Module Contents
        >>> set_lattice(3, c=4, gamma=120)
 
 
+.. py:function:: set_wavelength(value: float, units=None) -> None
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.set_wavelength``
+
+
+   Set the wavelength; if Signal has write access, changes control system.
+
+   EXAMPLE:
+
+   .. code-block:: python
+
+       >>> set_wavelength(123.45, units="pm")
+
+
 .. py:function:: setor(h, k, l, *reals: hklpy2.typing.NUMERIC, wavelength=None, name=None, **kwreals: hklpy2.typing.AxesDict) -> hklpy2.blocks.reflection.Reflection
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.setor``
+
 
    Define an ORienting reflection.
 
@@ -529,7 +507,50 @@ Module Contents
      See the examples above.
 
 
+.. py:function:: solver_summary(write=True) -> pyRestTable.Table | None
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.solver_summary``
+
+
+   Table of diffractometer solver's modes, axes, ...
+
+   EXAMPLE:
+
+   .. code-block:: python
+       :linenos:
+
+       >>> import hklpy2
+       >>> from hklpy2.user import *
+       >>> e4cv = hklpy2.creator(name="e4cv")
+       >>> set_diffractometer(e4cv)
+       >>> solver_summary()
+       ========= ================== ================== ==================== ==================== ===============
+       engine    mode               pseudo(s)          real(s)              writable(s)          extra(s)
+       ========= ================== ================== ==================== ==================== ===============
+       hkl       bissector          h, k, l            omega, chi, phi, tth omega, chi, phi, tth
+       hkl       constant_omega     h, k, l            omega, chi, phi, tth chi, phi, tth
+       hkl       constant_chi       h, k, l            omega, chi, phi, tth omega, phi, tth
+       hkl       constant_phi       h, k, l            omega, chi, phi, tth omega, chi, tth
+       hkl       double_diffraction h, k, l            omega, chi, phi, tth omega, chi, phi, tth h2, k2, l2
+       hkl       psi_constant       h, k, l            omega, chi, phi, tth omega, chi, phi, tth h2, k2, l2, psi
+       psi       psi                psi                omega, chi, phi, tth omega, chi, phi, tth h2, k2, l2
+       q         q                  q                  tth                  tth
+       incidence incidence          incidence, azimuth omega, chi, phi                           x, y, z
+       emergence emergence          emergence, azimuth omega, chi, phi, tth                      x, y, z
+       ========= ================== ================== ==================== ==================== ===============
+
+   .. seealso:: :ref:`geometries.summary_tables`,
+       :meth:`hklpy2.backends.base.SolverBase.summary()`
+
+
 .. py:function:: wh(digits=4) -> None
+
+   .. container:: import-path
+
+      Import: ``hklpy2.user.wh``
+
 
    Report (brief) where is the diffractometer.
 
@@ -545,6 +566,4 @@ Module Contents
 
    .. seealso:: :func:`~hklpy2.user.pa`
 
-
-.. py:data:: add_reflection
 

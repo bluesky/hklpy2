@@ -1,9 +1,11 @@
-hklpy2.incident
-===============
+incident
+========
 
 .. py:module:: hklpy2.incident
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.incident``
 
    Wavelength of the monochromatic source radiation.
 
@@ -49,36 +51,18 @@ hklpy2.incident
 
 
 
-Attributes
-----------
 
-.. autoapisummary::
-
-   hklpy2.incident.logger
-   hklpy2.incident.DEFAULT_SOURCE_TYPE
-   hklpy2.incident.DEFAULT_WAVELENGTH
-   hklpy2.incident.DEFAULT_WAVELENGTH_DEADBAND
-   hklpy2.incident.XRAY_ENERGY_EQUIVALENT_
-   hklpy2.incident.A_KEV
-   hklpy2.incident.WavelengthDictType
-
-
-Classes
--------
-
-.. autoapisummary::
-
-   hklpy2.incident._WavelengthBase
-   hklpy2.incident.Wavelength
-   hklpy2.incident.WavelengthXray
-   hklpy2.incident.EpicsWavelengthRO
-   hklpy2.incident.EpicsMonochromatorRO
 
 
 Module Contents
 ---------------
 
-.. py:data:: logger
+.. py:data:: A_KEV
+   :type:  float
+   :value: 12.398419843856837
+
+
+   X-ray voltage wavelength product (:math:`h \nu`), per NIST standard.
 
 .. py:data:: DEFAULT_SOURCE_TYPE
    :type:  str
@@ -95,49 +79,39 @@ Module Contents
    :value: 0.0001
 
 
-.. py:data:: XRAY_ENERGY_EQUIVALENT_
-   :type:  float
-   :value: 806554.3937
+.. py:class:: EpicsMonochromatorRO(prefix: str = '', *, pv_energy: str = '', energy_units: str = INTERNAL_XRAY_ENERGY_UNITS, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.incident.EpicsMonochromatorRO``
 
 
-   Energy equivalent factor :math:`1 / (h \nu)`
-
-   Per NIST publication, of CODATA Fundamental Physical Constants, 2022 revision.
-
-   :see: https://physics.nist.gov/cuu/Constants/factors.html ("1 eV" *v*. "1/m")
-
-.. py:data:: A_KEV
-   :type:  float
-   :value: 12.398419843856837
+   Bases: :py:obj:`EpicsWavelengthRO`
 
 
-   X-ray voltage wavelength product (:math:`h \nu`), per NIST standard.
+   Monochromatic X-ray wavelength (:math:`\lambda`) & energy from EPICS PVs.
 
-.. py:data:: WavelengthDictType
-
-.. py:class:: _WavelengthBase(prefix: str = '', *, source_type: Optional[str] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, wavelength_deadband: float = DEFAULT_WAVELENGTH_DEADBAND, connection_timeout: Optional[float] = None, **kwargs)
-
-   Bases: :py:obj:`ophyd.Device`
+   The EPICS controls are responsible for conversions between wavelength &
+   energy and for making changing these values.
 
 
-   (internal) Base for any monochromatic wavelength (:math:`\lambda`) classes.
-
-   In this class, wavelength is a constant.
-
-   .. autosummary::
-
-       ~_asdict
-       ~_fromdict
+   .. py:attribute:: energy
 
 
-   .. py:attribute:: source_type
+   .. py:attribute:: energy_units
 
-      Description of the incident radiation.
 
-      Defined here as metadata for scientific analyses.  Not used by hklpy2.
+.. py:class:: EpicsWavelengthRO(prefix: str = '', *, pv_wavelength: str = '', wavelength_units: str = INTERNAL_LENGTH_UNITS, **kwargs)
 
-      Suggest using one of the types enumerated by `NeXus
-      <https://manual.nexusformat.org/classes/base_classes/NXsource.html#nxsource-type-field>`_.
+   .. container:: import-path
+
+      Import: ``hklpy2.incident.EpicsWavelengthRO``
+
+
+   Bases: :py:obj:`_WavelengthBase`
+
+
+   Monochromatic wavelength (:math:`\lambda`) from an EPICS PV.
 
 
    .. py:attribute:: wavelength
@@ -150,55 +124,12 @@ Module Contents
       Constant engineering units of wavelength. (Same units as unit cell lengths.)
 
 
-   .. py:attribute:: wavelength_deadband
-
-      Allowed variation in wavelength before signaling change to diffractometer.
-
-
-   .. py:attribute:: _keyset
-      :type:  list[str]
-
-      List of Component names for '_asdict()' and '_fromdict()'.
-
-
-   .. py:method:: _asdict() -> WavelengthDictType
-
-      Returns dictionary with attributes named in '_keyset'.
-
-
-
-   .. py:method:: _fromdict(info: WavelengthDictType) -> None
-
-      Set attributes from dictionary based on keys in '_keyset'.
-
-
-
-   .. py:attribute:: _wavelength_reference
-      :value: None
-
-
-
-   .. py:attribute:: wavelength_updated_func
-      :value: None
-
-
-
-   .. py:method:: _wavelength_changed(value: float, **kwargs) -> None
-
-      Called when wavelength changes (EPICS CA monitor event) or on-demand.
-
-      When wavelength changes more than deadband from reference, call the
-      supplied function with a value of ``True``.
-
-
-
-   .. py:method:: cleanup_subscriptions() -> None
-
-      Clear subscriptions on exit.
-
-
-
 .. py:class:: Wavelength(prefix: str = '', *, source_type: Optional[str] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, wavelength_deadband: float = DEFAULT_WAVELENGTH_DEADBAND, connection_timeout: Optional[float] = None, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.incident.Wavelength``
+
 
    Bases: :py:obj:`_WavelengthBase`
 
@@ -236,7 +167,14 @@ Module Contents
       Engineering units of wavelength. (Same units as unit cell lengths.)
 
 
+.. py:data:: WavelengthDictType
+
 .. py:class:: WavelengthXray(prefix: str = '', *, energy: Optional[float] = None, energy_units: Optional[str] = None, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.incident.WavelengthXray``
+
 
    Bases: :py:obj:`Wavelength`
 
@@ -262,97 +200,14 @@ Module Contents
       unit string is not recognized.
 
 
-   .. py:attribute:: _keyset
-      :type:  list[str]
-
-      List of Component names for '_asdict()' and '_fromdict()'.
-
-
-   .. py:property:: _energy
-      :type: float
+.. py:data:: XRAY_ENERGY_EQUIVALENT_
+   :type:  float
+   :value: 806554.3937
 
 
-      Return the energy, computed from wavelength, in the current units.
+   Energy equivalent factor :math:`1 / (h \nu)`
 
+   Per NIST publication, of CODATA Fundamental Physical Constants, 2022 revision.
 
-   .. py:method:: _to_wavelength(value: float) -> float
-
-      Convert E to lambda.
-
-
-
-   .. py:method:: _to_energy(value: float) -> float
-
-      Convert lambda to E.
-
-
-
-   .. py:method:: _wavelength_changed(value: float, **kwargs) -> None
-
-      Sync energy with wavelength changes.
-
-
-
-.. py:class:: EpicsWavelengthRO(prefix: str = '', *, pv_wavelength: str = '', wavelength_units: str = INTERNAL_LENGTH_UNITS, **kwargs)
-
-   Bases: :py:obj:`_WavelengthBase`
-
-
-   Monochromatic wavelength (:math:`\lambda`) from an EPICS PV.
-
-
-   .. py:attribute:: wavelength
-
-      Constant wavelength (:math:`\lambda`) of incident monochromatic beam.
-
-
-   .. py:attribute:: wavelength_units
-
-      Constant engineering units of wavelength. (Same units as unit cell lengths.)
-
-
-   .. py:attribute:: _pv_wavelength
-      :value: ''
-
-
-
-   .. py:method:: _asdict() -> WavelengthDictType
-
-      .
-
-
-
-.. py:class:: EpicsMonochromatorRO(prefix: str = '', *, pv_energy: str = '', energy_units: str = INTERNAL_XRAY_ENERGY_UNITS, **kwargs)
-
-   Bases: :py:obj:`EpicsWavelengthRO`
-
-
-   Monochromatic X-ray wavelength (:math:`\lambda`) & energy from EPICS PVs.
-
-   The EPICS controls are responsible for conversions between wavelength &
-   energy and for making changing these values.
-
-
-   .. py:attribute:: energy
-
-
-   .. py:attribute:: energy_units
-
-
-   .. py:attribute:: _keyset
-      :type:  list[str]
-
-      List of Component names for '_asdict()' and '_fromdict()'.
-
-
-   .. py:attribute:: _pv_energy
-      :value: ''
-
-
-
-   .. py:method:: _asdict() -> WavelengthDictType
-
-      .
-
-
+   :see: https://physics.nist.gov/cuu/Constants/factors.html ("1 eV" *v*. "1/m")
 

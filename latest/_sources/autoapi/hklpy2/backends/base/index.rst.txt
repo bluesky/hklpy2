@@ -1,9 +1,11 @@
-hklpy2.backends.base
-====================
+base
+====
 
 .. py:module:: hklpy2.backends.base
 
 .. autoapi-nested-parse::
+
+   Import: ``hklpy2.backends.base``
 
    Abstract base class for all solvers.
 
@@ -13,28 +15,16 @@ hklpy2.backends.base
 
 
 
-Attributes
-----------
-
-.. autoapisummary::
-
-   hklpy2.backends.base.logger
-
-
-Classes
--------
-
-.. autoapisummary::
-
-   hklpy2.backends.base.SolverBase
-
 
 Module Contents
 ---------------
 
-.. py:data:: logger
-
 .. py:class:: SolverBase(geometry: str, *, mode: str = '', **kwargs: Any)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.backends.base.SolverBase``
+
 
    Bases: :py:obj:`abc.ABC`
 
@@ -100,20 +90,6 @@ Module Contents
        ~UB
 
 
-   .. py:attribute:: name
-      :type:  str
-      :value: 'base'
-
-
-      Name of this Solver.
-
-
-   .. py:attribute:: version
-      :type:  str
-
-      Version of this Solver.
-
-
    .. py:attribute:: ANGLE_UNITS
       :type:  str
       :value: 'degrees'
@@ -136,40 +112,11 @@ Module Contents
       ``INTERNAL_LENGTH_UNITS``.
 
 
-   .. py:attribute:: _gname
-      :type:  str
+   .. py:property:: UB
+      :type: hklpy2.typing.Matrix3x3
 
 
-   .. py:property:: mode
-      :type: str
-
-
-      Diffractometer geometry operation mode for :meth:`forward()`.
-
-      A mode defines which axes will be modified by the
-      :meth:`forward` computation.
-
-
-   .. py:attribute:: _all_extra_axis_names
-      :type:  Optional[List[str]]
-      :value: None
-
-
-
-   .. py:attribute:: _sample
-      :type:  Optional[hklpy2.backends.typing.SampleDict]
-      :value: None
-
-
-
-   .. py:method:: __repr__() -> str
-
-
-   .. py:property:: _metadata
-      :type: hklpy2.backends.typing.SolverMetadataDict
-
-
-      Dictionary with this solver's summary metadata.
+      Orientation matrix (3x3).
 
 
    .. py:method:: addReflection(reflection: hklpy2.backends.typing.ReflectionDict) -> None
@@ -266,6 +213,16 @@ Module Contents
       Crystal lattice parameters.  (Not used by this |solver|.)
 
 
+   .. py:property:: mode
+      :type: str
+
+
+      Diffractometer geometry operation mode for :meth:`forward()`.
+
+      A mode defines which axes will be modified by the
+      :meth:`forward` computation.
+
+
    .. py:property:: modes
       :type: List[str]
 
@@ -273,6 +230,14 @@ Module Contents
 
 
       List of the geometry operating modes.
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'base'
+
+
+      Name of this Solver.
 
 
    .. py:property:: pseudo_axis_names
@@ -316,13 +281,6 @@ Module Contents
       Crystalline sample.
 
 
-   .. py:property:: _summary_dict
-      :type: hklpy2.typing.KeyValueMap
-
-
-      Return a summary of the geometry (modes, axes)
-
-
    .. py:property:: summary
       :type: pyRestTable.Table
 
@@ -333,10 +291,9 @@ Module Contents
           :func:`hklpy2.user.solver_summary()`
 
 
-   .. py:property:: UB
-      :type: hklpy2.typing.Matrix3x3
+   .. py:attribute:: version
+      :type:  str
 
-
-      Orientation matrix (3x3).
+      Version of this Solver.
 
 
