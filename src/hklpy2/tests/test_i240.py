@@ -1,8 +1,9 @@
 """Test issue #240"""
 
 import pathlib
-import numpy as np
 import uuid
+
+import numpy as np
 import yaml
 
 I250_CONFIG_FILE = pathlib.Path(__file__).parent / "configuration_i240.yml"
@@ -162,9 +163,9 @@ def test_i240_hkl_soleil():
 
 def test_i240_libhkl():
     """Test the libhkl code without the solver API."""
-    from hklpy2.backends.hkl_soleil import libhkl
     from hklpy2.backends.hkl_soleil import LIBHKL_DETECTOR_TYPE
     from hklpy2.backends.hkl_soleil import LIBHKL_USER_UNITS
+    from hklpy2.backends.hkl_soleil import libhkl
 
     SAMPLE_NAME = I250_CONFIG["sample_name"]
     SAMPLE = I250_CONFIG["samples"][SAMPLE_NAME]

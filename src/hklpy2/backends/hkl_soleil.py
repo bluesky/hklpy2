@@ -42,20 +42,19 @@ import platform
 from typing import Dict
 from typing import List
 
-from gi._error import GError
-
 import numpy as np
+from gi._error import GError
 from numpy import typing as npt
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
 from ..misc import NoForwardSolutions
-from ..typing import Matrix3x3
-from ..typing import NamedFloatDict
 from ..misc import check_value_in_list
 from ..misc import istype
 from ..misc import roundoff
 from ..misc import unique_name
+from ..typing import Matrix3x3
+from ..typing import NamedFloatDict
 from .base import SolverBase
 from .hkl_soleil_utils import setup_libhkl
 from .typing import ReflectionDict

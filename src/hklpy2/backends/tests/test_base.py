@@ -3,6 +3,7 @@
 # Many features are tested, albeit indrectly, in specific solvers.
 
 import re
+
 import pyRestTable
 import pytest
 

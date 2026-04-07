@@ -1,6 +1,6 @@
-import re
 import math
 import pathlib
+import re
 from contextlib import nullcontext as does_not_raise
 
 import pytest

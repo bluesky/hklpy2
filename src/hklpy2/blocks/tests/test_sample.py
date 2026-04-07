@@ -1,6 +1,6 @@
+import re
 from contextlib import nullcontext as does_not_raise
 
-import re
 import pytest
 
 from ...diffract import creator

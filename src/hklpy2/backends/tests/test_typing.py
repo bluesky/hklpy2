@@ -9,7 +9,6 @@ from ..typing import ReflectionDict
 from ..typing import SampleDict
 from ..typing import SolverMetadataDict
 
-
 # ---------------------------------------------------------------------------
 # ReflectionDict
 # ---------------------------------------------------------------------------

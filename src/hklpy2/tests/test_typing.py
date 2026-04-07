@@ -8,7 +8,6 @@ import pytest
 
 from ..typing import ConfigHeaderDict
 
-
 # ---------------------------------------------------------------------------
 # Simple type aliases — verify the aliases resolve to the expected types
 # ---------------------------------------------------------------------------

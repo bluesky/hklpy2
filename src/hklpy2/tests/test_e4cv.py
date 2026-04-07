@@ -1,8 +1,8 @@
 """Various configurations of the E4CV geometry."""
 
+import re
 from contextlib import nullcontext as does_not_raise
 
-import re
 import numpy as np
 import ophyd.utils.errors
 import pytest
