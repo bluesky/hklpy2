@@ -471,21 +471,42 @@ fi
 echo ""
 if [[ "${DRY_RUN}" == "true" ]]; then
     if [[ "${IS_GH_PRERELEASE}" == "true" ]]; then
-        dryrun "gh release create ${VERSION} --title ${VERSION} --prerelease --latest=false"
+        dryrun "gh release create ${VERSION} --title ${VERSION} --prerelease --latest=false (with generated notes prepended)"
     else
-        dryrun "gh release create ${VERSION} --title ${VERSION} --generate-notes --latest"
+        dryrun "gh release create ${VERSION} --title ${VERSION} --prerelease=false --latest (with generated notes prepended)"
     fi
 elif confirm "Create GitHub Release for ${VERSION} now?"; then
+    # Build release notes: RELEASE_NOTES.rst link + horizontal bar + GitHub-generated notes
+    _RELEASE_NOTES_HEADER="See [RELEASE_NOTES.rst](https://github.com/bluesky/hklpy2/blob/main/RELEASE_NOTES.rst) for details.
+
+----------------------
+
+"
+    # Determine the previous tag to generate notes relative to
+    _PREV_TAG="$(git tag --sort=-version:refname | grep -v "^${VERSION}$" | head -1)"
+    if [[ -n "${_PREV_TAG}" ]]; then
+        _GH_NOTES="$(gh api repos/bluesky/hklpy2/releases/generate-notes \
+            -f tag_name="${VERSION}" \
+            -f previous_tag_name="${_PREV_TAG}" \
+            --jq '.body')"
+    else
+        _GH_NOTES="$(gh api repos/bluesky/hklpy2/releases/generate-notes \
+            -f tag_name="${VERSION}" \
+            --jq '.body')"
+    fi
+    _FULL_NOTES="${_RELEASE_NOTES_HEADER}${_GH_NOTES}"
+
     if [[ "${IS_GH_PRERELEASE}" == "true" ]]; then
         gh release create "${VERSION}" \
             --title "${VERSION}" \
-            --notes "See [RELEASE_NOTES.rst](https://github.com/bluesky/hklpy2/blob/main/RELEASE_NOTES.rst) for details." \
+            --notes "${_FULL_NOTES}" \
             --prerelease \
             --latest=false
     else
         gh release create "${VERSION}" \
             --title "${VERSION}" \
-            --generate-notes \
+            --notes "${_FULL_NOTES}" \
+            --prerelease=false \
             --latest
     fi
     success "GitHub Release created."
