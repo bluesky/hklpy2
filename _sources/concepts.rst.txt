@@ -9,7 +9,6 @@ Concepts
    :hidden:
 
    concepts/*
-   concepts/planning/*
 
 .. figure:: _static/hklpy2-block-diagram.png
    :alt: hklpy2 block diagram

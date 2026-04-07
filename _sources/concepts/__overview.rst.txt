@@ -20,4 +20,4 @@ axes. Geometries are defined by backend  :ref:`concepts.solvers`. Some solvers
 support different calculation engines (other than :math:`hkl`). It is common for a
 geometry to support several operating *modes*.
 
-.. seealso:: :ref:`glossary`, :ref:`v2_checklist`
+.. seealso:: :ref:`glossary`

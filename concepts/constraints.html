@@ -42,11 +42,13 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=437b515a"></script>
+    <script src="../_static/documentation_options.js?v=e19b818d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'concepts/constraints';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
@@ -367,15 +369,13 @@
 <li class="toctree-l2"><a class="reference internal" href="creator.html">Diffractometer creator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diffract.html">Diffractometer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lattice.html">Crystal Lattice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="ops.html">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presets.html">Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reflection.html">Orientation Reflection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sample.html">Sample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user.html">User Friendliness</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wavelength.html">Wavelength</a></li>
-<li class="toctree-l2"><a class="reference internal" href="planning/_checklist_v2.html">Feature Checklist for v2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="planning/_design-discussion.html">Design for hklpy2</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../diffractometers.html">Diffractometers</a></li>
@@ -403,6 +403,7 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guides.html">Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/design.html">Design for hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/diffract.html">Diffractometer How-To Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_creator_from_config.html">How to Create a Simulator from a Config</a></li>
@@ -411,9 +412,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_presets.html">How to Use Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_release.html">How to Make a Release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/howto_write_solver.html">How to write a new Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/solvers.html">Solvers Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/spec_xref.html">SPEC commands in hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/z_checklist_v2.html">Feature Checklist for v2</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -484,25 +487,32 @@
                   
   <section id="constraints">
 <span id="concepts-constraints"></span><h1>Constraints<a class="headerlink" href="#constraints" title="Link to this heading">#</a></h1>
-<p id="index-0">Computation of <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> can have
-many solutions.  One or more constraints
-(<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a>) (a.k.a, cut points),
-together with a choice of operating <strong>mode</strong>, can be applied to:</p>
+<p id="index-0"><strong>Constraints</strong> filter the solutions returned by a
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> computation.</p>
+<p>The solver can return many candidate sets of real-axis angles for a given
+<span class="math notranslate nohighlight">\(hkl\)</span> position.  One or more constraints
+(<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a>), together with a choice
+of operating <strong>mode</strong>, narrow those candidates by:</p>
 <ul class="simple">
-<li><p>Limit the range of <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>
-solutions accepted for that positioner.</p></li>
-<li><p>Future possibilities derived from
-<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a></p></li>
+<li><p>Accepting only solutions where each real axis falls within a specified range.</p></li>
 </ul>
 <div class="admonition tip" id="index-1">
 <p class="admonition-title">Tip</p>
 <p><em>Constraints</em> are implemented as <em>cut points</em> in other software.
 Similar in concept yet not entirely identical in implementation.</p>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Constraints act <em>after</em> the solver computes solutions.  If you want
+the solver to <em>assume</em> a specific value for a constant axis <em>before</em>
+computation, use <a class="reference internal" href="presets.html#concepts-presets"><span class="std std-ref">Presets</span></a> instead.</p>
+</div>
 <p class="rubric">Examples</p>
 <p>Many of the <a class="reference internal" href="../examples.html#examples"><span class="std std-ref">Examples</span></a> show how to adjust <a class="reference internal" href="../examples/constraints.html#examples-constraints"><span class="std std-ref">constraints</span></a>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
+<p><a class="reference internal" href="presets.html#concepts-presets"><span class="std std-ref">Presets</span></a> — define constant-axis values used before
+<code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.</p>
 <p><a class="reference internal" href="../glossary.html#glossary"><span class="std std-ref">Glossary</span></a></p>
 </div>
 </section>

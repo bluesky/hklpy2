@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=437b515a"></script>
+    <script src="_static/documentation_options.js?v=e19b818d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -587,6 +587,11 @@ version is available, with a link to it. (<a class="extlink-issue reference exte
 <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.restore" title="hklpy2.diffract.DiffractometerBase.restore"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restore()</span></code></a>, applying geometry
 validation, beam/wavelength restoration, and state clearing consistently
 with calling <code class="docutils literal notranslate"><span class="pre">restore()</span></code> directly. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/231">issue #231</a>)</p></li>
+<li><p>Fix stale lattice parameters not reaching the solver before <code class="docutils literal notranslate"><span class="pre">calc_UB()</span></code>
+computes the orientation matrix; lattice changes now propagate immediately
+via <code class="docutils literal notranslate"><span class="pre">Lattice.__setattr__</span></code> → <code class="docutils literal notranslate"><span class="pre">Sample</span></code> callback → solver update, so
+subsequent <code class="docutils literal notranslate"><span class="pre">forward()</span></code> / <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> calls use the correct lattice.
+(<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/240">issue #240</a>, <a class="extlink-pr reference external" href="https://github.com/bluesky/hklpy2/pull/244">PR #244</a>)</p></li>
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">LimitsConstraint.valid()</span></code> rejecting solver solutions that land just
 outside a limit boundary due to floating-point arithmetic; increase
 <code class="docutils literal notranslate"><span class="pre">ENDPOINT_TOLERANCE</span></code> from <code class="docutils literal notranslate"><span class="pre">1e-7</span></code> to <code class="docutils literal notranslate"><span class="pre">1e-4</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/242">issue #242</a>)</p></li>
@@ -891,7 +896,7 @@ reflections when computing constant-axis modes. (<a class="extlink-issue referen
 <ul class="simple">
 <li><p>Ready for relocation to Bluesky organization on GitHub.</p></li>
 <li><p>See <a class="reference internal" href="concepts.html#concepts"><span class="std std-ref">Concepts</span></a> for more details about how this works.</p></li>
-<li><p>See <a class="reference internal" href="concepts/planning/_checklist_v2.html#v2-checklist"><span class="std std-ref">Feature Checklist for v2</span></a> for progress on what has been planned.</p></li>
+<li><p>See <a class="reference internal" href="guides/z_checklist_v2.html#v2-checklist"><span class="std std-ref">Feature Checklist for v2</span></a> for progress on what has been planned.</p></li>
 <li><p>For those familiar with SPEC, see <a class="reference internal" href="guides/spec_xref.html#spec-commands-map"><span class="std std-ref">SPEC commands in hklpy2</span></a>.</p></li>
 </ul>
 </section>

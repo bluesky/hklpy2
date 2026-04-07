@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=437b515a"></script>
+    <script src="../_static/documentation_options.js?v=e19b818d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -58,8 +58,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Orientation Reflection" href="reflection.html" />
-    <link rel="prev" title="Migration from hklpy (v1)" href="migration.html" />
+    <link rel="next" title="Presets" href="presets.html" />
+    <link rel="prev" title="Crystal Lattice" href="lattice.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.4" />
@@ -367,15 +367,13 @@
 <li class="toctree-l2"><a class="reference internal" href="creator.html">Diffractometer creator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diffract.html">Diffractometer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lattice.html">Crystal Lattice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presets.html">Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reflection.html">Orientation Reflection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sample.html">Sample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user.html">User Friendliness</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wavelength.html">Wavelength</a></li>
-<li class="toctree-l2"><a class="reference internal" href="planning/_checklist_v2.html">Feature Checklist for v2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="planning/_design-discussion.html">Design for hklpy2</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../diffractometers.html">Diffractometers</a></li>
@@ -403,6 +401,7 @@
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../guides.html">Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/design.html">Design for hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/diffract.html">Diffractometer How-To Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_creator_from_config.html">How to Create a Simulator from a Config</a></li>
@@ -411,9 +410,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_presets.html">How to Use Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/how_release.html">How to Make a Release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/howto_write_solver.html">How to write a new Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/solvers.html">Solvers Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/spec_xref.html">SPEC commands in hklpy2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/z_checklist_v2.html">Feature Checklist for v2</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
@@ -510,29 +511,10 @@ a diffractometer.</p>
 </div>
 <p>In addition to <strong>Solver</strong> transactions, the <code class="docutils literal notranslate"><span class="pre">.core</span></code> manages all
 details involving the set of samples and their lattices &amp; reflections.</p>
-<p>Here, we use the <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> to create a simulated 4-circle
-diffractometer with the <a class="reference internal" href="../diffractometers.html#geometries-hkl-soleil-e4cv"><span class="std std-ref">E4CV</span></a> geometry.</p>
-<p>EXAMPLE:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">creator</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span> <span class="o">=</span> <span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">sample</span>
-<span class="go">Sample(name=&#39;cubic&#39;, lattice=Lattice(a=1, b=1, c=1, alpha=90.0, beta=90.0, gamma=90.0))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span>
-<span class="go">HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;v5.0.0.3434&#39;, geometry=&#39;E4CV&#39;, engine=&#39;hkl&#39;, mode=&#39;bissector&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span>
-<span class="go">{}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;r1&quot;</span><span class="p">)</span>
-<span class="go">Reflection(name=&#39;r1&#39;, geometry=&#39;E4CV&#39;, pseudos={&#39;h&#39;: 1, &#39;k&#39;: 0, &#39;l&#39;: 0}, reals={&#39;omega&#39;: 10, &#39;chi&#39;: 0, &#39;phi&#39;: 0, &#39;tth&#39;: 20}, wavelength=1.0)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;r2&quot;</span><span class="p">)</span>
-<span class="go">Reflection(name=&#39;r2&#39;, geometry=&#39;E4CV&#39;, pseudos={&#39;h&#39;: 0, &#39;k&#39;: 1, &#39;l&#39;: 0}, reals={&#39;omega&#39;: 10, &#39;chi&#39;: -90, &#39;phi&#39;: 0, &#39;tth&#39;: 20}, wavelength=1.0)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span>
-<span class="go">{&#39;r1&#39;: {&#39;name&#39;: &#39;r1&#39;, &#39;geometry&#39;: &#39;E4CV&#39;, &#39;pseudos&#39;: {&#39;h&#39;: 1, &#39;k&#39;: 0, &#39;l&#39;: 0}, &#39;reals&#39;: {&#39;omega&#39;: 10, &#39;chi&#39;: 0, &#39;phi&#39;: 0, &#39;tth&#39;: 20}, &#39;wavelength&#39;: 1.0, &#39;order&#39;: 0}, &#39;r2&#39;: {&#39;name&#39;: &#39;r2&#39;, &#39;geometry&#39;: &#39;E4CV&#39;, &#39;pseudos&#39;: {&#39;h&#39;: 0, &#39;k&#39;: 1, &#39;l&#39;: 0}, &#39;reals&#39;: {&#39;omega&#39;: 10, &#39;chi&#39;: -90, &#39;phi&#39;: 0, &#39;tth&#39;: 20}, &#39;wavelength&#39;: 1.0, &#39;order&#39;: 1}}</span>
-
-<span class="go">Using the ``e4cv`` simulator, the property is::</span>
-
-<span class="go">    &gt;&gt;&gt; e4cv.core.solver_signature</span>
-<span class="go">    &quot;HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)&quot;</span>
-</pre></div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../guides/diffract.html#guide-diffract"><span class="std std-ref">Diffractometer How-To Guide</span></a> for step-by-step instructions on creating
+and using a diffractometer object.</p>
 </div>
 <section id="core-concepts">
 <span id="index-1"></span><h2>Core concepts<a class="headerlink" href="#core-concepts" title="Link to this heading">#</a></h2>
@@ -578,8 +560,8 @@ matrix via <code class="docutils literal notranslate"><span class="pre">calc_UB(
 <td><p><a class="reference internal" href="reflection.html#concepts-reflection"><span class="std std-ref">Orientation Reflection</span></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>Constraints</p></td>
-<td><p>Limits and conditions on real-axis values that filter the solutions
-returned by <code class="docutils literal notranslate"><span class="pre">forward()</span></code>.</p></td>
+<td><p>Limits on real-axis ranges that filter the solutions returned by
+<code class="docutils literal notranslate"><span class="pre">forward()</span></code>.  Act <em>after</em> computation.</p></td>
 <td><p><a class="reference internal" href="constraints.html#concepts-constraints"><span class="std std-ref">Constraints</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p>Axis names</p></td>
@@ -589,8 +571,9 @@ names, set by <code class="docutils literal notranslate"><span class="pre">assig
 </tr>
 <tr class="row-odd"><td><p>Presets</p></td>
 <td><p>Per-mode constant-axis values the solver assumes during <code class="docutils literal notranslate"><span class="pre">forward()</span></code>
-instead of the current motor positions; do not move any motor.</p></td>
-<td><p><a class="reference internal" href="../guides/how_presets.html#how-presets"><span class="std std-ref">How to Use Presets</span></a></p></td>
+instead of the current motor positions; do not move any motor.
+Act <em>before</em> computation.</p></td>
+<td><p><a class="reference internal" href="presets.html#concepts-presets"><span class="std std-ref">Presets</span></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -609,20 +592,20 @@ instead of the current motor positions; do not move any motor.</p></td>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="migration.html"
+       href="lattice.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Migration from <strong>hklpy (v1)</strong></p>
+        <p class="prev-next-title">Crystal Lattice</p>
       </div>
     </a>
     <a class="right-next"
-       href="reflection.html"
+       href="presets.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Orientation Reflection</p>
+        <p class="prev-next-title">Presets</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
