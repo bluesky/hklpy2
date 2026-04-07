@@ -22,6 +22,14 @@ repos:
       # - id: check-json
       # - id: check-symlinks
       - id: check-executables-have-shebangs
+  - repo: local
+    hooks:
+      - id: update-copyright-year
+        name: Update copyright end year
+        language: python
+        entry: python scripts/update_copyright_year.py
+        pass_filenames: false
+        always_run: true
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.6
     hooks:
