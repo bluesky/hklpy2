@@ -63,8 +63,8 @@ where each is described in more detail.
         matrix via ``calc_UB()``.
       - :ref:`concepts.reflection`
     * - Constraints
-      - Limits and conditions on real-axis values that filter the solutions
-        returned by ``forward()``.
+      - Limits on real-axis ranges that filter the solutions returned by
+        ``forward()``.  Act *after* computation.
       - :ref:`concepts.constraints`
     * - Axis names
       - Cross-reference map between diffractometer axis names and solver axis
@@ -73,4 +73,5 @@ where each is described in more detail.
     * - Presets
       - Per-mode constant-axis values the solver assumes during ``forward()``
         instead of the current motor positions; do not move any motor.
-      - :ref:`how_presets`
+        Act *before* computation.
+      - :ref:`concepts.presets`

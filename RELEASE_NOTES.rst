@@ -47,6 +47,9 @@ describe future plans.
     Maintenance
     -----------
 
+    * Add ``concepts/presets.rst`` concepts page; update ``concepts/constraints.rst``
+      with the presets/constraints distinction and mutual cross-references.
+      (:issue:`259`)
     * Revise concepts documents to be brief and purely conceptual; move
       ``migration.rst`` from ``concepts/`` to ``guides/`` and remove
       guide-like example content from ``ops.rst``. (:issue:`259`)

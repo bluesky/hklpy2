@@ -156,6 +156,9 @@ When presets are active, :meth:`~hklpy2.diffract.DiffractometerBase.wh` with
 
 .. seealso::
 
-    :ref:`concepts.ops` — overview of Core concepts, including presets.
+    :ref:`concepts.presets` — concept overview of presets.
+
+    :ref:`concepts.constraints` — filter ``forward()`` solutions after
+    computation (contrast with presets, which act before).
 
     :class:`~hklpy2.ops.Core` — full API reference.

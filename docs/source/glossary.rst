@@ -204,7 +204,7 @@ Glossary
   position.  Presets do not move any motor.  Each *mode* stores its
   own independent preset dictionary, defaulting to ``{}``.
 
-  .. seealso:: :ref:`how_presets`
+  .. seealso:: :ref:`concepts.presets`, :ref:`how_presets`
 
 ..  index::
     !definition; pseudo
