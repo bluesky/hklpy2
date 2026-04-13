@@ -16,6 +16,7 @@ See the API documentation for details.
 """
 
 from .base import SolverBase  # noqa: F401
+from .typing import GeometryDescriptor  # noqa: F401
 from .typing import ReflectionDict  # noqa: F401
 from .typing import SampleDict  # noqa: F401
 from .typing import SolverMetadataDict  # noqa: F401

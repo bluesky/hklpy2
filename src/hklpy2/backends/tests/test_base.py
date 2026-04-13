@@ -127,6 +127,8 @@ def test_SolverBase():
 
     with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.sample = 1.0
+    solver.sample = {"name": "si", "lattice": {}, "reflections": {}, "order": []}
+    assert solver.sample is not None
 
 
 def test_SolverBase_abstractmethods():

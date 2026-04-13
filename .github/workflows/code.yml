@@ -69,6 +69,7 @@ jobs:
     name: Python ${{ matrix.python-version }}
     needs: lint
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental || false }}
     strategy:
       matrix:
         python-version:
@@ -76,7 +77,10 @@ jobs:
           - "3.11"
           - "3.12"
           - "3.13"
-          # - "3.14"  # not installable because it requires python_rc =* *, which does not exist
+        include:
+          # 3.14-dev: tracked for early warning; allowed to fail.
+          - python-version: "3.14"
+            experimental: true
       max-parallel: 5
 
     steps:
@@ -167,7 +171,7 @@ jobs:
           # combine and report
           python -m coverage combine || true
           python -m coverage xml -i -o coverage.xml || true
-          python -m coverage report --precision 3 -m || true
+          python -m coverage report --precision 3 -m
 
           # check junit for failures
           if [ -f reports/junit.xml ]; then

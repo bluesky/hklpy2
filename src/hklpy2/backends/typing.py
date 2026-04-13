@@ -15,20 +15,94 @@ Structures that belong above the backends layer live in
 
 .. autosummary::
 
+    ~GeometryDescriptor
     ~ReflectionDict
     ~SampleDict
     ~SolverMetadataDict
 """
 
+from dataclasses import dataclass
+from dataclasses import field
 from typing import Dict
 from typing import List
 from typing import TypedDict
 
 __all__ = [
+    "GeometryDescriptor",
     "ReflectionDict",
     "SampleDict",
     "SolverMetadataDict",
 ]
+
+
+@dataclass
+class GeometryDescriptor:
+    """
+    Describes a diffractometer geometry independently of any solver backend.
+
+    A :class:`GeometryDescriptor` captures the static facts about a geometry —
+    its axis names, available modes, and optional description — decoupled from
+    the solver library that implements the mathematics.  It serves two roles:
+
+    1. **Registry entry** — stored in a solver class's
+       :attr:`~hklpy2.backends.base.SolverBase._geometry_registry` so that
+       :meth:`~hklpy2.backends.base.SolverBase.geometries` can enumerate
+       available geometries without creating a solver instance.
+
+    2. **Dispatch table** — used by pure-Python solvers (e.g.
+       :class:`~hklpy2.backends.th_tth_q.ThTthSolver`) to look up axis lists
+       and modes by geometry name, replacing hard-coded ``if self.geometry ==
+       ...`` branching in every property.
+
+    Parameters
+    ----------
+    name : str
+        Canonical geometry name, e.g. ``"TH TTH Q"`` or ``"E4CV"``.  Used as
+        the dictionary key in the registry and must match the string passed to
+        the solver's constructor.
+    pseudo_axis_names : list of str
+        Ordered pseudo-axis names, e.g. ``["h", "k", "l"]`` or ``["q"]``.
+        Order is significant — solvers must not sort this list.
+    real_axis_names : list of str
+        Ordered real-axis names, e.g. ``["omega", "chi", "phi", "tth"]`` or
+        ``["th", "tth"]``.  Order is significant — solvers must not sort.
+    modes : list of str
+        All valid operating mode names for this geometry.
+    default_mode : str
+        Mode to use when ``mode=""`` is requested.  Must be one of
+        :attr:`modes` or ``""`` (meaning the solver chooses).
+    description : str
+        Optional human-readable description of this geometry.
+
+    Examples
+    --------
+    >>> from hklpy2.backends.typing import GeometryDescriptor
+    >>> geo = GeometryDescriptor(
+    ...     name="TH TTH Q",
+    ...     pseudo_axis_names=["q"],
+    ...     real_axis_names=["th", "tth"],
+    ...     modes=["bissector"],
+    ...     default_mode="bissector",
+    ...     description="theta / two-theta powder diffractometer",
+    ... )
+    >>> geo.name
+    'TH TTH Q'
+    >>> geo.real_axis_names
+    ['th', 'tth']
+    """
+
+    name: str
+    pseudo_axis_names: List[str]
+    real_axis_names: List[str]
+    modes: List[str]
+    default_mode: str = ""
+    description: str = ""
+    extra_axis_names: Dict[str, List[str]] = field(default_factory=dict)
+    """Per-mode extra parameter names: ``{mode_name: [param_names, ...]}``.
+
+    Used by solvers that expose additional named parameters (e.g. azimuthal
+    angle) for specific modes.  Defaults to an empty dict (no extras).
+    """
 
 
 class ReflectionDict(TypedDict):

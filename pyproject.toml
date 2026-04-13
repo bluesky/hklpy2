@@ -131,6 +131,24 @@ force_single_line = true
 line_length = 115
 src_paths = ["."]
 
+[tool.coverage.run]
+# Do not measure coverage of the test files themselves; only measure
+# production code under src/hklpy2 (excluding the tests/ subdirectories).
+omit = [
+    "*/tests/*",
+    "*/tests/**",
+]
+
+[tool.coverage.report]
+fail_under = 100
+# Exclude lines that are genuinely untestable or unreachable in the test
+# environment (e.g. abstract-method stubs, TYPE_CHECKING guards).
+exclude_also = [
+    "^\\s*@(abc\\.)?abstractmethod",
+    "^\\s*if TYPE_CHECKING:",
+    "^\\s*\\.\\.\\.\\s*$",
+]
+
 [tool.pytest.ini_options]
 addopts = ["--import-mode=importlib"]
 # filterwarnings = [

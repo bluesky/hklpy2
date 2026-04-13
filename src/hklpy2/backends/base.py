@@ -10,6 +10,7 @@ import logging
 from abc import ABC
 from abc import abstractmethod
 from typing import Any
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Union
@@ -24,6 +25,7 @@ from ..misc import validate_and_canonical_unit
 from ..typing import KeyValueMap
 from ..typing import Matrix3x3
 from ..typing import NamedFloatDict
+from .typing import GeometryDescriptor
 from .typing import ReflectionDict
 from .typing import SampleDict
 from .typing import SolverMetadataDict
@@ -80,6 +82,13 @@ class SolverBase(ABC):
         ~refineLattice
         ~removeAllReflections
 
+    .. rubric:: Geometry Registry
+
+    .. autosummary::
+
+        ~_geometry_registry
+        ~register_geometry
+
     .. rubric:: Python Properties
 
     .. autosummary::
@@ -117,6 +126,63 @@ class SolverBase(ABC):
     Solver can override this **constant**.  Must be convertible to
     ``INTERNAL_LENGTH_UNITS``.
     """
+
+    _geometry_registry: Dict[str, GeometryDescriptor] = {}
+    """
+    Per-class registry of :class:`~hklpy2.backends.typing.GeometryDescriptor`
+    objects, keyed by geometry name.
+
+    Each concrete solver subclass owns an **independent** registry — populated
+    either at class-definition time (via :meth:`register_geometry`) or
+    dynamically at runtime.  The base-class dict is intentionally empty; do
+    not write to it directly.
+
+    .. note::
+        Subclasses must define their own ``_geometry_registry = {}`` class
+        variable to avoid sharing the base-class dict across siblings.
+    """
+
+    @classmethod
+    def register_geometry(cls, descriptor: GeometryDescriptor) -> None:
+        """
+        Add or replace a geometry in this solver's registry.
+
+        Registers *descriptor* under ``descriptor.name`` in
+        :attr:`_geometry_registry`.  Calling this method on a subclass
+        affects only that subclass's registry, not the base class or any
+        sibling solver.
+
+        Parameters
+        ----------
+        descriptor : GeometryDescriptor
+            The geometry to register.  The :attr:`~GeometryDescriptor.name`
+            attribute is used as the registry key.
+
+        Raises
+        ------
+        TypeError
+            If *descriptor* is not a :class:`~hklpy2.backends.typing.GeometryDescriptor`.
+
+        Examples
+        --------
+        >>> from hklpy2.backends.typing import GeometryDescriptor
+        >>> from hklpy2.backends.th_tth_q import ThTthSolver
+        >>> geo = GeometryDescriptor(
+        ...     name="MY GEO",
+        ...     pseudo_axis_names=["h", "k", "l"],
+        ...     real_axis_names=["mu", "delta", "nu", "eta", "chi", "phi"],
+        ...     modes=["lifting detector"],
+        ... )
+        >>> ThTthSolver.register_geometry(geo)
+        >>> "MY GEO" in ThTthSolver.geometries()
+        True
+        """
+        if not isinstance(descriptor, GeometryDescriptor):
+            raise TypeError(
+                f"Expected GeometryDescriptor, received {type(descriptor)!r}."
+            )
+        cls._geometry_registry[descriptor.name] = descriptor
+        logger.debug("Registered geometry %r on %s", descriptor.name, cls.__name__)
 
     def __init__(
         self,
@@ -210,7 +276,12 @@ class SolverBase(ABC):
     @abstractmethod
     def geometries(cls) -> List[str]:
         """
-        Ordered list of the geometry names.
+        Ordered list of the geometry names supported by this solver.
+
+        Implementations that use the :attr:`_geometry_registry` should return
+        ``sorted(cls._geometry_registry.keys())``.  Solvers backed by an
+        external library (e.g. :class:`~hklpy2.backends.hkl_soleil.HklSolver`)
+        may query that library's own registry instead.
 
         EXAMPLES::
 
