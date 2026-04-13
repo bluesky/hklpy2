@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=4ce04ba6"></script>
+    <script src="../_static/documentation_options.js?v=1edef8cf"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -496,10 +496,18 @@ of operating <strong>mode</strong>, narrow those candidates by:</p>
 <ul class="simple">
 <li><p>Accepting only solutions where each real axis falls within a specified range.</p></li>
 </ul>
-<div class="admonition tip" id="index-1">
-<p class="admonition-title">Tip</p>
-<p><em>Constraints</em> are implemented as <em>cut points</em> in other software.
-Similar in concept yet not entirely identical in implementation.</p>
+<div class="admonition note" id="index-1">
+<p class="admonition-title">Note</p>
+<p><strong>Relation to</strong> <em>cut points</em> <strong>in other software</strong> (SPEC <code class="docutils literal notranslate"><span class="pre">cuts</span></code>,
+diffcalc): In SPEC, a <em>cut point</em> is a branch point that sets where an
+angle wraps around — for example, a cut point of <code class="docutils literal notranslate"><span class="pre">-180</span></code> means the motor
+is represented in the interval <code class="docutils literal notranslate"><span class="pre">[-180,</span> <span class="pre">+180)</span></code>.  Its primary purpose is
+controlling motor travel direction and angle representation, not filtering
+solutions.  hklpy2 <code class="docutils literal notranslate"><span class="pre">LimitsConstraint</span></code> is a <em>post-computation filter</em>: it
+discards solver solutions whose axis values fall outside a given range.
+The two concepts overlap in effect when the constraint window matches the
+cut-point interval, but they are not the same mechanism.  See
+<a class="reference internal" href="../guides/spec_xref.html#spec-commands-map"><span class="std std-ref">SPEC commands in hklpy2</span></a> for the SPEC-to-hklpy2 mapping.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -515,6 +523,103 @@ computation, use <a class="reference internal" href="presets.html#concepts-prese
 <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.</p>
 <p><a class="reference internal" href="../glossary.html#glossary"><span class="std std-ref">Glossary</span></a></p>
 </div>
+<section id="how-constraints-work-internally">
+<span id="concepts-constraints-internals"></span><h2>How Constraints Work Internally<a class="headerlink" href="#how-constraints-work-internally" title="Link to this heading">#</a></h2>
+<section id="the-valid-method">
+<span id="concepts-constraints-valid"></span><h3>The <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Method<a class="headerlink" href="#the-valid-method" title="Link to this heading">#</a></h3>
+<p>Every constraint class inherits from
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a> and must implement the
+abstract method <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase.valid" title="hklpy2.blocks.constraints.ConstraintBase.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>The method receives the <strong>full set of real-axis positions</strong> (as keyword
+arguments, <code class="docutils literal notranslate"><span class="pre">axis_name=value</span></code>) and returns <code class="docutils literal notranslate"><span class="pre">True</span></code> when the constraint is
+satisfied or <code class="docutils literal notranslate"><span class="pre">False</span></code> when it is not.</p>
+<p>The built-in implementation,
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a>, checks whether the
+axis value falls within the configured <code class="docutils literal notranslate"><span class="pre">[low_limit,</span> <span class="pre">high_limit]</span></code> range:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># simplified from hklpy2/blocks/constraints.py</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">values</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">value</span> <span class="o">+</span> <span class="n">ENDPOINT_TOLERANCE</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_limit</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">ENDPOINT_TOLERANCE</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_limit</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>A small tolerance (<code class="docutils literal notranslate"><span class="pre">ENDPOINT_TOLERANCE</span> <span class="pre">=</span> <span class="pre">1e-4</span></code>) is applied at each
+endpoint so that solver solutions that land exactly on a limit boundary
+are not rejected due to floating-point rounding.</p>
+</section>
+<section id="how-valid-is-called-during-forward">
+<span id="concepts-constraints-forward-call"></span><h3>How <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Is Called During <code class="docutils literal notranslate"><span class="pre">forward()</span></code><a class="headerlink" href="#how-valid-is-called-during-forward" title="Link to this heading">#</a></h3>
+<p>After the solver returns its candidate solutions,
+<a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.forward" title="hklpy2.ops.Core.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> iterates over every solution and calls
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.RealAxisConstraints.valid" title="hklpy2.blocks.constraints.RealAxisConstraints.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a> on the
+collection of constraints:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># simplified from hklpy2/ops.py  Core.forward()</span>
+<span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">pseudos</span><span class="p">):</span>
+    <span class="n">reals</span> <span class="o">=</span> <span class="p">{</span><span class="n">axis</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">computed_value</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span><span class="p">}</span>   <span class="c1"># full set of real-axis values</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="o">**</span><span class="n">reals</span><span class="p">):</span>
+        <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>             <span class="c1"># solution passes all constraints</span>
+    <span class="c1"># solutions that fail are discarded (and logged at INFO level)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.RealAxisConstraints.valid" title="hklpy2.blocks.constraints.RealAxisConstraints.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a> in turn calls
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.valid" title="hklpy2.blocks.constraints.LimitsConstraint.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a> on each individual
+constraint and returns <code class="docutils literal notranslate"><span class="pre">True</span></code> only when <strong>all</strong> constraints are satisfied.
+Solutions that fail at least one constraint are silently discarded; the
+reasons are recorded at the <code class="docutils literal notranslate"><span class="pre">logging.INFO</span></code> level.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="presets.html#concepts-presets"><span class="std std-ref">Presets</span></a> — supply a fixed value for a constant axis
+<em>before</em> the solver runs, rather than filtering solutions <em>after</em>.</p>
+</div>
+</section>
+<section id="the-limitsconstraint-label">
+<span id="concepts-constraints-label"></span><h3>The <code class="docutils literal notranslate"><span class="pre">LimitsConstraint</span></code> Label<a class="headerlink" href="#the-limitsconstraint-label" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">label</span></code> attribute of a
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a> <strong>must match the real
+axis name</strong> as it appears on the diffractometer.  This is because
+<code class="docutils literal notranslate"><span class="pre">valid()</span></code> looks up the axis value from the <code class="docutils literal notranslate"><span class="pre">**values</span></code> keyword-argument
+dictionary using <code class="docutils literal notranslate"><span class="pre">self.label</span></code> as the key:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># from LimitsConstraint.valid()</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>   <span class="c1"># KeyError / ConstraintsError if label is wrong</span>
+</pre></div>
+</div>
+<p>The same name is used as the dictionary key in
+<code class="docutils literal notranslate"><span class="pre">diffractometer.core.constraints</span></code>, which is a
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.RealAxisConstraints" title="hklpy2.blocks.constraints.RealAxisConstraints"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealAxisConstraints</span></code></a> instance (a <code class="docutils literal notranslate"><span class="pre">dict</span></code>
+subclass):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span>
+<span class="c1"># {</span>
+<span class="c1">#   &quot;omega&quot;: LimitsConstraint(label=&quot;omega&quot;, ...),</span>
+<span class="c1">#   &quot;chi&quot;:   LimitsConstraint(label=&quot;chi&quot;,   ...),</span>
+<span class="c1">#   &quot;phi&quot;:   LimitsConstraint(label=&quot;phi&quot;,   ...),</span>
+<span class="c1">#   &quot;tth&quot;:   LimitsConstraint(label=&quot;tth&quot;,   ...),</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+<p>Constraints are created automatically for every real axis when the
+diffractometer is initialised (or when
+<a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.reset_constraints" title="hklpy2.ops.Core.reset_constraints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset_constraints()</span></code></a> is called).  The <code class="docutils literal notranslate"><span class="pre">label</span></code> is set
+to the axis name at that point.  You do not normally need to set the label
+manually; if you create a <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a>
+directly you must supply a <code class="docutils literal notranslate"><span class="pre">label</span></code> that matches a real axis name, otherwise
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.valid" title="hklpy2.blocks.constraints.LimitsConstraint.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a> will raise a
+<a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.ConstraintsError" title="hklpy2.misc.ConstraintsError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConstraintsError</span></code></a>.</p>
+<p class="rubric">Example — adjusting a constraint</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restrict chi to the range [0, 90] degrees.</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+
+<span class="c1"># Reset all constraints to defaults (±180 degrees).</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">reset_constraints</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
 
@@ -555,6 +660,23 @@ computation, use <a class="reference internal" href="presets.html#concepts-prese
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-constraints-work-internally">How Constraints Work Internally</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-valid-method">The <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Method</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-valid-is-called-during-forward">How <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Is Called During <code class="docutils literal notranslate"><span class="pre">forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-limitsconstraint-label">The <code class="docutils literal notranslate"><span class="pre">LimitsConstraint</span></code> Label</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

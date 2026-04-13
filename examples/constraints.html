@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=4ce04ba6"></script>
+    <script src="../_static/documentation_options.js?v=1edef8cf"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -490,13 +490,18 @@
 <p><a class="reference internal" href="../concepts/constraints.html#concepts-constraints"><span class="std std-ref">Constraints</span></a> are used to filter
 acceptable solutions computed by a <strong>Solver</strong> <code class="docutils literal notranslate"><span class="pre">forward()</span></code> method.
 One or more constraints
-(<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a>) (a.k.a, cut points),
-together with a choice of operating <strong>mode</strong> are used to control
+(<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a>),
+together with a choice of operating <strong>mode</strong>, are used to control
 the over-determined transformation from <span class="math notranslate nohighlight">\(hkl\)</span> to motor angles.</p>
-<div class="admonition tip" id="index-0">
-<p class="admonition-title">Tip</p>
-<p><em>Constraints</em> are implemented as <em>cut points</em> in other software.
-Similar in concept yet not entirely identical in implementation.</p>
+<div class="admonition note" id="index-0">
+<p class="admonition-title">Note</p>
+<p><strong>Relation to</strong> <em>cut points</em> <strong>in other software</strong> (SPEC <code class="docutils literal notranslate"><span class="pre">cuts</span></code>):
+In SPEC, a <em>cut point</em> is a branch point that sets where an angle wraps
+around (e.g., <code class="docutils literal notranslate"><span class="pre">-180</span></code> → <code class="docutils literal notranslate"><span class="pre">[-180,</span> <span class="pre">+180)</span></code>), controlling motor travel
+direction rather than filtering solutions.  hklpy2 <code class="docutils literal notranslate"><span class="pre">LimitsConstraint</span></code>
+is a <em>post-computation filter</em> that discards solutions outside a range.
+The two overlap in effect when the constraint window matches the
+cut-point interval, but the mechanisms differ.</p>
 </div>
 <section id="show-the-current-constraints">
 <h2>Show the current constraints<a class="headerlink" href="#show-the-current-constraints" title="Link to this heading">#</a></h2>
