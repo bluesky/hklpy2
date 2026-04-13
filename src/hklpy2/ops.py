@@ -484,7 +484,15 @@ class Core:
             self.request_solver_update(True)
 
     def forward(self, pseudos: AnyAxesType, wavelength: Optional[float] = None) -> list:
-        """Compute [{names:reals}] from {names: pseudos} (hkl -> angles)."""
+        """
+        Compute [{names:reals}] from {names: pseudos} (hkl -> angles).
+
+        Delegates to :meth:`SolverBase.forward() <hklpy2.backends.base.SolverBase.forward>`
+        which returns all solutions the backend engine can find (one or
+        more).  Each solution is then filtered against the active
+        :attr:`constraints`; only solutions that satisfy all constraints
+        are included in the returned list.
+        """
         logger.debug(
             "(%s) forward(): pseudos=%r",
             self.__class__.__name__,
