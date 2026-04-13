@@ -35,6 +35,14 @@ describe future plans.
 
     Release expected by 2026-H1.
 
+    Documentation
+    -------------
+
+    * Document ``ConstraintBase.valid()`` internals, the ``forward()`` call
+      sequence, and the ``LimitsConstraint`` label requirement; clarify that
+      hklpy2 constraints are post-computation filters distinct from SPEC/diffcalc
+      cut points. (:issue:`275`)
+
 0.4.3
 #####
 

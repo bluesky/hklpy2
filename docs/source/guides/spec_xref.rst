@@ -33,8 +33,8 @@ the tools in Bluesky's |hklpy2| package.
 ``reflex``       :func:`~hklpy2.blocks.sample.Sample.refine_lattice()`          Refinement of lattice parameters from list of 3 or more reflections
 ``reflex_beg``   not necessary                                                  Initializes the reflections file
 ``reflex_end``   not necessary                                                  Closes the reflections file
---               ``diffractometer.core.constraints``                            Show the current set of constraints (cut points).
-``cuts``         See :meth:`~hklpy2.blocks.constraints.LimitsConstraint`        Add constraints to the diffractometer ``forward()`` computation.
+--               ``diffractometer.core.constraints``                            Show the current set of constraints.
+``cuts``         See :meth:`~hklpy2.blocks.constraints.LimitsConstraint`        Set axis range limits (cut points in SPEC set angle wrap; hklpy2 filters ``forward()`` solutions — related but not identical).
 ``freeze``       :ref:`presets <how_presets>`                                   Hold an axis constant during the diffractometer ``forward()`` computation.
 ``unfreeze``     :ref:`presets <how_presets.pop>`                               Remove a preset constant value for an axis.
 --               :func:`~hklpy2.user.calc_UB`                                   Compute the UB matrix with two reflections.

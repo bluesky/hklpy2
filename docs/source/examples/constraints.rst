@@ -7,13 +7,18 @@ Constraints
 :ref:`Constraints <concepts.constraints>` are used to filter
 acceptable solutions computed by a |solver| ``forward()`` method.
 One or more constraints
-(:class:`~hklpy2.blocks.constraints.ConstraintBase`) (a.k.a, cut points),
-together with a choice of operating **mode** are used to control
+(:class:`~hklpy2.blocks.constraints.ConstraintBase`),
+together with a choice of operating **mode**, are used to control
 the over-determined transformation from :math:`hkl` to motor angles.
 
 .. index:: cut points
-.. tip:: *Constraints* are implemented as *cut points* in other software.
-    Similar in concept yet not entirely identical in implementation.
+.. note:: **Relation to** *cut points* **in other software** (SPEC ``cuts``):
+    In SPEC, a *cut point* is a branch point that sets where an angle wraps
+    around (e.g., ``-180`` → ``[-180, +180)``), controlling motor travel
+    direction rather than filtering solutions.  hklpy2 ``LimitsConstraint``
+    is a *post-computation filter* that discards solutions outside a range.
+    The two overlap in effect when the constraint window matches the
+    cut-point interval, but the mechanisms differ.
 
 Show the current constraints
 ----------------------------
