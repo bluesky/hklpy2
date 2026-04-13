@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../../_static/documentation_options.js?v=1edef8cf"></script>
+    <script src="../../../../_static/documentation_options.js?v=d6c99174"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -462,13 +462,16 @@ and place the subclass in that solver’s module.</p>
 <a class="reference internal" href="../../typing/index.html#module-hklpy2.typing" title="hklpy2.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.typing</span></code></a> (e.g. <code class="docutils literal notranslate"><span class="pre">ConfigHeaderDict</span></code>).</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.typing.ReflectionDict" title="hklpy2.backends.typing.ReflectionDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReflectionDict</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.typing.GeometryDescriptor" title="hklpy2.backends.typing.GeometryDescriptor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GeometryDescriptor</span></code></a>(name, pseudo_axis_names, ...)</p></td>
+<td><p>Describes a diffractometer geometry independently of any solver backend.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.backends.typing.ReflectionDict" title="hklpy2.backends.typing.ReflectionDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ReflectionDict</span></code></a></p></td>
 <td><p>Typed structure for a single diffraction reflection.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.backends.typing.SampleDict" title="hklpy2.backends.typing.SampleDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SampleDict</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.typing.SampleDict" title="hklpy2.backends.typing.SampleDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SampleDict</span></code></a></p></td>
 <td><p>Typed structure for a crystalline sample.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.typing.SolverMetadataDict" title="hklpy2.backends.typing.SolverMetadataDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SolverMetadataDict</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.backends.typing.SolverMetadataDict" title="hklpy2.backends.typing.SolverMetadataDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SolverMetadataDict</span></code></a></p></td>
 <td><p>Typed structure for the <strong>common</strong> solver summary metadata.</p></td>
 </tr>
 </tbody>
@@ -476,6 +479,104 @@ and place the subclass in that solver’s module.</p>
 </div>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hklpy2.backends.typing.GeometryDescriptor">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.backends.typing.</span></span><span class="sig-name descname"><span class="pre">GeometryDescriptor</span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/typing.html#GeometryDescriptor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.typing.GeometryDescriptor" title="Link to this definition">#</a></dt>
+<dd><div class="import-path docutils container">
+<p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.backends.typing.GeometryDescriptor</span></code></p>
+</div>
+<p>Describes a diffractometer geometry independently of any solver backend.</p>
+<p>A <a class="reference internal" href="#hklpy2.backends.typing.GeometryDescriptor" title="hklpy2.backends.typing.GeometryDescriptor"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeometryDescriptor</span></code></a> captures the static facts about a geometry —
+its axis names, available modes, and optional description — decoupled from
+the solver library that implements the mathematics.  It serves two roles:</p>
+<ol class="arabic simple">
+<li><p><strong>Registry entry</strong> — stored in a solver class’s
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_geometry_registry</span></code> so that
+<a class="reference internal" href="../base/index.html#hklpy2.backends.base.SolverBase.geometries" title="hklpy2.backends.base.SolverBase.geometries"><code class="xref py py-meth docutils literal notranslate"><span class="pre">geometries()</span></code></a> can enumerate
+available geometries without creating a solver instance.</p></li>
+<li><p><strong>Dispatch table</strong> — used by pure-Python solvers (e.g.
+<a class="reference internal" href="../th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver" title="hklpy2.backends.th_tth_q.ThTthSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThTthSolver</span></code></a>) to look up axis lists
+and modes by geometry name, replacing hard-coded <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">self.geometry</span> <span class="pre">==</span>
+<span class="pre">...</span></code> branching in every property.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Canonical geometry name, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;TH</span> <span class="pre">TTH</span> <span class="pre">Q&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;E4CV&quot;</span></code>.  Used as
+the dictionary key in the registry and must match the string passed to
+the solver’s constructor.</p></li>
+<li><p><strong>pseudo_axis_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Ordered pseudo-axis names, e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;h&quot;,</span> <span class="pre">&quot;k&quot;,</span> <span class="pre">&quot;l&quot;]</span></code> or <code class="docutils literal notranslate"><span class="pre">[&quot;q&quot;]</span></code>.
+Order is significant — solvers must not sort this list.</p></li>
+<li><p><strong>real_axis_names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Ordered real-axis names, e.g. <code class="docutils literal notranslate"><span class="pre">[&quot;omega&quot;,</span> <span class="pre">&quot;chi&quot;,</span> <span class="pre">&quot;phi&quot;,</span> <span class="pre">&quot;tth&quot;]</span></code> or
+<code class="docutils literal notranslate"><span class="pre">[&quot;th&quot;,</span> <span class="pre">&quot;tth&quot;]</span></code>.  Order is significant — solvers must not sort.</p></li>
+<li><p><strong>modes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em> of </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – All valid operating mode names for this geometry.</p></li>
+<li><p><strong>default_mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Mode to use when <code class="docutils literal notranslate"><span class="pre">mode=&quot;&quot;</span></code> is requested.  Must be one of
+<a class="reference internal" href="#hklpy2.backends.typing.GeometryDescriptor.modes" title="hklpy2.backends.typing.GeometryDescriptor.modes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">modes</span></code></a> or <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> (meaning the solver chooses).</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Optional human-readable description of this geometry.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryDescriptor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geo</span> <span class="o">=</span> <span class="n">GeometryDescriptor</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">pseudo_axis_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;q&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">real_axis_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;th&quot;</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;bissector&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">default_mode</span><span class="o">=</span><span class="s2">&quot;bissector&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;theta / two-theta powder diffractometer&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geo</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;TH TTH Q&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geo</span><span class="o">.</span><span class="n">real_axis_names</span>
+<span class="go">[&#39;th&#39;, &#39;tth&#39;]</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.backends.typing.GeometryDescriptor.default_mode">
+<span class="sig-name descname"><span class="pre">default_mode</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/typing.html#GeometryDescriptor.default_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.typing.GeometryDescriptor.default_mode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.backends.typing.GeometryDescriptor.description">
+<span class="sig-name descname"><span class="pre">description</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/typing.html#GeometryDescriptor.description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.typing.GeometryDescriptor.description" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.backends.typing.GeometryDescriptor.extra_axis_names">
+<span class="sig-name descname"><span class="pre">extra_axis_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/typing.html#GeometryDescriptor.extra_axis_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.typing.GeometryDescriptor.extra_axis_names" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">{mode_name:</span> <span class="pre">[param_names,</span> <span class="pre">...]}</span></code>.</p>
+<p>Used by solvers that expose additional named parameters (e.g. azimuthal
+angle) for specific modes.  Defaults to an empty dict (no extras).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Per-mode extra parameter names</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.backends.typing.GeometryDescriptor.modes">
+<span class="sig-name descname"><span class="pre">modes</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/typing.html#GeometryDescriptor.modes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.typing.GeometryDescriptor.modes" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.backends.typing.GeometryDescriptor.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/typing.html#GeometryDescriptor.name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.typing.GeometryDescriptor.name" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.backends.typing.GeometryDescriptor.pseudo_axis_names">
+<span class="sig-name descname"><span class="pre">pseudo_axis_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/typing.html#GeometryDescriptor.pseudo_axis_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.typing.GeometryDescriptor.pseudo_axis_names" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.backends.typing.GeometryDescriptor.real_axis_names">
+<span class="sig-name descname"><span class="pre">real_axis_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/typing.html#GeometryDescriptor.real_axis_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.typing.GeometryDescriptor.real_axis_names" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="hklpy2.backends.typing.ReflectionDict">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.backends.typing.</span></span><span class="sig-name descname"><span class="pre">ReflectionDict</span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/typing.html#ReflectionDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.typing.ReflectionDict" title="Link to this definition">#</a></dt>
@@ -676,6 +777,16 @@ with <code class="docutils literal notranslate"><span class="pre">total=False</s
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.GeometryDescriptor"><code class="docutils literal notranslate"><span class="pre">GeometryDescriptor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.GeometryDescriptor.default_mode"><code class="docutils literal notranslate"><span class="pre">GeometryDescriptor.default_mode</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.GeometryDescriptor.description"><code class="docutils literal notranslate"><span class="pre">GeometryDescriptor.description</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.GeometryDescriptor.extra_axis_names"><code class="docutils literal notranslate"><span class="pre">GeometryDescriptor.extra_axis_names</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.GeometryDescriptor.modes"><code class="docutils literal notranslate"><span class="pre">GeometryDescriptor.modes</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.GeometryDescriptor.name"><code class="docutils literal notranslate"><span class="pre">GeometryDescriptor.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.GeometryDescriptor.pseudo_axis_names"><code class="docutils literal notranslate"><span class="pre">GeometryDescriptor.pseudo_axis_names</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.GeometryDescriptor.real_axis_names"><code class="docutils literal notranslate"><span class="pre">GeometryDescriptor.real_axis_names</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.ReflectionDict"><code class="docutils literal notranslate"><span class="pre">ReflectionDict</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.ReflectionDict.name"><code class="docutils literal notranslate"><span class="pre">ReflectionDict.name</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.typing.ReflectionDict.pseudos"><code class="docutils literal notranslate"><span class="pre">ReflectionDict.pseudos</span></code></a></li>

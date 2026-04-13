@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=1edef8cf"></script>
+    <script src="../../../_static/documentation_options.js?v=d6c99174"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -415,20 +415,118 @@
 
 <span class="sd">.. autosummary::</span>
 
+<span class="sd">    ~GeometryDescriptor</span>
 <span class="sd">    ~ReflectionDict</span>
 <span class="sd">    ~SampleDict</span>
 <span class="sd">    ~SolverMetadataDict</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;GeometryDescriptor&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ReflectionDict&quot;</span><span class="p">,</span>
     <span class="s2">&quot;SampleDict&quot;</span><span class="p">,</span>
     <span class="s2">&quot;SolverMetadataDict&quot;</span><span class="p">,</span>
 <span class="p">]</span>
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="GeometryDescriptor">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GeometryDescriptor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Describes a diffractometer geometry independently of any solver backend.</span>
+
+<span class="sd">    A :class:`GeometryDescriptor` captures the static facts about a geometry —</span>
+<span class="sd">    its axis names, available modes, and optional description — decoupled from</span>
+<span class="sd">    the solver library that implements the mathematics.  It serves two roles:</span>
+
+<span class="sd">    1. **Registry entry** — stored in a solver class&#39;s</span>
+<span class="sd">       :attr:`~hklpy2.backends.base.SolverBase._geometry_registry` so that</span>
+<span class="sd">       :meth:`~hklpy2.backends.base.SolverBase.geometries` can enumerate</span>
+<span class="sd">       available geometries without creating a solver instance.</span>
+
+<span class="sd">    2. **Dispatch table** — used by pure-Python solvers (e.g.</span>
+<span class="sd">       :class:`~hklpy2.backends.th_tth_q.ThTthSolver`) to look up axis lists</span>
+<span class="sd">       and modes by geometry name, replacing hard-coded ``if self.geometry ==</span>
+<span class="sd">       ...`` branching in every property.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Canonical geometry name, e.g. ``&quot;TH TTH Q&quot;`` or ``&quot;E4CV&quot;``.  Used as</span>
+<span class="sd">        the dictionary key in the registry and must match the string passed to</span>
+<span class="sd">        the solver&#39;s constructor.</span>
+<span class="sd">    pseudo_axis_names : list of str</span>
+<span class="sd">        Ordered pseudo-axis names, e.g. ``[&quot;h&quot;, &quot;k&quot;, &quot;l&quot;]`` or ``[&quot;q&quot;]``.</span>
+<span class="sd">        Order is significant — solvers must not sort this list.</span>
+<span class="sd">    real_axis_names : list of str</span>
+<span class="sd">        Ordered real-axis names, e.g. ``[&quot;omega&quot;, &quot;chi&quot;, &quot;phi&quot;, &quot;tth&quot;]`` or</span>
+<span class="sd">        ``[&quot;th&quot;, &quot;tth&quot;]``.  Order is significant — solvers must not sort.</span>
+<span class="sd">    modes : list of str</span>
+<span class="sd">        All valid operating mode names for this geometry.</span>
+<span class="sd">    default_mode : str</span>
+<span class="sd">        Mode to use when ``mode=&quot;&quot;`` is requested.  Must be one of</span>
+<span class="sd">        :attr:`modes` or ``&quot;&quot;`` (meaning the solver chooses).</span>
+<span class="sd">    description : str</span>
+<span class="sd">        Optional human-readable description of this geometry.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from hklpy2.backends.typing import GeometryDescriptor</span>
+<span class="sd">    &gt;&gt;&gt; geo = GeometryDescriptor(</span>
+<span class="sd">    ...     name=&quot;TH TTH Q&quot;,</span>
+<span class="sd">    ...     pseudo_axis_names=[&quot;q&quot;],</span>
+<span class="sd">    ...     real_axis_names=[&quot;th&quot;, &quot;tth&quot;],</span>
+<span class="sd">    ...     modes=[&quot;bissector&quot;],</span>
+<span class="sd">    ...     default_mode=&quot;bissector&quot;,</span>
+<span class="sd">    ...     description=&quot;theta / two-theta powder diffractometer&quot;,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; geo.name</span>
+<span class="sd">    &#39;TH TTH Q&#39;</span>
+<span class="sd">    &gt;&gt;&gt; geo.real_axis_names</span>
+<span class="sd">    [&#39;th&#39;, &#39;tth&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GeometryDescriptor.name">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.name">[docs]</a>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span></div>
+
+<div class="viewcode-block" id="GeometryDescriptor.pseudo_axis_names">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.pseudo_axis_names">[docs]</a>
+    <span class="n">pseudo_axis_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="GeometryDescriptor.real_axis_names">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.real_axis_names">[docs]</a>
+    <span class="n">real_axis_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="GeometryDescriptor.modes">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.modes">[docs]</a>
+    <span class="n">modes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="GeometryDescriptor.default_mode">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.default_mode">[docs]</a>
+    <span class="n">default_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="GeometryDescriptor.description">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.description">[docs]</a>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="GeometryDescriptor.extra_axis_names">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.extra_axis_names">[docs]</a>
+    <span class="n">extra_axis_names</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Per-mode extra parameter names: ``{mode_name: [param_names, ...]}``.</span>
+
+<span class="sd">    Used by solvers that expose additional named parameters (e.g. azimuthal</span>
+<span class="sd">    angle) for specific modes.  Defaults to an empty dict (no extras).</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
 
 
 <div class="viewcode-block" id="ReflectionDict">

@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../../_static/documentation_options.js?v=1edef8cf"></script>
+    <script src="../../../../_static/documentation_options.js?v=d6c99174"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -516,7 +516,7 @@ as best fits the underlying support library.</p>
 <td><p>Compute list of solutions(reals) from pseudos (hkl -&gt; [angles]).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.base.SolverBase.geometries" title="hklpy2.backends.base.SolverBase.geometries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geometries</span></code></a>()</p></td>
-<td><p>Ordered list of the geometry names.</p></td>
+<td><p>Ordered list of the geometry names supported by this solver.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.backends.base.SolverBase.inverse" title="hklpy2.backends.base.SolverBase.inverse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inverse</span></code></a>(reals)</p></td>
 <td><p>Compute dict of pseudos from reals (angles -&gt; hkl).</p></td>
@@ -535,6 +535,18 @@ as best fits the underlying support library.</p>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.base.SolverBase.removeAllReflections" title="hklpy2.backends.base.SolverBase.removeAllReflections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">removeAllReflections</span></code></a>()</p></td>
 <td><p>Remove all reflections.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Geometry Registry</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_geometry_registry</span></code></p></td>
+<td><p>Per-class registry of <a class="reference internal" href="../typing/index.html#hklpy2.backends.typing.GeometryDescriptor" title="hklpy2.backends.typing.GeometryDescriptor"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeometryDescriptor</span></code></a> objects, keyed by geometry name.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.backends.base.SolverBase.register_geometry" title="hklpy2.backends.base.SolverBase.register_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_geometry</span></code></a>(descriptor)</p></td>
+<td><p>Add or replace a geometry in this solver's registry.</p></td>
 </tr>
 </tbody>
 </table>
@@ -639,7 +651,11 @@ as best fits the underlying support library.</p>
 <dt class="field-odd">Abstractmethod<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p></dd>
 </dl>
-<p>Ordered list of the geometry names.</p>
+<p>Ordered list of the geometry names supported by this solver.</p>
+<p>Implementations that use the <code class="xref py py-attr docutils literal notranslate"><span class="pre">_geometry_registry</span></code> should return
+<code class="docutils literal notranslate"><span class="pre">sorted(cls._geometry_registry.keys())</span></code>.  Solvers backed by an
+external library (e.g. <a class="reference internal" href="../hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a>)
+may query that library’s own registry instead.</p>
 <p>EXAMPLES:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_solver</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Solver</span> <span class="o">=</span> <span class="n">get_solver</span><span class="p">(</span><span class="s2">&quot;no_op&quot;</span><span class="p">)</span>
@@ -720,6 +736,39 @@ for each geometry.</p>
 <dt class="sig sig-object py" id="hklpy2.backends.base.SolverBase.refineLattice">
 <span class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">refineLattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reflections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../typing/index.html#hklpy2.backends.typing.ReflectionDict" title="hklpy2.backends.typing.ReflectionDict"><span class="pre">ReflectionDict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../typing/index.html#hklpy2.typing.NamedFloatDict" title="hklpy2.typing.NamedFloatDict"><span class="pre">NamedFloatDict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/base.html#SolverBase.refineLattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.base.SolverBase.refineLattice" title="Link to this definition">#</a></dt>
 <dd><p>Refine the lattice parameters from a list of reflections.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.backends.base.SolverBase.register_geometry">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">register_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">descriptor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.backends.typing.GeometryDescriptor" title="hklpy2.backends.typing.GeometryDescriptor"><span class="pre">GeometryDescriptor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/base.html#SolverBase.register_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.base.SolverBase.register_geometry" title="Link to this definition">#</a></dt>
+<dd><p>Add or replace a geometry in this solver’s registry.</p>
+<p>Registers <em>descriptor</em> under <code class="docutils literal notranslate"><span class="pre">descriptor.name</span></code> in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_geometry_registry</span></code>.  Calling this method on a subclass
+affects only that subclass’s registry, not the base class or any
+sibling solver.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>descriptor</strong> (<a class="reference internal" href="../typing/index.html#hklpy2.backends.typing.GeometryDescriptor" title="hklpy2.backends.typing.GeometryDescriptor"><em>GeometryDescriptor</em></a>) – The geometry to register.  The <code class="xref py py-attr docutils literal notranslate"><span class="pre">name</span></code>
+attribute is used as the registry key.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If <em>descriptor</em> is not a <a class="reference internal" href="../typing/index.html#hklpy2.backends.typing.GeometryDescriptor" title="hklpy2.backends.typing.GeometryDescriptor"><code class="xref py py-class docutils literal notranslate"><span class="pre">GeometryDescriptor</span></code></a>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryDescriptor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.th_tth_q</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThTthSolver</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geo</span> <span class="o">=</span> <span class="n">GeometryDescriptor</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MY GEO&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">pseudo_axis_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">real_axis_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">,</span> <span class="s2">&quot;nu&quot;</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;lifting detector&quot;</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ThTthSolver</span><span class="o">.</span><span class="n">register_geometry</span><span class="p">(</span><span class="n">geo</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;MY GEO&quot;</span> <span class="ow">in</span> <span class="n">ThTthSolver</span><span class="o">.</span><span class="n">geometries</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -824,6 +873,7 @@ for each geometry.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.pseudo_axis_names"><code class="docutils literal notranslate"><span class="pre">SolverBase.pseudo_axis_names</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.real_axis_names"><code class="docutils literal notranslate"><span class="pre">SolverBase.real_axis_names</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.refineLattice"><code class="docutils literal notranslate"><span class="pre">SolverBase.refineLattice()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.register_geometry"><code class="docutils literal notranslate"><span class="pre">SolverBase.register_geometry()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.removeAllReflections"><code class="docutils literal notranslate"><span class="pre">SolverBase.removeAllReflections()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.sample"><code class="docutils literal notranslate"><span class="pre">SolverBase.sample</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.summary"><code class="docutils literal notranslate"><span class="pre">SolverBase.summary</span></code></a></li>

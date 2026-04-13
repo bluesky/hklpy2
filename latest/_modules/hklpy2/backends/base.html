@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=1edef8cf"></script>
+    <script src="../../../_static/documentation_options.js?v=d6c99174"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -410,6 +410,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
@@ -424,6 +425,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeometryDescriptor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReflectionDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">SampleDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverMetadataDict</span>
@@ -482,6 +484,13 @@
 <span class="sd">        ~refineLattice</span>
 <span class="sd">        ~removeAllReflections</span>
 
+<span class="sd">    .. rubric:: Geometry Registry</span>
+
+<span class="sd">    .. autosummary::</span>
+
+<span class="sd">        ~_geometry_registry</span>
+<span class="sd">        ~register_geometry</span>
+
 <span class="sd">    .. rubric:: Python Properties</span>
 
 <span class="sd">    .. autosummary::</span>
@@ -531,6 +540,66 @@
 <span class="sd">    Solver can override this **constant**.  Must be convertible to</span>
 <span class="sd">    ``INTERNAL_LENGTH_UNITS``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_geometry_registry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">GeometryDescriptor</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Per-class registry of :class:`~hklpy2.backends.typing.GeometryDescriptor`</span>
+<span class="sd">    objects, keyed by geometry name.</span>
+
+<span class="sd">    Each concrete solver subclass owns an **independent** registry — populated</span>
+<span class="sd">    either at class-definition time (via :meth:`register_geometry`) or</span>
+<span class="sd">    dynamically at runtime.  The base-class dict is intentionally empty; do</span>
+<span class="sd">    not write to it directly.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        Subclasses must define their own ``_geometry_registry = {}`` class</span>
+<span class="sd">        variable to avoid sharing the base-class dict across siblings.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="SolverBase.register_geometry">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.register_geometry">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_geometry</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">descriptor</span><span class="p">:</span> <span class="n">GeometryDescriptor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add or replace a geometry in this solver&#39;s registry.</span>
+
+<span class="sd">        Registers *descriptor* under ``descriptor.name`` in</span>
+<span class="sd">        :attr:`_geometry_registry`.  Calling this method on a subclass</span>
+<span class="sd">        affects only that subclass&#39;s registry, not the base class or any</span>
+<span class="sd">        sibling solver.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        descriptor : GeometryDescriptor</span>
+<span class="sd">            The geometry to register.  The :attr:`~GeometryDescriptor.name`</span>
+<span class="sd">            attribute is used as the registry key.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            If *descriptor* is not a :class:`~hklpy2.backends.typing.GeometryDescriptor`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from hklpy2.backends.typing import GeometryDescriptor</span>
+<span class="sd">        &gt;&gt;&gt; from hklpy2.backends.th_tth_q import ThTthSolver</span>
+<span class="sd">        &gt;&gt;&gt; geo = GeometryDescriptor(</span>
+<span class="sd">        ...     name=&quot;MY GEO&quot;,</span>
+<span class="sd">        ...     pseudo_axis_names=[&quot;h&quot;, &quot;k&quot;, &quot;l&quot;],</span>
+<span class="sd">        ...     real_axis_names=[&quot;mu&quot;, &quot;delta&quot;, &quot;nu&quot;, &quot;eta&quot;, &quot;chi&quot;, &quot;phi&quot;],</span>
+<span class="sd">        ...     modes=[&quot;lifting detector&quot;],</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; ThTthSolver.register_geometry(geo)</span>
+<span class="sd">        &gt;&gt;&gt; &quot;MY GEO&quot; in ThTthSolver.geometries()</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">descriptor</span><span class="p">,</span> <span class="n">GeometryDescriptor</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected GeometryDescriptor, received </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">descriptor</span><span class="p">)</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_geometry_registry</span><span class="p">[</span><span class="n">descriptor</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">descriptor</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Registered geometry </span><span class="si">%r</span><span class="s2"> on </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">descriptor</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -644,7 +713,12 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.geometries">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">geometries</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Ordered list of the geometry names.</span>
+<span class="sd">        Ordered list of the geometry names supported by this solver.</span>
+
+<span class="sd">        Implementations that use the :attr:`_geometry_registry` should return</span>
+<span class="sd">        ``sorted(cls._geometry_registry.keys())``.  Solvers backed by an</span>
+<span class="sd">        external library (e.g. :class:`~hklpy2.backends.hkl_soleil.HklSolver`)</span>
+<span class="sd">        may query that library&#39;s own registry instead.</span>
 
 <span class="sd">        EXAMPLES::</span>
 
