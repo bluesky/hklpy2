@@ -24,12 +24,22 @@ from ..misc import SolverError
 from ..typing import Matrix3x3
 from ..typing import NamedFloatDict
 from .base import SolverBase
+from .typing import GeometryDescriptor
 from .typing import ReflectionDict
 
 logger = logging.getLogger(__name__)
 TH_TTH_Q_GEOMETRY = "TH TTH Q"
-TH_Q_GEOMETRY = "TH Q"  # TODO: Second geometry?
 BISECTOR_MODE = "bissector"  # spelled same as in E4CV
+
+#: Built-in geometry descriptor for the theta/two-theta/Q geometry.
+_TH_TTH_Q_DESCRIPTOR = GeometryDescriptor(
+    name=TH_TTH_Q_GEOMETRY,
+    pseudo_axis_names=["q"],
+    real_axis_names=["th", "tth"],
+    modes=[BISECTOR_MODE],
+    default_mode=BISECTOR_MODE,
+    description="theta / two-theta powder diffractometer (Q transform)",
+)
 
 
 class ThTthSolver(SolverBase):
@@ -49,6 +59,9 @@ class ThTthSolver(SolverBase):
     reflections must have the same :index:`wavelength`.
 
     No orientation matrix is used in this geometry.
+
+    New geometries can be added at runtime via
+    :meth:`~hklpy2.backends.base.SolverBase.register_geometry`.
 
     .. rubric:: Python Methods
 
@@ -79,10 +92,18 @@ class ThTthSolver(SolverBase):
     name = "th_tth"
     version = __version__
 
+    # Each ThTthSolver subclass (or the class itself) has its own registry,
+    # independent of SolverBase._geometry_registry.
+    _geometry_registry = {}
+
     def __init__(self, geometry: str, **kwargs) -> None:
         super().__init__(geometry, **kwargs)
         self._reflections = []
         self._wavelength = None
+
+    def _descriptor(self) -> GeometryDescriptor:
+        """Return the GeometryDescriptor for the current geometry, or None."""
+        return self._geometry_registry.get(self.geometry)
 
     def addReflection(self, value: ReflectionDict) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
@@ -104,15 +125,23 @@ class ThTthSolver(SolverBase):
 
     @property
     def extra_axis_names(self) -> List[str]:
-        return []
+        desc = self._descriptor()
+        if desc is None:
+            return []
+        # extra_axis_names is a per-mode dict; return all unique names
+        all_extras: List[str] = []
+        for names in desc.extra_axis_names.values():
+            all_extras += names
+        return sorted(set(all_extras))
 
     def forward(self, pseudos: NamedFloatDict) -> List[NamedFloatDict]:
         """Transform pseudos to list of reals."""
         if not isinstance(pseudos, dict):
             raise TypeError(f"Must supply dict, received {pseudos!r}")
 
+        desc = self._descriptor()
         solutions = []
-        if self.geometry == TH_TTH_Q_GEOMETRY:
+        if desc is not None and self.geometry == TH_TTH_Q_GEOMETRY:
             q = pseudos.get("q")
             if q is None:
                 raise SolverError(f"'q' not defined. Received {pseudos!r}.")
@@ -126,15 +155,17 @@ class ThTthSolver(SolverBase):
 
     @classmethod
     def geometries(cls) -> List[str]:
-        return [TH_TTH_Q_GEOMETRY]  # only one geometry
+        """Sorted list of registered geometry names."""
+        return sorted(cls._geometry_registry.keys())
 
     def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
         """Transform reals to pseudos."""
         if not isinstance(reals, dict):
             raise TypeError(f"Must supply dict, received {reals!r}")
 
+        desc = self._descriptor()
         pseudos = {}
-        if self.geometry == TH_TTH_Q_GEOMETRY:
+        if desc is not None and self.geometry == TH_TTH_Q_GEOMETRY:
             tth = reals.get("tth")
             if tth is None:
                 raise SolverError(f"'tth' not defined. Received {reals!r}.")
@@ -148,19 +179,24 @@ class ThTthSolver(SolverBase):
 
     @property
     def modes(self) -> List[str]:
-        if self.geometry == TH_TTH_Q_GEOMETRY:
-            return [BISECTOR_MODE]
-        return []
+        desc = self._descriptor()
+        if desc is None:
+            return []
+        return list(desc.modes)
 
     @property
     def pseudo_axis_names(self) -> List[str]:
-        axes = {TH_TTH_Q_GEOMETRY: ["q"]}
-        return axes.get(self.geometry, [])
+        desc = self._descriptor()
+        if desc is None:
+            return []
+        return list(desc.pseudo_axis_names)
 
     @property
     def real_axis_names(self) -> List[str]:
-        axes = {TH_TTH_Q_GEOMETRY: "th tth".split()}
-        return axes.get(self.geometry, [])
+        desc = self._descriptor()
+        if desc is None:
+            return []
+        return list(desc.real_axis_names)
 
     def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict | None:
         """No lattice refinement in this |solver|."""
@@ -183,3 +219,7 @@ class ThTthSolver(SolverBase):
         if value <= 0:
             raise ValueError(f"Must supply positive number, received {value!r}")
         self._wavelength = value
+
+
+# Register the built-in TH TTH Q geometry at import time.
+ThTthSolver.register_geometry(_TH_TTH_Q_DESCRIPTOR)

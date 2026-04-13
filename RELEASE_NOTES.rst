@@ -35,6 +35,20 @@ describe future plans.
 
     Release expected by 2026-H1.
 
+    New Features
+    ------------
+
+    * Add ``GeometryDescriptor`` dataclass to ``hklpy2.backends.typing``:
+      decouples geometry identity (axis names, modes, description) from the
+      solver backend that implements the mathematics. (:issue:`293`)
+    * Add ``SolverBase._geometry_registry`` and ``SolverBase.register_geometry()``
+      so solver subclasses can register geometries dynamically at runtime,
+      enabling user-defined and ad-hoc diffractometer geometries. (:issue:`292`)
+    * Refactor ``ThTthSolver`` to use the new registry: ``geometries()``,
+      ``pseudo_axis_names``, ``real_axis_names``, ``modes``, and
+      ``extra_axis_names`` are all driven by registered ``GeometryDescriptor``
+      objects instead of hard-coded string dispatch. (:issue:`292`, :issue:`293`)
+
     Documentation
     -------------
 
