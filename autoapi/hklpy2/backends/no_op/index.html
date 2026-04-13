@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../../_static/documentation_options.js?v=1edef8cf"></script>
+    <script src="../../../../_static/documentation_options.js?v=d6c99174"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -493,7 +493,7 @@
 <td><p>Compute list of solutions(reals) from pseudos (hkl -&gt; [angles]).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.no_op.NoOpSolver.geometries" title="hklpy2.backends.no_op.NoOpSolver.geometries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geometries</span></code></a>()</p></td>
-<td><p>Ordered list of the geometry names.</p></td>
+<td><p>Ordered list of the geometry names supported by this solver.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.backends.no_op.NoOpSolver.inverse" title="hklpy2.backends.no_op.NoOpSolver.inverse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inverse</span></code></a>(reals)</p></td>
 <td><p>Compute dict of pseudos from reals (angles -&gt; hkl).</p></td>
@@ -562,7 +562,11 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2.backends.no_op.NoOpSolver.geometries">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">geometries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/no_op.html#NoOpSolver.geometries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.no_op.NoOpSolver.geometries" title="Link to this definition">#</a></dt>
-<dd><p>Ordered list of the geometry names.</p>
+<dd><p>Ordered list of the geometry names supported by this solver.</p>
+<p>Implementations that use the <code class="xref py py-attr docutils literal notranslate"><span class="pre">_geometry_registry</span></code> should return
+<code class="docutils literal notranslate"><span class="pre">sorted(cls._geometry_registry.keys())</span></code>.  Solvers backed by an
+external library (e.g. <a class="reference internal" href="../hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a>)
+may query that library’s own registry instead.</p>
 <p>EXAMPLES:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_solver</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Solver</span> <span class="o">=</span> <span class="n">get_solver</span><span class="p">(</span><span class="s2">&quot;no_op&quot;</span><span class="p">)</span>

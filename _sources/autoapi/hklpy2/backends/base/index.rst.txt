@@ -76,6 +76,13 @@ Module Contents
        ~refineLattice
        ~removeAllReflections
 
+   .. rubric:: Geometry Registry
+
+   .. autosummary::
+
+       ~_geometry_registry
+       ~register_geometry
+
    .. rubric:: Python Properties
 
    .. autosummary::
@@ -174,7 +181,12 @@ Module Contents
       :abstractmethod:
 
 
-      Ordered list of the geometry names.
+      Ordered list of the geometry names supported by this solver.
+
+      Implementations that use the :attr:`_geometry_registry` should return
+      ``sorted(cls._geometry_registry.keys())``.  Solvers backed by an
+      external library (e.g. :class:`~hklpy2.backends.hkl_soleil.HklSolver`)
+      may query that library's own registry instead.
 
       EXAMPLES::
 
@@ -263,6 +275,39 @@ Module Contents
 
 
       Refine the lattice parameters from a list of reflections.
+
+
+
+   .. py:method:: register_geometry(descriptor: ~hklpy2.backends.typing.GeometryDescriptor) -> None
+      :classmethod:
+
+
+      Add or replace a geometry in this solver's registry.
+
+      Registers *descriptor* under ``descriptor.name`` in
+      :attr:`_geometry_registry`.  Calling this method on a subclass
+      affects only that subclass's registry, not the base class or any
+      sibling solver.
+
+      :param descriptor: The geometry to register.  The :attr:`~GeometryDescriptor.name`
+                         attribute is used as the registry key.
+      :type descriptor: GeometryDescriptor
+
+      :raises TypeError: If *descriptor* is not a :class:`~hklpy2.backends.typing.GeometryDescriptor`.
+
+      .. rubric:: Examples
+
+      >>> from hklpy2.backends.typing import GeometryDescriptor
+      >>> from hklpy2.backends.th_tth_q import ThTthSolver
+      >>> geo = GeometryDescriptor(
+      ...     name="MY GEO",
+      ...     pseudo_axis_names=["h", "k", "l"],
+      ...     real_axis_names=["mu", "delta", "nu", "eta", "chi", "phi"],
+      ...     modes=["lifting detector"],
+      ... )
+      >>> ThTthSolver.register_geometry(geo)
+      >>> "MY GEO" in ThTthSolver.geometries()
+      True
 
 
 

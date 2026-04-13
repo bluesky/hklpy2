@@ -98,7 +98,12 @@ Module Contents
       :classmethod:
 
 
-      Ordered list of the geometry names.
+      Ordered list of the geometry names supported by this solver.
+
+      Implementations that use the :attr:`_geometry_registry` should return
+      ``sorted(cls._geometry_registry.keys())``.  Solvers backed by an
+      external library (e.g. :class:`~hklpy2.backends.hkl_soleil.HklSolver`)
+      may query that library's own registry instead.
 
       EXAMPLES::
 

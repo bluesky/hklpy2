@@ -33,10 +33,6 @@ Module Contents
    :value: 'bissector'
 
 
-.. py:data:: TH_Q_GEOMETRY
-   :value: 'TH Q'
-
-
 .. py:data:: TH_TTH_Q_GEOMETRY
    :value: 'TH TTH Q'
 
@@ -66,6 +62,9 @@ Module Contents
    reflections must have the same :index:`wavelength`.
 
    No orientation matrix is used in this geometry.
+
+   New geometries can be added at runtime via
+   :meth:`~hklpy2.backends.base.SolverBase.register_geometry`.
 
    .. rubric:: Python Methods
 
@@ -124,17 +123,7 @@ Module Contents
       :classmethod:
 
 
-      Ordered list of the geometry names.
-
-      EXAMPLES::
-
-          >>> from hklpy2 import get_solver
-          >>> Solver = get_solver("no_op")
-          >>> Solver.geometries()
-          []
-          >>> solver = Solver("TH TTH Q")
-          >>> solver.geometries()
-          []
+      Sorted list of registered geometry names.
 
 
 
