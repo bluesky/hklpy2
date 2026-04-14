@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=10fd8df5"></script>
+    <script src="_static/documentation_options.js?v=f7a8147b"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -421,6 +421,7 @@
 <li class="toctree-l2"><a class="reference internal" href="guides/design.html">Architecture &amp; Design Decisions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/diffract.html">Diffractometer How-To Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/how_calc_ub.html">How to Compute and Set the UB Matrix</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_constraints.html">How to Use Constraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_creator_from_config.html">How to Create a Simulator from a Config</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
@@ -502,7 +503,7 @@
 <li><p>create a simulated 4-circle diffractometer in Python</p></li>
 <li><p>define a crystal sample and its lattice parameters</p></li>
 <li><p>add two orientation reflections and compute the <span class="math notranslate nohighlight">\(UB\)</span> matrix</p></li>
-<li><p>verify the orientation with <code class="docutils literal notranslate"><span class="pre">forward()</span></code> and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code></p></li>
+<li><p>verify the orientation with <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> and <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a></p></li>
 <li><p>move to a reciprocal-space position</p></li>
 <li><p>run a simple scan in reciprocal space</p></li>
 </ul>
@@ -521,7 +522,7 @@ only the axis names, lattice parameters, and reflection angles change.</p>
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="concepts/diffract.html#concepts-diffract"><span class="std std-ref">Diffractometer</span></a> — conceptual overview of the diffractometer.</p>
 <p><a class="reference internal" href="diffractometers.html#geometries"><span class="std std-ref">Diffractometers</span></a> — full table of available geometries and solvers.</p>
-<p><a class="reference internal" href="concepts/constraints.html#concepts-constraints"><span class="std std-ref">Constraints</span></a> — how constraints filter <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions.</p>
+<p><a class="reference internal" href="concepts/constraints.html#concepts-constraints"><span class="std std-ref">Constraints</span></a> — how constraints filter <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> solutions.</p>
 </div>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
@@ -569,9 +570,9 @@ modelled on common SPEC commands.  We import the ones we need and tell
 <span class="n">set_diffractometer</span><span class="p">(</span><span class="n">fourc</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>All subsequent calls to <code class="docutils literal notranslate"><span class="pre">pa()</span></code>, <code class="docutils literal notranslate"><span class="pre">wh()</span></code>, <code class="docutils literal notranslate"><span class="pre">setor()</span></code>, etc. will
-operate on <code class="docutils literal notranslate"><span class="pre">fourc</span></code> until you call <code class="docutils literal notranslate"><span class="pre">set_diffractometer()</span></code> again with
-a different object.</p>
+<p>All subsequent calls to <a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.pa" title="hklpy2.user.pa"><code class="xref py py-func docutils literal notranslate"><span class="pre">pa()</span></code></a>, <a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.wh" title="hklpy2.user.wh"><code class="xref py py-func docutils literal notranslate"><span class="pre">wh()</span></code></a>,
+<a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.setor" title="hklpy2.user.setor"><code class="xref py py-func docutils literal notranslate"><span class="pre">setor()</span></code></a>, etc. will operate on <code class="docutils literal notranslate"><span class="pre">fourc</span></code> until you call
+<a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.set_diffractometer" title="hklpy2.user.set_diffractometer"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_diffractometer()</span></code></a> again with a different object.</p>
 </section>
 <section id="step-3-add-a-sample">
 <h2>Step 3 — Add a sample<a class="headerlink" href="#step-3-add-a-sample" title="Link to this heading">#</a></h2>
@@ -581,7 +582,7 @@ silicon lattice parameter as a built-in constant:</p>
 </pre></div>
 </div>
 <p>Silicon is cubic so only one lattice parameter <code class="docutils literal notranslate"><span class="pre">a</span></code> is needed.
-Notice that <code class="docutils literal notranslate"><span class="pre">add_sample()</span></code> prints a confirmation:</p>
+Notice that <a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.add_sample" title="hklpy2.user.add_sample"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_sample()</span></code></a> prints a confirmation:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Sample(name=&#39;silicon&#39;, lattice=Lattice(a=5.431, system=&#39;cubic&#39;))
 </pre></div>
 </div>
@@ -654,14 +655,15 @@ negative:</p>
 <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now check <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> — given the angles of the first reflection,
-do we recover <span class="math notranslate nohighlight">\((4, 0, 0)\)</span>?</p>
+<p>Now check <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> — given
+the angles of the first reflection, do we recover <span class="math notranslate nohighlight">\((4, 0, 0)\)</span>?</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">inverse</span><span class="p">((</span><span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">69.0966</span><span class="p">))</span>
 <span class="c1"># → Hklpy2DiffractometerPseudoPos(h=3.9999, k=0, l=0)  ✓</span>
 </pre></div>
 </div>
-<p>And <code class="docutils literal notranslate"><span class="pre">forward()</span></code> — given <span class="math notranslate nohighlight">\((4, 0, 0)\)</span>, do we get back angles
-close to the measured reflection?</p>
+<p>And <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> — given
+<span class="math notranslate nohighlight">\((4, 0, 0)\)</span>, do we get back angles close to the measured
+reflection?</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector&quot;</span>   <span class="c1"># omega = tth / 2</span>
 <span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="c1"># → Hklpy2DiffractometerRealPos(omega=-34.5491, chi=0.0, phi=-110.9011, tth=69.0982)</span>
@@ -669,10 +671,11 @@ close to the measured reflection?</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">forward()</span></code> answer may differ from the measured reflection angles
-— both are valid positions for <span class="math notranslate nohighlight">\((4, 0, 0)\)</span>.  There are often
-multiple geometrically equivalent solutions.  Use
-<a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.cahkl_table" title="hklpy2.user.cahkl_table"><code class="xref py py-func docutils literal notranslate"><span class="pre">cahkl_table()</span></code></a> to see all of them:</p>
+<p>The <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> answer may
+differ from the measured reflection angles — both are valid positions
+for <span class="math notranslate nohighlight">\((4, 0, 0)\)</span>.  There are often multiple geometrically
+equivalent solutions.  Use <a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.cahkl_table" title="hklpy2.user.cahkl_table"><code class="xref py py-func docutils literal notranslate"><span class="pre">cahkl_table()</span></code></a> to see
+all of them:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cahkl_table</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -691,7 +694,7 @@ sphere, the current constraints, and the wavelength all restrict which
 reflections the diffractometer can reach.  The wavelength sets the
 radius of the Ewald sphere and therefore determines which
 reciprocal-lattice points are in range at all; changing the wavelength
-(or equivalently the energy) shifts that boundary.  If <code class="docutils literal notranslate"><span class="pre">forward()</span></code>
+(or equivalently the energy) shifts that boundary.     If <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>
 returns no solutions, the position is inaccessible under the current
 configuration.</p>
 </div>
@@ -743,7 +746,7 @@ what makes a diffractometer different from a simple multi-axis stage.</p>
 <li><p>Set the X-ray wavelength</p></li>
 <li><p>Recorded two orientation reflections with <a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.setor" title="hklpy2.user.setor"><code class="xref py py-func docutils literal notranslate"><span class="pre">setor()</span></code></a></p></li>
 <li><p>Computed the <span class="math notranslate nohighlight">\(UB\)</span> orientation matrix with <a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.calc_UB" title="hklpy2.user.calc_UB"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_UB()</span></code></a></p></li>
-<li><p>Verified the orientation with <code class="docutils literal notranslate"><span class="pre">forward()</span></code> and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code></p></li>
+<li><p>Verified the orientation with <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> and <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a></p></li>
 <li><p>Moved to a reciprocal-space position with <code class="xref py py-meth docutils literal notranslate"><span class="pre">move()</span></code></p></li>
 <li><p>Ran a Bluesky scan along a reciprocal-space direction</p></li>
 </ol>
