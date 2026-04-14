@@ -68,6 +68,11 @@ Glossary
         - ``cut_point = 0``: angles reported in 0 up to (but not
           including) 360.
 
+        Any finite number is acceptable.  ``inf``, ``-inf``, and ``nan``
+        raise :exc:`~hklpy2.misc.ConstraintsError`.  The cut point does
+        not need to fall within the axis limits — it is independent of
+        ``low_limit`` and ``high_limit``.
+
         Applied *before* :term:`constraint` checking in the ``forward()``
         pipeline — controls *representation*, not whether a solution is
         accepted or rejected.

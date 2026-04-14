@@ -176,15 +176,10 @@ class LimitsConstraint(ConstraintBase):
         if high_limit is None:
             high_limit = 180
 
-        self.low_limit, self.high_limit = sorted(
+        self._low_limit, self._high_limit = sorted(
             map(float, [low_limit, high_limit]),
         )
-        cut_point = float(cut_point)
-        if not math.isfinite(cut_point):
-            raise ConstraintsError(
-                f"cut_point must be a finite number, received {cut_point!r}."
-            )
-        self.cut_point = cut_point
+        self.cut_point = cut_point  # validated by property setter
 
     def __repr__(self) -> str:
         """Return a nicely-formatted string."""
@@ -207,12 +202,41 @@ class LimitsConstraint(ConstraintBase):
         self._fields = [f for f in self._fields if f != "cut_point"]
         super()._fromdict(config, core=core)
         self._fields = saved_fields
-        cut_point = float(config.get("cut_point", DEFAULT_CUT_POINT))
-        if not math.isfinite(cut_point):
+        self.cut_point = config.get(
+            "cut_point", DEFAULT_CUT_POINT
+        )  # validated by setter
+
+    @property
+    def cut_point(self) -> float:
+        """Angle (degrees) at which the 360-degree wrap begins."""
+        return self._cut_point
+
+    @cut_point.setter
+    def cut_point(self, value: float) -> None:
+        value = float(value)
+        if not math.isfinite(value):
             raise ConstraintsError(
-                f"cut_point must be a finite number, received {cut_point!r}."
+                f"cut_point must be a finite number, received {value!r}."
             )
-        self.cut_point = cut_point
+        self._cut_point = value
+
+    @property
+    def low_limit(self) -> float:
+        """Lower limit of the acceptable range."""
+        return self._low_limit
+
+    @low_limit.setter
+    def low_limit(self, value: float) -> None:
+        self.limits = (value, self._high_limit)
+
+    @property
+    def high_limit(self) -> float:
+        """Upper limit of the acceptable range."""
+        return self._high_limit
+
+    @high_limit.setter
+    def high_limit(self, value: float) -> None:
+        self.limits = (self._low_limit, value)
 
     def apply_cut(self, value: float) -> float:
         """
@@ -248,13 +272,13 @@ class LimitsConstraint(ConstraintBase):
     @property
     def limits(self) -> tuple[float, float]:
         """Return the low and high limits of this constraint."""
-        return (self.low_limit, self.high_limit)
+        return (self._low_limit, self._high_limit)
 
     @limits.setter
     def limits(self, values: tuple[float, float]) -> None:
         if len(values) != 2:
             raise ConstraintsError(f"Use exactly two values.  Received: {values!r}")
-        self.low_limit, self.high_limit = sorted(map(float, values))
+        self._low_limit, self._high_limit = sorted(map(float, values))
 
     def valid(self, **values: Dict[str, NUMERIC]) -> bool:
         """

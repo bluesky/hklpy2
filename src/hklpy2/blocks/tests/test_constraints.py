@@ -322,6 +322,49 @@ def test_cut_point_validation(parms, context):
         assert math.isfinite(c.cut_point)
 
 
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(attr="cut_point", value=0.0),
+            does_not_raise(),
+            id="cut_point finite accepted",
+        ),
+        pytest.param(
+            dict(attr="cut_point", value=float("nan")),
+            pytest.raises(
+                ConstraintsError, match=re.escape("cut_point must be a finite number")
+            ),
+            id="cut_point nan rejected post-construction",
+        ),
+        pytest.param(
+            dict(attr="cut_point", value=float("inf")),
+            pytest.raises(
+                ConstraintsError, match=re.escape("cut_point must be a finite number")
+            ),
+            id="cut_point inf rejected post-construction",
+        ),
+        pytest.param(
+            dict(attr="low_limit", value=50.0),
+            does_not_raise(),
+            id="low_limit set via property sorted with high",
+        ),
+        pytest.param(
+            dict(attr="high_limit", value=-50.0),
+            does_not_raise(),
+            id="high_limit below low_limit is sorted",
+        ),
+    ],
+)
+def test_post_construction_validation(parms, context):
+    c = LimitsConstraint(-180, 180, label="axis")
+    with context:
+        setattr(c, parms["attr"], parms["value"])
+        # after setting low or high, sorted order is maintained
+        if parms["attr"] in ("low_limit", "high_limit"):
+            assert c.low_limit <= c.high_limit
+
+
 def test_limits_property():
     sim = creator(name="sim", solver="th_tth", geometry="TH TTH Q")
     constraint = sim.core.constraints["th"]

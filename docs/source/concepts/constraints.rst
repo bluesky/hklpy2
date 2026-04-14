@@ -53,6 +53,20 @@ Two common choices:
 Technically, a cut point ``c`` maps any computed angle to its equivalent
 in the range from ``c`` up to (but not including) ``c + 360``.
 
+.. rubric:: Valid values
+
+Any finite number is an acceptable cut point — including values outside
+the axis limits.  The cut point is independent of ``low_limit`` and
+``high_limit``; there is no requirement that it fall within the limits.
+
+``inf``, ``-inf``, and ``nan`` are rejected immediately with a
+:exc:`~hklpy2.misc.ConstraintsError`, both when the constraint is
+created and when ``cut_point`` is set afterwards.
+
+``low_limit`` and ``high_limit`` are always kept in sorted order: setting
+either one (or both via the ``limits`` property) sorts the pair
+automatically, so ``low_limit`` is always ``<=`` ``high_limit``.
+
 .. rubric:: Cut point vs. constraint — the key distinction
 
 +---------------------+--------------------------------------------------+
