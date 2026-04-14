@@ -60,6 +60,9 @@ Computation
    * - :ref:`how_presets`
      - Hold a real axis at a fixed value during ``forward()`` without moving
        any motor (SPEC ``freeze``/``unfreeze`` equivalent).
+   * - :ref:`how_user_interface`
+     - Use the :mod:`hklpy2.user` interactive convenience functions:
+       ``pa``, ``wh``, ``cahkl``, ``setor``, ``set_wavelength``, and more.
    * - :doc:`guides/var_engines`
      - Switch between calculation engines (e.g. ``hkl``, ``q``) on the same
        geometry.
