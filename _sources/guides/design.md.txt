@@ -1,152 +1,181 @@
 (guide.design)=
-# Design for hklpy2
+# Architecture & Design Decisions
 
-Gather the discussion points, thoughts, issues, etc. for development of
-[*hklpy2*](https://github.com/bluesky/hklpy2), the second generation of
-the [*hklpy*](https://github.com/bluesky/hklpy) package.
+This page describes the architectural decisions behind *hklpy2* — why the
+package is structured the way it is, and where it is headed.
 
-Here's a block diagram of the new API:
+## Package Architecture
 
-![Block Diagram](/_static/hklpy2-block-diagram.png)
+![Package architecture overview](/_static/hklpy2-overview.svg)
 
-## hklpy release v2.0 project
+The package is organised into five sections, flowing left to right:
 
-As stated in the [project](https://github.com/orgs/bluesky/projects/4/settings):
+- **External (left)** — Bluesky plans (RunEngine,
+  [`bps.mv`](https://blueskyproject.io/bluesky/main/generated/bluesky.plan_stubs.mv.html),
+  …) drive the diffractometer; EPICS provides real motor axes and optional
+  PV-based wavelength control.  These are external to *hklpy2* and shown
+  with dashed borders.
+- **User-facing** — {class}`~hklpy2.diffract.DiffractometerBase` (an ophyd
+  {class}`~ophyd.pseudopos.PseudoPositioner`),
+  {class}`~hklpy2.wavelength.WavelengthBase`, the
+  {func}`~hklpy2.misc.creator` factory, and the
+  {mod}`hklpy2.user` convenience functions
+  ({func}`~hklpy2.user.pa`, {func}`~hklpy2.user.wh`,
+  {func}`~hklpy2.user.cahkl`, {func}`~hklpy2.user.setor`, …).
+- **Core** — {class}`~hklpy2.ops.Core` manages the seven block classes
+  ({class}`~hklpy2.blocks.sample.Sample`,
+  {class}`~hklpy2.blocks.lattice.Lattice`,
+  {class}`~hklpy2.blocks.reflection.Reflection`,
+  {class}`~hklpy2.blocks.constraints.ConstraintBase`,
+  Presets,
+  {class}`~hklpy2.blocks.zone.OrthonormalZone`,
+  {class}`~hklpy2.blocks.configure.Configuration`)
+  and acts as the single point of contact between the diffractometer and its
+  solver.
+- **Solvers** — {class}`~hklpy2.backends.base.SolverBase` defines the
+  adapter interface; built-in solvers
+  ({class}`~hklpy2.backends.hkl_soleil.HklSolver`,
+  {class}`~hklpy2.backends.th_tth_q.ThTthSolver`,
+  {class}`~hklpy2.backends.no_op.NoOpSolver`) and additional solvers
+  registered via Python entry points all subclass it.
+- **Backend libraries (right)** — the third-party libraries that solvers
+  delegate the heavy mathematics to (e.g. [Hkl/Soleil](https://people.debian.org/~picca/hkl/hkl.html)).  Like the external
+  section on the left, these are outside *hklpy2* and shown with dashed
+  borders.
 
-Redesign of the Diffractometer object.
+See {ref}`overview.architecture` for detailed diagrams of each layer.
 
-- user-requested changes
-- move libhkl to be a replaceable back-end computation library
-- easy to save/restore configuration
-- easy to use different *engines* (such as `hkl`, `qper_qpar`, `emergence`, ...)
-- user can choose different names for any of the diffractometer axes
+## Design Goals
 
-## Design ideas (from 2020 RFP)
+### Why a new package?
 
-This is a starting format for suggestions, but it may become clear that a different format to describe our requirements is necessary.
+Two specific user requests made it clear that incrementally patching *hklpy*
+v1 was not viable.
 
-1. Default diffractometer geometries
-1. Bragg Peak optimization tools
-1. Defining orientation matrix or matrices
-1. Simulating diffraction and diffractometer modes
-1. Built in reciprocal space plans (or scans)
-1. Choice of calculation engines other than the hkl C package
+The first was **named reflections**.  In v1, reflection storage was delegated
+entirely to the backend library (Hkl/Soleil).  Adding user-visible names to
+reflections would have required a deep refactor of every layer that touched
+the backend — a change so invasive it would have broken the existing API
+throughout.
 
-## Review of terminology coordinate systems
+The second was **wavelength handling**.  A review of how v1 managed (and
+failed to manage) wavelength revealed that the tight coupling to Hkl/Soleil
+made it impossible to support replaceable solver backends without rebuilding
+the package from scratch.  Wavelength is a property of the beam, not of the
+solver, and v1 had no clean way to express that separation.
 
-- {math}`B` goes from *hkl* to an orthonormal basis in the crystal reference frame
-- {math}`U` goes from the crystal reference frame to the reciprocal lab frame
-  (expressing how the crystal is stuck onto the diffractometer)
-- Solving the diffractometer equation goes from the reciprocal lab frame to
-  diffractometer angles. (Some people loosely call this "real space" but perhaps
-  they shouldn't. It's angles.)
+Together these two issues confirmed that the goal of *replaceable solvers*
+— the central design requirement of v2 — could not be achieved by refactoring
+v1.  A new code base, with reflection management and wavelength control owned
+by Python rather than delegated to the backend, was the only path forward.
 
-## Desired API
+### What changed
 
-The desired "solver API" into the HKL computation code should be transformations
-from reciprocal space to diffractometer angle space and vice versa, each taking
-three arguments:
+The redesign from *hklpy* v1 to *hklpy2* v2 addressed these shortcomings:
 
-- a structure (dict or struct) describing a geometry (motors, reference positions, and constraints)
-- observed mapping between real and reciprocal space to give you the "U" of the UB matrix
-- the crystallography to give you the "B"
+| hklpy v1 | hklpy2 v2 |
+|---|---|
+| Depends on **[Hkl/Soleil](https://people.debian.org/~picca/hkl/hkl.html)** (Linux x86-64 only) | Hkl/Soleil is one optional backend solver |
+| All samples, lattices, reflections stored inside Hkl/Soleil | Samples, lattices, reflections stored in Python |
+| Multiple confusing layers mirroring Hkl/Soleil internals | Two clear layers: Core and Solver |
+| Difficult to add geometries or swap backends | Solvers are plugins, swappable at runtime |
+| Difficult to use additional axes or parameters | Extra axes and parameters are first-class |
+| No standard save/restore | Configuration block handles save/restore |
 
-Underneath this API could be many different solvers:
+## Coordinate Systems
 
-- custom project
-- pybind-wrapped components from `libhkl`
-- SPEC
+*hklpy2* works in two coordinate spaces simultaneously:
 
-It should be easy to switch between solvers at run time so that new things can be validated.
+**Real space** — the physical rotation angles of the diffractometer motors
+(e.g. `omega`, `chi`, `phi`, `tth`).  These are the *real* axes.  Their
+names and order are defined by the diffractometer geometry provided by the
+solver.
 
-## Support for Additions
+**Reciprocal space** — the crystallographic Miller indices {math}`(h, k, l)`
+that identify planes in the crystal lattice.  These are the *pseudo* axes.
+While Miller indices are conventionally integers, the pseudo axes in
+*hklpy2* are floating-point values, allowing positions between Bragg peaks
+(e.g. for continuous scanning along a reciprocal-space trajectory, diffuse
+scattering, or incommensurate structures).
+{class}`~hklpy2.diffract.DiffractometerBase` converts between the two spaces
+via {meth}`~hklpy2.diffract.DiffractometerBase.forward` (hkl → angles) and
+{meth}`~hklpy2.diffract.DiffractometerBase.inverse` (angles → hkl), delegating
+the mathematics to Core and then to the solver.
 
-- [analyzers and polarizers](https://github.com/bluesky/hklpy/issues/92)
+### The UB matrix
 
-  Perhaps everything is already in place to support these items as stand alone
-  ophyd objects. Here is what's needed:
+The conversion between the two spaces requires knowing both the crystal
+geometry and its orientation on the diffractometer.  This is encoded in the
+{math}`UB` orientation matrix, which is the product of two matrices:
 
-  - [ ] Identify if we are missing items to support analyzers or polarizers
-  - [ ] Make sure we don't over specify requirements to cause problems for analyzers or polarizers
-  - [ ] Do we need to tie these new ophyd objects together with diffractometer object?
-          What is the best way to do that?
+- {math}`B` — encodes the crystal lattice geometry (lengths and angles of
+  the unit cell).  It transforms the sample's Miller indices {math}`(h, k,
+  l)` into the diffractometer's reference frame (technically, to an
+  orthonormal Cartesian basis aligned with the crystal axes).
+- {math}`U` — encodes how the crystal is physically mounted on the
+  diffractometer sample holder.  It transforms from the diffractometer's
+  reference frame into the laboratory reference frame (technically, a
+  rotation matrix from the crystal Cartesian frame to the reciprocal lab
+  frame).
+- {math}`UB` — the product of {math}`U` and {math}`B`; the single matrix
+  used in all {meth}`~hklpy2.diffract.DiffractometerBase.forward` and
+  {meth}`~hklpy2.diffract.DiffractometerBase.inverse` calculations to convert
+  between Miller indices and diffractometer angles.
 
-- Make it easy to provide additional axes, such as for:
-  - rotation about arbitrary vector
-  - Solvers with different reciprocal-space axes
-  - extra parameters, as required by solver
-    (For example, see `emergence` mode in
-    [E4CV](https://blueskyproject.io/hklpy/geometry_tables.html#geometry-e4cv))
+{math}`UB` is computed from two or more measured *orientation reflections* —
+positions where the diffractometer angles and the corresponding {math}`(h, k,
+l)` are both known.  See {func}`~hklpy2.user.calc_UB` and
+{meth}`~hklpy2.ops.Core.calc_UB`.
 
-## Reflections
+See issue {issue}`192` for an open discussion on reconsidering coordinate
+system transformations.
 
-- [write orientation reflections with scan](https://github.com/bluesky/hklpy/issues/158),
-  [also](https://github.com/bluesky/hklpy/issues/247)
-- [identify orientation reflections](https://github.com/bluesky/hklpy/issues/176)
-- [`cahkl()` should make nice report when reflection can't be reached](https://github.com/bluesky/hklpy/issues/178)
-- [reflection is a Python class](https://github.com/bluesky/hklpy/issues/189)
-- [`addReflection()`, when to use current positions](https://github.com/bluesky/hklpy/issues/219)
-- [avoid duplications](https://github.com/bluesky/hklpy/issues/248)
-- [label each reflection](https://github.com/bluesky/hklpy/issues/293)
+## Solver Plugin Design
 
-## Other
+A solver is a Python class that subclasses
+{class}`~hklpy2.backends.base.SolverBase` and is registered
+with the `"hklpy2.solver"` entry-point group in its package metadata.  This
+allows solvers to be installed independently and discovered at runtime without
+modifying *hklpy2* itself.
 
-- [modify existing sample](https://github.com/bluesky/hklpy/issues/157)
-- [control display precision in `wh()` and `pa()`](https://github.com/bluesky/hklpy/issues/179)
-- [crystallographic *zones*](https://github.com/bluesky/hklpy/issues/291)
+```toml
+# pyproject.toml of a solver package
+[project.entry-points."hklpy2.solver"]
+my_solver = "my_package.solver:MySolver"
+```
 
-## Sources
+Built-in solvers shipped with *hklpy2*:
 
-As listed in *hklpy* issues:
+| Solver | Backend | Notes |
+|---|---|---|
+| {class}`~hklpy2.backends.hkl_soleil.HklSolver` (`hkl_soleil`) | [Hkl/Soleil](https://people.debian.org/~picca/hkl/hkl.html) | Linux x86-64 only; many geometry types |
+| {class}`~hklpy2.backends.th_tth_q.ThTthSolver` (`th_tth`) | pure Python | Any OS; θ/2θ geometry with *Q* pseudo axis |
+| {class}`~hklpy2.backends.no_op.NoOpSolver` (`no_op`) | none | Testing only; no useful geometries |
 
-- (2020) [design conversation for an hkl solver API](https://github.com/bluesky/hklpy/issues/14)
-- (2020) Requirements [RFP](https://github.com/bluesky/hklpy/issues/47)
-- (2020) [requirements](https://docs.google.com/document/d/1QHNc1usAH3DoIHvtqVJTmHI0Q5lbwC4zimRLurOGiWE/edit)
+See {ref}`howto.solvers.write` for how to write and register a new solver.
 
-  See above section *Design ideas (from 2020 RFP)* for a copy of the collected requirements.
+## Future Plans
 
-## Additional Solvers
+The following design-level topics are under active consideration.
+Each links to the tracking issue for discussion and status.
 
-As listed in *hklpy* issues.
+**Multiple solvers per diffractometer** ({issue}`187`)
+: Allow a single {class}`~hklpy2.diffract.DiffractometerBase` instance to switch between solvers at
+  runtime without reconstruction, enabling side-by-side comparison of
+  backends.
 
-- [*ad-hoc* geometries](https://github.com/bluesky/hklpy/issues/244)
-- [diffcalc](https://github.com/bluesky/hklpy/issues/163)
-- [TwoC unknown in libhkl](https://github.com/bluesky/hklpy/issues/165)
-- [xrayutilities](https://github.com/bluesky/hklpy/issues/162)
-- [SPEC server](https://github.com/bluesky/hklpy/issues/341)
+**Performance targets** ({issue}`221`, {issue}`223`)
+: Minimum throughput of 2,000 {meth}`~hklpy2.diffract.DiffractometerBase.forward`
+  and {meth}`~hklpy2.diffract.DiffractometerBase.inverse` operations per second.
 
-## Python entrypoints
+**Coordinate system reconsideration** ({issue}`192`)
+: Review whether the current {math}`UB` convention and axis ordering are the
+  best defaults for all supported geometries.
 
-Could be used for [backend solvers](https://github.com/bluesky/hklpy/issues/161)
+**Analyzers and polarizers** ({issue}`222`)
+: Support for additional optical elements as stand-alone ophyd objects that
+  coordinate with the diffractometer.
 
-> It provides an useful tool for pluggable Python software development.
-
-- [Article with example](https://stackoverflow.com/a/9615473/1046449) about entrypoints.
-- [Demo](https://github.com/RichardBronosky/entrypoint_demo) (9 years old)
-
-See the docs in setuptools regarding [*Entry Points for
-Plugins*](https://setuptools.pypa.io/en/latest/userguide/entry_point.html#entry-points-for-plugins).
-
-## Differences between hklpy v1 & hklpy2 v2
-
-### hklpy v1
-
-- Depends on **libhkl**:
-  - Only compiled for linux-x86_64
-  - Difficult to modify existing (or add additional) diffractometer geometries.
-  - All samples, lattices, & reflections are stored by the **libhkl** library.
-  - Multiple layers (diffractometer, calc, engine, sample), based on **libhkl** design.
-    - Layer design is confusing as to where a feature is implemented.
-    - Users are often tempted to dig into lower layers for features.
-  - Difficult to use additional diffractometer axes and parameters.
-- Uses **libhkl** as the *defining reference* for diffractometer data and operations.
-
-### hklpy2 v2
-
-- Samples, lattices, & reflections stored in Python.
-- Separate the roles of core and solver.
-  - Core makes *transactions* with the selected *solver*.
-  - For specific operations, *solver* is setup and then *operated*.
-- Refactor use of **libhkl** as a backend *solver* library.
-- Support additional backend *solver* libraries (installed as entry-points).
-- Simpler design.
+**Fly scanning** ({issue}`11`)
+: Built-in reciprocal-space fly-scan plans integrated with the Bluesky
+  RunEngine.
