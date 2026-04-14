@@ -75,7 +75,6 @@ class ThTthSolver(SolverBase):
         ~inverse
         ~pseudo_axis_names
         ~real_axis_names
-        ~refineLattice
         ~removeAllReflections
 
     .. rubric:: Python Properties
@@ -197,10 +196,6 @@ class ThTthSolver(SolverBase):
         if desc is None:
             return []
         return list(desc.real_axis_names)
-
-    def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict | None:
-        """No lattice refinement in this |solver|."""
-        return None
 
     def removeAllReflections(self) -> None:
         """Remove all reflections."""

@@ -70,7 +70,6 @@ class SolverBase(ABC):
 
     .. autosummary::
 
-        ~addReflection
         ~calculate_UB
         ~extra_axis_names
         ~forward
@@ -79,7 +78,17 @@ class SolverBase(ABC):
         ~modes
         ~pseudo_axis_names
         ~real_axis_names
+
+    .. rubric:: Default Implementations
+
+    Subclasses may override these methods if the backend library
+    provides its own reflection management or lattice refinement.
+
+    .. autosummary::
+
+        ~addReflection
         ~refineLattice
+        ~reflections
         ~removeAllReflections
 
     .. rubric:: Geometry Registry
@@ -195,6 +204,8 @@ class SolverBase(ABC):
         self.mode = mode
         self._all_extra_axis_names: Optional[List[str]] = None
         self._sample: Optional[SampleDict] = None
+        self._reflections: List[ReflectionDict] = []
+        self._UB: Matrix3x3 = IDENTITY_MATRIX_3X3
 
         validate_and_canonical_unit(self.ANGLE_UNITS, INTERNAL_ANGLE_UNITS)
         validate_and_canonical_unit(self.LENGTH_UNITS, INTERNAL_LENGTH_UNITS)
@@ -221,9 +232,18 @@ class SolverBase(ABC):
             "version": self.version,
         }
 
-    @abstractmethod
     def addReflection(self, reflection: ReflectionDict) -> None:
-        """Add coordinates of a diffraction condition (a reflection)."""
+        """
+        Add coordinates of a diffraction condition (a reflection).
+
+        Default implementation stores the reflection in an internal list.
+        Solvers that delegate reflection management to their backend
+        library (e.g. :class:`~hklpy2.backends.hkl_soleil.HklSolver`)
+        should override this method.
+        """
+        if not isinstance(reflection, dict):
+            raise TypeError(f"Must supply ReflectionDict, received {reflection!r}")
+        self._reflections.append(reflection)
 
     @property
     def all_extra_axis_names(self) -> List[str]:
@@ -371,13 +391,37 @@ class SolverBase(ABC):
         # Do NOT sort.
         # return []
 
-    @abstractmethod
     def refineLattice(self, reflections: List[ReflectionDict]) -> NamedFloatDict | None:
-        """Refine the lattice parameters from a list of reflections."""
+        """
+        Refine the lattice parameters from a list of reflections.
 
-    @abstractmethod
+        Default implementation returns ``None`` to signal that lattice
+        refinement is not supported.  Solvers whose backend library
+        provides refinement (e.g.
+        :class:`~hklpy2.backends.hkl_soleil.HklSolver`) should override.
+        """
+        return None
+
     def removeAllReflections(self) -> None:
-        """Remove all reflections."""
+        """
+        Remove all reflections.
+
+        Default implementation clears the internal reflection list.
+        Solvers that delegate reflection management to their backend
+        library should override this method.
+        """
+        self._reflections.clear()
+
+    @property
+    def reflections(self) -> List[ReflectionDict]:
+        """
+        List of stored reflections.
+
+        Default implementation returns a copy of the internal list.
+        Solvers that delegate reflection storage to their backend
+        library should override this property.
+        """
+        return list(self._reflections)
 
     @property
     def sample(self) -> Union[SampleDict, None]:
@@ -443,4 +487,16 @@ class SolverBase(ABC):
     @property
     def UB(self) -> Matrix3x3:
         """Orientation matrix (3x3)."""
-        return IDENTITY_MATRIX_3X3
+        return self._UB
+
+    @UB.setter
+    def UB(self, value: Matrix3x3) -> None:
+        """
+        Set the orientation matrix (3x3).
+
+        Default implementation stores the value for later retrieval.
+        Solvers that delegate UB storage to their backend library
+        (e.g. :class:`~hklpy2.backends.hkl_soleil.HklSolver`) should
+        override this setter.
+        """
+        self._UB = value

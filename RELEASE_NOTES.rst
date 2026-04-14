@@ -49,6 +49,15 @@ describe future plans.
       ``extra_axis_names`` are all driven by registered ``GeometryDescriptor``
       objects instead of hard-coded string dispatch. (:issue:`292`, :issue:`293`)
 
+    Enhancements
+    ------------
+
+    * Provide default reflection management in ``SolverBase``:
+      ``addReflection()``, ``removeAllReflections()``, ``refineLattice()``,
+      and ``reflections`` property are no longer abstract.  Add ``UB`` setter
+      to ``SolverBase``.  Simplify ``NoOpSolver`` and ``ThTthSolver`` to
+      inherit defaults where appropriate. (:issue:`299`)
+
     Documentation
     -------------
 

@@ -56,7 +56,6 @@ methods (methods marked with decorator ``@abstractmethod``
 
     from hklpy2.backends.base import SolverBase
     from hklpy2.misc import IDENTITY_MATRIX_3X3
-    from hklpy2.misc import KeyValueMap
     from hklpy2.misc import Matrix3x3
     from hklpy2.misc import NamedFloatDict
 
@@ -68,11 +67,7 @@ methods (methods marked with decorator ``@abstractmethod``
             super().__init__(geometry, **kwargs)
 
         # Required abstract methods
-        def addReflection(self, reflection: KeyValueMap) -> None:
-            """Add an observed diffraction reflection."""
-            pass  # TODO: send to your library
-
-        def calculate_UB(self, r1: KeyValueMap, r2: KeyValueMap) -> Matrix3x3:
+        def calculate_UB(self, r1: dict, r2: dict) -> Matrix3x3:
             """Calculate the UB matrix with two reflections."""
             return IDENTITY_MATRIX_3X3  # TODO: calculate with your library
 
@@ -83,14 +78,6 @@ methods (methods marked with decorator ``@abstractmethod``
         def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
             """Compute pseudos from reals."""
             return {}  # TODO: calculate with your library
-
-        def refineLattice(self, reflections: list[KeyValueMap]) -> NamedFloatDict:
-            """Refine lattice parameters from reflections."""
-            return {}  # TODO: calculate with your library
-
-        def removeAllReflections(self) -> None:
-            """Remove all reflections."""
-            pass  # TODO: use your library
 
         # Required properties
         @property
@@ -117,6 +104,12 @@ methods (methods marked with decorator ``@abstractmethod``
         def real_axis_names(self) -> list[str]:
             """Ordered list of real axis names (omega, chi, phi, tth)."""
             return []
+
+    # Optional overrides — SolverBase provides working defaults:
+    # addReflection(reflection)   — stores in internal list
+    # removeAllReflections()      — clears internal list
+    # refineLattice(reflections)  — returns None (not supported)
+    # reflections                 — returns copy of internal list
 
 Step 2. Register as Entry Point
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -169,12 +162,13 @@ Required Methods Contract
 
 All solvers must implement these attributes, methods, and properties:
 
+**Required** (abstract — subclasses must implement):
+
 ==============================  ==================
 method (or property)            description
 ==============================  ==================
 ``name``                        (string attribute) Name of this solver.
 ``version``                     (string attribute) Version of this solver.
-``addReflection(reflection)``   Add an observed diffraction reflection.
 ``calculate_UB(r1, r2)``        Calculate the UB matrix with two reflections.
 ``extra_axis_names``            Returns list of any extra axes in the current *mode*.
 ``forward(pseudos)``            Compute list of solutions(reals) from pseudos.
@@ -183,9 +177,19 @@ method (or property)            description
 ``modes``                       Returns list of all modes support by this geometry.
 ``pseudo_axis_names``           Returns list of all pseudos support by this geometry.
 ``real_axis_names``             Returns list of all reals support by this geometry.
-``refineLattice(reflections)``  Return refined lattice parameters given reflections.
-``removeAllReflections()``      Clears sample of all stored reflections.
 ==============================  ==================
+
+**Optional** (``SolverBase`` provides working defaults — override if your
+backend library has its own reflection management or lattice refinement):
+
+=================================  ==================
+method (or property)               default behavior
+=================================  ==================
+``addReflection(reflection)``      Stores in internal list.
+``reflections``                    Returns copy of internal list.
+``refineLattice(reflections)``     Returns ``None`` (not supported).
+``removeAllReflections()``         Clears internal list.
+=================================  ==================
 
 Engineering Units System
 ^^^^^^^^^^^^^^^^^^^^^^^^

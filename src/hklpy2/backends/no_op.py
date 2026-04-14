@@ -33,11 +33,16 @@ class NoOpSolver(SolverBase):
 
     |solver| that has no reciprocal space transformations.
 
+    Inherits default reflection management
+    (:meth:`~hklpy2.backends.base.SolverBase.addReflection`,
+    :meth:`~hklpy2.backends.base.SolverBase.removeAllReflections`,
+    :meth:`~hklpy2.backends.base.SolverBase.refineLattice`) from
+    :class:`~hklpy2.backends.base.SolverBase`.
+
     .. rubric:: Python Methods
 
     .. autosummary::
 
-        ~addReflection
         ~calculate_UB
         ~extra_axis_names
         ~forward
@@ -45,8 +50,6 @@ class NoOpSolver(SolverBase):
         ~inverse
         ~pseudo_axis_names
         ~real_axis_names
-        ~refineLattice
-        ~removeAllReflections
 
     .. rubric:: Python Properties
 
@@ -64,9 +67,6 @@ class NoOpSolver(SolverBase):
 
     def __init__(self, geometry: str, **kwargs) -> None:
         super().__init__(geometry, **kwargs)
-
-    def addReflection(self, reflection: ReflectionDict) -> None:
-        return None
 
     def calculate_UB(self, r1: ReflectionDict, r2: ReflectionDict) -> Matrix3x3:
         return IDENTITY_MATRIX_3X3
@@ -96,11 +96,3 @@ class NoOpSolver(SolverBase):
     @property
     def real_axis_names(self) -> List[str]:
         return []  # no axes
-
-    def refineLattice(self, reflections: List[ReflectionDict]) -> NamedFloatDict | None:
-        """No refinement."""
-        return None
-
-    def removeAllReflections(self) -> None:
-        """Remove all reflections."""
-        pass

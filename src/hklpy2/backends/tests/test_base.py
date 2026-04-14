@@ -3,11 +3,11 @@
 # Many features are tested, albeit indrectly, in specific solvers.
 
 import re
+from contextlib import nullcontext as does_not_raise
 
 import pyRestTable
 import pytest
 
-from ...blocks.lattice import Lattice
 from ...blocks.reflection import Reflection
 from ...misc import IDENTITY_MATRIX_3X3
 from ..base import SolverBase
@@ -16,10 +16,10 @@ from ..th_tth_q import ThTthSolver
 
 
 class TrivialSolver(SolverBase):
-    """Trivial implementation for testing."""
+    """Trivial implementation for testing.
 
-    def addReflection(self, reflection: Reflection):
-        """."""
+    Uses inherited default reflection management from SolverBase.
+    """
 
     def calculate_UB(
         self,
@@ -64,13 +64,6 @@ class TrivialSolver(SolverBase):
         # Do NOT sort.
         return []
 
-    def refineLattice(self, reflections: list[Reflection]) -> Lattice:
-        """Refine the lattice parameters from a list of reflections."""
-        return Lattice(1.0)  # always cubic, for testing
-
-    def removeAllReflections(self) -> None:
-        """Remove all reflections."""
-
 
 def test_SolverBase():
     assert TrivialSolver.geometries() == []
@@ -92,7 +85,7 @@ def test_SolverBase():
     assert solver.inverse({}) == {}
     assert solver.pseudo_axis_names == [], f"{solver.pseudo_axis_names=}"
     assert solver.real_axis_names == [], f"{solver.real_axis_names=}"
-    assert solver.refineLattice([]) == Lattice(a=1.0)
+    assert solver.refineLattice([]) is None
 
     delattr(solver, "_mode")
     assert solver.mode == ""
@@ -153,3 +146,149 @@ def test_SolverBase_abstractmethods():
         match=re.escape("Cannot change 'geometry' after solver is created."),
     ):
         solver.geometry = TH_TTH_Q_GEOMETRY
+
+
+SAMPLE_REFLECTION = dict(
+    name="r1",
+    pseudos={"h": 1.0, "k": 0.0, "l": 0.0},
+    reals={"omega": 10.0, "chi": 0.0, "phi": 0.0, "tth": 20.0},
+    wavelength=1.54,
+)
+
+SAMPLE_REFLECTION_2 = dict(
+    name="r2",
+    pseudos={"h": 0.0, "k": 1.0, "l": 0.0},
+    reals={"omega": 15.0, "chi": 0.0, "phi": 90.0, "tth": 30.0},
+    wavelength=1.54,
+)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(reflection=SAMPLE_REFLECTION),
+            does_not_raise(),
+            id="valid reflection dict",
+        ),
+        pytest.param(
+            dict(reflection="not a dict"),
+            pytest.raises(TypeError, match=re.escape("Must supply ReflectionDict")),
+            id="string raises TypeError",
+        ),
+        pytest.param(
+            dict(reflection=42),
+            pytest.raises(TypeError, match=re.escape("Must supply ReflectionDict")),
+            id="int raises TypeError",
+        ),
+    ],
+)
+def test_addReflection_default(parms, context):
+    solver = TrivialSolver("test_geo")
+    with context:
+        solver.addReflection(**parms)
+        assert len(solver.reflections) == 1
+        assert solver.reflections[0] == parms["reflection"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(reflections=[SAMPLE_REFLECTION, SAMPLE_REFLECTION_2]),
+            does_not_raise(),
+            id="add two then remove all",
+        ),
+        pytest.param(
+            dict(reflections=[]),
+            does_not_raise(),
+            id="remove from empty list",
+        ),
+    ],
+)
+def test_removeAllReflections_default(parms, context):
+    solver = TrivialSolver("test_geo")
+    with context:
+        for r in parms["reflections"]:
+            solver.addReflection(r)
+        assert len(solver.reflections) == len(parms["reflections"])
+        solver.removeAllReflections()
+        assert len(solver.reflections) == 0
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(reflections=[]),
+            does_not_raise(),
+            id="empty list returns None",
+        ),
+        pytest.param(
+            dict(reflections=[SAMPLE_REFLECTION]),
+            does_not_raise(),
+            id="one reflection returns None",
+        ),
+    ],
+)
+def test_refineLattice_default(parms, context):
+    solver = TrivialSolver("test_geo")
+    with context:
+        result = solver.refineLattice(**parms)
+        assert result is None
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                reflections=[SAMPLE_REFLECTION, SAMPLE_REFLECTION_2],
+                expected_count=2,
+            ),
+            does_not_raise(),
+            id="two reflections stored",
+        ),
+        pytest.param(
+            dict(
+                reflections=[],
+                expected_count=0,
+            ),
+            does_not_raise(),
+            id="empty reflections list",
+        ),
+    ],
+)
+def test_reflections_property(parms, context):
+    solver = TrivialSolver("test_geo")
+    with context:
+        for r in parms["reflections"]:
+            solver.addReflection(r)
+        result = solver.reflections
+        assert len(result) == parms["expected_count"]
+        # Verify it returns a copy, not the internal list.
+        result.append({"dummy": True})
+        assert len(solver.reflections) == parms["expected_count"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(ub=[[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+            does_not_raise(),
+            id="set identity UB",
+        ),
+        pytest.param(
+            dict(ub=[[2, 0, 0], [0, 2, 0], [0, 0, 2]]),
+            does_not_raise(),
+            id="set non-identity UB",
+        ),
+    ],
+)
+def test_UB_setter(parms, context):
+    solver = TrivialSolver("test_geo")
+    assert solver.UB == IDENTITY_MATRIX_3X3
+    with context:
+        solver.UB = parms["ub"]
+        assert solver.UB == parms["ub"]
