@@ -280,8 +280,7 @@ layer handles their absence gracefully.
 
 **Operating modes.**
     Named configurations (e.g., bisector, constant-phi) that define
-    which axes will be modified by ``forward()``.  See
-    :term:`mode`.
+    which axes will be modified by ``forward()``.
 
 .. _howto.solvers.write.design_rationale:
 
