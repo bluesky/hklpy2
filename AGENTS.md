@@ -201,6 +201,25 @@ The `Makefile` `pre` target also exports this variable automatically.
   Features, Enhancements, Fixes, Maintenance, Deprecations, New Contributors.
 - Sort entries alphabetically within each subsection.
 
+## Documentation: Architecture Diagram
+
+The package architecture diagram lives in
+`docs/source/concepts/__overview.rst` (the `.. graphviz::` block under
+the "Package Architecture" section).  It must be kept in sync with the
+actual package structure.  Update it when:
+
+- A new top-level module or class is added (e.g. a new block in
+  `hklpy2/blocks/`, a new solver, a new user-facing utility).
+- A component moves between layers (user-facing, Core, solver adapter).
+- A significant dependency relationship changes (e.g. a new block that
+  `Core` manages, a new external library the solver delegates to).
+- The four-stage `forward()` pipeline changes (Stages 1–4).
+
+The diagram uses `sphinx.ext.graphviz` (DOT language).  Verify the DOT
+syntax locally with `dot -Tsvg <file>` before committing.  Labels must
+use only `\n` for line breaks; em-dashes and multi-line string
+concatenation are not supported inside the Sphinx graphviz directive.
+
 ## Documentation: Glossary
 
 - Keep glossary entries in `docs/source/glossary.rst` sorted alphabetically

@@ -53,11 +53,11 @@ jobs:
           echo "SRC_DIR=$(pwd)" >> ${GITHUB_ENV}
           echo "TMP_DIR=$(mktemp -d)" >> ${GITHUB_ENV}
 
-      - name: install pandoc in the OS
+      - name: install pandoc and graphviz in the OS
         run: |
           set -vxeuo pipefail
           sudo apt-get update && \
-          sudo apt-get -y install pandoc
+          sudo apt-get -y install pandoc graphviz
 
       - name: Checkout
         uses: actions/checkout@v6

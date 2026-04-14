@@ -128,6 +128,9 @@ def test_cahkl_table(fourc, capsys):
     # After #242, ENDPOINT_TOLERANCE is wider so chi=180 (solver fp result)
     # is no longer rejected at limit=180; both chi=180 and chi=-180 solutions
     # appear (they are physically identical but the solver returns both).
+    # After #296, cut-point wrapping maps chi=+180 to chi=-180 (default cut
+    # at -180 excludes the +180 end).  Both near-180 solutions map to near
+    # -180, so 5 solutions for (1,0,0) remain (two display as -180).
     expected = "\n".join(
         [
             "======= = ===== ==== ====== ===",
@@ -135,8 +138,8 @@ def test_cahkl_table(fourc, capsys):
             "======= = ===== ==== ====== ===",
             "(1 0 0) 1 30    0    90     60 ",
             "(1 0 0) 2 -150  0    -90    60 ",
-            "(1 0 0) 3 30    180  -90    60 ",
-            "(1 0 0) 4 -150  180  90     60 ",
+            "(1 0 0) 3 30    -180 -90    60 ",
+            "(1 0 0) 4 -150  -180 90     60 ",
             "(1 0 0) 5 -150  -180 90     60 ",
             "(0 1 0) 1 30    90   68.3   60 ",
             "(0 1 0) 2 30    90   -68.3  60 ",
@@ -251,10 +254,10 @@ def test_pa(fourc, capsys):
         "Orienting reflections: []",
         "U=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]",
         f"UB=[[{twopi}, 0.0, 0.0], [0.0, {twopi}, 0.0], [0.0, 0.0, {twopi}]]",
-        "constraint: -180.0 <= omega <= 180.0",
-        "constraint: -180.0 <= chi <= 180.0",
-        "constraint: -180.0 <= phi <= 180.0",
-        "constraint: -180.0 <= tth <= 180.0",
+        "constraint: -180.0 <= omega <= 180.0 [cut=-180.0]",
+        "constraint: -180.0 <= chi <= 180.0 [cut=-180.0]",
+        "constraint: -180.0 <= phi <= 180.0 [cut=-180.0]",
+        "constraint: -180.0 <= tth <= 180.0 [cut=-180.0]",
         "Mode: bissector",
         (
             "beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source',"
