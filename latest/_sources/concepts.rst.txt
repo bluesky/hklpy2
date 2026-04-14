@@ -10,10 +10,11 @@ Concepts
 
    concepts/*
 
-.. figure:: _static/hklpy2-block-diagram.png
-   :alt: hklpy2 block diagram
+.. figure:: _static/hklpy2-overview.svg
+   :alt: hklpy2 package architecture overview
 
-   Functional blocks in  |hklpy2|.
+   Overview of the major sections of |hklpy2|.  See :ref:`overview.architecture`
+   for detailed diagrams of each section.
 
 Overview
 ========
