@@ -106,7 +106,7 @@ grouped by their role in the package.
         }
 
         subgraph cluster_solver {
-            label="Solver adapter"
+            label="Solver adapter\n(built-in)"
             style=filled
             fillcolor="#f4f0ff"
             color="#6a3a98"
@@ -115,12 +115,24 @@ grouped by their role in the package.
 
             solverbase   [label="SolverBase\n(adapter interface)",
                           fillcolor="#e8e0f8", color="#6a3a98"]
-            hklsolver    [label="HklSolver\n(libhkl adapter)",
+            hklsolver    [label="HklSolver",
                           fillcolor="#e8e0f8", color="#6a3a98"]
             thttthsolver [label="ThTthSolver",
                           fillcolor="#e8e0f8", color="#6a3a98"]
             noopsolver   [label="NoOpSolver",
                           fillcolor="#e8e0f8", color="#6a3a98"]
+        }
+
+        subgraph cluster_ext_solver {
+            label="Additional Solvers"
+            style=dashed
+            color="#6a3a98"
+            fontname="sans-serif"
+            fontsize=10
+
+            extsolver [label="ExternalSolver\n(subclass of SolverBase)",
+                       fillcolor="#e8e0f8", color="#6a3a98",
+                       style="rounded,filled,dashed"]
         }
 
         subgraph cluster_epics {
@@ -135,7 +147,7 @@ grouped by their role in the package.
         }
 
         subgraph cluster_backend {
-            label="Backends\n(via entry points)"
+            label="Backend libraries"
             style=dashed
             color="#888888"
             fontname="sans-serif"
@@ -154,7 +166,7 @@ grouped by their role in the package.
                                   style=dashed, color="#888888"]
         creator    -> diffract   [xlabel="creates"]
         usermod    -> diffract
-        diffract   -> wavelength [style=dashed, label=".beam"]
+        diffract   -> wavelength [label=".beam"]
 
         diffract   -> core       [label=".core"]
         wavelength -> core       [xlabel="beam"]
@@ -169,8 +181,9 @@ grouped by their role in the package.
         solverbase -> hklsolver    [style=dashed, label="subclass"]
         solverbase -> thttthsolver [style=dashed]
         solverbase -> noopsolver   [style=dashed]
+        solverbase -> extsolver    [style=dashed, label="entry points"]
         hklsolver  -> libhkl
-        solverbase -> otherbk      [style=dashed]
+        extsolver  -> otherbk      [style=dashed]
     }
 
 .. seealso:: :ref:`glossary`
