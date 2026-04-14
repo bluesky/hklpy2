@@ -14,7 +14,7 @@ PseudoPositioners in the `Bluesky Framework <https://blueskyproject.io>`_.
 
    user_guide
    release_notes
-   autoapi/hklpy2/index
+   API Reference <autoapi/hklpy2/index>
 
 .. icons: https://fonts.google.com/icons
 

@@ -25,7 +25,7 @@ digraph hklpy2_user {
         fontname="sans-serif"
         fontsize=12
 
-        epics [label="EPICS\nmotor axes",
+        epics [label="EPICS",
                fillcolor="#e0e0e0", color="#666666"]
     }
 
@@ -61,9 +61,8 @@ digraph hklpy2_user {
     }
 
     bluesky    -> diffract   [dir=both]
-    epics      -> diffract   [style=dashed, color="#888888"]
-    epics      -> wavelength [xlabel="EPICS PVs\n(optional)",
-                              style=dashed, color="#888888"]
+    epics      -> diffract   [xlabel="motor PVs", style=dashed, color="#888888"]
+    epics      -> wavelength [xlabel="PVs", style=dashed, color="#888888"]
     creator    -> diffract   [xlabel="creates"]
     usermod    -> diffract
     diffract   -> wavelength [xlabel=".beam"]
