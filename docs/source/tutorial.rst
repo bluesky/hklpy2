@@ -130,8 +130,9 @@ calculations:
 
 Notice we use ``.put()`` because
 :attr:`~hklpy2.wavelength.WavelengthBase.wavelength` is an ophyd Signal.
-At a real beamline this signal would be connected to an EPICS PV and
-would read the monochromator energy automatically.
+At a real beamline this signal would be connected to the monochromator
+control system, which may work in either wavelength or energy units —
+:class:`~hklpy2.wavelength.WavelengthXray` supports both.
 
 
 Step 5 — Add orientation reflections
