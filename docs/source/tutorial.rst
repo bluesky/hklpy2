@@ -114,8 +114,7 @@ Notice that ``add_sample()`` prints a confirmation:
    Sample(name='silicon', lattice=Lattice(a=5.431, system='cubic'))
 
 For a non-cubic crystal you would supply additional parameters, for
-example ``a=5.0, b=6.0, c=7.0, alpha=90, beta=90, gamma=120`` for a
-hexagonal crystal.
+example ``a=3.0, c=5.0, gamma=120`` for a hexagonal crystal.
 
 
 Step 4 — Set the wavelength
