@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=847b15a2"></script>
+    <script src="../_static/documentation_options.js?v=8494300a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -496,19 +496,6 @@ of operating <strong>mode</strong>, narrow those candidates by:</p>
 <ul class="simple">
 <li><p>Accepting only solutions where each real axis falls within a specified range.</p></li>
 </ul>
-<div class="admonition note" id="index-1">
-<p class="admonition-title">Note</p>
-<p><strong>Relation to</strong> <em>cut points</em> <strong>in other software</strong> (SPEC <code class="docutils literal notranslate"><span class="pre">cuts</span></code>,
-diffcalc): In SPEC, a <em>cut point</em> is a branch point that sets where an
-angle wraps around — for example, a cut point of <code class="docutils literal notranslate"><span class="pre">-180</span></code> means the motor
-is represented in the interval <code class="docutils literal notranslate"><span class="pre">[-180,</span> <span class="pre">+180)</span></code>.  Its primary purpose is
-controlling motor travel direction and angle representation, not filtering
-solutions.  hklpy2 <code class="docutils literal notranslate"><span class="pre">LimitsConstraint</span></code> is a <em>post-computation filter</em>: it
-discards solver solutions whose axis values fall outside a given range.
-The two concepts overlap in effect when the constraint window matches the
-cut-point interval, but they are not the same mechanism.  See
-<a class="reference internal" href="../guides/spec_xref.html#spec-commands-map"><span class="std std-ref">SPEC commands in hklpy2</span></a> for the SPEC-to-hklpy2 mapping.</p>
-</div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Constraints act <em>after</em> the solver computes solutions.  If you want
@@ -523,6 +510,112 @@ computation, use <a class="reference internal" href="presets.html#concepts-prese
 <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.</p>
 <p><a class="reference internal" href="../glossary.html#glossary"><span class="std std-ref">Glossary</span></a></p>
 </div>
+<section id="cut-points">
+<span id="concepts-constraints-cut-points"></span><h2>Cut Points<a class="headerlink" href="#cut-points" title="Link to this heading">#</a></h2>
+<p id="index-1">A <strong>cut point</strong> is the angle at which a motor’s reported position “wraps
+around.”  It sets the start of the 360-degree window used to express the
+angle.  The physics is unchanged — it is the same motor position either
+way — only how the number is written down changes.</p>
+<p>Two common choices:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">-180</span></code> (default): angles are reported in the range
+−180 up to (but not including) +180.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">0</span></code>: angles are reported in the range 0 up to (but not
+including) 360.</p></li>
+</ul>
+<p>Technically, a cut point <code class="docutils literal notranslate"><span class="pre">c</span></code> maps any computed angle to its equivalent
+in the range from <code class="docutils literal notranslate"><span class="pre">c</span></code> up to (but not including) <code class="docutils literal notranslate"><span class="pre">c</span> <span class="pre">+</span> <span class="pre">360</span></code>.</p>
+<p class="rubric">Valid values</p>
+<p>Any finite number is an acceptable cut point — including values outside
+the axis limits.  The cut point is independent of <code class="docutils literal notranslate"><span class="pre">low_limit</span></code> and
+<code class="docutils literal notranslate"><span class="pre">high_limit</span></code>; there is no requirement that it fall within the limits.</p>
+<p><code class="docutils literal notranslate"><span class="pre">inf</span></code>, <code class="docutils literal notranslate"><span class="pre">-inf</span></code>, and <code class="docutils literal notranslate"><span class="pre">nan</span></code> are rejected immediately with a
+<a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.ConstraintsError" title="hklpy2.misc.ConstraintsError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConstraintsError</span></code></a>, both when the constraint is
+created and when <code class="docutils literal notranslate"><span class="pre">cut_point</span></code> is set afterwards.</p>
+<p><code class="docutils literal notranslate"><span class="pre">low_limit</span></code> and <code class="docutils literal notranslate"><span class="pre">high_limit</span></code> are always kept in sorted order: setting
+either one (or both via the <code class="docutils literal notranslate"><span class="pre">limits</span></code> property) sorts the pair
+automatically, so <code class="docutils literal notranslate"><span class="pre">low_limit</span></code> is always <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code> <code class="docutils literal notranslate"><span class="pre">high_limit</span></code>.</p>
+<p class="rubric">Cut point vs. constraint — the key distinction</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Cut point</strong></p></th>
+<th class="head"><p><strong>LimitsConstraint</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Controls the
+<em>representation</em> of
+an angle — which
+360-degree window
+it is expressed in.</p></td>
+<td><p>Filters out solutions whose axis value falls
+<em>outside</em> a physically acceptable range.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Applied <strong>first</strong>,
+before limit
+checking.</p></td>
+<td><p>Applied <strong>after</strong> cut-point wrapping.</p></td>
+</tr>
+<tr class="row-even"><td><p>Does not accept or
+reject solutions.</p></td>
+<td><p>Accepts or rejects solutions.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Equivalent to SPEC
+<code class="docutils literal notranslate"><span class="pre">cuts</span></code>,
+diffcalc <code class="docutils literal notranslate"><span class="pre">setcut</span></code></p></td>
+<td><p>No direct SPEC equivalent — SPEC uses cut points
+for both wrapping <em>and</em> as a proxy for limits.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">When to use each</p>
+<ul class="simple">
+<li><p><strong>Need angles in</strong> <code class="docutils literal notranslate"><span class="pre">[-180,</span> <span class="pre">+180)</span></code>? — That is the default cut point
+(<code class="docutils literal notranslate"><span class="pre">-180</span></code>).  No change required.</p></li>
+<li><p><strong>Need angles in</strong> <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">360)</span></code>? — Set <code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p></li>
+<li><p><strong>Motor has a physical travel limit</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">chi</span></code> can only reach
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">100]</span></code>)? — Set <code class="docutils literal notranslate"><span class="pre">limits</span> <span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">100)</span></code> on the constraint.  The
+cut point controls representation; the limits control which solutions
+are physically reachable.</p></li>
+<li><p><strong>Both</strong>: a motor in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">360)</span></code> representation with physical travel
+of <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">290]</span></code> needs <code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">0</span></code> <em>and</em> <code class="docutils literal notranslate"><span class="pre">limits</span> <span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">290)</span></code>.</p></li>
+</ul>
+<p>In practice: if your motor can only travel from 0° to 290°, setting
+<code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">0</span></code> means all reported angles are positive numbers that
+are easy to compare against your travel limits.  With the default cut
+of −180, a position of 181° still reads as 181° — so in that case it
+makes no difference.  The cut point matters when the motor’s usable
+range straddles the wrap boundary.</p>
+<p class="rubric">Pipeline order in <code class="docutils literal notranslate"><span class="pre">forward()</span></code></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>solver.forward(pseudos)
+  └─→ for each solution:
+        for each axis:
+          apply_cut(value)         ← wraps into [cut_point, cut_point+360)
+        constraints.valid(...)     ← checks wrapped value against limits
+        if valid: keep solution
+</pre></div>
+</div>
+<p class="rubric">Example — using cut points</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default: chi expressed in [-180, +180).</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span>   <span class="c1"># -180.0</span>
+
+<span class="c1"># Change to [0, 360).</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Restrict physical travel as well.</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">290</span><span class="p">)</span>
+
+<span class="c1"># Reset everything to defaults.</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">reset_constraints</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../glossary.html#term-cut-point"><span class="xref std std-term">cut point</span></a> in the glossary.</p>
+<p><a class="reference internal" href="../guides/spec_xref.html#spec-commands-map"><span class="std std-ref">SPEC commands in hklpy2</span></a> — SPEC <code class="docutils literal notranslate"><span class="pre">cuts</span></code> maps to <code class="docutils literal notranslate"><span class="pre">cut_point</span></code>.</p>
+</div>
+</section>
 <section id="how-constraints-work-internally">
 <span id="concepts-constraints-internals"></span><h2>How Constraints Work Internally<a class="headerlink" href="#how-constraints-work-internally" title="Link to this heading">#</a></h2>
 <section id="the-valid-method">
@@ -536,13 +629,14 @@ abstract method <a class="reference internal" href="../autoapi/hklpy2/blocks/con
 </div>
 <p>The method receives the <strong>full set of real-axis positions</strong> (as keyword
 arguments, <code class="docutils literal notranslate"><span class="pre">axis_name=value</span></code>) and returns <code class="docutils literal notranslate"><span class="pre">True</span></code> when the constraint is
-satisfied or <code class="docutils literal notranslate"><span class="pre">False</span></code> when it is not.</p>
+satisfied or <code class="docutils literal notranslate"><span class="pre">False</span></code> when it is not.  The values passed to <code class="docutils literal notranslate"><span class="pre">valid()</span></code>
+have already been cut-point-wrapped by <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.apply_cut" title="hklpy2.blocks.constraints.LimitsConstraint.apply_cut"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply_cut()</span></code></a>.</p>
 <p>The built-in implementation,
 <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a>, checks whether the
 axis value falls within the configured <code class="docutils literal notranslate"><span class="pre">[low_limit,</span> <span class="pre">high_limit]</span></code> range:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># simplified from hklpy2/blocks/constraints.py</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">values</span><span class="p">):</span>
-    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>   <span class="c1"># already cut-point-wrapped</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="p">(</span><span class="n">value</span> <span class="o">+</span> <span class="n">ENDPOINT_TOLERANCE</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_limit</span>
         <span class="ow">and</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">ENDPOINT_TOLERANCE</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_limit</span>
@@ -556,12 +650,19 @@ are not rejected due to floating-point rounding.</p>
 <section id="how-valid-is-called-during-forward">
 <span id="concepts-constraints-forward-call"></span><h3>How <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Is Called During <code class="docutils literal notranslate"><span class="pre">forward()</span></code><a class="headerlink" href="#how-valid-is-called-during-forward" title="Link to this heading">#</a></h3>
 <p>After the solver returns its candidate solutions,
-<a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.forward" title="hklpy2.ops.Core.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> iterates over every solution and calls
+<a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.forward" title="hklpy2.ops.Core.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> iterates over every solution, applies
+cut-point wrapping, then calls
 <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.RealAxisConstraints.valid" title="hklpy2.blocks.constraints.RealAxisConstraints.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a> on the
 collection of constraints:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># simplified from hklpy2/ops.py  Core.forward()</span>
 <span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">pseudos</span><span class="p">):</span>
     <span class="n">reals</span> <span class="o">=</span> <span class="p">{</span><span class="n">axis</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">computed_value</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span><span class="p">}</span>   <span class="c1"># full set of real-axis values</span>
+
+    <span class="c1"># Step 1: apply cut-point wrapping (new in #296)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">constraint</span><span class="o">.</span><span class="n">apply_cut</span><span class="p">(</span><span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+    <span class="c1"># Step 2: check limits on wrapped values</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="o">**</span><span class="n">reals</span><span class="p">):</span>
         <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>             <span class="c1"># solution passes all constraints</span>
     <span class="c1"># solutions that fail are discarded (and logged at INFO level)</span>
@@ -614,7 +715,10 @@ directly you must supply a <code class="docutils literal notranslate"><span clas
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restrict chi to the range [0, 90] degrees.</span>
 <span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
 
-<span class="c1"># Reset all constraints to defaults (±180 degrees).</span>
+<span class="c1"># Set chi&#39;s cut point to [0, 360).</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Reset all constraints to defaults (±180 degrees, cut at -180).</span>
 <span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">reset_constraints</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -669,6 +773,7 @@ directly you must supply a <code class="docutils literal notranslate"><span clas
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cut-points">Cut Points</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-constraints-work-internally">How Constraints Work Internally</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-valid-method">The <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Method</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-valid-is-called-during-forward">How <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Is Called During <code class="docutils literal notranslate"><span class="pre">forward()</span></code></a></li>

@@ -218,6 +218,51 @@ capabilities.  An empty list (or raising
 :exc:`~hklpy2.misc.NoForwardSolutions`) signals that no solution
 exists for the requested pseudo-axis values.
 
+.. rubric:: The four-stage forward pipeline
+
+All three backend libraries (|libhkl|, diffcalc, SPEC) follow the same
+pattern: the engine returns **all** theoretical solutions; post-processing
+stages then wrap, filter, and select.  hklpy2 implements the same
+four stages.  A solver adapter is responsible only for **Stage 1**;
+Stages 2–4 are handled by the |hklpy2| Core and DiffractometerBase
+layers.
+
+.. graphviz::
+    :caption: Four-stage forward() pipeline in hklpy2 (equivalent stages in SPEC and diffcalc shown in parentheses).
+    :align: center
+
+    digraph forward_pipeline {
+        graph [rankdir=TB, splines=ortho, nodesep=0.6, ranksep=0.5,
+               fontname="sans-serif", bgcolor="transparent"]
+        node  [shape=box, style="rounded,filled", fontname="sans-serif",
+               fontsize=11, margin="0.15,0.08"]
+        edge  [fontname="sans-serif", fontsize=10]
+
+        pseudos [label="pseudos\n(h, k, l)", shape=ellipse,
+                 fillcolor="#e8f4e8", color="#4a7c4a"]
+
+        s1 [label="Stage 1: SolverBase.forward()\nBackend engine returns ALL theoretical\nsolutions for the pseudos, geometry, mode.\nSPEC/diffcalc: geometry engine\nlibhkl: pseudo_axis_values_set()",
+            fillcolor="#dce8f8", color="#3a6898"]
+
+        s2 [label="Stage 2: apply_cut()  [Core]\nEach axis angle is mapped into\n[cut_point, cut_point+360).\nControls representation, not validity.\nSPEC: cuts  |  diffcalc: _cut_angles()",
+            fillcolor="#fdf3dc", color="#a07820"]
+
+        s3 [label="Stage 3: LimitsConstraint.valid()  [Core]\nSolutions whose wrapped axis values\nfall outside configured limits are discarded.\nSPEC: lm  |  diffcalc: is_position_within_limits()",
+            fillcolor="#fdf3dc", color="#a07820"]
+
+        s4 [label="Stage 4: solution picker  [DiffractometerBase]\nOne solution is selected from survivors\nfor motor motion (ophyd PseudoPositioner).",
+            fillcolor="#f0e8f8", color="#6a3a98"]
+
+        result [label="single real-axis position\nfor motor motion",
+                shape=ellipse, fillcolor="#e8f4e8", color="#4a7c4a"]
+
+        pseudos -> s1 [label="all theoretical solutions"]
+        s1      -> s2 [label="wrapped solutions"]
+        s2      -> s3 [label="filtered solutions"]
+        s3      -> s4 [label="one solution"]
+        s4      -> result
+    }
+
 .. _howto.solvers.write.backend_requirements:
 
 Backend Library Requirements

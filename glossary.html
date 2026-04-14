@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=847b15a2"></script>
+    <script src="_static/documentation_options.js?v=8494300a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -530,6 +530,26 @@ one of its <em>geometries</em>.</p>
 </dd>
 <dt id="term-crystal">crystal<a class="headerlink" href="#term-crystal" title="Link to this term">#</a></dt><dd><p>A homogeneous substance composed from a repeating three-dimensional
 pattern.  The pattern (<em>unit cell</em>) is characterized by its <em>lattice</em>.</p>
+</dd>
+<dt id="term-cut-point">cut point<a class="headerlink" href="#term-cut-point" title="Link to this term">#</a></dt><dd><p>The angle at which a motor’s reported position “wraps around.”
+It sets the start of the 360-degree window used to express the
+angle — the physics is unchanged, only how the number is written.</p>
+<p>Two common choices:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">-180</span></code> (default): angles reported in −180 up to
+(but not including) +180.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">0</span></code>: angles reported in 0 up to (but not
+including) 360.</p></li>
+</ul>
+<p>Any finite number is acceptable.  <code class="docutils literal notranslate"><span class="pre">inf</span></code>, <code class="docutils literal notranslate"><span class="pre">-inf</span></code>, and <code class="docutils literal notranslate"><span class="pre">nan</span></code>
+raise <a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.ConstraintsError" title="hklpy2.misc.ConstraintsError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConstraintsError</span></code></a>.  The cut point does
+not need to fall within the axis limits — it is independent of
+<code class="docutils literal notranslate"><span class="pre">low_limit</span></code> and <code class="docutils literal notranslate"><span class="pre">high_limit</span></code>.</p>
+<p>Applied <em>before</em> <a class="reference internal" href="#term-constraint"><span class="xref std std-term">constraint</span></a> checking in the <code class="docutils literal notranslate"><span class="pre">forward()</span></code>
+pipeline — controls <em>representation</em>, not whether a solution is
+accepted or rejected.</p>
+<p>Equivalent to SPEC <code class="docutils literal notranslate"><span class="pre">cuts</span></code> and diffcalc <code class="docutils literal notranslate"><span class="pre">setcut</span></code>.</p>
+<p>See also: <a class="reference internal" href="#term-constraint"><span class="xref std std-term">constraint</span></a>.</p>
 </dd>
 <dt id="term-detector">detector<a class="headerlink" href="#term-detector" title="Link to this term">#</a></dt><dd><p>Measures the intensity of diffracted radiation from the sample.</p>
 </dd>

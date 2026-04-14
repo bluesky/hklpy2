@@ -56,6 +56,31 @@ Glossary
         A homogeneous substance composed from a repeating three-dimensional
         pattern.  The pattern (*unit cell*) is characterized by its *lattice*.
 
+    cut point
+        The angle at which a motor's reported position "wraps around."
+        It sets the start of the 360-degree window used to express the
+        angle — the physics is unchanged, only how the number is written.
+
+        Two common choices:
+
+        - ``cut_point = -180`` (default): angles reported in −180 up to
+          (but not including) +180.
+        - ``cut_point = 0``: angles reported in 0 up to (but not
+          including) 360.
+
+        Any finite number is acceptable.  ``inf``, ``-inf``, and ``nan``
+        raise :exc:`~hklpy2.misc.ConstraintsError`.  The cut point does
+        not need to fall within the axis limits — it is independent of
+        ``low_limit`` and ``high_limit``.
+
+        Applied *before* :term:`constraint` checking in the ``forward()``
+        pipeline — controls *representation*, not whether a solution is
+        accepted or rejected.
+
+        Equivalent to SPEC ``cuts`` and diffcalc ``setcut``.
+
+        See also: :term:`constraint`.
+
     detector
         Measures the intensity of diffracted radiation from the sample.
 
