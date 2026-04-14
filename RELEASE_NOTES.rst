@@ -45,6 +45,11 @@ describe future plans.
       reflections, computing from two reflections, setting manually,
       swapping, inspecting, refining lattice parameters, and verifying.
       (:issue:`315`)
+    * Add how-to guide for the :mod:`hklpy2.user` interactive interface:
+      ``pa``, ``wh``, ``cahkl``, ``cahkl_table``, ``setor``,
+      ``set_wavelength``, ``set_lattice``, ``list_samples``,
+      ``solver_summary``, ``scan_extra``, and quick-reference SPEC table.
+      (:issue:`316`)
 
 0.5.0
 #####
