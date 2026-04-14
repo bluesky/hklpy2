@@ -238,8 +238,12 @@ close to the measured reflection?
 Step 8 — Move to a reciprocal-space position
 ---------------------------------------------
 
-Once the orientation is verified, moving to any :math:`(h, k, l)` is
-straightforward:
+Once the orientation is verified, moving to an accessible :math:`(h, k,
+l)` position is straightforward.  Not every position is reachable —
+physical motor limits, the Ewald sphere, and the current constraints all
+restrict which reflections the diffractometer can reach.  If ``forward()``
+returns no solutions, the position is inaccessible under the current
+configuration:
 
 .. code-block:: python
 
