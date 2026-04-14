@@ -4,8 +4,12 @@
 Examples
 ==========
 
-Example documents and notebooks to demonstrate |hklpy2|. The notebooks are
-available for download from the source code website:
+These notebooks are **worked demonstrations** — they show |hklpy2| working
+on specific use cases with real (or simulated) hardware configurations.
+They are not tutorials: they assume you already know the basic workflow.
+If you are new to |hklpy2|, start with the :ref:`tutorial` first.
+
+The notebooks are available for download from the source code website:
 https://github.com/bluesky/hklpy2/docs/source/examples.
 
 .. toctree::

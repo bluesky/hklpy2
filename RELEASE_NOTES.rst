@@ -51,6 +51,15 @@ describe future plans.
       ``solver_summary``, ``scan_extra``, and quick-reference SPEC table.
       (:issue:`316`)
 
+    Maintenance
+    -----------
+
+    * Reframe ``examples/`` pages as worked demonstrations (not tutorials);
+      add framing paragraph directing new users to the Tutorial.
+      Separate user-facing and developer/contributor sections in
+      ``guides/``; move solver-writing, release, design, and checklist
+      guides under a new "Developer / Contributor" heading. (:issue:`314`)
+
 0.5.0
 #####
 
