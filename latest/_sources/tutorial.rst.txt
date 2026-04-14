@@ -11,7 +11,7 @@ By the end of this tutorial you will be able to:
 - create a simulated 4-circle diffractometer in Python
 - define a crystal sample and its lattice parameters
 - add two orientation reflections and compute the :math:`UB` matrix
-- verify the orientation with ``forward()`` and ``inverse()``
+- verify the orientation with :meth:`~hklpy2.diffract.DiffractometerBase.forward` and :meth:`~hklpy2.diffract.DiffractometerBase.inverse`
 - move to a reciprocal-space position
 - run a simple scan in reciprocal space
 
@@ -33,7 +33,7 @@ diffractometer.
 
    :ref:`geometries` — full table of available geometries and solvers.
 
-   :ref:`concepts.constraints` — how constraints filter ``forward()`` solutions.
+   :ref:`concepts.constraints` — how constraints filter :meth:`~hklpy2.diffract.DiffractometerBase.forward` solutions.
 
 
 Prerequisites
@@ -91,9 +91,9 @@ modelled on common SPEC commands.  We import the ones we need and tell
 
    set_diffractometer(fourc)
 
-All subsequent calls to ``pa()``, ``wh()``, ``setor()``, etc. will
-operate on ``fourc`` until you call ``set_diffractometer()`` again with
-a different object.
+All subsequent calls to :func:`~hklpy2.user.pa`, :func:`~hklpy2.user.wh`,
+:func:`~hklpy2.user.setor`, etc. will operate on ``fourc`` until you call
+:func:`~hklpy2.user.set_diffractometer` again with a different object.
 
 
 Step 3 — Add a sample
@@ -107,7 +107,7 @@ silicon lattice parameter as a built-in constant:
    add_sample("silicon", a=hklpy2.SI_LATTICE_PARAMETER)
 
 Silicon is cubic so only one lattice parameter ``a`` is needed.
-Notice that ``add_sample()`` prints a confirmation:
+Notice that :func:`~hklpy2.user.add_sample` prints a confirmation:
 
 .. code-block:: text
 
@@ -203,16 +203,17 @@ negative:
    fourc.core.constraints["tth"].limits = -0.001, 180
    fourc.core.constraints["omega"].limits = (-180, 0.001)
 
-Now check ``inverse()`` — given the angles of the first reflection,
-do we recover :math:`(4, 0, 0)`?
+Now check :meth:`~hklpy2.diffract.DiffractometerBase.inverse` — given
+the angles of the first reflection, do we recover :math:`(4, 0, 0)`?
 
 .. code-block:: python
 
    fourc.inverse((-145.451, 0, 0, 69.0966))
    # → Hklpy2DiffractometerPseudoPos(h=3.9999, k=0, l=0)  ✓
 
-And ``forward()`` — given :math:`(4, 0, 0)`, do we get back angles
-close to the measured reflection?
+And :meth:`~hklpy2.diffract.DiffractometerBase.forward` — given
+:math:`(4, 0, 0)`, do we get back angles close to the measured
+reflection?
 
 .. code-block:: python
 
@@ -222,10 +223,11 @@ close to the measured reflection?
 
 .. note::
 
-   The ``forward()`` answer may differ from the measured reflection angles
-   — both are valid positions for :math:`(4, 0, 0)`.  There are often
-   multiple geometrically equivalent solutions.  Use
-   :func:`~hklpy2.user.cahkl_table` to see all of them:
+   The :meth:`~hklpy2.diffract.DiffractometerBase.forward` answer may
+   differ from the measured reflection angles — both are valid positions
+   for :math:`(4, 0, 0)`.  There are often multiple geometrically
+   equivalent solutions.  Use :func:`~hklpy2.user.cahkl_table` to see
+   all of them:
 
    .. code-block:: python
 
@@ -248,7 +250,7 @@ l)` position is straightforward:
    reflections the diffractometer can reach.  The wavelength sets the
    radius of the Ewald sphere and therefore determines which
    reciprocal-lattice points are in range at all; changing the wavelength
-   (or equivalently the energy) shifts that boundary.  If ``forward()``
+   (or equivalently the energy) shifts that boundary.     If :meth:`~hklpy2.diffract.DiffractometerBase.forward`
    returns no solutions, the position is inaccessible under the current
    configuration.
 
@@ -312,7 +314,7 @@ In this tutorial we:
 3. Set the X-ray wavelength
 4. Recorded two orientation reflections with :func:`~hklpy2.user.setor`
 5. Computed the :math:`UB` orientation matrix with :func:`~hklpy2.user.calc_UB`
-6. Verified the orientation with ``forward()`` and ``inverse()``
+6. Verified the orientation with :meth:`~hklpy2.diffract.DiffractometerBase.forward` and :meth:`~hklpy2.diffract.DiffractometerBase.inverse`
 7. Moved to a reciprocal-space position with :meth:`~hklpy2.diffract.DiffractometerBase.move`
 8. Ran a Bluesky scan along a reciprocal-space direction
 
