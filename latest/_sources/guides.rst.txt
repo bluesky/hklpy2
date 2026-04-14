@@ -10,7 +10,9 @@ Guides
 
    guides/*
 
-Guides, how-to documents, notebooks and tutorials.
+User-facing how-to guides for beamline scientists and instrument scientists.
+For developer and contributor documentation, see the
+`Developer / Contributor`_ section below.
 
 Getting started
 ---------------
@@ -81,8 +83,6 @@ Configuration and solvers
        reflections) and restore it later.
    * - :ref:`how_creator_from_config`
      - Create a simulated diffractometer directly from a saved config file.
-   * - :ref:`howto.solvers.write`
-     - Write and register a new solver plugin using Python entry points.
 
 Reference and background
 -------------------------
@@ -97,7 +97,24 @@ Reference and background
      - Cross-reference of common SPEC commands to their |hklpy2| equivalents.
    * - :ref:`guide.migration_from_hklpy_v1`
      - How code written for |hklpy| (v1) maps to |hklpy2|.
+
+Developer / Contributor
+------------------------
+
+These guides are aimed at developers extending |hklpy2| or maintaining
+the project — not at beamline users.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Guide
+     - Description
    * - :ref:`guide.design`
-     - Design rationale and architectural decisions behind |hklpy2|.
+     - Architecture and design decisions behind |hklpy2|.
+   * - :ref:`howto.solvers.write`
+     - Write and register a new solver plugin using Python entry points.
+   * - :ref:`how_release`
+     - Step-by-step release process for maintainers.
    * - :ref:`v2_checklist`
      - Feature checklist tracking the v2 build (historical reference).
