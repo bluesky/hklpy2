@@ -205,9 +205,20 @@ The `Makefile` `pre` target also exports this variable automatically.
 
 - Keep glossary entries in `docs/source/glossary.rst` sorted alphabetically
   (case-insensitive).
-- Each entry consists of an `.. index::` directive followed by a `:term:`
-  definition.  When adding or moving entries, keep the index directive and
-  definition together as a unit.
+- The glossary uses the Sphinx `.. glossary::` directive (with `:sorted:`).
+  Each entry is a term on its own line, with the definition indented below:
+
+  ```rst
+  .. glossary::
+      :sorted:
+
+      my term
+          Definition text here.
+  ```
+
+- Use `:term:\`my term\`` to cross-reference glossary entries from other docs pages.
+- When adding or moving entries, maintain alphabetical order within the file
+  (even though `:sorted:` renders them alphabetically regardless).
 
 ## Documentation: Sphinx Index entries
 
@@ -216,8 +227,9 @@ The `Makefile` `pre` target also exports this variable automatically.
 - The primary entry belongs on the page with the **most substantive content**
   for that term — typically its dedicated concept or how-to page, not the
   Glossary.
-- The Glossary may include a secondary (non-primary) index entry for the same
-  term via its `!definition; term` sub-entry pattern.
+- The Sphinx `.. glossary::` directive automatically generates index entries for
+  each term; explicit `.. index::` directives within the glossary are only needed
+  for additional cross-references (e.g., `see: preset; presets`).
 - Pages that reference a term but are not its primary source (e.g., a summary
   table) should use a plain (non-primary) index entry.
 

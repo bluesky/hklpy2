@@ -52,6 +52,9 @@ describe future plans.
     Documentation
     -------------
 
+    * Migrate glossary from field-list format to Sphinx ``.. glossary::``
+      directive, enabling ``:term:`` cross-references throughout the docs.
+      (:issue:`305`)
     * Clarify the ``forward()`` contract: a solver may return one or more
       solutions in the list, and a single-element list is valid.  Document
       backend library requirements for writing a solver. (:issue:`294`)
