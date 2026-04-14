@@ -311,6 +311,16 @@ the backend library needs.  Computation, data management (including
 reflections), and transport (for remote backends) belong in the
 backend or its solver adapter, not in the base class.
 
+Backend library APIs vary widely.  For example,
+:meth:`HklSolver.forward() <hklpy2.backends.hkl_soleil.HklSolver.forward>`
+calls ``engine.pseudo_axis_values_set()`` — a |libhkl| GObject
+introspection binding that sets pseudo-axis values and returns a
+``GeometryList`` of solutions as a side effect.  The backend function
+name gives no indication it is computing forward solutions.  This is
+exactly why the solver adapter exists: to present a consistent
+``forward(pseudos)`` interface regardless of how the backend library
+exposes its capabilities.
+
 Engineering Units System
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
