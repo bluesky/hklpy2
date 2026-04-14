@@ -66,6 +66,11 @@ describe future plans.
     Maintenance
     -----------
 
+    * Split the monolithic architecture ``.. graphviz::`` diagram in
+      ``__overview.rst`` into four pre-built SVG figures (overview, user,
+      core, solvers); DOT source files are committed alongside the SVGs in
+      ``docs/source/_static/``.  Removes the Graphviz dependency from the
+      Sphinx build. (:issue:`311`)
     * Adopt the `Deprecated <https://pypi.org/project/Deprecated/>`_ package
       as a runtime dependency.  Apply ``@versionadded``, ``@versionchanged``,
       and ``@deprecated`` decorators throughout the codebase to document when
