@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=792d4b61"></script>
+    <script src="../_static/documentation_options.js?v=7f741ae8"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -670,31 +670,44 @@ with your solver and test it.  Here’s a suggested start:</p>
 </section>
 <section id="forward-contract">
 <span id="howto-solvers-write-forward-contract"></span><h3><code class="docutils literal notranslate"><span class="pre">forward()</span></code> Contract<a class="headerlink" href="#forward-contract" title="Link to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">forward(pseudos)</span></code> returns a <code class="docutils literal notranslate"><span class="pre">list[NamedFloatDict]</span></code> — all valid real-axis
-solutions the backend engine can find for the given pseudo-axis values,
-geometry, and mode.</p>
-<p>The number of solutions depends on the backend library’s capabilities.
-Some engines analytically enumerate all mathematically valid solutions;
-others return only one.  <strong>A single-element list is a valid return value.</strong>
-The <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> layer iterates over whatever the solver
-returns, applies <a class="reference internal" href="../concepts/constraints.html#concepts-constraints"><span class="std std-ref">constraint filtering</span></a>, and
-passes the survivors to a
-<a class="reference internal" href="how_forward_solution.html#how-forward-solution"><span class="std std-ref">solution picker</span></a>.</p>
-<p>An empty list (or raising <a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.NoForwardSolutions" title="hklpy2.misc.NoForwardSolutions"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoForwardSolutions</span></code></a>) signals
-that no solution exists for the requested pseudo-axis values.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">forward()</span></code> method appears at three layers, each with a distinct
+role and return type:</p>
+<dl class="simple">
+<dt><a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.forward" title="hklpy2.backends.base.SolverBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SolverBase.forward(pseudos)</span></code></a></dt><dd><p>Returns <code class="docutils literal notranslate"><span class="pre">list[NamedFloatDict]</span></code> — all valid real-axis solutions the
+backend engine can find for the given pseudo-axis values, geometry,
+and mode.  <strong>A single-element list is a valid return value.</strong></p>
+</dd>
+<dt><a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.forward" title="hklpy2.ops.Core.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Core.forward(pseudos)</span></code></a></dt><dd><p>Calls the solver’s <code class="docutils literal notranslate"><span class="pre">forward()</span></code>, then applies
+<a class="reference internal" href="../concepts/constraints.html#concepts-constraints"><span class="std std-ref">constraint filtering</span></a> to each solution.
+Returns the filtered list — the full set of candidate motor angle
+combinations that satisfy all constraints.</p>
+</dd>
+<dt><a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DiffractometerBase.forward(pseudos)</span></code></a></dt><dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.PseudoPositioner</span></code> interface, called by motion
+commands during bluesky plans.  Calls <code class="docutils literal notranslate"><span class="pre">Core.forward()</span></code>, then
+applies a <a class="reference internal" href="how_forward_solution.html#how-forward-solution"><span class="std std-ref">solution picker</span></a> to select
+one solution for motor motion.  Returns a single <code class="docutils literal notranslate"><span class="pre">NamedTuple</span></code>.</p>
+</dd>
+</dl>
+<p>When writing a solver, only <code class="docutils literal notranslate"><span class="pre">SolverBase.forward()</span></code> needs to be
+implemented.  The number of solutions depends on the backend library’s
+capabilities.  An empty list (or raising
+<a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.NoForwardSolutions" title="hklpy2.misc.NoForwardSolutions"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoForwardSolutions</span></code></a>) signals that no solution
+exists for the requested pseudo-axis values.</p>
 </section>
 <section id="backend-library-requirements">
 <span id="howto-solvers-write-backend-requirements"></span><h3>Backend Library Requirements<a class="headerlink" href="#backend-library-requirements" title="Link to this heading">#</a></h3>
 <p>A <strong>Solver</strong> is an adapter for a backend computation library.  The backend
 library must provide (or enable the adapter to implement) the following
-capabilities:</p>
-<dl class="simple">
+capabilities.</p>
+<section id="required">
+<h4>Required<a class="headerlink" href="#required" title="Link to this heading">#</a></h4>
+<dl class="simple" id="index-0">
 <dt><strong>Geometry-aware rotation chain.</strong></dt><dd><p>The library must know the physical axis directions and stacking order
 for each geometry it supports.  This is the irreducible foundation
 for all diffractometer calculations.</p>
 </dd>
-<dt><strong>Forward transform</strong> (pseudos to reals).</dt><dd><p>Given pseudo-axis values, lattice parameters, orientation matrix, and
-wavelength, compute real-axis angles.</p>
+<dt><strong>Forward transform</strong> (pseudos to reals).</dt><dd><p>Given pseudo-axis values, orientation matrix, and wavelength, compute
+real-axis angles.  This is geometry- and mode-specific.</p>
 </dd>
 <dt><strong>Inverse transform</strong> (reals to pseudos).</dt><dd><p>Given real-axis angles, lattice parameters, orientation matrix, and
 wavelength, compute pseudo-axis values.</p>
@@ -706,12 +719,62 @@ into lab-frame scattering vectors.  <code class="docutils literal notranslate"><
 <code class="docutils literal notranslate"><span class="pre">forward()</span></code>, and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> all depend on the same rotation
 chain and cannot be separated.</p>
 </dd>
+<dt><strong>Reflection management.</strong></dt><dd><p>Store and retrieve measured reflections for UB matrix calculation.
+The backend library must manage reflections because UB calculation
+consumes them — the solver adapter passes reflections through to the
+backend, not buffering them in the adapter layer.</p>
+</dd>
 </dl>
-<p>These capabilities are coupled through the geometry’s rotation chain.  A
-library that can compute <code class="docutils literal notranslate"><span class="pre">forward()</span></code> and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> necessarily has
-the geometry knowledge to also compute <code class="docutils literal notranslate"><span class="pre">calculate_UB()</span></code>.  A library
-that lacks this knowledge cannot serve as a complete <strong>hklpy2</strong> solver
-backend.</p>
+</section>
+<section id="optional">
+<h4>Optional<a class="headerlink" href="#optional" title="Link to this heading">#</a></h4>
+<p id="index-1">The following capabilities enhance a solver but are not required.
+Solvers that lack these features remain valid — the <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a>
+layer handles their absence gracefully.</p>
+<dl class="simple">
+<dt><strong>Lattice refinement.</strong></dt><dd><p>Refine lattice parameters from multiple reflections.  Solvers that
+lack this capability return <code class="docutils literal notranslate"><span class="pre">None</span></code> from <code class="docutils literal notranslate"><span class="pre">refineLattice()</span></code>; Core
+raises an informative error to the user.</p>
+</dd>
+<dt><strong>Multi-solution enumeration.</strong></dt><dd><p>Return multiple valid angle solutions for a given set of pseudo-axis
+values.  A single-element list is a valid return from <code class="docutils literal notranslate"><span class="pre">forward()</span></code>
+(see <a class="reference internal" href="#howto-solvers-write-forward-contract"><span class="std std-ref">forward() Contract</span></a>).</p>
+</dd>
+<dt><strong>Operating modes.</strong></dt><dd><p>Named configurations (e.g., bisector, constant-phi) that define
+which axes will be modified by <code class="docutils literal notranslate"><span class="pre">forward()</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="design-rationale">
+<span id="howto-solvers-write-design-rationale"></span><h4>Design Rationale<a class="headerlink" href="#design-rationale" title="Link to this heading">#</a></h4>
+<p id="index-2">The required capabilities above are coupled through the geometry’s
+rotation chain: the same axis definitions that drive <code class="docutils literal notranslate"><span class="pre">forward()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">inverse()</span></code> are needed to compute lab-frame scattering vectors for
+<code class="docutils literal notranslate"><span class="pre">calculate_UB()</span></code>, and to manage the reflections that feed it.  A
+library that can compute <code class="docutils literal notranslate"><span class="pre">forward()</span></code> and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> necessarily
+has the geometry knowledge to also compute <code class="docutils literal notranslate"><span class="pre">calculate_UB()</span></code>.  A
+library that lacks this knowledge cannot serve as a complete <strong>hklpy2</strong>
+solver backend.</p>
+<p>This coupling is why these capabilities cannot be factored into
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a>.  A “generic” implementation
+would require embedding a full geometry engine — effectively becoming a
+backend library itself, violating the separation of concerns between
+the adapter layer and the computation engine.</p>
+<p>The <strong>Solver</strong> should be a thin adapter: it translates
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> method calls into whatever
+the backend library needs.  Computation, data management (including
+reflections), and transport (for remote backends) belong in the
+backend or its solver adapter, not in the base class.</p>
+<p>Backend library APIs vary widely.  For example,
+<a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.forward" title="hklpy2.backends.hkl_soleil.HklSolver.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HklSolver.forward()</span></code></a>
+calls <code class="docutils literal notranslate"><span class="pre">engine.pseudo_axis_values_set()</span></code> — a <strong>Hkl/Soleil</strong> GObject
+introspection binding that sets pseudo-axis values and returns a
+<code class="docutils literal notranslate"><span class="pre">GeometryList</span></code> of solutions as a side effect.  The backend function
+name gives no indication it is computing forward solutions.  This is
+exactly why the solver adapter exists: to present a consistent
+<code class="docutils literal notranslate"><span class="pre">forward(pseudos)</span></code> interface regardless of how the backend library
+exposes its capabilities.</p>
+</section>
 </section>
 <section id="engineering-units-system">
 <h3>Engineering Units System<a class="headerlink" href="#engineering-units-system" title="Link to this heading">#</a></h3>
@@ -869,7 +932,12 @@ to <em>Create a Python Project on GitHub</em>.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-implementation-details">Key Implementation Details</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-methods-contract">Required Methods Contract</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#forward-contract"><code class="docutils literal notranslate"><span class="pre">forward()</span></code> Contract</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-library-requirements">Backend Library Requirements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-library-requirements">Backend Library Requirements</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#required">Required</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#optional">Optional</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#design-rationale">Design Rationale</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#engineering-units-system">Engineering Units System</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-reference">Example Reference</a></li>
 </ul>
