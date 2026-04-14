@@ -27,6 +27,8 @@ from typing import Dict
 from typing import List
 from typing import TypedDict
 
+from deprecated.sphinx import versionadded
+
 __all__ = [
     "GeometryDescriptor",
     "ReflectionDict",
@@ -35,6 +37,7 @@ __all__ = [
 ]
 
 
+@versionadded(version="0.5.0", reason="Dynamic geometry registration support.")
 @dataclass
 class GeometryDescriptor:
     """
@@ -105,6 +108,7 @@ class GeometryDescriptor:
     """
 
 
+@versionadded(version="0.4.0", reason="Typed reflection dictionary.")
 class ReflectionDict(TypedDict):
     """
     Typed structure for a single diffraction reflection.
@@ -129,6 +133,7 @@ class ReflectionDict(TypedDict):
     wavelength: float
 
 
+@versionadded(version="0.4.0", reason="Typed sample dictionary.")
 class SampleDict(TypedDict):
     """
     Typed structure for a crystalline sample.
@@ -152,6 +157,7 @@ class SampleDict(TypedDict):
     order: List[str]
 
 
+@versionadded(version="0.4.0", reason="Typed solver metadata dictionary.")
 class SolverMetadataDict(TypedDict):
     """
     Typed structure for the **common** solver summary metadata.

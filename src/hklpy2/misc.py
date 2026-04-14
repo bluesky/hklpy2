@@ -72,6 +72,9 @@ import uuid
 import warnings
 from collections.abc import Iterable
 from importlib.metadata import entry_points
+
+from deprecated.sphinx import versionadded
+from deprecated.sphinx import versionchanged
 from typing import TYPE_CHECKING
 from typing import Any
 from typing import Iterator
@@ -237,6 +240,7 @@ class SolverError(Hklpy2Error):
 # Virtual positioner base class
 
 
+@versionadded(version="0.1.4", reason="Base class for diffractometer virtual axes.")
 class VirtualPositionerBase(SoftPositioner):
     """
     Base class for a diffractometer's virtual axis.
@@ -761,6 +765,10 @@ def get_solver(solver_name: str) -> "SolverBase":
     return entries[solver_name].load()
 
 
+@versionadded(
+    version="0.2.3", reason="Retrieve diffractometer orientation from a Tiled run."
+)
+@versionchanged(version="0.4.0", reason="Exported from top-level ``hklpy2`` namespace.")
 def get_run_orientation(
     run: Any,
     name=None,
@@ -866,6 +874,10 @@ def istype(value: Any, annotation: Type) -> bool:
         return False
 
 
+@versionadded(
+    version="0.2.3", reason="List runs that contain diffractometer orientation data."
+)
+@versionchanged(version="0.4.0", reason="Exported from top-level ``hklpy2`` namespace.")
 def list_orientation_runs(
     catalog: Any,
     limit: int = 10,
@@ -1058,6 +1070,10 @@ def parse_factory_axes(
     return attributes
 
 
+@versionadded(
+    version="0.1.4",
+    reason="Alternative forward() solution picker using closest motor positions.",
+)
 def pick_closest_solution(
     position: NamedTuple,
     solutions: list[NamedTuple],
@@ -1152,6 +1168,10 @@ def solvers() -> Mapping[str, "SolverBase"]:
     return {ep.name: ep.value for ep in entry_points(group=SOLVER_ENTRYPOINT_GROUP)}
 
 
+@versionadded(
+    version="0.4.0",
+    reason="Create a simulated diffractometer from a saved configuration.",
+)
 def creator_from_config(config: Union[dict, str, pathlib.Path]):
     """
     Create a simulated diffractometer from a saved configuration.

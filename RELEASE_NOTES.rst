@@ -63,9 +63,13 @@ describe future plans.
       ``"is not a container or iterable"``.  Truncate match pattern to
       accept both. (:issue:`304`)
 
-    Documentation
-    -------------
+    Maintenance
+    -----------
 
+    * Adopt the `Deprecated <https://pypi.org/project/Deprecated/>`_ package
+      as a runtime dependency.  Apply ``@versionadded``, ``@versionchanged``,
+      and ``@deprecated`` decorators throughout the codebase to document when
+      each public symbol was introduced or changed. (:issue:`111`)
     * Migrate glossary from field-list format to Sphinx ``.. glossary::``
       directive, enabling ``:term:`` cross-references throughout the docs.
       (:issue:`305`)
@@ -80,6 +84,8 @@ describe future plans.
       sequence, and the ``LimitsConstraint`` label requirement; clarify that
       hklpy2 constraints are post-computation filters distinct from SPEC/diffcalc
       cut points. (:issue:`275`)
+
+
 
 0.4.3
 #####

@@ -25,6 +25,8 @@ from typing import cast
 import numpy as np
 import yaml
 from bluesky.protocols import Movable
+from deprecated.sphinx import versionadded
+from deprecated.sphinx import versionchanged
 from bluesky.protocols import Readable
 from bluesky.utils import plan
 from cytoolz import partition
@@ -930,6 +932,11 @@ class DiffractometerBase(PseudoPositioner):
         print_axes(self.auxiliary_axis_names, preface="auxiliaries: ")
 
 
+@versionadded(version="0.1.0", reason="Factory function for diffractometer instances.")
+@versionchanged(
+    version="0.2.2",
+    reason="Replaced ``aliases`` with ``_pseudo`` and ``_real`` parameters.",
+)
 def creator(
     *,
     prefix: str = "",
@@ -1073,6 +1080,11 @@ def creator(
     return DiffractometerClass(prefix, name=name, labels=labels, **kwargs)
 
 
+@versionadded(version="0.1.0", reason="Factory function for diffractometer classes.")
+@versionchanged(
+    version="0.2.2",
+    reason="Replaced ``aliases`` with ``_pseudo`` and ``_real`` parameters.",
+)
 def diffractometer_class_factory(
     *,
     solver: str = "hkl_soleil",

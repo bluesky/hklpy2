@@ -417,6 +417,16 @@ A Pull Request (PR) describes *how* an issue has been (or will be) addressed.
 - The PR title should be a concise summary of the change.
 - Assign the PR to the user running the agent (determine with ``gh api user --jq '.login'``).
 - Copy the issue's labels, project(s), milestone, and status to the PR.
+
+  **Mandatory checklist — complete these immediately after `gh pr create`:**
+
+  1. `gh pr edit <N> --milestone "<milestone title>"` — copy milestone from issue.
+  2. Add PR to the project board via GraphQL `addProjectV2ItemById`.
+  3. Set PR project status to **"In review"** via GraphQL `updateProjectV2ItemFieldValue`.
+  4. Set issue project status to **"In review"** via the same mutation.
+
+  These four steps are required for every PR and must not be skipped.
+
 - Sign the PR body with the agent and model name:
 
   ```md

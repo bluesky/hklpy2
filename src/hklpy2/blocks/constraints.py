@@ -25,6 +25,8 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
+from deprecated.sphinx import versionadded
+
 from ..misc import ConfigurationError
 from ..misc import ConstraintsError
 from ..typing import NUMERIC
@@ -40,6 +42,8 @@ Default cut-point value (degrees).
 A cut point ``c`` maps a computed angle into the range from ``c`` up to
 (but not including) ``c + 360``.  The default of ``-180`` gives the
 familiar range of -180 up to (but not including) +180 degrees.
+
+.. versionadded:: 0.5.0
 """
 
 
@@ -156,6 +160,9 @@ class LimitsConstraint(ConstraintBase):
         ~cut_point
         ~limits
         ~valid
+
+    .. versionchanged:: 0.5.0
+        Added ``cut_point`` parameter and :meth:`apply_cut` method.
     """
 
     def __init__(
@@ -208,7 +215,11 @@ class LimitsConstraint(ConstraintBase):
 
     @property
     def cut_point(self) -> float:
-        """Angle (degrees) at which the 360-degree wrap begins."""
+        """
+        Angle (degrees) at which the 360-degree wrap begins.
+
+        .. versionadded:: 0.5.0
+        """
         return self._cut_point
 
     @cut_point.setter
@@ -238,6 +249,7 @@ class LimitsConstraint(ConstraintBase):
     def high_limit(self, value: float) -> None:
         self.limits = (self._low_limit, value)
 
+    @versionadded(version="0.5.0", reason="Cut-point angle branch-cut support.")
     def apply_cut(self, value: float) -> float:
         """
         Map ``value`` into the range from ``cut_point`` up to (but not
