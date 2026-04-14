@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=847b15a2"></script>
+    <script src="../_static/documentation_options.js?v=8494300a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -498,10 +498,173 @@ defines all the components of a diffractometer. The diffractometer
 axes. Geometries are defined by backend  <a class="reference internal" href="solvers.html#concepts-solvers"><span class="std std-ref">Solvers</span></a>. Some solvers
 support different calculation engines (other than <span class="math notranslate nohighlight">\(hkl\)</span>). It is common for a
 geometry to support several operating <em>modes</em>.</p>
+<section id="package-architecture">
+<span id="overview-architecture"></span><h2>Package Architecture<a class="headerlink" href="#package-architecture" title="Link to this heading">#</a></h2>
+<p>The diagram below shows how the major components of <strong>hklpy2</strong> fit together,
+grouped by their role in the package.</p>
+<figure class="align-center" id="id2">
+<div class="graphviz"><img src="../_images/graphviz-dda3012711cc35a1bd901ecd2fa9d05af85e911a.png" alt="digraph hklpy2_architecture {
+    graph [rankdir=TB, splines=ortho, nodesep=0.5, ranksep=0.6,
+           fontname=&quot;sans-serif&quot;, bgcolor=&quot;transparent&quot;, compound=true]
+    node  [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;sans-serif&quot;,
+           fontsize=10, margin=&quot;0.10,0.05&quot;]
+    edge  [fontname=&quot;sans-serif&quot;, fontsize=9, dir=none]
+
+    subgraph cluster_bluesky {
+        label=&quot;Bluesky\n(data acquisition)&quot;
+        style=dashed
+        color=&quot;#888888&quot;
+        fontname=&quot;sans-serif&quot;
+        fontsize=10
+
+        bluesky  [label=&quot;bluesky plans\n(RE, bps.mv, ...)&quot;,
+                  fillcolor=&quot;#e0e0e0&quot;, color=&quot;#666666&quot;]
+    }
+
+    subgraph cluster_user {
+        label=&quot;User-facing&quot;
+        style=filled
+        fillcolor=&quot;#f0f4ff&quot;
+        color=&quot;#3a6898&quot;
+        fontname=&quot;sans-serif&quot;
+        fontsize=10
+
+        creator    [label=&quot;creator()\nfactory function&quot;,
+                    fillcolor=&quot;#dce8f8&quot;, color=&quot;#3a6898&quot;]
+        usermod    [label=&quot;hklpy2.user\n(pa, wh, cahkl, setor, ...)&quot;,
+                    fillcolor=&quot;#dce8f8&quot;, color=&quot;#3a6898&quot;]
+        diffract   [label=&quot;DiffractometerBase\n(ophyd PseudoPositioner)&quot;,
+                    fillcolor=&quot;#dce8f8&quot;, color=&quot;#3a6898&quot;]
+        wavelength [label=&quot;Wavelength / beam\n(ophyd.Device)&quot;,
+                    fillcolor=&quot;#dce8f8&quot;, color=&quot;#3a6898&quot;]
+    }
+
+    subgraph cluster_core {
+        label=&quot;Core  (diffractometer.core)&quot;
+        style=filled
+        fillcolor=&quot;#fffbe8&quot;
+        color=&quot;#a07820&quot;
+        fontname=&quot;sans-serif&quot;
+        fontsize=10
+
+        core [label=&quot;Core&quot;,
+              fillcolor=&quot;#fdf3dc&quot;, color=&quot;#a07820&quot;]
+
+        subgraph cluster_blocks {
+            label=&quot;blocks&quot;
+            style=filled
+            fillcolor=&quot;#fff8e0&quot;
+            color=&quot;#c09030&quot;
+            fontname=&quot;sans-serif&quot;
+            fontsize=9
+
+            sample      [label=&quot;Sample\nLattice&quot;,
+                         fillcolor=&quot;#fdf3dc&quot;, color=&quot;#a07820&quot;]
+            reflection  [label=&quot;Reflection&quot;,
+                         fillcolor=&quot;#fdf3dc&quot;, color=&quot;#a07820&quot;]
+            constraints [label=&quot;Constraints\ncut_point&quot;,
+                         fillcolor=&quot;#fdf3dc&quot;, color=&quot;#a07820&quot;]
+            presets     [label=&quot;Presets&quot;,
+                         fillcolor=&quot;#fdf3dc&quot;, color=&quot;#a07820&quot;]
+            zone        [label=&quot;Zone&quot;,
+                         fillcolor=&quot;#fdf3dc&quot;, color=&quot;#a07820&quot;]
+            configure   [label=&quot;Configuration&quot;,
+                         fillcolor=&quot;#fdf3dc&quot;, color=&quot;#a07820&quot;]
+
+            { rank=same; sample; reflection; constraints }
+            { rank=same; presets; zone; configure }
+        }
+    }
+
+    subgraph cluster_solver {
+        label=&quot;Solver adapter\n(built-in)&quot;
+        style=filled
+        fillcolor=&quot;#f4f0ff&quot;
+        color=&quot;#6a3a98&quot;
+        fontname=&quot;sans-serif&quot;
+        fontsize=10
+
+        solverbase   [label=&quot;SolverBase\n(adapter interface)&quot;,
+                      fillcolor=&quot;#e8e0f8&quot;, color=&quot;#6a3a98&quot;]
+        hklsolver    [label=&quot;HklSolver&quot;,
+                      fillcolor=&quot;#e8e0f8&quot;, color=&quot;#6a3a98&quot;]
+        thttthsolver [label=&quot;ThTthSolver&quot;,
+                      fillcolor=&quot;#e8e0f8&quot;, color=&quot;#6a3a98&quot;]
+        noopsolver   [label=&quot;NoOpSolver&quot;,
+                      fillcolor=&quot;#e8e0f8&quot;, color=&quot;#6a3a98&quot;]
+    }
+
+    subgraph cluster_ext_solver {
+        label=&quot;Additional Solvers&quot;
+        style=dashed
+        color=&quot;#6a3a98&quot;
+        fontname=&quot;sans-serif&quot;
+        fontsize=10
+
+        extsolver [label=&quot;ExternalSolver\n(subclass of SolverBase)&quot;,
+                   fillcolor=&quot;#e8e0f8&quot;, color=&quot;#6a3a98&quot;,
+                   style=&quot;rounded,filled,dashed&quot;]
+    }
+
+    subgraph cluster_epics {
+        label=&quot;EPICS\n(hardware controls)&quot;
+        style=dashed
+        color=&quot;#888888&quot;
+        fontname=&quot;sans-serif&quot;
+        fontsize=10
+
+        epics    [label=&quot;EPICS\nmotor axes&quot;,
+                  fillcolor=&quot;#e0e0e0&quot;, color=&quot;#666666&quot;]
+    }
+
+    subgraph cluster_backend {
+        label=&quot;Backend libraries&quot;
+        style=dashed
+        color=&quot;#888888&quot;
+        fontname=&quot;sans-serif&quot;
+        fontsize=10
+
+        libhkl   [label=&quot;libhkl&quot;,
+                  fillcolor=&quot;#e0e0e0&quot;, color=&quot;#666666&quot;]
+        otherbk  [label=&quot;other backend\nlibraries ...&quot;,
+                  fillcolor=&quot;#e0e0e0&quot;, color=&quot;#666666&quot;,
+                  style=&quot;rounded,filled,dashed&quot;]
+    }
+
+    bluesky    -&gt; diffract
+    epics      -&gt; diffract   [style=dashed, color=&quot;#888888&quot;]
+    epics      -&gt; wavelength [label=&quot;EPICS PVs\n(optional)&quot;,
+                              style=dashed, color=&quot;#888888&quot;]
+    creator    -&gt; diffract   [xlabel=&quot;creates&quot;]
+    usermod    -&gt; diffract
+    diffract   -&gt; wavelength [label=&quot;.beam&quot;]
+
+    diffract   -&gt; core       [label=&quot;.core&quot;]
+    wavelength -&gt; core       [xlabel=&quot;beam&quot;]
+    core       -&gt; sample
+    core       -&gt; reflection
+    core       -&gt; constraints
+    core       -&gt; presets
+    core       -&gt; zone
+    core       -&gt; configure
+
+    core       -&gt; solverbase   [label=&quot;calculations&quot;]
+    solverbase -&gt; hklsolver    [style=dashed, label=&quot;subclass&quot;]
+    solverbase -&gt; thttthsolver [style=dashed]
+    solverbase -&gt; noopsolver   [style=dashed]
+    solverbase -&gt; extsolver    [style=dashed, label=&quot;entry points&quot;]
+    hklsolver  -&gt; libhkl
+    extsolver  -&gt; otherbk      [style=dashed]
+}" class="graphviz" /></div>
+<figcaption>
+<p><span class="caption-text">hklpy2 package architecture – components grouped by layer.</span><a class="headerlink" href="#id2" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="../glossary.html#glossary"><span class="std std-ref">Glossary</span></a></p>
 </div>
+</section>
 </section>
 
 
@@ -542,6 +705,18 @@ geometry to support several operating <em>modes</em>.</p>
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-architecture">Package Architecture</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

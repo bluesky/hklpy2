@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../../_static/documentation_options.js?v=847b15a2"></script>
+    <script src="../../../../_static/documentation_options.js?v=8494300a"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -461,14 +461,17 @@ implemented yet)</p></li>
 </ul>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.constraints.RealAxisConstraints" title="hklpy2.blocks.constraints.RealAxisConstraints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RealAxisConstraints</span></code></a>(reals)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.constraints.DEFAULT_CUT_POINT" title="hklpy2.blocks.constraints.DEFAULT_CUT_POINT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_CUT_POINT</span></code></a></p></td>
+<td><p>Default cut-point value (degrees).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.constraints.RealAxisConstraints" title="hklpy2.blocks.constraints.RealAxisConstraints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RealAxisConstraints</span></code></a>(reals)</p></td>
 <td><p>Constraints for every (real) axis of the diffractometer.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a>()</p></td>
 <td><p>Base class for all constraints for selecting 'forward()' solutions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a>([low_limit, high_limit, label])</p></td>
-<td><p>Value must fall between low &amp; high limits.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a>([low_limit, high_limit, ...])</p></td>
+<td><p>Value must fall between low &amp; high limits, after cut-point wrapping.</p></td>
 </tr>
 </tbody>
 </table>
@@ -513,31 +516,101 @@ implemented yet)</p></li>
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="hklpy2.blocks.constraints.DEFAULT_CUT_POINT">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.constraints.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_CUT_POINT</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-180.0</span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#DEFAULT_CUT_POINT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.DEFAULT_CUT_POINT" title="Link to this definition">#</a></dt>
+<dd><p>Default cut-point value (degrees).</p>
+<p>A cut point <code class="docutils literal notranslate"><span class="pre">c</span></code> maps a computed angle into the range from <code class="docutils literal notranslate"><span class="pre">c</span></code> up to
+(but not including) <code class="docutils literal notranslate"><span class="pre">c</span> <span class="pre">+</span> <span class="pre">360</span></code>.  The default of <code class="docutils literal notranslate"><span class="pre">-180</span></code> gives the
+familiar range of -180 up to (but not including) +180 degrees.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="hklpy2.blocks.constraints.ENDPOINT_TOLERANCE">
 <span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.constraints.</span></span><span class="sig-name descname"><span class="pre">ENDPOINT_TOLERANCE</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0001</span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#ENDPOINT_TOLERANCE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.ENDPOINT_TOLERANCE" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="hklpy2.blocks.constraints.LimitsConstraint">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.constraints.</span></span><span class="sig-name descname"><span class="pre">LimitsConstraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-180</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">180</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#LimitsConstraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.LimitsConstraint" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.blocks.constraints.</span></span><span class="sig-name descname"><span class="pre">LimitsConstraint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-180</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">180</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cut_point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_CUT_POINT</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#LimitsConstraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.LimitsConstraint" title="Link to this definition">#</a></dt>
 <dd><div class="import-path docutils container">
 <p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.blocks.constraints.LimitsConstraint</span></code></p>
 </div>
 <p>Bases: <a class="reference internal" href="#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a></p>
-<p>Value must fall between low &amp; high limits.</p>
+<p>Value must fall between low &amp; high limits, after cut-point wrapping.</p>
+<p>Two mechanisms work together for each real axis:</p>
+<ol class="arabic simple">
+<li><p><strong>Cut point</strong> (<a class="reference internal" href="#hklpy2.blocks.constraints.LimitsConstraint.cut_point" title="hklpy2.blocks.constraints.LimitsConstraint.cut_point"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cut_point</span></code></a>): wraps the computed angle into
+a preferred 360-degree window before any limit check.  The cut
+point <code class="docutils literal notranslate"><span class="pre">c</span></code> maps an angle <code class="docutils literal notranslate"><span class="pre">v</span></code> to the equivalent angle in the
+range from <code class="docutils literal notranslate"><span class="pre">c</span></code> up to (but not including) <code class="docutils literal notranslate"><span class="pre">c</span> <span class="pre">+</span> <span class="pre">360</span></code>.  This
+controls <em>representation</em> — which 360-degree window the angle is
+expressed in — not whether the solution is accepted or rejected.</p></li>
+<li><p><strong>Limits</strong> (<a class="reference internal" href="#hklpy2.blocks.constraints.LimitsConstraint.low_limit" title="hklpy2.blocks.constraints.LimitsConstraint.low_limit"><code class="xref py py-attr docutils literal notranslate"><span class="pre">low_limit</span></code></a>, <a class="reference internal" href="#hklpy2.blocks.constraints.LimitsConstraint.high_limit" title="hklpy2.blocks.constraints.LimitsConstraint.high_limit"><code class="xref py py-attr docutils literal notranslate"><span class="pre">high_limit</span></code></a>): filter out
+solutions whose (already-wrapped) axis value falls outside the
+configured range.  This controls <em>validity</em> — whether the
+physical motor can reach that position.</p></li>
+</ol>
+<p>The cut point is applied first (in <a class="reference internal" href="../../ops/index.html#hklpy2.ops.Core.forward" title="hklpy2.ops.Core.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>),
+then the limits check operates on the wrapped value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>low_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Lowest acceptable value for this axis when computing real-space solutions
-from given reciprocal-space positions.</p></li>
-<li><p><strong>high_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Highest acceptable value for this axis when computing real-space solutions
-from given reciprocal-space positions.</p></li>
+<li><p><strong>low_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Lowest acceptable value for this axis when computing real-space
+solutions from given reciprocal-space positions.</p></li>
+<li><p><strong>high_limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Highest acceptable value for this axis when computing real-space
+solutions from given reciprocal-space positions.</p></li>
 <li><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Name of the axis for these limits.</p></li>
-<li><p><strong>autosummary::</strong> (<em>..</em>) – ~limits
+<li><p><strong>cut_point</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Angle (degrees) at which the 360-degree wrap begins.  The
+computed angle is mapped to the range from <code class="docutils literal notranslate"><span class="pre">cut_point</span></code> up to
+(but not including) <code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">+</span> <span class="pre">360</span></code>.  Default is
+<code class="docutils literal notranslate"><span class="pre">-180</span></code>, giving the range -180 up to (but not including) +180.
+Use <code class="docutils literal notranslate"><span class="pre">0</span></code> for the range 0 up to (but not including) 360.</p></li>
+<li><p><strong>autosummary::</strong> (<em>..</em>) – ~apply_cut
+~cut_point
+~limits
 ~valid</p></li>
 </ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.constraints.LimitsConstraint.apply_cut">
+<span class="sig-name descname"><span class="pre">apply_cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#LimitsConstraint.apply_cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.LimitsConstraint.apply_cut" title="Link to this definition">#</a></dt>
+<dd><p>Map <code class="docutils literal notranslate"><span class="pre">value</span></code> into the range from <code class="docutils literal notranslate"><span class="pre">cut_point</span></code> up to (but not
+including) <code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">+</span> <span class="pre">360</span></code>.</p>
+<p>For example, with the default cut point of <code class="docutils literal notranslate"><span class="pre">-180</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">45.0</span></code>  →  <code class="docutils literal notranslate"><span class="pre">45.0</span></code>   (already in range, unchanged)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">200.0</span></code> →  <code class="docutils literal notranslate"><span class="pre">-160.0</span></code> (wrapped down by 360)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-200.0</span></code> → <code class="docutils literal notranslate"><span class="pre">160.0</span></code>  (wrapped up by 360)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-180.0</span></code> → <code class="docutils literal notranslate"><span class="pre">-180.0</span></code> (at the cut point, unchanged)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">180.0</span></code>  → <code class="docutils literal notranslate"><span class="pre">-180.0</span></code> (at the open end, wraps to cut point)</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><em>float</em></a>) – Angle in degrees to wrap.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Equivalent angle in the range from <code class="docutils literal notranslate"><span class="pre">cut_point</span></code> up to
+(but not including) <code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">+</span> <span class="pre">360</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.blocks.constraints.LimitsConstraint.cut_point">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cut_point</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#LimitsConstraint.cut_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.LimitsConstraint.cut_point" title="Link to this definition">#</a></dt>
+<dd><p>Angle (degrees) at which the 360-degree wrap begins.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.blocks.constraints.LimitsConstraint.high_limit">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">high_limit</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#LimitsConstraint.high_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.LimitsConstraint.high_limit" title="Link to this definition">#</a></dt>
+<dd><p>Upper limit of the acceptable range.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="hklpy2.blocks.constraints.LimitsConstraint.label">
 <span class="sig-name descname"><span class="pre">label</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#LimitsConstraint.label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.LimitsConstraint.label" title="Link to this definition">#</a></dt>
@@ -549,13 +622,22 @@ from given reciprocal-space positions.</p></li>
 <dd><p>Return the low and high limits of this constraint.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.blocks.constraints.LimitsConstraint.low_limit">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">low_limit</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#LimitsConstraint.low_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.LimitsConstraint.low_limit" title="Link to this definition">#</a></dt>
+<dd><p>Lower limit of the acceptable range.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2.blocks.constraints.LimitsConstraint.valid">
 <span class="sig-name descname"><span class="pre">valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../../typing/index.html#hklpy2.typing.NUMERIC" title="hklpy2.typing.NUMERIC"><span class="pre">NUMERIC</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/constraints.html#LimitsConstraint.valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.constraints.LimitsConstraint.valid" title="Link to this definition">#</a></dt>
 <dd><p>True if low &lt;= value &lt;= high.</p>
 <p>PARAMETERS</p>
 <dl class="simple">
-<dt>reals <em>dict</em>:</dt><dd><p>Dictionary of current ‘axis: value’ pairs for comparison.</p>
+<dt>reals <em>dict</em>:</dt><dd><p>Dictionary of current ‘axis: value’ pairs for comparison.
+Values should already be cut-point-wrapped before calling
+this method (see <a class="reference internal" href="#hklpy2.blocks.constraints.LimitsConstraint.apply_cut" title="hklpy2.blocks.constraints.LimitsConstraint.apply_cut"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply_cut()</span></code></a> and
+<a class="reference internal" href="../../ops/index.html#hklpy2.ops.Core.forward" title="hklpy2.ops.Core.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -653,10 +735,15 @@ from given reciprocal-space positions.</p></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.ConstraintBase.valid"><code class="docutils literal notranslate"><span class="pre">ConstraintBase.valid()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.DEFAULT_CUT_POINT"><code class="docutils literal notranslate"><span class="pre">DEFAULT_CUT_POINT</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.ENDPOINT_TOLERANCE"><code class="docutils literal notranslate"><span class="pre">ENDPOINT_TOLERANCE</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.LimitsConstraint"><code class="docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.LimitsConstraint.apply_cut"><code class="docutils literal notranslate"><span class="pre">LimitsConstraint.apply_cut()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.LimitsConstraint.cut_point"><code class="docutils literal notranslate"><span class="pre">LimitsConstraint.cut_point</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.LimitsConstraint.high_limit"><code class="docutils literal notranslate"><span class="pre">LimitsConstraint.high_limit</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.LimitsConstraint.label"><code class="docutils literal notranslate"><span class="pre">LimitsConstraint.label</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.LimitsConstraint.limits"><code class="docutils literal notranslate"><span class="pre">LimitsConstraint.limits</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.LimitsConstraint.low_limit"><code class="docutils literal notranslate"><span class="pre">LimitsConstraint.low_limit</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.constraints.LimitsConstraint.valid"><code class="docutils literal notranslate"><span class="pre">LimitsConstraint.valid()</span></code></a></li>
 </ul>
 </li>

@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=847b15a2"></script>
+    <script src="../_static/documentation_options.js?v=8494300a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -693,6 +693,49 @@ implemented.  The number of solutions depends on the backend library’s
 capabilities.  An empty list (or raising
 <a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.NoForwardSolutions" title="hklpy2.misc.NoForwardSolutions"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoForwardSolutions</span></code></a>) signals that no solution
 exists for the requested pseudo-axis values.</p>
+<p class="rubric">The four-stage forward pipeline</p>
+<p>All three backend libraries (<strong>Hkl/Soleil</strong>, diffcalc, SPEC) follow the same
+pattern: the engine returns <strong>all</strong> theoretical solutions; post-processing
+stages then wrap, filter, and select.  hklpy2 implements the same
+four stages.  A solver adapter is responsible only for <strong>Stage 1</strong>;
+Stages 2–4 are handled by the <strong>hklpy2</strong> Core and DiffractometerBase
+layers.</p>
+<figure class="align-center" id="id10">
+<div class="graphviz"><img src="../_images/graphviz-0979cbfe78a0f2be31aba9a62c19abd4e18b0720.png" alt="digraph forward_pipeline {
+    graph [rankdir=TB, splines=ortho, nodesep=0.6, ranksep=0.5,
+           fontname=&quot;sans-serif&quot;, bgcolor=&quot;transparent&quot;]
+    node  [shape=box, style=&quot;rounded,filled&quot;, fontname=&quot;sans-serif&quot;,
+           fontsize=11, margin=&quot;0.15,0.08&quot;]
+    edge  [fontname=&quot;sans-serif&quot;, fontsize=10]
+
+    pseudos [label=&quot;pseudos\n(h, k, l)&quot;, shape=ellipse,
+             fillcolor=&quot;#e8f4e8&quot;, color=&quot;#4a7c4a&quot;]
+
+    s1 [label=&quot;Stage 1: SolverBase.forward()\nBackend engine returns ALL theoretical\nsolutions for the pseudos, geometry, mode.\nSPEC/diffcalc: geometry engine\nlibhkl: pseudo_axis_values_set()&quot;,
+        fillcolor=&quot;#dce8f8&quot;, color=&quot;#3a6898&quot;]
+
+    s2 [label=&quot;Stage 2: apply_cut()  [Core]\nEach axis angle is mapped into\n[cut_point, cut_point+360).\nControls representation, not validity.\nSPEC: cuts  |  diffcalc: _cut_angles()&quot;,
+        fillcolor=&quot;#fdf3dc&quot;, color=&quot;#a07820&quot;]
+
+    s3 [label=&quot;Stage 3: LimitsConstraint.valid()  [Core]\nSolutions whose wrapped axis values\nfall outside configured limits are discarded.\nSPEC: lm  |  diffcalc: is_position_within_limits()&quot;,
+        fillcolor=&quot;#fdf3dc&quot;, color=&quot;#a07820&quot;]
+
+    s4 [label=&quot;Stage 4: solution picker  [DiffractometerBase]\nOne solution is selected from survivors\nfor motor motion (ophyd PseudoPositioner).&quot;,
+        fillcolor=&quot;#f0e8f8&quot;, color=&quot;#6a3a98&quot;]
+
+    result [label=&quot;single real-axis position\nfor motor motion&quot;,
+            shape=ellipse, fillcolor=&quot;#e8f4e8&quot;, color=&quot;#4a7c4a&quot;]
+
+    pseudos -&gt; s1 [label=&quot;all theoretical solutions&quot;]
+    s1      -&gt; s2 [label=&quot;wrapped solutions&quot;]
+    s2      -&gt; s3 [label=&quot;filtered solutions&quot;]
+    s3      -&gt; s4 [label=&quot;one solution&quot;]
+    s4      -&gt; result
+}" class="graphviz" /></div>
+<figcaption>
+<p><span class="caption-text">Four-stage forward() pipeline in hklpy2 (equivalent stages in SPEC and diffcalc shown in parentheses).</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="backend-library-requirements">
 <span id="howto-solvers-write-backend-requirements"></span><h3>Backend Library Requirements<a class="headerlink" href="#backend-library-requirements" title="Link to this heading">#</a></h3>
