@@ -14,10 +14,53 @@ The :meth:`~hklpy2.diffract.DiffractometerBase.forward` method may return
 multiple valid real-axis positions for a given set of pseudo-axis coordinates.
 A *solution picker* function selects one solution from that list.
 
-The number of solutions depends on the backend |solver|'s capabilities.
-Some engines analytically enumerate all mathematically valid solutions;
-others return only one.  A single-element list is valid — the pickers
-and constraint filters handle it correctly.  See also
+.. rubric:: The four-stage forward pipeline
+
+Computing a single motor position from pseudo-axis coordinates (e.g.
+``h, k, l``) involves four distinct stages across three layers of
+|hklpy2|.  This guide covers **Stage 4** — the solution picker.
+
+.. graphviz::
+    :caption: Four-stage forward() pipeline in hklpy2 (equivalent stages in SPEC and diffcalc shown in parentheses).
+    :align: center
+
+    digraph forward_pipeline {
+        graph [rankdir=TB, splines=ortho, nodesep=0.6, ranksep=0.5,
+               fontname="sans-serif", bgcolor="transparent"]
+        node  [shape=box, style="rounded,filled", fontname="sans-serif",
+               fontsize=11, margin="0.15,0.08"]
+        edge  [fontname="sans-serif", fontsize=10]
+
+        pseudos [label="pseudos\n(h, k, l)", shape=ellipse,
+                 fillcolor="#e8f4e8", color="#4a7c4a"]
+
+        s1 [label="Stage 1: SolverBase.forward()\nBackend engine returns ALL theoretical\nsolutions for the pseudos, geometry, mode.\nSPEC/diffcalc: geometry engine\nlibhkl: pseudo_axis_values_set()",
+            fillcolor="#dce8f8", color="#3a6898"]
+
+        s2 [label="Stage 2: apply_cut()  [Core]\nEach axis angle is mapped into\n[cut_point, cut_point+360).\nControls representation, not validity.\nSPEC: cuts  |  diffcalc: _cut_angles()",
+            fillcolor="#fdf3dc", color="#a07820"]
+
+        s3 [label="Stage 3: LimitsConstraint.valid()  [Core]\nSolutions whose wrapped axis values\nfall outside configured limits are discarded.\nSPEC: lm  |  diffcalc: is_position_within_limits()",
+            fillcolor="#fdf3dc", color="#a07820"]
+
+        s4 [label="Stage 4: solution picker  [DiffractometerBase]\nOne solution is selected from survivors\nfor motor motion (ophyd PseudoPositioner).",
+            fillcolor="#f0e8f8", color="#6a3a98",
+            style="rounded,filled,bold"]
+
+        result [label="single real-axis position\nfor motor motion",
+                shape=ellipse, fillcolor="#e8f4e8", color="#4a7c4a"]
+
+        pseudos -> s1 [label="all theoretical solutions"]
+        s1      -> s2 [label="wrapped solutions"]
+        s2      -> s3 [label="filtered solutions"]
+        s3      -> s4 [label="one solution"]
+        s4      -> result
+    }
+
+The number of solutions entering Stage 4 depends on the backend
+|solver|'s capabilities.  Some engines analytically enumerate all
+mathematically valid solutions; others return only one.  A
+single-element list is valid.  See also
 :ref:`howto.solvers.write.forward_contract`.
 
 This guide explains the built-in pickers, how to switch between them, and how
