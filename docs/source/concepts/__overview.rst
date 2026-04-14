@@ -135,14 +135,17 @@ grouped by their role in the package.
         }
 
         subgraph cluster_backend {
-            label="Backends"
+            label="Backends\n(via entry points)"
             style=dashed
             color="#888888"
             fontname="sans-serif"
             fontsize=10
 
-            backend  [label="backend library\n(libhkl, ...)",
+            libhkl   [label="libhkl",
                       fillcolor="#e0e0e0", color="#666666"]
+            otherbk  [label="other backend\nlibraries ...",
+                      fillcolor="#e0e0e0", color="#666666",
+                      style="rounded,filled,dashed"]
         }
 
         bluesky    -> diffract
@@ -166,7 +169,8 @@ grouped by their role in the package.
         solverbase -> hklsolver    [style=dashed, label="subclass"]
         solverbase -> thttthsolver [style=dashed]
         solverbase -> noopsolver   [style=dashed]
-        hklsolver  -> backend      [label="calls"]
+        hklsolver  -> libhkl
+        solverbase -> otherbk      [style=dashed]
     }
 
 .. seealso:: :ref:`glossary`
