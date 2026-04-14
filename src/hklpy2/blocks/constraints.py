@@ -11,11 +11,13 @@ together with a choice of operating *mode*, can:
 
 .. autosummary::
 
+    ~DEFAULT_CUT_POINT
     ~RealAxisConstraints
     ~ConstraintBase
     ~LimitsConstraint
 """
 
+import math
 from abc import ABC
 from abc import abstractmethod
 from typing import Any
@@ -30,6 +32,15 @@ from ..typing import KeyValueMap
 
 ENDPOINT_TOLERANCE: float = 1e-4  # for comparisons, less than motion step size
 UNDEFINED_LABEL: str = "undefined"
+
+DEFAULT_CUT_POINT: float = -180.0
+"""
+Default cut-point value (degrees).
+
+A cut point ``c`` maps a computed angle into the range from ``c`` up to
+(but not including) ``c + 360``.  The default of ``-180`` gives the
+familiar range of -180 up to (but not including) +180 degrees.
+"""
 
 
 class ConstraintBase(ABC):
@@ -103,21 +114,46 @@ class ConstraintBase(ABC):
 
 class LimitsConstraint(ConstraintBase):
     """
-    Value must fall between low & high limits.
+    Value must fall between low & high limits, after cut-point wrapping.
+
+    Two mechanisms work together for each real axis:
+
+    1. **Cut point** (:attr:`cut_point`): wraps the computed angle into
+       a preferred 360-degree window before any limit check.  The cut
+       point ``c`` maps an angle ``v`` to the equivalent angle in the
+       range from ``c`` up to (but not including) ``c + 360``.  This
+       controls *representation* — which 360-degree window the angle is
+       expressed in — not whether the solution is accepted or rejected.
+
+    2. **Limits** (:attr:`low_limit`, :attr:`high_limit`): filter out
+       solutions whose (already-wrapped) axis value falls outside the
+       configured range.  This controls *validity* — whether the
+       physical motor can reach that position.
+
+    The cut point is applied first (in :meth:`~hklpy2.ops.Core.forward`),
+    then the limits check operates on the wrapped value.
 
     Parameters
     ----------
     low_limit : float
-        Lowest acceptable value for this axis when computing real-space solutions
-        from given reciprocal-space positions.
+        Lowest acceptable value for this axis when computing real-space
+        solutions from given reciprocal-space positions.
     high_limit : float
-        Highest acceptable value for this axis when computing real-space solutions
-        from given reciprocal-space positions.
+        Highest acceptable value for this axis when computing real-space
+        solutions from given reciprocal-space positions.
     label : str
         Name of the axis for these limits.
+    cut_point : float
+        Angle (degrees) at which the 360-degree wrap begins.  The
+        computed angle is mapped to the range from ``cut_point`` up to
+        (but not including) ``cut_point + 360``.  Default is
+        ``-180``, giving the range -180 up to (but not including) +180.
+        Use ``0`` for the range 0 up to (but not including) 360.
 
     .. autosummary::
 
+        ~apply_cut
+        ~cut_point
         ~limits
         ~valid
     """
@@ -127,12 +163,13 @@ class LimitsConstraint(ConstraintBase):
         low_limit: Optional[float] = -180,
         high_limit: Optional[float] = 180,
         label: Optional[str] = None,
+        cut_point: float = DEFAULT_CUT_POINT,
     ) -> None:
         if label is None:
             raise ConstraintsError("Must provide a value for 'label'.")
 
         self.label = label
-        self._fields = "label low_limit high_limit".split()
+        self._fields = "label low_limit high_limit cut_point".split()
 
         if low_limit is None:
             low_limit = -180
@@ -142,10 +179,61 @@ class LimitsConstraint(ConstraintBase):
         self.low_limit, self.high_limit = sorted(
             map(float, [low_limit, high_limit]),
         )
+        self.cut_point = float(cut_point)
 
     def __repr__(self) -> str:
         """Return a nicely-formatted string."""
-        return f"{self.low_limit} <= {self.label} <= {self.high_limit}"
+        return (
+            f"{self.low_limit} <= {self.label} <= {self.high_limit}"
+            f" [cut={self.cut_point}]"
+        )
+
+    def _fromdict(self, config: KeyValueMap, core: Optional[Any] = None) -> None:
+        """
+        Redefine this constraint from a (configuration) dictionary.
+
+        Tolerates missing ``cut_point`` key for backward compatibility
+        with configurations saved before cut-point support was added;
+        those default to :data:`DEFAULT_CUT_POINT`.
+        """
+        # Handle cut_point separately so we can supply a default when
+        # loading older configurations that pre-date this field.
+        saved_fields = self._fields
+        self._fields = [f for f in self._fields if f != "cut_point"]
+        super()._fromdict(config, core=core)
+        self._fields = saved_fields
+        self.cut_point = float(config.get("cut_point", DEFAULT_CUT_POINT))
+
+    def apply_cut(self, value: float) -> float:
+        """
+        Map ``value`` into the range from ``cut_point`` up to (but not
+        including) ``cut_point + 360``.
+
+        For example, with the default cut point of ``-180``:
+
+        - ``45.0``  →  ``45.0``   (already in range, unchanged)
+        - ``200.0`` →  ``-160.0`` (wrapped down by 360)
+        - ``-200.0`` → ``160.0``  (wrapped up by 360)
+        - ``-180.0`` → ``-180.0`` (at the cut point, unchanged)
+        - ``180.0``  → ``-180.0`` (at the open end, wraps to cut point)
+
+        Parameters
+        ----------
+        value : float
+            Angle in degrees to wrap.
+
+        Returns
+        -------
+        float
+            Equivalent angle in the range from ``cut_point`` up to
+            (but not including) ``cut_point + 360``.
+        """
+        wrapped = self.cut_point + math.fmod(value - self.cut_point, 360.0) % 360.0
+        # Floating-point arithmetic can produce a result indistinguishably
+        # close to cut_point + 360 (the excluded upper bound).  Map it back.
+        if abs(wrapped - (self.cut_point + 360.0)) < ENDPOINT_TOLERANCE:
+            wrapped = self.cut_point
+        return wrapped
 
     @property
     def limits(self) -> tuple[float, float]:
@@ -166,6 +254,9 @@ class LimitsConstraint(ConstraintBase):
 
         reals *dict*:
             Dictionary of current 'axis: value' pairs for comparison.
+            Values should already be cut-point-wrapped before calling
+            this method (see :meth:`apply_cut` and
+            :meth:`~hklpy2.ops.Core.forward`).
         """
         if self.label not in values:
             raise ConstraintsError(

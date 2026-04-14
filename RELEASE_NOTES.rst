@@ -38,6 +38,12 @@ describe future plans.
     New Features
     ------------
 
+    * Add per-axis cut-point (angle branch-cut) to ``LimitsConstraint``:
+      the ``cut_point`` attribute maps computed angles into the range from
+      ``c`` up to (but not including) ``c + 360`` before limit checking in
+      ``Core.forward()``.  Default is ``-180`` (range −180 up to +180),
+      matching SPEC ``cuts`` and diffcalc ``setcut`` semantics.
+      (:issue:`296`)
     * Add ``GeometryDescriptor`` dataclass to ``hklpy2.backends.typing``:
       decouples geometry identity (axis names, modes, description) from the
       solver backend that implements the mathematics. (:issue:`293`)

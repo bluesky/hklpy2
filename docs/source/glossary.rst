@@ -56,6 +56,22 @@ Glossary
         A homogeneous substance composed from a repeating three-dimensional
         pattern.  The pattern (*unit cell*) is characterized by its *lattice*.
 
+    cut point
+        A per-axis scalar ``c`` (degrees) that maps a computed angle ``v``
+        to an equivalent angle in the range from ``c`` up to (but not
+        including) ``c + 360``.  Applied *before* :term:`constraint`
+        checking in the ``forward()`` pipeline.
+
+        Controls the *representation* of an angle — which 360-degree window
+        it is expressed in — not whether a solution is accepted or rejected.
+        For example, a cut point of ``-180`` gives the range −180 up to
+        (but not including) +180 (the default), while ``0`` gives 0 up to
+        (but not including) 360.
+
+        Equivalent to SPEC ``cuts`` and diffcalc ``setcut``.
+
+        See also: :term:`constraint`.
+
     detector
         Measures the intensity of diffracted radiation from the sample.
 

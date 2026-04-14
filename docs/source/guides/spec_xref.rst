@@ -34,7 +34,7 @@ the tools in Bluesky's |hklpy2| package.
 ``reflex_beg``   not necessary                                                  Initializes the reflections file
 ``reflex_end``   not necessary                                                  Closes the reflections file
 --               ``diffractometer.core.constraints``                            Show the current set of constraints.
-``cuts``         See :meth:`~hklpy2.blocks.constraints.LimitsConstraint`        Set axis range limits (cut points in SPEC set angle wrap; hklpy2 filters ``forward()`` solutions — related but not identical).
+``cuts``         ``diffractometer.core.constraints["chi"].cut_point = 0``        Set the angle branch-cut (wrap point) for an axis; maps computed angles into the range from ``c`` up to (but not including) ``c + 360``.
 ``freeze``       :ref:`presets <how_presets>`                                   Hold an axis constant during the diffractometer ``forward()`` computation.
 ``unfreeze``     :ref:`presets <how_presets.pop>`                               Remove a preset constant value for an axis.
 --               :func:`~hklpy2.user.calc_UB`                                   Compute the UB matrix with two reflections.

@@ -554,6 +554,13 @@ class Core:
                         angle_units_solver,
                         angle_units_core,
                     )
+                # Apply cut-point wrapping before constraint checking.
+                # Each axis angle is mapped into [cut_point, cut_point+360)
+                # so that limit checks operate on the wrapped representation.
+                for name, constraint in self.constraints.items():
+                    if name in reals:
+                        reals[name] = constraint.apply_cut(reals[name])
+
                 if self.constraints.valid(**reals):
                     solutions.append(self.diffractometer.RealPosition(**reals))
                 else:
@@ -562,10 +569,12 @@ class Core:
                         if not constraint.valid(**reals):
                             logger.info(
                                 "Solution discarded: %s=%.4f"
+                                " (after cut_point=%.4f wrapping)"
                                 " outside limits [%.4f, %.4f]."
                                 "  pseudos=%r",
                                 name,
                                 reals[name],
+                                constraint.cut_point,
                                 constraint.low_limit,
                                 constraint.high_limit,
                                 pdict,
