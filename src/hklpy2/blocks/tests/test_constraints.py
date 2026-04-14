@@ -1,3 +1,4 @@
+import math
 import re
 from contextlib import nullcontext as does_not_raise
 
@@ -272,6 +273,53 @@ def test_repr():
     assert "-180.0 <= th <= 180.0 [cut=-180.0]" in rep
     assert "-180.0 <= tth <= 180.0 [cut=-180.0]" in rep
     assert rep.endswith("]")
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(cut_point=0.0),
+            does_not_raise(),
+            id="zero is valid",
+        ),
+        pytest.param(
+            dict(cut_point=-180.0),
+            does_not_raise(),
+            id="default is valid",
+        ),
+        pytest.param(
+            dict(cut_point=720.0),
+            does_not_raise(),
+            id="large finite value is valid",
+        ),
+        pytest.param(
+            dict(cut_point=float("inf")),
+            pytest.raises(
+                ConstraintsError, match=re.escape("cut_point must be a finite number")
+            ),
+            id="inf rejected",
+        ),
+        pytest.param(
+            dict(cut_point=float("-inf")),
+            pytest.raises(
+                ConstraintsError, match=re.escape("cut_point must be a finite number")
+            ),
+            id="-inf rejected",
+        ),
+        pytest.param(
+            dict(cut_point=float("nan")),
+            pytest.raises(
+                ConstraintsError, match=re.escape("cut_point must be a finite number")
+            ),
+            id="nan rejected",
+        ),
+    ],
+)
+def test_cut_point_validation(parms, context):
+    with context:
+        c = LimitsConstraint(label="axis", cut_point=parms["cut_point"])
+        assert math.isfinite(c.cut_point)
 
 
 def test_limits_property():

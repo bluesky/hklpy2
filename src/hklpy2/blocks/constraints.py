@@ -179,7 +179,12 @@ class LimitsConstraint(ConstraintBase):
         self.low_limit, self.high_limit = sorted(
             map(float, [low_limit, high_limit]),
         )
-        self.cut_point = float(cut_point)
+        cut_point = float(cut_point)
+        if not math.isfinite(cut_point):
+            raise ConstraintsError(
+                f"cut_point must be a finite number, received {cut_point!r}."
+            )
+        self.cut_point = cut_point
 
     def __repr__(self) -> str:
         """Return a nicely-formatted string."""
@@ -202,7 +207,12 @@ class LimitsConstraint(ConstraintBase):
         self._fields = [f for f in self._fields if f != "cut_point"]
         super()._fromdict(config, core=core)
         self._fields = saved_fields
-        self.cut_point = float(config.get("cut_point", DEFAULT_CUT_POINT))
+        cut_point = float(config.get("cut_point", DEFAULT_CUT_POINT))
+        if not math.isfinite(cut_point):
+            raise ConstraintsError(
+                f"cut_point must be a finite number, received {cut_point!r}."
+            )
+        self.cut_point = cut_point
 
     def apply_cut(self, value: float) -> float:
         """
