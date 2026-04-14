@@ -5,9 +5,9 @@ Gather the discussion points, thoughts, issues, etc. for development of
 [*hklpy2*](https://github.com/bluesky/hklpy2), the second generation of
 the [*hklpy*](https://github.com/bluesky/hklpy) package.
 
-Here's a block diagram of the new API:
+Here's an overview of the package architecture:
 
-![Block Diagram](/_static/hklpy2-block-diagram.png)
+![Package architecture overview](/_static/hklpy2-overview.svg)
 
 ## hklpy release v2.0 project
 
