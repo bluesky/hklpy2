@@ -192,20 +192,31 @@ method (or property)            description
 ``forward()`` Contract
 ^^^^^^^^^^^^^^^^^^^^^^
 
-``forward(pseudos)`` returns a ``list[NamedFloatDict]`` — all valid real-axis
-solutions the backend engine can find for the given pseudo-axis values,
-geometry, and mode.
+The ``forward()`` method appears at three layers, each with a distinct
+role and return type:
 
-The number of solutions depends on the backend library's capabilities.
-Some engines analytically enumerate all mathematically valid solutions;
-others return only one.  **A single-element list is a valid return value.**
-The :class:`~hklpy2.ops.Core` layer iterates over whatever the solver
-returns, applies :ref:`constraint filtering <concepts.constraints>`, and
-passes the survivors to a
-:ref:`solution picker <how_forward_solution>`.
+:meth:`SolverBase.forward(pseudos) <hklpy2.backends.base.SolverBase.forward>`
+    Returns ``list[NamedFloatDict]`` — all valid real-axis solutions the
+    backend engine can find for the given pseudo-axis values, geometry,
+    and mode.  **A single-element list is a valid return value.**
 
-An empty list (or raising :exc:`~hklpy2.misc.NoForwardSolutions`) signals
-that no solution exists for the requested pseudo-axis values.
+:meth:`Core.forward(pseudos) <hklpy2.ops.Core.forward>`
+    Calls the solver's ``forward()``, then applies
+    :ref:`constraint filtering <concepts.constraints>` to each solution.
+    Returns the filtered list — the full set of candidate motor angle
+    combinations that satisfy all constraints.
+
+:meth:`DiffractometerBase.forward(pseudos) <hklpy2.diffract.DiffractometerBase.forward>`
+    The |ophyd| ``PseudoPositioner`` interface, called by motion
+    commands during bluesky plans.  Calls ``Core.forward()``, then
+    applies a :ref:`solution picker <how_forward_solution>` to select
+    one solution for motor motion.  Returns a single ``NamedTuple``.
+
+When writing a solver, only ``SolverBase.forward()`` needs to be
+implemented.  The number of solutions depends on the backend library's
+capabilities.  An empty list (or raising
+:exc:`~hklpy2.misc.NoForwardSolutions`) signals that no solution
+exists for the requested pseudo-axis values.
 
 .. _howto.solvers.write.backend_requirements:
 
@@ -214,7 +225,12 @@ Backend Library Requirements
 
 A |solver| is an adapter for a backend computation library.  The backend
 library must provide (or enable the adapter to implement) the following
-capabilities:
+capabilities.
+
+Required
+""""""""
+
+.. index:: backend requirements; required
 
 **Geometry-aware rotation chain.**
     The library must know the physical axis directions and stacking order
@@ -223,7 +239,8 @@ capabilities:
 
 **Forward transform** (pseudos to reals).
     Given pseudo-axis values, lattice parameters, orientation matrix, and
-    wavelength, compute real-axis angles.
+    wavelength, compute real-axis angles.  This is geometry- and
+    mode-specific.
 
 **Inverse transform** (reals to pseudos).
     Given real-axis angles, lattice parameters, orientation matrix, and
@@ -237,11 +254,62 @@ capabilities:
     ``forward()``, and ``inverse()`` all depend on the same rotation
     chain and cannot be separated.
 
-These capabilities are coupled through the geometry's rotation chain.  A
-library that can compute ``forward()`` and ``inverse()`` necessarily has
-the geometry knowledge to also compute ``calculate_UB()``.  A library
-that lacks this knowledge cannot serve as a complete |hklpy2| solver
-backend.
+**Reflection management.**
+    Store and retrieve measured reflections for UB matrix calculation.
+    The backend library must manage reflections because UB calculation
+    consumes them — the solver adapter passes reflections through to the
+    backend, not buffering them in the adapter layer.
+
+Optional
+""""""""
+
+.. index:: backend requirements; optional
+
+The following capabilities enhance a solver but are not required.
+Solvers that lack these features remain valid — the :class:`~hklpy2.ops.Core`
+layer handles their absence gracefully.
+
+**Lattice refinement.**
+    Refine lattice parameters from multiple reflections.  Solvers that
+    lack this capability return ``None`` from ``refineLattice()``; Core
+    raises an informative error to the user.
+
+**Multi-solution enumeration.**
+    Return multiple valid angle solutions for a given set of pseudo-axis
+    values.  A single-element list is a valid return from ``forward()``
+    (see :ref:`howto.solvers.write.forward_contract`).
+
+**Operating modes.**
+    Named constraint sets (e.g., bisector, constant-phi) that restrict
+    which axes move during ``forward()``.
+
+.. _howto.solvers.write.design_rationale:
+
+Design Rationale
+""""""""""""""""
+
+.. index:: separation of concerns
+
+The required capabilities above are coupled through the geometry's
+rotation chain: the same axis definitions that drive ``forward()`` and
+``inverse()`` are needed to compute lab-frame scattering vectors for
+``calculate_UB()``, and to manage the reflections that feed it.  A
+library that can compute ``forward()`` and ``inverse()`` necessarily
+has the geometry knowledge to also compute ``calculate_UB()``.  A
+library that lacks this knowledge cannot serve as a complete |hklpy2|
+solver backend.
+
+This coupling is why these capabilities cannot be factored into
+:class:`~hklpy2.backends.base.SolverBase`.  A "generic" implementation
+would require embedding a full geometry engine — effectively becoming a
+backend library itself, violating the separation of concerns between
+the adapter layer and the computation engine.
+
+The |solver| should be a thin adapter: it translates
+:class:`~hklpy2.backends.base.SolverBase` method calls into whatever
+the backend library needs.  Computation, data management (including
+reflections), and transport (for remote backends) belong in the
+backend or its solver adapter, not in the base class.
 
 Engineering Units System
 ^^^^^^^^^^^^^^^^^^^^^^^^
