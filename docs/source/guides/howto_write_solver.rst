@@ -238,9 +238,8 @@ Required
     for all diffractometer calculations.
 
 **Forward transform** (pseudos to reals).
-    Given pseudo-axis values, lattice parameters, orientation matrix, and
-    wavelength, compute real-axis angles.  This is geometry- and
-    mode-specific.
+    Given pseudo-axis values, orientation matrix, and wavelength, compute
+    real-axis angles.  This is geometry- and mode-specific.
 
 **Inverse transform** (reals to pseudos).
     Given real-axis angles, lattice parameters, orientation matrix, and
@@ -280,8 +279,9 @@ layer handles their absence gracefully.
     (see :ref:`howto.solvers.write.forward_contract`).
 
 **Operating modes.**
-    Named constraint sets (e.g., bisector, constant-phi) that restrict
-    which axes move during ``forward()``.
+    Named configurations (e.g., bisector, constant-phi) that define
+    which axes will be modified by ``forward()``.  See
+    :term:`mode`.
 
 .. _howto.solvers.write.design_rationale:
 
