@@ -177,7 +177,7 @@ method (or property)            description
 ``addReflection(reflection)``   Add an observed diffraction reflection.
 ``calculate_UB(r1, r2)``        Calculate the UB matrix with two reflections.
 ``extra_axis_names``            Returns list of any extra axes in the current *mode*.
-``forward(pseudos)``            Compute list of solutions(reals) from pseudos.
+``forward(pseudos)``            Compute list of solutions(reals) from pseudos.  A single-element list is acceptable (see :ref:`forward() contract <howto.solvers.write.forward_contract>`).
 ``geometries``                  ``@classmethod`` [#classmethod_decorator]_ : Returns list of all geometries support by this solver.
 ``inverse(reals)``              Compute pseudos from reals.
 ``modes``                       Returns list of all modes support by this geometry.
@@ -186,6 +186,62 @@ method (or property)            description
 ``refineLattice(reflections)``  Return refined lattice parameters given reflections.
 ``removeAllReflections()``      Clears sample of all stored reflections.
 ==============================  ==================
+
+.. _howto.solvers.write.forward_contract:
+
+``forward()`` Contract
+^^^^^^^^^^^^^^^^^^^^^^
+
+``forward(pseudos)`` returns a ``list[NamedFloatDict]`` — all valid real-axis
+solutions the backend engine can find for the given pseudo-axis values,
+geometry, and mode.
+
+The number of solutions depends on the backend library's capabilities.
+Some engines analytically enumerate all mathematically valid solutions;
+others return only one.  **A single-element list is a valid return value.**
+The :class:`~hklpy2.ops.Core` layer iterates over whatever the solver
+returns, applies :ref:`constraint filtering <concepts.constraints>`, and
+passes the survivors to a
+:ref:`solution picker <how_forward_solution>`.
+
+An empty list (or raising :exc:`~hklpy2.misc.NoForwardSolutions`) signals
+that no solution exists for the requested pseudo-axis values.
+
+.. _howto.solvers.write.backend_requirements:
+
+Backend Library Requirements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A |solver| is an adapter for a backend computation library.  The backend
+library must provide (or enable the adapter to implement) the following
+capabilities:
+
+**Geometry-aware rotation chain.**
+    The library must know the physical axis directions and stacking order
+    for each geometry it supports.  This is the irreducible foundation
+    for all diffractometer calculations.
+
+**Forward transform** (pseudos to reals).
+    Given pseudo-axis values, lattice parameters, orientation matrix, and
+    wavelength, compute real-axis angles.
+
+**Inverse transform** (reals to pseudos).
+    Given real-axis angles, lattice parameters, orientation matrix, and
+    wavelength, compute pseudo-axis values.
+
+**UB matrix calculation.**
+    Given two measured reflections (each with known pseudos, measured
+    angles, and wavelength), compute the orientation matrix.  This
+    requires the geometry's rotation chain to convert measured angles
+    into lab-frame scattering vectors.  ``calculate_UB()``,
+    ``forward()``, and ``inverse()`` all depend on the same rotation
+    chain and cannot be separated.
+
+These capabilities are coupled through the geometry's rotation chain.  A
+library that can compute ``forward()`` and ``inverse()`` necessarily has
+the geometry knowledge to also compute ``calculate_UB()``.  A library
+that lacks this knowledge cannot serve as a complete |hklpy2| solver
+backend.
 
 Engineering Units System
 ^^^^^^^^^^^^^^^^^^^^^^^^
