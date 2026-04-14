@@ -866,9 +866,7 @@ def test_extras_setter(
                 "samples": {},
                 "constraints": {"tth": {"class": "LimitsConstraint", "label": 0}},
             },
-            pytest.raises(
-                TypeError, match=re.escape("argument of type 'int' is not iterable")
-            ),
+            pytest.raises(TypeError, match=re.escape("argument of type 'int' is not")),
             id="real_axes-not-iterable",
         ),
         pytest.param(  # 18

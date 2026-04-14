@@ -49,6 +49,14 @@ describe future plans.
       ``extra_axis_names`` are all driven by registered ``GeometryDescriptor``
       objects instead of hard-coded string dispatch. (:issue:`292`, :issue:`293`)
 
+    Fixes
+    -----
+
+    * Fix CI test failure on Python 3.14: ``TypeError`` message for ``in``
+      operator on non-iterable changed from ``"is not iterable"`` to
+      ``"is not a container or iterable"``.  Truncate match pattern to
+      accept both. (:issue:`304`)
+
     Documentation
     -------------
 
