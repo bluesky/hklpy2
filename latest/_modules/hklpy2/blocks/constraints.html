@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=8494300a"></script>
+    <script src="../../../_static/documentation_options.js?v=9785c6ff"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -425,6 +425,8 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConstraintsError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NUMERIC</span>
@@ -449,6 +451,8 @@
 <span class="sd">A cut point ``c`` maps a computed angle into the range from ``c`` up to</span>
 <span class="sd">(but not including) ``c + 360``.  The default of ``-180`` gives the</span>
 <span class="sd">familiar range of -180 up to (but not including) +180 degrees.</span>
+
+<span class="sd">.. versionadded:: 0.5.0</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 
@@ -576,6 +580,9 @@
 <span class="sd">        ~cut_point</span>
 <span class="sd">        ~limits</span>
 <span class="sd">        ~valid</span>
+
+<span class="sd">    .. versionchanged:: 0.5.0</span>
+<span class="sd">        Added ``cut_point`` parameter and :meth:`apply_cut` method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -633,7 +640,11 @@
 <div class="viewcode-block" id="LimitsConstraint.cut_point">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.cut_point">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cut_point</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Angle (degrees) at which the 360-degree wrap begins.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Angle (degrees) at which the 360-degree wrap begins.</span>
+
+<span class="sd">        .. versionadded:: 0.5.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cut_point</span></div>
 
 
@@ -670,6 +681,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">high_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_low_limit</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
+    <span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Cut-point angle branch-cut support.&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="LimitsConstraint.apply_cut">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.apply_cut">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">apply_cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
