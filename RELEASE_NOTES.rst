@@ -69,9 +69,7 @@ describe future plans.
     * Adopt the `Deprecated <https://pypi.org/project/Deprecated/>`_ package
       as a runtime dependency.  Apply ``@versionadded``, ``@versionchanged``,
       and ``@deprecated`` decorators throughout the codebase to document when
-      each public symbol was introduced or changed, and to mark
-      ``dev_i182.creator()`` as deprecated in favour of
-      :func:`hklpy2.diffract.creator`. (:issue:`111`)
+      each public symbol was introduced or changed. (:issue:`111`)
     * Migrate glossary from field-list format to Sphinx ``.. glossary::``
       directive, enabling ``:term:`` cross-references throughout the docs.
       (:issue:`305`)
@@ -87,11 +85,7 @@ describe future plans.
       hklpy2 constraints are post-computation filters distinct from SPEC/diffcalc
       cut points. (:issue:`275`)
 
-    Deprecations
-    ------------
 
-    * ``dev_i182.creator()`` is deprecated; use :func:`hklpy2.diffract.creator`
-      instead. (:issue:`111`)
 
 0.4.3
 #####
