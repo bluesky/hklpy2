@@ -57,16 +57,20 @@ Glossary
         pattern.  The pattern (*unit cell*) is characterized by its *lattice*.
 
     cut point
-        A per-axis scalar ``c`` (degrees) that maps a computed angle ``v``
-        to an equivalent angle in the range from ``c`` up to (but not
-        including) ``c + 360``.  Applied *before* :term:`constraint`
-        checking in the ``forward()`` pipeline.
+        The angle at which a motor's reported position "wraps around."
+        It sets the start of the 360-degree window used to express the
+        angle — the physics is unchanged, only how the number is written.
 
-        Controls the *representation* of an angle — which 360-degree window
-        it is expressed in — not whether a solution is accepted or rejected.
-        For example, a cut point of ``-180`` gives the range −180 up to
-        (but not including) +180 (the default), while ``0`` gives 0 up to
-        (but not including) 360.
+        Two common choices:
+
+        - ``cut_point = -180`` (default): angles reported in −180 up to
+          (but not including) +180.
+        - ``cut_point = 0``: angles reported in 0 up to (but not
+          including) 360.
+
+        Applied *before* :term:`constraint` checking in the ``forward()``
+        pipeline — controls *representation*, not whether a solution is
+        accepted or rejected.
 
         Equivalent to SPEC ``cuts`` and diffcalc ``setcut``.
 

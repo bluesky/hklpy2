@@ -38,10 +38,20 @@ Cut Points
 
 .. index:: cut point
 
-A **cut point** is a per-axis scalar ``c`` (in degrees) that maps a
-computed angle to an equivalent angle in the range from ``c`` up to (but
-not including) ``c + 360``.  This is called a *branch cut* — the angle
-representation "wraps" at ``c``.
+A **cut point** is the angle at which a motor's reported position "wraps
+around."  It sets the start of the 360-degree window used to express the
+angle.  The physics is unchanged — it is the same motor position either
+way — only how the number is written down changes.
+
+Two common choices:
+
+- ``cut_point = -180`` (default): angles are reported in the range
+  −180 up to (but not including) +180.
+- ``cut_point = 0``: angles are reported in the range 0 up to (but not
+  including) 360.
+
+Technically, a cut point ``c`` maps any computed angle to its equivalent
+in the range from ``c`` up to (but not including) ``c + 360``.
 
 .. rubric:: Cut point vs. constraint — the key distinction
 
@@ -80,6 +90,13 @@ representation "wraps" at ``c``.
 
 * **Both**: a motor in ``[0, 360)`` representation with physical travel
   of ``[0, 290]`` needs ``cut_point = 0`` *and* ``limits = (0, 290)``.
+
+In practice: if your motor can only travel from 0° to 290°, setting
+``cut_point = 0`` means all reported angles are positive numbers that
+are easy to compare against your travel limits.  With the default cut
+of −180, a position of 181° still reads as 181° — so in that case it
+makes no difference.  The cut point matters when the motor's usable
+range straddles the wrap boundary.
 
 .. rubric:: Pipeline order in ``forward()``
 
