@@ -29,27 +29,24 @@ The diagram below shows how the major components of |hklpy2| fit together,
 grouped by their role in the package.
 
 .. graphviz::
-    :caption: hklpy2 package architecture -- components grouped by layer (left to right).
+    :caption: hklpy2 package architecture -- components grouped by layer.
     :align: center
 
     digraph hklpy2_architecture {
-        graph [rankdir=LR, splines=ortho, nodesep=0.35, ranksep=0.7,
+        graph [rankdir=TB, splines=ortho, nodesep=0.5, ranksep=0.6,
                fontname="sans-serif", bgcolor="transparent", compound=true]
         node  [shape=box, style="rounded,filled", fontname="sans-serif",
                fontsize=10, margin="0.10,0.05"]
         edge  [fontname="sans-serif", fontsize=9]
 
-        subgraph cluster_bluesky_epics {
-            label="Bluesky / EPICS"
+        subgraph cluster_bluesky {
+            label="Bluesky\n(data acquisition)"
             style=dashed
             color="#888888"
             fontname="sans-serif"
             fontsize=10
-            rank=source
 
             bluesky  [label="bluesky plans\n(RE, bps.mv, ...)",
-                      fillcolor="#e0e0e0", color="#666666"]
-            epics    [label="EPICS / simulated\nmotor axes",
                       fillcolor="#e0e0e0", color="#666666"]
         }
 
@@ -61,13 +58,13 @@ grouped by their role in the package.
             fontname="sans-serif"
             fontsize=10
 
-            diffract   [label="DiffractometerBase\n(ophyd PseudoPositioner)",
+            creator    [label="creator()\nfactory function",
                         fillcolor="#dce8f8", color="#3a6898"]
             usermod    [label="hklpy2.user\n(pa, wh, cahkl, setor, ...)",
                         fillcolor="#dce8f8", color="#3a6898"]
-            creator    [label="creator()\nfactory function",
+            diffract   [label="DiffractometerBase\n(ophyd PseudoPositioner)",
                         fillcolor="#dce8f8", color="#3a6898"]
-            wavelength [label="Wavelength / beam\n(ophyd Signal or subclass)",
+            wavelength [label="Wavelength / beam\n(ophyd.Device)",
                         fillcolor="#dce8f8", color="#3a6898"]
         }
 
@@ -79,7 +76,7 @@ grouped by their role in the package.
             fontname="sans-serif"
             fontsize=10
 
-            core [label="Core\noperations hub",
+            core [label="Core",
                   fillcolor="#fdf3dc", color="#a07820"]
 
             subgraph cluster_blocks {
@@ -90,17 +87,17 @@ grouped by their role in the package.
                 fontname="sans-serif"
                 fontsize=9
 
-                sample      [label="Sample + Lattice",
+                sample      [label="Sample\nLattice",
                              fillcolor="#fdf3dc", color="#a07820"]
-                reflection  [label="Reflection\n(UB calc)",
+                reflection  [label="Reflection",
                              fillcolor="#fdf3dc", color="#a07820"]
-                constraints [label="LimitsConstraint\n(cut_point + limits)",
+                constraints [label="Constraints\ncut_point",
                              fillcolor="#fdf3dc", color="#a07820"]
-                presets     [label="Presets\n(constant axes)",
+                presets     [label="Presets",
                              fillcolor="#fdf3dc", color="#a07820"]
-                zone        [label="OrthonormalZone",
+                zone        [label="Zone",
                              fillcolor="#fdf3dc", color="#a07820"]
-                configure   [label="Configuration\n(save / restore)",
+                configure   [label="Configuration",
                              fillcolor="#fdf3dc", color="#a07820"]
 
                 { rank=same; sample; reflection; constraints }
@@ -126,6 +123,17 @@ grouped by their role in the package.
                           fillcolor="#e8e0f8", color="#6a3a98"]
         }
 
+        subgraph cluster_epics {
+            label="EPICS\n(hardware controls)"
+            style=dashed
+            color="#888888"
+            fontname="sans-serif"
+            fontsize=10
+
+            epics    [label="EPICS\nmotor axes",
+                      fillcolor="#e0e0e0", color="#666666"]
+        }
+
         subgraph cluster_backend {
             label="Backends"
             style=dashed
@@ -137,27 +145,24 @@ grouped by their role in the package.
                       fillcolor="#e0e0e0", color="#666666"]
         }
 
-        // invisible chain enforces left-to-right cluster order:
-        // Bluesky/EPICS -> User-facing -> Core -> Solver -> Backends
-        bluesky -> diffract -> core -> solverbase -> backend [style=invis, weight=10]
+        bluesky    -> diffract
+        epics      -> diffract   [style=dashed, color="#888888"]
+        epics      -> wavelength [label="EPICS PVs\n(optional)",
+                                  style=dashed, color="#888888"]
+        creator    -> diffract   [xlabel="creates"]
+        usermod    -> diffract
+        diffract   -> wavelength [style=dashed, label=".beam"]
 
-        bluesky  -> diffract   [label="plans"]
-        epics    -> diffract   [label="motor axes"]
-        epics    -> wavelength [label="EPICS PVs\n(optional)",
-                                style=dashed, color="#888888"]
-        usermod  -> diffract   [label="convenience\nfunctions"]
-        creator  -> diffract   [label="creates"]
+        diffract   -> core       [label=".core"]
+        wavelength -> core       [xlabel="beam"]
+        core       -> sample
+        core       -> reflection
+        core       -> constraints
+        core       -> presets
+        core       -> zone
+        core       -> configure
 
-        diffract   -> core     [label=".core"]
-        wavelength -> core     [label="beam"]
-        core -> sample
-        core -> reflection
-        core -> constraints
-        core -> presets
-        core -> zone
-        core -> configure
-
-        core       -> solverbase   [label="delegates\nforward()/inverse()"]
+        core       -> solverbase   [label="calculations"]
         solverbase -> hklsolver    [style=dashed, label="subclass"]
         solverbase -> thttthsolver [style=dashed]
         solverbase -> noopsolver   [style=dashed]
