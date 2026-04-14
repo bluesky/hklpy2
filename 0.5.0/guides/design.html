@@ -1,0 +1,835 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Architecture &amp; Design Decisions &#8212; hklpy2 0.5</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+
+    <script src="../_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'guides/design';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.5.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Diffractometer How-To Guide" href="diffract.html" />
+    <link rel="prev" title="Diffractometer Configuration – Save and Restore" href="configuration_save_restore.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.5" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.5</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/hklpy2/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/hklpy2/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../concepts.html">Concepts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/__overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/constraints.html">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/creator.html">Diffractometer creator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/diffract.html">Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/lattice.html">Crystal Lattice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/ops.html">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/presets.html">Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/reflection.html">Orientation Reflection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/sample.html">Sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/user.html">User Friendliness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/wavelength.html">Wavelength</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../diffractometers.html">Diffractometers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/_api_demo.html">Demonstrate <strong>hklpy2</strong>’s API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/aps-isn-e6c.html">APS ISN Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/constraints.html">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-creator.html">Example 4-circle diffractometer using creator()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-custom-class.html">Example 4-circle diffractometer custom Python class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4ch.html"><strong>hkl_soleil</strong> E4CH</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv.html"><strong>hkl_soleil</strong> E4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv%2Bepics.html"><strong>hkl_soleil</strong> E4CV with EPICS motors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-psi.html"><strong>hkl_soleil</strong> E6C psi axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-test_calculations.html"><strong>hkl_soleil</strong> E6C test of calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-k4cv.html"><strong>hkl_soleil</strong> K4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-lattice_refine.html"><strong>hkl_soleil</strong> Refine lattice from 3 reflections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_calc.html"><strong>hkl_soleil</strong> UB matrix : calculate from 2 reflections.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_set.html"><strong>hkl_soleil</strong> UB matrix : Set directly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/nslsii-tardis.html"><strong>NSLS-II</strong> <strong>tardis</strong> diffractometer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../examples/tst_e4cv_fourc.html">Compare <strong>hkl_soleil</strong> <strong>E4CV</strong> with <strong>SPEC</strong> <strong>fourc</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/virtual-axis.html">Virtual diffractometer axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/zone-scan.html">Zone Scan</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../guides.html">Guides</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Architecture &amp; Design Decisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diffract.html">Diffractometer How-To Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_constraints.html">How to Use Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_creator_from_config.html">How to Create a Simulator from a Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_forward_solution.html">How to Choose the Default forward() Solution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_presets.html">How to Use Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_release.html">How to Make a Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto_write_solver.html">How to write a new Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spec_xref.html">SPEC commands in hklpy2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="z_checklist_v2.html">Feature Checklist for v2</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../guides.html" class="nav-link">Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Architecture &amp; Design Decisions</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="architecture-design-decisions">
+<span id="guide-design"></span><h1>Architecture &amp; Design Decisions<a class="headerlink" href="#architecture-design-decisions" title="Link to this heading">#</a></h1>
+<p>This page describes the architectural decisions behind <em>hklpy2</em> — why the
+package is structured the way it is, and where it is headed.</p>
+<section id="package-architecture">
+<h2>Package Architecture<a class="headerlink" href="#package-architecture" title="Link to this heading">#</a></h2>
+<p><img alt="Package architecture overview" src="../_images/hklpy2-overview.svg" /></p>
+<p>The package is organised into five sections, flowing left to right:</p>
+<ul class="simple">
+<li><p><strong>External (left)</strong> — Bluesky plans (RunEngine,
+<a class="reference external" href="https://blueskyproject.io/bluesky/main/generated/bluesky.plan_stubs.mv.html"><code class="docutils literal notranslate"><span class="pre">bps.mv</span></code></a>,
+…) drive the diffractometer; EPICS provides real motor axes and optional
+PV-based wavelength control.  These are external to <em>hklpy2</em> and shown
+with dashed borders.</p></li>
+<li><p><strong>User-facing</strong> — <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a> (an ophyd
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/reference/positioners.html#ophyd.pseudopos.PseudoPositioner" title="(in ophyd v1.11.1.dev14+ged7d4bb73)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PseudoPositioner</span></code></a>),
+<code class="xref py py-class docutils literal notranslate"><span class="pre">WavelengthBase</span></code>, the
+<code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code> factory, and the
+<a class="reference internal" href="../autoapi/hklpy2/user/index.html#module-hklpy2.user" title="hklpy2.user"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.user</span></code></a> convenience functions
+(<a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.pa" title="hklpy2.user.pa"><code class="xref py py-func docutils literal notranslate"><span class="pre">pa()</span></code></a>, <a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.wh" title="hklpy2.user.wh"><code class="xref py py-func docutils literal notranslate"><span class="pre">wh()</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.cahkl" title="hklpy2.user.cahkl"><code class="xref py py-func docutils literal notranslate"><span class="pre">cahkl()</span></code></a>, <a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.setor" title="hklpy2.user.setor"><code class="xref py py-func docutils literal notranslate"><span class="pre">setor()</span></code></a>, …).</p></li>
+<li><p><strong>Core</strong> — <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> manages the seven block classes
+(<a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample" title="hklpy2.blocks.sample.Sample"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sample</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice" title="hklpy2.blocks.lattice.Lattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lattice</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection" title="hklpy2.blocks.reflection.Reflection"><code class="xref py py-class docutils literal notranslate"><span class="pre">Reflection</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a>,
+Presets,
+<a class="reference internal" href="../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone" title="hklpy2.blocks.zone.OrthonormalZone"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrthonormalZone</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/blocks/configure/index.html#hklpy2.blocks.configure.Configuration" title="hklpy2.blocks.configure.Configuration"><code class="xref py py-class docutils literal notranslate"><span class="pre">Configuration</span></code></a>)
+and acts as the single point of contact between the diffractometer and its
+solver.</p></li>
+<li><p><strong>Solvers</strong> — <a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> defines the
+adapter interface; built-in solvers
+(<a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver" title="hklpy2.backends.th_tth_q.ThTthSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThTthSolver</span></code></a>,
+<a class="reference internal" href="../autoapi/hklpy2/backends/no_op/index.html#hklpy2.backends.no_op.NoOpSolver" title="hklpy2.backends.no_op.NoOpSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoOpSolver</span></code></a>) and additional solvers
+registered via Python entry points all subclass it.</p></li>
+<li><p><strong>Backend libraries (right)</strong> — the third-party libraries that solvers
+delegate the heavy mathematics to (e.g. <a class="reference external" href="https://people.debian.org/~picca/hkl/hkl.html">Hkl/Soleil</a>).  Like the external
+section on the left, these are outside <em>hklpy2</em> and shown with dashed
+borders.</p></li>
+</ul>
+<p>See <a class="reference internal" href="../concepts/__overview.html#overview-architecture"><span class="std std-ref">Package Architecture</span></a> for detailed diagrams of each layer.</p>
+</section>
+<section id="design-goals">
+<h2>Design Goals<a class="headerlink" href="#design-goals" title="Link to this heading">#</a></h2>
+<section id="why-a-new-package">
+<h3>Why a new package?<a class="headerlink" href="#why-a-new-package" title="Link to this heading">#</a></h3>
+<p>Two specific user requests made it clear that incrementally patching <em>hklpy</em>
+v1 was not viable.</p>
+<p>The first was <strong>named reflections</strong>.  In v1, reflection storage was delegated
+entirely to the backend library (Hkl/Soleil).  Adding user-visible names to
+reflections would have required a deep refactor of every layer that touched
+the backend — a change so invasive it would have broken the existing API
+throughout.</p>
+<p>The second was <strong>wavelength handling</strong>.  A review of how v1 managed (and
+failed to manage) wavelength revealed that the tight coupling to Hkl/Soleil
+made it impossible to support replaceable solver backends without rebuilding
+the package from scratch.  Wavelength is a property of the beam, not of the
+solver, and v1 had no clean way to express that separation.</p>
+<p>Together these two issues confirmed that the goal of <em>replaceable solvers</em>
+— the central design requirement of v2 — could not be achieved by refactoring
+v1.  A new code base, with reflection management and wavelength control owned
+by Python rather than delegated to the backend, was the only path forward.</p>
+</section>
+<section id="what-changed">
+<h3>What changed<a class="headerlink" href="#what-changed" title="Link to this heading">#</a></h3>
+<p>The redesign from <em>hklpy</em> v1 to <em>hklpy2</em> v2 addressed these shortcomings:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>hklpy v1</p></th>
+<th class="head"><p>hklpy2 v2</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Depends on <strong><a class="reference external" href="https://people.debian.org/~picca/hkl/hkl.html">Hkl/Soleil</a></strong> (Linux x86-64 only)</p></td>
+<td><p>Hkl/Soleil is one optional backend solver</p></td>
+</tr>
+<tr class="row-odd"><td><p>All samples, lattices, reflections stored inside Hkl/Soleil</p></td>
+<td><p>Samples, lattices, reflections stored in Python</p></td>
+</tr>
+<tr class="row-even"><td><p>Multiple confusing layers mirroring Hkl/Soleil internals</p></td>
+<td><p>Two clear layers: Core and Solver</p></td>
+</tr>
+<tr class="row-odd"><td><p>Difficult to add geometries or swap backends</p></td>
+<td><p>Solvers are plugins, swappable at runtime</p></td>
+</tr>
+<tr class="row-even"><td><p>Difficult to use additional axes or parameters</p></td>
+<td><p>Extra axes and parameters are first-class</p></td>
+</tr>
+<tr class="row-odd"><td><p>No standard save/restore</p></td>
+<td><p>Configuration block handles save/restore</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="coordinate-systems">
+<h2>Coordinate Systems<a class="headerlink" href="#coordinate-systems" title="Link to this heading">#</a></h2>
+<p><em>hklpy2</em> works in two coordinate spaces simultaneously:</p>
+<p><strong>Real space</strong> — the physical rotation angles of the diffractometer motors
+(e.g. <code class="docutils literal notranslate"><span class="pre">omega</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>, <code class="docutils literal notranslate"><span class="pre">tth</span></code>).  These are the <em>real</em> axes.  Their
+names and order are defined by the diffractometer geometry provided by the
+solver.</p>
+<p><strong>Reciprocal space</strong> — the crystallographic Miller indices <span class="math notranslate nohighlight">\((h, k, l)\)</span>
+that identify planes in the crystal lattice.  These are the <em>pseudo</em> axes.
+While Miller indices are conventionally integers, the pseudo axes in
+<em>hklpy2</em> are floating-point values, allowing positions between Bragg peaks
+(e.g. for continuous scanning along a reciprocal-space trajectory, diffuse
+scattering, or incommensurate structures).
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a> converts between the two spaces
+via <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> (hkl → angles) and
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> (angles → hkl), delegating
+the mathematics to Core and then to the solver.</p>
+<section id="the-ub-matrix">
+<h3>The UB matrix<a class="headerlink" href="#the-ub-matrix" title="Link to this heading">#</a></h3>
+<p>The conversion between the two spaces requires knowing both the crystal
+geometry and its orientation on the diffractometer.  This is encoded in the
+<span class="math notranslate nohighlight">\(UB\)</span> orientation matrix, which is the product of two matrices:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(B\)</span> — encodes the crystal lattice geometry (lengths and angles of
+the unit cell).  It transforms the sample’s Miller indices <span class="math notranslate nohighlight">\((h, k, l)\)</span> into the diffractometer’s reference frame (technically, to an
+orthonormal Cartesian basis aligned with the crystal axes).</p></li>
+<li><p><span class="math notranslate nohighlight">\(U\)</span> — encodes how the crystal is physically mounted on the
+diffractometer sample holder.  It transforms from the diffractometer’s
+reference frame into the laboratory reference frame (technically, a
+rotation matrix from the crystal Cartesian frame to the reciprocal lab
+frame).</p></li>
+<li><p><span class="math notranslate nohighlight">\(UB\)</span> — the product of <span class="math notranslate nohighlight">\(U\)</span> and <span class="math notranslate nohighlight">\(B\)</span>; the single matrix
+used in all <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> and
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> calculations to convert
+between Miller indices and diffractometer angles.</p></li>
+</ul>
+<p><span class="math notranslate nohighlight">\(UB\)</span> is computed from two or more measured <em>orientation reflections</em> —
+positions where the diffractometer angles and the corresponding <span class="math notranslate nohighlight">\((h, k, l)\)</span> are both known.  See <a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.calc_UB" title="hklpy2.user.calc_UB"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_UB()</span></code></a> and
+<a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.calc_UB" title="hklpy2.ops.Core.calc_UB"><code class="xref py py-meth docutils literal notranslate"><span class="pre">calc_UB()</span></code></a>.</p>
+<p>See issue <a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/192">issue #192</a> for an open discussion on reconsidering coordinate
+system transformations.</p>
+</section>
+</section>
+<section id="solver-plugin-design">
+<h2>Solver Plugin Design<a class="headerlink" href="#solver-plugin-design" title="Link to this heading">#</a></h2>
+<p>A solver is a Python class that subclasses
+<a class="reference internal" href="../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> and is registered
+with the <code class="docutils literal notranslate"><span class="pre">&quot;hklpy2.solver&quot;</span></code> entry-point group in its package metadata.  This
+allows solvers to be installed independently and discovered at runtime without
+modifying <em>hklpy2</em> itself.</p>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="c1"># pyproject.toml of a solver package</span>
+<span class="k">[project.entry-points.</span><span class="s2">&quot;hklpy2.solver&quot;</span><span class="k">]</span>
+<span class="n">my_solver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;my_package.solver:MySolver&quot;</span>
+</pre></div>
+</div>
+<p>Built-in solvers shipped with <em>hklpy2</em>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Solver</p></th>
+<th class="head"><p>Backend</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver" title="hklpy2.backends.hkl_soleil.HklSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">HklSolver</span></code></a> (<code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code>)</p></td>
+<td><p><a class="reference external" href="https://people.debian.org/~picca/hkl/hkl.html">Hkl/Soleil</a></p></td>
+<td><p>Linux x86-64 only; many geometry types</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver" title="hklpy2.backends.th_tth_q.ThTthSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">ThTthSolver</span></code></a> (<code class="docutils literal notranslate"><span class="pre">th_tth</span></code>)</p></td>
+<td><p>pure Python</p></td>
+<td><p>Any OS; θ/2θ geometry with <em>Q</em> pseudo axis</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../autoapi/hklpy2/backends/no_op/index.html#hklpy2.backends.no_op.NoOpSolver" title="hklpy2.backends.no_op.NoOpSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoOpSolver</span></code></a> (<code class="docutils literal notranslate"><span class="pre">no_op</span></code>)</p></td>
+<td><p>none</p></td>
+<td><p>Testing only; no useful geometries</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>See <a class="reference internal" href="howto_write_solver.html#howto-solvers-write"><span class="std std-ref">How to write a new Solver</span></a> for how to write and register a new solver.</p>
+</section>
+<section id="future-plans">
+<h2>Future Plans<a class="headerlink" href="#future-plans" title="Link to this heading">#</a></h2>
+<p>The following design-level topics are under active consideration.
+Each links to the tracking issue for discussion and status.</p>
+<p><strong>Multiple solvers per diffractometer</strong> (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/187">issue #187</a>)
+: Allow a single <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a> instance to switch between solvers at
+runtime without reconstruction, enabling side-by-side comparison of
+backends.</p>
+<p><strong>Performance targets</strong> (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/221">issue #221</a>, <a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/223">issue #223</a>)
+: Minimum throughput of 2,000 <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>
+and <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> operations per second.</p>
+<p><strong>Coordinate system reconsideration</strong> (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/192">issue #192</a>)
+: Review whether the current <span class="math notranslate nohighlight">\(UB\)</span> convention and axis ordering are the
+best defaults for all supported geometries.</p>
+<p><strong>Analyzers and polarizers</strong> (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/222">issue #222</a>)
+: Support for additional optical elements as stand-alone ophyd objects that
+coordinate with the diffractometer.</p>
+<p><strong>Fly scanning</strong> (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/11">issue #11</a>)
+: Built-in reciprocal-space fly-scan plans integrated with the Bluesky
+RunEngine.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="configuration_save_restore.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Diffractometer Configuration – Save and Restore</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="diffract.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Diffractometer How-To Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-architecture">Package Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-goals">Design Goals</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-a-new-package">Why a new package?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-changed">What changed</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#coordinate-systems">Coordinate Systems</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-ub-matrix">The UB matrix</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solver-plugin-design">Solver Plugin Design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#future-plans">Future Plans</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/guides/design.md">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/guides/design.md.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2026, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+// hklpy2 -- User-facing detail
+digraph hklpy2_user {
+    graph [rankdir=LR, splines=ortho, nodesep=0.6, ranksep=1.0,
+           fontname="sans-serif", fontsize=12, bgcolor="transparent",
+           compound=true]
+    node  [shape=box, style="rounded,filled", fontname="sans-serif",
+           fontsize=12, margin="0.20,0.10"]
+    edge  [fontname="sans-serif", fontsize=11]
+
+    subgraph cluster_bluesky {
+        label="Bluesky\n(data acquisition)"
+        style=dashed
+        color="#888888"
+        fontname="sans-serif"
+        fontsize=12
+
+        bluesky [label="bluesky plans\n(RE, bps.mv, ...)",
+                 fillcolor="#e0e0e0", color="#666666"]
+    }
+
+    subgraph cluster_epics {
+        label="EPICS\n(hardware controls)"
+        style=dashed
+        color="#888888"
+        fontname="sans-serif"
+        fontsize=12
+
+        epics [label="EPICS",
+               fillcolor="#e0e0e0", color="#666666"]
+    }
+
+    subgraph cluster_user {
+        label="User-facing"
+        style=filled
+        fillcolor="#f0f4ff"
+        color="#3a6898"
+        fontname="sans-serif"
+        fontsize=12
+
+        creator    [label="creator()\nfactory function",
+                    fillcolor="#dce8f8", color="#3a6898"]
+        usermod    [label="hklpy2.user\n(pa, wh, cahkl, setor, ...)",
+                    fillcolor="#dce8f8", color="#3a6898"]
+        diffract   [label="DiffractometerBase\n(ophyd PseudoPositioner)",
+                    fillcolor="#dce8f8", color="#3a6898"]
+        wavelength [label="Wavelength / beam\n(ophyd.Device)",
+                    fillcolor="#dce8f8", color="#3a6898"]
+    }
+
+    subgraph cluster_core {
+        label="Core"
+        style=filled
+        fillcolor="#fffbe8"
+        color="#a07820"
+        fontname="sans-serif"
+        fontsize=12
+
+        core_box [label="Core\n(see Core diagram)",
+                  fillcolor="#fdf3dc", color="#a07820",
+                  style="rounded,filled,dashed"]
+    }
+
+    bluesky    -> diffract   [dir=both]
+    epics      -> diffract   [xlabel="motor PVs", style=dashed, color="#888888"]
+    epics      -> wavelength [xlabel="PVs", style=dashed, color="#888888"]
+    creator    -> diffract   [xlabel="creates"]
+    usermod    -> diffract
+    diffract   -> wavelength [xlabel=".beam"]
+    diffract   -> core_box   [xlabel=".core"]
+    wavelength -> core_box   [xlabel="beam"]
+}

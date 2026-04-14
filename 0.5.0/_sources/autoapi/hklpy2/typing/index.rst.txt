@@ -1,0 +1,146 @@
+typing
+======
+
+.. py:module:: hklpy2.typing
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.typing``
+
+   Package-level type aliases and typed dictionary structures for |hklpy2|.
+
+   Consolidates the type aliases previously defined in :mod:`hklpy2.misc` (see
+   :issue:`252`) alongside the ``TypedDict`` subclasses introduced in
+   :issue:`233`.  :mod:`hklpy2.misc` re-exports everything defined here for
+   backward compatibility.
+
+   .. rubric:: Simple type aliases
+
+   .. autosummary::
+
+       ~AnyAxesType
+       ~AxesArray
+       ~AxesDict
+       ~AxesList
+       ~AxesTuple
+       ~BlueskyPlanType
+       ~INPUT_VECTOR
+       ~KeyValueMap
+       ~Matrix3x3
+       ~NamedFloatDict
+       ~NUMERIC
+
+   .. rubric:: TypedDict structures
+
+   .. autosummary::
+
+       ~ConfigHeaderDict
+
+   Solver-internal typed structures (``ReflectionDict``, ``SampleDict``,
+   ``SolverMetadataDict``) live in :mod:`hklpy2.backends.typing`.
+   Solver-specific metadata extensions (e.g. ``HklSolverMetadataDict``) live
+   in the solver's own module (e.g. :mod:`hklpy2.backends.hkl_soleil`).
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: AnyAxesType
+
+   Any of these types are used to describe both pseudo and real axes.
+
+   =============   =========================   ====================
+   description     example                     type annotation
+   =============   =========================   ====================
+   dict            {"h": 0, "k": 1, "l": -1}   AxesDict
+   namedtuple      (h=0.0, k=1.0, l=-1.0)      AxesTuple
+   numpy array     numpy.array([0, 1, -1])     AxesArray
+   ordered list    [0, 1, -1]                  AxesList
+   ordered tuple   (0, 1, -1)                  AxesTuple
+   =============   =========================   ====================
+
+.. py:data:: AxesArray
+
+   Numpy array of axes values.
+
+.. py:data:: AxesDict
+
+   Dictionary of axes names and values.
+
+.. py:data:: AxesList
+
+   List of axes values.
+
+.. py:data:: AxesTuple
+
+   Tuple of axes values.
+
+.. py:data:: BlueskyPlanType
+
+   Type of a bluesky plan.
+
+.. py:class:: ConfigHeaderDict
+
+   .. container:: import-path
+
+      Import: ``hklpy2.typing.ConfigHeaderDict``
+
+
+   Bases: :py:obj:`TypedDict`
+
+
+   Typed structure for the configuration ``_header`` block.
+
+   Written by :meth:`~hklpy2.ops.Core._asdict` to record provenance
+   information alongside saved diffractometer configurations.
+
+   Keys
+   ----
+   datetime : str
+       ISO-8601 timestamp when the configuration was saved.
+   hklpy2_version : str
+       Version of |hklpy2| used to write the configuration.
+   python_class : str
+       ``__class__.__name__`` of the diffractometer.
+
+
+   .. py:attribute:: datetime
+      :type:  str
+
+
+   .. py:attribute:: hklpy2_version
+      :type:  str
+
+
+   .. py:attribute:: python_class
+      :type:  str
+
+
+.. py:data:: INPUT_VECTOR
+
+   Acceptable forms of vector input for zones, ...
+
+.. py:data:: KeyValueMap
+
+   Dictionary for configuration and other.
+
+.. py:data:: Matrix3x3
+
+   mutable orientation & rotation matrices.
+
+   :type: Python type annotation
+
+.. py:data:: NUMERIC
+
+   Either integer or real number.
+
+.. py:data:: NamedFloatDict
+
+   dictionary of named floats.
+
+   :type: Python type annotation
+
