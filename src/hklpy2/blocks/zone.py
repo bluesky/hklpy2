@@ -31,6 +31,7 @@ from typing import Optional
 from typing import Sequence
 
 import numpy as np
+from deprecated.sphinx import versionadded
 from bluesky import plan_stubs as bps
 from bluesky import preprocessors as bpp
 from bluesky.protocols import Readable
@@ -54,6 +55,7 @@ __all__ = """
 """.split()
 
 
+@versionadded(version="0.3.0", reason="Crystallographic zone axis operations.")
 class OrthonormalZone:
     """
     An orthonormal (Cartesian) zone defined by a *zone axis*.
@@ -410,6 +412,10 @@ def zone_series(
     print(table)
 
 
+@versionadded(
+    version="0.4.2",
+    reason="Move diffractometer to a zone position (SPEC ``mz`` equivalent).",
+)
 @plan
 def move_zone(
     diffractometer: DiffractometerBase,
@@ -447,6 +453,10 @@ def move_zone(
     yield from bps.mv(*parms)
 
 
+@versionadded(
+    version="0.3.0",
+    reason="Scan a diffractometer through a zone (SPEC ``scanzone`` equivalent).",
+)
 @plan
 def scan_zone(
     detectors: Sequence[Readable],

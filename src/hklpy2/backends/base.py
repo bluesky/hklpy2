@@ -15,6 +15,8 @@ from typing import List
 from typing import Optional
 from typing import Union
 
+from deprecated.sphinx import versionadded
+
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
@@ -140,8 +142,11 @@ class SolverBase(ABC):
     .. note::
         Subclasses must define their own ``_geometry_registry = {}`` class
         variable to avoid sharing the base-class dict across siblings.
+
+    .. versionadded:: 0.5.0
     """
 
+    @versionadded(version="0.5.0", reason="Dynamic geometry registration support.")
     @classmethod
     def register_geometry(cls, descriptor: GeometryDescriptor) -> None:
         """
