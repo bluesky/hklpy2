@@ -50,6 +50,8 @@ Computation
 
    * - Guide
      - Description
+   * - :ref:`how_constraints`
+     - Set axis limits and cut points; write a custom constraint subclass.
    * - :ref:`how_forward_solution`
      - Choose which ``forward()`` solution the diffractometer uses by default.
    * - :ref:`how_presets`
