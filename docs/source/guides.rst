@@ -50,6 +50,9 @@ Computation
 
    * - Guide
      - Description
+   * - :ref:`how_calc_ub`
+     - Add orientation reflections, compute the UB matrix, set it manually,
+       inspect, refine, and reset it.
    * - :ref:`how_constraints`
      - Set axis limits and cut points; write a custom constraint subclass.
    * - :ref:`how_forward_solution`

@@ -41,6 +41,10 @@ describe future plans.
     * Add Diátaxis tutorial: guided first experience from creating a
       simulated E4CV diffractometer through UB matrix computation to
       reciprocal-space scanning. (:issue:`318`)
+    * Add how-to guide for computing and setting the UB matrix: adding
+      reflections, computing from two reflections, setting manually,
+      swapping, inspecting, refining lattice parameters, and verifying.
+      (:issue:`315`)
 
 0.5.0
 #####
