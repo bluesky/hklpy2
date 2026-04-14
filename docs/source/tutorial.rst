@@ -239,14 +239,18 @@ Step 8 — Move to a reciprocal-space position
 ---------------------------------------------
 
 Once the orientation is verified, moving to an accessible :math:`(h, k,
-l)` position is straightforward.  Not every position is reachable —
-physical motor limits, the Ewald sphere, the current constraints, and the
-wavelength all restrict which reflections the diffractometer can reach.
-The wavelength sets the radius of the Ewald sphere and therefore determines
-which reciprocal-lattice points are in range at all; changing the wavelength
-(or equivalently the energy) shifts that boundary.  If ``forward()``
-returns no solutions, the position is inaccessible under the current
-configuration:
+l)` position is straightforward:
+
+.. note::
+
+   Not every position is reachable.  Physical motor limits, the Ewald
+   sphere, the current constraints, and the wavelength all restrict which
+   reflections the diffractometer can reach.  The wavelength sets the
+   radius of the Ewald sphere and therefore determines which
+   reciprocal-lattice points are in range at all; changing the wavelength
+   (or equivalently the energy) shifts that boundary.  If ``forward()``
+   returns no solutions, the position is inaccessible under the current
+   configuration.
 
 .. code-block:: python
 
@@ -259,11 +263,9 @@ to :math:`(4, 0, 0)`.  Check the current position:
 
    wh()
 
-You will see the current :math:`(h, k, l)` pseudo-position and the
-real motor angles together.  Notice that the *pseudo* position reports
-the reciprocal-space coordinate and the *real* positions are the motor
-angles — these are the two coordinate spaces described in
-:ref:`guide.design`.
+You will see the current :math:`(h, k, l)` *pseudo* position alongside
+the *real* motor angles — the two coordinate spaces described in
+:ref:`guide.design` displayed together in one place.
 
 
 Step 9 — Scan in reciprocal space
