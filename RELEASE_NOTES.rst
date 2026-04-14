@@ -38,6 +38,9 @@ describe future plans.
     New Features
     ------------
 
+    * Add how-to guide for constraints: setting axis limits, cut points,
+      using both together, resetting to defaults, and writing a custom
+      ``ConstraintBase`` subclass. (:issue:`191`)
     * Add per-axis cut-point (angle branch-cut) to ``LimitsConstraint``:
       the ``cut_point`` attribute maps computed angles into the range from
       ``c`` up to (but not including) ``c + 360`` before limit checking in
