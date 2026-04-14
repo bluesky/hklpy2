@@ -72,7 +72,7 @@ Solvers provided with |hklpy2|:
         :attr:`~hklpy2.backends.base.SolverBase.modes`
       - create instance of :class:`~hklpy2.blocks.reflection.Reflection()`
       - define or compute a :math:`UB` matrix
-        (:meth:`~hklpy2.backends.base.SolverBase.calculateOrientation`)
+        (:func:`~hklpy2.user.calc_UB`, :meth:`~hklpy2.ops.Core.calc_UB`)
       - :meth:`~hklpy2.backends.base.SolverBase.forward`
         and :meth:`~hklpy2.backends.base.SolverBase.inverse`
       - determine the diffractometer :attr:`~hklpy2.diffract.DiffractometerBase.position`
