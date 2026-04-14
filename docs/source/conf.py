@@ -232,7 +232,10 @@ extlinks = {
 }
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
+intersphinx_mapping = {
+    "ophyd": ("https://blueskyproject.io/ophyd", None),
+    "python": ("https://docs.python.org/3", None),
+}
 inheritance_graph_attrs = {"rankdir": "LR"}
 inheritance_node_attrs = {"fontsize": 24}
 autosummary_generate = True
