@@ -35,7 +35,12 @@ describe future plans.
 
     Release expected by 2026-H2.
 
-    (no entries yet)
+    New Features
+    ------------
+
+    * Add Diátaxis tutorial: guided first experience from creating a
+      simulated E4CV diffractometer through UB matrix computation to
+      reciprocal-space scanning. (:issue:`318`)
 
 0.5.0
 #####
