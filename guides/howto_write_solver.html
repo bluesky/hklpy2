@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=d6c99174"></script>
+    <script src="../_static/documentation_options.js?v=792d4b61"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -641,7 +641,7 @@ with your solver and test it.  Here’s a suggested start:</p>
 <td><p>Returns list of any extra axes in the current <em>mode</em>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">forward(pseudos)</span></code></p></td>
-<td><p>Compute list of solutions(reals) from pseudos.</p></td>
+<td><p>Compute list of solutions(reals) from pseudos.  A single-element list is acceptable (see <a class="reference internal" href="#howto-solvers-write-forward-contract"><span class="std std-ref">forward() contract</span></a>).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">geometries</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&#64;classmethod</span></code> <a class="footnote-reference brackets" href="#classmethod-decorator" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a> : Returns list of all geometries support by this solver.</p></td>
@@ -667,6 +667,51 @@ with your solver and test it.  Here’s a suggested start:</p>
 </tbody>
 </table>
 </div>
+</section>
+<section id="forward-contract">
+<span id="howto-solvers-write-forward-contract"></span><h3><code class="docutils literal notranslate"><span class="pre">forward()</span></code> Contract<a class="headerlink" href="#forward-contract" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">forward(pseudos)</span></code> returns a <code class="docutils literal notranslate"><span class="pre">list[NamedFloatDict]</span></code> — all valid real-axis
+solutions the backend engine can find for the given pseudo-axis values,
+geometry, and mode.</p>
+<p>The number of solutions depends on the backend library’s capabilities.
+Some engines analytically enumerate all mathematically valid solutions;
+others return only one.  <strong>A single-element list is a valid return value.</strong>
+The <a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> layer iterates over whatever the solver
+returns, applies <a class="reference internal" href="../concepts/constraints.html#concepts-constraints"><span class="std std-ref">constraint filtering</span></a>, and
+passes the survivors to a
+<a class="reference internal" href="how_forward_solution.html#how-forward-solution"><span class="std std-ref">solution picker</span></a>.</p>
+<p>An empty list (or raising <a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.NoForwardSolutions" title="hklpy2.misc.NoForwardSolutions"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoForwardSolutions</span></code></a>) signals
+that no solution exists for the requested pseudo-axis values.</p>
+</section>
+<section id="backend-library-requirements">
+<span id="howto-solvers-write-backend-requirements"></span><h3>Backend Library Requirements<a class="headerlink" href="#backend-library-requirements" title="Link to this heading">#</a></h3>
+<p>A <strong>Solver</strong> is an adapter for a backend computation library.  The backend
+library must provide (or enable the adapter to implement) the following
+capabilities:</p>
+<dl class="simple">
+<dt><strong>Geometry-aware rotation chain.</strong></dt><dd><p>The library must know the physical axis directions and stacking order
+for each geometry it supports.  This is the irreducible foundation
+for all diffractometer calculations.</p>
+</dd>
+<dt><strong>Forward transform</strong> (pseudos to reals).</dt><dd><p>Given pseudo-axis values, lattice parameters, orientation matrix, and
+wavelength, compute real-axis angles.</p>
+</dd>
+<dt><strong>Inverse transform</strong> (reals to pseudos).</dt><dd><p>Given real-axis angles, lattice parameters, orientation matrix, and
+wavelength, compute pseudo-axis values.</p>
+</dd>
+<dt><strong>UB matrix calculation.</strong></dt><dd><p>Given two measured reflections (each with known pseudos, measured
+angles, and wavelength), compute the orientation matrix.  This
+requires the geometry’s rotation chain to convert measured angles
+into lab-frame scattering vectors.  <code class="docutils literal notranslate"><span class="pre">calculate_UB()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">forward()</span></code>, and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> all depend on the same rotation
+chain and cannot be separated.</p>
+</dd>
+</dl>
+<p>These capabilities are coupled through the geometry’s rotation chain.  A
+library that can compute <code class="docutils literal notranslate"><span class="pre">forward()</span></code> and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> necessarily has
+the geometry knowledge to also compute <code class="docutils literal notranslate"><span class="pre">calculate_UB()</span></code>.  A library
+that lacks this knowledge cannot serve as a complete <strong>hklpy2</strong> solver
+backend.</p>
 </section>
 <section id="engineering-units-system">
 <h3>Engineering Units System<a class="headerlink" href="#engineering-units-system" title="Link to this heading">#</a></h3>
@@ -823,6 +868,8 @@ to <em>Create a Python Project on GitHub</em>.</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-implementation-details">Key Implementation Details</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-methods-contract">Required Methods Contract</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#forward-contract"><code class="docutils literal notranslate"><span class="pre">forward()</span></code> Contract</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#backend-library-requirements">Backend Library Requirements</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#engineering-units-system">Engineering Units System</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-reference">Example Reference</a></li>
 </ul>

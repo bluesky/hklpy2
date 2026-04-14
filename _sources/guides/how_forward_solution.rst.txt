@@ -14,6 +14,12 @@ The :meth:`~hklpy2.diffract.DiffractometerBase.forward` method may return
 multiple valid real-axis positions for a given set of pseudo-axis coordinates.
 A *solution picker* function selects one solution from that list.
 
+The number of solutions depends on the backend |solver|'s capabilities.
+Some engines analytically enumerate all mathematically valid solutions;
+others return only one.  A single-element list is valid — the pickers
+and constraint filters handle it correctly.  See also
+:ref:`howto.solvers.write.forward_contract`.
+
 This guide explains the built-in pickers, how to switch between them, and how
 to write a custom one.
 

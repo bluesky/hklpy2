@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=d6c99174"></script>
+    <script src="../../../_static/documentation_options.js?v=792d4b61"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -702,7 +702,40 @@
 <div class="viewcode-block" id="SolverBase.forward">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">NamedFloatDict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute list of solutions(reals) from pseudos (hkl -&gt; [angles]).&quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute list of solutions(reals) from pseudos (hkl -&gt; [angles]).</span>
+
+<span class="sd">        Returns all valid real-axis solutions that the backend engine can</span>
+<span class="sd">        find for the given pseudo-axis values, geometry, and mode.  The</span>
+<span class="sd">        number of solutions depends on the backend library&#39;s capabilities:</span>
+<span class="sd">        some engines enumerate all mathematically valid solutions while</span>
+<span class="sd">        others return only one.  A single-element list is a valid return</span>
+<span class="sd">        value.</span>
+
+<span class="sd">        The :class:`~hklpy2.ops.Core` layer iterates over the returned</span>
+<span class="sd">        list, applies constraint filtering, and passes the survivors to a</span>
+<span class="sd">        solution picker (see :func:`~hklpy2.misc.pick_first_solution`,</span>
+<span class="sd">        :func:`~hklpy2.misc.pick_closest_solution`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pseudos : NamedFloatDict</span>
+<span class="sd">            Pseudo-axis values keyed by name</span>
+<span class="sd">            (e.g. ``{&quot;h&quot;: 1.0, &quot;k&quot;: 0.0, &quot;l&quot;: 0.0}``).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[NamedFloatDict]</span>
+<span class="sd">            Each element is a dictionary of real-axis values keyed by name</span>
+<span class="sd">            (e.g. ``{&quot;omega&quot;: 10.0, &quot;chi&quot;: 0.0, &quot;phi&quot;: 0.0, &quot;tth&quot;: 20.0}``).</span>
+<span class="sd">            An empty list signals no solutions; a single-element list is</span>
+<span class="sd">            acceptable.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NoForwardSolutions</span>
+<span class="sd">            If the backend cannot find any solution.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
         <span class="c1"># based on geometry and mode</span>
         <span class="c1"># return [{}]</span>

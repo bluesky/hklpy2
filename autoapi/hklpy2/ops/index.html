@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=d6c99174"></script>
+    <script src="../../../_static/documentation_options.js?v=792d4b61"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -707,6 +707,11 @@ solutions.</p>
 <dt class="sig sig-object py" id="hklpy2.ops.Core.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pseudos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.typing.AnyAxesType" title="hklpy2.typing.AnyAxesType"><span class="pre">AnyAxesType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/ops.html#Core.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.ops.Core.forward" title="Link to this definition">#</a></dt>
 <dd><p>Compute [{names:reals}] from {names: pseudos} (hkl -&gt; angles).</p>
+<p>Delegates to <a class="reference internal" href="../backends/base/index.html#hklpy2.backends.base.SolverBase.forward" title="hklpy2.backends.base.SolverBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SolverBase.forward()</span></code></a>
+which returns all solutions the backend engine can find (one or
+more).  Each solution is then filtered against the active
+<a class="reference internal" href="#hklpy2.ops.Core.constraints" title="hklpy2.ops.Core.constraints"><code class="xref py py-attr docutils literal notranslate"><span class="pre">constraints</span></code></a>; only solutions that satisfy all constraints
+are included in the returned list.</p>
 </dd></dl>
 
 <dl class="py method">

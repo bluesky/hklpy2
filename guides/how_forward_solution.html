@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=d6c99174"></script>
+    <script src="../_static/documentation_options.js?v=792d4b61"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -488,6 +488,11 @@
 <p id="index-0">The <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> method may return
 multiple valid real-axis positions for a given set of pseudo-axis coordinates.
 A <em>solution picker</em> function selects one solution from that list.</p>
+<p>The number of solutions depends on the backend <strong>Solver</strong>’s capabilities.
+Some engines analytically enumerate all mathematically valid solutions;
+others return only one.  A single-element list is valid — the pickers
+and constraint filters handle it correctly.  See also
+<a class="reference internal" href="howto_write_solver.html#howto-solvers-write-forward-contract"><span class="std std-ref">forward() Contract</span></a>.</p>
 <p>This guide explains the built-in pickers, how to switch between them, and how
 to write a custom one.</p>
 <section id="built-in-solution-pickers">
