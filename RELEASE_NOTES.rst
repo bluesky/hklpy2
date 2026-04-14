@@ -30,70 +30,76 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    0.5.0
+    0.5.1
     #####
 
-    Release expected by 2026-H1.
+    Release expected by 2026-H2.
 
-    New Features
-    ------------
+    (no entries yet)
 
-    * Add how-to guide for constraints: setting axis limits, cut points,
-      using both together, resetting to defaults, and writing a custom
-      ``ConstraintBase`` subclass. (:issue:`191`)
-    * Add per-axis cut-point (angle branch-cut) to ``LimitsConstraint``:
-      the ``cut_point`` attribute maps computed angles into the range from
-      ``c`` up to (but not including) ``c + 360`` before limit checking in
-      ``Core.forward()``.  Default is ``-180`` (range −180 up to +180),
-      matching SPEC ``cuts`` and diffcalc ``setcut`` semantics.
-      (:issue:`296`)
-    * Add ``GeometryDescriptor`` dataclass to ``hklpy2.backends.typing``:
-      decouples geometry identity (axis names, modes, description) from the
-      solver backend that implements the mathematics. (:issue:`293`)
-    * Add ``SolverBase._geometry_registry`` and ``SolverBase.register_geometry()``
-      so solver subclasses can register geometries dynamically at runtime,
-      enabling user-defined and ad-hoc diffractometer geometries. (:issue:`292`)
-    * Refactor ``ThTthSolver`` to use the new registry: ``geometries()``,
-      ``pseudo_axis_names``, ``real_axis_names``, ``modes``, and
-      ``extra_axis_names`` are all driven by registered ``GeometryDescriptor``
-      objects instead of hard-coded string dispatch. (:issue:`292`, :issue:`293`)
+0.5.0
+#####
 
-    Fixes
-    -----
+Released 2026-04-14.
 
-    * Fix CI test failure on Python 3.14: ``TypeError`` message for ``in``
-      operator on non-iterable changed from ``"is not iterable"`` to
-      ``"is not a container or iterable"``.  Truncate match pattern to
-      accept both. (:issue:`304`)
+New Features
+------------
 
-    Maintenance
-    -----------
+* Add how-to guide for constraints: setting axis limits, cut points,
+  using both together, resetting to defaults, and writing a custom
+  ``ConstraintBase`` subclass. (:issue:`191`)
+* Add per-axis cut-point (angle branch-cut) to ``LimitsConstraint``:
+  the ``cut_point`` attribute maps computed angles into the range from
+  ``c`` up to (but not including) ``c + 360`` before limit checking in
+  ``Core.forward()``.  Default is ``-180`` (range −180 up to +180),
+  matching SPEC ``cuts`` and diffcalc ``setcut`` semantics.
+  (:issue:`296`)
+* Add ``GeometryDescriptor`` dataclass to ``hklpy2.backends.typing``:
+  decouples geometry identity (axis names, modes, description) from the
+  solver backend that implements the mathematics. (:issue:`293`)
+* Add ``SolverBase._geometry_registry`` and ``SolverBase.register_geometry()``
+  so solver subclasses can register geometries dynamically at runtime,
+  enabling user-defined and ad-hoc diffractometer geometries. (:issue:`292`)
+* Refactor ``ThTthSolver`` to use the new registry: ``geometries()``,
+  ``pseudo_axis_names``, ``real_axis_names``, ``modes``, and
+  ``extra_axis_names`` are all driven by registered ``GeometryDescriptor``
+  objects instead of hard-coded string dispatch. (:issue:`292`, :issue:`293`)
 
-    * Split the monolithic architecture ``.. graphviz::`` diagram in
-      ``__overview.rst`` into four pre-built SVG figures (overview, user,
-      core, solvers); DOT source files are committed alongside the SVGs in
-      ``docs/source/_static/``.  Removes the Graphviz dependency from the
-      Sphinx build. (:issue:`311`)
-    * Adopt the `Deprecated <https://pypi.org/project/Deprecated/>`_ package
-      as a runtime dependency.  Apply ``@versionadded``, ``@versionchanged``,
-      and ``@deprecated`` decorators throughout the codebase to document when
-      each public symbol was introduced or changed. (:issue:`111`)
-    * Migrate glossary from field-list format to Sphinx ``.. glossary::``
-      directive, enabling ``:term:`` cross-references throughout the docs.
-      (:issue:`305`)
-    * Clarify the ``forward()`` contract: a solver may return one or more
-      solutions in the list, and a single-element list is valid.  Document
-      backend library requirements for writing a solver. (:issue:`294`)
-    * Expand backend library requirements documentation: add reflection
-      management (required), optional capabilities (lattice refinement,
-      multi-solution, modes), and design rationale explaining why these
-      cannot be factored into ``SolverBase``. (:issue:`300`)
-    * Document ``ConstraintBase.valid()`` internals, the ``forward()`` call
-      sequence, and the ``LimitsConstraint`` label requirement; clarify that
-      hklpy2 constraints are post-computation filters distinct from SPEC/diffcalc
-      cut points. (:issue:`275`)
+Fixes
+-----
 
+* Fix CI test failure on Python 3.14: ``TypeError`` message for ``in``
+  operator on non-iterable changed from ``"is not iterable"`` to
+  ``"is not a container or iterable"``.  Truncate match pattern to
+  accept both. (:issue:`304`)
 
+Maintenance
+-----------
+
+* Add `Deprecated <https://pypi.org/project/Deprecated/>`_ as a new
+  **runtime dependency** (conda-forge: ``deprecated``).  Apply
+  ``@versionadded``, ``@versionchanged``, and ``@deprecated`` decorators
+  throughout the codebase to document when each public symbol was
+  introduced or changed. (:issue:`111`)
+* Clarify the ``forward()`` contract: a solver may return one or more
+  solutions in the list, and a single-element list is valid.  Document
+  backend library requirements for writing a solver. (:issue:`294`)
+* Document ``ConstraintBase.valid()`` internals, the ``forward()`` call
+  sequence, and the ``LimitsConstraint`` label requirement; clarify that
+  hklpy2 constraints are post-computation filters distinct from SPEC/diffcalc
+  cut points. (:issue:`275`)
+* Expand backend library requirements documentation: add reflection
+  management (required), optional capabilities (lattice refinement,
+  multi-solution, modes), and design rationale explaining why these
+  cannot be factored into ``SolverBase``. (:issue:`300`)
+* Migrate glossary from field-list format to Sphinx ``.. glossary::``
+  directive, enabling ``:term:`` cross-references throughout the docs.
+  (:issue:`305`)
+* Split the monolithic architecture ``.. graphviz::`` diagram in
+  ``__overview.rst`` into four pre-built SVG figures (overview, user,
+  core, solvers); DOT source files are committed alongside the SVGs in
+  ``docs/source/_static/``.  Removes the Graphviz dependency from the
+  Sphinx build. (:issue:`311`)
 
 0.4.3
 #####
