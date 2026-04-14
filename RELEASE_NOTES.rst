@@ -52,6 +52,9 @@ describe future plans.
     Documentation
     -------------
 
+    * Clarify the ``forward()`` contract: a solver may return one or more
+      solutions in the list, and a single-element list is valid.  Document
+      backend library requirements for writing a solver. (:issue:`294`)
     * Document ``ConstraintBase.valid()`` internals, the ``forward()`` call
       sequence, and the ``LimitsConstraint`` label requirement; clarify that
       hklpy2 constraints are post-computation filters distinct from SPEC/diffcalc

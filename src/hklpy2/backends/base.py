@@ -268,7 +268,40 @@ class SolverBase(ABC):
 
     @abstractmethod
     def forward(self, pseudos: NamedFloatDict) -> List[NamedFloatDict]:
-        """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
+        """
+        Compute list of solutions(reals) from pseudos (hkl -> [angles]).
+
+        Returns all valid real-axis solutions that the backend engine can
+        find for the given pseudo-axis values, geometry, and mode.  The
+        number of solutions depends on the backend library's capabilities:
+        some engines enumerate all mathematically valid solutions while
+        others return only one.  A single-element list is a valid return
+        value.
+
+        The :class:`~hklpy2.ops.Core` layer iterates over the returned
+        list, applies constraint filtering, and passes the survivors to a
+        solution picker (see :func:`~hklpy2.misc.pick_first_solution`,
+        :func:`~hklpy2.misc.pick_closest_solution`).
+
+        Parameters
+        ----------
+        pseudos : NamedFloatDict
+            Pseudo-axis values keyed by name
+            (e.g. ``{"h": 1.0, "k": 0.0, "l": 0.0}``).
+
+        Returns
+        -------
+        list[NamedFloatDict]
+            Each element is a dictionary of real-axis values keyed by name
+            (e.g. ``{"omega": 10.0, "chi": 0.0, "phi": 0.0, "tth": 20.0}``).
+            An empty list signals no solutions; a single-element list is
+            acceptable.
+
+        Raises
+        ------
+        NoForwardSolutions
+            If the backend cannot find any solution.
+        """
         # based on geometry and mode
         # return [{}]
 
