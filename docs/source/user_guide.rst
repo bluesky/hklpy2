@@ -9,6 +9,7 @@ User Guide
    :hidden:
 
    quickstart
+   tutorial
    concepts
    diffractometers
    examples
@@ -22,6 +23,7 @@ User Guide
 .. grid:: 2
 
     .. grid-item-card:: :material-outlined:`directions_run;3em` :ref:`user_guide.quickstart`
+    .. grid-item-card:: :material-outlined:`school;3em` :ref:`tutorial`
     .. grid-item-card:: :material-outlined:`architecture;3em` :ref:`concepts`
     .. grid-item-card:: :material-outlined:`format_list_bulleted;3em` :ref:`geometries`
     .. grid-item-card:: :material-outlined:`preview;3em` :ref:`examples`

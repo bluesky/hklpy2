@@ -12,6 +12,7 @@ PseudoPositioners in the `Bluesky Framework <https://blueskyproject.io>`_.
    :glob:
    :hidden:
 
+   tutorial
    user_guide
    release_notes
    API Reference <autoapi/hklpy2/index>
