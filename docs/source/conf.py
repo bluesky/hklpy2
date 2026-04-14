@@ -180,7 +180,6 @@ rst_prolog = """
 .. |hklpy.url| replace:: https://blueskyproject.io/hklpy
 .. |hklpy2| replace:: **hklpy2**
 .. |libhkl| replace:: **Hkl/Soleil**
-.. |ophyd| replace:: **ophyd**
 .. |solver| replace:: **Solver**
 .. |spec| replace:: **SPEC**
 """

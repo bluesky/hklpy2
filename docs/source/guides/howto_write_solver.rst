@@ -207,7 +207,7 @@ role and return type:
     combinations that satisfy all constraints.
 
 :meth:`DiffractometerBase.forward(pseudos) <hklpy2.diffract.DiffractometerBase.forward>`
-    The |ophyd| ``PseudoPositioner`` interface, called by motion
+    The :class:`ophyd.PseudoPositioner` interface, called by motion
     commands during bluesky plans.  Calls ``Core.forward()``, then
     applies a :ref:`solution picker <how_forward_solution>` to select
     one solution for motor motion.  Returns a single ``NamedTuple``.
