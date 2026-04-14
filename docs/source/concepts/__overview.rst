@@ -37,7 +37,7 @@ grouped by their role in the package.
                fontname="sans-serif", bgcolor="transparent", compound=true]
         node  [shape=box, style="rounded,filled", fontname="sans-serif",
                fontsize=10, margin="0.10,0.05"]
-        edge  [fontname="sans-serif", fontsize=9]
+        edge  [fontname="sans-serif", fontsize=9, dir=none]
 
         subgraph cluster_bluesky {
             label="Bluesky\n(data acquisition)"
