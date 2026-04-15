@@ -3,11 +3,13 @@
 import re
 from contextlib import nullcontext as does_not_raise
 from pathlib import Path
+from unittest.mock import patch
 
 import bluesky
 import pytest
 from ophyd.sim import noisy_det
 
+from ..diffract import creator
 from ..misc import creator_from_config
 from ..misc import validate_not_parallel
 from ..plans import _find_psi_axis
@@ -102,6 +104,40 @@ def test_find_psi_mode(parms, context):
             assert result == parms["mode_override"]
 
 
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(mode_override=None),
+            pytest.raises(NotImplementedError, match=re.escape("No psi-capable mode")),
+            id="no psi mode on th_tth raises NotImplementedError",
+        ),
+    ],
+)
+def test_find_psi_mode_no_psi_geometry(parms, context):
+    with context:
+        # th_tth solver has no psi-capable mode
+        tth = creator(solver="th_tth", geometry="TH TTH Q")
+        _find_psi_mode(tth, **parms)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(mode_override=None),
+            pytest.raises(ValueError, match=re.escape("Multiple psi-capable modes")),
+            id="multiple psi modes on E6C raises ValueError",
+        ),
+    ],
+)
+def test_find_psi_mode_multiple_psi_modes(parms, context):
+    with context:
+        # E6C has both psi_constant_vertical and psi_constant_horizontal
+        e6c = creator(solver="hkl_soleil", geometry="E6C")
+        _find_psi_mode(e6c, **parms)
+
+
 # ---------------------------------------------------------------------------
 # _find_psi_axis
 # ---------------------------------------------------------------------------
@@ -136,6 +172,69 @@ def test_find_psi_axis(parms, context):
             assert "psi" in result.lower()
         elif parms["psi_axis_override"] != "no_such_axis":
             assert result == parms["psi_axis_override"]
+
+
+@pytest.mark.parametrize(
+    "fake_extras, context",
+    [
+        pytest.param(
+            [],
+            pytest.raises(ValueError, match=re.escape("No psi extra axis found")),
+            id="no psi axis in extras raises",
+        ),
+        pytest.param(
+            ["psi", "psi_vertical"],
+            pytest.raises(ValueError, match=re.escape("Multiple psi-like extra axes")),
+            id="multiple psi axes in extras raises",
+        ),
+    ],
+)
+def test_find_psi_axis_edge_cases(fake_extras, context):
+    with context:
+        fourc = sim4c()
+        fourc.core.mode = "psi_constant"
+        with patch.object(
+            type(fourc.core),
+            "solver_extra_axis_names",
+            new_callable=lambda: property(lambda self: fake_extras),
+        ):
+            _find_psi_axis(fourc, None)
+
+
+@pytest.mark.parametrize(
+    "fake_extras, context",
+    [
+        pytest.param(
+            ["psi"],  # only psi, no ref axes — ref_axes count will be 0
+            pytest.raises(ValueError, match=re.escape("Expected exactly 3 reference")),
+            id="wrong ref axis count raises in scan_psi",
+        ),
+    ],
+)
+def test_scan_psi_wrong_ref_axis_count(fake_extras, context):
+    with context:
+        fourc = sim4c()
+        RE = bluesky.RunEngine()
+        with patch.object(
+            type(fourc.core),
+            "solver_extra_axis_names",
+            new_callable=lambda: property(lambda self: fake_extras),
+        ):
+            RE(
+                scan_psi(
+                    [noisy_det, fourc],
+                    fourc,
+                    h=2,
+                    k=2,
+                    l=0,
+                    hkl2=(1, -1, 0),
+                    psi_start=0,
+                    psi_stop=90,
+                    num=4,
+                    mode="psi_constant",
+                    psi_axis="psi",
+                )
+            )
 
 
 # ---------------------------------------------------------------------------
