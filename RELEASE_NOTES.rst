@@ -38,6 +38,11 @@ describe future plans.
     New Features
     ------------
 
+    * Add how-to guide for azimuthal (ψ) scans: scan the azimuthal angle
+      at fixed *(h, k, l)* using the ``psi_constant`` mode of the
+      ``hkl_soleil`` solver via
+      :meth:`~hklpy2.diffract.DiffractometerBase.scan_extra`; includes
+      realistic motor constraints and pre-scan verification. (:issue:`188`)
     * Add how-to guide for zone scans: move to or scan along a
       crystallographic zone axis using :func:`~hklpy2.blocks.zone.move_zone`,
       :func:`~hklpy2.blocks.zone.scan_zone`,
