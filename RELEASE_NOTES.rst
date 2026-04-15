@@ -38,6 +38,11 @@ describe future plans.
     New Features
     ------------
 
+    * Add how-to guide for zone scans: move to or scan along a
+      crystallographic zone axis using :func:`~hklpy2.blocks.zone.move_zone`,
+      :func:`~hklpy2.blocks.zone.scan_zone`,
+      :func:`~hklpy2.blocks.zone.zone_series`, and
+      :class:`~hklpy2.blocks.zone.OrthonormalZone`. (:issue:`324`)
     * Add Diátaxis tutorial: guided first experience from creating a
       simulated E4CV diffractometer through UB matrix computation to
       reciprocal-space scanning. (:issue:`318`)
