@@ -157,7 +157,7 @@ def _generate_diffractometers_rst(app):
 def setup(app):
     """Connect autoapi events, register Jinja2 filters, and auto-generate geometry docs."""
     sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))  # docs/
-    app.connect("builder-inited", lambda app: _generate_diffractometers_rst(app))
+    app.connect("builder-inited", _generate_diffractometers_rst)
     app.connect("autoapi-skip-member", autoapi_skip_member)
     app.config.autoapi_prepare_jinja_env = _prepare_jinja_env
 
