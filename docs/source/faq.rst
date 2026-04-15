@@ -244,14 +244,17 @@ Can I perform azimuthal (ψ) scans?
 ------------------------------------
 
 Azimuthal scans — rotating the sample about the scattering vector
-:math:`\mathbf{Q}` at fixed :math:`hkl` — are not yet directly supported
-as a built-in plan (:issue:`188`).
+:math:`\mathbf{Q}` at fixed :math:`hkl` — are supported using
+:meth:`~hklpy2.diffract.DiffractometerBase.scan_extra` with the
+``psi_constant`` mode of the ``hkl_soleil`` solver.
 
-With ``hkl_soleil`` geometries that include a ``psi`` extra parameter
-(such as E6C), you can scan the ``psi`` axis using the standard
-:func:`bluesky.plans.scan` over ``diffractometer.psi``.  See
-:doc:`/examples/hkl_soleil-e6c-psi` for an example of the psi extra axis.
+.. seealso::
 
-For other geometries, a workaround is to compute the required motor angles
-externally (using ``forward()`` at each azimuthal step) and drive the motors
-to each position.
+   :doc:`guides/how_psi_scan` — step-by-step how-to guide for E4CV,
+   including realistic motor constraints and pre-scan verification.
+
+   :doc:`/examples/hkl_soleil-e6c-psi` — worked E6C demonstration,
+   including the inverse case (reading ψ from real motor positions).
+
+   :issue:`188` — tracking issue; a convenience wrapper ``scan_psi()``
+   may be added in a future release.
