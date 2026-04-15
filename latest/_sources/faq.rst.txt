@@ -34,6 +34,7 @@ Is |hklpy2| ophyd v1 only, or can it be used with ophyd async?
 ---------------------------------------------------------------
 
 |hklpy2| uses ophyd v1 (synchronous).  Ophyd async (v2) is not yet supported.
+See :issue:`334` for a feasibility analysis of migrating to ophyd-async.
 
 ----
 
