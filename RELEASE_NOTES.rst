@@ -59,6 +59,10 @@ describe future plans.
     Maintenance
     -----------
 
+    * Update ``quickstart.rst``: reframe as an installation verification
+      page and entry point; add prominent ``seealso`` links to the tutorial,
+      how-to guides, and geometries reference; add an Installation section.
+      (:issue:`327`)
     * Review ``faq.rst``: replace inline answers that duplicate dedicated
       pages with concise summaries and ``seealso`` cross-references to
       the tutorial, ``how_constraints``, ``how_presets``, and
