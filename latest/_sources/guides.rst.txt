@@ -68,6 +68,9 @@ Computation
    * - :doc:`guides/var_engines`
      - Switch between calculation engines (e.g. ``hkl``, ``q``) on the same
        geometry.
+   * - :ref:`how_zone_scan`
+     - Move to or scan along a crystallographic zone axis
+       (SPEC ``mz``/``scanzone`` equivalent).
 
 Configuration and solvers
 --------------------------
