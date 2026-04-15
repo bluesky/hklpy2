@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=c774b8e9"></script>
+    <script src="../_static/documentation_options.js?v=e20c016d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -515,25 +515,28 @@ accessible to the experiment.</p>
 diffractometer users at X-ray synchrotrons, <em>wavelength</em> is the general term
 used by diffraction science.</p>
 </div>
-<p>Here, a diffractometer (as a subclass of
-<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a>) is a <em>positioner</em> that expects the
-incident radiation to be <em>monochromatic</em>.  Knowledge of wavelength is essential
-for diffractometer operations.  Simulators are provided for the general case
-(<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.Wavelength" title="hklpy2.incident.Wavelength"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wavelength()</span></code></a>) for any type of monochromatic
-radiation) and for the case of X-rays
-(<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.WavelengthXray" title="hklpy2.incident.WavelengthXray"><code class="xref py py-class docutils literal notranslate"><span class="pre">WavelengthXray()</span></code></a>) where photon energy is computed
-from the wavelength.</p>
-<p>When the wavelength (and possibly the energy) is known from EPICS, <em>read-only</em>
-support is provided for the general case
-(<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.EpicsWavelengthRO" title="hklpy2.incident.EpicsWavelengthRO"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsWavelengthRO()</span></code></a>) and for a monochromator
-(<a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.EpicsMonochromatorRO" title="hklpy2.incident.EpicsMonochromatorRO"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsMonochromatorRO()</span></code></a>) which provides both
-wavelength and energy. Control of these EPICS PVs is beyond the scope of
-diffractometer controls. Refer to EPICS for control of the monochromator or
-wavelength PV.  Or, create a custom subclass of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">_WavelengthBase()</span></code>.</p>
+<p>A diffractometer (as a subclass of
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a>) expects the incident radiation to
+be <em>monochromatic</em>.  Wavelength is used directly in every
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> and
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> calculation — it sets the
+scale of the reciprocal lattice and determines which <span class="math notranslate nohighlight">\(hkl\)</span> reflections
+lie within the Ewald sphere and are therefore reachable.</p>
+<p><strong>hklpy2</strong> provides wavelength classes for several common situations:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.Wavelength" title="hklpy2.incident.Wavelength"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wavelength</span></code></a> — general monochromatic source
+(simulated, any radiation type).</p></li>
+<li><p><a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.WavelengthXray" title="hklpy2.incident.WavelengthXray"><code class="xref py py-class docutils literal notranslate"><span class="pre">WavelengthXray</span></code></a> — X-ray source with energy/wavelength
+conversion (default for most geometries).</p></li>
+<li><p><a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.EpicsWavelengthRO" title="hklpy2.incident.EpicsWavelengthRO"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsWavelengthRO</span></code></a> — read wavelength from an EPICS PV
+(read-only; control of the PV is outside the diffractometer).</p></li>
+<li><p><a class="reference internal" href="../autoapi/hklpy2/incident/index.html#hklpy2.incident.EpicsMonochromatorRO" title="hklpy2.incident.EpicsMonochromatorRO"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsMonochromatorRO</span></code></a> — read both wavelength and
+energy from a monochromator EPICS PV (read-only).</p></li>
+</ul>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>The <a class="reference internal" href="../autoapi/hklpy2/incident/index.html#module-hklpy2.incident" title="hklpy2.incident"><code class="xref py py-mod docutils literal notranslate"><span class="pre">incident</span></code></a> module.</p>
+<p><a class="reference internal" href="../autoapi/hklpy2/incident/index.html#module-hklpy2.incident" title="hklpy2.incident"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.incident</span></code></a> — full API reference for wavelength classes.</p>
+<p><a class="reference internal" href="../guides/diffract.html#guide-diffract"><span class="std std-ref">How to Work with a Diffractometer</span></a> — how to connect wavelength to a diffractometer object.</p>
 </div>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="id2" role="doc-footnote">
