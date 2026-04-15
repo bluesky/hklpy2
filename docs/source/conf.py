@@ -5,6 +5,7 @@
 
 # flake8: noqa
 
+import logging
 import os
 import pathlib
 import sys
@@ -141,8 +142,22 @@ def _prepare_jinja_env(jinja_env) -> None:
     jinja_env.filters["tilde_type"] = _tilde_type_str
 
 
+def _generate_diffractometers_rst(app):
+    """Regenerate diffractometers.rst if installed solver versions have changed."""
+    import make_geometries_doc
+
+    logger = logging.getLogger(__name__)
+    updated = make_geometries_doc.main()
+    if updated:
+        logger.info("diffractometers.rst was regenerated.")
+    else:
+        logger.info("diffractometers.rst is current; no regeneration needed.")
+
+
 def setup(app):
-    """Connect autoapi events and register Jinja2 filters."""
+    """Connect autoapi events, register Jinja2 filters, and auto-generate geometry docs."""
+    sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))  # docs/
+    app.connect("builder-inited", lambda app: _generate_diffractometers_rst(app))
     app.connect("autoapi-skip-member", autoapi_skip_member)
     app.config.autoapi_prepare_jinja_env = _prepare_jinja_env
 
