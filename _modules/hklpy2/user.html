@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=06a12ccc"></script>
+    <script src="../../_static/documentation_options.js?v=fe2eb571"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -429,6 +429,7 @@
 <span class="sd">    ~pa</span>
 <span class="sd">    ~remove_sample</span>
 <span class="sd">    ~scan_extra</span>
+<span class="sd">    ~scan_psi</span>
 <span class="sd">    ~set_diffractometer</span>
 <span class="sd">    ~set_lattice</span>
 <span class="sd">    ~set_wavelength</span>
@@ -475,6 +476,7 @@
 <span class="s2">    pa</span>
 <span class="s2">    remove_reflection</span>
 <span class="s2">    remove_sample</span>
+<span class="s2">    scan_psi</span>
 <span class="s2">    set_diffractometer</span>
 <span class="s2">    set_lattice</span>
 <span class="s2">    set_wavelength</span>
@@ -1041,6 +1043,95 @@
         <span class="n">pseudos</span><span class="o">=</span><span class="n">pseudos</span><span class="p">,</span>
         <span class="n">reals</span><span class="o">=</span><span class="n">reals</span><span class="p">,</span>
         <span class="n">extras</span><span class="o">=</span><span class="n">extras</span><span class="p">,</span>
+        <span class="n">fail_on_exception</span><span class="o">=</span><span class="n">fail_on_exception</span><span class="p">,</span>
+        <span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="scan_psi">
+<a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.scan_psi">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">scan_psi</span><span class="p">(</span>
+    <span class="n">detectors</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">h</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">l</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>  <span class="c1"># noqa: E741</span>
+    <span class="n">hkl2</span><span class="p">,</span>
+    <span class="n">psi_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">psi_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">psi_axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">fail_on_exception</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">md</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Scan the azimuthal angle (ψ) at a fixed *(h, k, l)* using the selected diffractometer.</span>
+
+<span class="sd">    Thin wrapper around :func:`~hklpy2.plans.scan_psi` that obtains</span>
+<span class="sd">    the diffractometer from :func:`get_diffractometer`.</span>
+
+<span class="sd">    Example</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">        :linenos:</span>
+
+<span class="sd">        &gt;&gt;&gt; import hklpy2</span>
+<span class="sd">        &gt;&gt;&gt; from hklpy2.user import *</span>
+<span class="sd">        &gt;&gt;&gt; fourc = hklpy2.creator(name=&quot;fourc&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; set_diffractometer(fourc)</span>
+<span class="sd">        &gt;&gt;&gt; # ... set up sample and UB matrix ...</span>
+<span class="sd">        &gt;&gt;&gt; RE(</span>
+<span class="sd">            scan_psi(</span>
+<span class="sd">                [noisy_det, fourc],</span>
+<span class="sd">                h=2, k=2, l=0,</span>
+<span class="sd">                hkl2=(1, -1, 0),</span>
+<span class="sd">                psi_start=0, psi_stop=180,</span>
+<span class="sd">                num=7,</span>
+<span class="sd">            )</span>
+<span class="sd">        )</span>
+
+<span class="sd">    Parameters</span>
+
+<span class="sd">    detectors:</span>
+<span class="sd">        List of readable objects.</span>
+<span class="sd">    h, k, l: float</span>
+<span class="sd">        Fixed reflection coordinates.</span>
+<span class="sd">    hkl2: sequence of float</span>
+<span class="sd">        Reference reflection *(h2, k2, l2)* defining psi = 0.</span>
+<span class="sd">        Must not be parallel to *(h, k, l)*.</span>
+<span class="sd">    psi_start: float</span>
+<span class="sd">        Starting azimuthal angle (degrees).</span>
+<span class="sd">    psi_stop: float</span>
+<span class="sd">        Ending azimuthal angle (degrees).</span>
+<span class="sd">    num: int</span>
+<span class="sd">        Number of points (inclusive of endpoints).</span>
+<span class="sd">    mode: str, optional</span>
+<span class="sd">        Psi mode name override. Auto-detected when *None*.</span>
+<span class="sd">    psi_axis: str, optional</span>
+<span class="sd">        Psi extra axis name override. Auto-detected when *None*.</span>
+<span class="sd">    fail_on_exception: bool</span>
+<span class="sd">        When *True*, raise on failed forward solutions. Default *False*.</span>
+<span class="sd">    md: dict, optional</span>
+<span class="sd">        User-supplied metadata.</span>
+
+<span class="sd">    .. seealso:: :func:`~hklpy2.plans.scan_psi`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.plans</span><span class="w"> </span><span class="kn">import</span> <span class="n">scan_psi</span> <span class="k">as</span> <span class="n">_scan_psi_impl</span>
+
+    <span class="k">yield from</span> <span class="n">_scan_psi_impl</span><span class="p">(</span>
+        <span class="n">detectors</span><span class="p">,</span>
+        <span class="n">get_diffractometer</span><span class="p">(),</span>
+        <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+        <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+        <span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">,</span>
+        <span class="n">hkl2</span><span class="o">=</span><span class="n">hkl2</span><span class="p">,</span>
+        <span class="n">psi_start</span><span class="o">=</span><span class="n">psi_start</span><span class="p">,</span>
+        <span class="n">psi_stop</span><span class="o">=</span><span class="n">psi_stop</span><span class="p">,</span>
+        <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+        <span class="n">psi_axis</span><span class="o">=</span><span class="n">psi_axis</span><span class="p">,</span>
         <span class="n">fail_on_exception</span><span class="o">=</span><span class="n">fail_on_exception</span><span class="p">,</span>
         <span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span>
     <span class="p">)</span></div>
