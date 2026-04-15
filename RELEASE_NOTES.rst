@@ -59,6 +59,12 @@ describe future plans.
     Maintenance
     -----------
 
+    * Automate ``diffractometers.rst`` generation: refactor
+      ``make_geometries_doc.py`` to use a solver-version sentinel
+      (``.. solvers: name=version ...``) for stale detection instead of a
+      timestamp; add a ``builder-inited`` hook in ``conf.py`` so the file is
+      regenerated automatically on every docs build when solver versions
+      change; add a "Solver Versions" table to the page. (:issue:`331`)
     * Restore explanatory character of ``concepts/lattice.rst``: add prose
       explaining the role of the lattice in UB matrix computation and crystal
       symmetry; add ``seealso`` links; convert bare ``:see:`` to proper RST.
