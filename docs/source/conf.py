@@ -144,14 +144,21 @@ def _prepare_jinja_env(jinja_env) -> None:
 
 def _generate_diffractometers_rst(app):
     """Regenerate diffractometers.rst if installed solver versions have changed."""
-    import make_geometries_doc
-
     logger = logging.getLogger(__name__)
-    updated = make_geometries_doc.main()
-    if updated:
-        logger.info("diffractometers.rst was regenerated.")
-    else:
-        logger.info("diffractometers.rst is current; no regeneration needed.")
+    try:
+        import make_geometries_doc
+
+        updated = make_geometries_doc.main()
+        if updated:
+            logger.info("diffractometers.rst was regenerated.")
+        else:
+            logger.info("diffractometers.rst is current; no regeneration needed.")
+    except Exception as exc:
+        logger.warning(
+            "diffractometers.rst auto-generation skipped: %s: %s",
+            type(exc).__name__,
+            exc,
+        )
 
 
 def setup(app):
