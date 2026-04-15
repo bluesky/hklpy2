@@ -30,39 +30,49 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    0.5.1
+    0.5.2
     #####
 
     Release expected by 2026-H2.
 
-    New Features
-    ------------
-
-    * Add Diátaxis tutorial for E4CV: create, orient, and scan. (:issue:`318`)
-    * Add how-to guide: azimuthal (ψ) scans via ``psi_constant`` mode. (:issue:`188`)
-    * Add how-to guide: UB matrix computation and management. (:issue:`315`)
-    * Add how-to guide: :mod:`hklpy2.user` interactive interface. (:issue:`316`)
-    * Add how-to guide: zone scans (``move_zone``, ``scan_zone``). (:issue:`324`)
-    * Add ``scan_psi()`` convenience plan for azimuthal (ψ) scans with solver-agnostic mode discovery. (:issue:`335`)
-
     Maintenance
     -----------
 
-    * Fix ``examples/hkl_soleil-e6c-psi.ipynb``: full axis constraints,
-      phi discontinuity, pre-scan verification, matplotlib plot. (:issue:`337`)
-    * Automate ``diffractometers.rst`` regeneration via solver-version
-      sentinel and Sphinx ``builder-inited`` hook. (:issue:`331`)
-    * Improve ``concepts/lattice.rst`` and ``concepts/wavelength.rst``:
-      explanatory prose, ``seealso`` links, crystal-systems cross-reference.
-      (:issue:`325`)
-    * Update ``quickstart.rst`` as installation-verification entry point.
-      (:issue:`327`)
-    * Update ``faq.rst``: replace duplicated answers with cross-references.
-      (:issue:`326`)
-    * Restructure ``guides/diffract.rst`` as "How to Work with a
-      Diffractometer". (:issue:`317`)
-    * Reframe ``examples/`` as demonstrations; reorganise ``guides/`` with
-      Developer / Contributor section. (:issue:`314`)
+    * Consolidate zone plans (``move_zone``, ``scan_zone``) into ``hklpy2/plans.py``. (:issue:`339`)
+
+0.5.1
+#####
+
+Released 2026-04-15.
+
+New Features
+------------
+
+* Add Diátaxis tutorial for E4CV: create, orient, and scan. (:issue:`318`)
+* Add how-to guide: azimuthal (ψ) scans via ``psi_constant`` mode. (:issue:`188`)
+* Add how-to guide: UB matrix computation and management. (:issue:`315`)
+* Add how-to guide: :mod:`hklpy2.user` interactive interface. (:issue:`316`)
+* Add how-to guide: zone scans (``move_zone``, ``scan_zone``). (:issue:`324`)
+* Add ``scan_psi()`` convenience plan for azimuthal (ψ) scans with solver-agnostic mode discovery. (:issue:`335`)
+
+Maintenance
+-----------
+
+* Fix ``examples/hkl_soleil-e6c-psi.ipynb``: full axis constraints,
+  phi discontinuity, pre-scan verification, matplotlib plot. (:issue:`337`)
+* Automate ``diffractometers.rst`` regeneration via solver-version
+  sentinel and Sphinx ``builder-inited`` hook. (:issue:`331`)
+* Improve ``concepts/lattice.rst`` and ``concepts/wavelength.rst``:
+  explanatory prose, ``seealso`` links, crystal-systems cross-reference.
+  (:issue:`325`)
+* Update ``quickstart.rst`` as installation-verification entry point.
+  (:issue:`327`)
+* Update ``faq.rst``: replace duplicated answers with cross-references.
+  (:issue:`326`)
+* Restructure ``guides/diffract.rst`` as "How to Work with a
+  Diffractometer". (:issue:`317`)
+* Reframe ``examples/`` as demonstrations; reorganise ``guides/`` with
+  Developer / Contributor section. (:issue:`314`)
 
 0.5.0
 #####
