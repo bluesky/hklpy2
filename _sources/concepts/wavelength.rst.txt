@@ -14,24 +14,29 @@ accessible to the experiment.
     diffractometer users at X-ray synchrotrons, *wavelength* is the general term
     used by diffraction science.
 
-Here, a diffractometer (as a subclass of
-:class:`~hklpy2.diffract.DiffractometerBase`) is a *positioner* that expects the
-incident radiation to be *monochromatic*.  Knowledge of wavelength is essential
-for diffractometer operations.  Simulators are provided for the general case
-(:class:`~hklpy2.incident.Wavelength()`) for any type of monochromatic
-radiation) and for the case of X-rays
-(:class:`~hklpy2.incident.WavelengthXray()`) where photon energy is computed
-from the wavelength.
+A diffractometer (as a subclass of
+:class:`~hklpy2.diffract.DiffractometerBase`) expects the incident radiation to
+be *monochromatic*.  Wavelength is used directly in every
+:meth:`~hklpy2.diffract.DiffractometerBase.forward` and
+:meth:`~hklpy2.diffract.DiffractometerBase.inverse` calculation — it sets the
+scale of the reciprocal lattice and determines which :math:`hkl` reflections
+lie within the Ewald sphere and are therefore reachable.
 
-When the wavelength (and possibly the energy) is known from EPICS, *read-only*
-support is provided for the general case
-(:class:`~hklpy2.incident.EpicsWavelengthRO()`) and for a monochromator
-(:class:`~hklpy2.incident.EpicsMonochromatorRO()`) which provides both
-wavelength and energy. Control of these EPICS PVs is beyond the scope of
-diffractometer controls. Refer to EPICS for control of the monochromator or
-wavelength PV.  Or, create a custom subclass of
-:class:`~hklpy2.incident._WavelengthBase()`.
+|hklpy2| provides wavelength classes for several common situations:
 
-.. seealso:: The :mod:`~hklpy2.incident` module.
+- :class:`~hklpy2.incident.Wavelength` — general monochromatic source
+  (simulated, any radiation type).
+- :class:`~hklpy2.incident.WavelengthXray` — X-ray source with energy/wavelength
+  conversion (default for most geometries).
+- :class:`~hklpy2.incident.EpicsWavelengthRO` — read wavelength from an EPICS PV
+  (read-only; control of the PV is outside the diffractometer).
+- :class:`~hklpy2.incident.EpicsMonochromatorRO` — read both wavelength and
+  energy from a monochromator EPICS PV (read-only).
+
+.. seealso::
+
+   :mod:`hklpy2.incident` — full API reference for wavelength classes.
+
+   :ref:`guide.diffract` — how to connect wavelength to a diffractometer object.
 
 .. [#] https://dictionary.iucr.org/Ewald_sphere

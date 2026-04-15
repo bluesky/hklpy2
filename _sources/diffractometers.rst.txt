@@ -1,5 +1,5 @@
 .. author: make_geometries_doc.py
-.. date: 2025-03-11 13:31:21.554744
+.. date: 2026-04-14 22:28:02.612592
 
 .. _geometries:
 
@@ -7,7 +7,6 @@
 Diffractometers
 ===============
 
-.. index:: diffractometers
 .. index:: geometries
 
 
@@ -16,6 +15,11 @@ and then, for each geometry, the calculation engines, modes of operation, pseudo
 axes required, and any additional parameters required by the
 :meth:`~hklpy2.backends.base.SolverBase.mode`.  The mode defines which axes will
 be computed, which will be held constant, and any relationships between axes.
+
+.. seealso::
+
+   :ref:`concepts.lattice` — crystal lattice parameters and the seven crystal
+   systems, including the :ref:`lattice.crystal-systems` reference table.
 
 .. _geometries.number_of_reals:
 

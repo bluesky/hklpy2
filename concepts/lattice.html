@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=c774b8e9"></script>
+    <script src="../_static/documentation_options.js?v=e20c016d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -506,14 +506,35 @@
                   
   <section id="crystal-lattice">
 <span id="concepts-lattice"></span><h1>Crystal Lattice<a class="headerlink" href="#crystal-lattice" title="Link to this heading">#</a></h1>
-<span class="target" id="index-0"></span><p>Record a sample’s crystalline <span class="target" id="index-1"></span>lattice parameters: <span class="math notranslate nohighlight">\(a, b, c,
-\alpha, \beta, \gamma\)</span>. Information for a crystal lattice is stored in an
-instance of <a class="reference internal" href="../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice" title="hklpy2.blocks.lattice.Lattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.blocks.lattice.Lattice()</span></code></a>.  This class will examine
-the lattice parameters and report the crystal system.  If the parameters do not
-match any of these crystal systems, an exception will be raised.</p>
-<p>A lattice is stored as part of the <a class="reference internal" href="sample.html#concepts-sample"><span class="std std-ref">sample</span></a>.</p>
-<p class="rubric">Examples of the Seven 3-D Crystal Systems (highest to lowest symmetry)</p>
-<div class="pst-scrollable-table-container"><table class="table">
+<p id="index-0">A crystal lattice describes the periodic arrangement of atoms in a crystal.
+Its geometry is characterised by six parameters: three unit-cell edge lengths
+<span class="math notranslate nohighlight">\(a, b, c\)</span> (in ångströms) and three inter-edge angles
+<span class="math notranslate nohighlight">\(\alpha, \beta, \gamma\)</span> (in degrees).</p>
+<p>The lattice matters to diffractometer operation for two reasons:</p>
+<ol class="arabic simple">
+<li><p><strong>UB matrix</strong> — the <span class="math notranslate nohighlight">\(B\)</span> matrix is computed directly from the lattice
+parameters and transforms Miller indices <span class="math notranslate nohighlight">\((h, k, l)\)</span> into Cartesian
+reciprocal-space coordinates.  Without accurate lattice parameters the
+<span class="math notranslate nohighlight">\(UB\)</span> matrix, and therefore every
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> and
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> calculation, will be
+wrong.</p></li>
+<li><p><strong>Crystal symmetry</strong> — the crystal system (cubic, hexagonal, …) constrains
+which lattice parameters are independent.  <strong>hklpy2</strong> determines the crystal
+system from the supplied parameters automatically and reports it; if the
+parameters are inconsistent with any known system an exception is raised.</p></li>
+</ol>
+<p>In <strong>hklpy2</strong>, lattice parameters are stored in an instance of
+<a class="reference internal" href="../autoapi/hklpy2/blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice" title="hklpy2.blocks.lattice.Lattice"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lattice</span></code></a>, which is part of the
+<a class="reference internal" href="sample.html#concepts-sample"><span class="std std-ref">sample</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="sample.html#concepts-sample"><span class="std std-ref">Sample</span></a> — the sample that owns the lattice.</p>
+<p><a class="reference internal" href="../guides/how_calc_ub.html#how-calc-ub"><span class="std std-ref">How to Compute and Set the UB Matrix</span></a> — computing the UB matrix from the lattice and orientation reflections.</p>
+<p><a class="reference internal" href="../glossary.html#glossary"><span class="std std-ref">Glossary</span></a> — definitions of lattice, UB matrix, and related terms.</p>
+</div>
+<p class="rubric" id="lattice-crystal-systems">The Seven 3-D Crystal Systems (highest to lowest symmetry)</p>
+<div class="pst-scrollable-table-container"><table class="table" id="index-1">
 <thead>
 <tr class="row-odd"><th class="head"><p>system</p></th>
 <th class="head"><p>command</p></th>
@@ -592,18 +613,9 @@ match any of these crystal systems, an exception will be raised.</p>
 </tbody>
 </table>
 </div>
-<p>Default values are <em>italicized</em>.  It is not necessary to supply the default parameters.</p>
-<dl class="field-list simple">
-<dt class="field-odd">see<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://dictionary.iucr.org/Crystal_system">https://dictionary.iucr.org/Crystal_system</a></p>
-</dd>
-<dt class="field-even">see<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://en.wikipedia.org/wiki/Crystal_system">https://en.wikipedia.org/wiki/Crystal_system</a></p>
-</dd>
-</dl>
-<p class="rubric">EXAMPLES</p>
-<p>It is not necessary to enter any of the default information for any lattice
-(such as the 90 degree angles for an orthorhombic crystals).</p>
+<p>Default values are <em>italicized</em>.  It is not necessary to supply the default
+parameters.</p>
+<p class="rubric">Examples</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span>
 <span class="linenos"> 2</span><span class="o">&gt;&gt;&gt;</span> <span class="n">Lattice</span><span class="p">(</span><span class="mf">5.</span><span class="p">)</span>
 <span class="linenos"> 3</span><span class="n">Lattice</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">90.0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">90.0</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">90.0</span><span class="p">)</span>
@@ -629,7 +641,9 @@ match any of these crystal systems, an exception will be raised.</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="../glossary.html#glossary"><span class="std std-ref">Glossary</span></a></p>
+<p><a class="reference internal" href="#lattice-crystal-systems"><span class="std std-ref">The Seven 3-D Crystal Systems (highest to lowest symmetry)</span></a> is also cross-referenced from <a class="reference internal" href="../diffractometers.html#geometries"><span class="std std-ref">Diffractometers</span></a>.</p>
+<p><a class="reference external" href="https://dictionary.iucr.org/Crystal_system">IUCr: Crystal system</a></p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Crystal_system">Wikipedia: Crystal system</a></p>
 </div>
 </section>
 
