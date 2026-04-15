@@ -1,5 +1,5 @@
 .. author: make_geometries_doc.py
-.. date: 2026-04-14 22:28:02.612592
+.. solvers: hkl_soleil=5.1.3 th_tth=0.4.3.dev4+g998861fb2
 
 .. _geometries:
 
@@ -20,6 +20,22 @@ be computed, which will be held constant, and any relationships between axes.
 
    :ref:`concepts.lattice` — crystal lattice parameters and the seven crystal
    systems, including the :ref:`lattice.crystal-systems` reference table.
+
+.. _geometries.solver-versions:
+
+Solver Versions
+===============
+
+.. index:: geometries; solver versions
+
+The geometry tables below were generated from these installed solver versions:
+
+========== =====================
+Solver     Version
+========== =====================
+hkl_soleil 5.1.3
+th_tth     0.4.3.dev4+g998861fb2
+========== =====================
 
 .. _geometries.number_of_reals:
 
