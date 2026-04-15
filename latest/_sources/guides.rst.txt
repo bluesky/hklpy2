@@ -57,11 +57,11 @@ Computation
        inspect, refine, and reset it.
    * - :ref:`how_constraints`
      - Set axis limits and cut points; write a custom constraint subclass.
-   * - :ref:`how_forward_solution`
-     - Choose which ``forward()`` solution the diffractometer uses by default.
    * - :ref:`how_presets`
      - Hold a real axis at a fixed value during ``forward()`` without moving
        any motor (SPEC ``freeze``/``unfreeze`` equivalent).
+   * - :ref:`how_forward_solution`
+     - Choose which ``forward()`` solution the diffractometer uses by default.
    * - :ref:`how_user_interface`
      - Use the :mod:`hklpy2.user` interactive convenience functions:
        ``pa``, ``wh``, ``cahkl``, ``setor``, ``set_wavelength``, and more.
@@ -71,6 +71,9 @@ Computation
    * - :ref:`how_zone_scan`
      - Move to or scan along a crystallographic zone axis
        (SPEC ``mz``/``scanzone`` equivalent).
+   * - :doc:`guides/how_psi_scan`
+     - Scan the azimuthal angle ψ at fixed *(h, k, l)* using the
+       ``psi_constant`` mode (``hkl_soleil`` solver feature).
 
 Configuration and solvers
 --------------------------

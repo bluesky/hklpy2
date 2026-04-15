@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=0645411c"></script>
+    <script src="_static/documentation_options.js?v=2bfa3188"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -427,6 +427,7 @@
 <li class="toctree-l2"><a class="reference internal" href="guides/how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_forward_solution.html">How to Choose the Default forward() Solution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_presets.html">How to Use Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/how_psi_scan.html">How to Perform an Azimuthal (ψ) Scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_release.html">How to Make a Release</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_user_interface.html">How to Use the hklpy2.user Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_zone_scan.html">How to Perform a Zone Scan</a></li>
@@ -746,15 +747,18 @@ presets.</p></td>
 <section id="can-i-perform-azimuthal-scans">
 <span id="faq-azimuthal"></span><h2>Can I perform azimuthal (ψ) scans?<a class="headerlink" href="#can-i-perform-azimuthal-scans" title="Link to this heading">#</a></h2>
 <p>Azimuthal scans — rotating the sample about the scattering vector
-<span class="math notranslate nohighlight">\(\mathbf{Q}\)</span> at fixed <span class="math notranslate nohighlight">\(hkl\)</span> — are not yet directly supported
-as a built-in plan (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/188">issue #188</a>).</p>
-<p>With <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code> geometries that include a <code class="docutils literal notranslate"><span class="pre">psi</span></code> extra parameter
-(such as E6C), you can scan the <code class="docutils literal notranslate"><span class="pre">psi</span></code> axis using the standard
-<code class="xref py py-func docutils literal notranslate"><span class="pre">bluesky.plans.scan()</span></code> over <code class="docutils literal notranslate"><span class="pre">diffractometer.psi</span></code>.  See
-<a class="reference internal" href="examples/hkl_soleil-e6c-psi.html"><span class="doc">hkl_soleil E6C psi axis</span></a> for an example of the psi extra axis.</p>
-<p>For other geometries, a workaround is to compute the required motor angles
-externally (using <code class="docutils literal notranslate"><span class="pre">forward()</span></code> at each azimuthal step) and drive the motors
-to each position.</p>
+<span class="math notranslate nohighlight">\(\mathbf{Q}\)</span> at fixed <span class="math notranslate nohighlight">\(hkl\)</span> — are supported using
+<a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.scan_extra" title="hklpy2.diffract.DiffractometerBase.scan_extra"><code class="xref py py-meth docutils literal notranslate"><span class="pre">scan_extra()</span></code></a> with the
+<code class="docutils literal notranslate"><span class="pre">psi_constant</span></code> mode of the <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code> solver.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="guides/how_psi_scan.html"><span class="doc">How to Perform an Azimuthal (ψ) Scan</span></a> — step-by-step how-to guide for E4CV,
+including realistic motor constraints and pre-scan verification.</p>
+<p><a class="reference internal" href="examples/hkl_soleil-e6c-psi.html"><span class="doc">hkl_soleil E6C psi axis</span></a> — worked E6C demonstration,
+including the inverse case (reading ψ from real motor positions).</p>
+<p><a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/188">issue #188</a> — tracking issue; a convenience wrapper <code class="docutils literal notranslate"><span class="pre">scan_psi()</span></code>
+may be added in a future release.</p>
+</div>
 </section>
 </section>
 
