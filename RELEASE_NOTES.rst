@@ -59,6 +59,10 @@ describe future plans.
     Maintenance
     -----------
 
+    * Review ``faq.rst``: replace inline answers that duplicate dedicated
+      pages with concise summaries and ``seealso`` cross-references to
+      the tutorial, ``how_constraints``, ``how_presets``, and
+      ``how_calc_ub``. (:issue:`326`)
     * Restructure ``guides/diffract.rst``: rename to "How to Work with a
       Diffractometer", trim attribute narrative to a summary table with
       cross-references, promote out-of-order axis sections to a top-level
