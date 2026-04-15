@@ -49,7 +49,11 @@ real axes default to soft (simulated) positioners::
     import hklpy2
     e4cv = hklpy2.creator(name="e4cv")
 
-See :doc:`/examples/example-4-circle-creator` for a worked example.
+.. seealso::
+
+   :ref:`tutorial` — full guided walkthrough using a simulated E4CV diffractometer.
+
+   :doc:`/examples/example-4-circle-creator` — worked demonstration.
 
 ----
 
@@ -117,8 +121,6 @@ The most common causes, in order of likelihood:
 
        e4cv.core.constraints["omega"].limits = -180, 180
 
-   See :ref:`examples.constraints` for worked examples.
-
 2. **The requested** :math:`hkl` **is outside the Ewald sphere** at the current
    wavelength.  Use a shorter wavelength (higher energy) or request a lower-angle
    reflection.
@@ -131,7 +133,11 @@ The most common causes, in order of likelihood:
    ``_real=["name1", "name2", ...]`` to :func:`~hklpy2.diffract.creator` in
    solver order.  See :ref:`diffract_axes.reals-out-of-order`.
 
-.. seealso:: :ref:`concepts.constraints`, :ref:`concepts.presets`
+.. seealso::
+
+   :ref:`how_constraints` — set limits, cut points, and write custom constraints.
+
+   :ref:`concepts.constraints`, :ref:`concepts.presets`
 
 ----
 
@@ -163,6 +169,12 @@ points in the ``forward()`` computation:
        ``chi``, ``tth``.
      - Restrict ``chi`` to ±90° to avoid sample collision.
 
+.. seealso::
+
+   :ref:`how_constraints` — set axis limits and cut points.
+
+   :ref:`how_presets` — freeze an axis at a fixed value during ``forward()``.
+
 ----
 
 .. _faq.ub-wrong:
@@ -182,6 +194,10 @@ Two common causes:
    matrix retains full floating-point precision.  A sign difference (e.g.
    ``+0.0101`` vs. ``-0.0101``) on a near-zero element is a display rounding
    artefact.  Retrieve the full matrix via ``diffractometer.sample.UB``.
+
+.. seealso::
+
+   :ref:`how_calc_ub` — add reflections, compute, inspect, and refine the UB matrix.
 
 ----
 
