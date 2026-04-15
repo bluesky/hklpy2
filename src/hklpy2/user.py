@@ -15,6 +15,7 @@ Simplified interface for |hklpy2| diffractometer users.
     ~pa
     ~remove_sample
     ~scan_extra
+    ~scan_psi
     ~set_diffractometer
     ~set_lattice
     ~set_wavelength
@@ -61,6 +62,7 @@ __all__ = """
     pa
     remove_reflection
     remove_sample
+    scan_psi
     set_diffractometer
     set_lattice
     set_wavelength
@@ -592,6 +594,92 @@ def scan_extra(
         pseudos=pseudos,
         reals=reals,
         extras=extras,
+        fail_on_exception=fail_on_exception,
+        md=md,
+    )
+
+
+def scan_psi(
+    detectors,
+    *,
+    h: float,
+    k: float,
+    l: float,  # noqa: E741
+    hkl2,
+    psi_start: float,
+    psi_stop: float,
+    num: int,
+    mode: Optional[str] = None,
+    psi_axis: Optional[str] = None,
+    fail_on_exception: bool = False,
+    md: Optional[dict] = None,
+):
+    """
+    Scan the azimuthal angle (ψ) at a fixed *(h, k, l)* using the selected diffractometer.
+
+    Thin wrapper around :func:`~hklpy2.plans.scan_psi` that obtains
+    the diffractometer from :func:`get_diffractometer`.
+
+    Example
+
+    .. code-block:: python
+        :linenos:
+
+        >>> import hklpy2
+        >>> from hklpy2.user import *
+        >>> fourc = hklpy2.creator(name="fourc")
+        >>> set_diffractometer(fourc)
+        >>> # ... set up sample and UB matrix ...
+        >>> RE(
+            scan_psi(
+                [noisy_det, fourc],
+                h=2, k=2, l=0,
+                hkl2=(1, -1, 0),
+                psi_start=0, psi_stop=180,
+                num=7,
+            )
+        )
+
+    Parameters
+
+    detectors:
+        List of readable objects.
+    h, k, l: float
+        Fixed reflection coordinates.
+    hkl2: sequence of float
+        Reference reflection *(h2, k2, l2)* defining psi = 0.
+        Must not be parallel to *(h, k, l)*.
+    psi_start: float
+        Starting azimuthal angle (degrees).
+    psi_stop: float
+        Ending azimuthal angle (degrees).
+    num: int
+        Number of points (inclusive of endpoints).
+    mode: str, optional
+        Psi mode name override. Auto-detected when *None*.
+    psi_axis: str, optional
+        Psi extra axis name override. Auto-detected when *None*.
+    fail_on_exception: bool
+        When *True*, raise on failed forward solutions. Default *False*.
+    md: dict, optional
+        User-supplied metadata.
+
+    .. seealso:: :func:`~hklpy2.plans.scan_psi`
+    """
+    from .plans import scan_psi as _scan_psi_impl
+
+    yield from _scan_psi_impl(
+        detectors,
+        get_diffractometer(),
+        h=h,
+        k=k,
+        l=l,
+        hkl2=hkl2,
+        psi_start=psi_start,
+        psi_stop=psi_stop,
+        num=num,
+        mode=mode,
+        psi_axis=psi_axis,
         fail_on_exception=fail_on_exception,
         md=md,
     )

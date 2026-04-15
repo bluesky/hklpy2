@@ -40,9 +40,10 @@ describe future plans.
 
     * Add Diátaxis tutorial for E4CV: create, orient, and scan. (:issue:`318`)
     * Add how-to guide: azimuthal (ψ) scans via ``psi_constant`` mode. (:issue:`188`)
-    * Add how-to guide: zone scans (``move_zone``, ``scan_zone``). (:issue:`324`)
     * Add how-to guide: UB matrix computation and management. (:issue:`315`)
     * Add how-to guide: :mod:`hklpy2.user` interactive interface. (:issue:`316`)
+    * Add how-to guide: zone scans (``move_zone``, ``scan_zone``). (:issue:`324`)
+    * Add ``scan_psi()`` convenience plan for azimuthal (ψ) scans with solver-agnostic mode discovery. (:issue:`335`)
 
     Maintenance
     -----------

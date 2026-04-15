@@ -216,7 +216,11 @@ The `Makefile` `pre` target also exports this variable automatically.
 - Use the appropriate subsection and keep subsections in the logical order
   defined at the top of ``RELEASE_NOTES.rst``: Notice, Breaking Changes, New
   Features, Enhancements, Fixes, Maintenance, Deprecations, New Contributors.
-- Sort entries alphabetically within each subsection.
+- Sort entries alphabetically within each subsection.  Sort by the
+  rendered text — strip RST markup (````backticks````, ``:role:`target```,
+  ``**bold**``, etc.) before comparing.  For example,
+  ``Add ``scan_psi()```  sorts as ``"Add scan_psi()"`` (after ``"Add s"``),
+  placing it after entries that begin with ``"Add h"``.
 
 ## Documentation: Architecture Diagram
 

@@ -35,6 +35,7 @@ Miscellaneous Support.
     ~solvers
     ~unique_name
     ~validate_and_canonical_unit
+    ~validate_not_parallel
 
 .. rubric: Symbols
 .. autosummary::
@@ -1287,6 +1288,37 @@ def unique_name(prefix: str = "", length: int = 7) -> str:
     Short, unique name, first 7 (at most) characters of a unique, random uuid.
     """
     return prefix + str(uuid.uuid4())[: max(1, min(length, 7))]
+
+
+def validate_not_parallel(
+    hkl: Sequence[float], hkl2: Sequence[float], tol: float = 1e-6
+) -> None:
+    """Raise ValueError if two vectors are parallel or anti-parallel.
+
+    Parameters
+    ----------
+    hkl : sequence of float
+        First vector.
+    hkl2 : sequence of float
+        Second vector.
+    tol : float
+        Tolerance on the cross-product magnitude below which the vectors are
+        considered parallel.
+
+    Raises
+    ------
+    ValueError
+        If the cross product of *hkl* and *hkl2* has magnitude less than *tol*.
+    """
+    v1 = np.asarray(hkl, dtype=float)
+    v2 = np.asarray(hkl2, dtype=float)
+    cross = np.cross(v1, v2)
+    if np.linalg.norm(cross) < tol:
+        raise ValueError(
+            f"hkl={tuple(hkl)} and hkl2={tuple(hkl2)} are parallel "
+            "(or anti-parallel); psi is undefined. "
+            "Choose a reference reflection that is not parallel to the scan reflection."
+        )
 
 
 def validate_and_canonical_unit(value: str, target_units: str) -> str:
