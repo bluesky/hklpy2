@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=06a12ccc"></script>
+    <script src="../_static/documentation_options.js?v=fe2eb571"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -813,6 +813,46 @@ Plan  [&#39;b57b4665&#39;] (scan num: 1)
 </div>
 </div>
 </section>
+<section id="alternative-use-scan-psi-convenience-plan">
+<h2>Alternative: use <code class="docutils literal notranslate"><span class="pre">scan_psi()</span></code> convenience plan<a class="headerlink" href="#alternative-use-scan-psi-convenience-plan" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="../autoapi/hklpy2/plans/index.html#hklpy2.plans.scan_psi" title="hklpy2.plans.scan_psi"><code class="xref py py-func docutils literal notranslate"><span class="pre">scan_psi()</span></code></a> convenience plan wraps the
+mode-selection and <code class="docutils literal notranslate"><span class="pre">scan_extra</span></code> ceremony into a single call.
+It auto-detects the psi-capable mode and the psi extra axis name
+from the diffractometer’s solver, and restores the prior mode on exit.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">mode=</span></code> and <code class="docutils literal notranslate"><span class="pre">psi_axis=</span></code> keyword arguments are available as
+escape hatches when auto-detection is ambiguous (e.g. on E6C where
+both <code class="docutils literal notranslate"><span class="pre">&quot;psi_constant&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;psi_constant_vertical&quot;</span></code> are available).</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">scan_psi</span>
+
+<span class="c1"># Restore bissector mode first to show scan_psi switches mode automatically.</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mode before scan_psi:&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">uid2</span><span class="p">,)</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span>
+    <span class="n">scan_psi</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">noisy_det</span><span class="p">,</span> <span class="n">fourc</span><span class="p">],</span>
+        <span class="n">fourc</span><span class="p">,</span>
+        <span class="n">h</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">hkl2</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">psi_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">psi_stop</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span>
+        <span class="n">num</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Run uid:&quot;</span><span class="p">,</span> <span class="n">uid2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mode after scan_psi:&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>  <span class="c1"># restored to bissector</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 <section id="inspect-the-scan-results">
 <h2>Inspect the scan results<a class="headerlink" href="#inspect-the-scan-results" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
@@ -1000,6 +1040,7 @@ inverse case), create a second diffractometer instance with
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#switch-to-psi-constant-mode">Switch to <code class="docutils literal notranslate"><span class="pre">psi_constant</span></code> mode</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-single-point-forward-calculations">Verify single-point forward calculations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-azimuthal-scan">Run the azimuthal scan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternative-use-scan-psi-convenience-plan">Alternative: use <code class="docutils literal notranslate"><span class="pre">scan_psi()</span></code> convenience plan</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inspect-the-scan-results">Inspect the scan results</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-motor-angles-vs">Plot motor angles vs ψ</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-a-reference-reflection-to-avoid-discontinuities">Choosing a reference reflection to avoid discontinuities</a></li>

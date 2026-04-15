@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=06a12ccc"></script>
+    <script src="../../_static/documentation_options.js?v=fe2eb571"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -449,6 +449,7 @@
 <span class="sd">    ~solvers</span>
 <span class="sd">    ~unique_name</span>
 <span class="sd">    ~validate_and_canonical_unit</span>
+<span class="sd">    ~validate_not_parallel</span>
 
 <span class="sd">.. rubric: Symbols</span>
 <span class="sd">.. autosummary::</span>
@@ -1875,6 +1876,37 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="mi">7</span><span class="p">))]</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_not_parallel</span><span class="p">(</span>
+    <span class="n">hkl</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">hkl2</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise ValueError if two vectors are parallel or anti-parallel.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    hkl : sequence of float</span>
+<span class="sd">        First vector.</span>
+<span class="sd">    hkl2 : sequence of float</span>
+<span class="sd">        Second vector.</span>
+<span class="sd">    tol : float</span>
+<span class="sd">        Tolerance on the cross-product magnitude below which the vectors are</span>
+<span class="sd">        considered parallel.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the cross product of *hkl* and *hkl2* has magnitude less than *tol*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">hkl</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">hkl2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">cross</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">cross</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;hkl=</span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">hkl</span><span class="p">)</span><span class="si">}</span><span class="s2"> and hkl2=</span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">hkl2</span><span class="p">)</span><span class="si">}</span><span class="s2"> are parallel &quot;</span>
+            <span class="s2">&quot;(or anti-parallel); psi is undefined. &quot;</span>
+            <span class="s2">&quot;Choose a reference reflection that is not parallel to the scan reflection.&quot;</span>
+        <span class="p">)</span>
 
 
 <div class="viewcode-block" id="validate_and_canonical_unit">
