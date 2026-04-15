@@ -54,6 +54,11 @@ describe future plans.
     Maintenance
     -----------
 
+    * Restructure ``guides/diffract.rst``: rename to "How to Work with a
+      Diffractometer", trim attribute narrative to a summary table with
+      cross-references, promote out-of-order axis sections to a top-level
+      "Advanced" section, add ``seealso`` links to the tutorial and concept
+      pages. (:issue:`317`)
     * Reframe ``examples/`` pages as worked demonstrations (not tutorials);
       add framing paragraph directing new users to the Tutorial.
       Separate user-facing and developer/contributor sections in

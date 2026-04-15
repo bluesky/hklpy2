@@ -24,8 +24,8 @@ Getting started
    * - Guide
      - Description
    * - :ref:`guide.diffract`
-     - Define a diffractometer class, connect it to a solver, and use it
-       with the bluesky RunEngine.
+     - Define a diffractometer (custom subclass or ``creator()``), use custom
+       axis names, handle axes out of order, and scan with the bluesky RunEngine.
    * - :ref:`guide.solvers`
      - List, select, and instantiate solvers; understand solver entry points.
 
