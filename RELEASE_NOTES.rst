@@ -59,6 +59,13 @@ describe future plans.
     Maintenance
     -----------
 
+    * Restore explanatory character of ``concepts/lattice.rst``: add prose
+      explaining the role of the lattice in UB matrix computation and crystal
+      symmetry; add ``seealso`` links; convert bare ``:see:`` to proper RST.
+      Add ``seealso`` in ``concepts/wavelength.rst`` tying wavelength to
+      ``forward()``/``inverse()``. Add cross-reference from
+      ``diffractometers.rst`` (via ``make_geometries_doc.py``) to the crystal
+      systems table in ``concepts/lattice.rst``. (:issue:`325`)
     * Update ``quickstart.rst``: reframe as an installation verification
       page and entry point; add prominent ``seealso`` links to the tutorial,
       how-to guides, and geometries reference; add an Installation section.
