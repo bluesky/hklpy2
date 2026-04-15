@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=2bfa3188"></script>
+    <script src="../_static/documentation_options.js?v=03b928a1"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -762,6 +762,32 @@ e6c_hkl.sample.U=[[0.034882054037, 0.999391435978, 0.0], [0.0, 0.0, 1.0], [0.999
 </div>
 </div>
 </section>
+<section id="set-axis-constraints">
+<h3>Set axis constraints<a class="headerlink" href="#set-axis-constraints" title="Link to this heading">#</a></h3>
+<p>Restrict axes to a single solution branch before any motion.
+Using the negative branch ($\chi\leq0$, $\delta\leq0$) ensures the
+solver stays consistent throughout the notebook — including the
+later azimuthal scan of $(002)$, where alternating between branches
+would cause a discontinuous jump in $\varphi$.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+<span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">0</span>
+<span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mf">0.1</span>  <span class="c1"># allow chi=-90 boundary</span>
+<span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">0</span>
+<span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;gamma&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+<span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;delta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;0.0 &lt;= mu &lt;= 0.0 [cut=-180.0]&#39;, &#39;-180.0 &lt;= omega &lt;= 0.0 [cut=-180.0]&#39;, &#39;-180.0 &lt;= chi &lt;= 0.1 [cut=-180.0]&#39;, &#39;-180.0 &lt;= phi &lt;= 0.0 [cut=-180.0]&#39;, &#39;0.0 &lt;= gamma &lt;= 0.0 [cut=-180.0]&#39;, &#39;-180.0 &lt;= delta &lt;= 0.0 [cut=-180.0]&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 <section id="move-to-the-111-orientation">
 <h3>Move to the $(111)$ orientation<a class="headerlink" href="#move-to-the-111-orientation" title="Link to this heading">#</a></h3>
 <p>Before moving the diffractometer, ensure you have selected the desired operating
@@ -775,8 +801,8 @@ e6c_hkl.sample.U=[[0.034882054037, 0.999391435978, 0.0], [0.0, 0.0, 1.0], [0.999
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(Hklpy2DiffractometerPseudoPos(h=1.0, k=-0.0, l=0),
- Hklpy2DiffractometerRealPos(mu=0, omega=7.0393, chi=-0.0, phi=1.999, gamma=0, delta=14.0785))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(Hklpy2DiffractometerPseudoPos(h=1.0, k=-0.0, l=0.0),
+ Hklpy2DiffractometerRealPos(mu=0.0, omega=-7.0393, chi=-0.0, phi=-178.001, gamma=0.0, delta=-14.0785))
 </pre></div>
 </div>
 </div>
@@ -823,7 +849,7 @@ e6c_hkl.sample.U=[[0.034882054037, 0.999391435978, 0.0], [0.0, 0.0, 1.0], [0.999
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>p_111=Hklpy2DiffractometerRealPos(mu=0, omega=66.3916, chi=99.7738, phi=-49.9973, gamma=0, delta=24.5098)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>p_111=Hklpy2DiffractometerRealPos(mu=0.0, omega=-66.3916, chi=-80.2262, phi=-49.9973, gamma=0.0, delta=-24.5098)
 </pre></div>
 </div>
 </div>
@@ -840,7 +866,7 @@ e6c_hkl.sample.U=[[0.034882054037, 0.999391435978, 0.0], [0.0, 0.0, 1.0], [0.999
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>e6c_hkl.position=Hklpy2DiffractometerPseudoPos(h=1.0, k=1.0, l=1.0)
-e6c_hkl.real_position=Hklpy2DiffractometerRealPos(mu=0, omega=66.3916, chi=99.7738, phi=-49.9973, gamma=0, delta=24.5098)
+e6c_hkl.real_position=Hklpy2DiffractometerRealPos(mu=0.0, omega=-66.3916, chi=-80.2262, phi=-49.9973, gamma=0.0, delta=-24.5098)
 e6c_hkl.core.extras={&#39;h2&#39;: 1, &#39;k2&#39;: 1, &#39;l2&#39;: 0, &#39;psi&#39;: 12}
 </pre></div>
 </div>
@@ -930,7 +956,7 @@ e6c_hkl.sample.U=[[0.034882054037, 0.999391435978, 0.0], [0.0, 0.0, 1.0], [0.999
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>e6c_psi.pseudo_axis_names=[&#39;psi&#39;]
 e6c_psi.core.solver_pseudo_axis_names=[&#39;psi&#39;]
 e6c_psi.position=Hklpy2DiffractometerPseudoPos(psi=12.0)
-e6c_psi.real_position=Hklpy2DiffractometerRealPos(mu=0, omega=66.3916, chi=99.7738, phi=-49.9973, gamma=0, delta=24.5098)
+e6c_psi.real_position=Hklpy2DiffractometerRealPos(mu=0.0, omega=-66.3916, chi=-80.2262, phi=-49.9973, gamma=0.0, delta=-24.5098)
 </pre></div>
 </div>
 </div>
@@ -949,12 +975,12 @@ e6c_psi.real_position=Hklpy2DiffractometerRealPos(mu=0, omega=66.3916, chi=99.77
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Hklpy2Diffractometer(prefix=&#39;&#39;, name=&#39;e6c_hkl&#39;, settle_time=0.0, timeout=None, egu=&#39;&#39;, limits=(0, 0), source=&#39;computed&#39;, read_attrs=[&#39;beam&#39;, &#39;beam.wavelength&#39;, &#39;beam.energy&#39;, &#39;h&#39;, &#39;h.readback&#39;, &#39;h.setpoint&#39;, &#39;k&#39;, &#39;k.readback&#39;, &#39;k.setpoint&#39;, &#39;l&#39;, &#39;l.readback&#39;, &#39;l.setpoint&#39;, &#39;mu&#39;, &#39;omega&#39;, &#39;chi&#39;, &#39;phi&#39;, &#39;gamma&#39;, &#39;delta&#39;], configuration_attrs=[&#39;beam&#39;, &#39;beam.source_type&#39;, &#39;beam.wavelength_units&#39;, &#39;beam.wavelength_deadband&#39;, &#39;beam.energy_units&#39;, &#39;h&#39;, &#39;k&#39;, &#39;l&#39;], concurrent=True)
 wavelength=1.54
 pseudos: h=1.0, k=1.0, l=1.0
-reals: mu=0, omega=66.3916, chi=99.7738, phi=-49.9973, gamma=0, delta=24.5098
+reals: mu=0, omega=-66.3916, chi=-80.2262, phi=-49.9973, gamma=0, delta=-24.5098
 extras: h2=1 k2=1 l2=0 psi=12
 Hklpy2Diffractometer(prefix=&#39;&#39;, name=&#39;e6c_psi&#39;, settle_time=0.0, timeout=None, egu=&#39;&#39;, limits=(0, 0), source=&#39;computed&#39;, read_attrs=[&#39;beam&#39;, &#39;beam.wavelength&#39;, &#39;beam.energy&#39;, &#39;psi&#39;, &#39;psi.readback&#39;, &#39;psi.setpoint&#39;, &#39;mu&#39;, &#39;omega&#39;, &#39;chi&#39;, &#39;phi&#39;, &#39;gamma&#39;, &#39;delta&#39;], configuration_attrs=[&#39;beam&#39;, &#39;beam.source_type&#39;, &#39;beam.wavelength_units&#39;, &#39;beam.wavelength_deadband&#39;, &#39;beam.energy_units&#39;, &#39;psi&#39;], concurrent=True)
 wavelength=1.0
 pseudos: psi=12.0
-reals: mu=0, omega=66.3916, chi=99.7738, phi=-49.9973, gamma=0, delta=24.5098
+reals: mu=0, omega=-66.3916, chi=-80.2262, phi=-49.9973, gamma=0, delta=-24.5098
 extras: h2=1 k2=1 l2=0
 </pre></div>
 </div>
@@ -997,7 +1023,7 @@ extras: h2=1 k2=1 l2=0
 </div>
 </div>
 </div>
-<p>Scan $\psi$ over a wide range in coarse steps.</p>
+<p>Scan $\psi$ over a wide range while holding $Q=(002)$ and $hkl_2=(120)$ fixed.</p>
 <hr class="docutils" />
 <p><strong>NOTE</strong></p>
 <blockquote>
@@ -1010,64 +1036,121 @@ an extra axis, while holding any pseudos or reals, and other extras at
 constant values.</p>
 </div></blockquote>
 <hr class="docutils" />
-<p>This example chooses $Q=(002)$ and $hkl_2=(120)$. (The reference $hkl_2$
-was chosen to be perpendicular to $Q$.)  Save the <code class="docutils literal notranslate"><span class="pre">uid</span></code> from the scan for later
-reference.</p>
-<p>To control the solution space, we adjust the low limit of both $\varphi$ and
-$\omega$ so their ranges are limited to $0..180^o$.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">e6c_hkl</span></code> diffractometer is added as a detector here so that all the
-positioner values will be available for plotting later.</p>
+<p>The reference $hkl_2=(120)$ is perpendicular to $Q=(002)$.</p>
+<p>Without constraints, the solver alternates between two equivalent solution
+branches ($\chi=\pm90^\circ$, $\delta=\pm28^\circ$) as $\psi$ varies,
+causing a discontinuous jump in $\varphi$ mid-scan.  Restrict <code class="docutils literal notranslate"><span class="pre">chi</span></code> and
+<code class="docutils literal notranslate"><span class="pre">delta</span></code> to pin to a single branch.  Here we use <code class="docutils literal notranslate"><span class="pre">chi</span></code> $\leq0$ and
+<code class="docutils literal notranslate"><span class="pre">delta</span></code> $\leq0$ (the negative branch), with <code class="docutils literal notranslate"><span class="pre">mu</span></code> and <code class="docutils literal notranslate"><span class="pre">gamma</span></code> fixed at 0.</p>
+<p>Verify coverage with <code class="docutils literal notranslate"><span class="pre">forward()</span></code> before running the scan.</p>
+<p>Verify that <code class="docutils literal notranslate"><span class="pre">forward()</span></code> returns valid, smooth solutions across the
+full $\psi$ range before committing to the scan.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;psi_constant_vertical&quot;</span>
-<span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">low_limit</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">low_limit</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;psi&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;omega&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;chi&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;phi&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;delta&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">48</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">psi</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
+    <span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="n">psi</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">e6c_hkl</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">psi</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">omega</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">chi</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">phi</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">delta</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">psi</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">  *** no solution: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   psi     omega       chi       phi     delta
+------------------------------------------------
+  10.0   -14.188   -90.000   -34.566   -28.375
+  20.0   -14.188   -90.000   -44.566   -28.375
+  30.0   -14.188   -90.000   -54.566   -28.375
+  40.0   -14.188   -90.000   -64.566   -28.375
+  50.0   -14.188   -90.000   -74.566   -28.375
+  60.0   -14.188   -90.000   -84.566   -28.375
+  70.0   -14.188   -90.000   -94.566   -28.375
+  80.0   -14.188   -90.000  -104.566   -28.375
+  90.0   -14.188   -90.000  -114.566   -28.375
+ 100.0   -14.188   -90.000  -124.566   -28.375
+ 110.0   -14.188   -90.000  -134.566   -28.375
+ 120.0   -14.188   -90.000  -144.566   -28.375
+ 130.0   -14.188   -90.000  -154.566   -28.375
+ 140.0   -14.188   -90.000  -164.566   -28.375
+ 150.0   -14.188   -90.000  -174.566   -28.375
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scan_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_collect</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;event&quot;</span><span class="p">:</span>
+        <span class="n">scan_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span>
+
+
 <span class="p">(</span><span class="n">uid</span><span class="p">,)</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span>
     <span class="n">e6c_hkl</span><span class="o">.</span><span class="n">scan_extra</span><span class="p">(</span>
         <span class="p">[</span><span class="n">noisy_det</span><span class="p">,</span> <span class="n">e6c_hkl</span><span class="p">],</span>
         <span class="s2">&quot;psi&quot;</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">150</span><span class="p">,</span>
-        <span class="n">num</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+        <span class="mi">10</span><span class="p">,</span>
+        <span class="mi">150</span><span class="p">,</span>  <span class="c1"># psi range: phi decreases smoothly on the chi&lt;0 branch</span>
+        <span class="n">num</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
         <span class="n">pseudos</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
         <span class="n">extras</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
     <span class="p">),</span>
+    <span class="n">_collect</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 1     Time: 2025-12-02 11:49:07
-Persistent Unique Scan ID: &#39;5cb8ea18-ba39-4d55-964d-4896b31a1a37&#39;
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 1     Time: 2026-04-15 01:08:09
+Persistent Unique Scan ID: &#39;d7741c2c-d861-4110-a964-a02c189083e5&#39;
 New stream: &#39;primary&#39;
 +-----------+------------+--------------------+------------+-------------------------+---------------------+------------+------------+------------+------------+---------------+-------------+-------------+---------------+---------------+
 |   seq_num |       time | e6c_hkl_extras_psi |  noisy_det | e6c_hkl_beam_wavelength | e6c_hkl_beam_energy |  e6c_hkl_h |  e6c_hkl_k |  e6c_hkl_l | e6c_hkl_mu | e6c_hkl_omega | e6c_hkl_chi | e6c_hkl_phi | e6c_hkl_gamma | e6c_hkl_delta |
 +-----------+------------+--------------------+------------+-------------------------+---------------------+------------+------------+------------+------------+---------------+-------------+-------------+---------------+---------------+
-|         1 | 11:49:07.8 |              0.000 |      0.941 |                   1.540 |               8.051 |     -0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     155.434 |             0 |       -28.375 |
-|         2 | 11:49:07.8 |             10.714 |      0.947 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     144.720 |             0 |       -28.375 |
-|         3 | 11:49:07.8 |             21.429 |      1.072 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |     134.005 |             0 |       -28.375 |
-|         4 | 11:49:07.8 |             32.143 |      1.091 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |     123.291 |             0 |       -28.375 |
-|         5 | 11:49:07.8 |             42.857 |      1.041 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |     112.577 |             0 |       -28.375 |
-|         6 | 11:49:07.8 |             53.571 |      1.032 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |     101.863 |             0 |       -28.375 |
-|         7 | 11:49:07.8 |             64.286 |      1.024 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |      91.148 |             0 |       -28.375 |
-|         8 | 11:49:07.9 |             75.000 |      0.955 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |      80.434 |             0 |       -28.375 |
-|         9 | 11:49:07.9 |             85.714 |      1.057 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |      69.720 |             0 |       -28.375 |
-|        10 | 11:49:07.9 |             96.429 |      0.935 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |      59.005 |             0 |       -28.375 |
-|        11 | 11:49:07.9 |            107.143 |      1.057 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      48.291 |             0 |       -28.375 |
-|        12 | 11:49:07.9 |            117.857 |      0.960 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |      37.577 |             0 |       -28.375 |
-|        13 | 11:49:07.9 |            128.571 |      0.907 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |          0 |       165.812 |      90.000 |      26.863 |             0 |       -28.375 |
-|        14 | 11:49:07.9 |            139.286 |      0.917 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |      16.148 |             0 |       -28.375 |
-|        15 | 11:49:08.0 |            150.000 |      0.924 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |          0 |       165.812 |      90.000 |       5.434 |             0 |       -28.375 |
-+-----------+------------+--------------------+------------+-------------------------+---------------------+------------+------------+------------+------------+---------------+-------------+-------------+---------------+---------------+
-Plan  [&#39;5cb8ea18&#39;] (scan num: 1)
+|         1 | 01:08:09.9 |             10.000 |      0.965 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |     -34.566 |         0.000 |       -28.375 |
+|         2 | 01:08:09.9 |             19.333 |      1.053 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |     -43.899 |         0.000 |       -28.375 |
+|         3 | 01:08:10.0 |             28.667 |      0.985 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |     -53.233 |         0.000 |       -28.375 |
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|         4 | 01:08:10.0 |             38.000 |      1.059 |                   1.540 |               8.051 |     -0.000 |      0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |     -62.566 |         0.000 |       -28.375 |
+|         5 | 01:08:10.0 |             47.333 |      0.997 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |     -71.899 |         0.000 |       -28.375 |
+|         6 | 01:08:10.0 |             56.667 |      1.087 |                   1.540 |               8.051 |      0.000 |     -0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |     -81.233 |         0.000 |       -28.375 |
+|         7 | 01:08:10.0 |             66.000 |      1.095 |                   1.540 |               8.051 |     -0.000 |      0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |     -90.566 |         0.000 |       -28.375 |
+|         8 | 01:08:10.0 |             75.333 |      1.039 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |     -99.899 |         0.000 |       -28.375 |
+|         9 | 01:08:10.1 |             84.667 |      1.024 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |    -109.233 |         0.000 |       -28.375 |
+|        10 | 01:08:10.1 |             94.000 |      0.972 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |    -118.566 |         0.000 |       -28.375 |
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|        11 | 01:08:10.1 |            103.333 |      0.918 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |    -127.899 |         0.000 |       -28.375 |
+|        12 | 01:08:10.1 |            112.667 |      0.977 |                   1.540 |               8.051 |     -0.000 |     -0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |    -137.233 |         0.000 |       -28.375 |
+|        13 | 01:08:10.1 |            122.000 |      0.959 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |    -146.566 |         0.000 |       -28.375 |
+|        14 | 01:08:10.1 |            131.333 |      0.930 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |    -155.899 |         0.000 |       -28.375 |
+|        15 | 01:08:10.1 |            140.667 |      0.925 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |    -165.233 |         0.000 |       -28.375 |
+|        16 | 01:08:10.2 |            150.000 |      0.961 |                   1.540 |               8.051 |      0.000 |      0.000 |      2.000 |      0.000 |       -14.188 |     -90.000 |    -174.566 |         0.000 |       -28.375 |
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+------------+--------------------+------------+-------------------------+---------------------+------------+------------+------------+------------+---------------+-------------+-------------+---------------+---------------+
+Plan  [&#39;d7741c2c&#39;] (scan num: 1)
 </pre></div>
 </div>
 </div>
 </div>
-<section id="plot-any-motions">
-<h3>Plot any motions<a class="headerlink" href="#plot-any-motions" title="Link to this heading">#</a></h3>
-<p>The only real-space axis to be moved by this scan is $\varphi$.  Plot $\varphi$ <em>vs.</em>
-$\psi$.</p>
+<section id="plot-motor-angles-vs-psi">
+<h3>Plot motor angles vs $\psi$<a class="headerlink" href="#plot-motor-angles-vs-psi" title="Link to this heading">#</a></h3>
+<p>Plot real-axis positions recorded during the scan as a function of $\psi$.
+<code class="docutils literal notranslate"><span class="pre">omega</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, and <code class="docutils literal notranslate"><span class="pre">delta</span></code> are constant on the chosen solution branch;
+<code class="docutils literal notranslate"><span class="pre">phi</span></code> carries the azimuthal rotation and decreases monotonically.</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>axis</p></th>
@@ -1087,28 +1170,33 @@ $\psi$.</p>
 <hr class="docutils" />
 <p><strong>NOTE</strong></p>
 <blockquote>
-<div><p><strong>ⓘ</strong>  <em>Extra</em> axes are named with the <code class="docutils literal notranslate"><span class="pre">_extras</span></code> label inserted in the
-name.</p>
+<div><p><strong>ⓘ</strong>  <em>Extra</em> axes are named with the <code class="docutils literal notranslate"><span class="pre">_extras</span></code> label inserted in
+the name.</p>
 </div></blockquote>
-<hr class="docutils" />
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">apstools.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">plotxy</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="n">run</span> <span class="o">=</span> <span class="n">client</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span>
+<span class="n">psi_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;e6c_hkl_extras_psi&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">scan_data</span><span class="p">])</span>
 
-<span class="c1"># Compose a title from current conditions.</span>
-<span class="n">pos</span> <span class="o">=</span> <span class="n">e6c_hkl</span><span class="o">.</span><span class="n">full_position</span><span class="p">(</span><span class="n">digits</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">pos</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">pos</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">pos</span><span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">)&quot;</span>
-<span class="n">hkl2</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">pos</span><span class="p">[</span><span class="s1">&#39;h2&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">pos</span><span class="p">[</span><span class="s1">&#39;k2&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> ,</span><span class="si">{</span><span class="n">pos</span><span class="p">[</span><span class="s1">&#39;l2&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">)&quot;</span>
-<span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;$Q=</span><span class="si">{</span><span class="n">Q</span><span class="si">}</span><span class="s2">$ and $hkl_2=</span><span class="si">{</span><span class="n">hkl2</span><span class="si">}</span><span class="s2">$&quot;</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">motor</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;e6c_hkl_omega&quot;</span><span class="p">,</span> <span class="s2">&quot;e6c_hkl_chi&quot;</span><span class="p">,</span> <span class="s2">&quot;e6c_hkl_phi&quot;</span><span class="p">,</span> <span class="s2">&quot;e6c_hkl_delta&quot;</span><span class="p">):</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">motor</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">&quot;e6c_hkl_&quot;</span><span class="p">)</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="n">motor</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">scan_data</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">psi_vals</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
 
-<span class="n">plotxy</span><span class="p">(</span><span class="n">run</span><span class="p">,</span> <span class="s2">&quot;e6c_hkl_extras_psi&quot;</span><span class="p">,</span> <span class="s2">&quot;e6c_hkl_phi&quot;</span><span class="p">,</span> <span class="n">stats</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\psi$ (degrees)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Motor angle (degrees)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;E6C real-axis positions vs $\psi$&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;$Q=(002)$, $hkl_2=(120)$&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c9fc744a0fad8ad2f6b7c8b7f08d6e16e5c48a630bcbb28b266fe41473de0ab9.png" src="../_images/c9fc744a0fad8ad2f6b7c8b7f08d6e16e5c48a630bcbb28b266fe41473de0ab9.png" />
+<img alt="../_images/23d848d17407fffc5d63cdd6db73c9d093de0bfb3e5425cfe3ad368bbfc62410.png" src="../_images/23d848d17407fffc5d63cdd6db73c9d093de0bfb3e5425cfe3ad368bbfc62410.png" />
 </div>
 </div>
 </section>
@@ -1169,13 +1257,14 @@ name.</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup-e6c-simulators">Setup E6C Simulators</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#define-and-orient-a-sample">Define and orient a sample</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#set-axis-constraints">Set axis constraints</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#move-to-the-111-orientation">Move to the $(111)$ orientation</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-hkl-2-and-psi">Set ${hkl}_2$ and $\psi$</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-psi-at-fixed-q-and-hkl-2">Compute $\psi$ at fixed $Q$ and $hkl_2$</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scan-psi-at-fixed-q-and-hkl-2">Scan $\psi$ at fixed $Q$ and $hkl_2$</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-any-motions">Plot any motions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-motor-angles-vs-psi">Plot motor angles vs $\psi$</a></li>
 </ul>
 </li>
 </ul>
