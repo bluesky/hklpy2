@@ -21,6 +21,11 @@ and then, for each geometry, the calculation engines, modes of operation, pseudo
 axes required, and any additional parameters required by the
 :meth:`~hklpy2.backends.base.SolverBase.mode`.  The mode defines which axes will
 be computed, which will be held constant, and any relationships between axes.
+
+.. seealso::
+
+   :ref:`concepts.lattice` — crystal lattice parameters and the seven crystal
+   systems, including the :ref:`lattice.crystal-systems` reference table.
 """
 
 
