@@ -194,8 +194,25 @@ The `Makefile` `pre` target also exports this variable automatically.
   feature, fix, enhancement, or maintenance change.
 - Add the entry under the current development version heading (the topmost
   unreleased section inside the ``.. comment`` block).
-- Entries should be terse — one or two lines — and reference the issue or PR
-  number with ``:issue:`N``` or ``:pr:`N```.
+- Entries must be **terse**: one line preferred, two lines maximum.
+  State *what* changed, not *how* or *why*. Omit implementation details,
+  lists of function names, and inline API cross-references unless the
+  function name is the entire point of the entry.
+- Always end with the issue or PR reference: ``:issue:`N``` or ``:pr:`N```.
+- Good examples::
+
+    * Add how-to guide: azimuthal (ψ) scans via ``psi_constant`` mode. (:issue:`188`)
+    * Fix ``examples/hkl_soleil-e6c-psi.ipynb``: full axis constraints,
+      phi discontinuity, pre-scan verification, matplotlib plot. (:issue:`337`)
+
+- Bad examples (too wordy)::
+
+    * Add how-to guide for azimuthal (ψ) scans: scan the azimuthal angle
+      at fixed *(h, k, l)* using the ``psi_constant`` mode of the
+      ``hkl_soleil`` solver via
+      :meth:`~hklpy2.diffract.DiffractometerBase.scan_extra`; includes
+      realistic motor constraints and pre-scan verification. (:issue:`188`)
+
 - Use the appropriate subsection and keep subsections in the logical order
   defined at the top of ``RELEASE_NOTES.rst``: Notice, Breaking Changes, New
   Features, Enhancements, Fixes, Maintenance, Deprecations, New Contributors.

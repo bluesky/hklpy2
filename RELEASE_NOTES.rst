@@ -38,70 +38,30 @@ describe future plans.
     New Features
     ------------
 
-    * Add how-to guide for azimuthal (ψ) scans: scan the azimuthal angle
-      at fixed *(h, k, l)* using the ``psi_constant`` mode of the
-      ``hkl_soleil`` solver via
-      :meth:`~hklpy2.diffract.DiffractometerBase.scan_extra`; includes
-      realistic motor constraints and pre-scan verification. (:issue:`188`)
-    * Add how-to guide for zone scans: move to or scan along a
-      crystallographic zone axis using :func:`~hklpy2.blocks.zone.move_zone`,
-      :func:`~hklpy2.blocks.zone.scan_zone`,
-      :func:`~hklpy2.blocks.zone.zone_series`, and
-      :class:`~hklpy2.blocks.zone.OrthonormalZone`. (:issue:`324`)
-    * Add Diátaxis tutorial: guided first experience from creating a
-      simulated E4CV diffractometer through UB matrix computation to
-      reciprocal-space scanning. (:issue:`318`)
-    * Add how-to guide for computing and setting the UB matrix: adding
-      reflections, computing from two reflections, setting manually,
-      swapping, inspecting, refining lattice parameters, and verifying.
-      (:issue:`315`)
-    * Add how-to guide for the :mod:`hklpy2.user` interactive interface:
-      ``pa``, ``wh``, ``cahkl``, ``cahkl_table``, ``setor``,
-      ``set_wavelength``, ``set_lattice``, ``list_samples``,
-      ``solver_summary``, ``scan_extra``, and quick-reference SPEC table.
-      (:issue:`316`)
+    * Add Diátaxis tutorial for E4CV: create, orient, and scan. (:issue:`318`)
+    * Add how-to guide: azimuthal (ψ) scans via ``psi_constant`` mode. (:issue:`188`)
+    * Add how-to guide: zone scans (``move_zone``, ``scan_zone``). (:issue:`324`)
+    * Add how-to guide: UB matrix computation and management. (:issue:`315`)
+    * Add how-to guide: :mod:`hklpy2.user` interactive interface. (:issue:`316`)
 
     Maintenance
     -----------
 
-    * Fix ``examples/hkl_soleil-e6c-psi.ipynb``: replace deprecated
-      ``.low_limit`` constraint syntax with ``.limits``; add full constraints
-      for all six E6C axes (including ``delta`` and ``chi``) to prevent a
-      ~166° phi discontinuity mid-scan; add pre-scan ``forward()`` verification
-      table; replace ``apstools.plotxy`` with a ``matplotlib`` plot of all motor
-      angles vs ψ; reduce scan range to ψ=0°–100° where phi is monotonic.
-      (:issue:`337`)
-    * Automate ``diffractometers.rst`` generation: refactor
-      ``make_geometries_doc.py`` to use a solver-version sentinel
-      (``.. solvers: name=version ...``) for stale detection instead of a
-      timestamp; add a ``builder-inited`` hook in ``conf.py`` so the file is
-      regenerated automatically on every docs build when solver versions
-      change; add a "Solver Versions" table to the page. (:issue:`331`)
-    * Restore explanatory character of ``concepts/lattice.rst``: add prose
-      explaining the role of the lattice in UB matrix computation and crystal
-      symmetry; add ``seealso`` links; convert bare ``:see:`` to proper RST.
-      Add ``seealso`` in ``concepts/wavelength.rst`` tying wavelength to
-      ``forward()``/``inverse()``. Add cross-reference from
-      ``diffractometers.rst`` (via ``make_geometries_doc.py``) to the crystal
-      systems table in ``concepts/lattice.rst``. (:issue:`325`)
-    * Update ``quickstart.rst``: reframe as an installation verification
-      page and entry point; add prominent ``seealso`` links to the tutorial,
-      how-to guides, and geometries reference; add an Installation section.
+    * Fix ``examples/hkl_soleil-e6c-psi.ipynb``: full axis constraints,
+      phi discontinuity, pre-scan verification, matplotlib plot. (:issue:`337`)
+    * Automate ``diffractometers.rst`` regeneration via solver-version
+      sentinel and Sphinx ``builder-inited`` hook. (:issue:`331`)
+    * Improve ``concepts/lattice.rst`` and ``concepts/wavelength.rst``:
+      explanatory prose, ``seealso`` links, crystal-systems cross-reference.
+      (:issue:`325`)
+    * Update ``quickstart.rst`` as installation-verification entry point.
       (:issue:`327`)
-    * Review ``faq.rst``: replace inline answers that duplicate dedicated
-      pages with concise summaries and ``seealso`` cross-references to
-      the tutorial, ``how_constraints``, ``how_presets``, and
-      ``how_calc_ub``. (:issue:`326`)
-    * Restructure ``guides/diffract.rst``: rename to "How to Work with a
-      Diffractometer", trim attribute narrative to a summary table with
-      cross-references, promote out-of-order axis sections to a top-level
-      "Advanced" section, add ``seealso`` links to the tutorial and concept
-      pages. (:issue:`317`)
-    * Reframe ``examples/`` pages as worked demonstrations (not tutorials);
-      add framing paragraph directing new users to the Tutorial.
-      Separate user-facing and developer/contributor sections in
-      ``guides/``; move solver-writing, release, design, and checklist
-      guides under a new "Developer / Contributor" heading. (:issue:`314`)
+    * Update ``faq.rst``: replace duplicated answers with cross-references.
+      (:issue:`326`)
+    * Restructure ``guides/diffract.rst`` as "How to Work with a
+      Diffractometer". (:issue:`317`)
+    * Reframe ``examples/`` as demonstrations; reorganise ``guides/`` with
+      Developer / Contributor section. (:issue:`314`)
 
 0.5.0
 #####
