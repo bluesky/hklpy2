@@ -64,6 +64,13 @@ describe future plans.
     Maintenance
     -----------
 
+    * Fix ``examples/hkl_soleil-e6c-psi.ipynb``: replace deprecated
+      ``.low_limit`` constraint syntax with ``.limits``; add full constraints
+      for all six E6C axes (including ``delta`` and ``chi``) to prevent a
+      ~166° phi discontinuity mid-scan; add pre-scan ``forward()`` verification
+      table; replace ``apstools.plotxy`` with a ``matplotlib`` plot of all motor
+      angles vs ψ; reduce scan range to ψ=0°–100° where phi is monotonic.
+      (:issue:`337`)
     * Automate ``diffractometers.rst`` generation: refactor
       ``make_geometries_doc.py`` to use a solver-version sentinel
       (``.. solvers: name=version ...``) for stale detection instead of a
