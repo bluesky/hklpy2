@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=722b3ce9"></script>
+    <script src="_static/documentation_options.js?v=c774b8e9"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -503,64 +503,90 @@
                   
   <section id="quickstart">
 <span id="user-guide-quickstart"></span><h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">#</a></h1>
-<p>Get started with a diffractometer object.  For example, use the diffractometer
-<a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> function to build a 6-circle diffractometer
-(<a class="reference internal" href="diffractometers.html#geometries-hkl-soleil-e6c"><span class="std std-ref">E6C</span></a> geometry). Use simulated motor
-axes.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
-<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sixc&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E6C&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">)</span>
+<p>This page verifies that <strong>hklpy2</strong> is installed and working.  If you are new
+to <strong>hklpy2</strong>, continue to the <a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">Tutorial: Your First Diffractometer</span></a> after this page for a full
+guided walkthrough: sample setup, orientation reflections, UB matrix
+computation, and reciprocal-space scanning.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">Tutorial: Your First Diffractometer</span></a> — start here for a complete first experience.</p>
+<p><a class="reference internal" href="guides/diffract.html#guide-diffract"><span class="std std-ref">How to Work with a Diffractometer</span></a> — how to define and work with a diffractometer.</p>
+<p><a class="reference internal" href="diffractometers.html#geometries"><span class="std std-ref">Diffractometers</span></a> — available geometries and solvers.</p>
+<p><a class="reference internal" href="guides.html#guides"><span class="std std-ref">Guides</span></a> — task-oriented how-to guides for common workflows.</p>
+</div>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<p>Install <strong>hklpy2</strong> and its dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>hklpy2
 </pre></div>
 </div>
-<p>Make it the <em>default</em> diffractometer and show its current settings:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
-<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">set_diffractometer</span><span class="p">(</span><span class="n">sixc</span><span class="p">)</span>
+<p>Then confirm the installation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Show its current settings (the brief report):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">wh</span><span class="p">()</span>  <span class="c1"># wh: &quot;WHere&quot;</span>
-<span class="linenos">2</span><span class="go">h=0, k=0, l=0</span>
-<span class="linenos">3</span><span class="go">wavelength=1.0</span>
-<span class="linenos">4</span><span class="go">mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0</span>
+</section>
+<section id="create-a-simulated-diffractometer">
+<h2>Create a Simulated Diffractometer<a class="headerlink" href="#create-a-simulated-diffractometer" title="Link to this heading">#</a></h2>
+<p>Use <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> to build a simulated 6-circle
+diffractometer (no hardware required):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sixc&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E6C&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Show the full report:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">pa</span><span class="p">()</span>  <span class="c1"># pa: &quot;Print All&quot;</span>
-<span class="linenos"> 2</span><span class="n">diffractometer</span><span class="o">=</span><span class="s1">&#39;sixc&#39;</span>
-<span class="linenos"> 3</span><span class="n">HklSolver</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;hkl_soleil&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;5.1.2&#39;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;E6C&#39;</span><span class="p">,</span> <span class="n">engine_name</span><span class="o">=</span><span class="s1">&#39;hkl&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;bissector_vertical&#39;</span><span class="p">)</span>
-<span class="linenos"> 4</span><span class="n">Sample</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;sample&#39;</span><span class="p">,</span> <span class="n">lattice</span><span class="o">=</span><span class="n">Lattice</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">system</span><span class="o">=</span><span class="s1">&#39;cubic&#39;</span><span class="p">))</span>
-<span class="linenos"> 5</span><span class="n">Orienting</span> <span class="n">reflections</span><span class="p">:</span> <span class="p">[]</span>
-<span class="linenos"> 6</span><span class="n">U</span><span class="o">=</span><span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]</span>
-<span class="linenos"> 7</span><span class="n">UB</span><span class="o">=</span><span class="p">[[</span><span class="mf">6.28318530718</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">6.28318530718</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">6.28318530718</span><span class="p">]]</span>
-<span class="linenos"> 8</span><span class="n">constraint</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span> <span class="o">&lt;=</span> <span class="n">mu</span> <span class="o">&lt;=</span> <span class="mf">180.0</span>
-<span class="linenos"> 9</span><span class="n">constraint</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span> <span class="o">&lt;=</span> <span class="n">omega</span> <span class="o">&lt;=</span> <span class="mf">180.0</span>
-<span class="linenos">10</span><span class="n">constraint</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span> <span class="o">&lt;=</span> <span class="n">chi</span> <span class="o">&lt;=</span> <span class="mf">180.0</span>
-<span class="linenos">11</span><span class="n">constraint</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span> <span class="o">&lt;=</span> <span class="n">phi</span> <span class="o">&lt;=</span> <span class="mf">180.0</span>
-<span class="linenos">12</span><span class="n">constraint</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span> <span class="o">&lt;=</span> <span class="n">gamma</span> <span class="o">&lt;=</span> <span class="mf">180.0</span>
-<span class="linenos">13</span><span class="n">constraint</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span> <span class="o">&lt;=</span> <span class="n">delta</span> <span class="o">&lt;=</span> <span class="mf">180.0</span>
-<span class="linenos">14</span><span class="n">h</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span>
-<span class="linenos">15</span><span class="n">wavelength</span><span class="o">=</span><span class="mf">1.0</span>
-<span class="linenos">16</span><span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span>
+<p>Make it the <em>default</em> diffractometer for the interactive interface:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">set_diffractometer</span><span class="p">(</span><span class="n">sixc</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Calculate the angles for <span class="math notranslate nohighlight">\(hkl=(1\ \bar{1}\ 0)\)</span>, using
-<a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.cahkl" title="hklpy2.user.cahkl"><code class="xref py py-func docutils literal notranslate"><span class="pre">cahkl()</span></code></a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">cahkl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="linenos">2</span><span class="go">Hklpy2DiffractometerRealPos(mu=0, omega=-45.000000066239, chi=44.999999876575, phi=-89.999999917768, gamma=0, delta=-90.000000132477)</span>
-<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">wh</span><span class="p">()</span>
-<span class="linenos">4</span><span class="go">h=0, k=0, l=0</span>
-<span class="linenos">5</span><span class="go">wavelength=1.0</span>
-<span class="linenos">6</span><span class="go">mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0</span>
+<p>Show the brief position report:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wh</span><span class="p">()</span>  <span class="c1"># wh: &quot;WHere&quot;</span>
+<span class="go">h=0, k=0, l=0</span>
+<span class="go">wavelength=1.0</span>
+<span class="go">mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0</span>
 </pre></div>
 </div>
-<p>Note this was only a calculation.  The motors did not move.  Do that now.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="linenos">2</span><span class="go">MoveStatus(done=True, pos=sixc, elapsed=0.0, success=True, settle_time=0.0)</span>
-<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">wh</span><span class="p">()</span>
-<span class="linenos">4</span><span class="go">h=1.0, k=-1.0, l=0</span>
-<span class="linenos">5</span><span class="go">wavelength=1.0</span>
-<span class="linenos">6</span><span class="go">mu=0, omega=-45.0, chi=45.0, phi=-90.0, gamma=0, delta=-90.0</span>
+<p>Show the full orientation report:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="p">()</span>  <span class="c1"># pa: &quot;Print All&quot;</span>
+<span class="go">diffractometer=&#39;sixc&#39;</span>
+<span class="go">HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E6C&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector_vertical&#39;)</span>
+<span class="go">Sample(name=&#39;sample&#39;, lattice=Lattice(a=1, system=&#39;cubic&#39;))</span>
+<span class="go">Orienting reflections: []</span>
+<span class="go">U=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]</span>
+<span class="go">UB=[[6.28318530718, -0.0, -0.0], [0.0, 6.28318530718, -0.0], [0.0, 0.0, 6.28318530718]]</span>
+<span class="go">constraint: -180.0 &lt;= mu &lt;= 180.0</span>
+<span class="go">constraint: -180.0 &lt;= omega &lt;= 180.0</span>
+<span class="go">constraint: -180.0 &lt;= chi &lt;= 180.0</span>
+<span class="go">constraint: -180.0 &lt;= phi &lt;= 180.0</span>
+<span class="go">constraint: -180.0 &lt;= gamma &lt;= 180.0</span>
+<span class="go">constraint: -180.0 &lt;= delta &lt;= 180.0</span>
+<span class="go">h=0, k=0, l=0</span>
+<span class="go">wavelength=1.0</span>
+<span class="go">mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0</span>
 </pre></div>
 </div>
+<p>Calculate angles for <span class="math notranslate nohighlight">\(hkl=(1\ \bar{1}\ 0)\)</span> without moving motors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cahkl</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">Hklpy2DiffractometerRealPos(mu=0, omega=-45.000000066239, chi=44.999999876575, phi=-89.999999917768, gamma=0, delta=-90.000000132477)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wh</span><span class="p">()</span>
+<span class="go">h=0, k=0, l=0</span>
+<span class="go">wavelength=1.0</span>
+<span class="go">mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0</span>
+</pre></div>
+</div>
+<p>Note this was only a calculation — the motors did not move.  Move now:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">MoveStatus(done=True, pos=sixc, elapsed=0.0, success=True, settle_time=0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wh</span><span class="p">()</span>
+<span class="go">h=1.0, k=-1.0, l=0</span>
+<span class="go">wavelength=1.0</span>
+<span class="go">mu=0, omega=-45.0, chi=45.0, phi=-90.0, gamma=0, delta=-90.0</span>
+</pre></div>
+</div>
+<p>If this works, <strong>hklpy2</strong> is installed correctly.  Continue to the
+<a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">Tutorial: Your First Diffractometer</span></a> to learn how to define a crystal sample, add orientation
+reflections, and compute the UB matrix.</p>
+</section>
 </section>
 
 
@@ -601,6 +627,19 @@ axes.</p>
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-simulated-diffractometer">Create a Simulated Diffractometer</a></li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
