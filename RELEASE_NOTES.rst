@@ -30,15 +30,17 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    0.5.2
+    0.6.0
     #####
 
     Release expected by 2026-H2.
 
-    Maintenance
-    -----------
+0.5.2
+#####
 
-    * Consolidate zone plans (``move_zone``, ``scan_zone``) into ``hklpy2/plans.py``. (:issue:`339`)
+Released 2026-04-15.
+
+patch-up release per standard release procedure
 
 0.5.1
 #####
