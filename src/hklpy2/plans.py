@@ -104,6 +104,7 @@ def _find_psi_mode(
             f"Multiple psi-capable modes found: {candidates}. "
             "Pass mode= to select one explicitly."
         )
+    logger.debug("scan_psi: auto-detected psi mode %r", candidates[0])
     return candidates[0]
 
 
@@ -149,6 +150,7 @@ def _find_psi_axis(
             f"Multiple psi-like extra axes found: {candidates}. "
             "Pass psi_axis= to select one explicitly."
         )
+    logger.debug("scan_psi: auto-detected psi axis %r", candidates[0])
     return candidates[0]
 
 
