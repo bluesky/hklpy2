@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=53713c50"></script>
+    <script src="_static/documentation_options.js?v=722b3ce9"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -537,7 +537,11 @@ real axes default to soft (simulated) positioners:</p>
 <span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="examples/example-4-circle-creator.html"><span class="doc">Example 4-circle diffractometer using creator()</span></a> for a worked example.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">Tutorial: Your First Diffractometer</span></a> — full guided walkthrough using a simulated E4CV diffractometer.</p>
+<p><a class="reference internal" href="examples/example-4-circle-creator.html"><span class="doc">Example 4-circle diffractometer using creator()</span></a> — worked demonstration.</p>
+</div>
 <hr class="docutils" />
 </section>
 <section id="what-units-does-hklpy2-use">
@@ -611,7 +615,6 @@ Widen the range for the blocking axis:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="examples/constraints.html#examples-constraints"><span class="std std-ref">Constraints</span></a> for worked examples.</p>
 </li>
 <li><p><strong>The requested</strong> <span class="math notranslate nohighlight">\(hkl\)</span> <strong>is outside the Ewald sphere</strong> at the current
 wavelength.  Use a shorter wavelength (higher energy) or request a lower-angle
@@ -626,6 +629,7 @@ solver order.  See <a class="reference internal" href="guides/diffract.html#diff
 </ol>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
+<p><a class="reference internal" href="guides/how_constraints.html#how-constraints"><span class="std std-ref">How to Use Constraints</span></a> — set limits, cut points, and write custom constraints.</p>
 <p><a class="reference internal" href="concepts/constraints.html#concepts-constraints"><span class="std std-ref">Constraints</span></a>, <a class="reference internal" href="concepts/presets.html#concepts-presets"><span class="std std-ref">Presets</span></a></p>
 </div>
 <hr class="docutils" />
@@ -665,6 +669,11 @@ range are discarded.</p></td>
 </tbody>
 </table>
 </div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="guides/how_constraints.html#how-constraints"><span class="std std-ref">How to Use Constraints</span></a> — set axis limits and cut points.</p>
+<p><a class="reference internal" href="guides/how_presets.html#how-presets"><span class="std std-ref">How to Use Presets</span></a> — freeze an axis at a fixed value during <code class="docutils literal notranslate"><span class="pre">forward()</span></code>.</p>
+</div>
 <hr class="docutils" />
 </section>
 <section id="the-ub-matrix-looks-wrong-or-pa-and-configuration-show-different-values">
@@ -681,6 +690,10 @@ matrix retains full floating-point precision.  A sign difference (e.g.
 <code class="docutils literal notranslate"><span class="pre">+0.0101</span></code> vs. <code class="docutils literal notranslate"><span class="pre">-0.0101</span></code>) on a near-zero element is a display rounding
 artefact.  Retrieve the full matrix via <code class="docutils literal notranslate"><span class="pre">diffractometer.sample.UB</span></code>.</p></li>
 </ol>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="guides/how_calc_ub.html#how-calc-ub"><span class="std std-ref">How to Compute and Set the UB Matrix</span></a> — add reflections, compute, inspect, and refine the UB matrix.</p>
+</div>
 <hr class="docutils" />
 </section>
 <section id="what-are-the-hklpy2-equivalents-of-spec-s-wh-and-pa">
