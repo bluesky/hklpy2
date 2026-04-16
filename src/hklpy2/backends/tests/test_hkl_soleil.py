@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from pyRestTable import Table
 
-from ...misc import IDENTITY_MATRIX_3X3
+from ...utils import IDENTITY_MATRIX_3X3
 from ...ops import Core
 from .. import hkl_soleil
 from ..hkl_soleil import HklSolverMetadataDict

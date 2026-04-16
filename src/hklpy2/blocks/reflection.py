@@ -18,13 +18,13 @@ from typing import Mapping
 from typing import Optional
 from typing import Union
 
-from ..misc import INTERNAL_LENGTH_UNITS
 from ..exceptions import ConfigurationError
 from ..exceptions import ReflectionError
-from ..misc import check_value_in_list
-from ..misc import compare_float_dicts
-from ..misc import convert_units
-from ..misc import validate_and_canonical_unit
+from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import check_value_in_list
+from ..utils import compare_float_dicts
+from ..utils import convert_units
+from ..utils import validate_and_canonical_unit
 from ..typing import NamedFloatDict
 
 logger = logging.getLogger(__name__)

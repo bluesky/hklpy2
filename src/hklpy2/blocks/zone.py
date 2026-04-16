@@ -261,9 +261,9 @@ class OrthonormalZone:
         Parameters
         ----------
         b1 : INPUT_VECTOR
-            Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+            Starting :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
         b2 : INPUT_VECTOR
-            Ending :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+            Ending :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
         n : int
             Number of vectors to generate
 
@@ -335,9 +335,9 @@ def zonespace(
     diff : hklpy2.DiffractometerBase
         Diffractometer instance for sample & forward() calculations.
     hkl_1 : INPUT_VECTOR
-        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+        Starting :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
     hkl_2 : INPUT_VECTOR
-        Ending :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+        Ending :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
     n : int
         Number of interpolation points to generate (must be > 0).
 
@@ -391,9 +391,9 @@ def zone_series(
     diff : hklpy2.DiffractometerBase
         The diffractometer instance used for forward calculations.
     hkl_1 : INPUT_VECTOR
-        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+        Starting :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
     hkl_2 : INPUT_VECTOR
-        Ending :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
+        Ending :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
     n : int
         Number of points to generate from hkl_1 to hkl_2 (inclusive).
 

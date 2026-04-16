@@ -46,7 +46,7 @@ __all__ = [
 ]
 
 # Default labels applied to real-axis positioners.
-# Imported here to avoid a back-import from misc; kept in sync with misc.DEFAULT_MOTOR_LABELS.
+# Default motor labels — kept in sync with utils.DEFAULT_MOTOR_LABELS.
 _DEFAULT_MOTOR_LABELS: Sequence[str] = ["motors"]
 
 

@@ -118,12 +118,12 @@ def test_creator_reals(pseudos, reals, positioner_class, context, config_file):
             id="solution func None",
         ),
         pytest.param(
-            dict(forward_solution_function="hklpy2.misc.pick_closest_solution"),
+            dict(forward_solution_function="hklpy2.utils.pick_closest_solution"),
             does_not_raise(),
             id="pick closest solution",
         ),
         pytest.param(
-            dict(forward_solution_function="hklpy2.misc.pick_first_solution"),
+            dict(forward_solution_function="hklpy2.utils.pick_first_solution"),
             does_not_raise(),
             id="pick first solution",
         ),
@@ -1097,7 +1097,7 @@ def test_miller_args(miller, context):
 def test_restore(input, ref, context):
     from ..incident import A_KEV
     from ..incident import DEFAULT_WAVELENGTH
-    from ..misc import load_yaml_file
+    from ..utils import load_yaml_file
 
     with context:
         input["config"] = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
@@ -1127,7 +1127,7 @@ def test_restore(input, ref, context):
 
 def test_failed_restore():
     from ..diffract import creator
-    from ..misc import load_yaml_file
+    from ..utils import load_yaml_file
 
     config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
     assert isinstance(config, dict)
@@ -1251,7 +1251,7 @@ def test_TypeError_issue_120(specs, context):
 )
 def test_reals_units_property_and_validation(set_value, context, expected):
     from ..diffract import creator
-    from ..misc import INTERNAL_ANGLE_UNITS
+    from ..utils import INTERNAL_ANGLE_UNITS
 
     with context:
         sim = creator()
@@ -1352,7 +1352,7 @@ def test_configuration_setter_delegates_to_restore(parms, context):
     import math
 
     from ..incident import DEFAULT_WAVELENGTH
-    from ..misc import load_yaml_file
+    from ..utils import load_yaml_file
 
     with context:
         config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")

@@ -19,8 +19,8 @@ from ..incident import EpicsWavelengthRO
 from ..incident import Wavelength
 from ..incident import WavelengthXray
 from ..incident import _WavelengthBase
-from ..misc import INTERNAL_LENGTH_UNITS
-from ..misc import INTERNAL_XRAY_ENERGY_UNITS
+from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import INTERNAL_XRAY_ENERGY_UNITS
 from .common import IOC_PREFIX
 
 logger = logging.getLogger(__name__)

@@ -9,7 +9,7 @@ from ... import __version__
 from ...diffract import DiffractometerBase
 from ...diffract import creator
 from ...exceptions import ConfigurationError
-from ...misc import load_yaml_file
+from ...utils import load_yaml_file
 from ...tests.models import E4CV_CONFIG_FILE
 from ...tests.models import add_oriented_vibranium_to_e4cv
 from ...tests.models import e4cv_config

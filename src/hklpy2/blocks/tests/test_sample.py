@@ -4,10 +4,10 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ...diffract import creator
-from ...misc import IDENTITY_MATRIX_3X3
 from ...exceptions import CoreError
-from ...misc import load_yaml
-from ...misc import unique_name
+from ...utils import IDENTITY_MATRIX_3X3
+from ...utils import load_yaml
+from ...utils import unique_name
 from ...tests.models import add_oriented_vibranium_to_e4cv
 from ..lattice import Lattice
 from ..reflection import ReflectionsDict

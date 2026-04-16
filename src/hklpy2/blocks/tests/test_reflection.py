@@ -5,7 +5,7 @@ import pint
 import pytest
 
 from ...diffract import creator
-from ...misc import INTERNAL_LENGTH_UNITS
+from ...utils import INTERNAL_LENGTH_UNITS
 from ...exceptions import ConfigurationError
 from ...tests.models import add_oriented_vibranium_to_e4cv
 from ..reflection import DEFAULT_REFLECTION_DIGITS
@@ -904,7 +904,7 @@ def test_eq_converts_wavelength_units(wl1, u1, wl2, u2, context, expect_eq):
     ],
 )
 def test_convert_units_helper(value, from_u, to_u, context, expected):
-    from ...misc import convert_units
+    from ...utils import convert_units
 
     with context:
         result = convert_units(value, from_u, to_u)
@@ -916,8 +916,8 @@ def test_reflections_to_solver_converts_per_reflection_units():
     """Ensure _reflections_to_solver converts each reflection's wavelength
     from its own units into the solver internal units."""
     from ...diffract import creator
-    from ...misc import INTERNAL_LENGTH_UNITS
-    from ...misc import convert_units
+    from ...utils import INTERNAL_LENGTH_UNITS
+    from ...utils import convert_units
 
     # create a minimal diffractometer/core to use the conversion helper
     dif = creator(name="testdif")

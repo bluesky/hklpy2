@@ -43,14 +43,14 @@ from ophyd.pseudopos import real_position_argument
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .incident import WavelengthXray
-from .misc import DEFAULT_DIGITS
-from .misc import INTERNAL_ANGLE_UNITS
-from .misc import MISSING_HEADER_KEY_MSG
 from .exceptions import DiffractometerError
-from .misc import load_yaml_file
-from .misc import pick_first_solution
-from .misc import roundoff
-from .misc import validate_and_canonical_unit
+from .utils import DEFAULT_DIGITS
+from .utils import INTERNAL_ANGLE_UNITS
+from .utils import MISSING_HEADER_KEY_MSG
+from .utils import load_yaml_file
+from .utils import pick_first_solution
+from .utils import roundoff
+from .utils import validate_and_canonical_unit
 from .typing import AnyAxesType
 from .typing import AxesDict
 from .typing import BlueskyPlanType
@@ -117,7 +117,7 @@ class DiffractometerBase(PseudoPositioner):
     forward_solution_function : Callable
         Function to pick one solution from list of possibilities.
         Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.
-        (default: :func:`~hklpy2.misc.pick_first_solution`)
+        (default: :func:`~hklpy2.utils.pick_first_solution`)
     reals_units : str
         The units for the real axes. (default: "degrees")
 
@@ -168,8 +168,8 @@ class DiffractometerBase(PseudoPositioner):
 
     Choices include:
 
-    * (default) :func:`hklpy2.misc.pick_first_solution`
-    * :func:`hklpy2.misc.pick_closest_solution`
+    * (default) :func:`hklpy2.utils.pick_first_solution`
+    * :func:`hklpy2.utils.pick_closest_solution`
     * User-supplied function matching the same interface.
 
     .. seealso::
@@ -405,7 +405,7 @@ class DiffractometerBase(PseudoPositioner):
 
     def full_position(self, digits=4) -> KeyValueMap:
         """Return dict with positions of pseudos, reals, & extras."""
-        from .misc import roundoff
+        from .utils import roundoff
 
         pdict = self.position._asdict()
         pdict.update(self.real_position._asdict())
@@ -426,7 +426,7 @@ class DiffractometerBase(PseudoPositioner):
         """(plan) Move diffractometer axes to positions in 'axes'."""
         from bluesky import plan_stubs as bps
 
-        from .misc import flatten_lists
+        from .utils import flatten_lists
 
         if hasattr(axes, "_fields"):
             # Convert namedtuple to dict
@@ -1054,7 +1054,7 @@ def creator(
     forward_solution_function : str
         Name of function to pick one solution from list of possibilities.
         Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.
-        (default: :func:`~hklpy2.misc.pick_first_solution`)
+        (default: :func:`~hklpy2.utils.pick_first_solution`)
 
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     kwargs : any
@@ -1162,14 +1162,14 @@ def diffractometer_class_factory(
     forward_solution_function : str
         Name of function to pick one solution from list of possibilities.
         Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.
-        (default: :func:`~hklpy2.misc.pick_first_solution`)
+        (default: :func:`~hklpy2.utils.pick_first_solution`)
 
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     """
     from .devices import dynamic_import
     from .devices import make_component
     from .devices import parse_factory_axes
-    from .misc import DEFAULT_MOTOR_LABELS
+    from .utils import DEFAULT_MOTOR_LABELS
     from .solver_utils import solver_factory
 
     if not isinstance(pseudos, list):
@@ -1188,7 +1188,7 @@ def diffractometer_class_factory(
     attributes["beam"] = maker(beam_class, **beam_kwargs)
 
     if forward_solution_function is None:
-        forward_solution_function = "hklpy2.misc.pick_first_solution"
+        forward_solution_function = "hklpy2.utils.pick_first_solution"
     attributes["_forward_solution"] = dynamic_import(
         forward_solution_function,
     )
