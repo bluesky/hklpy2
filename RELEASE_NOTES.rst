@@ -35,6 +35,11 @@ describe future plans.
 
     Release expected by 2026-H2.
 
+    Fixes
+    -----
+
+    * Fix ``AttributeError`` raised by non-``hkl_soleil`` solvers when ``forward()`` calls ``set_reals()``: add no-op ``set_reals()`` to ``SolverBase``. (:issue:`347`)
+
 0.5.2
 #####
 

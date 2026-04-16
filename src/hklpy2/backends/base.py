@@ -84,6 +84,12 @@ class SolverBase(ABC):
         ~refineLattice
         ~removeAllReflections
 
+    .. rubric:: Python Methods (concrete, overridable)
+
+    .. autosummary::
+
+        ~set_reals
+
     .. rubric:: Geometry Registry
 
     .. autosummary::
@@ -416,6 +422,29 @@ class SolverBase(ABC):
     @abstractmethod
     def removeAllReflections(self) -> None:
         """Remove all reflections."""
+
+    def set_reals(self, reals: NamedFloatDict) -> None:
+        """
+        Set current real-axis values in the solver's internal geometry object.
+
+        This method is called by :meth:`~hklpy2.ops.Core.forward` to push
+        the current motor positions (or preset values for constant axes) into
+        the solver before computing forward-calculation solutions.  Solvers
+        that maintain an internal geometry object with real-axis state (such
+        as ``hkl_soleil``, which calls ``axis_values_set`` on its libhkl
+        geometry) **must** override this method.
+
+        The default implementation is a deliberate no-op so that solvers
+        which do not require real-axis state (e.g. pure function-based
+        backends) can inherit from :class:`SolverBase` without needing to
+        define this method.
+
+        Parameters
+        ----------
+        reals : NamedFloatDict
+            Dictionary mapping solver real-axis names to their current values
+            (in the solver's internal angle units).
+        """
 
     @property
     def sample(self) -> Union[SampleDict, None]:

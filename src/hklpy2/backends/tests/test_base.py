@@ -3,6 +3,7 @@
 # Many features are tested, albeit indrectly, in specific solvers.
 
 import re
+from contextlib import nullcontext as does_not_raise
 
 import pyRestTable
 import pytest
@@ -153,3 +154,44 @@ def test_SolverBase_abstractmethods():
         match=re.escape("Cannot change 'geometry' after solver is created."),
     ):
         solver.geometry = TH_TTH_Q_GEOMETRY
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(reals={}),
+            does_not_raise(),
+            id="set_reals() on TrivialSolver is a no-op (empty dict)",
+        ),
+        pytest.param(
+            dict(reals={"th": 10.0, "tth": 20.0}),
+            does_not_raise(),
+            id="set_reals() on TrivialSolver is a no-op (with values)",
+        ),
+    ],
+)
+def test_SolverBase_set_reals_noop(parms, context):
+    """SolverBase.set_reals() is a no-op; any solver inheriting it must not raise."""
+    with context:
+        solver = TrivialSolver("test_geo")
+        result = solver.set_reals(**parms)
+        assert result is None
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(reals={"th": 5.0, "tth": 10.0}),
+            does_not_raise(),
+            id="set_reals() on ThTthSolver (non-hkl_soleil) succeeds via inherited no-op",
+        ),
+    ],
+)
+def test_SolverBase_set_reals_inherited(parms, context):
+    """Non-hkl_soleil solvers inheriting set_reals() must not raise AttributeError."""
+    with context:
+        solver = ThTthSolver(TH_TTH_Q_GEOMETRY)
+        result = solver.set_reals(**parms)
+        assert result is None
