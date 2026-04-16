@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=b7c95916"></script>
+    <script src="../../_static/documentation_options.js?v=b9b5806a"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -421,7 +421,7 @@
 <span class="sd">.. autosummary::</span>
 
 <span class="sd">    ~ConfigurationRunWrapper</span>
-<span class="sd">    ~creator_from_config</span>
+<span class="sd">    ~simulator_from_config</span>
 <span class="sd">    ~get_run_orientation</span>
 <span class="sd">    ~list_orientation_runs</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -450,7 +450,7 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;ConfigurationRunWrapper&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;creator_from_config&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;simulator_from_config&quot;</span><span class="p">,</span>
     <span class="s2">&quot;get_run_orientation&quot;</span><span class="p">,</span>
     <span class="s2">&quot;list_orientation_runs&quot;</span><span class="p">,</span>
 <span class="p">]</span>
@@ -784,17 +784,15 @@
     <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.4.0&quot;</span><span class="p">,</span>
     <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Create a simulated diffractometer from a saved configuration.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<div class="viewcode-block" id="creator_from_config">
-<a class="viewcode-back" href="../../autoapi/hklpy2/run_utils/index.html#hklpy2.run_utils.creator_from_config">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">creator_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]):</span>
+<div class="viewcode-block" id="simulator_from_config">
+<a class="viewcode-back" href="../../autoapi/hklpy2/run_utils/index.html#hklpy2.run_utils.simulator_from_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">simulator_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a simulated diffractometer from a saved configuration.</span>
 
-<span class="sd">    Parses the configuration for the solver, geometry, and axis names, then</span>
-<span class="sd">    constructs a simulator (all axes are soft positioners — no hardware</span>
-<span class="sd">    connection) and restores the full orientation (samples, reflections, UB</span>
-<span class="sd">    matrix, wavelength, constraints) from the configuration.  Auxiliary axes</span>
-<span class="sd">    saved by :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored</span>
+<span class="sd">    All axes are soft positioners — no hardware connections are made.</span>
+<span class="sd">    Auxiliary axes and solver mode saved by</span>
+<span class="sd">    :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored</span>
 <span class="sd">    automatically.</span>
 
 <span class="sd">    If the diffractometer requires auxiliary axes that are not in the</span>
@@ -818,7 +816,7 @@
 <span class="sd">    EXAMPLE::</span>
 
 <span class="sd">        &gt;&gt;&gt; import hklpy2</span>
-<span class="sd">        &gt;&gt;&gt; sim = hklpy2.creator_from_config(&quot;e4cv-config.yml&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; sim = hklpy2.simulator_from_config(&quot;e4cv-config.yml&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; sim.wh()</span>
 
 <span class="sd">    SEE ALSO</span>
@@ -828,7 +826,7 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">creator</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;creator_from_config: loading from file </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;simulator_from_config: loading from file </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">load_yaml_file</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -891,7 +889,7 @@
     <span class="n">diffractometer_name</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s2">&quot;creator_from_config: creating </span><span class="si">%r</span><span class="s2"> solver=</span><span class="si">%r</span><span class="s2"> geometry=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;simulator_from_config: creating </span><span class="si">%r</span><span class="s2"> solver=</span><span class="si">%r</span><span class="s2"> geometry=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">diffractometer_name</span><span class="p">,</span>
         <span class="n">solver_name</span><span class="p">,</span>
         <span class="n">geometry</span><span class="p">,</span>
@@ -906,7 +904,10 @@
         <span class="n">_pseudo</span><span class="o">=</span><span class="n">pseudo_axes_ordered</span> <span class="k">if</span> <span class="n">pseudo_axes_ordered</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">sim</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+    <span class="c1"># restore_mode=True is safe here: simulator_from_config() always produces</span>
+    <span class="c1"># a simulator with no hardware connections, so mode changes cannot cause</span>
+    <span class="c1"># unexpected motion.</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">restore_mode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sim</span></div>
 
 </pre></div>
