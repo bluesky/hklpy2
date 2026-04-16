@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../../_static/documentation_options.js?v=7b5c4000"></script>
+    <script src="../../../../_static/documentation_options.js?v=8be1f73d"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -563,6 +563,18 @@ as best fits the underlying support library.</p>
 </tbody>
 </table>
 </div>
+<p class="rubric">Python Properties (concrete, overridable)</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.base.SolverBase.U" title="hklpy2.backends.base.SolverBase.U"><code class="xref py py-obj docutils literal notranslate"><span class="pre">U</span></code></a></p></td>
+<td><p>Relative orientation of the crystal on the diffractometer (3x3 rotation matrix).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.backends.base.SolverBase.UB" title="hklpy2.backends.base.SolverBase.UB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UB</span></code></a></p></td>
+<td><p>Orientation matrix (3x3).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p class="rubric">Geometry Registry</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
@@ -599,9 +611,6 @@ as best fits the underlying support library.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.base.SolverBase.sample" title="hklpy2.backends.base.SolverBase.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a></p></td>
 <td><p>Crystalline sample.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.backends.base.SolverBase.UB" title="hklpy2.backends.base.SolverBase.UB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UB</span></code></a></p></td>
-<td><p>Orientation matrix (3x3).</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -622,9 +631,23 @@ as best fits the underlying support library.</p>
 </dd></dl>
 
 <dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.backends.base.SolverBase.U">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">U</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../typing/index.html#hklpy2.typing.Matrix3x3" title="hklpy2.typing.Matrix3x3"><span class="pre">Matrix3x3</span></a></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/base.html#SolverBase.U"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.base.SolverBase.U" title="Link to this definition">#</a></dt>
+<dd><p>Relative orientation of the crystal on the diffractometer (3x3 rotation matrix).</p>
+<p>The default implementation stores and returns the value set via the
+setter, initialised to the identity matrix.  Subclasses that maintain
+an internal backend object (e.g. <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code>) should override both
+getter and setter to read/write the backend state directly.</p>
+</dd></dl>
+
+<dl class="py property">
 <dt class="sig sig-object py" id="hklpy2.backends.base.SolverBase.UB">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">UB</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="../../typing/index.html#hklpy2.typing.Matrix3x3" title="hklpy2.typing.Matrix3x3"><span class="pre">Matrix3x3</span></a></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/base.html#SolverBase.UB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.base.SolverBase.UB" title="Link to this definition">#</a></dt>
 <dd><p>Orientation matrix (3x3).</p>
+<p>The default implementation stores and returns the value set via the
+setter, initialised to the identity matrix.  Subclasses that maintain
+an internal backend object (e.g. <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code>) should override both
+getter and setter to read/write the backend state directly.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -930,6 +953,7 @@ define this method.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase"><code class="docutils literal notranslate"><span class="pre">SolverBase</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.ANGLE_UNITS"><code class="docutils literal notranslate"><span class="pre">SolverBase.ANGLE_UNITS</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.LENGTH_UNITS"><code class="docutils literal notranslate"><span class="pre">SolverBase.LENGTH_UNITS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.U"><code class="docutils literal notranslate"><span class="pre">SolverBase.U</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.UB"><code class="docutils literal notranslate"><span class="pre">SolverBase.UB</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.addReflection"><code class="docutils literal notranslate"><span class="pre">SolverBase.addReflection()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.all_extra_axis_names"><code class="docutils literal notranslate"><span class="pre">SolverBase.all_extra_axis_names</span></code></a></li>

@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=7b5c4000"></script>
+    <script src="../../../_static/documentation_options.js?v=8be1f73d"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -506,6 +506,13 @@
 
 <span class="sd">        ~set_reals</span>
 
+<span class="sd">    .. rubric:: Python Properties (concrete, overridable)</span>
+
+<span class="sd">    .. autosummary::</span>
+
+<span class="sd">        ~U</span>
+<span class="sd">        ~UB</span>
+
 <span class="sd">    .. rubric:: Geometry Registry</span>
 
 <span class="sd">    .. autosummary::</span>
@@ -524,7 +531,6 @@
 <span class="sd">        ~lattice</span>
 <span class="sd">        ~mode</span>
 <span class="sd">        ~sample</span>
-<span class="sd">        ~UB</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
@@ -637,6 +643,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_all_extra_axis_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SampleDict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_U</span><span class="p">:</span> <span class="n">Matrix3x3</span> <span class="o">=</span> <span class="n">IDENTITY_MATRIX_3X3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_UB</span><span class="p">:</span> <span class="n">Matrix3x3</span> <span class="o">=</span> <span class="n">IDENTITY_MATRIX_3X3</span>
 
         <span class="n">validate_and_canonical_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ANGLE_UNITS</span><span class="p">,</span> <span class="n">INTERNAL_ANGLE_UNITS</span><span class="p">)</span>
         <span class="n">validate_and_canonical_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LENGTH_UNITS</span><span class="p">,</span> <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">)</span>
@@ -996,12 +1004,42 @@
 
 
     <span class="nd">@property</span>
+<div class="viewcode-block" id="SolverBase.U">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.U">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">U</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Relative orientation of the crystal on the diffractometer (3x3 rotation matrix).</span>
+
+<span class="sd">        The default implementation stores and returns the value set via the</span>
+<span class="sd">        setter, initialised to the identity matrix.  Subclasses that maintain</span>
+<span class="sd">        an internal backend object (e.g. ``hkl_soleil``) should override both</span>
+<span class="sd">        getter and setter to read/write the backend state directly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_U</span></div>
+
+
+    <span class="nd">@U</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">U</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Matrix3x3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_U</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
 <div class="viewcode-block" id="SolverBase.UB">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.UB">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">UB</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Orientation matrix (3x3).&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">IDENTITY_MATRIX_3X3</span></div>
-</div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Orientation matrix (3x3).</span>
+
+<span class="sd">        The default implementation stores and returns the value set via the</span>
+<span class="sd">        setter, initialised to the identity matrix.  Subclasses that maintain</span>
+<span class="sd">        an internal backend object (e.g. ``hkl_soleil``) should override both</span>
+<span class="sd">        getter and setter to read/write the backend state directly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_UB</span></div>
+
+
+    <span class="nd">@UB</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">UB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Matrix3x3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_UB</span> <span class="o">=</span> <span class="n">value</span></div>
 
 </pre></div>
 

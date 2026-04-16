@@ -82,6 +82,13 @@ Module Contents
 
        ~set_reals
 
+   .. rubric:: Python Properties (concrete, overridable)
+
+   .. autosummary::
+
+       ~U
+       ~UB
+
    .. rubric:: Geometry Registry
 
    .. autosummary::
@@ -100,7 +107,6 @@ Module Contents
        ~lattice
        ~mode
        ~sample
-       ~UB
 
 
    .. py:attribute:: ANGLE_UNITS
@@ -125,11 +131,28 @@ Module Contents
       ``INTERNAL_LENGTH_UNITS``.
 
 
+   .. py:property:: U
+      :type: ~hklpy2.typing.Matrix3x3
+
+
+      Relative orientation of the crystal on the diffractometer (3x3 rotation matrix).
+
+      The default implementation stores and returns the value set via the
+      setter, initialised to the identity matrix.  Subclasses that maintain
+      an internal backend object (e.g. ``hkl_soleil``) should override both
+      getter and setter to read/write the backend state directly.
+
+
    .. py:property:: UB
       :type: ~hklpy2.typing.Matrix3x3
 
 
       Orientation matrix (3x3).
+
+      The default implementation stores and returns the value set via the
+      setter, initialised to the identity matrix.  Subclasses that maintain
+      an internal backend object (e.g. ``hkl_soleil``) should override both
+      getter and setter to read/write the backend state directly.
 
 
    .. py:method:: addReflection(reflection: ~hklpy2.backends.typing.ReflectionDict) -> None
