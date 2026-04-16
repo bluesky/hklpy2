@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=364c43d7"></script>
+    <script src="../_static/documentation_options.js?v=c28c1457"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -658,7 +658,7 @@ with any of the plans in <code class="xref py py-mod docutils literal notranslat
 Multiple motors may be scanned simultaneously (as in the <cite>0kl</cite> and diagonal
 examples below).  Consult <code class="xref py py-mod docutils literal notranslate"><span class="pre">bluesky.plans</span></code> for the full list of available
 scan plans.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationRunWrapper</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.run_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationRunWrapper</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">)</span>
 <span class="linenos"> 4</span>
@@ -689,9 +689,9 @@ scan plans.</p>
 </div>
 <p>Keep in mind these considerations:</p>
 <ol class="arabic">
-<li><p>Use the <a class="reference internal" href="../autoapi/hklpy2/misc/index.html#hklpy2.misc.ConfigurationRunWrapper" title="hklpy2.misc.ConfigurationRunWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.misc.ConfigurationRunWrapper</span></code></a> to save configuration
+<li><p>Use the <a class="reference internal" href="../autoapi/hklpy2/run_utils/index.html#hklpy2.run_utils.ConfigurationRunWrapper" title="hklpy2.run_utils.ConfigurationRunWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.run_utils.ConfigurationRunWrapper</span></code></a> to save configuration
 as part of every run:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationRunWrapper</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.run_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationRunWrapper</span>
 <span class="linenos">2</span><span class="n">crw</span> <span class="o">=</span> <span class="n">ConfigurationRunWrapper</span><span class="p">(</span><span class="n">fourc</span><span class="p">)</span>
 <span class="linenos">3</span><span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crw</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
 </pre></div>
