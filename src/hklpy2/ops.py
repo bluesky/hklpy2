@@ -944,11 +944,8 @@ class Core:
     def sample(self, value: str) -> None:
         self._sample_name = value
         if self.solver is not None:
-            try:
-                self.solver.U = self.sample.U
-                self.solver.UB = self.sample.UB
-            except AttributeError:
-                pass  # property is not settable
+            self.solver.U = self.sample.U
+            self.solver.UB = self.sample.UB
 
     @property
     def samples(self) -> Mapping[str, Sample]:
@@ -1174,10 +1171,7 @@ class Core:
             except AttributeError:
                 pass  # Some solvers have no setter for extras
 
-            try:
-                self.solver.U = self.sample.U
-                self.solver.UB = self.sample.UB
-            except AttributeError:
-                pass  # Some solvers have no setter for U & UB
+            self.solver.U = self.sample.U
+            self.solver.UB = self.sample.UB
 
             self.request_solver_update(False)
