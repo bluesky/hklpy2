@@ -35,12 +35,19 @@ describe future plans.
 
     Release expected by 2026-H2.
 
+    Breaking Changes
+    ----------------
+
+    * Rename ``creator_from_config()`` to ``simulator_from_config()`` to
+      clarify that it always produces a simulator with no hardware connections.
+      (:issue:`363`)
+
     New Features
     ------------
 
     * Add analyzer how-to guide: crystal analyzer as additional positioners
       on the detector arm, including save/restore. (:issue:`222`)
-    * Save auxiliary axes in ``export()`` config; ``creator_from_config()``
+    * Save auxiliary axes in ``export()`` config; ``simulator_from_config()``
       restores them automatically. (:issue:`361`)
     * Add performance guide: factors affecting ``forward()``/``inverse()``
       throughput for diffractometer users. (:issue:`221`)
@@ -85,7 +92,7 @@ describe future plans.
       ``dict_device_factory``, ``dynamic_import``, ``make_component``,
       ``make_dynamic_instance``, ``parse_factory_axes``. (:issue:`342`)
     * Extract run-engine/databroker integration from ``misc.py`` into new
-      ``hklpy2/run_utils.py``: ``ConfigurationRunWrapper``, ``creator_from_config``,
+      ``hklpy2/run_utils.py``: ``ConfigurationRunWrapper``, ``simulator_from_config``,
       ``get_run_orientation``, ``list_orientation_runs``. (:issue:`344`)
     * Extract solver discovery machinery from ``misc.py`` into new
       ``hklpy2/solver_utils.py``: ``SOLVER_ENTRYPOINT_GROUP``, ``get_solver``,
@@ -354,7 +361,7 @@ Released 2026-04-03.
 New Features
 ------------
 
-* Add :func:`~hklpy2.misc.creator_from_config` to create a simulated
+* Add :func:`~hklpy2.misc.simulator_from_config` to create a simulated
   diffractometer (no hardware) from a saved configuration file or dict.
   (:issue:`210`)
 
@@ -403,7 +410,7 @@ Fixes
 * Fix ``LimitsConstraint.valid()`` rejecting solver solutions that land just
   outside a limit boundary due to floating-point arithmetic; increase
   ``ENDPOINT_TOLERANCE`` from ``1e-7`` to ``1e-4``. (:issue:`242`)
-* Fix :func:`~hklpy2.misc.creator_from_config` restoring reflections with
+* Fix :func:`~hklpy2.misc.simulator_from_config` restoring reflections with
   wrong axis values when YAML serialises ``reals`` dict keys alphabetically
   instead of in physical axis order. (:issue:`243`)
 * Fix error message bugs: missing f-string prefix in ``hkl_soleil.py``,

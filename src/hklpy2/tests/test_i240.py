@@ -311,9 +311,9 @@ def test_i240_libhkl():
 
 def test_i240_from_config():
     """Test using configuration file."""
-    from .. import creator_from_config
+    from .. import simulator_from_config
 
-    polar = creator_from_config(I250_CONFIG_FILE)
+    polar = simulator_from_config(I250_CONFIG_FILE)
     # validate the input first
     assert polar.sample.name == "test"
     assert polar.sample.lattice.crystal_system == "cubic"
