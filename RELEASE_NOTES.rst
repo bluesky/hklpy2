@@ -63,6 +63,8 @@ describe future plans.
 
     * Add ``forward()`` and ``inverse()`` throughput benchmark (``test_i221.py``)
       establishing 183 ops/sec baseline; target ≥2,000 ops/sec. (:issue:`221`)
+    * Remove ``_api_demo.ipynb`` early-development scratch notebook; content
+      now covered by existing guides. (:issue:`367`)
 
     Fixes
     -----
