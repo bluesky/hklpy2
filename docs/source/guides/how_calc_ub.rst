@@ -168,7 +168,7 @@ angles recovers the expected :math:`(h, k, l)`, and that
 :math:`(h, k, l)` returns angles close to the measured ones::
 
     >>> # inverse: angles → hkl
-    >>> fourc.inverse((-145.451, 0, 0, 69.0966))
+    >>> fourc.inverse(dict(omega=-145.451, chi=0, phi=0, tth=69.0966))
     Hklpy2DiffractometerPseudoPos(h=3.9999, k=0, l=0)   # ≈ (4, 0, 0) ✓
 
     >>> # forward: hkl → angles
