@@ -39,6 +39,7 @@ describe future plans.
     -----
 
     * Fix ``AttributeError`` raised by non-``hkl_soleil`` solvers when ``forward()`` calls ``set_reals()``: add no-op ``set_reals()`` to ``SolverBase``. (:issue:`347`)
+    * Fix silent UB loss in non-``hkl_soleil`` solvers: add ``U`` and ``UB`` getter/setter pair to ``SolverBase`` that stores orientation state. (:issue:`348`)
 
     Deprecations
     ------------

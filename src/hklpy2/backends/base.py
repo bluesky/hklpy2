@@ -90,6 +90,13 @@ class SolverBase(ABC):
 
         ~set_reals
 
+    .. rubric:: Python Properties (concrete, overridable)
+
+    .. autosummary::
+
+        ~U
+        ~UB
+
     .. rubric:: Geometry Registry
 
     .. autosummary::
@@ -108,7 +115,6 @@ class SolverBase(ABC):
         ~lattice
         ~mode
         ~sample
-        ~UB
     """
 
     from .. import __version__
@@ -206,6 +212,8 @@ class SolverBase(ABC):
         self.mode = mode
         self._all_extra_axis_names: Optional[List[str]] = None
         self._sample: Optional[SampleDict] = None
+        self._U: Matrix3x3 = IDENTITY_MATRIX_3X3
+        self._UB: Matrix3x3 = IDENTITY_MATRIX_3X3
 
         validate_and_canonical_unit(self.ANGLE_UNITS, INTERNAL_ANGLE_UNITS)
         validate_and_canonical_unit(self.LENGTH_UNITS, INTERNAL_LENGTH_UNITS)
@@ -508,6 +516,33 @@ class SolverBase(ABC):
         return table
 
     @property
+    def U(self) -> Matrix3x3:
+        """
+        Relative orientation of the crystal on the diffractometer (3x3 rotation matrix).
+
+        The default implementation stores and returns the value set via the
+        setter, initialised to the identity matrix.  Subclasses that maintain
+        an internal backend object (e.g. ``hkl_soleil``) should override both
+        getter and setter to read/write the backend state directly.
+        """
+        return self._U
+
+    @U.setter
+    def U(self, value: Matrix3x3) -> None:
+        self._U = value
+
+    @property
     def UB(self) -> Matrix3x3:
-        """Orientation matrix (3x3)."""
-        return IDENTITY_MATRIX_3X3
+        """
+        Orientation matrix (3x3).
+
+        The default implementation stores and returns the value set via the
+        setter, initialised to the identity matrix.  Subclasses that maintain
+        an internal backend object (e.g. ``hkl_soleil``) should override both
+        getter and setter to read/write the backend state directly.
+        """
+        return self._UB
+
+    @UB.setter
+    def UB(self, value: Matrix3x3) -> None:
+        self._UB = value
