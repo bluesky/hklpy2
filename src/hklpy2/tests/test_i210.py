@@ -15,7 +15,7 @@ import pytest
 import yaml
 
 import hklpy2
-from hklpy2.misc import creator_from_config
+from hklpy2.run_utils import creator_from_config
 
 TESTS_DIR = pathlib.Path(__file__).parent
 

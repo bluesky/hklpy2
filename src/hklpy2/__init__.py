@@ -64,10 +64,10 @@ from .diffract import creator  # noqa: E402, F401, F403
 from .diffract import diffractometer_class_factory  # noqa: E402, F401, F403
 from .incident import A_KEV  # noqa: E402, F401
 from .exceptions import SolverError  # noqa: E402, F401
-from .misc import ConfigurationRunWrapper  # noqa: E402, F401
-from .misc import creator_from_config  # noqa: E402, F401
-from .misc import get_run_orientation  # noqa: E402, F401
-from .misc import list_orientation_runs  # noqa: E402, F401
+from .run_utils import ConfigurationRunWrapper  # noqa: E402, F401
+from .run_utils import creator_from_config  # noqa: E402, F401
+from .run_utils import get_run_orientation  # noqa: E402, F401
+from .run_utils import list_orientation_runs  # noqa: E402, F401
 from .solver_utils import SOLVER_ENTRYPOINT_GROUP  # noqa: E402, F401
 from .solver_utils import get_solver  # noqa: E402, F401
 from .solver_utils import solver_factory  # noqa: E402, F401
