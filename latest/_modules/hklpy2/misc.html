@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=14bfd7cb"></script>
+    <script src="../../_static/documentation_options.js?v=364c43d7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -425,7 +425,6 @@
 <span class="sd">    ~distance_between_pos_tuples</span>
 <span class="sd">    ~flatten_lists</span>
 <span class="sd">    ~get_run_orientation</span>
-<span class="sd">    ~get_solver</span>
 <span class="sd">    ~istype</span>
 <span class="sd">    ~list_orientation_runs</span>
 <span class="sd">    ~load_yaml</span>
@@ -434,8 +433,6 @@
 <span class="sd">    ~pick_first_solution</span>
 <span class="sd">    ~roundoff</span>
 <span class="sd">    ~creator_from_config</span>
-<span class="sd">    ~solver_factory</span>
-<span class="sd">    ~solvers</span>
 <span class="sd">    ~unique_name</span>
 <span class="sd">    ~validate_and_canonical_unit</span>
 <span class="sd">    ~validate_not_parallel</span>
@@ -443,12 +440,12 @@
 <span class="sd">.. note::</span>
 
 <span class="sd">    Device construction helpers have moved to :mod:`hklpy2.devices`.</span>
+<span class="sd">    Solver discovery functions have moved to :mod:`hklpy2.solver_utils`.</span>
 
 <span class="sd">.. rubric: Symbols</span>
 <span class="sd">.. autosummary::</span>
 
 <span class="sd">    ~IDENTITY_MATRIX_3X3</span>
-<span class="sd">    ~SOLVER_ENTRYPOINT_GROUP</span>
 
 <span class="sd">.. rubric: Custom Preprocessors</span>
 <span class="sd">.. autosummary::</span>
@@ -470,7 +467,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">entry_points</span>
+
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionchanged</span>
@@ -491,7 +488,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyAxesType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesArray</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesDict</span>
@@ -517,7 +513,6 @@
     <span class="s2">&quot;INTERNAL_XRAY_ENERGY_UNITS&quot;</span><span class="p">,</span>
     <span class="s2">&quot;MISSING_HEADER_KEY_MSG&quot;</span><span class="p">,</span>
     <span class="s2">&quot;PINT_ERRORS&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SOLVER_ENTRYPOINT_GROUP&quot;</span><span class="p">,</span>
     <span class="s2">&quot;UREG&quot;</span><span class="p">,</span>
     <span class="c1"># Classes</span>
     <span class="s2">&quot;ConfigurationRunWrapper&quot;</span><span class="p">,</span>
@@ -530,7 +525,6 @@
     <span class="s2">&quot;distance_between_pos_tuples&quot;</span><span class="p">,</span>
     <span class="s2">&quot;flatten_lists&quot;</span><span class="p">,</span>
     <span class="s2">&quot;get_run_orientation&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;get_solver&quot;</span><span class="p">,</span>
     <span class="s2">&quot;istype&quot;</span><span class="p">,</span>
     <span class="s2">&quot;list_orientation_runs&quot;</span><span class="p">,</span>
     <span class="s2">&quot;load_yaml&quot;</span><span class="p">,</span>
@@ -538,8 +532,6 @@
     <span class="s2">&quot;pick_closest_solution&quot;</span><span class="p">,</span>
     <span class="s2">&quot;pick_first_solution&quot;</span><span class="p">,</span>
     <span class="s2">&quot;roundoff&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;solver_factory&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;solvers&quot;</span><span class="p">,</span>
     <span class="s2">&quot;unique_name&quot;</span><span class="p">,</span>
     <span class="s2">&quot;validate_and_canonical_unit&quot;</span><span class="p">,</span>
 <span class="p">]</span>
@@ -557,12 +549,6 @@
 <span class="n">MISSING_HEADER_KEY_MSG</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Configuration is missing &#39;_header&#39; key.&quot;</span></div>
 
 <span class="sd">&quot;&quot;&quot;Error message for missing _header key in configuration dicts.&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="SOLVER_ENTRYPOINT_GROUP">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.misc.SOLVER_ENTRYPOINT_GROUP">[docs]</a>
-<span class="n">SOLVER_ENTRYPOINT_GROUP</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;hklpy2.solver&quot;</span></div>
-
-<span class="sd">&quot;&quot;&quot;Name by which |hklpy2| |solver| classes are grouped.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="DEFAULT_DIGITS">
 <a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.misc.DEFAULT_DIGITS">[docs]</a>
@@ -910,26 +896,6 @@
 
 
 
-<div class="viewcode-block" id="get_solver">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.misc.get_solver">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_solver</span><span class="p">(</span><span class="n">solver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SolverBase&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Load a Solver class from a named entry point.</span>
-
-<span class="sd">    ::</span>
-
-<span class="sd">        import hklpy2</span>
-<span class="sd">        SolverClass = hklpy2.get_solver(&quot;hkl_soleil&quot;)</span>
-<span class="sd">        libhkl_solver = SolverClass()</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">solver_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">solvers</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">solver_name</span><span class="si">=!r}</span><span class="s2"> unknown.  Pick one of: </span><span class="si">{</span><span class="n">solvers</span><span class="p">()</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loading solver </span><span class="si">%r</span><span class="s2"> from entry points&quot;</span><span class="p">,</span> <span class="n">solver_name</span><span class="p">)</span>
-    <span class="n">entries</span> <span class="o">=</span> <span class="n">entry_points</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">SOLVER_ENTRYPOINT_GROUP</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">entries</span><span class="p">[</span><span class="n">solver_name</span><span class="p">]</span><span class="o">.</span><span class="n">load</span><span class="p">()</span></div>
-
-
-
 <span class="nd">@versionadded</span><span class="p">(</span>
     <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.2.3&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Retrieve diffractometer orientation from a Tiled run.&quot;</span>
 <span class="p">)</span>
@@ -1235,39 +1201,6 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Round a number to specified precision.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="n">digits</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>  <span class="c1"># &quot;-0&quot; becomes &quot;0&quot;</span></div>
-
-
-
-<div class="viewcode-block" id="solver_factory">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.misc.solver_factory">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">solver_factory</span><span class="p">(</span>
-    <span class="n">solver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SolverBase&quot;</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create a |solver| object with geometry and axes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-        <span class="s2">&quot;Creating solver </span><span class="si">%r</span><span class="s2"> geometry=</span><span class="si">%r</span><span class="s2"> kwargs=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">solver_name</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">kwargs</span>
-    <span class="p">)</span>
-    <span class="n">solver_class</span> <span class="o">=</span> <span class="n">get_solver</span><span class="p">(</span><span class="n">solver_name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">solver_class</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-
-
-<div class="viewcode-block" id="solvers">
-<a class="viewcode-back" href="../../autoapi/hklpy2/misc/index.html#hklpy2.misc.solvers">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">solvers</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;SolverBase&quot;</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Dictionary of available Solver classes, mapped by entry point name.</span>
-
-<span class="sd">    ::</span>
-
-<span class="sd">        import hklpy2</span>
-<span class="sd">        print(hklpy2.solvers())</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">ep</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">ep</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">entry_points</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">SOLVER_ENTRYPOINT_GROUP</span><span class="p">)}</span></div>
 
 
 
