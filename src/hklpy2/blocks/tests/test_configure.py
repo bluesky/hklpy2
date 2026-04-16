@@ -8,7 +8,7 @@ import pytest
 from ... import __version__
 from ...diffract import DiffractometerBase
 from ...diffract import creator
-from ...misc import ConfigurationError
+from ...exceptions import ConfigurationError
 from ...misc import load_yaml_file
 from ...tests.models import E4CV_CONFIG_FILE
 from ...tests.models import add_oriented_vibranium_to_e4cv

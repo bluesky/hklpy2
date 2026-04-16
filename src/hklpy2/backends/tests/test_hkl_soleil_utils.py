@@ -5,7 +5,7 @@ from contextlib import nullcontext as does_not_raise
 
 import pytest
 
-from ...misc import SolverError
+from ...exceptions import SolverError
 
 
 @pytest.mark.parametrize(

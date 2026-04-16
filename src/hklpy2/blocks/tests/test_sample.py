@@ -5,7 +5,7 @@ import pytest
 
 from ...diffract import creator
 from ...misc import IDENTITY_MATRIX_3X3
-from ...misc import CoreError
+from ...exceptions import CoreError
 from ...misc import load_yaml
 from ...misc import unique_name
 from ...tests.models import add_oriented_vibranium_to_e4cv

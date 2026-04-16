@@ -24,7 +24,7 @@ import pytest
 from numpy.testing import assert_almost_equal
 
 from ..diffract import creator
-from ..misc import NoForwardSolutions
+from ..exceptions import NoForwardSolutions
 
 
 class _allows_no_solutions:

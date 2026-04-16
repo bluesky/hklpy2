@@ -15,10 +15,10 @@ from pyRestTable import Table
 from ..blocks.lattice import SI_LATTICE_PARAMETER
 from ..diffract import creator
 from ..incident import WavelengthXray
-from ..misc import NoForwardSolutions
-from ..misc import ReflectionError
+from ..exceptions import NoForwardSolutions
+from ..exceptions import ReflectionError
 from ..misc import roundoff
-from ..ops import CoreError
+from ..exceptions import CoreError
 from ..user import add_sample
 from ..user import cahkl
 from ..user import cahkl_table

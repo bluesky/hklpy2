@@ -25,8 +25,8 @@ from yaml.parser import ParserError
 from ..diffract import creator
 from ..diffract import diffractometer_class_factory
 from ..misc import ConfigurationRunWrapper
-from ..misc import NoForwardSolutions
-from ..misc import SolverError
+from ..exceptions import NoForwardSolutions
+from ..exceptions import SolverError
 from ..misc import VirtualPositionerBase
 from ..misc import axes_to_dict
 from ..misc import compare_float_dicts

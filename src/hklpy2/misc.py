@@ -48,19 +48,10 @@ Miscellaneous Support.
 
     ~ConfigurationRunWrapper
 
-.. rubric: Custom Exceptions
-.. autosummary::
+.. note::
 
-    ~Hklpy2Error
-    ~ConfigurationError
-    ~ConstraintsError
-    ~CoreError
-    ~DiffractometerError
-    ~LatticeError
-    ~NoForwardSolutions
-    ~ReflectionError
-    ~SampleError
-    ~SolverError
+    Exception classes have moved to :mod:`hklpy2.exceptions`.
+
 """
 
 import logging
@@ -97,6 +88,8 @@ from ophyd import EpicsMotor
 from ophyd import PVPositioner
 from ophyd import SoftPositioner
 
+from .exceptions import NoForwardSolutions
+from .exceptions import SolverError
 from .typing import AnyAxesType
 from .typing import AxesArray
 from .typing import AxesDict
@@ -124,17 +117,6 @@ __all__ = [
     "PINT_ERRORS",
     "SOLVER_ENTRYPOINT_GROUP",
     "UREG",
-    # Exceptions
-    "ConfigurationError",
-    "ConstraintsError",
-    "CoreError",
-    "DiffractometerError",
-    "Hklpy2Error",
-    "LatticeError",
-    "NoForwardSolutions",
-    "ReflectionError",
-    "SampleError",
-    "SolverError",
     # Classes
     "ConfigurationRunWrapper",
     "VirtualPositionerBase",
@@ -194,49 +176,6 @@ PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
 
 DEFAULT_MOTOR_LABELS: Sequence[str] = ["motors"]
 """Default labels applied to real-axis positioners."""
-
-# Custom exceptions
-
-
-class Hklpy2Error(Exception):
-    """Any exception from the |hklpy2| package."""
-
-
-class ConfigurationError(Hklpy2Error):
-    """Custom exceptions from :mod:`hklpy2.blocks.configure`."""
-
-
-class ConstraintsError(Hklpy2Error):
-    """Custom exceptions from :mod:`hklpy2.blocks.constraints`."""
-
-
-class CoreError(Hklpy2Error):
-    """Custom exceptions from :class:`hklpy2.ops.Core`."""
-
-
-class DiffractometerError(Hklpy2Error):
-    """Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`."""
-
-
-class LatticeError(Hklpy2Error):
-    """Custom exceptions from :mod:`hklpy2.blocks.lattice`."""
-
-
-class NoForwardSolutions(Hklpy2Error):
-    """A solver did not find any ``forward()`` solutions."""
-
-
-class ReflectionError(Hklpy2Error):
-    """Custom exceptions from :mod:`hklpy2.blocks.reflection`."""
-
-
-class SampleError(Hklpy2Error):
-    """Custom exceptions from :mod:`hklpy2.blocks.sample`."""
-
-
-class SolverError(Hklpy2Error):
-    """Custom exceptions from a |solver|."""
-
 
 # Virtual positioner base class
 

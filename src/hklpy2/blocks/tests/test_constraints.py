@@ -5,7 +5,7 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ...diffract import creator
-from ...misc import ConfigurationError
+from ...exceptions import ConfigurationError
 from ..constraints import DEFAULT_CUT_POINT
 from ..constraints import ENDPOINT_TOLERANCE
 from ..constraints import ConstraintBase

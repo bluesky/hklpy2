@@ -21,7 +21,7 @@ from numpy import typing as npt
 
 from ..misc import INTERNAL_ANGLE_UNITS
 from ..misc import INTERNAL_LENGTH_UNITS
-from ..misc import LatticeError
+from ..exceptions import LatticeError
 from ..misc import compare_float_dicts
 from ..misc import convert_units
 from ..misc import validate_and_canonical_unit

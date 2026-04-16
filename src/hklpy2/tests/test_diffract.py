@@ -22,9 +22,9 @@ from ..blocks.sample import Sample
 from ..diffract import DiffractometerBase
 from ..diffract import creator
 from ..diffract import diffractometer_class_factory
-from ..misc import ConfigurationError
-from ..misc import DiffractometerError
-from ..misc import NoForwardSolutions
+from ..exceptions import ConfigurationError
+from ..exceptions import DiffractometerError
+from ..exceptions import NoForwardSolutions
 from ..misc import VirtualPositionerBase
 from ..ops import DEFAULT_SAMPLE_NAME
 from ..ops import Core

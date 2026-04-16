@@ -27,8 +27,8 @@ from typing import Optional
 
 from deprecated.sphinx import versionadded
 
-from ..misc import ConfigurationError
-from ..misc import ConstraintsError
+from ..exceptions import ConfigurationError
+from ..exceptions import ConstraintsError
 from ..typing import NUMERIC
 from ..typing import KeyValueMap
 

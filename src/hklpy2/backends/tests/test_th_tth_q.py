@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 
 from ...misc import IDENTITY_MATRIX_3X3
-from ...misc import SolverError
+from ...exceptions import SolverError
 from ...misc import get_solver
 from ...misc import solver_factory
 from ..base import SolverBase

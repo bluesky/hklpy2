@@ -39,7 +39,7 @@ from numpy.typing import NDArray
 from pyRestTable import Table
 
 from ..diffract import DiffractometerBase
-from ..misc import NoForwardSolutions
+from ..exceptions import NoForwardSolutions
 from ..typing import INPUT_VECTOR
 
 logger = logging.getLogger(__name__)

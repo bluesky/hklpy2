@@ -49,6 +49,7 @@ describe future plans.
     Maintenance
     -----------
 
+    * Extract all custom exception classes from ``misc.py`` into new ``hklpy2/exceptions.py``; update all internal imports to use ``hklpy2.exceptions`` directly. (:issue:`341`)
     * Move ``move_zone`` and ``scan_zone`` plans from ``hklpy2.blocks.zone`` to ``hklpy2.plans`` (canonical plan location). (:issue:`339`)
 
 0.5.2
