@@ -53,7 +53,7 @@ from deprecated.sphinx import versionadded
 
 from .blocks.zone import zonespace
 from .diffract import DiffractometerBase
-from .misc import validate_not_parallel
+from .utils import validate_not_parallel
 from .typing import INPUT_VECTOR
 from .typing import BlueskyPlanType
 

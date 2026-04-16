@@ -1,5 +1,5 @@
 """
-Miscellaneous Support.
+General-purpose utilities for |hklpy2|.
 
 .. rubric: Functions
 .. autosummary::
@@ -20,38 +20,30 @@ Miscellaneous Support.
     ~validate_and_canonical_unit
     ~validate_not_parallel
 
-.. note::
-
-    Device construction helpers have moved to :mod:`hklpy2.devices`.
-    Run-engine integration has moved to :mod:`hklpy2.run_utils`.
-    Solver discovery functions have moved to :mod:`hklpy2.solver_utils`.
-
 .. rubric: Symbols
 .. autosummary::
 
+    ~DEFAULT_DIGITS
+    ~DEFAULT_MOTOR_LABELS
+    ~DEFAULT_START_KEY
     ~IDENTITY_MATRIX_3X3
-
-.. note::
-
-    Exception classes have moved to :mod:`hklpy2.exceptions`.
-
+    ~INTERNAL_ANGLE_UNITS
+    ~INTERNAL_LENGTH_UNITS
+    ~INTERNAL_XRAY_ENERGY_UNITS
+    ~MISSING_HEADER_KEY_MSG
+    ~PINT_ERRORS
+    ~UREG
 """
 
 import logging
 import math
 import numbers
 import pathlib
-
-
 import uuid
 import warnings
 from collections.abc import Iterable
-
-
-from deprecated.sphinx import versionadded
 from typing import TYPE_CHECKING
 from typing import Any
-
 from typing import Mapping
 from typing import NamedTuple
 from typing import Sequence
@@ -59,11 +51,9 @@ from typing import Type
 from typing import Union
 
 import numpy as np
-
 import pint
-
 import yaml
-
+from deprecated.sphinx import versionadded
 
 from .exceptions import NoForwardSolutions
 from .typing import AnyAxesType
@@ -106,9 +96,12 @@ __all__ = [
     "roundoff",
     "unique_name",
     "validate_and_canonical_unit",
+    "validate_not_parallel",
 ]
 
-# Constants and Structures
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
 
 IDENTITY_MATRIX_3X3: Matrix3x3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 """Identity matrix, 2-D, 3 rows, 3 columns."""
@@ -133,10 +126,9 @@ PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
 DEFAULT_MOTOR_LABELS: Sequence[str] = ["motors"]
 """Default labels applied to real-axis positioners."""
 
-# Custom preprocessors
-
-
+# ---------------------------------------------------------------------------
 # Functions
+# ---------------------------------------------------------------------------
 
 
 def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
@@ -339,7 +331,7 @@ def pick_closest_solution(
 
     .. seealso::
         :attr:`~hklpy2.diffract.DiffractometerBase._forward_solution`,
-        :func:`~hklpy2.misc.pick_first_solution`
+        :func:`~hklpy2.utils.pick_first_solution`
     """
     if len(solutions) == 0:
         raise NoForwardSolutions("No solutions.")
@@ -374,7 +366,7 @@ def pick_first_solution(
 
     .. seealso::
         :attr:`~hklpy2.diffract.DiffractometerBase._forward_solution`,
-        :func:`~hklpy2.misc.pick_closest_solution`
+        :func:`~hklpy2.utils.pick_closest_solution`
     """
     if len(solutions) == 0:
         raise NoForwardSolutions("No solutions.")

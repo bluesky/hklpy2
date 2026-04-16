@@ -19,12 +19,12 @@ from typing import Union
 import numpy as np
 from numpy import typing as npt
 
-from ..misc import INTERNAL_ANGLE_UNITS
-from ..misc import INTERNAL_LENGTH_UNITS
 from ..exceptions import LatticeError
-from ..misc import compare_float_dicts
-from ..misc import convert_units
-from ..misc import validate_and_canonical_unit
+from ..utils import INTERNAL_ANGLE_UNITS
+from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import compare_float_dicts
+from ..utils import convert_units
+from ..utils import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 

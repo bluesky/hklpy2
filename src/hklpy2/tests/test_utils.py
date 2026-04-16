@@ -31,16 +31,16 @@ from ..devices import make_dynamic_instance
 from ..devices import parse_factory_axes
 from ..exceptions import NoForwardSolutions
 from ..exceptions import SolverError
-from ..misc import axes_to_dict
-from ..misc import compare_float_dicts
-from ..misc import convert_units
-from ..misc import distance_between_pos_tuples
-from ..misc import flatten_lists
-from ..misc import istype
-from ..misc import load_yaml_file
-from ..misc import pick_closest_solution
-from ..misc import pick_first_solution
-from ..misc import roundoff
+from ..utils import axes_to_dict
+from ..utils import compare_float_dicts
+from ..utils import convert_units
+from ..utils import distance_between_pos_tuples
+from ..utils import flatten_lists
+from ..utils import istype
+from ..utils import load_yaml_file
+from ..utils import pick_closest_solution
+from ..utils import pick_first_solution
+from ..utils import roundoff
 from ..run_utils import ConfigurationRunWrapper
 from ..run_utils import get_run_orientation
 from ..run_utils import list_orientation_runs
@@ -1105,7 +1105,7 @@ def test_parse_factory_axes(params, context):
 
 
 def test_make_dynamic_instance_raises():
-    non_callable = "hklpy2.misc.DEFAULT_MOTOR_LABELS"
+    non_callable = "hklpy2.utils.DEFAULT_MOTOR_LABELS"
     with pytest.raises(
         TypeError,
         match=re.escape(f"{non_callable!r} is not callable"),

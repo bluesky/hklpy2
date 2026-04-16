@@ -18,7 +18,7 @@ import logging
 from typing import List
 
 from .. import __version__
-from ..misc import IDENTITY_MATRIX_3X3
+from ..utils import IDENTITY_MATRIX_3X3
 from ..typing import Matrix3x3
 from ..typing import NamedFloatDict
 from .base import SolverBase

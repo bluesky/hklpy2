@@ -4,7 +4,7 @@ from contextlib import nullcontext as does_not_raise
 import numpy as np
 import pytest
 
-from ...misc import IDENTITY_MATRIX_3X3
+from ...utils import IDENTITY_MATRIX_3X3
 from ...exceptions import SolverError
 from ...solver_utils import get_solver
 from ...solver_utils import solver_factory

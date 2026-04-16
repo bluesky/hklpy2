@@ -12,7 +12,7 @@ from ophyd import SoftPositioner
 from ..diffract import DiffractometerBase
 from ..diffract import Hklpy2PseudoAxis
 from ..diffract import diffractometer_class_factory
-from ..misc import load_yaml_file
+from ..utils import load_yaml_file
 
 E4CV_CONFIG_FILE = pathlib.Path(__file__).parent / "e4cv_orient.yml"
 HN = Kind.hinted | Kind.normal

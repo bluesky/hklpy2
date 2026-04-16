@@ -17,7 +17,7 @@ from ..diffract import creator
 from ..incident import WavelengthXray
 from ..exceptions import NoForwardSolutions
 from ..exceptions import ReflectionError
-from ..misc import roundoff
+from ..utils import roundoff
 from ..exceptions import CoreError
 from ..user import add_sample
 from ..user import cahkl

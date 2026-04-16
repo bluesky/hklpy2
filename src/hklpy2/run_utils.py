@@ -27,9 +27,9 @@ from deprecated.sphinx import versionadded
 from deprecated.sphinx import versionchanged
 from ophyd import Device
 
-from .misc import DEFAULT_START_KEY
-from .misc import MISSING_HEADER_KEY_MSG
-from .misc import load_yaml_file
+from .utils import DEFAULT_START_KEY
+from .utils import MISSING_HEADER_KEY_MSG
+from .utils import load_yaml_file
 from .typing import KeyValueMap
 
 logger = logging.getLogger(__name__)

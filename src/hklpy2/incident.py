@@ -57,9 +57,9 @@ from ophyd import Signal
 from ophyd import SignalRO
 from ophyd.signal import AttributeSignal
 
-from .misc import INTERNAL_LENGTH_UNITS
-from .misc import INTERNAL_XRAY_ENERGY_UNITS
-from .misc import validate_and_canonical_unit
+from .utils import INTERNAL_LENGTH_UNITS
+from .utils import INTERNAL_XRAY_ENERGY_UNITS
+from .utils import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 DEFAULT_SOURCE_TYPE: str = "Synchrotron X-ray Source"
@@ -291,7 +291,7 @@ class WavelengthXray(Wavelength):
 
     def _to_wavelength(self, value: float) -> float:
         """Convert E to lambda."""
-        from .misc import convert_units
+        from .utils import convert_units
 
         energy = convert_units(
             value,
@@ -306,7 +306,7 @@ class WavelengthXray(Wavelength):
 
     def _to_energy(self, value: float) -> float:
         """Convert lambda to E."""
-        from .misc import convert_units
+        from .utils import convert_units
 
         wavelength = convert_units(
             value,

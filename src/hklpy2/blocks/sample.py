@@ -14,7 +14,7 @@ from typing import Union
 import numpy as np
 from numpy.linalg import norm
 
-from ..misc import unique_name
+from ..utils import unique_name
 from ..typing import Matrix3x3
 from .lattice import Lattice
 from .lattice import LatticeDictType
@@ -71,7 +71,7 @@ class Sample:
         name: str,
         lattice: Lattice,
     ) -> None:
-        from ..misc import IDENTITY_MATRIX_3X3
+        from ..utils import IDENTITY_MATRIX_3X3
         from ..ops import Core
 
         if not isinstance(core, Core):

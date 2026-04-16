@@ -47,12 +47,12 @@ from gi._error import GError
 from numpy import typing as npt
 from pyRestTable import Table
 
-from ..misc import IDENTITY_MATRIX_3X3
 from ..exceptions import NoForwardSolutions
-from ..misc import check_value_in_list
-from ..misc import istype
-from ..misc import roundoff
-from ..misc import unique_name
+from ..utils import IDENTITY_MATRIX_3X3
+from ..utils import check_value_in_list
+from ..utils import istype
+from ..utils import roundoff
+from ..utils import unique_name
 from ..typing import Matrix3x3
 from ..typing import NamedFloatDict
 from .base import SolverBase

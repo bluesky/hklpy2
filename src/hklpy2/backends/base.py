@@ -19,11 +19,11 @@ from deprecated.sphinx import versionadded
 
 from pyRestTable import Table
 
-from ..misc import IDENTITY_MATRIX_3X3
-from ..misc import INTERNAL_ANGLE_UNITS
-from ..misc import INTERNAL_LENGTH_UNITS
-from ..misc import istype
-from ..misc import validate_and_canonical_unit
+from ..utils import IDENTITY_MATRIX_3X3
+from ..utils import INTERNAL_ANGLE_UNITS
+from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import istype
+from ..utils import validate_and_canonical_unit
 from ..typing import KeyValueMap
 from ..typing import Matrix3x3
 from ..typing import NamedFloatDict
@@ -299,8 +299,8 @@ class SolverBase(ABC):
 
         The :class:`~hklpy2.ops.Core` layer iterates over the returned
         list, applies constraint filtering, and passes the survivors to a
-        solution picker (see :func:`~hklpy2.misc.pick_first_solution`,
-        :func:`~hklpy2.misc.pick_closest_solution`).
+        solution picker (see :func:`~hklpy2.utils.pick_first_solution`,
+        :func:`~hklpy2.utils.pick_closest_solution`).
 
         Parameters
         ----------
@@ -398,7 +398,7 @@ class SolverBase(ABC):
 
     @mode.setter
     def mode(self, value: str) -> None:
-        from ..misc import check_value_in_list  # avoid circular import here
+        from ..utils import check_value_in_list  # avoid circular import here
 
         check_value_in_list("Mode", value, self.modes, blank_ok=True)
         self._mode = value

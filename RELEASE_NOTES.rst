@@ -67,6 +67,9 @@ describe future plans.
     * Extract solver discovery machinery from ``misc.py`` into new
       ``hklpy2/solver_utils.py``: ``SOLVER_ENTRYPOINT_GROUP``, ``get_solver``,
       ``solver_factory``, ``solvers``. (:issue:`343`)
+    * Rename remaining ``misc.py`` utilities to ``hklpy2/utils.py`` and delete
+      ``misc.py``; rename ``test_misc.py`` to ``test_utils.py``. Completes the
+      ``misc.py`` refactor. (:issue:`345`, closes :issue:`340`)
     * Move ``move_zone`` and ``scan_zone`` plans from ``hklpy2.blocks.zone`` to
       ``hklpy2.plans`` (canonical plan location). (:issue:`339`)
 

@@ -25,10 +25,10 @@ from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .exceptions import CoreError
 from .exceptions import NoForwardSolutions
-from .misc import axes_to_dict
-from .misc import convert_units
 from .solver_utils import solver_factory
-from .misc import unique_name
+from .utils import axes_to_dict
+from .utils import convert_units
+from .utils import unique_name
 from .typing import AnyAxesType
 from .typing import AxesDict
 from .typing import ConfigHeaderDict

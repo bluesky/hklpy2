@@ -10,7 +10,7 @@ import pytest
 
 from ...blocks.lattice import Lattice
 from ...blocks.reflection import Reflection
-from ...misc import IDENTITY_MATRIX_3X3
+from ...utils import IDENTITY_MATRIX_3X3
 from ..base import SolverBase
 from ..th_tth_q import TH_TTH_Q_GEOMETRY
 from ..th_tth_q import ThTthSolver
