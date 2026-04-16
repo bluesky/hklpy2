@@ -104,7 +104,7 @@ scan plans.
 .. code-block:: Python
    :linenos:
 
-   from hklpy2.misc import ConfigurationRunWrapper
+   from hklpy2.run_utils import ConfigurationRunWrapper
 
    fourc = hklpy2.creator(name="fourc")
 
@@ -134,13 +134,13 @@ scan plans.
 
 Keep in mind these considerations:
 
-1. Use the :class:`hklpy2.misc.ConfigurationRunWrapper` to save configuration
+1. Use the :class:`hklpy2.run_utils.ConfigurationRunWrapper` to save configuration
    as part of every run:
 
    .. code-block:: Python
      :linenos:
 
-     from hklpy2.misc import ConfigurationRunWrapper
+     from hklpy2.run_utils import ConfigurationRunWrapper
      crw = ConfigurationRunWrapper(fourc)
      RE.preprocessors.append(crw.wrapper)
 

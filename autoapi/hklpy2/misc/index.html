@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=364c43d7"></script>
+    <script src="../../../_static/documentation_options.js?v=c28c1457"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -399,6 +399,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">misc</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../ops/index.html">ops</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../plans/index.html">plans</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../run_utils/index.html">run_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../solver_utils/index.html">solver_utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../typing/index.html">typing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user/index.html">user</a></li>
@@ -486,14 +487,8 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.flatten_lists" title="hklpy2.misc.flatten_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">flatten_lists</span></code></a>(xs)</p></td>
 <td><p>Convert nested lists into single list.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.get_run_orientation" title="hklpy2.misc.get_run_orientation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_run_orientation</span></code></a>(run[, name, start_key])</p></td>
-<td><p>Return the orientation information dictionary from a run.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.istype" title="hklpy2.misc.istype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">istype</span></code></a>(value, annotation)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.istype" title="hklpy2.misc.istype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">istype</span></code></a>(value, annotation)</p></td>
 <td><p>Check if 'value' matches the type 'annotation'.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.list_orientation_runs" title="hklpy2.misc.list_orientation_runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_orientation_runs</span></code></a>(catalog[, limit, ...])</p></td>
-<td><p>List the runs with orientation information.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.load_yaml" title="hklpy2.misc.load_yaml"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_yaml</span></code></a>(text)</p></td>
 <td><p>Load YAML from text.</p></td>
@@ -510,16 +505,13 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.roundoff" title="hklpy2.misc.roundoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roundoff</span></code></a>(value[, digits])</p></td>
 <td><p>Round a number to specified precision.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.creator_from_config" title="hklpy2.misc.creator_from_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">creator_from_config</span></code></a>(config)</p></td>
-<td><p>Create a simulated diffractometer from a saved configuration.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.unique_name" title="hklpy2.misc.unique_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique_name</span></code></a>([prefix, length])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.unique_name" title="hklpy2.misc.unique_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique_name</span></code></a>([prefix, length])</p></td>
 <td><p>Short, unique name, first 7 (at most) characters of a unique, random uuid.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.validate_and_canonical_unit" title="hklpy2.misc.validate_and_canonical_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_and_canonical_unit</span></code></a>(value, target_units)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.validate_and_canonical_unit" title="hklpy2.misc.validate_and_canonical_unit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_and_canonical_unit</span></code></a>(value, target_units)</p></td>
 <td><p>Validate that <em>value</em> is a unit convertible to <em>target_units</em>.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_not_parallel</span></code>(hkl, hkl2[, tol])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate_not_parallel</span></code>(hkl, hkl2[, tol])</p></td>
 <td><p>Raise ValueError if two vectors are parallel or anti-parallel.</p></td>
 </tr>
 </tbody>
@@ -528,6 +520,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Device construction helpers have moved to <a class="reference internal" href="../devices/index.html#module-hklpy2.devices" title="hklpy2.devices"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.devices</span></code></a>.
+Run-engine integration has moved to <a class="reference internal" href="../run_utils/index.html#module-hklpy2.run_utils" title="hklpy2.run_utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.run_utils</span></code></a>.
 Solver discovery functions have moved to <a class="reference internal" href="../solver_utils/index.html#module-hklpy2.solver_utils" title="hklpy2.solver_utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.solver_utils</span></code></a>.</p>
 </div>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
@@ -538,123 +531,12 @@ Solver discovery functions have moved to <a class="reference internal" href="../
 </tbody>
 </table>
 </div>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper" title="hklpy2.misc.ConfigurationRunWrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a>(*devices[, knowns])</p></td>
-<td><p>Write configuration of supported device(s) to a bluesky run.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Exception classes have moved to <a class="reference internal" href="../exceptions/index.html#module-hklpy2.exceptions" title="hklpy2.exceptions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.exceptions</span></code></a>.</p>
 </div>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">ConfigurationRunWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">devices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knowns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper" title="Link to this definition">#</a></dt>
-<dd><div class="import-path docutils container">
-<p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.misc.ConfigurationRunWrapper</span></code></p>
-</div>
-<p>Write configuration of supported device(s) to a bluesky run.</p>
-<p>EXAMPLE:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crw</span> <span class="o">=</span> <span class="n">ConfigurationRunWrapper</span><span class="p">(</span><span class="n">sim4c2</span><span class="p">)</span>
-<span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crw</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
-<span class="n">RE</span><span class="p">(</span><span class="n">bp</span><span class="o">.</span><span class="n">rel_scan</span><span class="p">([</span><span class="n">noisy</span><span class="p">],</span> <span class="n">m1</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>Disable the preprocessor:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crw</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># &#39;True&#39; to enable</span>
-</pre></div>
-</div>
-<p>Remove the last preprocessor:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Add another diffractometer:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crw</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e4cv</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.device_names" title="hklpy2.misc.ConfigurationRunWrapper.device_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">device_names</span></code></a></p></td>
-<td><p>Return list of configured device names.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.devices" title="hklpy2.misc.ConfigurationRunWrapper.devices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">devices</span></code></a></p></td>
-<td><p>List of devices to be reported.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.enable" title="hklpy2.misc.ConfigurationRunWrapper.enable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">enable</span></code></a></p></td>
-<td><p>Is it permitted to write device configuration?</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.known_bases" title="hklpy2.misc.ConfigurationRunWrapper.known_bases"><code class="xref py py-obj docutils literal notranslate"><span class="pre">known_bases</span></code></a></p></td>
-<td><p>Known device base classes.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.start_key" title="hklpy2.misc.ConfigurationRunWrapper.start_key"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_key</span></code></a></p></td>
-<td><p>Top-level key in run's metadata dictionary.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.validate" title="hklpy2.misc.ConfigurationRunWrapper.validate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validate</span></code></a>(devices)</p></td>
-<td><p>Verify all are recognized objects.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.misc.ConfigurationRunWrapper.wrapper" title="hklpy2.misc.ConfigurationRunWrapper.wrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">wrapper</span></code></a>(plan)</p></td>
-<td><p>Bluesky plan wrapper (preprocessor).</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<dl class="py property">
-<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.device_names">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">device_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.device_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.device_names" title="Link to this definition">#</a></dt>
-<dd><p>Return list of configured device names.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.devices">
-<span class="sig-name descname"><span class="pre">devices</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Device</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.devices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.devices" title="Link to this definition">#</a></dt>
-<dd><p>List of devices to be reported.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.enable">
-<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">enable</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.enable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.enable" title="Link to this definition">#</a></dt>
-<dd><p>Is it permitted to write device configuration?</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.known_bases">
-<span class="sig-name descname"><span class="pre">known_bases</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Device</span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.known_bases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.known_bases" title="Link to this definition">#</a></dt>
-<dd><p>Known device base classes.</p>
-<p>Any device (base class) that reports its configuration dictionary in
-the <cite>.read_configuration()</cite> method can be added to this tuple.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.start_key">
-<span class="sig-name descname"><span class="pre">start_key</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'diffractometers'</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.start_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.start_key" title="Link to this definition">#</a></dt>
-<dd><p>Top-level key in run’s metadata dictionary.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.validate">
-<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">devices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Device</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.validate" title="Link to this definition">#</a></dt>
-<dd><p>Verify all are recognized objects.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="hklpy2.misc.ConfigurationRunWrapper.wrapper">
-<span class="sig-name descname"><span class="pre">wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterator</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#ConfigurationRunWrapper.wrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.ConfigurationRunWrapper.wrapper" title="Link to this definition">#</a></dt>
-<dd><p>Bluesky plan wrapper (preprocessor).</p>
-<p>Writes device(s) configuration to start document metadata.</p>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">crw</span> <span class="o">=</span> <span class="n">ConfigurationRunWrapper</span><span class="p">(</span><span class="n">e4cv</span><span class="p">)</span>
-<span class="n">RE</span><span class="o">.</span><span class="n">preprocessors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">crw</span><span class="o">.</span><span class="n">wrapper</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="py data">
 <dt class="sig sig-object py" id="hklpy2.misc.DEFAULT_DIGITS">
 <span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_DIGITS</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#DEFAULT_DIGITS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.DEFAULT_DIGITS" title="Link to this definition">#</a></dt>
@@ -760,40 +642,6 @@ the <cite>.read_configuration()</cite> method can be added to this tuple.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="hklpy2.misc.creator_from_config">
-<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">creator_from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#creator_from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.creator_from_config" title="Link to this definition">#</a></dt>
-<dd><div class="import-path docutils container">
-<p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.misc.creator_from_config</span></code></p>
-</div>
-<p>Create a simulated diffractometer from a saved configuration.</p>
-<p>Parses the configuration for the solver, geometry, and axis names, then
-constructs a simulator (all axes are soft positioners — no hardware
-connection) and restores the full orientation (samples, reflections, UB
-matrix, wavelength, constraints) from the configuration.</p>
-<p>PARAMETERS</p>
-<dl class="simple">
-<dt>config<span class="classifier">dict, str, or pathlib.Path</span></dt><dd><p>Configuration dictionary, or path to a YAML configuration file
-previously saved with <code class="docutils literal notranslate"><span class="pre">diffractometer.export()</span></code>.</p>
-</dd>
-</dl>
-<p>RETURNS</p>
-<dl class="simple">
-<dt>DiffractometerBase</dt><dd><p>A fully configured simulated diffractometer instance.</p>
-</dd>
-</dl>
-<p>EXAMPLE:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator_from_config</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>SEE ALSO</p>
-<blockquote>
-<div><p><a class="reference internal" href="../diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> — create a diffractometer from scratch.</p>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="hklpy2.misc.distance_between_pos_tuples">
 <span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">distance_between_pos_tuples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NamedTuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NamedTuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#distance_between_pos_tuples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.distance_between_pos_tuples" title="Link to this definition">#</a></dt>
 <dd><div class="import-path docutils container">
@@ -813,85 +661,6 @@ previously saved with <code class="docutils literal notranslate"><span class="pr
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="hklpy2.misc.get_run_orientation">
-<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">get_run_orientation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_START_KEY</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../typing/index.html#hklpy2.typing.KeyValueMap" title="hklpy2.typing.KeyValueMap"><span class="pre">KeyValueMap</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#get_run_orientation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.get_run_orientation" title="Link to this definition">#</a></dt>
-<dd><div class="import-path docutils container">
-<p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.misc.get_run_orientation</span></code></p>
-</div>
-<p>Return the orientation information dictionary from a run.</p>
-<p>EXAMPLE:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="n">get_run_orientation</span><span class="p">(</span><span class="n">cat</span><span class="p">[</span><span class="mi">9752</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim4c2&quot;</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">3</span><span class="p">]:</span>
-<span class="p">{</span><span class="s1">&#39;_header&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;datetime&#39;</span><span class="p">:</span> <span class="s1">&#39;2025-02-27 15:54:33.364719&#39;</span><span class="p">,</span>
-<span class="s1">&#39;hklpy2_version&#39;</span><span class="p">:</span> <span class="s1">&#39;0.0.26.dev72+gcf9a65a.d20250227&#39;</span><span class="p">,</span>
-<span class="s1">&#39;python_class&#39;</span><span class="p">:</span> <span class="s1">&#39;Hklpy2Diffractometer&#39;</span><span class="p">,</span>
-<span class="s1">&#39;source_type&#39;</span><span class="p">:</span> <span class="s1">&#39;X-ray&#39;</span><span class="p">,</span>
-<span class="s1">&#39;energy_units&#39;</span><span class="p">:</span> <span class="s1">&#39;keV&#39;</span><span class="p">,</span>
-<span class="s1">&#39;energy&#39;</span><span class="p">:</span> <span class="mf">12.398419843856837</span><span class="p">,</span>
-<span class="s1">&#39;wavelength_units&#39;</span><span class="p">:</span> <span class="s1">&#39;angstrom&#39;</span><span class="p">,</span>
-<span class="s1">&#39;wavelength&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span>
-<span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sim4c2&#39;</span><span class="p">,</span>
-<span class="s1">&#39;axes&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;pseudo_axes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">],</span>
-<span class="s1">&#39;real_axes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;omega&#39;</span><span class="p">,</span> <span class="s1">&#39;chi&#39;</span><span class="p">,</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span> <span class="s1">&#39;tth&#39;</span><span class="p">],</span>
-<span class="s1">&#39;axes_xref&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span>
-<span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span>
-<span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span>
-<span class="s1">&#39;omega&#39;</span><span class="p">:</span> <span class="s1">&#39;omega&#39;</span><span class="p">,</span>
-<span class="s1">&#39;chi&#39;</span><span class="p">:</span> <span class="s1">&#39;chi&#39;</span><span class="p">,</span>
-<span class="s1">&#39;phi&#39;</span><span class="p">:</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span>
-<span class="s1">&#39;tth&#39;</span><span class="p">:</span> <span class="s1">&#39;tth&#39;</span><span class="p">},</span>
-<span class="s1">&#39;extra_axes&#39;</span><span class="p">:</span> <span class="p">{}},</span>
-<span class="s1">&#39;sample_name&#39;</span><span class="p">:</span> <span class="s1">&#39;sample&#39;</span><span class="p">,</span>
-<span class="s1">&#39;samples&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;sample&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sample&#39;</span><span class="p">,</span>
-<span class="s1">&#39;lattice&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span>
-    <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span>
-    <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">},</span>
-<span class="s1">&#39;reflections&#39;</span><span class="p">:</span> <span class="p">{},</span>
-<span class="s1">&#39;reflections_order&#39;</span><span class="p">:</span> <span class="p">[],</span>
-<span class="s1">&#39;U&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
-<span class="s1">&#39;UB&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
-<span class="s1">&#39;digits&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}},</span>
-<span class="s1">&#39;constraints&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;omega&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;omega&#39;</span><span class="p">,</span>
-<span class="s1">&#39;low_limit&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
-<span class="s1">&#39;high_limit&#39;</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
-<span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;LimitsConstraint&#39;</span><span class="p">},</span>
-<span class="s1">&#39;chi&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;chi&#39;</span><span class="p">,</span>
-<span class="s1">&#39;low_limit&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
-<span class="s1">&#39;high_limit&#39;</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
-<span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;LimitsConstraint&#39;</span><span class="p">},</span>
-<span class="s1">&#39;phi&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span>
-<span class="s1">&#39;low_limit&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
-<span class="s1">&#39;high_limit&#39;</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
-<span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;LimitsConstraint&#39;</span><span class="p">},</span>
-<span class="s1">&#39;tth&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;tth&#39;</span><span class="p">,</span>
-<span class="s1">&#39;low_limit&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">180.0</span><span class="p">,</span>
-<span class="s1">&#39;high_limit&#39;</span><span class="p">:</span> <span class="mf">180.0</span><span class="p">,</span>
-<span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;LimitsConstraint&#39;</span><span class="p">}},</span>
-<span class="s1">&#39;solver&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hkl_soleil&#39;</span><span class="p">,</span>
-<span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="s2">&quot;HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)&quot;</span><span class="p">,</span>
-<span class="s1">&#39;geometry&#39;</span><span class="p">:</span> <span class="s1">&#39;E4CV&#39;</span><span class="p">,</span>
-<span class="s1">&#39;real_axes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;omega&#39;</span><span class="p">,</span> <span class="s1">&#39;chi&#39;</span><span class="p">,</span> <span class="s1">&#39;phi&#39;</span><span class="p">,</span> <span class="s1">&#39;tth&#39;</span><span class="p">],</span>
-<span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;5.1.2&#39;</span><span class="p">,</span>
-<span class="s1">&#39;engine&#39;</span><span class="p">:</span> <span class="s1">&#39;hkl&#39;</span><span class="p">}}</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>run</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Bluesky run object.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (optional)
-Name of the diffractometer. (default=None, returns all available.)</p></li>
-<li><p><strong>start_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Metadata key where the orientation information is stored in the start
-document.  (default=”diffractometers”)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="hklpy2.misc.istype">
 <span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">istype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#istype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.istype" title="Link to this definition">#</a></dt>
 <dd><div class="import-path docutils container">
@@ -903,46 +672,6 @@ document.  (default=”diffractometers”)</p></li>
 <span class="go">True</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="hklpy2.misc.list_orientation_runs">
-<span class="sig-prename descclassname"><span class="pre">hklpy2.misc.</span></span><span class="sig-name descname"><span class="pre">list_orientation_runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">DEFAULT_START_KEY</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/misc.html#list_orientation_runs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.misc.list_orientation_runs" title="Link to this definition">#</a></dt>
-<dd><div class="import-path docutils container">
-<p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.misc.list_orientation_runs</span></code></p>
-</div>
-<p>List the runs with orientation information.</p>
-<p>EXAMPLE:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">42</span><span class="p">]:</span> <span class="n">list_orientation_runs</span><span class="p">(</span><span class="n">cat</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="s2">&quot;_header.datetime&quot;</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">42</span><span class="p">]:</span>
-    <span class="n">scan_id</span>      <span class="n">uid</span>  <span class="n">sample</span> <span class="n">diffractometer</span> <span class="n">geometry</span>      <span class="n">solver</span>                        <span class="n">date</span>
-<span class="mi">0</span>      <span class="mi">9752</span>  <span class="mi">41</span><span class="n">f71e9</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">33.364719</span>
-<span class="mi">1</span>      <span class="mi">9751</span>  <span class="mf">36e38</span><span class="n">bc</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">33.364719</span>
-<span class="mi">2</span>      <span class="mi">9750</span>  <span class="mf">62e425</span><span class="n">d</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mf">33.364719</span>
-<span class="mi">3</span>      <span class="mi">9749</span>  <span class="mi">18</span><span class="n">b11f0</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mf">55.958929</span>
-<span class="mi">4</span>      <span class="mi">9748</span>  <span class="n">bf9912f</span>  <span class="n">sample</span>         <span class="n">sim4c2</span>     <span class="n">E4CV</span>  <span class="n">hkl_soleil</span>  <span class="mi">2025</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">27</span> <span class="mi">15</span><span class="p">:</span><span class="mi">53</span><span class="p">:</span><span class="mf">55.958929</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Table of orientation runs</strong></p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>Pandas DataFrame object</p>
-</dd>
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>catalog</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><em>object</em></a>) – Catalog of bluesky runs.</p></li>
-<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – Limit the list to at most <code class="docutils literal notranslate"><span class="pre">limit</span></code> runs. (default=10)
-It could take a long time to search an entire catalog.</p></li>
-<li><p><strong>start_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Metadata key where the orientation information is stored in the start
-document.  (default=”diffractometers”)</p></li>
-<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><em>dict</em></a><em>[</em><em>str:str</em><em>]</em>) – Keyword parameters describing data column names to be displayed. The
-value of each column name is the dotted path to the orientation
-information (in the start document’s metadata).</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1091,16 +820,6 @@ Raises ValueError on failure.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.device_names"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.device_names</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.devices"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.devices</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.enable"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.enable</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.known_bases"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.known_bases</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.start_key"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.start_key</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.validate"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.validate()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.ConfigurationRunWrapper.wrapper"><code class="docutils literal notranslate"><span class="pre">ConfigurationRunWrapper.wrapper()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.DEFAULT_DIGITS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_DIGITS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.DEFAULT_MOTOR_LABELS"><code class="docutils literal notranslate"><span class="pre">DEFAULT_MOTOR_LABELS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.DEFAULT_START_KEY"><code class="docutils literal notranslate"><span class="pre">DEFAULT_START_KEY</span></code></a></li>
@@ -1115,12 +834,9 @@ Raises ValueError on failure.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.check_value_in_list"><code class="docutils literal notranslate"><span class="pre">check_value_in_list()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.compare_float_dicts"><code class="docutils literal notranslate"><span class="pre">compare_float_dicts()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.convert_units"><code class="docutils literal notranslate"><span class="pre">convert_units()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.creator_from_config"><code class="docutils literal notranslate"><span class="pre">creator_from_config()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.distance_between_pos_tuples"><code class="docutils literal notranslate"><span class="pre">distance_between_pos_tuples()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.flatten_lists"><code class="docutils literal notranslate"><span class="pre">flatten_lists()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.get_run_orientation"><code class="docutils literal notranslate"><span class="pre">get_run_orientation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.istype"><code class="docutils literal notranslate"><span class="pre">istype()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.list_orientation_runs"><code class="docutils literal notranslate"><span class="pre">list_orientation_runs()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.load_yaml"><code class="docutils literal notranslate"><span class="pre">load_yaml()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.load_yaml_file"><code class="docutils literal notranslate"><span class="pre">load_yaml_file()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.misc.pick_closest_solution"><code class="docutils literal notranslate"><span class="pre">pick_closest_solution()</span></code></a></li>

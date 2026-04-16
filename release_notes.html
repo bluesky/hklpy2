@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=364c43d7"></script>
+    <script src="_static/documentation_options.js?v=c28c1457"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -696,7 +696,7 @@ actions without making changes. (<a class="extlink-issue reference external" hre
 <section id="id16">
 <h3>New Features<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Add <a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.creator_from_config" title="hklpy2.misc.creator_from_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator_from_config()</span></code></a> to create a simulated
+<li><p>Add <code class="xref py py-func docutils literal notranslate"><span class="pre">creator_from_config()</span></code> to create a simulated
 diffractometer (no hardware) from a saved configuration file or dict.
 (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/210">issue #210</a>)</p></li>
 </ul>
@@ -717,9 +717,9 @@ extensions. (<a class="extlink-issue reference external" href="https://github.co
 <code class="docutils literal notranslate"><span class="pre">AxesTuple</span></code>, <code class="docutils literal notranslate"><span class="pre">AnyAxesType</span></code>, <code class="docutils literal notranslate"><span class="pre">BlueskyPlanType</span></code>, <code class="docutils literal notranslate"><span class="pre">INPUT_VECTOR</span></code>)
 from <a class="reference internal" href="autoapi/hklpy2/misc/index.html#module-hklpy2.misc" title="hklpy2.misc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.misc</span></code></a> into <a class="reference internal" href="autoapi/hklpy2/typing/index.html#module-hklpy2.typing" title="hklpy2.typing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.typing</span></code></a>; backward-compatible
 re-exports remain in <a class="reference internal" href="autoapi/hklpy2/misc/index.html#module-hklpy2.misc" title="hklpy2.misc"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hklpy2.misc</span></code></a>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/252">issue #252</a>)</p></li>
-<li><p>Export <a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.get_run_orientation" title="hklpy2.misc.get_run_orientation"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_run_orientation()</span></code></a> and
-<a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.list_orientation_runs" title="hklpy2.misc.list_orientation_runs"><code class="xref py py-func docutils literal notranslate"><span class="pre">list_orientation_runs()</span></code></a> at the top-level <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code>
-namespace, consistent with <a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.ConfigurationRunWrapper" title="hklpy2.misc.ConfigurationRunWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code></a>.
+<li><p>Export <code class="xref py py-func docutils literal notranslate"><span class="pre">get_run_orientation()</span></code> and
+<code class="xref py py-func docutils literal notranslate"><span class="pre">list_orientation_runs()</span></code> at the top-level <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code>
+namespace, consistent with <code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurationRunWrapper</span></code>.
 (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/231">issue #231</a>)</p></li>
 <li><p>Add how-to guide for choosing the default <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solution picker
 (<code class="docutils literal notranslate"><span class="pre">pick_first_solution</span></code>, <code class="docutils literal notranslate"><span class="pre">pick_closest_solution</span></code>, or custom).
@@ -746,7 +746,7 @@ subsequent <code class="docutils literal notranslate"><span class="pre">forward(
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">LimitsConstraint.valid()</span></code> rejecting solver solutions that land just
 outside a limit boundary due to floating-point arithmetic; increase
 <code class="docutils literal notranslate"><span class="pre">ENDPOINT_TOLERANCE</span></code> from <code class="docutils literal notranslate"><span class="pre">1e-7</span></code> to <code class="docutils literal notranslate"><span class="pre">1e-4</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/242">issue #242</a>)</p></li>
-<li><p>Fix <a class="reference internal" href="autoapi/hklpy2/misc/index.html#hklpy2.misc.creator_from_config" title="hklpy2.misc.creator_from_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator_from_config()</span></code></a> restoring reflections with
+<li><p>Fix <code class="xref py py-func docutils literal notranslate"><span class="pre">creator_from_config()</span></code> restoring reflections with
 wrong axis values when YAML serialises <code class="docutils literal notranslate"><span class="pre">reals</span></code> dict keys alphabetically
 instead of in physical axis order. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/243">issue #243</a>)</p></li>
 <li><p>Fix error message bugs: missing f-string prefix in <code class="docutils literal notranslate"><span class="pre">hkl_soleil.py</span></code>,
