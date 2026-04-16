@@ -35,6 +35,12 @@ describe future plans.
 
     Release expected by 2026-H2.
 
+    Maintenance
+    -----------
+
+    * Add ``forward()`` and ``inverse()`` throughput benchmark (``test_i221.py``)
+      establishing 183 ops/sec baseline; target ≥2,000 ops/sec. (:issue:`221`)
+
     Fixes
     -----
 

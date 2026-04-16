@@ -138,6 +138,17 @@ PRs opened or modified by automated agents must follow the "Agent pytest style" 
       - `from contextlib import nullcontext as does_not_raise`
     - do not separate success and errors tests into different test functions
     - do not separate success and errors tests using try..except
+- When a parameter set contains axis positions (real or pseudo), prefer a
+  `dict` with named axes over a bare tuple, so the intent is self-documenting:
+  ```py
+  # preferred
+  dict(reals=dict(omega=-145, chi=0, phi=0, tth=69), ...)
+  # avoid
+  dict(reals=(-145, 0, 0, 69), ...)
+  ```
+  Use `sim.inverse(**parms["reals"])` (or `sim.forward(**parms["pseudos"])`)
+  to unpack the dict in the test body.  A bare tuple is acceptable only when
+  the axis names are not meaningful in context (e.g. a generic zeros vector).
 
 ## Inputs & outputs
 
