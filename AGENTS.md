@@ -233,6 +233,12 @@ The `Makefile` `pre` target also exports this variable automatically.
   ``Add ``scan_psi()```  sorts as ``"Add scan_psi()"`` (after ``"Add s"``),
   placing it after entries that begin with ``"Add h"``.
 
+## Documentation: RST Style
+
+- RST title underlines (and overlines) must be **at least as long** as the
+  title text.  Count the characters and match exactly — a one-character
+  shortfall is a silent Sphinx build warning that can break rendered output.
+
 ## Documentation: Architecture Diagram
 
 The package architecture diagram lives in
