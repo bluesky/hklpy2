@@ -151,7 +151,10 @@ exclude_also = [
 ]
 
 [tool.pytest.ini_options]
-addopts = ["--import-mode=importlib"]
+addopts = ["--import-mode=importlib", "-m", "not benchmark"]
+markers = [
+    "benchmark: throughput benchmark tests; excluded from default runs (deselect with '-m not benchmark')",
+]
 # filterwarnings = [
 #   # Warnings inherited from upstream packages.
 #   "ignore:.*'wheel' package is no longer the canonical*:DeprecationWarning",

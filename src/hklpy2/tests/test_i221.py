@@ -25,6 +25,7 @@ TARGET_OPS_PER_SEC = 2_000
 MIN_OPS_PER_SEC = TARGET_OPS_PER_SEC * 0.9
 
 
+@pytest.mark.benchmark
 @pytest.mark.parametrize(
     "parms, context",
     [
@@ -91,6 +92,7 @@ def test_forward_throughput(parms, context):
         )
 
 
+@pytest.mark.benchmark
 @pytest.mark.parametrize(
     "parms, context",
     [
