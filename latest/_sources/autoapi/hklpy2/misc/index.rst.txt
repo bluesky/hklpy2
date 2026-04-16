@@ -9,11 +9,6 @@ misc
 
    Miscellaneous Support.
 
-   .. rubric: Base classes
-   .. autosummary::
-
-       ~VirtualPositionerBase
-
    .. rubric: Functions
    .. autosummary::
 
@@ -21,10 +16,7 @@ misc
        ~check_value_in_list
        ~compare_float_dicts
        ~convert_units
-       ~define_real_axis
-       ~dict_device_factory
        ~distance_between_pos_tuples
-       ~dynamic_import
        ~flatten_lists
        ~get_run_orientation
        ~get_solver
@@ -32,9 +24,6 @@ misc
        ~list_orientation_runs
        ~load_yaml
        ~load_yaml_file
-       ~make_component
-       ~make_dynamic_instance
-       ~parse_factory_axes
        ~pick_closest_solution
        ~pick_first_solution
        ~roundoff
@@ -44,6 +33,10 @@ misc
        ~unique_name
        ~validate_and_canonical_unit
        ~validate_not_parallel
+
+   .. note::
+
+       Device construction helpers have moved to :mod:`hklpy2.devices`.
 
    .. rubric: Symbols
    .. autosummary::
@@ -56,21 +49,9 @@ misc
 
        ~ConfigurationRunWrapper
 
-   .. rubric: Custom Exceptions
-   .. autosummary::
+   .. note::
 
-       ~Hklpy2Error
-       ~ConfigurationError
-       ~ConstraintsError
-       ~CoreError
-       ~DiffractometerError
-       ~LatticeError
-       ~NoForwardSolutions
-       ~ReflectionError
-       ~SampleError
-       ~SolverError
-
-
+       Exception classes have moved to :mod:`hklpy2.exceptions`.
 
 
 
@@ -81,19 +62,6 @@ misc
 
 Module Contents
 ---------------
-
-.. py:exception:: ConfigurationError
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.ConfigurationError``
-
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :mod:`hklpy2.blocks.configure`.
-
 
 .. py:class:: ConfigurationRunWrapper(*devices, knowns=None)
 
@@ -193,32 +161,6 @@ Module Contents
 
 
 
-.. py:exception:: ConstraintsError
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.ConstraintsError``
-
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :mod:`hklpy2.blocks.constraints`.
-
-
-.. py:exception:: CoreError
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.CoreError``
-
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :class:`hklpy2.ops.Core`.
-
-
 .. py:data:: DEFAULT_DIGITS
    :type:  int
    :value: 4
@@ -234,32 +176,6 @@ Module Contents
 .. py:data:: DEFAULT_START_KEY
    :type:  str
    :value: 'diffractometers'
-
-
-.. py:exception:: DiffractometerError
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.DiffractometerError``
-
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`.
-
-
-.. py:exception:: Hklpy2Error
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.Hklpy2Error``
-
-
-   Bases: :py:obj:`Exception`
-
-
-   Any exception from the |hklpy2| package.
 
 
 .. py:data:: IDENTITY_MATRIX_3X3
@@ -284,19 +200,6 @@ Module Contents
    :value: 'keV'
 
 
-.. py:exception:: LatticeError
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.LatticeError``
-
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :mod:`hklpy2.blocks.lattice`.
-
-
 .. py:data:: MISSING_HEADER_KEY_MSG
    :type:  str
    :value: "Configuration is missing '_header' key."
@@ -304,35 +207,9 @@ Module Contents
 
    Error message for missing _header key in configuration dicts.
 
-.. py:exception:: NoForwardSolutions
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.NoForwardSolutions``
-
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   A solver did not find any ``forward()`` solutions.
-
-
 .. py:data:: PINT_ERRORS
 
    Exception from pint that we are trapping here.
-
-.. py:exception:: ReflectionError
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.ReflectionError``
-
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :mod:`hklpy2.blocks.reflection`.
-
 
 .. py:data:: SOLVER_ENTRYPOINT_GROUP
    :type:  str
@@ -341,70 +218,7 @@ Module Contents
 
    Name by which |hklpy2| |solver| classes are grouped.
 
-.. py:exception:: SampleError
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.SampleError``
-
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from :mod:`hklpy2.blocks.sample`.
-
-
-.. py:exception:: SolverError
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.SolverError``
-
-
-   Bases: :py:obj:`Hklpy2Error`
-
-
-   Custom exceptions from a |solver|.
-
-
 .. py:data:: UREG
-
-.. py:class:: VirtualPositionerBase(*, physical_name: str = '', **kwargs)
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.VirtualPositionerBase``
-
-
-   Bases: :py:obj:`ophyd.SoftPositioner`
-
-
-   Base class for a diffractometer's virtual axis.
-
-   This base class also serves as an example where the virtual axis is twice
-   the value of the physical axis.  It is used as a Component of a
-   'DiffractometerBase' definition.  The ``physical_name`` is the name of a
-   sibling positioner attribute.
-
-
-   .. py:method:: forward(physical: float) -> float
-
-      Return virtual position from physical position.
-
-      Subclass should override.
-
-
-
-   .. py:method:: inverse(virtual: float) -> float
-
-      Return physical position from virtual position.
-
-      Subclass should override.
-
-
-
-   .. py:attribute:: physical
-
 
 .. py:function:: axes_to_dict(input: ~hklpy2.typing.AnyAxesType, names: list[str]) -> ~hklpy2.typing.AxesDict
 
@@ -496,27 +310,6 @@ Module Contents
        :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
 
 
-.. py:function:: define_real_axis(specs: Union[None, str, ~hklpy2.typing.KeyValueMap], kwargs: ~hklpy2.typing.KeyValueMap) -> tuple[str, Sequence, Mapping]
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.define_real_axis``
-
-
-   Return class and kwargs of a real axis from its 'specs'.
-
-
-.. py:function:: dict_device_factory(data: ~hklpy2.typing.KeyValueMap, **kwargs: Any) -> type
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.dict_device_factory``
-
-
-   Create a ``DictionaryDevice()`` class using the supplied dictionary.
-
-   .. index:: factory; dict_device_factory, dict_device_factory
-
 .. py:function:: distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple) -> float
 
    .. container:: import-path
@@ -525,29 +318,6 @@ Module Contents
 
 
    Return the RMS distance between 'pos1' and 'pos2'.
-
-
-.. py:function:: dynamic_import(full_path: str) -> type
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.dynamic_import``
-
-
-   Import the object given its import path as text.
-
-   Motivated by specification of class names for plugins
-   when using ``apstools.devices.ad_creator()``.
-
-   EXAMPLES::
-
-       klass = dynamic_import("ophyd.EpicsMotor")
-       m1 = klass("gp:m1", name="m1")
-
-       creator = dynamic_import("hklpy2.diffract.creator")
-       fourc = creator(name="fourc")
-
-   From the `apstools <https://github.com/BCDA-APS/apstools>`_ package.
 
 
 .. py:function:: flatten_lists(xs: Sequence[Union[bytes, ~collections.abc.Iterable, str]]) -> ~hklpy2.typing.BlueskyPlanType
@@ -727,38 +497,6 @@ Module Contents
 
 
    Return contents of a YAML file as a Python object.
-
-
-.. py:function:: make_component(call_name: str, *args: Any, **kwargs: Any) -> ~ophyd.Component
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.make_component``
-
-
-   Create an Component for a custom ophyd Device class.
-
-
-.. py:function:: make_dynamic_instance(call_name: str, *args: Any, **kwargs: Any) -> Any
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.make_dynamic_instance``
-
-
-   Return an instance of the Python 'call_name'.
-
-
-.. py:function:: parse_factory_axes(*, space: Optional[str] = None, axes: Union[~hklpy2.typing.KeyValueMap, None, Sequence[str]] = None, order: Optional[Sequence[str]] = None, canonical: Optional[Sequence[str]] = None, labels: Optional[Sequence[str]] = None, **_ignored: Any) -> Mapping[str, Union[~ophyd.Component, Sequence[str]]]
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.parse_factory_axes``
-
-
-   Parse a set of axis specifications, return Device class attributes.
-
-   Called from the diffract.diffractometer_class_factory().
 
 
 .. py:function:: pick_closest_solution(position: NamedTuple, solutions: list[NamedTuple]) -> NamedTuple
