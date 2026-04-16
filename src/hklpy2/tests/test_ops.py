@@ -11,11 +11,11 @@ import pytest
 
 from ..diffract import DiffractometerBase
 from ..diffract import creator
-from ..misc import ConfigurationError
-from ..misc import ReflectionError
+from ..exceptions import ConfigurationError
+from ..exceptions import ReflectionError
 from ..ops import DEFAULT_SAMPLE_NAME
 from ..ops import Core
-from ..ops import CoreError
+from ..exceptions import CoreError
 from ..tests.models import add_oriented_vibranium_to_e4cv
 from ..user import set_diffractometer
 from ..user import setor

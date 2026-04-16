@@ -38,18 +38,31 @@ describe future plans.
     Fixes
     -----
 
-    * Fix ``AttributeError`` raised by non-``hkl_soleil`` solvers when ``forward()`` calls ``set_reals()``: add no-op ``set_reals()`` to ``SolverBase``. (:issue:`347`)
-    * Fix silent UB loss in non-``hkl_soleil`` solvers: add ``U`` and ``UB`` getter/setter pair to ``SolverBase`` that stores orientation state. (:issue:`348`)
+    * Fix ``AttributeError`` raised by non-``hkl_soleil`` solvers when
+      ``forward()`` calls ``set_reals()``: add no-op ``set_reals()`` to
+      ``SolverBase``. (:issue:`347`)
+    * Fix silent UB loss in non-``hkl_soleil`` solvers: add ``U`` and ``UB``
+      getter/setter pair to ``SolverBase`` that stores orientation state.
+      (:issue:`348`)
 
     Deprecations
     ------------
 
-    * Deprecate ``move_zone`` and ``scan_zone`` imports from ``hklpy2.blocks.zone``; use ``hklpy2.plans`` instead. (:issue:`339`)
+    * Deprecate ``move_zone`` and ``scan_zone`` imports from
+      ``hklpy2.blocks.zone``; use ``hklpy2.plans`` instead. (:issue:`339`)
 
     Maintenance
     -----------
 
-    * Move ``move_zone`` and ``scan_zone`` plans from ``hklpy2.blocks.zone`` to ``hklpy2.plans`` (canonical plan location). (:issue:`339`)
+    * Extract all custom exception classes from ``misc.py`` into new
+      ``hklpy2/exceptions.py``; update all internal imports to use
+      ``hklpy2.exceptions`` directly. (:issue:`341`)
+    * Extract ophyd device construction helpers from ``misc.py`` into new
+      ``hklpy2/devices.py``: ``VirtualPositionerBase``, ``define_real_axis``,
+      ``dict_device_factory``, ``dynamic_import``, ``make_component``,
+      ``make_dynamic_instance``, ``parse_factory_axes``. (:issue:`342`)
+    * Move ``move_zone`` and ``scan_zone`` plans from ``hklpy2.blocks.zone`` to
+      ``hklpy2.plans`` (canonical plan location). (:issue:`339`)
 
 0.5.2
 #####

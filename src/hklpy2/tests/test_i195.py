@@ -25,7 +25,7 @@ from numpy.testing import assert_almost_equal
 
 from ..blocks.lattice import SI_LATTICE_PARAMETER
 from ..diffract import creator
-from ..misc import NoForwardSolutions
+from ..exceptions import NoForwardSolutions
 
 
 @pytest.mark.parametrize(

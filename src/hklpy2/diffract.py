@@ -46,7 +46,7 @@ from .incident import WavelengthXray
 from .misc import DEFAULT_DIGITS
 from .misc import INTERNAL_ANGLE_UNITS
 from .misc import MISSING_HEADER_KEY_MSG
-from .misc import DiffractometerError
+from .exceptions import DiffractometerError
 from .misc import load_yaml_file
 from .misc import pick_first_solution
 from .misc import roundoff
@@ -1166,10 +1166,10 @@ def diffractometer_class_factory(
 
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     """
+    from .devices import dynamic_import
+    from .devices import make_component
+    from .devices import parse_factory_axes
     from .misc import DEFAULT_MOTOR_LABELS
-    from .misc import dynamic_import
-    from .misc import make_component
-    from .misc import parse_factory_axes
     from .misc import solver_factory
 
     if not isinstance(pseudos, list):

@@ -6,7 +6,7 @@ import pytest
 
 from ...diffract import creator
 from ...misc import INTERNAL_LENGTH_UNITS
-from ...misc import ConfigurationError
+from ...exceptions import ConfigurationError
 from ...tests.models import add_oriented_vibranium_to_e4cv
 from ..reflection import DEFAULT_REFLECTION_DIGITS
 from ..reflection import Reflection

@@ -48,7 +48,7 @@ from numpy import typing as npt
 from pyRestTable import Table
 
 from ..misc import IDENTITY_MATRIX_3X3
-from ..misc import NoForwardSolutions
+from ..exceptions import NoForwardSolutions
 from ..misc import check_value_in_list
 from ..misc import istype
 from ..misc import roundoff

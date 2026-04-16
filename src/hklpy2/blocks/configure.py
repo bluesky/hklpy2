@@ -11,7 +11,7 @@ Export and restore sample UB matrix and other diffractometer configuration.
 import logging
 from typing import Any
 
-from ..misc import ConfigurationError
+from ..exceptions import ConfigurationError
 from ..typing import KeyValueMap
 
 logger = logging.getLogger(__name__)

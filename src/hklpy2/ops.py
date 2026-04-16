@@ -23,8 +23,8 @@ from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
-from .misc import CoreError
-from .misc import NoForwardSolutions
+from .exceptions import CoreError
+from .exceptions import NoForwardSolutions
 from .misc import axes_to_dict
 from .misc import convert_units
 from .misc import solver_factory

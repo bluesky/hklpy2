@@ -1,6 +1,6 @@
 """Additional support for hkl_soleil solver."""
 
-from ..misc import SolverError
+from ..exceptions import SolverError
 
 
 def setup_libhkl(system: str, library: str, version: str) -> object:

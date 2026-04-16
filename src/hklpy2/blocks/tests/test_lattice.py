@@ -4,7 +4,7 @@ from contextlib import nullcontext as does_not_raise
 import numpy as np
 import pytest
 
-from ...misc import LatticeError
+from ...exceptions import LatticeError
 from ..lattice import Lattice
 
 

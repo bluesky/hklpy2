@@ -41,8 +41,8 @@ from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .diffract import DiffractometerBase
-from .misc import NoForwardSolutions
-from .ops import CoreError
+from .exceptions import CoreError
+from .exceptions import NoForwardSolutions
 from .typing import NUMERIC
 from .typing import AxesDict
 from .typing import AxesTuple
