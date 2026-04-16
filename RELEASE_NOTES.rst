@@ -40,6 +40,8 @@ describe future plans.
 
     * Add analyzer how-to guide: crystal analyzer as additional positioners
       on the detector arm, including save/restore. (:issue:`222`)
+    * Save auxiliary axes in ``export()`` config; ``creator_from_config()``
+      restores them automatically. (:issue:`361`)
     * Add performance guide: factors affecting ``forward()``/``inverse()``
       throughput for diffractometer users. (:issue:`221`)
 

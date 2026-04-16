@@ -145,6 +145,7 @@ class Core:
                 "real_axes": self.diffractometer.real_axis_names,
                 "axes_xref": self.axes_xref,
                 "extra_axes": self.all_extras,
+                "auxiliary_axes": self.diffractometer.auxiliary_axis_names,
             },
             "digits": self.diffractometer.digits,
             "sample_name": self.sample.name,
