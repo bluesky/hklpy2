@@ -11,7 +11,6 @@ Miscellaneous Support.
     ~distance_between_pos_tuples
     ~flatten_lists
     ~get_run_orientation
-    ~get_solver
     ~istype
     ~list_orientation_runs
     ~load_yaml
@@ -20,8 +19,6 @@ Miscellaneous Support.
     ~pick_first_solution
     ~roundoff
     ~creator_from_config
-    ~solver_factory
-    ~solvers
     ~unique_name
     ~validate_and_canonical_unit
     ~validate_not_parallel
@@ -29,12 +26,12 @@ Miscellaneous Support.
 .. note::
 
     Device construction helpers have moved to :mod:`hklpy2.devices`.
+    Solver discovery functions have moved to :mod:`hklpy2.solver_utils`.
 
 .. rubric: Symbols
 .. autosummary::
 
     ~IDENTITY_MATRIX_3X3
-    ~SOLVER_ENTRYPOINT_GROUP
 
 .. rubric: Custom Preprocessors
 .. autosummary::
@@ -56,7 +53,7 @@ import sys
 import uuid
 import warnings
 from collections.abc import Iterable
-from importlib.metadata import entry_points
+
 
 from deprecated.sphinx import versionadded
 from deprecated.sphinx import versionchanged
@@ -77,7 +74,6 @@ import yaml
 from ophyd import Device
 
 from .exceptions import NoForwardSolutions
-from .exceptions import SolverError
 from .typing import AnyAxesType
 from .typing import AxesArray
 from .typing import AxesDict
@@ -103,7 +99,6 @@ __all__ = [
     "INTERNAL_XRAY_ENERGY_UNITS",
     "MISSING_HEADER_KEY_MSG",
     "PINT_ERRORS",
-    "SOLVER_ENTRYPOINT_GROUP",
     "UREG",
     # Classes
     "ConfigurationRunWrapper",
@@ -116,7 +111,6 @@ __all__ = [
     "distance_between_pos_tuples",
     "flatten_lists",
     "get_run_orientation",
-    "get_solver",
     "istype",
     "list_orientation_runs",
     "load_yaml",
@@ -124,8 +118,6 @@ __all__ = [
     "pick_closest_solution",
     "pick_first_solution",
     "roundoff",
-    "solver_factory",
-    "solvers",
     "unique_name",
     "validate_and_canonical_unit",
 ]
@@ -137,9 +129,6 @@ IDENTITY_MATRIX_3X3: Matrix3x3 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
 
 MISSING_HEADER_KEY_MSG: str = "Configuration is missing '_header' key."
 """Error message for missing _header key in configuration dicts."""
-
-SOLVER_ENTRYPOINT_GROUP: str = "hklpy2.solver"
-"""Name by which |hklpy2| |solver| classes are grouped."""
 
 DEFAULT_DIGITS: int = 4
 DEFAULT_START_KEY: str = "diffractometers"
@@ -419,23 +408,6 @@ def flatten_lists(
             yield from flatten_lists(x)
         else:
             yield x
-
-
-def get_solver(solver_name: str) -> "SolverBase":
-    """
-    Load a Solver class from a named entry point.
-
-    ::
-
-        import hklpy2
-        SolverClass = hklpy2.get_solver("hkl_soleil")
-        libhkl_solver = SolverClass()
-    """
-    if solver_name not in solvers():
-        raise SolverError(f"{solver_name=!r} unknown.  Pick one of: {solvers()!r}")
-    logger.debug("Loading solver %r from entry points", solver_name)
-    entries = entry_points(group=SOLVER_ENTRYPOINT_GROUP)
-    return entries[solver_name].load()
 
 
 @versionadded(
@@ -720,33 +692,6 @@ def pick_first_solution(
 def roundoff(value: float, digits=4) -> float:
     """Round a number to specified precision."""
     return round(value, ndigits=digits) or 0  # "-0" becomes "0"
-
-
-def solver_factory(
-    solver_name: str,
-    geometry: str,
-    **kwargs: Mapping,
-) -> "SolverBase":
-    """
-    Create a |solver| object with geometry and axes.
-    """
-    logger.debug(
-        "Creating solver %r geometry=%r kwargs=%r", solver_name, geometry, kwargs
-    )
-    solver_class = get_solver(solver_name)
-    return solver_class(geometry, **kwargs)
-
-
-def solvers() -> Mapping[str, "SolverBase"]:
-    """
-    Dictionary of available Solver classes, mapped by entry point name.
-
-    ::
-
-        import hklpy2
-        print(hklpy2.solvers())
-    """
-    return {ep.name: ep.value for ep in entry_points(group=SOLVER_ENTRYPOINT_GROUP)}
 
 
 @versionadded(

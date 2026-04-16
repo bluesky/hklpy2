@@ -3,7 +3,7 @@ import pytest
 from .. import SolverBase as AppBase
 from ..backends.base import SolverBase as BackendBase
 from ..backends.no_op import NoOpSolver as BackendSolver
-from ..misc import get_solver
+from ..solver_utils import get_solver
 from . import NO_OP_SOLVER_TYPE_STR
 
 

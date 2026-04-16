@@ -61,6 +61,9 @@ describe future plans.
       ``hklpy2/devices.py``: ``VirtualPositionerBase``, ``define_real_axis``,
       ``dict_device_factory``, ``dynamic_import``, ``make_component``,
       ``make_dynamic_instance``, ``parse_factory_axes``. (:issue:`342`)
+    * Extract solver discovery machinery from ``misc.py`` into new
+      ``hklpy2/solver_utils.py``: ``SOLVER_ENTRYPOINT_GROUP``, ``get_solver``,
+      ``solver_factory``, ``solvers``. (:issue:`343`)
     * Move ``move_zone`` and ``scan_zone`` plans from ``hklpy2.blocks.zone`` to
       ``hklpy2.plans`` (canonical plan location). (:issue:`339`)
 

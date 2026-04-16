@@ -1170,7 +1170,7 @@ def diffractometer_class_factory(
     from .devices import make_component
     from .devices import parse_factory_axes
     from .misc import DEFAULT_MOTOR_LABELS
-    from .misc import solver_factory
+    from .solver_utils import solver_factory
 
     if not isinstance(pseudos, list):
         raise TypeError(f"Expected a list.  Received {pseudos=!r}")

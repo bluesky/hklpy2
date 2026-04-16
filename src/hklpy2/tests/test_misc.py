@@ -38,7 +38,7 @@ from ..misc import convert_units
 from ..misc import distance_between_pos_tuples
 from ..misc import flatten_lists
 from ..misc import get_run_orientation
-from ..misc import get_solver
+from ..solver_utils import get_solver
 from ..misc import istype
 from ..misc import list_orientation_runs
 from ..misc import load_yaml_file
