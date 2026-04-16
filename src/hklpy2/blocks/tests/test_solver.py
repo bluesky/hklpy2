@@ -3,7 +3,7 @@ import re
 
 import pytest
 
-from ...misc import get_solver
+from ...solver_utils import get_solver
 
 
 @pytest.mark.parametrize(

@@ -27,7 +27,7 @@ from .exceptions import CoreError
 from .exceptions import NoForwardSolutions
 from .misc import axes_to_dict
 from .misc import convert_units
-from .misc import solver_factory
+from .solver_utils import solver_factory
 from .misc import unique_name
 from .typing import AnyAxesType
 from .typing import AxesDict

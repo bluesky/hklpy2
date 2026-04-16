@@ -6,8 +6,8 @@ import pytest
 
 from ...misc import IDENTITY_MATRIX_3X3
 from ...exceptions import SolverError
-from ...misc import get_solver
-from ...misc import solver_factory
+from ...solver_utils import get_solver
+from ...solver_utils import solver_factory
 from ..base import SolverBase
 from ..th_tth_q import BISECTOR_MODE
 from ..th_tth_q import TH_TTH_Q_GEOMETRY
