@@ -50,6 +50,10 @@ describe future plans.
     Fixes
     -----
 
+    * Fix ``forward()`` throughput: from ~183 to >2,000 ops/sec via
+      ``convert_units()`` short-circuit, ``axes_xref_reversed`` cache, and
+      eliminating double ``update_solver()`` per call. (:issue:`221`)
+
     * Fix stale ``from hklpy2.misc import`` in ``hkl_soleil-ub_set.ipynb``
       (now ``hklpy2.utils``). (:issue:`353`)
 
