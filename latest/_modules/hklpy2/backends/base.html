@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=9b32c5dc"></script>
+    <script src="../../../_static/documentation_options.js?v=7b5c4000"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -500,6 +500,12 @@
 <span class="sd">        ~refineLattice</span>
 <span class="sd">        ~removeAllReflections</span>
 
+<span class="sd">    .. rubric:: Python Methods (concrete, overridable)</span>
+
+<span class="sd">    .. autosummary::</span>
+
+<span class="sd">        ~set_reals</span>
+
 <span class="sd">    .. rubric:: Geometry Registry</span>
 
 <span class="sd">    .. autosummary::</span>
@@ -894,6 +900,32 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.removeAllReflections">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">removeAllReflections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all reflections.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="SolverBase.set_reals">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.set_reals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_reals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set current real-axis values in the solver&#39;s internal geometry object.</span>
+
+<span class="sd">        This method is called by :meth:`~hklpy2.ops.Core.forward` to push</span>
+<span class="sd">        the current motor positions (or preset values for constant axes) into</span>
+<span class="sd">        the solver before computing forward-calculation solutions.  Solvers</span>
+<span class="sd">        that maintain an internal geometry object with real-axis state (such</span>
+<span class="sd">        as ``hkl_soleil``, which calls ``axis_values_set`` on its libhkl</span>
+<span class="sd">        geometry) **must** override this method.</span>
+
+<span class="sd">        The default implementation is a deliberate no-op so that solvers</span>
+<span class="sd">        which do not require real-axis state (e.g. pure function-based</span>
+<span class="sd">        backends) can inherit from :class:`SolverBase` without needing to</span>
+<span class="sd">        define this method.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        reals : NamedFloatDict</span>
+<span class="sd">            Dictionary mapping solver real-axis names to their current values</span>
+<span class="sd">            (in the solver&#39;s internal angle units).</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
 
     <span class="nd">@property</span>
