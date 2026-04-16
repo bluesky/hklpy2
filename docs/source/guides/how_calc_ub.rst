@@ -26,6 +26,12 @@ resetting it.
    :ref:`guide.design` — explanation of the :math:`B`, :math:`U`, and
    :math:`UB` matrices.
 
+   :doc:`/examples/hkl_soleil-ub_calc` — executable notebook: compute
+   :math:`UB` from two reflections using the ``hkl_soleil`` solver.
+
+   :doc:`/examples/hkl_soleil-ub_set` — executable notebook: set
+   :math:`UB` directly from a known matrix.
+
 Setup
 -----
 
