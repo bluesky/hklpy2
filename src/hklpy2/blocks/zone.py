@@ -20,11 +20,11 @@ SPEC equivalents
     ~zonespace
     ~zone_series
 
-.. deprecated::
+.. note::
 
     :func:`move_zone` and :func:`scan_zone` have moved to :mod:`hklpy2.plans`.
-    Importing them from :mod:`hklpy2.blocks.zone` is deprecated and will be
-    removed in a future release.
+    Importing them from :mod:`hklpy2.blocks.zone` emits a
+    :exc:`DeprecationWarning` and will be removed in a future release.
 """
 
 import logging
