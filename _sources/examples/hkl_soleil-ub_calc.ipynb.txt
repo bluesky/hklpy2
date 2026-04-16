@@ -13,6 +13,18 @@
   },
   {
    "cell_type": "markdown",
+   "id": "crossref-how-calc-ub",
+   "metadata": {},
+   "source": [
+    "```{seealso}\n",
+    "The how-to guide [How to Compute and Set the UB Matrix](../guides/how_calc_ub.rst) ",
+    "covers the same workflow in prose form and includes additional patterns ",
+    "such as setting UB directly and refining the lattice.\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "markdown",
    "metadata": {},
    "source": [
     "## Create a diffractometer object\n",
@@ -96,9 +108,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "Add two non-parallel reflections.  Here, just the values of the pseudos and\n",
-    "reals are specified as Python tuples, in the exact order expected by the\n",
-    "*solver* geometry."
+    "Add two non-parallel reflections.  The motor positions are specified\n",
+    "as a dictionary of named real-axis values, making the example readable\n",
+    "regardless of the solver's internal axis order."
    ]
   },
   {
@@ -108,10 +120,14 @@
    "outputs": [],
    "source": [
     "r100 = diffractometer.add_reflection(\n",
-    "    (1, 0, 0), (-145.451, 5, -5, 69.0966), name=\"(100)\"\n",
+    "    (1, 0, 0),\n",
+    "    dict(omega=-145.451, chi=5, phi=-5, tth=69.0966),\n",
+    "    name=\"(100)\",\n",
     ")\n",
     "r010 = diffractometer.add_reflection(\n",
-    "    (0, 1, 0), (-145.451, 5, 85, 69.0966), name=\"(010)\"\n",
+    "    (0, 1, 0),\n",
+    "    dict(omega=-145.451, chi=5, phi=85, tth=69.0966),\n",
+    "    name=\"(010)\",\n",
     ")"
    ]
   },

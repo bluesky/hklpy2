@@ -26,6 +26,12 @@ resetting it.
    :ref:`guide.design` — explanation of the :math:`B`, :math:`U`, and
    :math:`UB` matrices.
 
+   :doc:`/examples/hkl_soleil-ub_calc` — executable notebook: compute
+   :math:`UB` from two reflections using the ``hkl_soleil`` solver.
+
+   :doc:`/examples/hkl_soleil-ub_set` — executable notebook: set
+   :math:`UB` directly from a known matrix.
+
 Setup
 -----
 
@@ -162,7 +168,7 @@ angles recovers the expected :math:`(h, k, l)`, and that
 :math:`(h, k, l)` returns angles close to the measured ones::
 
     >>> # inverse: angles → hkl
-    >>> fourc.inverse((-145.451, 0, 0, 69.0966))
+    >>> fourc.inverse(dict(omega=-145.451, chi=0, phi=0, tth=69.0966))
     Hklpy2DiffractometerPseudoPos(h=3.9999, k=0, l=0)   # ≈ (4, 0, 0) ✓
 
     >>> # forward: hkl → angles

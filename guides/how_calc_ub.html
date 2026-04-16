@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=6ee46811"></script>
+    <script src="../_static/documentation_options.js?v=751f47c4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -520,6 +520,10 @@ workflow for a new user.</p>
 solutions after the UB matrix is set.</p>
 <p><a class="reference internal" href="design.html#guide-design"><span class="std std-ref">Architecture &amp; Design Decisions</span></a> — explanation of the <span class="math notranslate nohighlight">\(B\)</span>, <span class="math notranslate nohighlight">\(U\)</span>, and
 <span class="math notranslate nohighlight">\(UB\)</span> matrices.</p>
+<p><a class="reference internal" href="../examples/hkl_soleil-ub_calc.html"><span class="doc">hkl_soleil UB matrix : calculate from 2 reflections.</span></a> — executable notebook: compute
+<span class="math notranslate nohighlight">\(UB\)</span> from two reflections using the <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code> solver.</p>
+<p><a class="reference internal" href="../examples/hkl_soleil-ub_set.html"><span class="doc">hkl_soleil UB matrix : Set directly</span></a> — executable notebook: set
+<span class="math notranslate nohighlight">\(UB\)</span> directly from a known matrix.</p>
 </div>
 <section id="setup">
 <h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
@@ -651,7 +655,7 @@ angles recovers the expected <span class="math notranslate nohighlight">\((h, k,
 <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> at the expected
 <span class="math notranslate nohighlight">\((h, k, l)\)</span> returns angles close to the measured ones:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># inverse: angles → hkl</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fourc</span><span class="o">.</span><span class="n">inverse</span><span class="p">((</span><span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">69.0966</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fourc</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.0966</span><span class="p">))</span>
 <span class="go">Hklpy2DiffractometerPseudoPos(h=3.9999, k=0, l=0)   # ≈ (4, 0, 0) ✓</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># forward: hkl → angles</span>

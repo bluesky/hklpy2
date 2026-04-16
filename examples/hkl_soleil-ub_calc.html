@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=6ee46811"></script>
+    <script src="../_static/documentation_options.js?v=751f47c4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -510,6 +510,10 @@
 <p><span class="math notranslate nohighlight">\(UB\)</span> is the 3x3 orientation matrix used to transform coordinates between
 reciprocal space directions (of the crystal lattice planes) and the rotational
 axes of the diffractometer.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The how-to guide <a class="reference internal" href="../guides/how_calc_ub.html"><span class="std std-doc">How to Compute and Set the UB Matrix</span></a> covers the same workflow in prose form and includes additional patterns such as setting UB directly and refining the lattice.</p>
+</div>
 <section id="create-a-diffractometer-object">
 <h2>Create a diffractometer object<a class="headerlink" href="#create-a-diffractometer-object" title="Link to this heading">#</a></h2>
 <p>First, create a diffractometer object that uses the <code class="docutils literal notranslate"><span class="pre">&quot;hkl_soleil&quot;</span></code> solver with
@@ -557,16 +561,20 @@ geometry from the solver’s <code class="docutils literal notranslate"><span cl
 </div>
 </div>
 </div>
-<p>Add two non-parallel reflections.  Here, just the values of the pseudos and
-reals are specified as Python tuples, in the exact order expected by the
-<em>solver</em> geometry.</p>
+<p>Add two non-parallel reflections.  The motor positions are specified
+as a dictionary of named real-axis values, making the example readable
+regardless of the solver’s internal axis order.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r100</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span>
-    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mf">69.0966</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(100)&quot;</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">phi</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.0966</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(100)&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">r010</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span>
-    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mf">69.0966</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(010)&quot;</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="nb">dict</span><span class="p">(</span><span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">85</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.0966</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;(010)&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>

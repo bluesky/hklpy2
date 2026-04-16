@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=6ee46811"></script>
+    <script src="../_static/documentation_options.js?v=751f47c4"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -514,6 +514,11 @@ axes of the diffractometer.</p>
 <p>Alternatively, <span class="math notranslate nohighlight">\(UB\)</span> can be <a class="reference internal" href="hkl_soleil-ub_calc.html"><span class="std std-doc">calculated</span></a> from two
 non-parallel reflections, using the method of Busing and Levy (<em>Acta Cryst</em>
 <strong>22</strong> (1967) 457).</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The how-to guide <a class="reference internal" href="../guides/how_calc_ub.html"><span class="std std-doc">How to Compute and Set the UB Matrix</span></a> covers both setting and computing UB in prose form.
+See also the companion notebook <a class="reference internal" href="hkl_soleil-ub_calc.html"><span class="std std-doc">hkl_soleil-ub_calc</span></a> for computing UB from two reflections.</p>
+</div>
 <section id="quick-example">
 <h2>Quick example<a class="headerlink" href="#quick-example" title="Link to this heading">#</a></h2>
 <p>In <strong>hklpy2</strong>, the <span class="math notranslate nohighlight">\(UB\)</span> matrix is a property of the <em>sample</em>.  For a
@@ -623,7 +628,7 @@ directly.</p>
 precision, we should not expect the precise values of (1.0, 1.0, 1.0).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">35</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="o">-</span><span class="mi">120</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">omega</span><span class="o">=-</span><span class="mi">60</span><span class="p">,</span> <span class="n">chi</span><span class="o">=-</span><span class="mi">35</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">tth</span><span class="o">=-</span><span class="mi">120</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -669,7 +674,7 @@ Here is a matrix for a cubic sample, oriented previously:</p>
 <p>First, compute $(hkl)$ from a set of <em>reals</em>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="o">-</span><span class="mi">35</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="o">-</span><span class="mi">120</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">omega</span><span class="o">=-</span><span class="mi">60</span><span class="p">,</span> <span class="n">chi</span><span class="o">=-</span><span class="mi">35</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">tth</span><span class="o">=-</span><span class="mi">120</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -721,7 +726,7 @@ Here is a matrix for a cubic sample, oriented previously:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">pick_closest_solution</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">pick_closest_solution</span>
 
 <span class="n">diffractometer</span><span class="o">.</span><span class="n">_forward_solution</span> <span class="o">=</span> <span class="n">pick_closest_solution</span>
 <span class="n">diffractometer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
