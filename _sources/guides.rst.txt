@@ -42,6 +42,9 @@ Diffractometer axes
      - Add crystal analyzer axes (``atheta``, ``attheta``) to a diffractometer
        as additional positioners on the detector arm; save and restore the
        configuration.
+   * - :ref:`how_axis_positions`
+     - All accepted forms for specifying real and pseudo axis positions:
+       positional args, keyword args, dict, and named tuple.
    * - :doc:`guides/how_extra_reals_and_pseudos`
      - Add extra real motors or pseudo axes beyond the solver defaults.
    * - :doc:`guides/how_additional_parameters`
