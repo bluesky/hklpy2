@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=c28c1457"></script>
+    <script src="../../_static/documentation_options.js?v=6ee46811"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -457,14 +457,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.reflection</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reflection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.sample</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sample</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.incident</span><span class="w"> </span><span class="kn">import</span> <span class="n">WavelengthXray</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_DIGITS</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MISSING_HEADER_KEY_MSG</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerError</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_yaml_file</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">pick_first_solution</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">roundoff</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_and_canonical_unit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_DIGITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">MISSING_HEADER_KEY_MSG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_yaml_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">pick_first_solution</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">roundoff</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_and_canonical_unit</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyAxesType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AxesDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlueskyPlanType</span>
@@ -548,7 +548,7 @@
 <span class="sd">    forward_solution_function : Callable</span>
 <span class="sd">        Function to pick one solution from list of possibilities.</span>
 <span class="sd">        Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.</span>
-<span class="sd">        (default: :func:`~hklpy2.misc.pick_first_solution`)</span>
+<span class="sd">        (default: :func:`~hklpy2.utils.pick_first_solution`)</span>
 <span class="sd">    reals_units : str</span>
 <span class="sd">        The units for the real axes. (default: &quot;degrees&quot;)</span>
 
@@ -602,8 +602,8 @@
 
 <span class="sd">    Choices include:</span>
 
-<span class="sd">    * (default) :func:`hklpy2.misc.pick_first_solution`</span>
-<span class="sd">    * :func:`hklpy2.misc.pick_closest_solution`</span>
+<span class="sd">    * (default) :func:`hklpy2.utils.pick_first_solution`</span>
+<span class="sd">    * :func:`hklpy2.utils.pick_closest_solution`</span>
 <span class="sd">    * User-supplied function matching the same interface.</span>
 
 <span class="sd">    .. seealso::</span>
@@ -862,7 +862,7 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.full_position">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">full_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dict with positions of pseudos, reals, &amp; extras.&quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">roundoff</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">roundoff</span>
 
         <span class="n">pdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>
         <span class="n">pdict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">real_position</span><span class="o">.</span><span class="n">_asdict</span><span class="p">())</span>
@@ -889,7 +889,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;(plan) Move diffractometer axes to positions in &#39;axes&#39;.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan_stubs</span> <span class="k">as</span> <span class="n">bps</span>
 
-        <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">flatten_lists</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">flatten_lists</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">):</span>
             <span class="c1"># Convert namedtuple to dict</span>
@@ -1557,7 +1557,7 @@
 <span class="sd">    forward_solution_function : str</span>
 <span class="sd">        Name of function to pick one solution from list of possibilities.</span>
 <span class="sd">        Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.</span>
-<span class="sd">        (default: :func:`~hklpy2.misc.pick_first_solution`)</span>
+<span class="sd">        (default: :func:`~hklpy2.utils.pick_first_solution`)</span>
 
 <span class="sd">        Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.</span>
 <span class="sd">    kwargs : any</span>
@@ -1668,14 +1668,14 @@
 <span class="sd">    forward_solution_function : str</span>
 <span class="sd">        Name of function to pick one solution from list of possibilities.</span>
 <span class="sd">        Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward`.</span>
-<span class="sd">        (default: :func:`~hklpy2.misc.pick_first_solution`)</span>
+<span class="sd">        (default: :func:`~hklpy2.utils.pick_first_solution`)</span>
 
 <span class="sd">        Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.devices</span><span class="w"> </span><span class="kn">import</span> <span class="n">dynamic_import</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.devices</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_component</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.devices</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_factory_axes</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_MOTOR_LABELS</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEFAULT_MOTOR_LABELS</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.solver_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">solver_factory</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -1694,7 +1694,7 @@
     <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;beam&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maker</span><span class="p">(</span><span class="n">beam_class</span><span class="p">,</span> <span class="o">**</span><span class="n">beam_kwargs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">forward_solution_function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">forward_solution_function</span> <span class="o">=</span> <span class="s2">&quot;hklpy2.misc.pick_first_solution&quot;</span>
+        <span class="n">forward_solution_function</span> <span class="o">=</span> <span class="s2">&quot;hklpy2.utils.pick_first_solution&quot;</span>
     <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;_forward_solution&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span>
         <span class="n">forward_solution_function</span><span class="p">,</span>
     <span class="p">)</span>
