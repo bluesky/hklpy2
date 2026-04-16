@@ -82,7 +82,7 @@ Performance target
 -------------------
 
 The project benchmark (``test_i221.py``) measures throughput using
-:func:`~hklpy2.run_utils.creator_from_config` with representative
+:func:`~hklpy2.run_utils.simulator_from_config` with representative
 configuration files and reports operations per second for both
 ``forward()`` and ``inverse()``.  The target is met when **all** parameter
 sets in that test pass.

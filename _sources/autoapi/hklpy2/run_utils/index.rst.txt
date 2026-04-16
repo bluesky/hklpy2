@@ -15,7 +15,7 @@ run_utils
    .. autosummary::
 
        ~ConfigurationRunWrapper
-       ~creator_from_config
+       ~simulator_from_config
        ~get_run_orientation
        ~list_orientation_runs
 
@@ -123,51 +123,6 @@ Module Contents
           crw = ConfigurationRunWrapper(e4cv)
           RE.preprocessors.append(crw.wrapper)
 
-
-
-.. py:function:: creator_from_config(config: Union[dict, str, ~pathlib.Path])
-
-   .. container:: import-path
-
-      Import: ``hklpy2.run_utils.creator_from_config``
-
-
-   Create a simulated diffractometer from a saved configuration.
-
-   Parses the configuration for the solver, geometry, and axis names, then
-   constructs a simulator (all axes are soft positioners — no hardware
-   connection) and restores the full orientation (samples, reflections, UB
-   matrix, wavelength, constraints) from the configuration.  Auxiliary axes
-   saved by :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored
-   automatically.
-
-   If the diffractometer requires auxiliary axes that are not in the
-   configuration file, use :func:`~hklpy2.diffract.creator` with
-   :meth:`~hklpy2.diffract.DiffractometerBase.restore` instead::
-
-       sim = hklpy2.creator(name="e4cv", reals=dict(..., extra_axis=None))
-       sim.restore("e4cv-config.yml")
-
-   PARAMETERS
-
-   config : dict, str, or pathlib.Path
-       Configuration dictionary, or path to a YAML configuration file
-       previously saved with ``diffractometer.export()``.
-
-   RETURNS
-
-   DiffractometerBase
-       A fully configured simulated diffractometer instance.
-
-   EXAMPLE::
-
-       >>> import hklpy2
-       >>> sim = hklpy2.creator_from_config("e4cv-config.yml")
-       >>> sim.wh()
-
-   SEE ALSO
-
-       :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
 
 
 .. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> ~hklpy2.typing.KeyValueMap
@@ -284,5 +239,48 @@ Module Contents
                       value of each column name is the dotted path to the orientation
                       information (in the start document's metadata).
    :type \*\*kwargs: dict[str:str]
+
+
+.. py:function:: simulator_from_config(config: Union[dict, str, ~pathlib.Path])
+
+   .. container:: import-path
+
+      Import: ``hklpy2.run_utils.simulator_from_config``
+
+
+   Create a simulated diffractometer from a saved configuration.
+
+   All axes are soft positioners — no hardware connections are made.
+   Auxiliary axes and solver mode saved by
+   :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored
+   automatically.
+
+   If the diffractometer requires auxiliary axes that are not in the
+   configuration file, use :func:`~hklpy2.diffract.creator` with
+   :meth:`~hklpy2.diffract.DiffractometerBase.restore` instead::
+
+       sim = hklpy2.creator(name="e4cv", reals=dict(..., extra_axis=None))
+       sim.restore("e4cv-config.yml")
+
+   PARAMETERS
+
+   config : dict, str, or pathlib.Path
+       Configuration dictionary, or path to a YAML configuration file
+       previously saved with ``diffractometer.export()``.
+
+   RETURNS
+
+   DiffractometerBase
+       A fully configured simulated diffractometer instance.
+
+   EXAMPLE::
+
+       >>> import hklpy2
+       >>> sim = hklpy2.simulator_from_config("e4cv-config.yml")
+       >>> sim.wh()
+
+   SEE ALSO
+
+       :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
 
 

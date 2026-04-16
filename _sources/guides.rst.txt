@@ -95,7 +95,7 @@ Configuration and solvers
    * - :doc:`guides/configuration_save_restore`
      - Save a full diffractometer configuration (orientation, samples,
        reflections) and restore it later.
-   * - :ref:`how_creator_from_config`
+   * - :ref:`how_simulator_from_config`
      - Create a simulated diffractometer directly from a saved config file.
 
 Reference and background

@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../_static/documentation_options.js?v=b7c95916"></script>
+    <script src="../_static/documentation_options.js?v=b9b5806a"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -508,8 +508,8 @@
                 <article class="bd-article">
                   
   <section id="how-to-create-a-simulator-from-a-config">
-<span id="how-creator-from-config"></span><h1>How to Create a Simulator from a Config<a class="headerlink" href="#how-to-create-a-simulator-from-a-config" title="Link to this heading">#</a></h1>
-<p id="index-0"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator_from_config()</span></code> creates a fully configured
+<span id="how-simulator-from-config"></span><h1>How to Create a Simulator from a Config<a class="headerlink" href="#how-to-create-a-simulator-from-a-config" title="Link to this heading">#</a></h1>
+<p id="index-0"><code class="xref py py-func docutils literal notranslate"><span class="pre">simulator_from_config()</span></code> creates a fully configured
 simulated diffractometer — with no hardware connections — from a previously
 saved configuration file or dictionary.  All real-axis positioners are soft
 (simulated) positioners regardless of how they were defined in the original
@@ -534,18 +534,18 @@ diffractometer.</p>
 <h2>Create a simulator from that file<a class="headerlink" href="#create-a-simulator-from-that-file" title="Link to this heading">#</a></h2>
 <p>Pass the path to the YAML file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator_from_config</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Or pass a configuration dictionary directly:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">misc</span><span class="o">.</span><span class="n">load_yaml_file</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Or pass the <code class="docutils literal notranslate"><span class="pre">configuration</span></code> property of an existing diffractometer to
 create a simulator with the same orientation — no file needed:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator_from_config</span><span class="p">(</span><span class="n">k6c</span><span class="o">.</span><span class="n">configuration</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="n">k6c</span><span class="o">.</span><span class="n">configuration</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -575,7 +575,7 @@ diffractometer:</p>
 <h2>Custom-named axes are preserved<a class="headerlink" href="#custom-named-axes-are-preserved" title="Link to this heading">#</a></h2>
 <p>If the original diffractometer used custom axis names (e.g. <code class="docutils literal notranslate"><span class="pre">theta</span></code> instead
 of <code class="docutils literal notranslate"><span class="pre">omega</span></code>), those names are preserved in the simulator:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator_from_config</span><span class="p">(</span><span class="s2">&quot;fourc-config.yml&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="s2">&quot;fourc-config.yml&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">real_axis_names</span>     <span class="c1"># e.g. [&#39;theta&#39;, &#39;chi&#39;, &#39;phi&#39;, &#39;ttheta&#39;]</span>
 <span class="go">[&#39;theta&#39;, &#39;chi&#39;, &#39;phi&#39;, &#39;ttheta&#39;]</span>
 </pre></div>
@@ -584,8 +584,8 @@ of <code class="docutils literal notranslate"><span class="pre">omega</span></co
 <section id="round-trip-simulator-to-simulator">
 <h2>Round-trip: simulator to simulator<a class="headerlink" href="#round-trip-simulator-to-simulator" title="Link to this heading">#</a></h2>
 <p>A simulator’s configuration can itself be used to create another simulator:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sim1</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator_from_config</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sim2</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator_from_config</span><span class="p">(</span><span class="n">sim1</span><span class="o">.</span><span class="n">configuration</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sim1</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim2</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="n">sim1</span><span class="o">.</span><span class="n">configuration</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
