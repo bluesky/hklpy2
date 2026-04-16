@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../../_static/documentation_options.js?v=9b32c5dc"></script>
+    <script src="../../../../_static/documentation_options.js?v=7b5c4000"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -554,6 +554,15 @@ as best fits the underlying support library.</p>
 </tbody>
 </table>
 </div>
+<p class="rubric">Python Methods (concrete, overridable)</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.backends.base.SolverBase.set_reals" title="hklpy2.backends.base.SolverBase.set_reals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_reals</span></code></a>(reals)</p></td>
+<td><p>Set current real-axis values in the solver's internal geometry object.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p class="rubric">Geometry Registry</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
@@ -826,6 +835,28 @@ attribute is used as the registry key.</p>
 <dd><p>Crystalline sample.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.backends.base.SolverBase.set_reals">
+<span class="sig-name descname"><span class="pre">set_reals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../typing/index.html#hklpy2.typing.NamedFloatDict" title="hklpy2.typing.NamedFloatDict"><span class="pre">NamedFloatDict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/base.html#SolverBase.set_reals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.base.SolverBase.set_reals" title="Link to this definition">#</a></dt>
+<dd><p>Set current real-axis values in the solver’s internal geometry object.</p>
+<p>This method is called by <a class="reference internal" href="../../ops/index.html#hklpy2.ops.Core.forward" title="hklpy2.ops.Core.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> to push
+the current motor positions (or preset values for constant axes) into
+the solver before computing forward-calculation solutions.  Solvers
+that maintain an internal geometry object with real-axis state (such
+as <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code>, which calls <code class="docutils literal notranslate"><span class="pre">axis_values_set</span></code> on its libhkl
+geometry) <strong>must</strong> override this method.</p>
+<p>The default implementation is a deliberate no-op so that solvers
+which do not require real-axis state (e.g. pure function-based
+backends) can inherit from <a class="reference internal" href="#hklpy2.backends.base.SolverBase" title="hklpy2.backends.base.SolverBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> without needing to
+define this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>reals</strong> (<a class="reference internal" href="../../typing/index.html#hklpy2.typing.NamedFloatDict" title="hklpy2.typing.NamedFloatDict"><em>NamedFloatDict</em></a>) – Dictionary mapping solver real-axis names to their current values
+(in the solver’s internal angle units).</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="hklpy2.backends.base.SolverBase.summary">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">summary</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Table</span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/base.html#SolverBase.summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.base.SolverBase.summary" title="Link to this definition">#</a></dt>
@@ -919,6 +950,7 @@ attribute is used as the registry key.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.register_geometry"><code class="docutils literal notranslate"><span class="pre">SolverBase.register_geometry()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.removeAllReflections"><code class="docutils literal notranslate"><span class="pre">SolverBase.removeAllReflections()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.sample"><code class="docutils literal notranslate"><span class="pre">SolverBase.sample</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.set_reals"><code class="docutils literal notranslate"><span class="pre">SolverBase.set_reals()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.summary"><code class="docutils literal notranslate"><span class="pre">SolverBase.summary</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.base.SolverBase.version"><code class="docutils literal notranslate"><span class="pre">SolverBase.version</span></code></a></li>
 </ul>
