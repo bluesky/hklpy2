@@ -516,7 +516,7 @@ class Core:
             angle_units_core = self.diffractometer.reals_units
 
             # Get the constant (read-only) axis names for this mode.
-            constant_axes = self.solver_constant_axis_names
+            constant_axes = self._constant_axis_names()
 
             # Get presets for current mode.
             mode_presets = self.presets
@@ -984,6 +984,14 @@ class Core:
         self.update_solver()
         return self.solver.real_axis_names
 
+    def _constant_axis_names(self) -> list[str]:
+        """Constant axes for the current mode; caller must have called update_solver()."""
+        all_axes = set(self.solver.real_axis_names)
+        written_axes = set(self.solver_written_axis_names)
+        constant_axes = list(all_axes - written_axes)
+        constant_axes.sort(key=self.solver.real_axis_names.index)
+        return constant_axes
+
     @property
     def solver_constant_axis_names(self) -> list[str]:
         """
@@ -996,11 +1004,7 @@ class Core:
         Constant axes are computed as: all real axis names - written axis names.
         """
         self.update_solver()
-        all_axes = set(self.solver.real_axis_names)
-        written_axes = set(self.solver_written_axis_names)
-        constant_axes = list(all_axes - written_axes)
-        constant_axes.sort(key=self.solver.real_axis_names.index)
-        return constant_axes
+        return self._constant_axis_names()
 
     @property
     def solver_written_axis_names(self) -> list[str]:
