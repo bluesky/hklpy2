@@ -407,9 +407,9 @@ class DiffractometerBase(PseudoPositioner):
 
         saved_mode = config.get("solver", {}).get("mode")
         if saved_mode is not None:
-            current_mode = self.core.solver.mode
+            current_mode = self.core.mode  # use core.mode (authoritative)
             if restore_mode:
-                self.core.solver.mode = saved_mode
+                self.core.mode = saved_mode
             elif saved_mode != current_mode:
                 import warnings
 

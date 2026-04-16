@@ -384,3 +384,42 @@ def test_simulator_from_config_auxiliary_axes_roundtrip(tmp_path):
         sim.forward(h=1, k=0, l=0)[0],
         sim2.forward(h=1, k=0, l=0)[0],
     )
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                config="e4cv_orient.yml", restore_mode=True, expected_mode="bissector"
+            ),
+            does_not_raise(),
+            id="restore_mode=True applies saved mode",
+        ),
+        pytest.param(
+            dict(
+                config="e4cv_orient.yml",
+                restore_mode=False,
+                expected_mode="constant_phi",
+            ),
+            pytest.warns(UserWarning, match="differs from current mode"),
+            id="restore_mode=False warns when saved mode differs from current",
+        ),
+    ],
+)
+def test_restore_mode(parms, context):
+    """
+    Test restore() mode handling (issue #363).
+
+    restore_mode=True applies the saved mode; restore_mode=False (default)
+    warns when saved mode differs from current mode.
+    """
+    with context:
+        sim = hklpy2.creator(name="e4cv")
+        # Set a mode that differs from the saved mode (bissector).
+        sim.core.mode = "constant_phi"
+        sim.restore(
+            TESTS_DIR / parms["config"],
+            restore_mode=parms["restore_mode"],
+        )
+        assert sim.core.mode == parms["expected_mode"]
