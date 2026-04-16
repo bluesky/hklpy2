@@ -309,6 +309,11 @@ When the user says "the full workflow", execute these steps in order:
 ## Notes
 
 - Keep agent actions small, reversible, and reviewable.
+- User-facing documentation and examples should be agnostic towards the
+  radiation source.  Crystallography is defined in terms of **wavelength**,
+  not energy.  Prefer "wavelength" over "energy" in all user-facing prose
+  unless the context is explicitly about energy (e.g. monochromator setup).
+  Source-agnosticism was a core motivation for hklpy2 over its predecessor.
 - When updating a file, verify that a change has actually been made by comparing
   the mtime before and after the edits.
 

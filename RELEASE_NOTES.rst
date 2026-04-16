@@ -38,6 +38,8 @@ describe future plans.
     New Features
     ------------
 
+    * Add analyzer how-to guide: crystal analyzer as additional positioners
+      on the detector arm, including save/restore. (:issue:`222`)
     * Add performance guide: factors affecting ``forward()``/``inverse()``
       throughput for diffractometer users. (:issue:`221`)
 
