@@ -5,6 +5,7 @@ General-purpose utilities for |hklpy2|.
 .. autosummary::
 
     ~axes_to_dict
+    ~benchmark
     ~check_value_in_list
     ~compare_float_dicts
     ~convert_units
@@ -39,6 +40,7 @@ import logging
 import math
 import numbers
 import pathlib
+import time
 import uuid
 import warnings
 from collections.abc import Iterable
@@ -431,3 +433,129 @@ def validate_and_canonical_unit(value: str, target_units: str) -> str:
     # On success, preserve and return the original user-provided unit string so callers
     # (and tests) see the same spelling/casing that was provided.
     return value
+
+
+def benchmark(diffractometer, n: int = 500, print: bool = True):
+    """
+    Assess ``forward()`` and ``inverse()`` throughput for a diffractometer.
+
+    This function is **purely computational** — it does not move any motors or
+    communicate with hardware.  It is safe to call on a live diffractometer.
+
+    Uses the diffractometer's current real and pseudo-axis positions, and the
+    current mode, as the benchmark inputs.
+
+    Parameters
+    ----------
+    diffractometer :
+        Any |hklpy2| diffractometer instance.
+    n : int, optional
+        Number of calls used to measure throughput.  Default: 500.
+    print : bool, optional
+        When ``True`` (default), print a human-readable report to stdout and
+        return ``None``.  When ``False``, suppress all output and return a
+        ``dict`` of results.
+
+    Returns
+    -------
+    None or dict
+        ``None`` when *print* is ``True``; a ``dict`` when *print* is
+        ``False``.  The dict contains:
+
+        - ``"solver"`` — solver name
+        - ``"geometry"`` — geometry name
+        - ``"mode"`` — current solver mode
+        - ``"wavelength"`` — current wavelength
+        - ``"n"`` — number of calls measured
+        - ``"forward_ops_per_sec"`` — ``forward()`` throughput
+        - ``"forward_ms_per_call"`` — ``forward()`` latency in ms
+        - ``"inverse_ops_per_sec"`` — ``inverse()`` throughput
+        - ``"inverse_ms_per_call"`` — ``inverse()`` latency in ms
+        - ``"target_ops_per_sec"`` — minimum target (2,000)
+
+    Example
+    -------
+    Print a report::
+
+        from hklpy2.utils import benchmark
+        benchmark(my_diffractometer)
+
+    Capture results programmatically::
+
+        from hklpy2.utils import benchmark
+        results = benchmark(my_diffractometer, print=False)
+        print(results["forward_ops_per_sec"])
+    """
+    TARGET = 2_000
+
+    # Use the first reflection's positions if available, as the origin (0,0,0)
+    # has no forward() solution. Fall back to current position otherwise.
+    reflections = list(diffractometer.sample.reflections.values())
+    if reflections:
+        pseudos = reflections[0].pseudos
+        reals = reflections[0].reals
+    else:
+        pseudos = diffractometer.position._asdict()
+        reals = diffractometer.real_position._asdict()
+    solver = diffractometer.core.solver
+    mode = solver.mode
+    geometry = solver.geometry
+    solver_name = solver.name
+    wavelength = diffractometer.beam.wavelength.get()
+
+    # forward() benchmark
+    t0 = time.perf_counter()
+    for _ in range(n):
+        diffractometer.forward(**pseudos)
+    fwd_elapsed = time.perf_counter() - t0
+    fwd_ops = n / fwd_elapsed
+    fwd_ms = fwd_elapsed * 1000 / n
+
+    # inverse() benchmark
+    t0 = time.perf_counter()
+    for _ in range(n):
+        diffractometer.inverse(**reals)
+    inv_elapsed = time.perf_counter() - t0
+    inv_ops = n / inv_elapsed
+    inv_ms = inv_elapsed * 1000 / n
+
+    results = {
+        "solver": solver_name,
+        "geometry": geometry,
+        "mode": mode,
+        "wavelength": wavelength,
+        "n": n,
+        "forward_ops_per_sec": fwd_ops,
+        "forward_ms_per_call": fwd_ms,
+        "inverse_ops_per_sec": inv_ops,
+        "inverse_ms_per_call": inv_ms,
+        "target_ops_per_sec": TARGET,
+    }
+
+    if not print:
+        return results
+
+    import builtins
+
+    tolerance = 0.10
+    threshold = TARGET * (1 - tolerance)
+
+    def _status(ops):
+        return "PASS" if ops >= threshold else "FAIL"
+
+    builtins.print(
+        f"Diffractometer benchmark"
+        f"\n  solver:     {solver_name}"
+        f"\n  geometry:   {geometry}"
+        f"\n  mode:       {mode}"
+        f"\n  wavelength: {wavelength}"
+        f"\n  calls:      {n}"
+        f"\n"
+        f"\n  {'operation':<12} {'ops/sec':>10} {'ms/call':>11} {'status':>6}"
+        f"\n  {'-' * 12} {'-' * 10} {'-' * 11} {'-' * 6}"
+        f"\n  {'forward()':<12} {fwd_ops:>10.0f} {fwd_ms:>11.3f} {_status(fwd_ops):>6}"
+        f"\n  {'inverse()':<12} {inv_ops:>10.0f} {inv_ms:>11.3f} {_status(inv_ops):>6}"
+        f"\n"
+        f"\n  target: {TARGET:,} ops/sec (+/-{tolerance:.0%})"
+    )
+    return None

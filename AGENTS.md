@@ -290,6 +290,22 @@ concatenation are not supported inside the Sphinx graphviz directive.
 - Pages that reference a term but are not its primary source (e.g., a summary
   table) should use a plain (non-primary) index entry.
 
+## The Full Workflow
+
+When the user says "the full workflow", execute these steps in order:
+
+1. `pre-commit run --all-files` — format and lint; fix any issues
+2. `pytest ./hklpy2` — full test suite; fix any failures
+3. Commit all staged changes with a conventional commit message
+4. `git push -u origin <branch>` — push to remote
+5. Open a PR via `gh pr create`; complete the mandatory PR checklist
+   (milestone, project board, status → "In review", assignee, labels)
+6. Set issue project status → "In review"
+7. Monitor CI via `gh pr checks`; fix any failures with new commits
+8. Resolve any code-quality review comments with new commits
+9. Merge the PR when all checks are green and reviews approved
+10. Local cleanup: `git checkout main && git pull && git branch -d <branch>`
+
 ## Notes
 
 - Keep agent actions small, reversible, and reviewable.
