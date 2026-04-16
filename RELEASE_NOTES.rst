@@ -30,89 +30,94 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    0.6.0
+    0.6.1
     #####
 
     Release expected by 2026-H2.
 
-    Breaking Changes
-    ----------------
+0.6.0
+#####
 
-    * Rename ``creator_from_config()`` to ``simulator_from_config()`` to
-      clarify that it always produces a simulator with no hardware connections.
-      (:issue:`363`)
+Released 2026-04-16.
 
-    New Features
-    ------------
+Breaking Changes
+----------------
 
-    * Add analyzer how-to guide: crystal analyzer as additional positioners
-      on the detector arm, including save/restore. (:issue:`222`)
-    * Add how-to guide: all accepted forms for specifying real and pseudo
-      axis positions (positional, keyword, dict, named tuple, bare tuple).
-      (:issue:`358`)
-    * Save solver mode in ``export()`` config; ``simulator_from_config()``
-      restores it automatically; ``restore()`` warns when saved mode differs
-      from current mode, with opt-in ``restore_mode=True``. (:issue:`363`)
-    * Save auxiliary axes in ``export()`` config; ``simulator_from_config()``
-      restores them automatically. (:issue:`361`)
-    * Add performance guide: factors affecting ``forward()``/``inverse()``
-      throughput for diffractometer users. (:issue:`221`)
+* Rename ``creator_from_config()`` to ``simulator_from_config()`` to
+  clarify that it always produces a simulator with no hardware connections.
+  (:issue:`363`)
 
-    Maintenance
-    -----------
+New Features
+------------
 
-    * Add ``forward()`` and ``inverse()`` throughput benchmark (``test_i221.py``)
-      establishing 183 ops/sec baseline; target ≥2,000 ops/sec. (:issue:`221`)
-    * Remove ``_api_demo.ipynb`` early-development scratch notebook; content
-      now covered by existing guides. (:issue:`367`)
+* Add analyzer how-to guide: crystal analyzer as additional positioners
+  on the detector arm, including save/restore. (:issue:`222`)
+* Add how-to guide: all accepted forms for specifying real and pseudo
+  axis positions (positional, keyword, dict, named tuple, bare tuple).
+  (:issue:`358`)
+* Save solver mode in ``export()`` config; ``simulator_from_config()``
+  restores it automatically; ``restore()`` warns when saved mode differs
+  from current mode, with opt-in ``restore_mode=True``. (:issue:`363`)
+* Save auxiliary axes in ``export()`` config; ``simulator_from_config()``
+  restores them automatically. (:issue:`361`)
+* Add performance guide: factors affecting ``forward()``/``inverse()``
+  throughput for diffractometer users. (:issue:`221`)
 
-    Fixes
-    -----
+Maintenance
+-----------
 
-    * Fix ``forward()`` throughput: from ~183 to >2,000 ops/sec via
-      ``convert_units()`` short-circuit, ``axes_xref_reversed`` cache, and
-      eliminating double ``update_solver()`` per call. (:issue:`221`)
+* Add ``forward()`` and ``inverse()`` throughput benchmark (``test_i221.py``)
+  establishing 183 ops/sec baseline; target ≥2,000 ops/sec. (:issue:`221`)
+* Remove ``_api_demo.ipynb`` early-development scratch notebook; content
+  now covered by existing guides. (:issue:`367`)
 
-    * Fix stale ``from hklpy2.misc import`` in ``hkl_soleil-ub_set.ipynb``
-      (now ``hklpy2.utils``). (:issue:`353`)
+Fixes
+-----
 
-    * Fix ``AttributeError`` raised by non-``hkl_soleil`` solvers when
-      ``forward()`` calls ``set_reals()``: add no-op ``set_reals()`` to
-      ``SolverBase``. (:issue:`347`)
-    * Fix silent UB loss in non-``hkl_soleil`` solvers: add ``U`` and ``UB``
-      getter/setter pair to ``SolverBase`` that stores orientation state.
-      (:issue:`348`)
+* Fix ``forward()`` throughput: from ~183 to >2,000 ops/sec via
+  ``convert_units()`` short-circuit, ``axes_xref_reversed`` cache, and
+  eliminating double ``update_solver()`` per call. (:issue:`221`)
 
-    Deprecations
-    ------------
+* Fix stale ``from hklpy2.misc import`` in ``hkl_soleil-ub_set.ipynb``
+  (now ``hklpy2.utils``). (:issue:`353`)
 
-    * Deprecate ``move_zone`` and ``scan_zone`` imports from
-      ``hklpy2.blocks.zone``; use ``hklpy2.plans`` instead. (:issue:`339`)
+* Fix ``AttributeError`` raised by non-``hkl_soleil`` solvers when
+  ``forward()`` calls ``set_reals()``: add no-op ``set_reals()`` to
+  ``SolverBase``. (:issue:`347`)
+* Fix silent UB loss in non-``hkl_soleil`` solvers: add ``U`` and ``UB``
+  getter/setter pair to ``SolverBase`` that stores orientation state.
+  (:issue:`348`)
 
-    Maintenance
-    -----------
+Deprecations
+------------
 
-    * Extract all custom exception classes from ``misc.py`` into new
-      ``hklpy2/exceptions.py``; update all internal imports to use
-      ``hklpy2.exceptions`` directly. (:issue:`341`)
-    * Extract ophyd device construction helpers from ``misc.py`` into new
-      ``hklpy2/devices.py``: ``VirtualPositionerBase``, ``define_real_axis``,
-      ``dict_device_factory``, ``dynamic_import``, ``make_component``,
-      ``make_dynamic_instance``, ``parse_factory_axes``. (:issue:`342`)
-    * Extract run-engine/databroker integration from ``misc.py`` into new
-      ``hklpy2/run_utils.py``: ``ConfigurationRunWrapper``, ``simulator_from_config``,
-      ``get_run_orientation``, ``list_orientation_runs``. (:issue:`344`)
-    * Extract solver discovery machinery from ``misc.py`` into new
-      ``hklpy2/solver_utils.py``: ``SOLVER_ENTRYPOINT_GROUP``, ``get_solver``,
-      ``solver_factory``, ``solvers``. (:issue:`343`)
-    * Add cross-references between ``hkl_soleil-ub_calc.ipynb``,
-      ``hkl_soleil-ub_set.ipynb``, and ``how_calc_ub.rst``; use named motor
-      positions (``dict(omega=…)``) in notebook examples. (:issue:`353`)
-    * Rename remaining ``misc.py`` utilities to ``hklpy2/utils.py`` and delete
-      ``misc.py``; rename ``test_misc.py`` to ``test_utils.py``. Completes the
-      ``misc.py`` refactor. (:issue:`345`, closes :issue:`340`)
-    * Move ``move_zone`` and ``scan_zone`` plans from ``hklpy2.blocks.zone`` to
-      ``hklpy2.plans`` (canonical plan location). (:issue:`339`)
+* Deprecate ``move_zone`` and ``scan_zone`` imports from
+  ``hklpy2.blocks.zone``; use ``hklpy2.plans`` instead. (:issue:`339`)
+
+Maintenance
+-----------
+
+* Extract all custom exception classes from ``misc.py`` into new
+  ``hklpy2/exceptions.py``; update all internal imports to use
+  ``hklpy2.exceptions`` directly. (:issue:`341`)
+* Extract ophyd device construction helpers from ``misc.py`` into new
+  ``hklpy2/devices.py``: ``VirtualPositionerBase``, ``define_real_axis``,
+  ``dict_device_factory``, ``dynamic_import``, ``make_component``,
+  ``make_dynamic_instance``, ``parse_factory_axes``. (:issue:`342`)
+* Extract run-engine/databroker integration from ``misc.py`` into new
+  ``hklpy2/run_utils.py``: ``ConfigurationRunWrapper``, ``simulator_from_config``,
+  ``get_run_orientation``, ``list_orientation_runs``. (:issue:`344`)
+* Extract solver discovery machinery from ``misc.py`` into new
+  ``hklpy2/solver_utils.py``: ``SOLVER_ENTRYPOINT_GROUP``, ``get_solver``,
+  ``solver_factory``, ``solvers``. (:issue:`343`)
+* Add cross-references between ``hkl_soleil-ub_calc.ipynb``,
+  ``hkl_soleil-ub_set.ipynb``, and ``how_calc_ub.rst``; use named motor
+  positions (``dict(omega=…)``) in notebook examples. (:issue:`353`)
+* Rename remaining ``misc.py`` utilities to ``hklpy2/utils.py`` and delete
+  ``misc.py``; rename ``test_misc.py`` to ``test_utils.py``. Completes the
+  ``misc.py`` refactor. (:issue:`345`, closes :issue:`340`)
+* Move ``move_zone`` and ``scan_zone`` plans from ``hklpy2.blocks.zone`` to
+  ``hklpy2.plans`` (canonical plan location). (:issue:`339`)
 
 0.5.2
 #####
