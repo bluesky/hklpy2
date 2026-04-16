@@ -31,11 +31,6 @@ Miscellaneous Support.
 
     ~IDENTITY_MATRIX_3X3
 
-.. rubric: Custom Preprocessors
-.. autosummary::
-
-    ~ConfigurationRunWrapper
-
 .. note::
 
     Exception classes have moved to :mod:`hklpy2.exceptions`.
