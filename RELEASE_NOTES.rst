@@ -35,6 +35,12 @@ describe future plans.
 
     Release expected by 2026-H2.
 
+    New Features
+    ------------
+
+    * Add performance guide: factors affecting ``forward()``/``inverse()``
+      throughput for diffractometer users. (:issue:`221`)
+
     Maintenance
     -----------
 

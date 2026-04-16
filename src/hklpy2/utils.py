@@ -239,6 +239,8 @@ def compare_float_dicts(a1, a2, tol=1e-4) -> bool:
 
 def convert_units(value: float, old_units: str, new_units: str) -> float:
     """Convert 'value' from old units to new."""
+    if old_units == new_units:
+        return value
     return UREG.Quantity(value, old_units).to(new_units).magnitude
 
 

@@ -62,6 +62,10 @@ Computation
        any motor (SPEC ``freeze``/``unfreeze`` equivalent).
    * - :ref:`how_forward_solution`
      - Choose which ``forward()`` solution the diffractometer uses by default.
+   * - :ref:`how_performance`
+     - Understand factors that affect ``forward()`` and ``inverse()``
+       throughput, including solver choice, mode, axis count, and workstation
+       load.
    * - :ref:`how_user_interface`
      - Use the :mod:`hklpy2.user` interactive convenience functions:
        ``pa``, ``wh``, ``cahkl``, ``setor``, ``set_wavelength``, and more.
