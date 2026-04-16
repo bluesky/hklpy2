@@ -38,6 +38,9 @@ describe future plans.
     Fixes
     -----
 
+    * Fix stale ``from hklpy2.misc import`` in ``hkl_soleil-ub_set.ipynb``
+      (now ``hklpy2.utils``). (:issue:`353`)
+
     * Fix ``AttributeError`` raised by non-``hkl_soleil`` solvers when
       ``forward()`` calls ``set_reals()``: add no-op ``set_reals()`` to
       ``SolverBase``. (:issue:`347`)
@@ -67,6 +70,9 @@ describe future plans.
     * Extract solver discovery machinery from ``misc.py`` into new
       ``hklpy2/solver_utils.py``: ``SOLVER_ENTRYPOINT_GROUP``, ``get_solver``,
       ``solver_factory``, ``solvers``. (:issue:`343`)
+    * Add cross-references between ``hkl_soleil-ub_calc.ipynb``,
+      ``hkl_soleil-ub_set.ipynb``, and ``how_calc_ub.rst``; use named motor
+      positions (``dict(omega=…)``) in notebook examples. (:issue:`353`)
     * Rename remaining ``misc.py`` utilities to ``hklpy2/utils.py`` and delete
       ``misc.py``; rename ``test_misc.py`` to ``test_utils.py``. Completes the
       ``misc.py`` refactor. (:issue:`345`, closes :issue:`340`)
