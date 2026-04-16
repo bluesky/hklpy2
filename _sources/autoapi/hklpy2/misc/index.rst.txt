@@ -19,7 +19,6 @@ misc
        ~distance_between_pos_tuples
        ~flatten_lists
        ~get_run_orientation
-       ~get_solver
        ~istype
        ~list_orientation_runs
        ~load_yaml
@@ -28,8 +27,6 @@ misc
        ~pick_first_solution
        ~roundoff
        ~creator_from_config
-       ~solver_factory
-       ~solvers
        ~unique_name
        ~validate_and_canonical_unit
        ~validate_not_parallel
@@ -37,12 +34,12 @@ misc
    .. note::
 
        Device construction helpers have moved to :mod:`hklpy2.devices`.
+       Solver discovery functions have moved to :mod:`hklpy2.solver_utils`.
 
    .. rubric: Symbols
    .. autosummary::
 
        ~IDENTITY_MATRIX_3X3
-       ~SOLVER_ENTRYPOINT_GROUP
 
    .. rubric: Custom Preprocessors
    .. autosummary::
@@ -210,13 +207,6 @@ Module Contents
 .. py:data:: PINT_ERRORS
 
    Exception from pint that we are trapping here.
-
-.. py:data:: SOLVER_ENTRYPOINT_GROUP
-   :type:  str
-   :value: 'hklpy2.solver'
-
-
-   Name by which |hklpy2| |solver| classes are grouped.
 
 .. py:data:: UREG
 
@@ -411,22 +401,6 @@ Module Contents
    :type start_key: str
 
 
-.. py:function:: get_solver(solver_name: str) -> ~hklpy2.backends.base.SolverBase
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.get_solver``
-
-
-   Load a Solver class from a named entry point.
-
-   ::
-
-       import hklpy2
-       SolverClass = hklpy2.get_solver("hkl_soleil")
-       libhkl_solver = SolverClass()
-
-
 .. py:function:: istype(value: Any, annotation: Type) -> bool
 
    .. container:: import-path
@@ -557,31 +531,6 @@ Module Contents
 
 
    Round a number to specified precision.
-
-
-.. py:function:: solver_factory(solver_name: str, geometry: str, **kwargs: Mapping) -> ~hklpy2.backends.base.SolverBase
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.solver_factory``
-
-
-   Create a |solver| object with geometry and axes.
-
-
-.. py:function:: solvers() -> Mapping[str, ~hklpy2.backends.base.SolverBase]
-
-   .. container:: import-path
-
-      Import: ``hklpy2.misc.solvers``
-
-
-   Dictionary of available Solver classes, mapped by entry point name.
-
-   ::
-
-       import hklpy2
-       print(hklpy2.solvers())
 
 
 .. py:function:: unique_name(prefix: str = '', length: int = 7) -> str
