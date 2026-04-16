@@ -24,7 +24,9 @@ plans
 
    .. autosummary::
 
+       ~move_zone
        ~scan_psi
+       ~scan_zone
 
    .. rubric:: Solver compatibility for scan_psi
 
@@ -49,6 +51,33 @@ plans
 
 Module Contents
 ---------------
+
+.. py:function:: move_zone(diffractometer: ~hklpy2.diffract.DiffractometerBase, hkl: ~hklpy2.typing.INPUT_VECTOR) -> ~hklpy2.typing.BlueskyPlanType
+
+   .. container:: import-path
+
+      Import: ``hklpy2.plans.move_zone``
+
+
+   Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).
+
+   Computes the real-axis positions corresponding to the given pseudo
+   position *hkl* via the diffractometer's forward calculation and moves
+   all real axes there.
+
+   .. rubric:: Example
+
+   .. code-block:: python
+
+       from hklpy2 import creator, move_zone
+       fourc = creator()
+       RE(move_zone(fourc, (1, 0, 0)))
+
+   :param diffractometer: hklpy2 diffractometer object.
+   :type diffractometer: DiffractometerBase
+   :param hkl: Target pseudo position (*h, k, l*).
+   :type hkl: INPUT_VECTOR
+
 
 .. py:function:: scan_psi(detectors: Sequence[~bluesky.protocols.Readable], diffractometer: ~hklpy2.diffract.DiffractometerBase, *, h: float, k: float, l: float, hkl2: Sequence[float], psi_start: float, psi_stop: float, num: int, mode: Optional[str] = None, psi_axis: Optional[str] = None, fail_on_exception: bool = False, md: Optional[Mapping[str, Any]] = None) -> ~hklpy2.typing.BlueskyPlanType
 
@@ -158,5 +187,50 @@ Module Contents
 
        :meth:`~hklpy2.diffract.DiffractometerBase.scan_extra` — the
        lower-level plan this function wraps.
+
+
+.. py:function:: scan_zone(detectors: Sequence[~bluesky.protocols.Readable], diffractometer: ~hklpy2.diffract.DiffractometerBase, start: ~hklpy2.typing.INPUT_VECTOR, finish: ~hklpy2.typing.INPUT_VECTOR, num: int, md: Optional[Mapping[str, Any]] = None) -> ~hklpy2.typing.BlueskyPlanType
+
+   .. container:: import-path
+
+      Import: ``hklpy2.plans.scan_zone``
+
+
+   Perform a zone scan on a diffractometer.
+
+   .. rubric:: Behavior
+
+   * Computes a sequence of pseudos and the corresponding reals in the
+     crystallographic zone defined by the cross-product of start cross finish.
+     Skips a position if not permitted by the UB matrix or diffractometer
+     constraints.
+   * For each point:
+       1. Moves the diffractometer real axes to the computed
+          real positions.
+       2. Triggers all detectors and waits for completion.
+       3. Creates a ``primary`` stream, reads all detectors and the
+          diffractometer, and saves the event.
+
+   .. rubric:: Example
+
+   .. code-block:: python
+
+       from hklpy2 import creator, scan_zone
+       fourc = creator()
+       (uid,) = RE(scan_zone([scaler], fourc, (1,0,0), (0,1,0), 5))
+
+   :param detectors: Ophyd devices to trigger and read at each measurement point.
+   :type detectors: Sequence[Readable])
+   :param diffractometer: hklpy2 Diffractometer object.
+   :type diffractometer: hklpy2.DiffractometerBase
+   :param start: Starting :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type start: INPUT_VECTOR
+   :param finish: Finishing :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type finish: INPUT_VECTOR
+   :param num: Number of points to sample along the zone (inclusive
+               of endpoints).
+   :type num: int
+   :param md: (Optional) User-supplied metadata.
+   :type md: dict
 
 
