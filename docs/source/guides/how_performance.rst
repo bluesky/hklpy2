@@ -1,8 +1,8 @@
 .. _how_performance:
 
-================================================
+=================================================
 Understanding forward() and inverse() Performance
-================================================
+=================================================
 
 .. index::
     !performance
@@ -16,6 +16,13 @@ and :meth:`~hklpy2.diffract.DiffractometerBase.inverse` operations per second.
 This matters most for fly scans, where ``forward()`` pre-computes motor
 trajectories and ``inverse()`` labels encoder positions with reciprocal-space
 coordinates at high repetition rates.
+
+``forward()`` and ``inverse()`` are **purely computational** — they perform
+no hardware communication and do not move any motors.  For local solvers
+(such as the default ``hkl_soleil``), throughput depends only on the CPU and
+the solver library, not on the state of the hardware control system, EPICS
+IOCs, or motor controllers.  A network-based solver (such as a future SPEC
+backend) would add network round-trip latency to every call.
 
 The actual throughput you observe depends on several factors, grouped below
 into those within |hklpy2|'s control and those outside it.
