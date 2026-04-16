@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=8b46f51e"></script>
+    <script src="../../_static/documentation_options.js?v=b7c95916"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -793,7 +793,16 @@
 <span class="sd">    Parses the configuration for the solver, geometry, and axis names, then</span>
 <span class="sd">    constructs a simulator (all axes are soft positioners — no hardware</span>
 <span class="sd">    connection) and restores the full orientation (samples, reflections, UB</span>
-<span class="sd">    matrix, wavelength, constraints) from the configuration.</span>
+<span class="sd">    matrix, wavelength, constraints) from the configuration.  Auxiliary axes</span>
+<span class="sd">    saved by :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored</span>
+<span class="sd">    automatically.</span>
+
+<span class="sd">    If the diffractometer requires auxiliary axes that are not in the</span>
+<span class="sd">    configuration file, use :func:`~hklpy2.diffract.creator` with</span>
+<span class="sd">    :meth:`~hklpy2.diffract.DiffractometerBase.restore` instead::</span>
+
+<span class="sd">        sim = hklpy2.creator(name=&quot;e4cv&quot;, reals=dict(..., extra_axis=None))</span>
+<span class="sd">        sim.restore(&quot;e4cv-config.yml&quot;)</span>
 
 <span class="sd">    PARAMETERS</span>
 
@@ -870,7 +879,12 @@
         <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">solver_to_diff_pseudo</span>
     <span class="p">]</span> <span class="ow">or</span> <span class="n">pseudo_axes</span>
 
-    <span class="n">reals</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">real_axes</span><span class="p">}</span>
+    <span class="n">reals_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">real_axes</span><span class="p">}</span>
+
+    <span class="c1"># Restore auxiliary axes saved in the config (backward-compatible: absent in old files).</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">axes_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;auxiliary_axes&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reals_dict</span><span class="p">:</span>
+            <span class="n">reals_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Pass _real and _pseudo so creator() maps axes in solver-expected order</span>
     <span class="c1"># even when diffractometer names differ from solver canonical names.</span>
@@ -887,7 +901,7 @@
         <span class="n">solver</span><span class="o">=</span><span class="n">solver_name</span><span class="p">,</span>
         <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">,</span>
         <span class="n">solver_kwargs</span><span class="o">=</span><span class="n">solver_kwargs</span><span class="p">,</span>
-        <span class="n">reals</span><span class="o">=</span><span class="n">reals</span><span class="p">,</span>
+        <span class="n">reals</span><span class="o">=</span><span class="n">reals_dict</span><span class="p">,</span>
         <span class="n">_real</span><span class="o">=</span><span class="n">real_axes</span> <span class="k">if</span> <span class="n">real_axes</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">_pseudo</span><span class="o">=</span><span class="n">pseudo_axes_ordered</span> <span class="k">if</span> <span class="n">pseudo_axes_ordered</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
