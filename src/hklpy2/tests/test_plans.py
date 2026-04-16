@@ -10,7 +10,7 @@ import pytest
 from ophyd.sim import noisy_det
 
 from ..diffract import creator
-from ..misc import creator_from_config
+from ..run_utils import creator_from_config
 from ..misc import validate_not_parallel
 from ..plans import _find_psi_axis
 from ..plans import _find_psi_mode
