@@ -112,6 +112,7 @@ class Core:
         default_sample: bool = True,
     ) -> None:
         self.axes_xref = {}  # cross-reference:  diffractometer name : solver name
+        self._axes_xref_reversed = None  # cache; invalidated when axes_xref changes
         self.diffractometer = diffractometer
         self._extras = {}  # Dictionary of any extra solver axis (across all modes).
         self._mode = None
@@ -417,6 +418,7 @@ class Core:
         both_p_r = all_pseudos + all_reals
 
         self.axes_xref = {}
+        self._axes_xref_reversed = None  # invalidate cache
         rebuild_axes_xref(pseudos, self.solver.pseudo_axis_names)
         rebuild_axes_xref(reals, self.solver.real_axis_names)
         self.reset_constraints()
@@ -432,7 +434,9 @@ class Core:
                 if len(names) == 0:
                     return {}
             raise CoreError("Did you forget to call `assign_axes()`?")
-        return {v: k for k, v in self.axes_xref.items()}
+        if self._axes_xref_reversed is None:
+            self._axes_xref_reversed = {v: k for k, v in self.axes_xref.items()}
+        return self._axes_xref_reversed
 
     def calc_UB(
         self, r1: Union[Reflection, str], r2: Union[Reflection, str]
