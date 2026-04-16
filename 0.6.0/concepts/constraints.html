@@ -1,0 +1,890 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Constraints &#8212; hklpy2 0.6</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+
+    <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'concepts/constraints';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.6.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Diffractometer creator" href="creator.html" />
+    <link rel="prev" title="Overview" href="__overview.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.6</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorial: Your First Diffractometer
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/hklpy2/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorial: Your First Diffractometer
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/hklpy2/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial: Your First Diffractometer</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../concepts.html">Concepts</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="__overview.html">Overview</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="creator.html">Diffractometer creator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diffract.html">Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lattice.html">Crystal Lattice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ops.html">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="presets.html">Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reflection.html">Orientation Reflection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sample.html">Sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user.html">User Friendliness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wavelength.html">Wavelength</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../diffractometers.html">Diffractometers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/aps-isn-e6c.html">APS ISN Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/constraints.html">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-creator.html">Example 4-circle diffractometer using creator()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-custom-class.html">Example 4-circle diffractometer custom Python class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4ch.html"><strong>hkl_soleil</strong> E4CH</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv.html"><strong>hkl_soleil</strong> E4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv%2Bepics.html"><strong>hkl_soleil</strong> E4CV with EPICS motors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-psi.html"><strong>hkl_soleil</strong> E6C psi axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-test_calculations.html"><strong>hkl_soleil</strong> E6C test of calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-k4cv.html"><strong>hkl_soleil</strong> K4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-lattice_refine.html"><strong>hkl_soleil</strong> Refine lattice from 3 reflections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_calc.html"><strong>hkl_soleil</strong> UB matrix : calculate from 2 reflections.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_set.html"><strong>hkl_soleil</strong> UB matrix : Set directly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/nslsii-tardis.html"><strong>NSLS-II</strong> <strong>tardis</strong> diffractometer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../examples/tst_e4cv_fourc.html">Compare <strong>hkl_soleil</strong> <strong>E4CV</strong> with <strong>SPEC</strong> <strong>fourc</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/virtual-axis.html">Virtual diffractometer axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/zone-scan.html">Zone Scan</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../guides.html">Guides</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/design.html">Architecture &amp; Design Decisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/diffract.html">How to Work with a Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_analyzer.html">Crystal Analyzer on the Detector Arm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_axis_positions.html">Ways to Specify Real and Pseudo Axis Positions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_calc_ub.html">How to Compute and Set the UB Matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_constraints.html">How to Use Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_creator_from_config.html">How to Create a Simulator from a Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_forward_solution.html">How to Choose the Default forward() Solution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_performance.html">Understanding forward() and inverse() Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_presets.html">How to Use Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_psi_scan.html">How to Perform an Azimuthal (ψ) Scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_release.html">How to Make a Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_user_interface.html">How to Use the hklpy2.user Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/how_zone_scan.html">How to Perform a Zone Scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/howto_write_solver.html">How to write a new Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/solvers.html">Solvers Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/spec_xref.html">SPEC commands in hklpy2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/z_checklist_v2.html">Feature Checklist for v2</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../concepts.html" class="nav-link">Concepts</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Constraints</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="constraints">
+<span id="concepts-constraints"></span><h1>Constraints<a class="headerlink" href="#constraints" title="Link to this heading">#</a></h1>
+<p id="index-0"><strong>Constraints</strong> filter the solutions returned by a
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> computation.</p>
+<p>The solver can return many candidate sets of real-axis angles for a given
+<span class="math notranslate nohighlight">\(hkl\)</span> position.  One or more constraints
+(<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a>), together with a choice
+of operating <strong>mode</strong>, narrow those candidates by:</p>
+<ul class="simple">
+<li><p>Accepting only solutions where each real axis falls within a specified range.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Constraints act <em>after</em> the solver computes solutions.  If you want
+the solver to <em>assume</em> a specific value for a constant axis <em>before</em>
+computation, use <a class="reference internal" href="presets.html#concepts-presets"><span class="std std-ref">Presets</span></a> instead.</p>
+</div>
+<p class="rubric">Examples</p>
+<p>Many of the <a class="reference internal" href="../examples.html#examples"><span class="std std-ref">Examples</span></a> show how to adjust <a class="reference internal" href="../examples/constraints.html#examples-constraints"><span class="std std-ref">constraints</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="presets.html#concepts-presets"><span class="std std-ref">Presets</span></a> — define constant-axis values used before
+<code class="docutils literal notranslate"><span class="pre">forward()</span></code> computation.</p>
+<p><a class="reference internal" href="../glossary.html#glossary"><span class="std std-ref">Glossary</span></a></p>
+</div>
+<section id="cut-points">
+<span id="concepts-constraints-cut-points"></span><h2>Cut Points<a class="headerlink" href="#cut-points" title="Link to this heading">#</a></h2>
+<p id="index-1">A <strong>cut point</strong> is the angle at which a motor’s reported position “wraps
+around.”  It sets the start of the 360-degree window used to express the
+angle.  The physics is unchanged — it is the same motor position either
+way — only how the number is written down changes.</p>
+<p>Two common choices:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">-180</span></code> (default): angles are reported in the range
+−180 up to (but not including) +180.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">0</span></code>: angles are reported in the range 0 up to (but not
+including) 360.</p></li>
+</ul>
+<p>Technically, a cut point <code class="docutils literal notranslate"><span class="pre">c</span></code> maps any computed angle to its equivalent
+in the range from <code class="docutils literal notranslate"><span class="pre">c</span></code> up to (but not including) <code class="docutils literal notranslate"><span class="pre">c</span> <span class="pre">+</span> <span class="pre">360</span></code>.</p>
+<p class="rubric">Valid values</p>
+<p>Any finite number is an acceptable cut point — including values outside
+the axis limits.  The cut point is independent of <code class="docutils literal notranslate"><span class="pre">low_limit</span></code> and
+<code class="docutils literal notranslate"><span class="pre">high_limit</span></code>; there is no requirement that it fall within the limits.</p>
+<p><code class="docutils literal notranslate"><span class="pre">inf</span></code>, <code class="docutils literal notranslate"><span class="pre">-inf</span></code>, and <code class="docutils literal notranslate"><span class="pre">nan</span></code> are rejected immediately with a
+<code class="xref py py-exc docutils literal notranslate"><span class="pre">ConstraintsError</span></code>, both when the constraint is
+created and when <code class="docutils literal notranslate"><span class="pre">cut_point</span></code> is set afterwards.</p>
+<p><code class="docutils literal notranslate"><span class="pre">low_limit</span></code> and <code class="docutils literal notranslate"><span class="pre">high_limit</span></code> are always kept in sorted order: setting
+either one (or both via the <code class="docutils literal notranslate"><span class="pre">limits</span></code> property) sorts the pair
+automatically, so <code class="docutils literal notranslate"><span class="pre">low_limit</span></code> is always <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code> <code class="docutils literal notranslate"><span class="pre">high_limit</span></code>.</p>
+<p class="rubric">Cut point vs. constraint — the key distinction</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Cut point</strong></p></th>
+<th class="head"><p><strong>LimitsConstraint</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Controls the
+<em>representation</em> of
+an angle — which
+360-degree window
+it is expressed in.</p></td>
+<td><p>Filters out solutions whose axis value falls
+<em>outside</em> a physically acceptable range.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Applied <strong>first</strong>,
+before limit
+checking.</p></td>
+<td><p>Applied <strong>after</strong> cut-point wrapping.</p></td>
+</tr>
+<tr class="row-even"><td><p>Does not accept or
+reject solutions.</p></td>
+<td><p>Accepts or rejects solutions.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Equivalent to SPEC
+<code class="docutils literal notranslate"><span class="pre">cuts</span></code>,
+diffcalc <code class="docutils literal notranslate"><span class="pre">setcut</span></code></p></td>
+<td><p>No direct SPEC equivalent — SPEC uses cut points
+for both wrapping <em>and</em> as a proxy for limits.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">When to use each</p>
+<ul class="simple">
+<li><p><strong>Need angles in</strong> <code class="docutils literal notranslate"><span class="pre">[-180,</span> <span class="pre">+180)</span></code>? — That is the default cut point
+(<code class="docutils literal notranslate"><span class="pre">-180</span></code>).  No change required.</p></li>
+<li><p><strong>Need angles in</strong> <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">360)</span></code>? — Set <code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">0</span></code>.</p></li>
+<li><p><strong>Motor has a physical travel limit</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">chi</span></code> can only reach
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">100]</span></code>)? — Set <code class="docutils literal notranslate"><span class="pre">limits</span> <span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">100)</span></code> on the constraint.  The
+cut point controls representation; the limits control which solutions
+are physically reachable.</p></li>
+<li><p><strong>Both</strong>: a motor in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">360)</span></code> representation with physical travel
+of <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">290]</span></code> needs <code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">0</span></code> <em>and</em> <code class="docutils literal notranslate"><span class="pre">limits</span> <span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">290)</span></code>.</p></li>
+</ul>
+<p>In practice: if your motor can only travel from 0° to 290°, setting
+<code class="docutils literal notranslate"><span class="pre">cut_point</span> <span class="pre">=</span> <span class="pre">0</span></code> means all reported angles are positive numbers that
+are easy to compare against your travel limits.  With the default cut
+of −180, a position of 181° still reads as 181° — so in that case it
+makes no difference.  The cut point matters when the motor’s usable
+range straddles the wrap boundary.</p>
+<p class="rubric">Pipeline order in <code class="docutils literal notranslate"><span class="pre">forward()</span></code></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>solver.forward(pseudos)
+  └─→ for each solution:
+        for each axis:
+          apply_cut(value)         ← wraps into [cut_point, cut_point+360)
+        constraints.valid(...)     ← checks wrapped value against limits
+        if valid: keep solution
+</pre></div>
+</div>
+<p class="rubric">Example — using cut points</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default: chi expressed in [-180, +180).</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span>   <span class="c1"># -180.0</span>
+
+<span class="c1"># Change to [0, 360).</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Restrict physical travel as well.</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">290</span><span class="p">)</span>
+
+<span class="c1"># Reset everything to defaults.</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">reset_constraints</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../glossary.html#term-cut-point"><span class="xref std std-term">cut point</span></a> in the glossary.</p>
+<p><a class="reference internal" href="../guides/spec_xref.html#spec-commands-map"><span class="std std-ref">SPEC commands in hklpy2</span></a> — SPEC <code class="docutils literal notranslate"><span class="pre">cuts</span></code> maps to <code class="docutils literal notranslate"><span class="pre">cut_point</span></code>.</p>
+</div>
+</section>
+<section id="how-constraints-work-internally">
+<span id="concepts-constraints-internals"></span><h2>How Constraints Work Internally<a class="headerlink" href="#how-constraints-work-internally" title="Link to this heading">#</a></h2>
+<section id="the-valid-method">
+<span id="concepts-constraints-valid"></span><h3>The <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Method<a class="headerlink" href="#the-valid-method" title="Link to this heading">#</a></h3>
+<p>Every constraint class inherits from
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase" title="hklpy2.blocks.constraints.ConstraintBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintBase</span></code></a> and must implement the
+abstract method <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.ConstraintBase.valid" title="hklpy2.blocks.constraints.ConstraintBase.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>The method receives the <strong>full set of real-axis positions</strong> (as keyword
+arguments, <code class="docutils literal notranslate"><span class="pre">axis_name=value</span></code>) and returns <code class="docutils literal notranslate"><span class="pre">True</span></code> when the constraint is
+satisfied or <code class="docutils literal notranslate"><span class="pre">False</span></code> when it is not.  The values passed to <code class="docutils literal notranslate"><span class="pre">valid()</span></code>
+have already been cut-point-wrapped by <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.apply_cut" title="hklpy2.blocks.constraints.LimitsConstraint.apply_cut"><code class="xref py py-meth docutils literal notranslate"><span class="pre">apply_cut()</span></code></a>.</p>
+<p>The built-in implementation,
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a>, checks whether the
+axis value falls within the configured <code class="docutils literal notranslate"><span class="pre">[low_limit,</span> <span class="pre">high_limit]</span></code> range:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># simplified from hklpy2/blocks/constraints.py</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">values</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>   <span class="c1"># already cut-point-wrapped</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">value</span> <span class="o">+</span> <span class="n">ENDPOINT_TOLERANCE</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_limit</span>
+        <span class="ow">and</span> <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">ENDPOINT_TOLERANCE</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">high_limit</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>A small tolerance (<code class="docutils literal notranslate"><span class="pre">ENDPOINT_TOLERANCE</span> <span class="pre">=</span> <span class="pre">1e-4</span></code>) is applied at each
+endpoint so that solver solutions that land exactly on a limit boundary
+are not rejected due to floating-point rounding.</p>
+</section>
+<section id="how-valid-is-called-during-forward">
+<span id="concepts-constraints-forward-call"></span><h3>How <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Is Called During <code class="docutils literal notranslate"><span class="pre">forward()</span></code><a class="headerlink" href="#how-valid-is-called-during-forward" title="Link to this heading">#</a></h3>
+<p>After the solver returns its candidate solutions,
+<a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.forward" title="hklpy2.ops.Core.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> iterates over every solution, applies
+cut-point wrapping, then calls
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.RealAxisConstraints.valid" title="hklpy2.blocks.constraints.RealAxisConstraints.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a> on the
+collection of constraints:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># simplified from hklpy2/ops.py  Core.forward()</span>
+<span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">pseudos</span><span class="p">):</span>
+    <span class="n">reals</span> <span class="o">=</span> <span class="p">{</span><span class="n">axis</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">computed_value</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span><span class="p">}</span>   <span class="c1"># full set of real-axis values</span>
+
+    <span class="c1"># Step 1: apply cut-point wrapping (new in #296)</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">constraint</span><span class="o">.</span><span class="n">apply_cut</span><span class="p">(</span><span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+    <span class="c1"># Step 2: check limits on wrapped values</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="o">**</span><span class="n">reals</span><span class="p">):</span>
+        <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>             <span class="c1"># solution passes all constraints</span>
+    <span class="c1"># solutions that fail are discarded (and logged at INFO level)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.RealAxisConstraints.valid" title="hklpy2.blocks.constraints.RealAxisConstraints.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a> in turn calls
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.valid" title="hklpy2.blocks.constraints.LimitsConstraint.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a> on each individual
+constraint and returns <code class="docutils literal notranslate"><span class="pre">True</span></code> only when <strong>all</strong> constraints are satisfied.
+Solutions that fail at least one constraint are silently discarded; the
+reasons are recorded at the <code class="docutils literal notranslate"><span class="pre">logging.INFO</span></code> level.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="presets.html#concepts-presets"><span class="std std-ref">Presets</span></a> — supply a fixed value for a constant axis
+<em>before</em> the solver runs, rather than filtering solutions <em>after</em>.</p>
+</div>
+</section>
+<section id="the-limitsconstraint-label">
+<span id="concepts-constraints-label"></span><h3>The <code class="docutils literal notranslate"><span class="pre">LimitsConstraint</span></code> Label<a class="headerlink" href="#the-limitsconstraint-label" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">label</span></code> attribute of a
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a> <strong>must match the real
+axis name</strong> as it appears on the diffractometer.  This is because
+<code class="docutils literal notranslate"><span class="pre">valid()</span></code> looks up the axis value from the <code class="docutils literal notranslate"><span class="pre">**values</span></code> keyword-argument
+dictionary using <code class="docutils literal notranslate"><span class="pre">self.label</span></code> as the key:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># from LimitsConstraint.valid()</span>
+<span class="n">value</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>   <span class="c1"># KeyError / ConstraintsError if label is wrong</span>
+</pre></div>
+</div>
+<p>The same name is used as the dictionary key in
+<code class="docutils literal notranslate"><span class="pre">diffractometer.core.constraints</span></code>, which is a
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.RealAxisConstraints" title="hklpy2.blocks.constraints.RealAxisConstraints"><code class="xref py py-class docutils literal notranslate"><span class="pre">RealAxisConstraints</span></code></a> instance (a <code class="docutils literal notranslate"><span class="pre">dict</span></code>
+subclass):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span>
+<span class="c1"># {</span>
+<span class="c1">#   &quot;omega&quot;: LimitsConstraint(label=&quot;omega&quot;, ...),</span>
+<span class="c1">#   &quot;chi&quot;:   LimitsConstraint(label=&quot;chi&quot;,   ...),</span>
+<span class="c1">#   &quot;phi&quot;:   LimitsConstraint(label=&quot;phi&quot;,   ...),</span>
+<span class="c1">#   &quot;tth&quot;:   LimitsConstraint(label=&quot;tth&quot;,   ...),</span>
+<span class="c1"># }</span>
+</pre></div>
+</div>
+<p>Constraints are created automatically for every real axis when the
+diffractometer is initialised (or when
+<a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.reset_constraints" title="hklpy2.ops.Core.reset_constraints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset_constraints()</span></code></a> is called).  The <code class="docutils literal notranslate"><span class="pre">label</span></code> is set
+to the axis name at that point.  You do not normally need to set the label
+manually; if you create a <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint" title="hklpy2.blocks.constraints.LimitsConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">LimitsConstraint</span></code></a>
+directly you must supply a <code class="docutils literal notranslate"><span class="pre">label</span></code> that matches a real axis name, otherwise
+<a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.valid" title="hklpy2.blocks.constraints.LimitsConstraint.valid"><code class="xref py py-meth docutils literal notranslate"><span class="pre">valid()</span></code></a> will raise a
+<code class="xref py py-exc docutils literal notranslate"><span class="pre">ConstraintsError</span></code>.</p>
+<p class="rubric">Example — adjusting a constraint</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restrict chi to the range [0, 90] degrees.</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+
+<span class="c1"># Set chi&#39;s cut point to [0, 360).</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Reset all constraints to defaults (±180 degrees, cut at -180).</span>
+<span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">reset_constraints</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="__overview.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Overview</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="creator.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Diffractometer creator</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cut-points">Cut Points</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-constraints-work-internally">How Constraints Work Internally</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-valid-method">The <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Method</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-valid-is-called-during-forward">How <code class="docutils literal notranslate"><span class="pre">valid()</span></code> Is Called During <code class="docutils literal notranslate"><span class="pre">forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-limitsconstraint-label">The <code class="docutils literal notranslate"><span class="pre">LimitsConstraint</span></code> Label</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/concepts/constraints.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/concepts/constraints.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2026, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

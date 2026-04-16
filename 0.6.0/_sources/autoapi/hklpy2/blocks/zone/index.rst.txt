@@ -1,0 +1,229 @@
+zone
+====
+
+.. py:module:: hklpy2.blocks.zone
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.blocks.zone``
+
+   Crystallographic zone axis operations.
+
+   A *zone* is set of crystal *lattice* planes, all parallel to one line, called
+   the *zone axis*. A *zone* is defined by a *zone axis* (a unit vector), which can
+   be specified directly or computed from two vectors (normal to their respective
+   *lattice* planes) using their cross product.
+
+   SPEC equivalents
+   ----------------
+
+   - ``cz`` — :class:`OrthonormalZone` (``b1=``, ``b2=``): calculate zone axis from two vectors.
+   - ``mz`` — :func:`~hklpy2.plans.move_zone`: move diffractometer to a position in the zone.
+   - ``pl`` — :meth:`OrthonormalZone.define_axis`: set the scattering plane from two vectors.
+   - ``sz`` — :class:`OrthonormalZone` (``axis=``): set zone axis directly.
+
+   .. autosummary::
+
+       ~OrthonormalZone
+       ~zonespace
+       ~zone_series
+
+   .. note::
+
+       :func:`move_zone` and :func:`scan_zone` have moved to :mod:`hklpy2.plans`.
+       Importing them from :mod:`hklpy2.blocks.zone` emits a
+       :exc:`DeprecationWarning` and will be removed in a future release.
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: OrthonormalZone(*, axis: Optional[~hklpy2.typing.INPUT_VECTOR] = None, b1: Optional[~hklpy2.typing.INPUT_VECTOR] = None, b2: Optional[~hklpy2.typing.INPUT_VECTOR] = None)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.zone.OrthonormalZone``
+
+
+   An orthonormal (Cartesian) zone defined by a *zone axis*.
+
+   The zone axis can be defined directly or computed from two vectors using
+   their cross product.
+
+   For crystallography, this class operates on the Cartesian reciprocal
+   lattice, transformed from the crystal lattice h,k,l coordinates.
+
+   :param axis: Direct specification of the zone axis vector
+   :type axis: INPUT_VECTOR, optional
+   :param b1: First vector for cross product calculation
+   :type b1: INPUT_VECTOR, optional
+   :param b2: Second vector for cross product calculation
+   :type b2: INPUT_VECTOR, optional
+
+   :raises ValueError: If both axis and v1/v2 are provided, or if only one of v1/v2 is provided
+
+
+   .. py:property:: axis
+      :type: ~numpy.typing.NDArray[~numpy.floating]
+
+
+      Get the zone axis (unit) vector.
+
+      :returns: 3-element numpy array representing the zone axis
+      :rtype: NDArray[np.floating]
+
+      :raises ValueError: If zone axis is undefined
+
+
+   .. py:property:: axis_defined
+      :type: bool
+
+
+      Is the zone axis defined?
+
+
+   .. py:method:: define_axis(b1: ~hklpy2.typing.INPUT_VECTOR, b2: ~hklpy2.typing.INPUT_VECTOR, normalize: bool = False) -> ~numpy.typing.NDArray[~numpy.floating]
+
+      Define the zone axis from two vectors using cross product.
+
+      :param b1: First vector (3-element)
+      :type b1: INPUT_VECTOR
+      :param b2: Second vector (3-element)
+      :type b2: INPUT_VECTOR
+      :param normalize: If True, normalize the resulting axis vector
+      :type normalize: bool, default False
+
+      :returns: The computed zone axis vector
+      :rtype: NDArray[np.floating]
+
+      :raises ValueError: If vectors are parallel, zero, or invalid
+
+
+
+   .. py:method:: in_zone(vector: ~hklpy2.typing.INPUT_VECTOR, tol: float = 1e-05) -> bool
+
+      Verify if 'vector' is in this zone.
+
+      :param vector: Vector to test for zone membership
+      :type vector: INPUT_VECTOR
+      :param tol: Tolerance for dot product comparison
+      :type tol: float, default 1e-5
+
+      :returns: True if vector is in the zone (dot product with axis ≤ tol)
+      :rtype: bool
+
+      :raises ValueError: If zone axis is undefined or vector is invalid
+
+
+
+   .. py:method:: vecspace(b1: ~hklpy2.typing.INPUT_VECTOR, b2: ~hklpy2.typing.INPUT_VECTOR, n: int) -> Iterator[~numpy.typing.NDArray]
+
+      Generate 'n' vectors from 'b1' to 'b2' rotated around b1 x b2.
+
+      :param b1: Starting :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+      :type b1: INPUT_VECTOR
+      :param b2: Ending :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+      :type b2: INPUT_VECTOR
+      :param n: Number of vectors to generate
+      :type n: int
+
+      :Yields: *NDArray* -- Vectors interpolated between v1 and v2
+
+      :raises ValueError: If vectors are not in the zone
+
+
+
+.. py:function:: move_zone(*args, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.zone.move_zone``
+
+
+   .. deprecated::
+       ``move_zone`` has moved to :mod:`hklpy2.plans`.
+       Import it from there: ``from hklpy2.plans import move_zone``.
+       This re-export will be removed in a future release.
+
+
+.. py:function:: scan_zone(*args, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.zone.scan_zone``
+
+
+   .. deprecated::
+       ``scan_zone`` has moved to :mod:`hklpy2.plans`.
+       Import it from there: ``from hklpy2.plans import scan_zone``.
+       This re-export will be removed in a future release.
+
+
+.. py:function:: zone_series(diff: ~hklpy2.diffract.DiffractometerBase, hkl_1: ~hklpy2.typing.INPUT_VECTOR, hkl_2: ~hklpy2.typing.INPUT_VECTOR, n: int) -> None
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.zone.zone_series``
+
+
+   Example: a series of diffractometer positions along a zone.
+
+   Print 'n' positions along the zone from hkl_1 to hkl_2 inclusive.
+   The series is computed using the orthonormal zone.
+   Results are displayed in a formatted table showing both reciprocal
+   space coordinates (pseudos) and real motor positions (reals).
+
+   :param diff: The diffractometer instance used for forward calculations.
+   :type diff: hklpy2.DiffractometerBase
+   :param hkl_1: Starting :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type hkl_1: INPUT_VECTOR
+   :param hkl_2: Ending :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type hkl_2: INPUT_VECTOR
+   :param n: Number of points to generate from hkl_1 to hkl_2 (inclusive).
+   :type n: int
+
+   .. rubric:: Examples
+
+   >>> # Generate 5 points from (1,0,0) to (0,1,0)
+   >>> zone_series(my_diffractometer, (1,0,0), (0,1,0), 5)
+
+
+.. py:function:: zonespace(diff: ~hklpy2.diffract.DiffractometerBase, hkl_1: ~hklpy2.typing.INPUT_VECTOR, hkl_2: ~hklpy2.typing.INPUT_VECTOR, n: int) -> Iterator[tuple[Sequence[float], Sequence[float]]]
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.zone.zonespace``
+
+
+   Generate pseudos and reals along a crystallographic zone.
+
+   * Transforms crystallographic coordinates (hkl) to Cartesian space
+     (b) using the sample's reciprocal lattice.
+   * Creates a zone from b1 & b2
+   * Yields corresponding diffractometer pseudo and real positions for
+     'n' points (including hkl_1 and hkl_2 points) along the
+     orthonormal zone, distributed evenly by angle.
+
+   :param diff: Diffractometer instance for sample & forward() calculations.
+   :type diff: hklpy2.DiffractometerBase
+   :param hkl_1: Starting :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type hkl_1: INPUT_VECTOR
+   :param hkl_2: Ending :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type hkl_2: INPUT_VECTOR
+   :param n: Number of interpolation points to generate (must be > 0).
+   :type n: int
+
+   :Yields: *tuple[Sequence[float], Sequence[float]]* -- (pseudos, reals) for each valid point.
+            Points where forward(pseudos) fails are logged and skipped.
+
+   .. rubric:: Notes
+
+   * hkl_1 & hkl_2 vectors are transformed from Miller to orthonormal
+     space using the sample's reciprocal lattice.
+   * Failed forward() solutions are logged at debug level.
+
+

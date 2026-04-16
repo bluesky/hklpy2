@@ -1,0 +1,286 @@
+run_utils
+=========
+
+.. py:module:: hklpy2.run_utils
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.run_utils``
+
+   Bluesky run-engine and databroker integration for |hklpy2|.
+
+   These utilities write diffractometer configuration into Bluesky run metadata
+   and retrieve orientation information from previously recorded runs.
+
+   .. autosummary::
+
+       ~ConfigurationRunWrapper
+       ~simulator_from_config
+       ~get_run_orientation
+       ~list_orientation_runs
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: ConfigurationRunWrapper(*devices, knowns=None)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.run_utils.ConfigurationRunWrapper``
+
+
+   Write configuration of supported device(s) to a bluesky run.
+
+   EXAMPLE::
+
+       crw = ConfigurationRunWrapper(sim4c2)
+       RE.preprocessors.append(crw.wrapper)
+       RE(bp.rel_scan([noisy], m1, -1.2, 1.2, 11))
+
+   Disable the preprocessor::
+
+       crw.enable = False  # 'True' to enable
+
+   Remove the last preprocessor::
+
+       RE.preprocessors.pop()
+
+   Add another diffractometer::
+
+       crw.devices.append(e4cv)
+
+   .. autosummary::
+
+       ~device_names
+       ~devices
+       ~enable
+       ~known_bases
+       ~start_key
+       ~validate
+       ~wrapper
+
+
+   .. py:property:: device_names
+      :type: list[str]
+
+
+      Return list of configured device names.
+
+
+   .. py:attribute:: devices
+      :type:  Sequence[~ophyd.Device]
+      :value: []
+
+
+      List of devices to be reported.
+
+
+   .. py:property:: enable
+      :type: bool
+
+
+      Is it permitted to write device configuration?
+
+
+   .. py:attribute:: known_bases
+      :type:  Sequence[~ophyd.Device]
+      :value: []
+
+
+      Known device base classes.
+
+      Any device (base class) that reports its configuration dictionary in
+      the `.read_configuration()` method can be added to this tuple.
+
+
+   .. py:attribute:: start_key
+      :type:  str
+      :value: 'diffractometers'
+
+
+      Top-level key in run's metadata dictionary.
+
+
+   .. py:method:: validate(devices: Sequence[~ophyd.Device]) -> None
+
+      Verify all are recognized objects.
+
+
+
+   .. py:method:: wrapper(plan: ~collections.abc.Iterator)
+
+      Bluesky plan wrapper (preprocessor).
+
+      Writes device(s) configuration to start document metadata.
+
+      Example::
+
+          crw = ConfigurationRunWrapper(e4cv)
+          RE.preprocessors.append(crw.wrapper)
+
+
+
+.. py:function:: get_run_orientation(run: Any, name=None, start_key: str = DEFAULT_START_KEY) -> ~hklpy2.typing.KeyValueMap
+
+   .. container:: import-path
+
+      Import: ``hklpy2.run_utils.get_run_orientation``
+
+
+   Return the orientation information dictionary from a run.
+
+   EXAMPLE::
+
+       In [3]: get_run_orientation(cat[9752], name="sim4c2")
+       Out[3]:
+       {'_header': {'datetime': '2025-02-27 15:54:33.364719',
+       'hklpy2_version': '0.0.26.dev72+gcf9a65a.d20250227',
+       'python_class': 'Hklpy2Diffractometer',
+       'source_type': 'X-ray',
+       'energy_units': 'keV',
+       'energy': 12.398419843856837,
+       'wavelength_units': 'angstrom',
+       'wavelength': 1.0},
+       'name': 'sim4c2',
+       'axes': {'pseudo_axes': ['h', 'k', 'l'],
+       'real_axes': ['omega', 'chi', 'phi', 'tth'],
+       'axes_xref': {'h': 'h',
+       'k': 'k',
+       'l': 'l',
+       'omega': 'omega',
+       'chi': 'chi',
+       'phi': 'phi',
+       'tth': 'tth'},
+       'extra_axes': {}},
+       'sample_name': 'sample',
+       'samples': {'sample': {'name': 'sample',
+       'lattice': {'a': 1,
+           'b': 1,
+           'c': 1,
+           'alpha': 90.0,
+           'beta': 90.0,
+           'gamma': 90.0},
+       'reflections': {},
+       'reflections_order': [],
+       'U': [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+       'UB': [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+       'digits': 4}},
+       'constraints': {'omega': {'label': 'omega',
+       'low_limit': -180.0,
+       'high_limit': 180.0,
+       'class': 'LimitsConstraint'},
+       'chi': {'label': 'chi',
+       'low_limit': -180.0,
+       'high_limit': 180.0,
+       'class': 'LimitsConstraint'},
+       'phi': {'label': 'phi',
+       'low_limit': -180.0,
+       'high_limit': 180.0,
+       'class': 'LimitsConstraint'},
+       'tth': {'label': 'tth',
+       'low_limit': -180.0,
+       'high_limit': 180.0,
+       'class': 'LimitsConstraint'}},
+       'solver': {'name': 'hkl_soleil',
+       'description': "HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')",
+       'geometry': 'E4CV',
+       'real_axes': ['omega', 'chi', 'phi', 'tth'],
+       'version': '5.1.2',
+       'engine': 'hkl'}}
+
+
+   :param run: Bluesky run object.
+   :type run: object
+   :param name: (optional)
+                Name of the diffractometer. (default=None, returns all available.)
+   :type name: str
+   :param start_key: Metadata key where the orientation information is stored in the start
+                     document.  (default="diffractometers")
+   :type start_key: str
+
+
+.. py:function:: list_orientation_runs(catalog: Any, limit: int = 10, start_key: str = DEFAULT_START_KEY, **kwargs: Mapping) -> ~pandas.DataFrame
+
+   .. container:: import-path
+
+      Import: ``hklpy2.run_utils.list_orientation_runs``
+
+
+   List the runs with orientation information.
+
+   EXAMPLE::
+
+       In [42]: list_orientation_runs(cat, limit=5, date="_header.datetime")
+       Out[42]:
+           scan_id      uid  sample diffractometer geometry      solver                        date
+       0      9752  41f71e9  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:54:33.364719
+       1      9751  36e38bc  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:54:33.364719
+       2      9750  62e425d  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:54:33.364719
+       3      9749  18b11f0  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:53:55.958929
+       4      9748  bf9912f  sample         sim4c2     E4CV  hkl_soleil  2025-02-27 15:53:55.958929
+
+   :returns: **Table of orientation runs**
+   :rtype: Pandas DataFrame object
+
+   :param catalog: Catalog of bluesky runs.
+   :type catalog: object
+   :param limit: Limit the list to at most ``limit`` runs. (default=10)
+                 It could take a long time to search an entire catalog.
+   :type limit: int
+   :param start_key: Metadata key where the orientation information is stored in the start
+                     document.  (default="diffractometers")
+   :type start_key: str
+   :param \*\*kwargs: Keyword parameters describing data column names to be displayed. The
+                      value of each column name is the dotted path to the orientation
+                      information (in the start document's metadata).
+   :type \*\*kwargs: dict[str:str]
+
+
+.. py:function:: simulator_from_config(config: Union[dict, str, ~pathlib.Path])
+
+   .. container:: import-path
+
+      Import: ``hklpy2.run_utils.simulator_from_config``
+
+
+   Create a simulated diffractometer from a saved configuration.
+
+   All axes are soft positioners — no hardware connections are made.
+   Auxiliary axes and solver mode saved by
+   :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored
+   automatically.
+
+   If the diffractometer requires auxiliary axes that are not in the
+   configuration file, use :func:`~hklpy2.diffract.creator` with
+   :meth:`~hklpy2.diffract.DiffractometerBase.restore` instead::
+
+       sim = hklpy2.creator(name="e4cv", reals=dict(..., extra_axis=None))
+       sim.restore("e4cv-config.yml")
+
+   PARAMETERS
+
+   config : dict, str, or pathlib.Path
+       Configuration dictionary, or path to a YAML configuration file
+       previously saved with ``diffractometer.export()``.
+
+   RETURNS
+
+   DiffractometerBase
+       A fully configured simulated diffractometer instance.
+
+   EXAMPLE::
+
+       >>> import hklpy2
+       >>> sim = hklpy2.simulator_from_config("e4cv-config.yml")
+       >>> sim.wh()
+
+   SEE ALSO
+
+       :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
+
+

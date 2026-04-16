@@ -1,0 +1,236 @@
+plans
+=====
+
+.. py:module:: hklpy2.plans
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.plans``
+
+   Bluesky plans provided by |hklpy2|.
+
+   This module is the single, canonical location for all standalone |hklpy2|
+   plans.  New plans should be implemented here directly.
+
+   .. note::
+
+       Diffractometer-method plans
+       (:meth:`~hklpy2.diffract.DiffractometerBase.scan_extra`,
+       :meth:`~hklpy2.diffract.DiffractometerBase.move_dict`, etc.) are not
+       listed here because they require a diffractometer instance as ``self``.
+       The free-function wrapper :func:`~hklpy2.user.scan_extra` is available
+       in :mod:`hklpy2.user` for interactive use with a pre-selected
+       diffractometer.
+
+   .. autosummary::
+
+       ~move_zone
+       ~scan_psi
+       ~scan_zone
+
+   .. rubric:: Solver compatibility for scan_psi
+
+   :func:`scan_psi` discovers the psi mode and psi axis name from the
+   diffractometer's solver at runtime using only the solver-agnostic API:
+
+   * ``diffractometer.core.modes`` — list of available mode names
+   * ``diffractometer.core.solver_extra_axis_names`` — extra axis names for
+     the current mode
+
+   Auto-detection searches ``core.modes`` for a name that contains ``"psi"``.
+   If the solver exposes more than one such mode (e.g. ``"psi_constant"``
+   **and** ``"psi_constant_vertical"`` on an E6C geometry), auto-detection is
+   ambiguous and the caller must pass ``mode=`` explicitly.
+
+   Override parameters ``mode=`` and ``psi_axis=`` are provided as escape
+   hatches for future solvers whose naming conventions differ from the current
+   ``hkl_soleil`` convention.
+
+
+
+
+Module Contents
+---------------
+
+.. py:function:: move_zone(diffractometer: ~hklpy2.diffract.DiffractometerBase, hkl: ~hklpy2.typing.INPUT_VECTOR) -> ~hklpy2.typing.BlueskyPlanType
+
+   .. container:: import-path
+
+      Import: ``hklpy2.plans.move_zone``
+
+
+   Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).
+
+   Computes the real-axis positions corresponding to the given pseudo
+   position *hkl* via the diffractometer's forward calculation and moves
+   all real axes there.
+
+   .. rubric:: Example
+
+   .. code-block:: python
+
+       from hklpy2 import creator, move_zone
+       fourc = creator()
+       RE(move_zone(fourc, (1, 0, 0)))
+
+   :param diffractometer: hklpy2 diffractometer object.
+   :type diffractometer: DiffractometerBase
+   :param hkl: Target pseudo position (*h, k, l*).
+   :type hkl: INPUT_VECTOR
+
+
+.. py:function:: scan_psi(detectors: Sequence[~bluesky.protocols.Readable], diffractometer: ~hklpy2.diffract.DiffractometerBase, *, h: float, k: float, l: float, hkl2: Sequence[float], psi_start: float, psi_stop: float, num: int, mode: Optional[str] = None, psi_axis: Optional[str] = None, fail_on_exception: bool = False, md: Optional[Mapping[str, Any]] = None) -> ~hklpy2.typing.BlueskyPlanType
+
+   .. container:: import-path
+
+      Import: ``hklpy2.plans.scan_psi``
+
+
+   Scan the azimuthal angle (ψ) at a fixed *(h, k, l)* position.
+
+   Rotates the sample about the scattering vector **Q** by sweeping the
+   azimuthal extra parameter (conventionally named ``psi``) from
+   *psi_start* to *psi_stop* in *num* steps, while holding *(h, k, l)*
+   constant.
+
+   The reference reflection *hkl2* defines the azimuthal zero (psi = 0).
+   It must not be parallel (or anti-parallel) to *(h, k, l)*.
+
+   .. rubric:: Behavior
+
+   1. Discovers the psi-capable mode from ``diffractometer.core.modes``
+      (any mode whose name contains ``"psi"``).  If the solver exposes more
+      than one such mode the caller must pass ``mode=`` explicitly.
+   2. Saves the current mode and restores it on exit (even after an error).
+   3. Sets the discovered mode and discovers the psi extra axis name from
+      ``core.solver_extra_axis_names`` (any axis whose name contains
+      ``"psi"``).
+   4. Validates that *hkl* and *hkl2* are not parallel.
+   5. Calls :meth:`~hklpy2.diffract.DiffractometerBase.scan_extra` with
+      the appropriate arguments.
+
+   .. rubric:: Example
+
+   .. code-block:: python
+
+       from hklpy2 import creator, scan_psi
+       fourc = creator()
+       # ... set up sample and UB matrix ...
+       RE(
+           scan_psi(
+               [det, fourc],
+               fourc,
+               h=2, k=2, l=0,
+               hkl2=(1, -1, 0),
+               psi_start=0, psi_stop=180,
+               num=7,
+           )
+       )
+
+   :param detectors: Ophyd devices to trigger and read at each measurement point.
+   :type detectors: Sequence[Readable]
+   :param diffractometer: hklpy2 diffractometer object.
+   :type diffractometer: DiffractometerBase
+   :param h: *h* component of the fixed reflection.
+   :type h: float
+   :param k: *k* component of the fixed reflection.
+   :type k: float
+   :param l: *l* component of the fixed reflection.
+   :type l: float
+   :param hkl2: Reference reflection *(h2, k2, l2)* that defines psi = 0.
+                Must not be parallel to *(h, k, l)*.
+   :type hkl2: Sequence[float]
+   :param psi_start: Starting azimuthal angle (degrees).
+   :type psi_start: float
+   :param psi_stop: Ending azimuthal angle (degrees).
+   :type psi_stop: float
+   :param num: Number of points (inclusive of endpoints).
+   :type num: int
+   :param mode: Psi-capable mode name to use.  When *None* (default), the mode is
+                discovered automatically by searching ``core.modes`` for a name
+                containing ``"psi"``.  Pass explicitly when the solver exposes
+                multiple psi modes (e.g. ``"psi_constant_vertical"`` on E6C).
+   :type mode: str, optional
+   :param psi_axis: Name of the azimuthal extra axis to scan.  When *None* (default),
+                    the axis is discovered automatically by searching
+                    ``core.solver_extra_axis_names`` for a name containing ``"psi"``.
+                    Pass explicitly if the solver uses a different naming convention.
+   :type psi_axis: str, optional
+   :param fail_on_exception: When *True*, any failed forward-calculation at a scan point raises
+                             immediately.  When *False* (default), the failure is printed and
+                             the scan continues.
+   :type fail_on_exception: bool, optional
+   :param md: User-supplied metadata added to the Bluesky run document.
+   :type md: dict, optional
+
+   :raises NotImplementedError: If no psi-capable mode is found in ``core.modes``.
+   :raises ValueError: If mode or psi_axis discovery is ambiguous, *hkl2* is parallel to
+       *(h, k, l)*, or an explicit override is not found in the solver.
+
+   .. rubric:: Notes
+
+   * The current diffractometer mode is saved before the scan and restored
+     afterward, even if the scan raises an exception.
+   * The reference extra axes (h2, k2, l2 or equivalent) are identified as
+     *all* extra axes in the psi mode that are not the psi axis itself.
+     Exactly three such axes are expected; any other count raises
+     ``ValueError``.
+   * Currently only solvers that expose a psi-capable mode (mode name
+     containing ``"psi"``) in their extra-axis API are supported.  This
+     includes ``hkl_soleil`` geometries such as E4CV, E4CH, K4CV, E6C,
+     K6C, APS POLAR, SOLEIL MARS, and PETRA3 P23.  Future solvers can
+     support :func:`scan_psi` by exposing a similarly named mode and extra
+     axis without any change to this function, or by passing ``mode=`` and
+     ``psi_axis=`` explicitly.
+
+   .. seealso::
+
+       :meth:`~hklpy2.diffract.DiffractometerBase.scan_extra` — the
+       lower-level plan this function wraps.
+
+
+.. py:function:: scan_zone(detectors: Sequence[~bluesky.protocols.Readable], diffractometer: ~hklpy2.diffract.DiffractometerBase, start: ~hklpy2.typing.INPUT_VECTOR, finish: ~hklpy2.typing.INPUT_VECTOR, num: int, md: Optional[Mapping[str, Any]] = None) -> ~hklpy2.typing.BlueskyPlanType
+
+   .. container:: import-path
+
+      Import: ``hklpy2.plans.scan_zone``
+
+
+   Perform a zone scan on a diffractometer.
+
+   .. rubric:: Behavior
+
+   * Computes a sequence of pseudos and the corresponding reals in the
+     crystallographic zone defined by the cross-product of start cross finish.
+     Skips a position if not permitted by the UB matrix or diffractometer
+     constraints.
+   * For each point:
+       1. Moves the diffractometer real axes to the computed
+          real positions.
+       2. Triggers all detectors and waits for completion.
+       3. Creates a ``primary`` stream, reads all detectors and the
+          diffractometer, and saves the event.
+
+   .. rubric:: Example
+
+   .. code-block:: python
+
+       from hklpy2 import creator, scan_zone
+       fourc = creator()
+       (uid,) = RE(scan_zone([scaler], fourc, (1,0,0), (0,1,0), 5))
+
+   :param detectors: Ophyd devices to trigger and read at each measurement point.
+   :type detectors: Sequence[Readable])
+   :param diffractometer: hklpy2 Diffractometer object.
+   :type diffractometer: hklpy2.DiffractometerBase
+   :param start: Starting :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type start: INPUT_VECTOR
+   :param finish: Finishing :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+   :type finish: INPUT_VECTOR
+   :param num: Number of points to sample along the zone (inclusive
+               of endpoints).
+   :type num: int
+   :param md: (Optional) User-supplied metadata.
+   :type md: dict
+
+
