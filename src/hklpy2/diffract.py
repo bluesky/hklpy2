@@ -339,6 +339,7 @@ class DiffractometerBase(PseudoPositioner):
         clear=True,
         restore_constraints=True,
         restore_wavelength=True,
+        restore_mode=False,
     ) -> None:
         """
         Restore diffractometer configuration.
@@ -368,6 +369,14 @@ class DiffractometerBase(PseudoPositioner):
             If ``True`` (default), restore any constraints provided.
         restore_wavelength : bool
             If ``True`` (default), restore wavelength.
+        restore_mode : bool
+            If ``False`` (default), the solver mode is not changed.  If the
+            saved mode differs from the current mode, a warning is issued so
+            the user can decide whether to apply it.
+
+            If ``True``, the saved mode is applied.  Use with caution on
+            hardware-connected diffractometers — changing mode can cause
+            ``forward()`` to move axes that were previously held fixed.
 
         Note: Can't name this method "import", it's a reserved Python word.
         """
@@ -395,6 +404,22 @@ class DiffractometerBase(PseudoPositioner):
             clear=clear,
             restore_constraints=restore_constraints,
         )
+
+        saved_mode = config.get("solver", {}).get("mode")
+        if saved_mode is not None:
+            current_mode = self.core.solver.mode
+            if restore_mode:
+                self.core.solver.mode = saved_mode
+            elif saved_mode != current_mode:
+                import warnings
+
+                warnings.warn(
+                    f"Saved mode {saved_mode!r} differs from current mode"
+                    f" {current_mode!r}. To apply the saved mode, use"
+                    f" restore(restore_mode=True).",
+                    UserWarning,
+                    stacklevel=2,
+                )
 
     @pseudo_position_argument
     def forward(self, pseudos: dict, wavelength: Optional[float] = None) -> NamedTuple:
