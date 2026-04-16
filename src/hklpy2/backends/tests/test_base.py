@@ -195,3 +195,73 @@ def test_SolverBase_set_reals_inherited(parms, context):
         solver = ThTthSolver(TH_TTH_Q_GEOMETRY)
         result = solver.set_reals(**parms)
         assert result is None
+
+
+# A non-identity 3x3 matrix for testing U/UB round-trips.
+_SAMPLE_MATRIX = [
+    [0.0, 1.0, 0.0],
+    [0.0, 0.0, 1.0],
+    [1.0, 0.0, 0.0],
+]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(attr="U", value=IDENTITY_MATRIX_3X3),
+            does_not_raise(),
+            id="U getter returns identity by default",
+        ),
+        pytest.param(
+            dict(attr="UB", value=IDENTITY_MATRIX_3X3),
+            does_not_raise(),
+            id="UB getter returns identity by default",
+        ),
+        pytest.param(
+            dict(attr="U", value=_SAMPLE_MATRIX),
+            does_not_raise(),
+            id="U setter stores value; getter returns it",
+        ),
+        pytest.param(
+            dict(attr="UB", value=_SAMPLE_MATRIX),
+            does_not_raise(),
+            id="UB setter stores value; getter returns it",
+        ),
+    ],
+)
+def test_SolverBase_U_UB(parms, context):
+    """SolverBase U and UB properties store and return orientation matrices."""
+    with context:
+        solver = TrivialSolver("test_geo")
+        attr = parms["attr"]
+        value = parms["value"]
+        # Verify default is identity before any assignment.
+        assert getattr(solver, attr) == IDENTITY_MATRIX_3X3
+        # Set and round-trip.
+        setattr(solver, attr, value)
+        assert getattr(solver, attr) == value
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(reals={"th": 5.0, "tth": 10.0}),
+            does_not_raise(),
+            id="ThTthSolver U/UB inherit base store-and-return behaviour",
+        ),
+    ],
+)
+def test_SolverBase_U_UB_inherited(parms, context):
+    """Non-hkl_soleil solvers inherit U/UB store-and-return without AttributeError."""
+    with context:
+        solver = ThTthSolver(TH_TTH_Q_GEOMETRY)
+        # Default is identity.
+        assert solver.U == IDENTITY_MATRIX_3X3
+        assert solver.UB == IDENTITY_MATRIX_3X3
+        # Setter stores; getter returns — no AttributeError.
+        solver.U = _SAMPLE_MATRIX
+        assert solver.U == _SAMPLE_MATRIX
+        solver.UB = _SAMPLE_MATRIX
+        assert solver.UB == _SAMPLE_MATRIX

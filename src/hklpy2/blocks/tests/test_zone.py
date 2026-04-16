@@ -470,10 +470,13 @@ def test_zone_deprecated_shims(parms, context):
 
         zone_mod = importlib.import_module("hklpy2.blocks.zone")
         func = getattr(zone_mod, parms["func_name"])
-        with pytest.warns(DeprecationWarning, match=re.escape(parms["msg"])):
-            # Call the shim with dummy args to trigger the warning;
-            # wrap in a try to ignore downstream errors.
-            try:
+        # Trigger only the warnings.warn() in the shim body, without calling
+        # the underlying plan (which would create a bluesky Plan generator that
+        # crashes in __del__ if never iterated).  We do this by patching the
+        # imported plan symbol so the shim's delegation never reaches @plan.
+        from unittest.mock import patch
+
+        target = f"hklpy2.plans.{parms['func_name']}"
+        with patch(target, return_value=None):
+            with pytest.warns(DeprecationWarning, match=re.escape(parms["msg"])):
                 func()
-            except Exception as ex:
-                logging.debug("Ignoring expected downstream error from deprecated shim call", exc_info=ex)
