@@ -25,7 +25,7 @@ from ..diffract import diffractometer_class_factory
 from ..exceptions import ConfigurationError
 from ..exceptions import DiffractometerError
 from ..exceptions import NoForwardSolutions
-from ..misc import VirtualPositionerBase
+from ..devices import VirtualPositionerBase
 from ..ops import DEFAULT_SAMPLE_NAME
 from ..ops import Core
 from ..ops import CoreError

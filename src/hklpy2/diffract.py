@@ -1166,10 +1166,10 @@ def diffractometer_class_factory(
 
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     """
+    from .devices import dynamic_import
+    from .devices import make_component
+    from .devices import parse_factory_axes
     from .misc import DEFAULT_MOTOR_LABELS
-    from .misc import dynamic_import
-    from .misc import make_component
-    from .misc import parse_factory_axes
     from .misc import solver_factory
 
     if not isinstance(pseudos, list):
