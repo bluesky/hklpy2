@@ -347,7 +347,16 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
     Parses the configuration for the solver, geometry, and axis names, then
     constructs a simulator (all axes are soft positioners — no hardware
     connection) and restores the full orientation (samples, reflections, UB
-    matrix, wavelength, constraints) from the configuration.
+    matrix, wavelength, constraints) from the configuration.  Auxiliary axes
+    saved by :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored
+    automatically.
+
+    If the diffractometer requires auxiliary axes that are not in the
+    configuration file, use :func:`~hklpy2.diffract.creator` with
+    :meth:`~hklpy2.diffract.DiffractometerBase.restore` instead::
+
+        sim = hklpy2.creator(name="e4cv", reals=dict(..., extra_axis=None))
+        sim.restore("e4cv-config.yml")
 
     PARAMETERS
 
@@ -424,7 +433,12 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
         if s in solver_to_diff_pseudo
     ] or pseudo_axes
 
-    reals = {name: None for name in real_axes}
+    reals_dict = {name: None for name in real_axes}
+
+    # Restore auxiliary axes saved in the config (backward-compatible: absent in old files).
+    for name in axes_cfg.get("auxiliary_axes", []):
+        if name not in reals_dict:
+            reals_dict[name] = None
 
     # Pass _real and _pseudo so creator() maps axes in solver-expected order
     # even when diffractometer names differ from solver canonical names.
@@ -441,7 +455,7 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
         solver=solver_name,
         geometry=geometry,
         solver_kwargs=solver_kwargs,
-        reals=reals,
+        reals=reals_dict,
         _real=real_axes if real_axes else None,
         _pseudo=pseudo_axes_ordered if pseudo_axes_ordered else None,
     )

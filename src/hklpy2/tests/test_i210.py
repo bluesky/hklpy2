@@ -316,3 +316,71 @@ def test_creator_from_config_reflection_axis_order(parms, context):
         assert np.isclose(norm, _I243_UB_NORM_EXPECTED, atol=_I243_TOL), (
             f"Expected ||UB||≈{_I243_UB_NORM_EXPECTED:.4f}, got {norm:.4f}"
         )
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(config="e4cv_orient.yml"),
+            does_not_raise(),
+            id="E4CV vibranium: backward compatible, no auxiliary_axes in old config",
+        ),
+        pytest.param(
+            dict(config="e4cv-silicon-example.yml"),
+            does_not_raise(),
+            id="E4CV silicon: backward compatible",
+        ),
+    ],
+)
+def test_creator_from_config_no_auxiliary_axes(parms, context):
+    """
+    Test creator_from_config() backward compatibility (issue #361).
+
+    Old config files without auxiliary_axes restore without error.
+    """
+    with context:
+        sim = creator_from_config(TESTS_DIR / parms["config"])
+        for ax in ("omega", "chi", "phi", "tth"):
+            assert ax in sim.component_names
+        result = sim.forward(h=1, k=0, l=0)
+        assert len(result) > 0
+
+
+def test_creator_from_config_auxiliary_axes_roundtrip(tmp_path):
+    """
+    Test that auxiliary axes are saved by export() and restored automatically
+    by creator_from_config() without requiring reals= (issue #361).
+    """
+    import yaml
+
+    # Build diffractometer with auxiliary axes and orient it.
+    sim = hklpy2.creator(
+        name="e4cv",
+        reals=dict(omega=None, chi=None, phi=None, tth=None, atheta=None, attheta=None),
+    )
+    sim.core.add_sample("vibranium", 4.04)
+    r1 = sim.core.add_reflection(
+        dict(h=4, k=0, l=0), dict(omega=-145.451, chi=0, phi=0, tth=69.066)
+    )
+    r2 = sim.core.add_reflection(
+        dict(h=0, k=4, l=0), dict(omega=-145.451, chi=0, phi=90, tth=69.066)
+    )
+    sim.core.calc_UB(r1, r2)
+
+    # Export — auxiliary_axes must appear in the saved config.
+    config_file = tmp_path / "e4cv-analyzer.yml"
+    sim.export(str(config_file))
+    cfg = yaml.safe_load(config_file.read_text())
+    assert cfg["axes"].get("auxiliary_axes") == ["atheta", "attheta"]
+
+    # Restore without reals= — auxiliary axes come from the config automatically.
+    sim2 = creator_from_config(config_file)
+    assert "atheta" in sim2.component_names
+    assert "attheta" in sim2.component_names
+
+    # Orientation is preserved — forward() gives consistent results.
+    assert np.isclose(
+        sim.forward(h=1, k=0, l=0)[0],
+        sim2.forward(h=1, k=0, l=0)[0],
+    )
