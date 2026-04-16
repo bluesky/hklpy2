@@ -31,8 +31,7 @@ Getting started
      - Simulated 4-circle diffractometer built with :func:`~hklpy2.diffract.creator`.
    * - :doc:`examples/example-4-circle-custom-class`
      - Same diffractometer built as a custom Python subclass.
-   * - :doc:`examples/_api_demo`
-     - Quick tour of the |hklpy2| API.
+
 
 Eulerian geometries (hkl_soleil)
 ---------------------------------
