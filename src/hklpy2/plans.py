@@ -16,7 +16,9 @@ plans.  New plans should be implemented here directly.
 
 .. autosummary::
 
+    ~move_zone
     ~scan_psi
+    ~scan_zone
 
 .. rubric:: Solver compatibility for scan_psi
 
@@ -43,18 +45,24 @@ from typing import Mapping
 from typing import Optional
 from typing import Sequence
 
+from bluesky import plan_stubs as bps
+from bluesky import preprocessors as bpp
 from bluesky.protocols import Readable
 from bluesky.utils import plan
 from deprecated.sphinx import versionadded
 
+from .blocks.zone import zonespace
 from .diffract import DiffractometerBase
 from .misc import validate_not_parallel
+from .typing import INPUT_VECTOR
 from .typing import BlueskyPlanType
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
+    "move_zone",
     "scan_psi",
+    "scan_zone",
 ]
 
 
@@ -157,6 +165,129 @@ def _find_psi_axis(
 # ---------------------------------------------------------------------------
 # Plans
 # ---------------------------------------------------------------------------
+
+
+@versionadded(
+    version="0.4.2",
+    reason="Move diffractometer to a zone position (SPEC ``mz`` equivalent).",
+)
+@plan
+def move_zone(
+    diffractometer: DiffractometerBase,
+    hkl: INPUT_VECTOR,
+) -> BlueskyPlanType:
+    """
+    Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).
+
+    Computes the real-axis positions corresponding to the given pseudo
+    position *hkl* via the diffractometer's forward calculation and moves
+    all real axes there.
+
+    .. rubric:: Example
+
+    .. code-block:: python
+
+        from hklpy2 import creator, move_zone
+        fourc = creator()
+        RE(move_zone(fourc, (1, 0, 0)))
+
+    Parameters
+    ----------
+    diffractometer : DiffractometerBase
+        hklpy2 diffractometer object.
+    hkl : INPUT_VECTOR
+        Target pseudo position (*h, k, l*).
+    """
+    pseudos = list(hkl) if not isinstance(hkl, dict) else hkl
+    reals = diffractometer.forward(pseudos)
+    parms = []
+    for k, v in zip(diffractometer.real_axis_names, reals):
+        parms.append(getattr(diffractometer, k))
+        parms.append(v)
+    yield from bps.mv(*parms)
+
+
+@versionadded(
+    version="0.3.0",
+    reason="Scan a diffractometer through a zone (SPEC ``scanzone`` equivalent).",
+)
+@plan
+def scan_zone(
+    detectors: Sequence[Readable],
+    diffractometer: DiffractometerBase,
+    start: INPUT_VECTOR,
+    finish: INPUT_VECTOR,
+    num: int,
+    md: Optional[Mapping[str, Any]] = None,
+) -> BlueskyPlanType:
+    """
+    Perform a zone scan on a diffractometer.
+
+    .. rubric:: Behavior
+
+    * Computes a sequence of pseudos and the corresponding reals in the
+      crystallographic zone defined by the cross-product of start cross finish.
+      Skips a position if not permitted by the UB matrix or diffractometer
+      constraints.
+    * For each point:
+        1. Moves the diffractometer real axes to the computed
+           real positions.
+        2. Triggers all detectors and waits for completion.
+        3. Creates a ``primary`` stream, reads all detectors and the
+           diffractometer, and saves the event.
+
+    .. rubric:: Example
+
+    .. code-block:: python
+
+        from hklpy2 import creator, scan_zone
+        fourc = creator()
+        (uid,) = RE(scan_zone([scaler], fourc, (1,0,0), (0,1,0), 5))
+
+    Parameters
+    ----------
+    detectors : Sequence[Readable])
+        Ophyd devices to trigger and read at each measurement point.
+    diffractometer : hklpy2.DiffractometerBase
+        hklpy2 Diffractometer object.
+    start : INPUT_VECTOR
+        Starting :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+    finish : INPUT_VECTOR
+        Finishing :data:`~hklpy2.typing.INPUT_VECTOR` of pseudos (*h,k,l*).
+    num : int
+        Number of points to sample along the zone (inclusive
+        of endpoints).
+    md : dict
+        (Optional) User-supplied metadata.
+    """
+    _md = {"plan_name": "scan_zone", **(md or {})}
+
+    @bpp.stage_decorator(detectors)
+    @bpp.run_decorator(md=_md)
+    def inner():
+        # Compute sequence of pseudos & reals in the zone
+        for pseudos, reals in zonespace(diffractometer, start, finish, num):
+            # move axes
+            logger.debug("zone hkl=%s", pseudos)
+            parms = []
+            for k, v in zip(diffractometer.real_axis_names, reals):
+                parms.append(getattr(diffractometer, k))
+                parms.append(v)
+            yield from bps.mv(*parms)
+
+            # trigger
+            group = "trigger_objects"
+            for item in detectors:
+                yield from bps.trigger(item, group=group)
+            yield from bps.wait(group=group)
+
+            # read
+            yield from bps.create("primary")
+            for item in detectors + [diffractometer]:
+                yield from bps.read(item)
+            yield from bps.save()
+
+    return (yield from inner())
 
 
 @versionadded(

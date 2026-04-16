@@ -10,39 +10,37 @@ SPEC equivalents
 ----------------
 
 - ``cz`` — :class:`OrthonormalZone` (``b1=``, ``b2=``): calculate zone axis from two vectors.
-- ``mz`` — :func:`move_zone`: move diffractometer to a position in the zone.
+- ``mz`` — :func:`~hklpy2.plans.move_zone`: move diffractometer to a position in the zone.
 - ``pl`` — :meth:`OrthonormalZone.define_axis`: set the scattering plane from two vectors.
 - ``sz`` — :class:`OrthonormalZone` (``axis=``): set zone axis directly.
 
 .. autosummary::
 
     ~OrthonormalZone
-    ~move_zone
-    ~scan_zone
     ~zonespace
     ~zone_series
+
+.. note::
+
+    :func:`move_zone` and :func:`scan_zone` have moved to :mod:`hklpy2.plans`.
+    Importing them from :mod:`hklpy2.blocks.zone` emits a
+    :exc:`DeprecationWarning` and will be removed in a future release.
 """
 
 import logging
-from typing import Any
+import warnings
 from typing import Iterator
-from typing import Mapping
 from typing import Optional
 from typing import Sequence
 
 import numpy as np
 from deprecated.sphinx import versionadded
-from bluesky import plan_stubs as bps
-from bluesky import preprocessors as bpp
-from bluesky.protocols import Readable
-from bluesky.utils import plan
 from numpy.typing import NDArray
 from pyRestTable import Table
 
 from ..diffract import DiffractometerBase
 from ..misc import NoForwardSolutions
 from ..typing import INPUT_VECTOR
-from ..typing import BlueskyPlanType
 
 logger = logging.getLogger(__name__)
 
@@ -412,125 +410,44 @@ def zone_series(
     print(table)
 
 
-@versionadded(
-    version="0.4.2",
-    reason="Move diffractometer to a zone position (SPEC ``mz`` equivalent).",
-)
-@plan
-def move_zone(
-    diffractometer: DiffractometerBase,
-    hkl: INPUT_VECTOR,
-) -> BlueskyPlanType:
+# ---------------------------------------------------------------------------
+# Deprecated re-exports of plan functions now living in hklpy2.plans
+# ---------------------------------------------------------------------------
+
+
+def move_zone(*args, **kwargs):
     """
-    Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).
-
-    Computes the real-axis positions corresponding to the given pseudo
-    position *hkl* via the diffractometer's forward calculation and moves
-    all real axes there.
-
-    .. rubric:: Example
-
-    .. code-block:: python
-
-        from hklpy2 import creator
-        from hklpy2.blocks.zone import move_zone
-        fourc = creator()
-        RE(move_zone(fourc, (1, 0, 0)))
-
-    Parameters
-    ----------
-    diffractometer : DiffractometerBase
-        hklpy2 diffractometer object.
-    hkl : INPUT_VECTOR
-        Target pseudo position (*h, k, l*).
+    .. deprecated::
+        ``move_zone`` has moved to :mod:`hklpy2.plans`.
+        Import it from there: ``from hklpy2.plans import move_zone``.
+        This re-export will be removed in a future release.
     """
-    pseudos = list(hkl) if not isinstance(hkl, dict) else hkl
-    reals = diffractometer.forward(pseudos)
-    parms = []
-    for k, v in zip(diffractometer.real_axis_names, reals):
-        parms.append(getattr(diffractometer, k))
-        parms.append(v)
-    yield from bps.mv(*parms)
+    warnings.warn(
+        "Importing move_zone from hklpy2.blocks.zone is deprecated. "
+        "Use 'from hklpy2.plans import move_zone' instead. "
+        "This compatibility shim will be removed in a future release.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    from ..plans import move_zone as _move_zone
+
+    return _move_zone(*args, **kwargs)
 
 
-@versionadded(
-    version="0.3.0",
-    reason="Scan a diffractometer through a zone (SPEC ``scanzone`` equivalent).",
-)
-@plan
-def scan_zone(
-    detectors: Sequence[Readable],
-    diffractometer: DiffractometerBase,
-    start: INPUT_VECTOR,
-    finish: INPUT_VECTOR,
-    num: int,
-    md: Optional[Mapping[str, Any]] = None,
-) -> BlueskyPlanType:
+def scan_zone(*args, **kwargs):
     """
-    Perform a zone scan on a diffractometer.
-
-    .. rubric:: Behavior
-
-    * Computes a sequence of pseudos and the corresponding reals in the
-      crystallographic zone defined by the cross-product of start cross finish.
-      Skips a position if not permitted by the UB matrix or diffractometer
-      constraints.
-    * For each point:
-        1. Moves the diffractometer real axes to the computed
-           real positions.
-        2. Triggers all detectors and waits for completion.
-        3. Creates a ``primary`` stream, reads all detectors and the
-           diffractometer, and saves the event.
-
-    .. rubric:: Example
-
-    .. code-block:: python
-
-        from hklpy2 import creator, scan_zone
-        fourc = creator()
-        (uid,) = RE(scan_zone([scaler],fourc, (1,0,0), (0,1,0), 5))
-
-    Parameters
-    ----------
-    detectors : Sequence[Readable])
-        Ophyd devices to trigger and read at each measurement point.
-    diffractometer : hklpy2.DiffractometerBase
-        hklpy2 Diffractometer object.
-    start : INPUT_VECTOR
-        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
-    finish : INPUT_VECTOR
-        Finishing :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
-    num : int
-        Number of points to sample along the zone (inclusive
-        of endpoints).
-    md : dict
-        (Optional) User-supplied metadata.
+    .. deprecated::
+        ``scan_zone`` has moved to :mod:`hklpy2.plans`.
+        Import it from there: ``from hklpy2.plans import scan_zone``.
+        This re-export will be removed in a future release.
     """
-    _md = {"plan_name": "scan_zone", **(md or {})}
+    warnings.warn(
+        "Importing scan_zone from hklpy2.blocks.zone is deprecated. "
+        "Use 'from hklpy2.plans import scan_zone' instead. "
+        "This compatibility shim will be removed in a future release.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    from ..plans import scan_zone as _scan_zone
 
-    @bpp.stage_decorator(detectors)
-    @bpp.run_decorator(md=_md)
-    def inner():
-        # Compute sequence of pseudos & reals in the zone
-        for pseudos, reals in zonespace(diffractometer, start, finish, num):
-            # move axes
-            logger.debug("zone hkl=%s", pseudos)
-            parms = []
-            for k, v in zip(diffractometer.real_axis_names, reals):
-                parms.append(getattr(diffractometer, k))
-                parms.append(v)
-            yield from bps.mv(*parms)
-
-            # trigger
-            group = "trigger_objects"
-            for item in detectors:
-                yield from bps.trigger(item, group=group)
-            yield from bps.wait(group=group)
-
-            # read
-            yield from bps.create("primary")
-            for item in detectors + [diffractometer]:
-                yield from bps.read(item)
-            yield from bps.save()
-
-    return (yield from inner())
+    return _scan_zone(*args, **kwargs)

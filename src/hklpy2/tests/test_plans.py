@@ -14,7 +14,9 @@ from ..misc import creator_from_config
 from ..misc import validate_not_parallel
 from ..plans import _find_psi_axis
 from ..plans import _find_psi_mode
+from ..plans import move_zone
 from ..plans import scan_psi
+from ..plans import scan_zone
 
 HKLPY2_DIR = Path(__file__).parent.parent
 
@@ -447,6 +449,86 @@ def test_scan_psi_metadata(parms, context):
 
 
 # ---------------------------------------------------------------------------
+# move_zone
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(hkl=(1, 0, 0)),
+            does_not_raise(),
+            id="move_zone to (1,0,0) tuple",
+        ),
+        pytest.param(
+            dict(hkl=(0, 1, 0)),
+            does_not_raise(),
+            id="move_zone to (0,1,0) tuple",
+        ),
+    ],
+)
+def test_move_zone(parms, context):
+    with context:
+        fourc = creator()
+        RE = bluesky.RunEngine()
+        RE(move_zone(fourc, parms["hkl"]))
+        for name, val in zip(fourc.pseudo_axis_names, parms["hkl"]):
+            assert getattr(fourc, name).get().readback == pytest.approx(val, abs=1e-3)
+
+
+# ---------------------------------------------------------------------------
+# scan_zone
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(start=(1, 0, 0), finish=(0, 1, 0), num=5, md=None),
+            does_not_raise(),
+            id="scan_zone basic",
+        ),
+        pytest.param(
+            dict(start=(1, 0, 0), finish=(0, 1, 0), num=3, md={"user": "test"}),
+            does_not_raise(),
+            id="scan_zone with metadata",
+        ),
+        pytest.param(
+            dict(start=(1, 0, 0), finish=(0, 1, 0), num=3, md=None),
+            does_not_raise(),
+            id="scan_zone metadata defaults to plan_name only",
+        ),
+    ],
+)
+def test_scan_zone(parms, context):
+    with context:
+        fourc = creator()
+        RE = bluesky.RunEngine()
+        docs = []
+        RE.subscribe(lambda name, doc: docs.append((name, doc)))
+        (uid,) = RE(
+            scan_zone(
+                [noisy_det],
+                fourc,
+                parms["start"],
+                parms["finish"],
+                parms["num"],
+                md=parms["md"],
+            )
+        )
+        assert isinstance(uid, str)
+        assert len(uid) > 0
+        starts = [doc for name, doc in docs if name == "start"]
+        assert len(starts) == 1
+        assert starts[0]["plan_name"] == "scan_zone"
+        if parms["md"]:
+            for k, v in parms["md"].items():
+                assert starts[0][k] == v
+
+
+# ---------------------------------------------------------------------------
 # Package exports
 # ---------------------------------------------------------------------------
 
@@ -455,9 +537,19 @@ def test_scan_psi_metadata(parms, context):
     "parms, context",
     [
         pytest.param(
+            dict(name="move_zone"),
+            does_not_raise(),
+            id="move_zone exported from hklpy2",
+        ),
+        pytest.param(
             dict(name="scan_psi"),
             does_not_raise(),
             id="scan_psi exported from hklpy2",
+        ),
+        pytest.param(
+            dict(name="scan_zone"),
+            does_not_raise(),
+            id="scan_zone exported from hklpy2",
         ),
     ],
 )

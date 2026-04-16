@@ -40,6 +40,16 @@ describe future plans.
 
     * Fix ``AttributeError`` raised by non-``hkl_soleil`` solvers when ``forward()`` calls ``set_reals()``: add no-op ``set_reals()`` to ``SolverBase``. (:issue:`347`)
 
+    Deprecations
+    ------------
+
+    * Deprecate ``move_zone`` and ``scan_zone`` imports from ``hklpy2.blocks.zone``; use ``hklpy2.plans`` instead. (:issue:`339`)
+
+    Maintenance
+    -----------
+
+    * Move ``move_zone`` and ``scan_zone`` plans from ``hklpy2.blocks.zone`` to ``hklpy2.plans`` (canonical plan location). (:issue:`339`)
+
 0.5.2
 #####
 
