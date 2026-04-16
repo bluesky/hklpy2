@@ -1105,7 +1105,7 @@ def test_parse_factory_axes(params, context):
 
 
 def test_make_dynamic_instance_raises():
-    non_callable = "hklpy2.misc.DEFAULT_MOTOR_LABELS"
+    non_callable = "hklpy2.utils.DEFAULT_MOTOR_LABELS"
     with pytest.raises(
         TypeError,
         match=re.escape(f"{non_callable!r} is not callable"),
