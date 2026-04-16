@@ -10,9 +10,9 @@ import pytest
 from ophyd.sim import noisy_det
 
 from ...diffract import creator
+from ...plans import move_zone
+from ...plans import scan_zone
 from ..zone import OrthonormalZone
-from ..zone import move_zone
-from ..zone import scan_zone
 from ..zone import zone_series
 from ..zone import zonespace
 
@@ -440,3 +440,40 @@ def test_zone_package_exports(parms, context):
         import hklpy2
 
         assert hasattr(hklpy2, parms["name"])
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                func_name="move_zone",
+                msg="move_zone from hklpy2.blocks.zone is deprecated",
+            ),
+            does_not_raise(),
+            id="move_zone from blocks.zone emits DeprecationWarning",
+        ),
+        pytest.param(
+            dict(
+                func_name="scan_zone",
+                msg="scan_zone from hklpy2.blocks.zone is deprecated",
+            ),
+            does_not_raise(),
+            id="scan_zone from blocks.zone emits DeprecationWarning",
+        ),
+    ],
+)
+def test_zone_deprecated_shims(parms, context):
+    """Importing move_zone/scan_zone from blocks.zone should emit DeprecationWarning."""
+    with context:
+        import importlib
+
+        zone_mod = importlib.import_module("hklpy2.blocks.zone")
+        func = getattr(zone_mod, parms["func_name"])
+        with pytest.warns(DeprecationWarning, match=re.escape(parms["msg"])):
+            # Call the shim with dummy args to trigger the warning;
+            # wrap in a try to ignore downstream errors.
+            try:
+                func()
+            except Exception:
+                pass
