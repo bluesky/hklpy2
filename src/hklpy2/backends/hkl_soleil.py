@@ -274,6 +274,7 @@ class HklSolver(SolverBase):
             "real_axes": self.real_axis_names,
             "version": self.version,
             "engine": self.engine_name,
+            "mode": self.mode,
         }
         return meta
 

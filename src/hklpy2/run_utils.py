@@ -7,7 +7,7 @@ and retrieve orientation information from previously recorded runs.
 .. autosummary::
 
     ~ConfigurationRunWrapper
-    ~creator_from_config
+    ~simulator_from_config
     ~get_run_orientation
     ~list_orientation_runs
 """
@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "ConfigurationRunWrapper",
-    "creator_from_config",
+    "simulator_from_config",
     "get_run_orientation",
     "list_orientation_runs",
 ]
@@ -340,15 +340,13 @@ def list_orientation_runs(
     version="0.4.0",
     reason="Create a simulated diffractometer from a saved configuration.",
 )
-def creator_from_config(config: Union[dict, str, pathlib.Path]):
+def simulator_from_config(config: Union[dict, str, pathlib.Path]):
     """
     Create a simulated diffractometer from a saved configuration.
 
-    Parses the configuration for the solver, geometry, and axis names, then
-    constructs a simulator (all axes are soft positioners — no hardware
-    connection) and restores the full orientation (samples, reflections, UB
-    matrix, wavelength, constraints) from the configuration.  Auxiliary axes
-    saved by :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored
+    All axes are soft positioners — no hardware connections are made.
+    Auxiliary axes and solver mode saved by
+    :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored
     automatically.
 
     If the diffractometer requires auxiliary axes that are not in the
@@ -372,7 +370,7 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
     EXAMPLE::
 
         >>> import hklpy2
-        >>> sim = hklpy2.creator_from_config("e4cv-config.yml")
+        >>> sim = hklpy2.simulator_from_config("e4cv-config.yml")
         >>> sim.wh()
 
     SEE ALSO
@@ -382,7 +380,7 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
     from .diffract import creator
 
     if isinstance(config, (str, pathlib.Path)):
-        logger.debug("creator_from_config: loading from file %r", str(config))
+        logger.debug("simulator_from_config: loading from file %r", str(config))
         config = load_yaml_file(config)
     if not isinstance(config, dict):
         raise TypeError(
@@ -445,7 +443,7 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
     diffractometer_name = config.get("name", geometry.lower())
 
     logger.debug(
-        "creator_from_config: creating %r solver=%r geometry=%r",
+        "simulator_from_config: creating %r solver=%r geometry=%r",
         diffractometer_name,
         solver_name,
         geometry,
@@ -460,5 +458,8 @@ def creator_from_config(config: Union[dict, str, pathlib.Path]):
         _pseudo=pseudo_axes_ordered if pseudo_axes_ordered else None,
     )
 
-    sim.restore(config)
+    # restore_mode=True is safe here: simulator_from_config() always produces
+    # a simulator with no hardware connections, so mode changes cannot cause
+    # unexpected motion.
+    sim.restore(config, restore_mode=True)
     return sim

@@ -43,7 +43,7 @@ from ..utils import pick_closest_solution
 from ..utils import pick_first_solution
 from ..utils import roundoff
 from ..run_utils import ConfigurationRunWrapper
-from ..run_utils import creator_from_config
+from ..run_utils import simulator_from_config
 from ..run_utils import get_run_orientation
 from ..run_utils import list_orientation_runs
 from ..solver_utils import get_solver
@@ -1140,7 +1140,7 @@ def test_benchmark(capsys, parms, context):
     hardware connection.
     """
     with context:
-        sim = creator_from_config(TESTS_DIR / parms["config"])
+        sim = simulator_from_config(TESTS_DIR / parms["config"])
         result = benchmark(sim, n=10, print=parms["print"])
 
         if parms["print"]:
@@ -1174,7 +1174,7 @@ def test_benchmark(capsys, parms, context):
 
 def test_benchmark_no_reflections():
     """benchmark() falls back to current position when sample has no reflections."""
-    sim = creator_from_config(TESTS_DIR / "e4cv_orient.yml")
+    sim = simulator_from_config(TESTS_DIR / "e4cv_orient.yml")
     # Remove all reflections to exercise the else branch; UB matrix is retained.
     for name in list(sim.sample.reflections.keys()):
         sim.sample.remove_reflection(name)

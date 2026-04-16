@@ -10,7 +10,7 @@ import pytest
 from ophyd.sim import noisy_det
 
 from ..diffract import creator
-from ..run_utils import creator_from_config
+from ..run_utils import simulator_from_config
 from ..utils import validate_not_parallel
 from ..plans import _find_psi_axis
 from ..plans import _find_psi_mode
@@ -23,7 +23,7 @@ HKLPY2_DIR = Path(__file__).parent.parent
 
 def sim4c():
     """Oriented E4CV with silicon, ready for psi scans."""
-    return creator_from_config(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
+    return simulator_from_config(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
 
 
 # ---------------------------------------------------------------------------

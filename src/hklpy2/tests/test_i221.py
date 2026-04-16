@@ -13,7 +13,7 @@ from contextlib import nullcontext as does_not_raise
 
 import pytest
 
-from .. import creator_from_config
+from .. import simulator_from_config
 from .common import TESTS_DIR
 
 # Number of calls used to measure throughput.
@@ -73,7 +73,7 @@ def test_forward_throughput(parms, context):
     target required by issue #221.
     """
     with context:
-        sim = creator_from_config(TESTS_DIR / parms["config"])
+        sim = simulator_from_config(TESTS_DIR / parms["config"])
         sim.core.solver.mode = parms["mode"]
 
         t0 = time.perf_counter()
@@ -140,7 +140,7 @@ def test_inverse_throughput(parms, context):
     target required by issue #221 (and #223).
     """
     with context:
-        sim = creator_from_config(TESTS_DIR / parms["config"])
+        sim = simulator_from_config(TESTS_DIR / parms["config"])
         sim.core.solver.mode = parms["mode"]
 
         t0 = time.perf_counter()

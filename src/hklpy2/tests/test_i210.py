@@ -1,7 +1,7 @@
 """
 Regression test for issue #210.
 
-Test creator_from_config(): create a simulated diffractometer from a
+Test simulator_from_config(): create a simulated diffractometer from a
 saved configuration file or dict, with no hardware connections.
 """
 
@@ -15,7 +15,7 @@ import pytest
 import yaml
 
 import hklpy2
-from hklpy2.run_utils import creator_from_config
+from hklpy2.run_utils import simulator_from_config
 
 TESTS_DIR = pathlib.Path(__file__).parent
 
@@ -59,10 +59,10 @@ TESTS_DIR = pathlib.Path(__file__).parent
         ),
     ],
 )
-def test_creator_from_config(parms, context):
-    """Test that creator_from_config() returns a working diffractometer."""
+def test_simulator_from_config(parms, context):
+    """Test that simulator_from_config() returns a working diffractometer."""
     with context:
-        sim = creator_from_config(parms["config"])
+        sim = simulator_from_config(parms["config"])
         assert sim is not None
         assert hasattr(sim, "core")
         assert hasattr(sim, "forward")
@@ -105,10 +105,10 @@ def test_creator_from_config(parms, context):
         ),
     ],
 )
-def test_creator_from_config_orientation(parms, context):
+def test_simulator_from_config_orientation(parms, context):
     """Test that orientation data is restored correctly."""
     with context:
-        sim = creator_from_config(parms["config"])
+        sim = simulator_from_config(parms["config"])
 
         assert sim.core.solver.name == parms["expected_solver"]
         assert sim.core.solver.geometry == parms["expected_geometry"]
@@ -131,7 +131,7 @@ def test_creator_from_config_orientation(parms, context):
 def test_simulator_is_simulated(parms, context):
     """Test that the simulator uses soft positioners, not EPICS."""
     with context:
-        sim = creator_from_config(parms["config"])
+        sim = simulator_from_config(parms["config"])
         # Soft positioners are connected immediately without an IOC
         assert sim.connected
 
@@ -142,14 +142,14 @@ def test_simulator_is_simulated(parms, context):
         pytest.param(
             dict(config=TESTS_DIR / "e4cv-silicon-example.yml"),
             does_not_raise(),
-            id="creator_from_config accessible from hklpy2 namespace",
+            id="simulator_from_config accessible from hklpy2 namespace",
         ),
     ],
 )
-def test_creator_from_config_in_namespace(parms, context):
-    """Test that creator_from_config is accessible from hklpy2 namespace."""
+def test_simulator_from_config_in_namespace(parms, context):
+    """Test that simulator_from_config is accessible from hklpy2 namespace."""
     with context:
-        sim = hklpy2.creator_from_config(parms["config"])
+        sim = hklpy2.simulator_from_config(parms["config"])
         assert sim is not None
 
 
@@ -166,10 +166,10 @@ def test_creator_from_config_in_namespace(parms, context):
 def test_simulator_roundtrip(parms, context):
     """Test that a simulator's exported config can recreate another simulator."""
     with context:
-        sim1 = creator_from_config(parms["config"])
+        sim1 = simulator_from_config(parms["config"])
         config1 = sim1.configuration
 
-        sim2 = creator_from_config(config1)
+        sim2 = simulator_from_config(config1)
 
         assert sim2.core.solver.geometry == sim1.core.solver.geometry
         assert set(sim2.core.samples.keys()) == set(sim1.core.samples.keys())
@@ -206,7 +206,7 @@ def test_simulator_roundtrip(parms, context):
 def test_simulator_axis_order(parms, context):
     """Test that real axes are in solver-expected order even with custom names."""
     with context:
-        sim = creator_from_config(parms["config"])
+        sim = simulator_from_config(parms["config"])
         assert sim.real_axis_names == parms["expected_real_axes"]
 
 
@@ -234,12 +234,12 @@ def test_simulator_axis_order(parms, context):
 def test_simulator_pseudo_order(parms, context):
     """Test that pseudo axes are in solver-expected order."""
     with context:
-        sim = creator_from_config(parms["config"])
+        sim = simulator_from_config(parms["config"])
         assert sim.pseudo_axis_names == parms["expected_pseudo_axes"]
 
 
 # ---------------------------------------------------------------------------
-# Issue #243: creator_from_config restores reflections with wrong axis values
+# Issue #243: simulator_from_config restores reflections with wrong axis values
 # when YAML serialises reals dict keys in alphabetical order.
 # ---------------------------------------------------------------------------
 
@@ -298,7 +298,7 @@ def _config_with_positionally_wrong_reals():
         ),
     ],
 )
-def test_creator_from_config_reflection_axis_order(parms, context):
+def test_simulator_from_config_reflection_axis_order(parms, context):
     """Regression test for #243: reals must be assigned by key, not position.
 
     YAML serialises dict keys alphabetically.  Before the fix, restoring a
@@ -309,7 +309,7 @@ def test_creator_from_config_reflection_axis_order(parms, context):
     internal implementation path.
     """
     with context:
-        sim = creator_from_config(parms["config"])
+        sim = simulator_from_config(parms["config"])
         r1, r2 = list(sim.core.sample.reflections)[:2]
         ub = sim.core.calc_UB(r1, r2)
         norm = np.linalg.norm(ub)
@@ -333,24 +333,24 @@ def test_creator_from_config_reflection_axis_order(parms, context):
         ),
     ],
 )
-def test_creator_from_config_no_auxiliary_axes(parms, context):
+def test_simulator_from_config_no_auxiliary_axes(parms, context):
     """
-    Test creator_from_config() backward compatibility (issue #361).
+    Test simulator_from_config() backward compatibility (issue #361).
 
     Old config files without auxiliary_axes restore without error.
     """
     with context:
-        sim = creator_from_config(TESTS_DIR / parms["config"])
+        sim = simulator_from_config(TESTS_DIR / parms["config"])
         for ax in ("omega", "chi", "phi", "tth"):
             assert ax in sim.component_names
         result = sim.forward(h=1, k=0, l=0)
         assert len(result) > 0
 
 
-def test_creator_from_config_auxiliary_axes_roundtrip(tmp_path):
+def test_simulator_from_config_auxiliary_axes_roundtrip(tmp_path):
     """
     Test that auxiliary axes are saved by export() and restored automatically
-    by creator_from_config() without requiring reals= (issue #361).
+    by simulator_from_config() without requiring reals= (issue #361).
     """
     import yaml
 
@@ -375,7 +375,7 @@ def test_creator_from_config_auxiliary_axes_roundtrip(tmp_path):
     assert cfg["axes"].get("auxiliary_axes") == ["atheta", "attheta"]
 
     # Restore without reals= — auxiliary axes come from the config automatically.
-    sim2 = creator_from_config(config_file)
+    sim2 = simulator_from_config(config_file)
     assert "atheta" in sim2.component_names
     assert "attheta" in sim2.component_names
 
@@ -384,3 +384,42 @@ def test_creator_from_config_auxiliary_axes_roundtrip(tmp_path):
         sim.forward(h=1, k=0, l=0)[0],
         sim2.forward(h=1, k=0, l=0)[0],
     )
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                config="e4cv_orient.yml", restore_mode=True, expected_mode="bissector"
+            ),
+            does_not_raise(),
+            id="restore_mode=True applies saved mode",
+        ),
+        pytest.param(
+            dict(
+                config="e4cv_orient.yml",
+                restore_mode=False,
+                expected_mode="constant_phi",
+            ),
+            pytest.warns(UserWarning, match="differs from current mode"),
+            id="restore_mode=False warns when saved mode differs from current",
+        ),
+    ],
+)
+def test_restore_mode(parms, context):
+    """
+    Test restore() mode handling (issue #363).
+
+    restore_mode=True applies the saved mode; restore_mode=False (default)
+    warns when saved mode differs from current mode.
+    """
+    with context:
+        sim = hklpy2.creator(name="e4cv")
+        # Set a mode that differs from the saved mode (bissector).
+        sim.core.mode = "constant_phi"
+        sim.restore(
+            TESTS_DIR / parms["config"],
+            restore_mode=parms["restore_mode"],
+        )
+        assert sim.core.mode == parms["expected_mode"]
