@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=8b46f51e"></script>
+    <script src="../../../_static/documentation_options.js?v=b7c95916"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -601,7 +601,16 @@ the <cite>.read_configuration()</cite> method can be added to this tuple.</p>
 <p>Parses the configuration for the solver, geometry, and axis names, then
 constructs a simulator (all axes are soft positioners — no hardware
 connection) and restores the full orientation (samples, reflections, UB
-matrix, wavelength, constraints) from the configuration.</p>
+matrix, wavelength, constraints) from the configuration.  Auxiliary axes
+saved by <a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase.export" title="hklpy2.diffract.DiffractometerBase.export"><code class="xref py py-meth docutils literal notranslate"><span class="pre">export()</span></code></a> are restored
+automatically.</p>
+<p>If the diffractometer requires auxiliary axes that are not in the
+configuration file, use <a class="reference internal" href="../diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">creator()</span></code></a> with
+<a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase.restore" title="hklpy2.diffract.DiffractometerBase.restore"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restore()</span></code></a> instead:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">,</span> <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">extra_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+<span class="n">sim</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>PARAMETERS</p>
 <dl class="simple">
 <dt>config<span class="classifier">dict, str, or pathlib.Path</span></dt><dd><p>Configuration dictionary, or path to a YAML configuration file

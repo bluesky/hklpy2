@@ -137,7 +137,16 @@ Module Contents
    Parses the configuration for the solver, geometry, and axis names, then
    constructs a simulator (all axes are soft positioners — no hardware
    connection) and restores the full orientation (samples, reflections, UB
-   matrix, wavelength, constraints) from the configuration.
+   matrix, wavelength, constraints) from the configuration.  Auxiliary axes
+   saved by :meth:`~hklpy2.diffract.DiffractometerBase.export` are restored
+   automatically.
+
+   If the diffractometer requires auxiliary axes that are not in the
+   configuration file, use :func:`~hklpy2.diffract.creator` with
+   :meth:`~hklpy2.diffract.DiffractometerBase.restore` instead::
+
+       sim = hklpy2.creator(name="e4cv", reals=dict(..., extra_axis=None))
+       sim.restore("e4cv-config.yml")
 
    PARAMETERS
 
