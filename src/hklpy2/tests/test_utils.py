@@ -1170,3 +1170,17 @@ def test_benchmark(capsys, parms, context):
             assert result["forward_ops_per_sec"] > 0
             assert result["inverse_ops_per_sec"] > 0
             assert result["target_ops_per_sec"] == 2_000
+
+
+def test_benchmark_no_reflections():
+    """benchmark() falls back to current position when sample has no reflections."""
+    sim = creator_from_config(TESTS_DIR / "e4cv_orient.yml")
+    # Remove all reflections to exercise the else branch; UB matrix is retained.
+    for name in list(sim.sample.reflections.keys()):
+        sim.sample.remove_reflection(name)
+    assert len(sim.sample.reflections) == 0
+    # Move to a non-trivial position so forward() has a solution.
+    sim.move(1, 0, 0)
+    result = benchmark(sim, n=5, print=False)
+    assert result["forward_ops_per_sec"] > 0
+    assert result["inverse_ops_per_sec"] > 0
