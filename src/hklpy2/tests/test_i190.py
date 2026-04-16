@@ -340,6 +340,31 @@ def test_solver_constant_axis_names(e4cv, parms, context):
     "parms, context",
     [
         pytest.param(
+            dict(mode="constant_phi", expected=["phi"]),
+            does_not_raise(),
+            id="constant_phi _constant_axis_names",
+        ),
+        pytest.param(
+            dict(mode="bissector", expected=[]),
+            does_not_raise(),
+            id="bissector _constant_axis_names",
+        ),
+    ],
+)
+def test_core_constant_axis_names(e4cv, parms, context):
+    """
+    Test _constant_axis_names() directly (assumes update_solver() already called).
+    """
+    with context:
+        e4cv.core.mode = parms["mode"]
+        e4cv.core.update_solver()  # satisfy the precondition
+        assert e4cv.core._constant_axis_names() == parms["expected"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
             dict(mode="constant_phi", expected=["omega", "chi", "tth"]),
             does_not_raise(),
             id="constant_phi written",

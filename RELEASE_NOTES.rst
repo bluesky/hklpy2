@@ -35,8 +35,24 @@ describe future plans.
 
     Release expected by 2026-H2.
 
+    New Features
+    ------------
+
+    * Add performance guide: factors affecting ``forward()``/``inverse()``
+      throughput for diffractometer users. (:issue:`221`)
+
+    Maintenance
+    -----------
+
+    * Add ``forward()`` and ``inverse()`` throughput benchmark (``test_i221.py``)
+      establishing 183 ops/sec baseline; target ≥2,000 ops/sec. (:issue:`221`)
+
     Fixes
     -----
+
+    * Fix ``forward()`` throughput: from ~183 to >2,000 ops/sec via
+      ``convert_units()`` short-circuit, ``axes_xref_reversed`` cache, and
+      eliminating double ``update_solver()`` per call. (:issue:`221`)
 
     * Fix stale ``from hklpy2.misc import`` in ``hkl_soleil-ub_set.ipynb``
       (now ``hklpy2.utils``). (:issue:`353`)

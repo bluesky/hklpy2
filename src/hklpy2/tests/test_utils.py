@@ -32,6 +32,7 @@ from ..devices import parse_factory_axes
 from ..exceptions import NoForwardSolutions
 from ..exceptions import SolverError
 from ..utils import axes_to_dict
+from ..utils import benchmark
 from ..utils import compare_float_dicts
 from ..utils import convert_units
 from ..utils import distance_between_pos_tuples
@@ -42,10 +43,12 @@ from ..utils import pick_closest_solution
 from ..utils import pick_first_solution
 from ..utils import roundoff
 from ..run_utils import ConfigurationRunWrapper
+from ..run_utils import creator_from_config
 from ..run_utils import get_run_orientation
 from ..run_utils import list_orientation_runs
 from ..solver_utils import get_solver
 from ..tests.common import HKLPY2_DIR
+from ..tests.common import TESTS_DIR
 from ..typing import AnyAxesType
 from ..typing import AxesArray
 from ..typing import AxesDict
@@ -1111,3 +1114,73 @@ def test_make_dynamic_instance_raises():
         match=re.escape(f"{non_callable!r} is not callable"),
     ):
         make_dynamic_instance(non_callable)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(config="e4cv_orient.yml", print=False),
+            does_not_raise(),
+            id="benchmark returns dict when print=False",
+        ),
+        pytest.param(
+            dict(config="e4cv_orient.yml", print=True),
+            does_not_raise(),
+            id="benchmark returns None when print=True",
+        ),
+    ],
+)
+def test_benchmark(capsys, parms, context):
+    """
+    Test benchmark() return value and output behaviour.
+
+    Verifies that benchmark() is purely computational: it completes
+    successfully on a simulated diffractometer without requiring any
+    hardware connection.
+    """
+    with context:
+        sim = creator_from_config(TESTS_DIR / parms["config"])
+        result = benchmark(sim, n=10, print=parms["print"])
+
+        if parms["print"]:
+            assert result is None
+            captured = capsys.readouterr()
+            assert "Diffractometer benchmark" in captured.out
+            assert "forward()" in captured.out
+            assert "inverse()" in captured.out
+            assert "ops/sec" in captured.out
+        else:
+            assert result is not None
+            assert isinstance(result, dict)
+            expected_keys = {
+                "solver",
+                "geometry",
+                "mode",
+                "wavelength",
+                "n",
+                "forward_ops_per_sec",
+                "forward_ms_per_call",
+                "inverse_ops_per_sec",
+                "inverse_ms_per_call",
+                "target_ops_per_sec",
+            }
+            assert set(result.keys()) == expected_keys
+            assert result["n"] == 10
+            assert result["forward_ops_per_sec"] > 0
+            assert result["inverse_ops_per_sec"] > 0
+            assert result["target_ops_per_sec"] == 2_000
+
+
+def test_benchmark_no_reflections():
+    """benchmark() falls back to current position when sample has no reflections."""
+    sim = creator_from_config(TESTS_DIR / "e4cv_orient.yml")
+    # Remove all reflections to exercise the else branch; UB matrix is retained.
+    for name in list(sim.sample.reflections.keys()):
+        sim.sample.remove_reflection(name)
+    assert len(sim.sample.reflections) == 0
+    # Move to a non-trivial position so forward() has a solution.
+    sim.move(1, 0, 0)
+    result = benchmark(sim, n=5, print=False)
+    assert result["forward_ops_per_sec"] > 0
+    assert result["inverse_ops_per_sec"] > 0

@@ -138,6 +138,17 @@ PRs opened or modified by automated agents must follow the "Agent pytest style" 
       - `from contextlib import nullcontext as does_not_raise`
     - do not separate success and errors tests into different test functions
     - do not separate success and errors tests using try..except
+- When a parameter set contains axis positions (real or pseudo), prefer a
+  `dict` with named axes over a bare tuple, so the intent is self-documenting:
+  ```py
+  # preferred
+  dict(reals=dict(omega=-145, chi=0, phi=0, tth=69), ...)
+  # avoid
+  dict(reals=(-145, 0, 0, 69), ...)
+  ```
+  Use `sim.inverse(**parms["reals"])` (or `sim.forward(**parms["pseudos"])`)
+  to unpack the dict in the test body.  A bare tuple is acceptable only when
+  the axis names are not meaningful in context (e.g. a generic zeros vector).
 
 ## Inputs & outputs
 
@@ -222,6 +233,12 @@ The `Makefile` `pre` target also exports this variable automatically.
   ``Add ``scan_psi()```  sorts as ``"Add scan_psi()"`` (after ``"Add s"``),
   placing it after entries that begin with ``"Add h"``.
 
+## Documentation: RST Style
+
+- RST title underlines (and overlines) must be **at least as long** as the
+  title text.  Count the characters and match exactly — a one-character
+  shortfall is a silent Sphinx build warning that can break rendered output.
+
 ## Documentation: Architecture Diagram
 
 The package architecture diagram lives in
@@ -272,6 +289,22 @@ concatenation are not supported inside the Sphinx graphviz directive.
   for additional cross-references (e.g., `see: preset; presets`).
 - Pages that reference a term but are not its primary source (e.g., a summary
   table) should use a plain (non-primary) index entry.
+
+## The Full Workflow
+
+When the user says "the full workflow", execute these steps in order:
+
+1. `pre-commit run --all-files` — format and lint; fix any issues
+2. `pytest ./hklpy2` — full test suite; fix any failures
+3. Commit all staged changes with a conventional commit message
+4. `git push -u origin <branch>` — push to remote
+5. Open a PR via `gh pr create`; complete the mandatory PR checklist
+   (milestone, project board, status → "In review", assignee, labels)
+6. Set issue project status → "In review"
+7. Monitor CI via `gh pr checks`; fix any failures with new commits
+8. Resolve any code-quality review comments with new commits
+9. Merge the PR when all checks are green and reviews approved
+10. Local cleanup: `git checkout main && git pull && git branch -d <branch>`
 
 ## Notes
 

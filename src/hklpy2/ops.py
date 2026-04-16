@@ -112,6 +112,7 @@ class Core:
         default_sample: bool = True,
     ) -> None:
         self.axes_xref = {}  # cross-reference:  diffractometer name : solver name
+        self._axes_xref_reversed = None  # cache; invalidated when axes_xref changes
         self.diffractometer = diffractometer
         self._extras = {}  # Dictionary of any extra solver axis (across all modes).
         self._mode = None
@@ -417,6 +418,7 @@ class Core:
         both_p_r = all_pseudos + all_reals
 
         self.axes_xref = {}
+        self._axes_xref_reversed = None  # invalidate cache
         rebuild_axes_xref(pseudos, self.solver.pseudo_axis_names)
         rebuild_axes_xref(reals, self.solver.real_axis_names)
         self.reset_constraints()
@@ -432,7 +434,9 @@ class Core:
                 if len(names) == 0:
                     return {}
             raise CoreError("Did you forget to call `assign_axes()`?")
-        return {v: k for k, v in self.axes_xref.items()}
+        if self._axes_xref_reversed is None:
+            self._axes_xref_reversed = {v: k for k, v in self.axes_xref.items()}
+        return self._axes_xref_reversed
 
     def calc_UB(
         self, r1: Union[Reflection, str], r2: Union[Reflection, str]
@@ -512,7 +516,7 @@ class Core:
             angle_units_core = self.diffractometer.reals_units
 
             # Get the constant (read-only) axis names for this mode.
-            constant_axes = self.solver_constant_axis_names
+            constant_axes = self._constant_axis_names()
 
             # Get presets for current mode.
             mode_presets = self.presets
@@ -980,6 +984,14 @@ class Core:
         self.update_solver()
         return self.solver.real_axis_names
 
+    def _constant_axis_names(self) -> list[str]:
+        """Constant axes for the current mode; caller must have called update_solver()."""
+        all_axes = set(self.solver.real_axis_names)
+        written_axes = set(self.solver_written_axis_names)
+        constant_axes = list(all_axes - written_axes)
+        constant_axes.sort(key=self.solver.real_axis_names.index)
+        return constant_axes
+
     @property
     def solver_constant_axis_names(self) -> list[str]:
         """
@@ -992,11 +1004,7 @@ class Core:
         Constant axes are computed as: all real axis names - written axis names.
         """
         self.update_solver()
-        all_axes = set(self.solver.real_axis_names)
-        written_axes = set(self.solver_written_axis_names)
-        constant_axes = list(all_axes - written_axes)
-        constant_axes.sort(key=self.solver.real_axis_names.index)
-        return constant_axes
+        return self._constant_axis_names()
 
     @property
     def solver_written_axis_names(self) -> list[str]:
