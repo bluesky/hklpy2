@@ -47,6 +47,9 @@ describe future plans.
 
     * Add analyzer how-to guide: crystal analyzer as additional positioners
       on the detector arm, including save/restore. (:issue:`222`)
+    * Add how-to guide: all accepted forms for specifying real and pseudo
+      axis positions (positional, keyword, dict, named tuple, bare tuple).
+      (:issue:`358`)
     * Save solver mode in ``export()`` config; ``simulator_from_config()``
       restores it automatically; ``restore()`` warns when saved mode differs
       from current mode, with opt-in ``restore_mode=True``. (:issue:`363`)
