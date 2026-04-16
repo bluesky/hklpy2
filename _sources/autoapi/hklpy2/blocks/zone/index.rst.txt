@@ -18,17 +18,21 @@ zone
    ----------------
 
    - ``cz`` — :class:`OrthonormalZone` (``b1=``, ``b2=``): calculate zone axis from two vectors.
-   - ``mz`` — :func:`move_zone`: move diffractometer to a position in the zone.
+   - ``mz`` — :func:`~hklpy2.plans.move_zone`: move diffractometer to a position in the zone.
    - ``pl`` — :meth:`OrthonormalZone.define_axis`: set the scattering plane from two vectors.
    - ``sz`` — :class:`OrthonormalZone` (``axis=``): set zone axis directly.
 
    .. autosummary::
 
        ~OrthonormalZone
-       ~move_zone
-       ~scan_zone
        ~zonespace
        ~zone_series
+
+   .. note::
+
+       :func:`move_zone` and :func:`scan_zone` have moved to :mod:`hklpy2.plans`.
+       Importing them from :mod:`hklpy2.blocks.zone` emits a
+       :exc:`DeprecationWarning` and will be removed in a future release.
 
 
 
@@ -133,77 +137,30 @@ Module Contents
 
 
 
-.. py:function:: move_zone(diffractometer: ~hklpy2.diffract.DiffractometerBase, hkl: ~hklpy2.typing.INPUT_VECTOR) -> ~hklpy2.typing.BlueskyPlanType
+.. py:function:: move_zone(*args, **kwargs)
 
    .. container:: import-path
 
       Import: ``hklpy2.blocks.zone.move_zone``
 
 
-   Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).
-
-   Computes the real-axis positions corresponding to the given pseudo
-   position *hkl* via the diffractometer's forward calculation and moves
-   all real axes there.
-
-   .. rubric:: Example
-
-   .. code-block:: python
-
-       from hklpy2 import creator
-       from hklpy2.blocks.zone import move_zone
-       fourc = creator()
-       RE(move_zone(fourc, (1, 0, 0)))
-
-   :param diffractometer: hklpy2 diffractometer object.
-   :type diffractometer: DiffractometerBase
-   :param hkl: Target pseudo position (*h, k, l*).
-   :type hkl: INPUT_VECTOR
+   .. deprecated::
+       ``move_zone`` has moved to :mod:`hklpy2.plans`.
+       Import it from there: ``from hklpy2.plans import move_zone``.
+       This re-export will be removed in a future release.
 
 
-.. py:function:: scan_zone(detectors: Sequence[~bluesky.protocols.Readable], diffractometer: ~hklpy2.diffract.DiffractometerBase, start: ~hklpy2.typing.INPUT_VECTOR, finish: ~hklpy2.typing.INPUT_VECTOR, num: int, md: Optional[Mapping[str, Any]] = None) -> ~hklpy2.typing.BlueskyPlanType
+.. py:function:: scan_zone(*args, **kwargs)
 
    .. container:: import-path
 
       Import: ``hklpy2.blocks.zone.scan_zone``
 
 
-   Perform a zone scan on a diffractometer.
-
-   .. rubric:: Behavior
-
-   * Computes a sequence of pseudos and the corresponding reals in the
-     crystallographic zone defined by the cross-product of start cross finish.
-     Skips a position if not permitted by the UB matrix or diffractometer
-     constraints.
-   * For each point:
-       1. Moves the diffractometer real axes to the computed
-          real positions.
-       2. Triggers all detectors and waits for completion.
-       3. Creates a ``primary`` stream, reads all detectors and the
-          diffractometer, and saves the event.
-
-   .. rubric:: Example
-
-   .. code-block:: python
-
-       from hklpy2 import creator, scan_zone
-       fourc = creator()
-       (uid,) = RE(scan_zone([scaler],fourc, (1,0,0), (0,1,0), 5))
-
-   :param detectors: Ophyd devices to trigger and read at each measurement point.
-   :type detectors: Sequence[Readable])
-   :param diffractometer: hklpy2 Diffractometer object.
-   :type diffractometer: hklpy2.DiffractometerBase
-   :param start: Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
-   :type start: INPUT_VECTOR
-   :param finish: Finishing :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).
-   :type finish: INPUT_VECTOR
-   :param num: Number of points to sample along the zone (inclusive
-               of endpoints).
-   :type num: int
-   :param md: (Optional) User-supplied metadata.
-   :type md: dict
+   .. deprecated::
+       ``scan_zone`` has moved to :mod:`hklpy2.plans`.
+       Import it from there: ``from hklpy2.plans import scan_zone``.
+       This re-export will be removed in a future release.
 
 
 .. py:function:: zone_series(diff: ~hklpy2.diffract.DiffractometerBase, hkl_1: ~hklpy2.typing.INPUT_VECTOR, hkl_2: ~hklpy2.typing.INPUT_VECTOR, n: int) -> None

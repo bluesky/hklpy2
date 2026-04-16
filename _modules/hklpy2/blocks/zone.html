@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=4293ece9"></script>
+    <script src="../../../_static/documentation_options.js?v=9b32c5dc"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -424,39 +424,37 @@
 <span class="sd">----------------</span>
 
 <span class="sd">- ``cz`` — :class:`OrthonormalZone` (``b1=``, ``b2=``): calculate zone axis from two vectors.</span>
-<span class="sd">- ``mz`` — :func:`move_zone`: move diffractometer to a position in the zone.</span>
+<span class="sd">- ``mz`` — :func:`~hklpy2.plans.move_zone`: move diffractometer to a position in the zone.</span>
 <span class="sd">- ``pl`` — :meth:`OrthonormalZone.define_axis`: set the scattering plane from two vectors.</span>
 <span class="sd">- ``sz`` — :class:`OrthonormalZone` (``axis=``): set zone axis directly.</span>
 
 <span class="sd">.. autosummary::</span>
 
 <span class="sd">    ~OrthonormalZone</span>
-<span class="sd">    ~move_zone</span>
-<span class="sd">    ~scan_zone</span>
 <span class="sd">    ~zonespace</span>
 <span class="sd">    ~zone_series</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">    :func:`move_zone` and :func:`scan_zone` have moved to :mod:`hklpy2.plans`.</span>
+<span class="sd">    Importing them from :mod:`hklpy2.blocks.zone` emits a</span>
+<span class="sd">    :exc:`DeprecationWarning` and will be removed in a future release.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan_stubs</span> <span class="k">as</span> <span class="n">bps</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">preprocessors</span> <span class="k">as</span> <span class="n">bpp</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Readable</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NDArray</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyRestTable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerBase</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">INPUT_VECTOR</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlueskyPlanType</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -850,133 +848,52 @@
 
 
 
-<span class="nd">@versionadded</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.4.2&quot;</span><span class="p">,</span>
-    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Move diffractometer to a zone position (SPEC ``mz`` equivalent).&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="nd">@plan</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Deprecated re-exports of plan functions now living in hklpy2.plans</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
 <div class="viewcode-block" id="move_zone">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.move_zone">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">move_zone</span><span class="p">(</span>
-    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span>
-    <span class="n">hkl</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">move_zone</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).</span>
-
-<span class="sd">    Computes the real-axis positions corresponding to the given pseudo</span>
-<span class="sd">    position *hkl* via the diffractometer&#39;s forward calculation and moves</span>
-<span class="sd">    all real axes there.</span>
-
-<span class="sd">    .. rubric:: Example</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        from hklpy2 import creator</span>
-<span class="sd">        from hklpy2.blocks.zone import move_zone</span>
-<span class="sd">        fourc = creator()</span>
-<span class="sd">        RE(move_zone(fourc, (1, 0, 0)))</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    diffractometer : DiffractometerBase</span>
-<span class="sd">        hklpy2 diffractometer object.</span>
-<span class="sd">    hkl : INPUT_VECTOR</span>
-<span class="sd">        Target pseudo position (*h, k, l*).</span>
+<span class="sd">    .. deprecated::</span>
+<span class="sd">        ``move_zone`` has moved to :mod:`hklpy2.plans`.</span>
+<span class="sd">        Import it from there: ``from hklpy2.plans import move_zone``.</span>
+<span class="sd">        This re-export will be removed in a future release.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">pseudos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">hkl</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hkl</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">hkl</span>
-    <span class="n">reals</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span>
-    <span class="n">parms</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span> <span class="n">reals</span><span class="p">):</span>
-        <span class="n">parms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
-        <span class="n">parms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="o">*</span><span class="n">parms</span><span class="p">)</span></div>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;Importing move_zone from hklpy2.blocks.zone is deprecated. &quot;</span>
+        <span class="s2">&quot;Use &#39;from hklpy2.plans import move_zone&#39; instead. &quot;</span>
+        <span class="s2">&quot;This compatibility shim will be removed in a future release.&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..plans</span><span class="w"> </span><span class="kn">import</span> <span class="n">move_zone</span> <span class="k">as</span> <span class="n">_move_zone</span>
+
+    <span class="k">return</span> <span class="n">_move_zone</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 
-<span class="nd">@versionadded</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.3.0&quot;</span><span class="p">,</span>
-    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Scan a diffractometer through a zone (SPEC ``scanzone`` equivalent).&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="nd">@plan</span>
 <div class="viewcode-block" id="scan_zone">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.scan_zone">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">scan_zone</span><span class="p">(</span>
-    <span class="n">detectors</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Readable</span><span class="p">],</span>
-    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span>
-    <span class="n">start</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-    <span class="n">finish</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-    <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">md</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">scan_zone</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Perform a zone scan on a diffractometer.</span>
-
-<span class="sd">    .. rubric:: Behavior</span>
-
-<span class="sd">    * Computes a sequence of pseudos and the corresponding reals in the</span>
-<span class="sd">      crystallographic zone defined by the cross-product of start cross finish.</span>
-<span class="sd">      Skips a position if not permitted by the UB matrix or diffractometer</span>
-<span class="sd">      constraints.</span>
-<span class="sd">    * For each point:</span>
-<span class="sd">        1. Moves the diffractometer real axes to the computed</span>
-<span class="sd">           real positions.</span>
-<span class="sd">        2. Triggers all detectors and waits for completion.</span>
-<span class="sd">        3. Creates a ``primary`` stream, reads all detectors and the</span>
-<span class="sd">           diffractometer, and saves the event.</span>
-
-<span class="sd">    .. rubric:: Example</span>
-
-<span class="sd">    .. code-block:: python</span>
-
-<span class="sd">        from hklpy2 import creator, scan_zone</span>
-<span class="sd">        fourc = creator()</span>
-<span class="sd">        (uid,) = RE(scan_zone([scaler],fourc, (1,0,0), (0,1,0), 5))</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    detectors : Sequence[Readable])</span>
-<span class="sd">        Ophyd devices to trigger and read at each measurement point.</span>
-<span class="sd">    diffractometer : hklpy2.DiffractometerBase</span>
-<span class="sd">        hklpy2 Diffractometer object.</span>
-<span class="sd">    start : INPUT_VECTOR</span>
-<span class="sd">        Starting :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
-<span class="sd">    finish : INPUT_VECTOR</span>
-<span class="sd">        Finishing :data:`~hklpy2.misc.INPUT_VECTOR` of pseudos (*h,k,l*).</span>
-<span class="sd">    num : int</span>
-<span class="sd">        Number of points to sample along the zone (inclusive</span>
-<span class="sd">        of endpoints).</span>
-<span class="sd">    md : dict</span>
-<span class="sd">        (Optional) User-supplied metadata.</span>
+<span class="sd">    .. deprecated::</span>
+<span class="sd">        ``scan_zone`` has moved to :mod:`hklpy2.plans`.</span>
+<span class="sd">        Import it from there: ``from hklpy2.plans import scan_zone``.</span>
+<span class="sd">        This re-export will be removed in a future release.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_md</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;plan_name&quot;</span><span class="p">:</span> <span class="s2">&quot;scan_zone&quot;</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">md</span> <span class="ow">or</span> <span class="p">{})}</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;Importing scan_zone from hklpy2.blocks.zone is deprecated. &quot;</span>
+        <span class="s2">&quot;Use &#39;from hklpy2.plans import scan_zone&#39; instead. &quot;</span>
+        <span class="s2">&quot;This compatibility shim will be removed in a future release.&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..plans</span><span class="w"> </span><span class="kn">import</span> <span class="n">scan_zone</span> <span class="k">as</span> <span class="n">_scan_zone</span>
 
-    <span class="nd">@bpp</span><span class="o">.</span><span class="n">stage_decorator</span><span class="p">(</span><span class="n">detectors</span><span class="p">)</span>
-    <span class="nd">@bpp</span><span class="o">.</span><span class="n">run_decorator</span><span class="p">(</span><span class="n">md</span><span class="o">=</span><span class="n">_md</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">inner</span><span class="p">():</span>
-        <span class="c1"># Compute sequence of pseudos &amp; reals in the zone</span>
-        <span class="k">for</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span> <span class="ow">in</span> <span class="n">zonespace</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
-            <span class="c1"># move axes</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;zone hkl=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span>
-            <span class="n">parms</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span> <span class="n">reals</span><span class="p">):</span>
-                <span class="n">parms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
-                <span class="n">parms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="o">*</span><span class="n">parms</span><span class="p">)</span>
-
-            <span class="c1"># trigger</span>
-            <span class="n">group</span> <span class="o">=</span> <span class="s2">&quot;trigger_objects&quot;</span>
-            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">detectors</span><span class="p">:</span>
-                <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
-            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
-
-            <span class="c1"># read</span>
-            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;primary&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">detectors</span> <span class="o">+</span> <span class="p">[</span><span class="n">diffractometer</span><span class="p">]:</span>
-                <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="p">(</span><span class="k">yield from</span> <span class="n">inner</span><span class="p">())</span></div>
+    <span class="k">return</span> <span class="n">_scan_zone</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 </pre></div>
 
