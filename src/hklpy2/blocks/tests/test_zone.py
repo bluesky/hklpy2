@@ -475,5 +475,5 @@ def test_zone_deprecated_shims(parms, context):
             # wrap in a try to ignore downstream errors.
             try:
                 func()
-            except Exception:
-                pass
+            except Exception as ex:
+                logging.debug("Ignoring expected downstream error from deprecated shim call", exc_info=ex)
