@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=7862653f"></script>
+    <script src="../../../_static/documentation_options.js?v=37711cf1"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -714,7 +714,7 @@ information (in the start document’s metadata).</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hklpy2.run_utils.simulator_from_config">
-<span class="sig-prename descclassname"><span class="pre">hklpy2.run_utils.</span></span><span class="sig-name descname"><span class="pre">simulator_from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/run_utils.html#simulator_from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.run_utils.simulator_from_config" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hklpy2.run_utils.</span></span><span class="sig-name descname"><span class="pre">simulator_from_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/run_utils.html#simulator_from_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.run_utils.simulator_from_config" title="Link to this definition">#</a></dt>
 <dd><div class="import-path docutils container">
 <p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.run_utils.simulator_from_config</span></code></p>
 </div>
@@ -732,8 +732,14 @@ configuration file, use <a class="reference internal" href="../diffract/index.ht
 </div>
 <p>PARAMETERS</p>
 <dl class="simple">
-<dt>config<span class="classifier">dict, str, or pathlib.Path</span></dt><dd><p>Configuration dictionary, or path to a YAML configuration file
-previously saved with <code class="docutils literal notranslate"><span class="pre">diffractometer.export()</span></code>.</p>
+<dt>config<span class="classifier">dict, str, pathlib.Path, or DiffractometerBase</span></dt><dd><p>One of:</p>
+<ul class="simple">
+<li><p>a configuration dictionary,</p></li>
+<li><p>a path to a YAML configuration file previously saved with
+<code class="docutils literal notranslate"><span class="pre">diffractometer.export()</span></code>, or</p></li>
+<li><p>a <a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractometerBase</span></code></a> instance (its
+current configuration snapshot will be used).</p></li>
+</ul>
 </dd>
 </dl>
 <p>RETURNS</p>
@@ -745,6 +751,10 @@ previously saved with <code class="docutils literal notranslate"><span class="pr
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
+
+<span class="go">Or directly from an existing diffractometer::</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>SEE ALSO</p>

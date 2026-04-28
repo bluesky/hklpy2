@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=7862653f"></script>
+    <script src="../../_static/documentation_options.js?v=37711cf1"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -484,6 +484,7 @@
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>  <span class="c1"># noqa: F401</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerBase</span>  <span class="c1"># noqa: F401</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -930,7 +931,7 @@
 <div class="viewcode-block" id="benchmark">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.benchmark">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">benchmark</span><span class="p">(</span>
-    <span class="n">diffractometer</span><span class="p">,</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="s2">&quot;DiffractometerBase&quot;</span><span class="p">,</span>
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
     <span class="nb">print</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">snapshot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1002,7 +1003,7 @@
     <span class="k">if</span> <span class="n">snapshot</span><span class="p">:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.run_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulator_from_config</span>
 
-        <span class="n">target</span> <span class="o">=</span> <span class="n">simulator_from_config</span><span class="p">(</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">configuration</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">simulator_from_config</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">diffractometer</span>
 
