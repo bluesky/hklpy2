@@ -1258,7 +1258,8 @@ def test_module_all_covers_public_defs(parms, context):
     with context:
         module = importlib.import_module(parms["module_name"])
         source_path = module.__file__
-        tree = ast.parse(open(source_path).read())
+        with open(source_path) as stream:
+            tree = ast.parse(stream.read())
         # Collect __all__
         all_list = None
         for node in tree.body:
