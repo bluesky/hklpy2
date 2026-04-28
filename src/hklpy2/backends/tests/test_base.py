@@ -10,10 +10,14 @@ import pytest
 
 from ...blocks.lattice import Lattice
 from ...blocks.reflection import Reflection
+from ...exceptions import SolverError
 from ...utils import IDENTITY_MATRIX_3X3
 from ..base import SolverBase
+from ..no_op import NoOpSolver
+from ..th_tth_q import BISECTOR_MODE
 from ..th_tth_q import TH_TTH_Q_GEOMETRY
 from ..th_tth_q import ThTthSolver
+from ..typing import GeometryDescriptor
 
 
 class TrivialSolver(SolverBase):
@@ -265,3 +269,124 @@ def test_SolverBase_U_UB_inherited(parms, context):
         assert solver.U == _SAMPLE_MATRIX
         solver.UB = _SAMPLE_MATRIX
         assert solver.UB == _SAMPLE_MATRIX
+
+
+# ---------------------------------------------------------------------------
+# Issue #372: Solver default geometry & default mode contract
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(cls=ThTthSolver, expected=TH_TTH_Q_GEOMETRY),
+            does_not_raise(),
+            id="ThTthSolver: first registered geometry",
+        ),
+        pytest.param(
+            dict(cls=NoOpSolver, expected=None),
+            pytest.raises(
+                SolverError,
+                match=re.escape("NoOpSolver has no registered geometries"),
+            ),
+            id="NoOpSolver: no geometries -> SolverError",
+        ),
+    ],
+)
+def test_default_geometry(parms, context):
+    """Solver.default_geometry() returns geometries()[0] or raises."""
+    with context:
+        result = parms["cls"].default_geometry()
+        assert result == parms["expected"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(cls=ThTthSolver, geometry=TH_TTH_Q_GEOMETRY, expected=BISECTOR_MODE),
+            does_not_raise(),
+            id="ThTthSolver: descriptor.default_mode wins",
+        ),
+        pytest.param(
+            dict(cls=ThTthSolver, geometry="UNKNOWN", expected=None),
+            pytest.raises(
+                SolverError,
+                match=re.escape("ThTthSolver has no registered geometry 'UNKNOWN'"),
+            ),
+            id="ThTthSolver: unregistered geometry -> SolverError",
+        ),
+        pytest.param(
+            dict(cls=NoOpSolver, geometry="anything", expected=None),
+            pytest.raises(
+                SolverError,
+                match=re.escape("NoOpSolver has no registered geometry 'anything'"),
+            ),
+            id="NoOpSolver: any geometry -> SolverError",
+        ),
+    ],
+)
+def test_default_mode(parms, context):
+    """Solver.default_mode(geometry) honours descriptor.default_mode or raises."""
+    with context:
+        result = parms["cls"].default_mode(parms["geometry"])
+        assert result == parms["expected"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(cls=ThTthSolver, geometry=TH_TTH_Q_GEOMETRY, expected=BISECTOR_MODE),
+            does_not_raise(),
+            id="ThTthSolver: __init__ applies default_mode",
+        ),
+        pytest.param(
+            dict(cls=NoOpSolver, geometry="anything", expected=""),
+            does_not_raise(),
+            id="NoOpSolver: __init__ leaves mode blank when no default exists",
+        ),
+    ],
+)
+def test_init_applies_default_mode(parms, context):
+    """Solver(geometry, mode='') resolves to default_mode when available."""
+    with context:
+        solver = parms["cls"](parms["geometry"])
+        assert solver.mode == parms["expected"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(modes=["a", "b", "c"], default_mode="b", expected="b"),
+            does_not_raise(),
+            id="explicit default_mode wins over modes[0]",
+        ),
+        pytest.param(
+            dict(modes=["a", "b", "c"], default_mode="", expected="a"),
+            does_not_raise(),
+            id="blank default_mode falls back to modes[0]",
+        ),
+    ],
+)
+def test_descriptor_default_mode_resolution(parms, context):
+    """Verify descriptor's default_mode field takes precedence over modes[0]."""
+
+    class _IsolatedSolver(ThTthSolver):
+        _geometry_registry = {}
+
+    with context:
+        desc = GeometryDescriptor(
+            name="ISOLATED",
+            pseudo_axis_names=["q"],
+            real_axis_names=["th", "tth"],
+            modes=parms["modes"],
+            default_mode=parms["default_mode"],
+        )
+        _IsolatedSolver.register_geometry(desc)
+        assert _IsolatedSolver.default_mode("ISOLATED") == parms["expected"]
+        # __init__ should also apply this default.
+        solver = _IsolatedSolver("ISOLATED")
+        assert solver.mode == parms["expected"]

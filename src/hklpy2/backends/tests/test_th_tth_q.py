@@ -31,7 +31,8 @@ def test_solver():
     assert solver.refineLattice([]) is None
     assert solver.calculate_UB(None, None) == IDENTITY_MATRIX_3X3
 
-    assert solver.mode == "", f"{solver.mode=!r}"
+    # Issue #372: solver picks the geometry's default mode at construction.
+    assert solver.mode == BISECTOR_MODE, f"{solver.mode=!r}"
     solver.mode = BISECTOR_MODE
     assert solver.mode == BISECTOR_MODE
 

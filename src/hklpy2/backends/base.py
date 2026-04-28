@@ -19,6 +19,7 @@ from deprecated.sphinx import versionadded
 
 from pyRestTable import Table
 
+from ..exceptions import SolverError
 from ..utils import IDENTITY_MATRIX_3X3
 from ..utils import INTERNAL_ANGLE_UNITS
 from ..utils import INTERNAL_LENGTH_UNITS
@@ -102,6 +103,8 @@ class SolverBase(ABC):
     .. autosummary::
 
         ~_geometry_registry
+        ~default_geometry
+        ~default_mode
         ~register_geometry
 
     .. rubric:: Python Properties
@@ -201,14 +204,82 @@ class SolverBase(ABC):
         cls._geometry_registry[descriptor.name] = descriptor
         logger.debug("Registered geometry %r on %s", descriptor.name, cls.__name__)
 
+    @versionadded(version="0.6.1", reason="Solver default geometry/mode contract.")
+    @classmethod
+    def default_geometry(cls) -> str:
+        """
+        Return this solver's default geometry name.
+
+        The default is the **first** entry in :meth:`geometries`.  Subclasses
+        that do not use :attr:`_geometry_registry` (e.g.
+        :class:`~hklpy2.backends.hkl_soleil.HklSolver`) should override this
+        method.
+
+        Raises
+        ------
+        SolverError
+            If the solver has no registered geometries.
+        """
+        names = cls.geometries()
+        if not names:
+            raise SolverError(
+                f"{cls.__name__} has no registered geometries; cannot pick a default."
+            )
+        return names[0]
+
+    @versionadded(version="0.6.1", reason="Solver default geometry/mode contract.")
+    @classmethod
+    def default_mode(cls, geometry: str) -> str:
+        """
+        Return the default mode for *geometry*.
+
+        Resolution order:
+
+        1. If a :class:`~hklpy2.backends.typing.GeometryDescriptor` is
+           registered for *geometry* and its
+           :attr:`~GeometryDescriptor.default_mode` is non-empty, return that.
+        2. Otherwise return the first entry in the descriptor's
+           :attr:`~GeometryDescriptor.modes`.
+
+        Subclasses that do not use :attr:`_geometry_registry` should override
+        this method to query their underlying library directly.
+
+        Raises
+        ------
+        SolverError
+            If *geometry* is not registered, or has no modes defined.
+        """
+        descriptor = cls._geometry_registry.get(geometry)
+        if descriptor is None:
+            raise SolverError(
+                f"{cls.__name__} has no registered geometry {geometry!r};"
+                f" cannot pick a default mode."
+            )
+        if descriptor.default_mode:
+            return descriptor.default_mode
+        if descriptor.modes:
+            return descriptor.modes[0]
+        raise SolverError(
+            f"Geometry {geometry!r} on {cls.__name__} defines no modes;"
+            f" cannot pick a default mode."
+        )
+
     def __init__(
         self,
         geometry: str,
         *,
         mode: str = "",  # "": accept solver's default mode
+        _resolve_default_mode: bool = True,
         **kwargs: Any,
     ) -> None:
         self._gname: str = geometry
+        if mode == "" and _resolve_default_mode:
+            try:
+                mode = type(self).default_mode(geometry)
+            except SolverError:
+                # Solver has no default for this geometry (e.g. NoOpSolver);
+                # leave mode blank as before.
+                mode = ""
         self.mode = mode
         self._all_extra_axis_names: Optional[List[str]] = None
         self._sample: Optional[SampleDict] = None

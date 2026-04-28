@@ -674,3 +674,73 @@ def test_hkl_solver_metadata_live(parms, context):
         assert meta["engine"] == parms["engine"]
         assert isinstance(meta["real_axes"], list)
         assert len(meta["real_axes"]) > 0
+
+
+# ---------------------------------------------------------------------------
+# Issue #372: HklSolver default geometry & default mode
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry="E4CV", engine="hkl", expected="bissector"),
+            does_not_raise(),
+            id="E4CV/hkl -> bissector",
+        ),
+        pytest.param(
+            dict(geometry="E4CV", engine="psi", expected="psi"),
+            does_not_raise(),
+            id="E4CV/psi -> psi",
+        ),
+        pytest.param(
+            dict(geometry="E4CV", engine="MISSING", expected="bissector"),
+            does_not_raise(),
+            id="missing engine falls back to first engine",
+        ),
+        pytest.param(
+            dict(geometry="UNKNOWN GEO", engine="hkl", expected=None),
+            pytest.raises(
+                __import__("hklpy2.exceptions", fromlist=["SolverError"]).SolverError,
+                match=re.escape("'UNKNOWN GEO' is not known to libhkl"),
+            ),
+            id="unknown geometry -> SolverError",
+        ),
+    ],
+)
+def test_hkl_default_mode(parms, context):
+    """HklSolver.default_mode(geometry, engine=...) queries libhkl directly."""
+    with context:
+        result = hkl_soleil.HklSolver.default_mode(
+            parms["geometry"], engine=parms["engine"]
+        )
+        assert result == parms["expected"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry="E4CV", engine="hkl", expected_mode="bissector"),
+            does_not_raise(),
+            id="E4CV/hkl applies bissector at construction",
+        ),
+        pytest.param(
+            dict(geometry="E4CV", engine="psi", expected_mode="psi"),
+            does_not_raise(),
+            id="E4CV/psi applies psi at construction",
+        ),
+    ],
+)
+def test_hkl_init_applies_default_mode(parms, context):
+    """HklSolver(geometry, engine=...) with mode='' resolves the engine's first mode."""
+    with context:
+        solver = hkl_soleil.HklSolver(parms["geometry"], engine=parms["engine"])
+        assert solver.mode == parms["expected_mode"]
+
+
+def test_hkl_default_geometry_is_first_alphabetical():
+    """HklSolver.default_geometry() returns geometries()[0] (alphabetical)."""
+    geometries = hkl_soleil.HklSolver.geometries()
+    assert hkl_soleil.HklSolver.default_geometry() == geometries[0]
