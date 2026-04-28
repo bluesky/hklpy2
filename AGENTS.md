@@ -411,6 +411,17 @@ question in code maintenance: *Why is this change being made?*
 
 All development happens on feature branches, never directly on `main`.
 
+- **MANDATORY:** Before making *any* change to the working tree (edits,
+  new files, or test scaffolding), create the feature branch first.  Do
+  not edit on `main`.  Verify with ``git branch --show-current`` before
+  the first edit.
+- If you discover you have started editing on `main`, immediately stash
+  the changes, create the feature branch from `main`, and pop the stash::
+
+      git stash push -m "WIP issue #N"
+      git checkout -b <ISSUE_NUMBER>-<concise-title> main
+      git stash pop
+
 - **Naming convention**: `<ISSUE_NUMBER>-<CONCISE-TITLE>`
   - The concise title is derived from the issue title, using lowercase words
     separated by hyphens.
