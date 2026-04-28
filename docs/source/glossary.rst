@@ -56,6 +56,15 @@ Glossary
         A homogeneous substance composed from a repeating three-dimensional
         pattern.  The pattern (*unit cell*) is characterized by its *lattice*.
 
+    crystal analyzer
+        A passive *crystal* mounted on the detector arm that selects a
+        specific scattered *wavelength* by Bragg diffraction, acting as a
+        narrow bandpass filter.  The Bragg angle (often called ``atheta``)
+        positions the crystal; the detector relocates to the analyzer arm
+        (often ``attheta``) and points at the analyzer.  Treated by
+        |hklpy2| as *auxiliary* positioners; does not affect
+        crystallography calculations.  See :doc:`guides/how_analyzer`.
+
     cut point
         The angle at which a motor's reported position "wraps around."
         It sets the start of the 360-degree window used to express the
@@ -156,6 +165,15 @@ Glossary
         Positioning of a *crystalline* sample's atomic planes
         (identified by a set of *pseudos*) within the laboratory reference
         frame (described by the *reals*).
+
+    polarization analyzer
+        A passive crystal mounted on the detector arm whose Bragg angle
+        is close to 45° (so the scattering angle 2θ is near 90°),
+        suppressing radiation polarized in the diffraction plane.
+        Rotation around the beam selects which polarization direction is
+        suppressed, allowing the beam polarization state to be probed.
+        Treated by |hklpy2| as *auxiliary* positioners; does not affect
+        crystallography calculations.  See :doc:`guides/how_polarizer`.
 
     preset
         .. index:: see: preset; presets
