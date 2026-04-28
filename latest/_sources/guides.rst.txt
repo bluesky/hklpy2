@@ -47,6 +47,9 @@ Diffractometer axes
        positional args, keyword args, dict, and named tuple.
    * - :doc:`guides/how_extra_reals_and_pseudos`
      - Add extra real motors or pseudo axes beyond the solver defaults.
+   * - :doc:`guides/how_polarizer`
+     - Add polarization analyzer axes (``pth``, ``ptth``, ``peta``) to a
+       diffractometer as auxiliary positioners on the detector arm.
    * - :doc:`guides/how_additional_parameters`
      - Pass extra solver parameters (e.g. ``psi``) to the backend.
 
