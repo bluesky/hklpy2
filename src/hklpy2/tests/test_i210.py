@@ -423,3 +423,55 @@ def test_restore_mode(parms, context):
             restore_mode=parms["restore_mode"],
         )
         assert sim.core.mode == parms["expected_mode"]
+
+
+# ---------------------------------------------------------------------------
+# Issue #372: simulator_from_config() falls back to Solver.default_geometry()
+# when the config omits solver.geometry.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(strip_geometry=True),
+            does_not_raise(),
+            id="missing solver.geometry resolved via default_geometry()",
+        ),
+    ],
+)
+def test_simulator_from_config_default_geometry(parms, context):
+    """
+    Per #372: simulator_from_config() resolves a missing solver.geometry
+    via the solver's default_geometry() classmethod.
+
+    We exercise the resolution path by patching a minimal in-memory config
+    that exposes only the fields needed to reach the fallback; verifying
+    that the geometry passed to ``creator()`` equals
+    ``HklSolver.default_geometry()`` is sufficient evidence that the
+    fallback runs.  (A real ``export()`` always writes solver.geometry, so
+    this fallback only matters for malformed/hand-edited configs.)
+    """
+    from unittest import mock
+
+    from hklpy2.backends.hkl_soleil import HklSolver
+
+    with context:
+        # Minimal valid config that reaches the fallback (no solver.geometry).
+        cfg = {
+            "_header": {},
+            "solver": {"name": "hkl_soleil"},
+            "axes": {"axes_xref": {}, "pseudo_axes": [], "real_axes": []},
+        }
+        with mock.patch(
+            "hklpy2.diffract.creator",
+            side_effect=RuntimeError("stop here"),
+        ) as mock_creator:
+            with pytest.raises(RuntimeError, match="stop here"):
+                simulator_from_config(cfg)
+        # The resolved geometry passed to creator() must equal
+        # HklSolver.default_geometry() (i.e. the fallback ran).
+        assert mock_creator.called
+        call_kwargs = mock_creator.call_args.kwargs
+        assert call_kwargs["geometry"] == HklSolver.default_geometry()

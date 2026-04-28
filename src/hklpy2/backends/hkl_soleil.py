@@ -48,6 +48,7 @@ from numpy import typing as npt
 from pyRestTable import Table
 
 from ..exceptions import NoForwardSolutions
+from ..exceptions import SolverError
 from ..utils import IDENTITY_MATRIX_3X3
 from ..utils import check_value_in_list
 from ..utils import istype
@@ -241,7 +242,11 @@ class HklSolver(SolverBase):
         self._hkl_engine = None
         self._sample = None
 
-        super().__init__(geometry, **kwargs)
+        # Suppress base-class default-mode resolution: libhkl objects are
+        # not yet built, so self.modes would return [] at this point.  We
+        # resolve and apply the default mode ourselves below, after engine
+        # setup, so mode validation in self.mode = ... can succeed.
+        super().__init__(geometry, _resolve_default_mode=False, **kwargs)
 
         # Preface libhkl object names with "_hkl".
         # Note: must keep the '_hkl_engine_list' object as class attribute or
@@ -254,6 +259,11 @@ class HklSolver(SolverBase):
         self._hkl_engine = self._hkl_engine_list.engine_get_by_name(engine)
         self._hkl_geometry = self._hkl_factory.create_new_geometry()
 
+        if mode == "":
+            try:
+                mode = type(self).default_mode(geometry, engine=engine)
+            except SolverError:  # pragma: no cover - defensive; libhkl raises first
+                mode = ""
         self.mode = mode
 
     def __repr__(self) -> str:
@@ -499,6 +509,61 @@ class HklSolver(SolverBase):
                 if num_engines(geometry) > 0
             ]
         )
+
+    @classmethod
+    def default_mode(cls, geometry: str, *, engine: str = "hkl") -> str:
+        """
+        Return the first mode of *geometry*'s *engine*.
+
+        Queries |libhkl| directly via :func:`libhkl.factories` rather than the
+        :attr:`_geometry_registry` (which ``HklSolver`` does not populate).
+
+        Parameters
+        ----------
+        geometry : str
+            Geometry name as known to |libhkl| (e.g. ``"E4CV"``).
+        engine : str, optional
+            Engine name (default: ``"hkl"``).  When the named engine is not
+            available for *geometry*, falls back to the first available
+            engine.
+
+        Raises
+        ------
+        SolverError
+            If *geometry* is not known to |libhkl| or has no modes defined.
+        """
+        factories = libhkl.factories()
+        if geometry not in factories:
+            raise SolverError(
+                f"{cls.__name__}: geometry {geometry!r} is not known to libhkl;"
+                f" cannot pick a default mode."
+            )
+        engine_list = factories[geometry].create_new_engine_list()
+        engines = engine_list.engines_get()
+        if (
+            not engines
+        ):  # pragma: no cover - libhkl-listed geometries always have engines
+            raise SolverError(
+                f"{cls.__name__}: geometry {geometry!r} has no engines;"
+                f" cannot pick a default mode."
+            )
+        chosen = None
+        for eng in engines:
+            if eng.name_get() == engine:
+                chosen = eng
+                break
+        if chosen is None:
+            chosen = engines[0]
+        modes = chosen.modes_names_get()
+        if (
+            not modes
+        ):  # pragma: no cover - libhkl engines always declare at least one mode
+            raise SolverError(
+                f"{cls.__name__}: geometry {geometry!r} engine"
+                f" {chosen.name_get()!r} has no modes;"
+                f" cannot pick a default mode."
+            )
+        return modes[0]
 
     def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
         """Compute tuple of pseudos from reals (angles -> hkl)."""

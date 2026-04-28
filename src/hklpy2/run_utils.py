@@ -390,8 +390,14 @@ def simulator_from_config(config: Union[dict, str, pathlib.Path]):
         raise KeyError(MISSING_HEADER_KEY_MSG)
 
     solver_cfg = config.get("solver", {})
-    solver_name = solver_cfg.get("name", "hkl_soleil")
-    geometry = solver_cfg.get("geometry", "E4CV")
+    # Default solver name remains "hkl_soleil" because the config
+    # does not include a way to discover a system-wide default solver
+    # (see #372 discussion); the geometry default now flows from the
+    # solver's own default_geometry() classmethod.
+    solver_name = solver_cfg.get("name") or "hkl_soleil"
+    from .solver_utils import get_solver
+
+    geometry = solver_cfg.get("geometry") or get_solver(solver_name).default_geometry()
 
     solver_kwargs: dict = {}
     engine = solver_cfg.get("engine")
