@@ -435,7 +435,12 @@ def validate_and_canonical_unit(value: str, target_units: str) -> str:
     return value
 
 
-def benchmark(diffractometer, n: int = 500, print: bool = True):
+def benchmark(
+    diffractometer,
+    n: int = 500,
+    print: bool = True,
+    snapshot: bool = True,
+):
     """
     Assess ``forward()`` and ``inverse()`` throughput for a diffractometer.
 
@@ -455,6 +460,12 @@ def benchmark(diffractometer, n: int = 500, print: bool = True):
         When ``True`` (default), print a human-readable report to stdout and
         return ``None``.  When ``False``, suppress all output and return a
         ``dict`` of results.
+    snapshot : bool, optional
+        When ``True`` (default), snapshot the diffractometer configuration
+        and run all timing loops on a simulator built from that snapshot,
+        leaving the original diffractometer (and its solver state)
+        completely untouched.  When ``False``, run the timing loops directly
+        on the supplied diffractometer (legacy behaviour).
 
     Returns
     -------
@@ -471,6 +482,7 @@ def benchmark(diffractometer, n: int = 500, print: bool = True):
         - ``"forward_ms_per_call"`` — ``forward()`` latency in ms
         - ``"inverse_ops_per_sec"`` — ``inverse()`` throughput
         - ``"inverse_ms_per_call"`` — ``inverse()`` latency in ms
+        - ``"fwd_inv_ratio"`` — ratio of forward to inverse ops/sec
         - ``"target_ops_per_sec"`` — minimum target (2,000)
 
     Example
@@ -488,25 +500,37 @@ def benchmark(diffractometer, n: int = 500, print: bool = True):
     """
     TARGET = 2_000
 
+    # Per #369: by default, snapshot the diffractometer configuration and
+    # run all timing loops on a simulator built from that snapshot.  This
+    # eliminates any risk of side effects on motor positions, sample state,
+    # or solver state during the benchmark — especially important when
+    # called on a live instrument.
+    if snapshot:
+        from .run_utils import simulator_from_config
+
+        target = simulator_from_config(diffractometer.configuration)
+    else:
+        target = diffractometer
+
     # Use the first reflection's positions if available, as the origin (0,0,0)
     # has no forward() solution. Fall back to current position otherwise.
-    reflections = list(diffractometer.sample.reflections.values())
+    reflections = list(target.sample.reflections.values())
     if reflections:
         pseudos = reflections[0].pseudos
         reals = reflections[0].reals
     else:
-        pseudos = diffractometer.position._asdict()
-        reals = diffractometer.real_position._asdict()
-    solver = diffractometer.core.solver
+        pseudos = target.position._asdict()
+        reals = target.real_position._asdict()
+    solver = target.core.solver
     mode = solver.mode
     geometry = solver.geometry
     solver_name = solver.name
-    wavelength = diffractometer.beam.wavelength.get()
+    wavelength = target.beam.wavelength.get()
 
     # forward() benchmark
     t0 = time.perf_counter()
     for _ in range(n):
-        diffractometer.forward(**pseudos)
+        target.forward(**pseudos)
     fwd_elapsed = time.perf_counter() - t0
     fwd_ops = n / fwd_elapsed
     fwd_ms = fwd_elapsed * 1000 / n
@@ -514,10 +538,12 @@ def benchmark(diffractometer, n: int = 500, print: bool = True):
     # inverse() benchmark
     t0 = time.perf_counter()
     for _ in range(n):
-        diffractometer.inverse(**reals)
+        target.inverse(**reals)
     inv_elapsed = time.perf_counter() - t0
     inv_ops = n / inv_elapsed
     inv_ms = inv_elapsed * 1000 / n
+
+    fwd_inv_ratio = fwd_ops / inv_ops if inv_ops > 0 else float("inf")
 
     results = {
         "solver": solver_name,
@@ -529,6 +555,7 @@ def benchmark(diffractometer, n: int = 500, print: bool = True):
         "forward_ms_per_call": fwd_ms,
         "inverse_ops_per_sec": inv_ops,
         "inverse_ms_per_call": inv_ms,
+        "fwd_inv_ratio": fwd_inv_ratio,
         "target_ops_per_sec": TARGET,
     }
 
@@ -550,11 +577,12 @@ def benchmark(diffractometer, n: int = 500, print: bool = True):
         f"\n  mode:       {mode}"
         f"\n  wavelength: {wavelength}"
         f"\n  calls:      {n}"
+        f"\n  snapshot:   {snapshot}"
         f"\n"
-        f"\n  {'operation':<12} {'ops/sec':>10} {'ms/call':>11} {'status':>6}"
-        f"\n  {'-' * 12} {'-' * 10} {'-' * 11} {'-' * 6}"
-        f"\n  {'forward()':<12} {fwd_ops:>10.0f} {fwd_ms:>11.3f} {_status(fwd_ops):>6}"
-        f"\n  {'inverse()':<12} {inv_ops:>10.0f} {inv_ms:>11.3f} {_status(inv_ops):>6}"
+        f"\n  {'operation':<12} {'ops/sec':>10} {'ms/call':>11} {'fwd/inv':>9} {'status':>6}"  # noqa: E501
+        f"\n  {'-' * 12} {'-' * 10} {'-' * 11} {'-' * 9} {'-' * 6}"
+        f"\n  {'forward()':<12} {fwd_ops:>10.0f} {fwd_ms:>11.3f} {fwd_inv_ratio:>9.3f} {_status(fwd_ops):>6}"  # noqa: E501
+        f"\n  {'inverse()':<12} {inv_ops:>10.0f} {inv_ms:>11.3f} {'':>9} {_status(inv_ops):>6}"  # noqa: E501
         f"\n"
         f"\n  target: {TARGET:,} ops/sec (+/-{tolerance:.0%})"
     )

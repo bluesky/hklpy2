@@ -1120,14 +1120,24 @@ def test_make_dynamic_instance_raises():
     "parms, context",
     [
         pytest.param(
-            dict(config="e4cv_orient.yml", print=False),
+            dict(config="e4cv_orient.yml", print=False, snapshot=True),
             does_not_raise(),
-            id="benchmark returns dict when print=False",
+            id="benchmark returns dict when print=False (snapshot=True)",
         ),
         pytest.param(
-            dict(config="e4cv_orient.yml", print=True),
+            dict(config="e4cv_orient.yml", print=True, snapshot=True),
             does_not_raise(),
-            id="benchmark returns None when print=True",
+            id="benchmark returns None when print=True (snapshot=True)",
+        ),
+        pytest.param(
+            dict(config="e4cv_orient.yml", print=False, snapshot=False),
+            does_not_raise(),
+            id="benchmark returns dict when print=False (snapshot=False)",
+        ),
+        pytest.param(
+            dict(config="e4cv_orient.yml", print=True, snapshot=False),
+            does_not_raise(),
+            id="benchmark returns None when print=True (snapshot=False)",
         ),
     ],
 )
@@ -1141,7 +1151,12 @@ def test_benchmark(capsys, parms, context):
     """
     with context:
         sim = simulator_from_config(TESTS_DIR / parms["config"])
-        result = benchmark(sim, n=10, print=parms["print"])
+        result = benchmark(
+            sim,
+            n=10,
+            print=parms["print"],
+            snapshot=parms["snapshot"],
+        )
 
         if parms["print"]:
             assert result is None
@@ -1150,6 +1165,8 @@ def test_benchmark(capsys, parms, context):
             assert "forward()" in captured.out
             assert "inverse()" in captured.out
             assert "ops/sec" in captured.out
+            assert "fwd/inv" in captured.out
+            assert f"snapshot:   {parms['snapshot']}" in captured.out
         else:
             assert result is not None
             assert isinstance(result, dict)
@@ -1163,6 +1180,7 @@ def test_benchmark(capsys, parms, context):
                 "forward_ms_per_call",
                 "inverse_ops_per_sec",
                 "inverse_ms_per_call",
+                "fwd_inv_ratio",
                 "target_ops_per_sec",
             }
             assert set(result.keys()) == expected_keys
@@ -1170,6 +1188,27 @@ def test_benchmark(capsys, parms, context):
             assert result["forward_ops_per_sec"] > 0
             assert result["inverse_ops_per_sec"] > 0
             assert result["target_ops_per_sec"] == 2_000
+            # fwd_inv_ratio matches the reported per-operation throughputs.
+            assert result["fwd_inv_ratio"] == pytest.approx(
+                result["forward_ops_per_sec"] / result["inverse_ops_per_sec"]
+            )
+
+
+def test_benchmark_snapshot_does_not_mutate_diffractometer():
+    """
+    Per #369: ``benchmark(snapshot=True)`` must not alter the supplied
+    diffractometer's solver state, sample, or position.
+    """
+    sim = simulator_from_config(TESTS_DIR / "e4cv_orient.yml")
+    before_mode = sim.core.solver.mode
+    before_sample = sim.sample.name
+    before_position = sim.real_position
+
+    benchmark(sim, n=5, print=False, snapshot=True)
+
+    assert sim.core.solver.mode == before_mode
+    assert sim.sample.name == before_sample
+    assert sim.real_position == before_position
 
 
 def test_benchmark_no_reflections():
@@ -1181,6 +1220,9 @@ def test_benchmark_no_reflections():
     assert len(sim.sample.reflections) == 0
     # Move to a non-trivial position so forward() has a solution.
     sim.move(1, 0, 0)
-    result = benchmark(sim, n=5, print=False)
+    # snapshot=False so the (mutated) sim is the actual benchmark target;
+    # otherwise the snapshot is rebuilt from configuration() and may not
+    # reflect the in-memory removal of reflections.
+    result = benchmark(sim, n=5, print=False, snapshot=False)
     assert result["forward_ops_per_sec"] > 0
     assert result["inverse_ops_per_sec"] > 0

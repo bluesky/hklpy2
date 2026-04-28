@@ -30,10 +30,17 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    0.6.1
-    #####
+0.6.1
+#####
 
-    Release expected by 2026-H2.
+Release expected by 2026-H2.
+
+Enhancements
+------------
+
+* ``benchmark()``: add ``snapshot=True`` (default) to time on a simulator
+  built from the diffractometer's configuration, and report ``fwd/inv``
+  ratio. (:issue:`369`, :issue:`373`)
 
 0.6.0
 #####
