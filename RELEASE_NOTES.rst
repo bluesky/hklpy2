@@ -30,10 +30,28 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-0.6.1
+0.6.2
 #####
 
 Release expected by 2026-H2.
+
+New Features
+------------
+
+* Add how-to guide: polarization analyzer as auxiliary positioners on
+  the detector arm. (:issue:`360`)
+
+Fixes
+-----
+
+* ``how_analyzer.ipynb``: correct stale prose about config save/restore
+  (axis names are stored, positions are not; solver mode is restored);
+  remove duplicate Bragg-law cell. (:issue:`360`)
+
+0.6.1
+#####
+
+Released 2026-04-28.
 
 Enhancements
 ------------
