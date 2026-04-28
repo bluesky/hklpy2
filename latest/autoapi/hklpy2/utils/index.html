@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=fe1d5400"></script>
+    <script src="../../../_static/documentation_options.js?v=7862653f"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -469,12 +469,13 @@
 <span id="utils"></span><h1>utils<a class="headerlink" href="#module-hklpy2.utils" title="Link to this heading">#</a></h1>
 <p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.utils</span></code></p>
 <p>General-purpose utilities for <strong>hklpy2</strong>.</p>
+<p class="rubric">Functions</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.utils.axes_to_dict" title="hklpy2.utils.axes_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">axes_to_dict</span></code></a>(input, names)</p></td>
 <td><p>Convert any acceptable axes input to standard form (dict).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">benchmark</span></code>(diffractometer[, n, print, snapshot])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.utils.benchmark" title="hklpy2.utils.benchmark"><code class="xref py py-obj docutils literal notranslate"><span class="pre">benchmark</span></code></a>(diffractometer[, n, print, snapshot])</p></td>
 <td><p>Assess <code class="docutils literal notranslate"><span class="pre">forward()</span></code> and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> throughput for a diffractometer.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.utils.check_value_in_list" title="hklpy2.utils.check_value_in_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_value_in_list</span></code></a>(title, value, examples)</p></td>
@@ -522,6 +523,7 @@
 </tbody>
 </table>
 </div>
+<p class="rubric">Symbols</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.utils.DEFAULT_DIGITS" title="hklpy2.utils.DEFAULT_DIGITS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT_DIGITS</span></code></a></p></td>
@@ -634,6 +636,68 @@
 <dt>names<span class="classifier">[str]</span></dt><dd><p>Expected names of the axes, in order expected by the solver.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.utils.benchmark">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.utils.</span></span><span class="sig-name descname"><span class="pre">benchmark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diffractometer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snapshot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/utils.html#benchmark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.utils.benchmark" title="Link to this definition">#</a></dt>
+<dd><div class="import-path docutils container">
+<p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.utils.benchmark</span></code></p>
+</div>
+<p>Assess <code class="docutils literal notranslate"><span class="pre">forward()</span></code> and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> throughput for a diffractometer.</p>
+<p>This function is <strong>purely computational</strong> — it does not move any motors or
+communicate with hardware.  It is safe to call on a live diffractometer.</p>
+<p>Uses the diffractometer’s current real and pseudo-axis positions, and the
+current mode, as the benchmark inputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diffractometer</strong> – Any <strong>hklpy2</strong> diffractometer instance.</p></li>
+<li><p><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – Number of calls used to measure throughput.  Default: 500.</p></li>
+<li><p><strong>print</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – When <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), print a human-readable report to stdout and
+return <code class="docutils literal notranslate"><span class="pre">None</span></code>.  When <code class="docutils literal notranslate"><span class="pre">False</span></code>, suppress all output and return a
+<code class="docutils literal notranslate"><span class="pre">dict</span></code> of results.</p></li>
+<li><p><strong>snapshot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a><em>, </em><em>optional</em>) – When <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), snapshot the diffractometer configuration
+and run all timing loops on a simulator built from that snapshot,
+leaving the original diffractometer (and its solver state)
+completely untouched.  When <code class="docutils literal notranslate"><span class="pre">False</span></code>, run the timing loops directly
+on the supplied diffractometer (legacy behaviour).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><code class="docutils literal notranslate"><span class="pre">None</span></code> when <em>print</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code>; a <code class="docutils literal notranslate"><span class="pre">dict</span></code> when <em>print</em> is
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.  The dict contains:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;solver&quot;</span></code> — solver name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;geometry&quot;</span></code> — geometry name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;mode&quot;</span></code> — current solver mode</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;wavelength&quot;</span></code> — current wavelength</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;n&quot;</span></code> — number of calls measured</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;forward_ops_per_sec&quot;</span></code> — <code class="docutils literal notranslate"><span class="pre">forward()</span></code> throughput</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;forward_ms_per_call&quot;</span></code> — <code class="docutils literal notranslate"><span class="pre">forward()</span></code> latency in ms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;inverse_ops_per_sec&quot;</span></code> — <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> throughput</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;inverse_ms_per_call&quot;</span></code> — <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> latency in ms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;fwd_inv_ratio&quot;</span></code> — ratio of forward to inverse ops/sec</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;target_ops_per_sec&quot;</span></code> — minimum target (2,000)</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)">dict</a></p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Print a report:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">benchmark</span>
+<span class="n">benchmark</span><span class="p">(</span><span class="n">my_diffractometer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Capture results programmatically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">benchmark</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">(</span><span class="n">my_diffractometer</span><span class="p">,</span> <span class="nb">print</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;forward_ops_per_sec&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -875,6 +939,7 @@ considered parallel.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.PINT_ERRORS"><code class="docutils literal notranslate"><span class="pre">PINT_ERRORS</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.UREG"><code class="docutils literal notranslate"><span class="pre">UREG</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.axes_to_dict"><code class="docutils literal notranslate"><span class="pre">axes_to_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.benchmark"><code class="docutils literal notranslate"><span class="pre">benchmark()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.check_value_in_list"><code class="docutils literal notranslate"><span class="pre">check_value_in_list()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.compare_float_dicts"><code class="docutils literal notranslate"><span class="pre">compare_float_dicts()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.convert_units"><code class="docutils literal notranslate"><span class="pre">convert_units()</span></code></a></li>

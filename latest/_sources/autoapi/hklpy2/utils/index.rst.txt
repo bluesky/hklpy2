@@ -9,7 +9,7 @@ utils
 
    General-purpose utilities for |hklpy2|.
 
-   .. rubric: Functions
+   .. rubric:: Functions
    .. autosummary::
 
        ~axes_to_dict
@@ -29,7 +29,7 @@ utils
        ~validate_and_canonical_unit
        ~validate_not_parallel
 
-   .. rubric: Symbols
+   .. rubric:: Symbols
    .. autosummary::
 
        ~DEFAULT_DIGITS
@@ -125,6 +125,65 @@ Module Contents
        Positions, specified as dict, list, or tuple.
    names : [str]
        Expected names of the axes, in order expected by the solver.
+
+
+.. py:function:: benchmark(diffractometer, n: int = 500, print: bool = True, snapshot: bool = True)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.utils.benchmark``
+
+
+   Assess ``forward()`` and ``inverse()`` throughput for a diffractometer.
+
+   This function is **purely computational** — it does not move any motors or
+   communicate with hardware.  It is safe to call on a live diffractometer.
+
+   Uses the diffractometer's current real and pseudo-axis positions, and the
+   current mode, as the benchmark inputs.
+
+   :param diffractometer: Any |hklpy2| diffractometer instance.
+   :param n: Number of calls used to measure throughput.  Default: 500.
+   :type n: int, optional
+   :param print: When ``True`` (default), print a human-readable report to stdout and
+                 return ``None``.  When ``False``, suppress all output and return a
+                 ``dict`` of results.
+   :type print: bool, optional
+   :param snapshot: When ``True`` (default), snapshot the diffractometer configuration
+                    and run all timing loops on a simulator built from that snapshot,
+                    leaving the original diffractometer (and its solver state)
+                    completely untouched.  When ``False``, run the timing loops directly
+                    on the supplied diffractometer (legacy behaviour).
+   :type snapshot: bool, optional
+
+   :returns: ``None`` when *print* is ``True``; a ``dict`` when *print* is
+             ``False``.  The dict contains:
+
+             - ``"solver"`` — solver name
+             - ``"geometry"`` — geometry name
+             - ``"mode"`` — current solver mode
+             - ``"wavelength"`` — current wavelength
+             - ``"n"`` — number of calls measured
+             - ``"forward_ops_per_sec"`` — ``forward()`` throughput
+             - ``"forward_ms_per_call"`` — ``forward()`` latency in ms
+             - ``"inverse_ops_per_sec"`` — ``inverse()`` throughput
+             - ``"inverse_ms_per_call"`` — ``inverse()`` latency in ms
+             - ``"fwd_inv_ratio"`` — ratio of forward to inverse ops/sec
+             - ``"target_ops_per_sec"`` — minimum target (2,000)
+   :rtype: None or dict
+
+   .. rubric:: Example
+
+   Print a report::
+
+       from hklpy2.utils import benchmark
+       benchmark(my_diffractometer)
+
+   Capture results programmatically::
+
+       from hklpy2.utils import benchmark
+       results = benchmark(my_diffractometer, print=False)
+       print(results["forward_ops_per_sec"])
 
 
 .. py:function:: check_value_in_list(title, value, examples, blank_ok=False) -> None
