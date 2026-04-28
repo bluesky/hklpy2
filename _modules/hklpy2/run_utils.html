@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=7862653f"></script>
+    <script src="../../_static/documentation_options.js?v=37711cf1"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -435,7 +435,6 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tqdm</span>
@@ -786,9 +785,13 @@
     <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.4.0&quot;</span><span class="p">,</span>
     <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Create a simulated diffractometer from a saved configuration.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="nd">@versionchanged</span><span class="p">(</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.1&quot;</span><span class="p">,</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Accept a ``DiffractometerBase`` instance directly.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 <div class="viewcode-block" id="simulator_from_config">
 <a class="viewcode-back" href="../../autoapi/hklpy2/run_utils/index.html#hklpy2.run_utils.simulator_from_config">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">simulator_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">simulator_from_config</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a simulated diffractometer from a saved configuration.</span>
 
@@ -806,9 +809,14 @@
 
 <span class="sd">    PARAMETERS</span>
 
-<span class="sd">    config : dict, str, or pathlib.Path</span>
-<span class="sd">        Configuration dictionary, or path to a YAML configuration file</span>
-<span class="sd">        previously saved with ``diffractometer.export()``.</span>
+<span class="sd">    config : dict, str, pathlib.Path, or DiffractometerBase</span>
+<span class="sd">        One of:</span>
+
+<span class="sd">        * a configuration dictionary,</span>
+<span class="sd">        * a path to a YAML configuration file previously saved with</span>
+<span class="sd">          ``diffractometer.export()``, or</span>
+<span class="sd">        * a :class:`~hklpy2.diffract.DiffractometerBase` instance (its</span>
+<span class="sd">          current configuration snapshot will be used).</span>
 
 <span class="sd">    RETURNS</span>
 
@@ -821,18 +829,30 @@
 <span class="sd">        &gt;&gt;&gt; sim = hklpy2.simulator_from_config(&quot;e4cv-config.yml&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; sim.wh()</span>
 
+<span class="sd">        Or directly from an existing diffractometer::</span>
+
+<span class="sd">        &gt;&gt;&gt; sim = hklpy2.simulator_from_config(diffractometer)</span>
+
 <span class="sd">    SEE ALSO</span>
 
 <span class="sd">        :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerBase</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">creator</span>
 
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">DiffractometerBase</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="s2">&quot;simulator_from_config: snapshotting diffractometer </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">configuration</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;simulator_from_config: loading from file </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">config</span><span class="p">))</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">load_yaml_file</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Expected a dict or path to a YAML file. Received: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Expected a dict, path to a YAML file, or DiffractometerBase&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; instance. Received: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;_header&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">MISSING_HEADER_KEY_MSG</span><span class="p">)</span>

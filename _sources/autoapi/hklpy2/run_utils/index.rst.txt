@@ -241,7 +241,7 @@ Module Contents
    :type \*\*kwargs: dict[str:str]
 
 
-.. py:function:: simulator_from_config(config: Union[dict, str, ~pathlib.Path])
+.. py:function:: simulator_from_config(config)
 
    .. container:: import-path
 
@@ -264,9 +264,14 @@ Module Contents
 
    PARAMETERS
 
-   config : dict, str, or pathlib.Path
-       Configuration dictionary, or path to a YAML configuration file
-       previously saved with ``diffractometer.export()``.
+   config : dict, str, pathlib.Path, or DiffractometerBase
+       One of:
+
+       * a configuration dictionary,
+       * a path to a YAML configuration file previously saved with
+         ``diffractometer.export()``, or
+       * a :class:`~hklpy2.diffract.DiffractometerBase` instance (its
+         current configuration snapshot will be used).
 
    RETURNS
 
@@ -278,6 +283,10 @@ Module Contents
        >>> import hklpy2
        >>> sim = hklpy2.simulator_from_config("e4cv-config.yml")
        >>> sim.wh()
+
+       Or directly from an existing diffractometer::
+
+       >>> sim = hklpy2.simulator_from_config(diffractometer)
 
    SEE ALSO
 
