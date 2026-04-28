@@ -1226,3 +1226,66 @@ def test_benchmark_no_reflections():
     result = benchmark(sim, n=5, print=False, snapshot=False)
     assert result["forward_ops_per_sec"] > 0
     assert result["inverse_ops_per_sec"] > 0
+
+
+# ---------------------------------------------------------------------------
+# Issue #375: every public function/class defined in utils.py must appear in
+# __all__ so that sphinx-autoapi renders a detail page (not just a row in
+# the summary table).
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(module_name="hklpy2.utils"),
+            does_not_raise(),
+            id="hklpy2.utils: every public def is in __all__",
+        ),
+    ],
+)
+def test_module_all_covers_public_defs(parms, context):
+    """
+    Guard against the #375 regression: a public function defined in a
+    module that exposes ``__all__`` must be listed in ``__all__``,
+    otherwise sphinx-autoapi renders a row in the summary table with no
+    body / hyperlink.
+    """
+    import ast
+    import importlib
+
+    with context:
+        module = importlib.import_module(parms["module_name"])
+        source_path = module.__file__
+        with open(source_path) as stream:
+            tree = ast.parse(stream.read())
+        # Collect __all__
+        all_list = None
+        for node in tree.body:
+            if isinstance(node, ast.Assign):
+                for tgt in node.targets:
+                    if (
+                        isinstance(tgt, ast.Name)
+                        and tgt.id == "__all__"
+                        and isinstance(node.value, ast.List)
+                    ):
+                        all_list = [
+                            e.value
+                            for e in node.value.elts
+                            if isinstance(e, ast.Constant)
+                        ]
+        assert all_list is not None, (
+            f"{parms['module_name']} has no __all__ to validate"
+        )
+        # Collect public top-level defs (functions and classes).
+        public_defs = [
+            node.name
+            for node in tree.body
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+            and not node.name.startswith("_")
+        ]
+        missing = [n for n in public_defs if n not in all_list]
+        assert not missing, (
+            f"{parms['module_name']}.__all__ is missing public defs: {missing!r}"
+        )
