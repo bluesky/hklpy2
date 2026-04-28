@@ -369,6 +369,11 @@ def test_init_applies_default_mode(parms, context):
             does_not_raise(),
             id="blank default_mode falls back to modes[0]",
         ),
+        pytest.param(
+            dict(modes=[], default_mode="", expected=None),
+            pytest.raises(SolverError, match=re.escape("defines no modes")),
+            id="empty modes -> SolverError",
+        ),
     ],
 )
 def test_descriptor_default_mode_resolution(parms, context):

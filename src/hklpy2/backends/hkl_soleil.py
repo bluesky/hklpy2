@@ -262,7 +262,7 @@ class HklSolver(SolverBase):
         if mode == "":
             try:
                 mode = type(self).default_mode(geometry, engine=engine)
-            except SolverError:
+            except SolverError:  # pragma: no cover - defensive; libhkl raises first
                 mode = ""
         self.mode = mode
 
@@ -540,7 +540,9 @@ class HklSolver(SolverBase):
             )
         engine_list = factories[geometry].create_new_engine_list()
         engines = engine_list.engines_get()
-        if not engines:
+        if (
+            not engines
+        ):  # pragma: no cover - libhkl-listed geometries always have engines
             raise SolverError(
                 f"{cls.__name__}: geometry {geometry!r} has no engines;"
                 f" cannot pick a default mode."
@@ -553,7 +555,9 @@ class HklSolver(SolverBase):
         if chosen is None:
             chosen = engines[0]
         modes = chosen.modes_names_get()
-        if not modes:
+        if (
+            not modes
+        ):  # pragma: no cover - libhkl engines always declare at least one mode
             raise SolverError(
                 f"{cls.__name__}: geometry {geometry!r} engine"
                 f" {chosen.name_get()!r} has no modes;"
