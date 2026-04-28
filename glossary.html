@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=685cc5e1"></script>
+    <script src="_static/documentation_options.js?v=8d1b82b0"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -430,6 +430,7 @@
 <li class="toctree-l2"><a class="reference internal" href="guides/how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_forward_solution.html">How to Choose the Default forward() Solution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_performance.html">Understanding forward() and inverse() Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/how_polarizer.html">Polarization Analyzer on the Detector Arm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_presets.html">How to Use Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_psi_scan.html">How to Perform an Azimuthal (ψ) Scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/how_release.html">How to Make a Release</a></li>
@@ -555,6 +556,14 @@ one of its <em>geometries</em>.</p>
 <dt id="term-crystal">crystal<a class="headerlink" href="#term-crystal" title="Link to this term">#</a></dt><dd><p>A homogeneous substance composed from a repeating three-dimensional
 pattern.  The pattern (<em>unit cell</em>) is characterized by its <em>lattice</em>.</p>
 </dd>
+<dt id="term-crystal-analyzer">crystal analyzer<a class="headerlink" href="#term-crystal-analyzer" title="Link to this term">#</a></dt><dd><p>A passive <em>crystal</em> mounted on the detector arm that selects a
+specific scattered <em>wavelength</em> by Bragg diffraction, acting as a
+narrow bandpass filter.  The Bragg angle (often called <code class="docutils literal notranslate"><span class="pre">atheta</span></code>)
+positions the crystal; the detector relocates to the analyzer arm
+(often <code class="docutils literal notranslate"><span class="pre">attheta</span></code>) and points at the analyzer.  Treated by
+<strong>hklpy2</strong> as <em>auxiliary</em> positioners; does not affect
+crystallography calculations.  See <a class="reference internal" href="guides/how_analyzer.html"><span class="doc">Crystal Analyzer on the Detector Arm</span></a>.</p>
+</dd>
 <dt id="term-cut-point">cut point<a class="headerlink" href="#term-cut-point" title="Link to this term">#</a></dt><dd><p>The angle at which a motor’s reported position “wraps around.”
 It sets the start of the 360-degree window used to express the
 angle — the physics is unchanged, only how the number is written.</p>
@@ -634,6 +643,14 @@ range), such that it may be characterized by a single floating point value.</p>
 <dt id="term-orientation">orientation<a class="headerlink" href="#term-orientation" title="Link to this term">#</a></dt><dd><p>Positioning of a <em>crystalline</em> sample’s atomic planes
 (identified by a set of <em>pseudos</em>) within the laboratory reference
 frame (described by the <em>reals</em>).</p>
+</dd>
+<dt id="term-polarization-analyzer">polarization analyzer<a class="headerlink" href="#term-polarization-analyzer" title="Link to this term">#</a></dt><dd><p>A passive crystal mounted on the detector arm whose Bragg angle
+is close to 45° (so the scattering angle 2θ is near 90°),
+suppressing radiation polarized in the diffraction plane.
+Rotation around the beam selects which polarization direction is
+suppressed, allowing the beam polarization state to be probed.
+Treated by <strong>hklpy2</strong> as <em>auxiliary</em> positioners; does not affect
+crystallography calculations.  See <a class="reference internal" href="guides/how_polarizer.html"><span class="doc">Polarization Analyzer on the Detector Arm</span></a>.</p>
 </dd>
 <dt id="term-preset">preset<a class="headerlink" href="#term-preset" title="Link to this term">#</a></dt><dd><p id="index-1">A value assigned to a constant (read-only) real axis for use
 during <code class="docutils literal notranslate"><span class="pre">forward()</span></code> computations, in place of the current motor

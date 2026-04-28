@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../_static/documentation_options.js?v=685cc5e1"></script>
+    <script src="../_static/documentation_options.js?v=8d1b82b0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -428,6 +428,7 @@
 <li class="toctree-l2"><a class="reference internal" href="how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_forward_solution.html">How to Choose the Default forward() Solution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_performance.html">Understanding forward() and inverse() Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_polarizer.html">Polarization Analyzer on the Detector Arm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_presets.html">How to Use Presets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_psi_scan.html">How to Perform an Azimuthal (ψ) Scan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="how_release.html">How to Make a Release</a></li>
@@ -683,25 +684,26 @@ document automatically.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OrderedDict([(&#39;e4cv_beam_wavelength&#39;,
-              {&#39;value&#39;: 1.54, &#39;timestamp&#39;: 1776377183.0549195}),
+              {&#39;value&#39;: 1.54, &#39;timestamp&#39;: 1777396875.6899548}),
              (&#39;e4cv_beam_energy&#39;,
-              {&#39;value&#39;: 8.050921976530415, &#39;timestamp&#39;: 1776377182.6812484}),
-             (&#39;e4cv_h&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377182.681517}),
+              {&#39;value&#39;: 8.050921976530415, &#39;timestamp&#39;: 1777396875.461194}),
+             (&#39;e4cv_h&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.461405}),
              (&#39;e4cv_h_setpoint&#39;,
-              {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377182.6815362}),
-             (&#39;e4cv_k&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377182.6816278}),
-             (&#39;e4cv_k_setpoint&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377182.681644}),
-             (&#39;e4cv_l&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377182.6817188}),
+              {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.4614258}),
+             (&#39;e4cv_k&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.4615283}),
+             (&#39;e4cv_k_setpoint&#39;,
+              {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.4615448}),
+             (&#39;e4cv_l&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.4616344}),
              (&#39;e4cv_l_setpoint&#39;,
-              {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377182.6817346}),
-             (&#39;e4cv_omega&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377183.0630844}),
-             (&#39;e4cv_chi&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377183.0630896}),
-             (&#39;e4cv_phi&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377183.0630927}),
-             (&#39;e4cv_tth&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1776377183.0630956}),
+              {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.4616501}),
+             (&#39;e4cv_omega&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.696121}),
+             (&#39;e4cv_chi&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.6961257}),
+             (&#39;e4cv_phi&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.6961286}),
+             (&#39;e4cv_tth&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1777396875.6961312}),
              (&#39;e4cv_atheta&#39;,
-              {&#39;value&#39;: 14.215809201820777, &#39;timestamp&#39;: 1776377183.0630977}),
+              {&#39;value&#39;: 14.215809201820777, &#39;timestamp&#39;: 1777396875.6961336}),
              (&#39;e4cv_attheta&#39;,
-              {&#39;value&#39;: 28.431618403641554, &#39;timestamp&#39;: 1776377183.0630999})])
+              {&#39;value&#39;: 28.431618403641554, &#39;timestamp&#39;: 1777396875.6961374})])
 </pre></div>
 </div>
 </div>
@@ -728,31 +730,15 @@ Incident wavelength : 1.5400 Å
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">analyzer_wavelength</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">d_spacing</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">e4cv</span><span class="o">.</span><span class="n">atheta</span><span class="o">.</span><span class="n">position</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;atheta              : </span><span class="si">{</span><span class="n">e4cv</span><span class="o">.</span><span class="n">atheta</span><span class="o">.</span><span class="n">position</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> deg&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Analyzer wavelength : </span><span class="si">{</span><span class="n">analyzer_wavelength</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Å&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incident wavelength : </span><span class="si">{</span><span class="n">e4cv</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Å&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>atheta              : 14.2158 deg
-Analyzer wavelength : 1.5400 Å
-Incident wavelength : 1.5400 Å
-</pre></div>
-</div>
-</div>
-</div>
 </section>
 <section id="save-the-diffractometer-configuration">
 <h2>Save the diffractometer configuration<a class="headerlink" href="#save-the-diffractometer-configuration" title="Link to this heading">#</a></h2>
-<p>Export the diffractometer configuration (orientation, sample, reflections,
-constraints) to a YAML file.  Note that the analyzer axes are auxiliary
-positioners outside the solver mapping and are <strong>not</strong> stored in the
-configuration file.  Their positions must be restored separately (e.g. from
-EPICS PV readback, or by moving them explicitly after restore).</p>
+<p>Export the diffractometer configuration (orientation, sample,
+reflections, constraints) to a YAML file.  The auxiliary axis <em>names</em>
+(<code class="docutils literal notranslate"><span class="pre">atheta</span></code>, <code class="docutils literal notranslate"><span class="pre">attheta</span></code>) are recorded in the file so the diffractometer
+can be rebuilt with the same axes.  Auxiliary axis <em>positions</em> are not
+stored and must be restored separately (e.g. from EPICS PV readback,
+or by moving them explicitly after restore).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">config_file</span> <span class="o">=</span> <span class="s2">&quot;e4cv-analyzer.yml&quot;</span>
@@ -771,8 +757,9 @@ EPICS PV readback, or by moving them explicitly after restore).</p>
 <section id="restore-the-configuration">
 <h2>Restore the configuration<a class="headerlink" href="#restore-the-configuration" title="Link to this heading">#</a></h2>
 <p>Restore the diffractometer from the saved file.  The auxiliary axes
-(<code class="docutils literal notranslate"><span class="pre">atheta</span></code>, <code class="docutils literal notranslate"><span class="pre">attheta</span></code>) are saved in the configuration file and restored
-automatically — no <code class="docutils literal notranslate"><span class="pre">reals=</span></code> argument is needed.</p>
+(<code class="docutils literal notranslate"><span class="pre">atheta</span></code>, <code class="docutils literal notranslate"><span class="pre">attheta</span></code>) are recreated automatically from the
+configuration — no <code class="docutils literal notranslate"><span class="pre">reals=</span></code> argument is needed.  Their positions
+default to zero and must be set explicitly.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e4cv2</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
@@ -789,14 +776,10 @@ auxiliaries: atheta=0, attheta=0
 </div>
 </div>
 </div>
-<p>The orientation (UB matrix, sample, reflections) is fully restored.  Two
-items are not stored in the configuration file and must be set explicitly
-as part of session startup:</p>
-<ul class="simple">
-<li><p><strong>Analyzer positions</strong> — default to zero; move them as shown above.</p></li>
-<li><p><strong>Solver mode</strong> — defaults to the solver’s first mode (<code class="docutils literal notranslate"><span class="pre">bissector</span></code> for
-E4CV); set it with <code class="docutils literal notranslate"><span class="pre">e4cv2.core.solver.mode</span> <span class="pre">=</span> <span class="pre">'desired_mode'</span></code>.</p></li>
-</ul>
+<p>The orientation (UB matrix, sample, reflections) and the solver mode
+are fully restored.  Analyzer-axis positions are not stored in the
+configuration file; they default to zero and must be set explicitly
+(e.g. from EPICS PV readback, or by moving them as shown above).</p>
 </section>
 <section id="verify-the-restored-orientation">
 <h2>Verify the restored orientation<a class="headerlink" href="#verify-the-restored-orientation" title="Link to this heading">#</a></h2>
