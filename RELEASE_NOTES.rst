@@ -41,6 +41,8 @@ Enhancements
 * ``benchmark()``: add ``snapshot=True`` (default) to time on a simulator
   built from the diffractometer's configuration, and report ``fwd/inv``
   ratio. (:issue:`369`, :issue:`373`)
+* ``simulator_from_config()`` accepts a diffractometer instance directly,
+  using its current configuration snapshot. (:issue:`371`)
 * ``Solver.default_geometry()`` and ``Solver.default_mode(geometry)``;
   remove hardcoded ``"E4CV"`` fallback in ``simulator_from_config()``.
   (:issue:`372`)

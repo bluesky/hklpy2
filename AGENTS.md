@@ -233,6 +233,62 @@ The `Makefile` `pre` target also exports this variable automatically.
   ``Add ``scan_psi()```  sorts as ``"Add scan_psi()"`` (after ``"Add s"``),
   placing it after entries that begin with ``"Add h"``.
 
+## Version Decorators
+
+The project uses Sphinx-style version decorators from the ``deprecated``
+package to record when public APIs were introduced or changed.  Keep these
+in sync with code changes — they appear in the rendered docs and are part
+of the public contract.
+
+- Imports::
+
+      from deprecated.sphinx import versionadded
+      from deprecated.sphinx import versionchanged
+      from deprecated.sphinx import deprecated
+
+- **New public function/class/method** → add ``@versionadded`` with the
+  upcoming release version and a one-line ``reason``::
+
+      @versionadded(version="0.6.1", reason="Brief description of the API.")
+      def new_function(...):
+          ...
+
+- **Behavioral or signature change to an existing public API** → add a
+  ``@versionchanged`` decorator (stacked **below** the original
+  ``@versionadded``) for the upcoming release.  Do not edit historical
+  entries::
+
+      @versionadded(version="0.4.0", reason="Original description.")
+      @versionchanged(
+          version="0.6.1",
+          reason="Accept a ``DiffractometerBase`` instance directly.",
+      )
+      def existing_function(...):
+          ...
+
+- **Decorator order**: ``@versionadded`` first (outermost), then any
+  ``@versionchanged`` entries in chronological order beneath it, then the
+  function definition.  This matches the existing convention (see
+  ``hklpy2.diffract.creator``).
+
+- **Version string**: use the upcoming release tag (the topmost unreleased
+  section in ``RELEASE_NOTES.rst``).  If you add a release-notes entry for
+  an API change, also add the matching ``@versionchanged``/``@versionadded``
+  decorator (and vice versa).
+
+- **Inline forms**: for module/class-level documentation that is not a
+  decorated callable, use the RST directive form inside the docstring::
+
+      """
+      .. versionadded:: 0.5.0
+      .. versionchanged:: 0.6.1
+         Description of the change.
+      """
+
+- **Deprecations**: use ``@deprecated`` (also from ``deprecated.sphinx``);
+  add a corresponding entry in the ``Deprecations`` subsection of
+  ``RELEASE_NOTES.rst``.
+
 ## Documentation: RST Style
 
 - RST title underlines (and overlines) must be **at least as long** as the
