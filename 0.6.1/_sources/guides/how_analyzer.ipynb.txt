@@ -1,0 +1,551 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Crystal Analyzer on the Detector Arm\n",
+    "\n",
+    "A crystal analyzer is a passive optical element on the detector arm that\n",
+    "selects a specific scattered wavelength by Bragg diffraction — acting as a\n",
+    "narrow bandpass filter (±Δλ) whose width depends on the crystal composition,\n",
+    "d-spacing, and perfection.  With an analyzer in place, the detector relocates to the\n",
+    "analyzer's `attheta` arm and points at the analyzer crystal (not the sample);\n",
+    "the `atheta` arm positions the crystal to select the wavelength.\n",
+    "\n",
+    "The control system operates the analyzer motors; hklpy2 treats them as\n",
+    "**auxiliary positioners** that are read alongside the diffractometer but do\n",
+    "not affect reciprocal-space calculations.\n",
+    "\n",
+    "**Objective**\n",
+    "\n",
+    "Add two analyzer axes (`atheta`, `attheta`) to an E4CV diffractometer,\n",
+    "demonstrate their use in a Bluesky session, and show how to save and restore the\n",
+    "diffractometer configuration.\n",
+    "\n",
+    "**Analyzer axes** (nominal names used here)\n",
+    "\n",
+    "axis | description\n",
+    "--- | ---\n",
+    "`atheta` | analyzer crystal Bragg angle (θ)\n",
+    "`attheta` | analyzer detector arm angle (2θ)\n",
+    "\n",
+    "These names are conventional; substitute the names used at your beamline."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Setup\n",
+    "\n",
+    "Create an E4CV diffractometer with the two analyzer axes declared alongside the\n",
+    "four standard real motors.  Pass all six axes in the `reals` dictionary; the\n",
+    "four that the solver knows about (`omega`, `chi`, `phi`, `tth`) are mapped\n",
+    "automatically; the remaining two (`atheta`, `attheta`) appear as *auxiliaries*.\n",
+    "\n",
+    "The solver axes (`omega`, `chi`, `phi`, `tth`) must appear in the order the\n",
+    "solver expects — giving them out of order will cause incorrect motor mapping.\n",
+    "Auxiliary axes may be appended in any order after the solver axes.  See\n",
+    "the [Diffractometer axes](diffract.rst) guide for details."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:17.113988Z",
+     "iopub.status.busy": "2026-04-16T22:06:17.113444Z",
+     "iopub.status.idle": "2026-04-16T22:06:22.985520Z",
+     "shell.execute_reply": "2026-04-16T22:06:22.984581Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import hklpy2\n",
+    "\n",
+    "e4cv = hklpy2.creator(\n",
+    "    name=\"e4cv\",\n",
+    "    reals=dict(\n",
+    "        omega=None,  # simulated motor\n",
+    "        chi=None,\n",
+    "        phi=None,\n",
+    "        tth=None,\n",
+    "        atheta=None,  # analyzer theta\n",
+    "        attheta=None,  # analyzer 2-theta\n",
+    "    ),\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Show the diffractometer position summary.  The analyzer axes appear under\n",
+    "*auxiliaries*."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:22.987990Z",
+     "iopub.status.busy": "2026-04-16T22:06:22.987577Z",
+     "iopub.status.idle": "2026-04-16T22:06:22.993260Z",
+     "shell.execute_reply": "2026-04-16T22:06:22.992321Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=1.0\n",
+      "pseudos: h=0, k=0, l=0\n",
+      "reals: omega=0, chi=0, phi=0, tth=0\n",
+      "auxiliaries: atheta=0, attheta=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "e4cv.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Show all ophyd component names."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.033918Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.033757Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.036467Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.035891Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "e4cv.component_names=('beam', 'h', 'k', 'l', 'omega', 'chi', 'phi', 'tth', 'atheta', 'attheta')\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f\"{e4cv.component_names=}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Orient the diffractometer\n",
+    "\n",
+    "Add a sample and two orientation reflections, then compute the UB matrix.\n",
+    "The analyzer axes play no role in orientation."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.038055Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.037894Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.046342Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.045782Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "UB matrix computed.\n"
+     ]
+    }
+   ],
+   "source": [
+    "e4cv.core.add_sample(\"vibranium\", 4.04)\n",
+    "\n",
+    "r1 = e4cv.core.add_reflection(\n",
+    "    dict(h=4, k=0, l=0),\n",
+    "    dict(omega=-145.451, chi=0, phi=0, tth=69.066),\n",
+    ")\n",
+    "r2 = e4cv.core.add_reflection(\n",
+    "    dict(h=0, k=4, l=0),\n",
+    "    dict(omega=-145.451, chi=0, phi=90, tth=69.066),\n",
+    ")\n",
+    "e4cv.core.calc_UB(r1, r2)\n",
+    "print(\"UB matrix computed.\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Set the wavelength and move the analyzer axes\n",
+    "\n",
+    "Set the incident wavelength first.  The analyzer is positioned here to select\n",
+    "elastic scattering — its Bragg angle is computed from the incident wavelength\n",
+    "and the analyzer crystal d-spacing."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.047505Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.047397Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.058170Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.057817Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "incident wavelength : 1.5400 Å\n",
+      "Si(111) d-spacing   : 3.1355 Å\n",
+      "atheta              : 14.2158 deg\n",
+      "attheta             : 28.4316 deg\n",
+      "wavelength=1.54\n",
+      "pseudos: h=0, k=0, l=0\n",
+      "reals: omega=0, chi=0, phi=0, tth=0\n",
+      "auxiliaries: atheta=14.2158, attheta=28.4316\n"
+     ]
+    }
+   ],
+   "source": [
+    "import math\n",
+    "\n",
+    "d_spacing = 3.1355  # Si(111) d-spacing in angstroms\n",
+    "\n",
+    "# Set incident wavelength. At a beamline this may be read-only (driven by the monochromator);\n",
+    "# in that case, skip this line — the analyzer angle is computed from e4cv.beam.wavelength (below).\n",
+    "e4cv.beam.wavelength.put(1.54)  # Cu K-alpha in angstroms\n",
+    "\n",
+    "# Compute analyzer Bragg angle for elastic scattering (analyzer lambda == incident lambda).\n",
+    "wavelength = e4cv.beam.wavelength.get()\n",
+    "e4cv.atheta.move(math.degrees(math.asin(wavelength / (2 * d_spacing))))\n",
+    "e4cv.attheta.move(e4cv.atheta.position * 2)\n",
+    "\n",
+    "print(f\"incident wavelength : {wavelength:.4f} Å\")\n",
+    "print(f\"Si(111) d-spacing   : {d_spacing:.4f} Å\")\n",
+    "print(f\"atheta              : {e4cv.atheta.position:.4f} deg\")\n",
+    "print(f\"attheta             : {e4cv.attheta.position:.4f} deg\")\n",
+    "e4cv.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Read all axes together\n",
+    "\n",
+    "Because the analyzer axes are ophyd components on the diffractometer device,\n",
+    "they are included in `read()` and will be recorded in every Bluesky run\n",
+    "document automatically."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.059626Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.059462Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.067138Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.066593Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "OrderedDict([('e4cv_beam_wavelength',\n",
+       "              {'value': 1.54, 'timestamp': 1776377183.0549195}),\n",
+       "             ('e4cv_beam_energy',\n",
+       "              {'value': 8.050921976530415, 'timestamp': 1776377182.6812484}),\n",
+       "             ('e4cv_h', {'value': 0, 'timestamp': 1776377182.681517}),\n",
+       "             ('e4cv_h_setpoint',\n",
+       "              {'value': 0, 'timestamp': 1776377182.6815362}),\n",
+       "             ('e4cv_k', {'value': 0, 'timestamp': 1776377182.6816278}),\n",
+       "             ('e4cv_k_setpoint', {'value': 0, 'timestamp': 1776377182.681644}),\n",
+       "             ('e4cv_l', {'value': 0, 'timestamp': 1776377182.6817188}),\n",
+       "             ('e4cv_l_setpoint',\n",
+       "              {'value': 0, 'timestamp': 1776377182.6817346}),\n",
+       "             ('e4cv_omega', {'value': 0, 'timestamp': 1776377183.0630844}),\n",
+       "             ('e4cv_chi', {'value': 0, 'timestamp': 1776377183.0630896}),\n",
+       "             ('e4cv_phi', {'value': 0, 'timestamp': 1776377183.0630927}),\n",
+       "             ('e4cv_tth', {'value': 0, 'timestamp': 1776377183.0630956}),\n",
+       "             ('e4cv_atheta',\n",
+       "              {'value': 14.215809201820777, 'timestamp': 1776377183.0630977}),\n",
+       "             ('e4cv_attheta',\n",
+       "              {'value': 28.431618403641554, 'timestamp': 1776377183.0630999})])"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "e4cv.read()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Verify the analyzer wavelength\n",
+    "\n",
+    "Back-compute the analyzed wavelength from the current `atheta` position using\n",
+    "Bragg's law (`λ = 2 d sin θ`) and confirm it matches the incident wavelength."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.068280Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.068172Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.071518Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.071023Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "atheta              : 14.2158 deg\n",
+      "Analyzer wavelength : 1.5400 Å\n",
+      "Incident wavelength : 1.5400 Å\n"
+     ]
+    }
+   ],
+   "source": [
+    "analyzer_wavelength = 2 * d_spacing * math.sin(math.radians(e4cv.atheta.position))\n",
+    "print(f\"atheta              : {e4cv.atheta.position:.4f} deg\")\n",
+    "print(f\"Analyzer wavelength : {analyzer_wavelength:.4f} Å\")\n",
+    "print(f\"Incident wavelength : {e4cv.beam.wavelength.get():.4f} Å\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.072656Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.072549Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.077640Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.077261Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "atheta              : 14.2158 deg\n",
+      "Analyzer wavelength : 1.5400 Å\n",
+      "Incident wavelength : 1.5400 Å\n"
+     ]
+    }
+   ],
+   "source": [
+    "analyzer_wavelength = 2 * d_spacing * math.sin(math.radians(e4cv.atheta.position))\n",
+    "print(f\"atheta              : {e4cv.atheta.position:.4f} deg\")\n",
+    "print(f\"Analyzer wavelength : {analyzer_wavelength:.4f} Å\")\n",
+    "print(f\"Incident wavelength : {e4cv.beam.wavelength.get():.4f} Å\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Save the diffractometer configuration\n",
+    "\n",
+    "Export the diffractometer configuration (orientation, sample, reflections,\n",
+    "constraints) to a YAML file.  Note that the analyzer axes are auxiliary\n",
+    "positioners outside the solver mapping and are **not** stored in the\n",
+    "configuration file.  Their positions must be restored separately (e.g. from\n",
+    "EPICS PV readback, or by moving them explicitly after restore)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.078994Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.078874Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.093540Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.092988Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Configuration saved to e4cv-analyzer.yml\n"
+     ]
+    }
+   ],
+   "source": [
+    "config_file = \"e4cv-analyzer.yml\"\n",
+    "e4cv.export(config_file, comment=\"E4CV with analyzer axes example\")\n",
+    "print(f\"Configuration saved to {config_file}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Restore the configuration\n",
+    "\n",
+    "Restore the diffractometer from the saved file.  The auxiliary axes\n",
+    "(`atheta`, `attheta`) are saved in the configuration file and restored\n",
+    "automatically — no `reals=` argument is needed."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.094697Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.094586Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.442967Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.442442Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=1.54\n",
+      "pseudos: h=0, k=0, l=0\n",
+      "reals: omega=0, chi=0, phi=0, tth=0\n",
+      "auxiliaries: atheta=0, attheta=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "e4cv2 = hklpy2.simulator_from_config(config_file)\n",
+    "e4cv2.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The orientation (UB matrix, sample, reflections) is fully restored.  Two\n",
+    "items are not stored in the configuration file and must be set explicitly\n",
+    "as part of session startup:\n",
+    "\n",
+    "- **Analyzer positions** — default to zero; move them as shown above.\n",
+    "- **Solver mode** — defaults to the solver's first mode (``bissector`` for\n",
+    "  E4CV); set it with ``e4cv2.core.solver.mode = 'desired_mode'``."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Verify the restored orientation\n",
+    "\n",
+    "Confirm that `forward()` gives the same result on both the original and restored\n",
+    "diffractometers."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.444227Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.444117Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.456769Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.456211Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "original: forward{'h': 1, 'k': 0, 'l': 0} -> -10.9875\n",
+      "restored: forward{'h': 1, 'k': 0, 'l': 0} -> -10.9875\n"
+     ]
+    }
+   ],
+   "source": [
+    "hkl = dict(h=1, k=0, l=0)\n",
+    "print(f\"original: forward{hkl} -> {e4cv.forward(**hkl)[0]:.4f}\")\n",
+    "print(f\"restored: forward{hkl} -> {e4cv2.forward(**hkl)[0]:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Clean up the example file"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-16T22:06:23.458057Z",
+     "iopub.status.busy": "2026-04-16T22:06:23.457951Z",
+     "iopub.status.idle": "2026-04-16T22:06:23.460125Z",
+     "shell.execute_reply": "2026-04-16T22:06:23.459763Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import pathlib\n",
+    "\n",
+    "pathlib.Path(config_file).unlink(missing_ok=True)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "hklpy2",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

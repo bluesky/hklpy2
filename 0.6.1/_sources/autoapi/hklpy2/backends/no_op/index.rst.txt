@@ -1,0 +1,194 @@
+no_op
+=====
+
+.. py:module:: hklpy2.backends.no_op
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.backends.no_op``
+
+   "no_op" solver for testing.
+
+   no reciprocal-space conversions
+
+   Example::
+
+       import hklpy2
+       SolverClass = hklpy2.get_solver("no_op")
+       noop_solver = SolverClass()
+
+   .. autosummary::
+
+       ~NoOpSolver
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: NoOpSolver(geometry: str, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.backends.no_op.NoOpSolver``
+
+
+   Bases: :py:obj:`hklpy2.backends.base.SolverBase`
+
+
+   ``"no_op"`` (any OS) no transformations.
+
+   |solver| that has no reciprocal space transformations.
+
+   .. rubric:: Python Methods
+
+   .. autosummary::
+
+       ~addReflection
+       ~calculate_UB
+       ~extra_axis_names
+       ~forward
+       ~geometries
+       ~inverse
+       ~pseudo_axis_names
+       ~real_axis_names
+       ~refineLattice
+       ~removeAllReflections
+
+   .. rubric:: Python Properties
+
+   .. autosummary::
+
+       ~geometry
+       ~lattice
+       ~mode
+       ~modes
+       ~sample
+
+
+   .. py:method:: addReflection(reflection: ~hklpy2.backends.typing.ReflectionDict) -> None
+
+      Add coordinates of a diffraction condition (a reflection).
+
+
+
+   .. py:method:: calculate_UB(r1: ~hklpy2.backends.typing.ReflectionDict, r2: ~hklpy2.backends.typing.ReflectionDict) -> ~hklpy2.typing.Matrix3x3
+
+      Calculate the UB (orientation) matrix with two reflections.
+
+      The method of Busing & Levy, Acta Cryst 22 (1967) 457.
+
+
+
+   .. py:property:: extra_axis_names
+      :type: List[str]
+
+
+      Ordered list of any extra axis names (such as x, y, z).
+
+
+   .. py:method:: forward(pseudos: ~hklpy2.typing.NamedFloatDict) -> List[~hklpy2.typing.NamedFloatDict]
+
+      Compute list of solutions(reals) from pseudos (hkl -> [angles]).
+
+      Returns all valid real-axis solutions that the backend engine can
+      find for the given pseudo-axis values, geometry, and mode.  The
+      number of solutions depends on the backend library's capabilities:
+      some engines enumerate all mathematically valid solutions while
+      others return only one.  A single-element list is a valid return
+      value.
+
+      The :class:`~hklpy2.ops.Core` layer iterates over the returned
+      list, applies constraint filtering, and passes the survivors to a
+      solution picker (see :func:`~hklpy2.utils.pick_first_solution`,
+      :func:`~hklpy2.utils.pick_closest_solution`).
+
+      :param pseudos: Pseudo-axis values keyed by name
+                      (e.g. ``{"h": 1.0, "k": 0.0, "l": 0.0}``).
+      :type pseudos: NamedFloatDict
+
+      :returns: Each element is a dictionary of real-axis values keyed by name
+                (e.g. ``{"omega": 10.0, "chi": 0.0, "phi": 0.0, "tth": 20.0}``).
+                An empty list signals no solutions; a single-element list is
+                acceptable.
+      :rtype: list[NamedFloatDict]
+
+      :raises NoForwardSolutions: If the backend cannot find any solution.
+
+
+
+   .. py:method:: geometries() -> List[str]
+      :classmethod:
+
+
+      Ordered list of the geometry names supported by this solver.
+
+      Implementations that use the :attr:`_geometry_registry` should return
+      ``sorted(cls._geometry_registry.keys())``.  Solvers backed by an
+      external library (e.g. :class:`~hklpy2.backends.hkl_soleil.HklSolver`)
+      may query that library's own registry instead.
+
+      EXAMPLES::
+
+          >>> from hklpy2 import get_solver
+          >>> Solver = get_solver("no_op")
+          >>> Solver.geometries()
+          []
+          >>> solver = Solver("TH TTH Q")
+          >>> solver.geometries()
+          []
+
+
+
+   .. py:method:: inverse(reals: ~hklpy2.typing.NamedFloatDict) -> ~hklpy2.typing.NamedFloatDict
+
+      Compute dict of pseudos from reals (angles -> hkl).
+
+
+
+   .. py:property:: modes
+      :type: List[str]
+
+
+      List of the geometry operating modes.
+
+
+   .. py:attribute:: name
+      :value: 'no_op'
+
+
+      Name of this Solver.
+
+
+   .. py:property:: pseudo_axis_names
+      :type: List[str]
+
+
+      Ordered list of the pseudo axis names (such as h, k, l).
+
+
+   .. py:property:: real_axis_names
+      :type: List[str]
+
+
+      Ordered list of the real axis names (such as th, tth).
+
+
+   .. py:method:: refineLattice(reflections: List[~hklpy2.backends.typing.ReflectionDict]) -> ~hklpy2.typing.NamedFloatDict | None
+
+      No refinement.
+
+
+
+   .. py:method:: removeAllReflections() -> None
+
+      Remove all reflections.
+
+
+
+   .. py:attribute:: version
+
+      Version of this Solver.
+
+

@@ -1,0 +1,1137 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>How to Perform an Azimuthal (ψ) Scan &#8212; hklpy2 0.6</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=2bd037f0"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'guides/how_psi_scan';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.6.1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="How to Make a Release" href="how_release.html" />
+    <link rel="prev" title="How to Use Presets" href="how_presets.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.6" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.6</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorial: Your First Diffractometer
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/hklpy2/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../tutorial.html">
+    Tutorial: Your First Diffractometer
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../autoapi/hklpy2/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../license.html">
+    License
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial: Your First Diffractometer</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../concepts.html">Concepts</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/__overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/constraints.html">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/creator.html">Diffractometer creator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/diffract.html">Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/lattice.html">Crystal Lattice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/ops.html">Core Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/presets.html">Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/reflection.html">Orientation Reflection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/sample.html">Sample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/user.html">User Friendliness</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../concepts/wavelength.html">Wavelength</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../diffractometers.html">Diffractometers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../examples.html">Examples</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/aps-isn-e6c.html">APS ISN Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/constraints.html">Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-creator.html">Example 4-circle diffractometer using creator()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/example-4-circle-custom-class.html">Example 4-circle diffractometer custom Python class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4ch.html"><strong>hkl_soleil</strong> E4CH</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv.html"><strong>hkl_soleil</strong> E4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e4cv%2Bepics.html"><strong>hkl_soleil</strong> E4CV with EPICS motors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-psi.html"><strong>hkl_soleil</strong> E6C psi axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-e6c-test_calculations.html"><strong>hkl_soleil</strong> E6C test of calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-k4cv.html"><strong>hkl_soleil</strong> K4CV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-lattice_refine.html"><strong>hkl_soleil</strong> Refine lattice from 3 reflections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_calc.html"><strong>hkl_soleil</strong> UB matrix : calculate from 2 reflections.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/hkl_soleil-ub_set.html"><strong>hkl_soleil</strong> UB matrix : Set directly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/nslsii-tardis.html"><strong>NSLS-II</strong> <strong>tardis</strong> diffractometer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../examples/tst_e4cv_fourc.html">Compare <strong>hkl_soleil</strong> <strong>E4CV</strong> with <strong>SPEC</strong> <strong>fourc</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/virtual-axis.html">Virtual diffractometer axis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/zone-scan.html">Zone Scan</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../guides.html">Guides</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="configuration_save_restore.html">Diffractometer Configuration – Save and Restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design.html">Architecture &amp; Design Decisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diffract.html">How to Work with a Diffractometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_additional_parameters.html">Diffractometer Extra Solver Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_analyzer.html">Crystal Analyzer on the Detector Arm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_axis_positions.html">Ways to Specify Real and Pseudo Axis Positions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_calc_ub.html">How to Compute and Set the UB Matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_constraints.html">How to Use Constraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_creator_from_config.html">How to Create a Simulator from a Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_extra_reals_and_pseudos.html">Diffractometer Extra Motors and/or Pseudos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_forward_solution.html">How to Choose the Default forward() Solution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_performance.html">Understanding forward() and inverse() Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_presets.html">How to Use Presets</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">How to Perform an Azimuthal (ψ) Scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_release.html">How to Make a Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_user_interface.html">How to Use the hklpy2.user Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="how_zone_scan.html">How to Perform a Zone Scan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto_write_solver.html">How to write a new Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration.html">Migration from <strong>hklpy (v1)</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spec_xref.html">SPEC commands in hklpy2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="var_engines.html">Use <code class="docutils literal notranslate"><span class="pre">E4CV</span></code>’s <code class="docutils literal notranslate"><span class="pre">q</span></code> calculation engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="z_checklist_v2.html">Feature Checklist for v2</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../guides.html" class="nav-link">Guides</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">How to Perform an Azimuthal (ψ) Scan</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="how-to-perform-an-azimuthal-scan">
+<h1>How to Perform an Azimuthal (ψ) Scan<a class="headerlink" href="#how-to-perform-an-azimuthal-scan" title="Link to this heading">#</a></h1>
+<p>An <strong>azimuthal scan</strong> (also called a ψ scan) rotates the sample about the
+scattering vector <strong>Q</strong> while holding the reciprocal-space position <em>(h, k, l)</em>
+fixed.  This probes how diffracted intensity varies with sample orientation
+around a Bragg reflection — useful for surface diffraction, multiple-beam
+diffraction studies, and verifying crystal alignment.</p>
+<div class="important admonition">
+<p class="admonition-title">Solver-specific feature</p>
+<p>Azimuthal scanning relies on the <code class="docutils literal notranslate"><span class="pre">psi_constant</span></code> mode provided by the
+<code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code> solver.  Not all solvers or geometries support this mode.
+Geometries that include <code class="docutils literal notranslate"><span class="pre">psi_constant</span></code> in their <code class="docutils literal notranslate"><span class="pre">hkl</span></code> engine include:
+E4CV, E4CH, K4CV, E6C, K6C, APS POLAR, SOLEIL MARS, PETRA3 P23 4C, and
+PETRA3 P23 6C.  Check <a class="reference internal" href="../diffractometers.html#geometries"><span class="std std-ref">Diffractometers</span></a> for your geometry.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../examples/hkl_soleil-e6c-psi.html"><span class="doc">hkl_soleil E6C psi axis</span></a> — E6C worked demonstration including
+the inverse case (computing ψ from real motor positions).</p>
+<p><a class="reference internal" href="var_engines.html"><span class="doc">Use E4CV’s q calculation engine</span></a> — how to select a calculation engine at creation time.</p>
+<p><a class="reference internal" href="how_constraints.html#how-constraints"><span class="std std-ref">How to Use Constraints</span></a> — how to set axis limits and cut points.</p>
+<p><a class="reference internal" href="diffract.html#guide-diffract"><span class="std std-ref">How to Work with a Diffractometer</span></a> — how to define and orient a diffractometer.</p>
+</div>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>A diffractometer using the <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code> solver with a geometry that supports
+<code class="docutils literal notranslate"><span class="pre">psi_constant</span></code> mode.</p></li>
+<li><p>A crystal sample with its lattice defined and a computed UB matrix.</p></li>
+<li><p>A reference reflection <strong>hkl₂</strong> that is <em>not parallel</em> to the scan
+reflection <strong>hkl</strong> — it defines the direction of ψ = 0.</p></li>
+<li><p>A running bluesky <code class="docutils literal notranslate"><span class="pre">RunEngine</span></code>.</p></li>
+</ul>
+</section>
+<section id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
+<p>Create a simulated E4CV diffractometer, define a silicon sample, add two
+orientation reflections, and compute the UB matrix.</p>
+<p>The orientation reflections use positive angles appropriate for a typical
+laboratory diffractometer with Cu Kα radiation (λ = 1.54 Å):</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>#</p></th>
+<th class="head"><p>h</p></th>
+<th class="head"><p>k</p></th>
+<th class="head"><p>l</p></th>
+<th class="head"><p>ω</p></th>
+<th class="head"><p>χ</p></th>
+<th class="head"><p>φ</p></th>
+<th class="head"><p>2θ</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>14.22°</p></td>
+<td><p>35.26°</p></td>
+<td><p>0°</p></td>
+<td><p>28.44°</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>2</p></td>
+<td><p>2</p></td>
+<td><p>0</p></td>
+<td><p>23.65°</p></td>
+<td><p>90.00°</p></td>
+<td><p>0°</p></td>
+<td><p>47.30°</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">bluesky</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">databroker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.callbacks.best_effort</span><span class="w"> </span><span class="kn">import</span> <span class="n">BestEffortCallback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">noisy_det</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">add_sample</span><span class="p">,</span>
+    <span class="n">calc_UB</span><span class="p">,</span>
+    <span class="n">set_diffractometer</span><span class="p">,</span>
+    <span class="n">setor</span><span class="p">,</span>
+    <span class="n">wh</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">RE</span> <span class="o">=</span> <span class="n">bluesky</span><span class="o">.</span><span class="n">RunEngine</span><span class="p">()</span>
+<span class="n">cat</span> <span class="o">=</span> <span class="n">databroker</span><span class="o">.</span><span class="n">temp</span><span class="p">()</span><span class="o">.</span><span class="n">v2</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">cat</span><span class="o">.</span><span class="n">v1</span><span class="o">.</span><span class="n">insert</span><span class="p">)</span>
+<span class="n">bec</span> <span class="o">=</span> <span class="n">BestEffortCallback</span><span class="p">()</span>
+<span class="n">RE</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="n">bec</span><span class="p">)</span>
+<span class="n">bec</span><span class="o">.</span><span class="n">disable_plots</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">)</span>
+<span class="n">set_diffractometer</span><span class="p">(</span><span class="n">fourc</span><span class="p">)</span>
+
+<span class="n">add_sample</span><span class="p">(</span><span class="s2">&quot;silicon&quot;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">SI_LATTICE_PARAMETER</span><span class="p">)</span>
+
+<span class="c1"># Two orientation reflections for silicon at wavelength 1.54 Å (Cu Kα)</span>
+<span class="n">r1</span> <span class="o">=</span> <span class="n">setor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">14.22</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mf">35.26</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">28.44</span><span class="p">,</span> <span class="n">wavelength</span><span class="o">=</span><span class="mf">1.54</span><span class="p">)</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">setor</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">23.65</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mf">90.00</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">47.30</span><span class="p">,</span> <span class="n">wavelength</span><span class="o">=</span><span class="mf">1.54</span><span class="p">)</span>
+<span class="n">calc_UB</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span>
+<span class="n">wh</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.54
+pseudos: h=0, k=0, l=0
+reals: omega=0, chi=0, phi=0, tth=0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="apply-realistic-motor-constraints">
+<h2>Apply realistic motor constraints<a class="headerlink" href="#apply-realistic-motor-constraints" title="Link to this heading">#</a></h2>
+<p>Restrict the real axes to physically accessible angles.  Without these
+constraints the solver may return solutions with negative <code class="docutils literal notranslate"><span class="pre">omega</span></code> or <code class="docutils literal notranslate"><span class="pre">tth</span></code>,
+which would place the detector below the floor on a real instrument.</p>
+<p>The choice of reference reflection <strong>hkl₂</strong> and the phi cut point together
+determine whether phi travels monotonically across the full ψ range.  Using
+<strong>hkl₂ = (1, -1, 0)</strong> with a phi cut point of -180° causes phi to decrease
+smoothly from 0° to -180° as ψ increases from 0° to 180° — no discontinuity.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;tth&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">180</span>
+<span class="c1"># Set phi cut point so phi decreases monotonically from 0° to -180°</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;0.0 &lt;= omega &lt;= 90.0 [cut=-180.0]&#39;, &#39;0.0 &lt;= chi &lt;= 180.0 [cut=-180.0]&#39;, &#39;-180.0 &lt;= phi &lt;= 0.0 [cut=-180.0]&#39;, &#39;0.0 &lt;= tth &lt;= 180.0 [cut=-180.0]&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="switch-to-psi-constant-mode">
+<h2>Switch to <code class="docutils literal notranslate"><span class="pre">psi_constant</span></code> mode<a class="headerlink" href="#switch-to-psi-constant-mode" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">psi_constant</span></code> mode keeps ψ fixed at a user-supplied value while
+<code class="docutils literal notranslate"><span class="pre">forward()</span></code> finds real-axis angles for any requested <em>(h, k, l)</em>.</p>
+<p>This mode requires four <em>extra</em> parameters:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Extra</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">h2</span></code>, <code class="docutils literal notranslate"><span class="pre">k2</span></code>, <code class="docutils literal notranslate"><span class="pre">l2</span></code></p></td>
+<td><p>Miller indices of the <strong>reference reflection</strong> that defines ψ = 0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi</span></code></p></td>
+<td><p>The azimuthal angle (degrees) to hold constant</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The reference reflection (<code class="docutils literal notranslate"><span class="pre">h2</span></code>, <code class="docutils literal notranslate"><span class="pre">k2</span></code>, <code class="docutils literal notranslate"><span class="pre">l2</span></code>) must <strong>not be parallel to</strong> the
+scan reflection (<code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code>) — their cross product must be non-zero, or
+ψ is undefined.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Available modes:&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">modes</span><span class="p">)</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;psi_constant&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Selected mode:&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Extra parameters:&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Available modes: [&#39;bissector&#39;, &#39;constant_omega&#39;, &#39;constant_chi&#39;, &#39;constant_phi&#39;, &#39;double_diffraction&#39;, &#39;psi_constant&#39;]
+Selected mode: psi_constant
+Extra parameters: [&#39;h2&#39;, &#39;k2&#39;, &#39;l2&#39;, &#39;psi&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Scan the (2, 2, 0) reflection.</span>
+<span class="c1"># Reference reflection hkl2 = (1, -1, 0) gives monotonic phi across the full psi range.</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Extras:&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Extras: {&#39;h2&#39;: 1, &#39;k2&#39;: -1, &#39;l2&#39;: 0, &#39;psi&#39;: 0}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="verify-single-point-forward-calculations">
+<h2>Verify single-point forward calculations<a class="headerlink" href="#verify-single-point-forward-calculations" title="Link to this heading">#</a></h2>
+<p>Before running a scan, check that <code class="docutils literal notranslate"><span class="pre">forward()</span></code> returns valid solutions at
+a few ψ values across the intended range.  This catches constraint or
+geometry problems before committing to a full scan.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">tth</span></code> remains constant throughout (|<strong>Q</strong>| is fixed), while
+<code class="docutils literal notranslate"><span class="pre">omega</span></code> and <code class="docutils literal notranslate"><span class="pre">chi</span></code> vary as the diffractometer adjusts to maintain the
+Bragg condition at each azimuthal angle.  Only <code class="docutils literal notranslate"><span class="pre">phi</span></code> travels monotonically
+from 0° to -180° without discontinuity, confirming that the chosen
+reference reflection and phi cut point are correct.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;psi&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;omega&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;chi&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;phi&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;tth&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">psi</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+    <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="n">psi</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">psi</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">omega</span><span class="si">:</span><span class="s2">10.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">chi</span><span class="si">:</span><span class="s2">10.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">phi</span><span class="si">:</span><span class="s2">10.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">tth</span><span class="si">:</span><span class="s2">10.4f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">psi</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">  *** no solution: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   psi       omega         chi         phi         tth
+-------------------------------------------------------
+   0.0     23.6413     70.5244      0.0000     47.2826
+  30.0     33.6687     73.2176    -31.4828     47.2826
+  60.0     40.6691     80.4038    -61.4398     47.2826
+  90.0     43.1169     90.0000    -90.0000     47.2826
+ 120.0     40.6691     99.5962   -118.5602     47.2826
+ 150.0     33.6687    106.7824   -148.5172     47.2826
+ 180.0     23.6413    109.4756   -180.0000     47.2826
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="run-the-azimuthal-scan">
+<h2>Run the azimuthal scan<a class="headerlink" href="#run-the-azimuthal-scan" title="Link to this heading">#</a></h2>
+<p>Use <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.scan_extra" title="hklpy2.diffract.DiffractometerBase.scan_extra"><code class="xref py py-meth docutils literal notranslate"><span class="pre">scan_extra()</span></code></a> to sweep ψ
+over a range while holding <em>(h, k, l)</em> fixed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">scan_extra</span></code> scans an <em>extra</em> parameter of the solver engine, not a pseudo
+axis.  The <code class="docutils literal notranslate"><span class="pre">pseudos</span></code> keyword fixes <em>(h, k, l)</em> throughout the scan.
+The <code class="docutils literal notranslate"><span class="pre">extras</span></code> keyword sets <code class="docutils literal notranslate"><span class="pre">h2</span></code>, <code class="docutils literal notranslate"><span class="pre">k2</span></code>, <code class="docutils literal notranslate"><span class="pre">l2</span></code> (the reference reflection);
+<code class="docutils literal notranslate"><span class="pre">psi</span></code> is supplied as the scanned axis and overrides any value in <code class="docutils literal notranslate"><span class="pre">extras</span></code>.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">uid</span><span class="p">,)</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span>
+    <span class="n">fourc</span><span class="o">.</span><span class="n">scan_extra</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">noisy_det</span><span class="p">,</span> <span class="n">fourc</span><span class="p">],</span>
+        <span class="s2">&quot;psi&quot;</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mi">180</span><span class="p">,</span>  <span class="c1"># scan psi from 0° to 180°</span>
+        <span class="n">num</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+        <span class="n">pseudos</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>  <span class="c1"># hold (2, 2, 0) fixed</span>
+        <span class="n">extras</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>  <span class="c1"># reference reflection (1, -1, 0)</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Run uid:&quot;</span><span class="p">,</span> <span class="n">uid</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 1     Time: 2026-04-15 00:22:52
+Persistent Unique Scan ID: &#39;b57b4665-2135-47e6-b720-8d25e6a93d95&#39;
+New stream: &#39;primary&#39;
++-----------+------------+------------+-----------------------+-------------------+------------+------------+------------+-------------+------------+------------+------------+------------------+
+|   seq_num |       time |  noisy_det | fourc_beam_wavelength | fourc_beam_energy |    fourc_h |    fourc_k |    fourc_l | fourc_omega |  fourc_chi |  fourc_phi |  fourc_tth | fourc_extras_psi |
++-----------+------------+------------+-----------------------+-------------------+------------+------------+------------+-------------+------------+------------+------------+------------------+
+|         1 | 00:22:52.4 |      0.986 |                 1.540 |             8.051 |      2.000 |      2.000 |     -0.000 |      23.641 |     70.524 |     -0.000 |     47.283 |            0.000 |
+|         2 | 00:22:52.5 |      1.094 |                 1.540 |             8.051 |      2.000 |      2.000 |      0.000 |      33.669 |     73.218 |    -31.483 |     47.283 |           30.000 |
+|         3 | 00:22:52.5 |      1.088 |                 1.540 |             8.051 |      2.000 |      2.000 |      0.000 |      40.669 |     80.404 |    -61.440 |     47.283 |           60.000 |
+|         4 | 00:22:52.5 |      1.057 |                 1.540 |             8.051 |      2.000 |      2.000 |      0.000 |      43.117 |     90.000 |    -90.000 |     47.283 |           90.000 |
+|         5 | 00:22:52.5 |      0.934 |                 1.540 |             8.051 |      2.000 |      2.000 |      0.000 |      40.669 |     99.596 |   -118.560 |     47.283 |          120.000 |
+|         6 | 00:22:52.5 |      0.908 |                 1.540 |             8.051 |      2.000 |      2.000 |      0.000 |      33.669 |    106.782 |   -148.517 |     47.283 |          150.000 |
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|         7 | 00:22:52.5 |      0.974 |                 1.540 |             8.051 |      2.000 |      2.000 |      0.000 |      23.641 |    109.476 |   -180.000 |     47.283 |          180.000 |
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+-----------+------------+------------+-----------------------+-------------------+------------+------------+------------+-------------+------------+------------+------------+------------------+
+Plan  [&#39;b57b4665&#39;] (scan num: 1)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Run uid: b57b4665-2135-47e6-b720-8d25e6a93d95
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="alternative-use-scan-psi-convenience-plan">
+<h2>Alternative: use <code class="docutils literal notranslate"><span class="pre">scan_psi()</span></code> convenience plan<a class="headerlink" href="#alternative-use-scan-psi-convenience-plan" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="../autoapi/hklpy2/plans/index.html#hklpy2.plans.scan_psi" title="hklpy2.plans.scan_psi"><code class="xref py py-func docutils literal notranslate"><span class="pre">scan_psi()</span></code></a> convenience plan wraps the
+mode-selection and <code class="docutils literal notranslate"><span class="pre">scan_extra</span></code> ceremony into a single call.
+It auto-detects the psi-capable mode and the psi extra axis name
+from the diffractometer’s solver, and restores the prior mode on exit.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">mode=</span></code> and <code class="docutils literal notranslate"><span class="pre">psi_axis=</span></code> keyword arguments are available as
+escape hatches when auto-detection is ambiguous (e.g. on E6C where
+both <code class="docutils literal notranslate"><span class="pre">&quot;psi_constant&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;psi_constant_vertical&quot;</span></code> are available).</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">scan_psi</span>
+
+<span class="c1"># Restore bissector mode first to show scan_psi switches mode automatically.</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mode before scan_psi:&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">uid2</span><span class="p">,)</span> <span class="o">=</span> <span class="n">RE</span><span class="p">(</span>
+    <span class="n">scan_psi</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">noisy_det</span><span class="p">,</span> <span class="n">fourc</span><span class="p">],</span>
+        <span class="n">fourc</span><span class="p">,</span>
+        <span class="n">h</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">hkl2</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">psi_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">psi_stop</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span>
+        <span class="n">num</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Run uid:&quot;</span><span class="p">,</span> <span class="n">uid2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mode after scan_psi:&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>  <span class="c1"># restored to bissector</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="inspect-the-scan-results">
+<h2>Inspect the scan results<a class="headerlink" href="#inspect-the-scan-results" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="o">=</span> <span class="n">cat</span><span class="p">[</span><span class="n">uid</span><span class="p">]</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">run</span><span class="o">.</span><span class="n">primary</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="n">ds</span><span class="p">[</span>
+        <span class="p">[</span>
+            <span class="s2">&quot;fourc_extras_psi&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fourc_phi&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fourc_chi&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fourc_omega&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fourc_h&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fourc_k&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fourc_l&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/beams/JEMIAN/.conda/envs/hklpy2/lib/python3.13/site-packages/databroker/intake_xarray_core/base.py:23: FutureWarning: The return type of `Dataset.dims` will be changed to return a set of dimension names in future, in order to be more consistent with `DataArray.dims`. To access a mapping from dimension names to lengths, please use `Dataset.sizes`.
+  &#39;dims&#39;: dict(self._ds.dims),
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;xarray.Dataset&gt; Size: 448B
+Dimensions:           (time: 7)
+Coordinates:
+  * time              (time) float64 56B 1.776e+09 1.776e+09 ... 1.776e+09
+Data variables:
+    fourc_extras_psi  (time) float64 56B 0.0 30.0 60.0 90.0 120.0 150.0 180.0
+    fourc_phi         (time) float64 56B -1.112e-06 -31.48 ... -148.5 -180.0
+    fourc_chi         (time) float64 56B 70.52 73.22 80.4 90.0 99.6 106.8 109.5
+    fourc_omega       (time) float64 56B 23.64 33.67 40.67 ... 40.67 33.67 23.64
+    fourc_h           (time) float64 56B 2.0 2.0 2.0 2.0 2.0 2.0 2.0
+    fourc_k           (time) float64 56B 2.0 2.0 2.0 2.0 2.0 2.0 2.0
+    fourc_l           (time) float64 56B -2.308e-09 1.876e-09 ... 3e-12
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="plot-motor-angles-vs">
+<h2>Plot motor angles vs ψ<a class="headerlink" href="#plot-motor-angles-vs" title="Link to this heading">#</a></h2>
+<p>Plot the real-axis positions recorded during the scan as a function of ψ.
+Only <code class="docutils literal notranslate"><span class="pre">tth</span></code> is constant throughout (|<strong>Q</strong>| is fixed); <code class="docutils literal notranslate"><span class="pre">omega</span></code> and <code class="docutils literal notranslate"><span class="pre">chi</span></code>
+vary as the diffractometer maintains the Bragg condition at each azimuthal
+angle, and <code class="docutils literal notranslate"><span class="pre">phi</span></code> carries the primary azimuthal rotation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">psi</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="s2">&quot;fourc_extras_psi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">motor</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;fourc_omega&quot;</span><span class="p">,</span> <span class="s2">&quot;fourc_chi&quot;</span><span class="p">,</span> <span class="s2">&quot;fourc_phi&quot;</span><span class="p">,</span> <span class="s2">&quot;fourc_tth&quot;</span><span class="p">):</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">motor</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">&quot;fourc_&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">ds</span><span class="p">[</span><span class="n">motor</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;ψ (degrees)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Motor angle (degrees)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+    <span class="s2">&quot;E4CV real-axis positions vs azimuthal angle ψ</span><span class="se">\n</span><span class="s2">Scan of (2,2,0), hkl₂=(1,−1,0)&quot;</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/9c5efbe843f27be646208149fe2e450051132503120216adba43e32c1ced767e.png" src="../_images/9c5efbe843f27be646208149fe2e450051132503120216adba43e32c1ced767e.png" />
+</div>
+</div>
+<p>The table confirms:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fourc_extras_psi</span></code> steps evenly from 0° to 180°.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fourc_phi</span></code> decreases monotonically from 0° to -180° — no discontinuity.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fourc_tth</span></code> remains constant — |<strong>Q</strong>| is fixed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fourc_omega</span></code> and <code class="docutils literal notranslate"><span class="pre">fourc_chi</span></code> vary as the diffractometer maintains the Bragg condition.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fourc_h</span></code>, <code class="docutils literal notranslate"><span class="pre">fourc_k</span></code>, <code class="docutils literal notranslate"><span class="pre">fourc_l</span></code> remain at (2, 2, 0) throughout.</p></li>
+</ul>
+</section>
+<section id="choosing-a-reference-reflection-to-avoid-discontinuities">
+<h2>Choosing a reference reflection to avoid discontinuities<a class="headerlink" href="#choosing-a-reference-reflection-to-avoid-discontinuities" title="Link to this heading">#</a></h2>
+<p>The choice of reference reflection <strong>hkl₂</strong> determines which real axis moves
+during the scan and how it behaves.  A poor choice can produce a 360°
+wrap-around discontinuity mid-scan (e.g. phi jumping from -180° to +180°)
+that causes the motor to slew the long way around.</p>
+<p>To check for discontinuities before scanning, run the verification loop above
+over the full ψ range and inspect the phi differences between adjacent steps.
+If any step exceeds ~180°, change <strong>hkl₂</strong> and/or adjust the phi cut point
+and limits until the travel is monotonic.</p>
+<p>General guidance:</p>
+<ul class="simple">
+<li><p>Choose <strong>hkl₂</strong> perpendicular to both <strong>hkl</strong> and the rotation axis you
+want to move primarily.</p></li>
+<li><p>Set the phi cut point to the starting phi value (or slightly below it) so
+the full range falls within <code class="docutils literal notranslate"><span class="pre">[cut,</span> <span class="pre">cut+360)</span></code>.</p></li>
+<li><p>Verify with <code class="docutils literal notranslate"><span class="pre">forward()</span></code> before running the scan.</p></li>
+</ul>
+</section>
+<section id="common-pitfalls">
+<h2>Common pitfalls<a class="headerlink" href="#common-pitfalls" title="Link to this heading">#</a></h2>
+<p><strong>Parallel <code class="docutils literal notranslate"><span class="pre">hkl</span></code> and <code class="docutils literal notranslate"><span class="pre">hkl2</span></code></strong>
+: If the scan reflection and the reference reflection are parallel
+(e.g. <code class="docutils literal notranslate"><span class="pre">(1,0,0)</span></code> and <code class="docutils literal notranslate"><span class="pre">(2,0,0)</span></code>), their cross product is zero and ψ is
+undefined.  The solver returns no solutions.  Choose a reference
+reflection that is not parallel to the scan reflection.</p>
+<p><strong>Phi discontinuity mid-scan</strong>
+: If phi jumps by ~360° at some ψ value, the motor will slew the long way
+around.  Fix this by choosing a different <strong>hkl₂</strong> and/or adjusting the
+phi cut point and limits.  See the section above.</p>
+<p><strong>Constraint limits blocking solutions</strong>
+: If <code class="docutils literal notranslate"><span class="pre">forward()</span></code> fails at some ψ values, a real axis may be hitting its
+limit at those azimuthal angles.  Widen the limits or choose a different
+starting orientation.  See <a class="reference internal" href="how_constraints.html#how-constraints"><span class="std std-ref">How to Use Constraints</span></a>.</p>
+<p><strong>Unrealistic motor angles without constraints</strong>
+: Without constraints, the solver may return solutions with negative <code class="docutils literal notranslate"><span class="pre">omega</span></code>
+or <code class="docutils literal notranslate"><span class="pre">tth</span></code>.  Always set realistic axis limits before scanning.</p>
+<p><strong>Solver-specific feature</strong>
+: <code class="docutils literal notranslate"><span class="pre">psi_constant</span></code> mode is provided by the <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code> solver.  If your
+diffractometer uses a different solver (e.g. <code class="docutils literal notranslate"><span class="pre">th_tth</span></code>), this mode is not
+available.  Check <code class="docutils literal notranslate"><span class="pre">fourc.core.modes</span></code> to see what is supported.</p>
+<p><strong>Engine is immutable</strong>
+: The <code class="docutils literal notranslate"><span class="pre">hkl</span></code> engine (used here) cannot be changed after the diffractometer
+is created.  To <em>read</em> the current ψ from real motor positions (the
+inverse case), create a second diffractometer instance with
+<code class="docutils literal notranslate"><span class="pre">solver_kwargs=dict(engine=&quot;psi&quot;)</span></code>.  See
+<a class="reference internal" href="../examples/hkl_soleil-e6c-psi.html"><span class="doc">hkl_soleil E6C psi axis</span></a> for a complete example.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="how_presets.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">How to Use Presets</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="how_release.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">How to Make a Release</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#apply-realistic-motor-constraints">Apply realistic motor constraints</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#switch-to-psi-constant-mode">Switch to <code class="docutils literal notranslate"><span class="pre">psi_constant</span></code> mode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-single-point-forward-calculations">Verify single-point forward calculations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-azimuthal-scan">Run the azimuthal scan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternative-use-scan-psi-convenience-plan">Alternative: use <code class="docutils literal notranslate"><span class="pre">scan_psi()</span></code> convenience plan</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inspect-the-scan-results">Inspect the scan results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#plot-motor-angles-vs">Plot motor angles vs ψ</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-a-reference-reflection-to-avoid-discontinuities">Choosing a reference reflection to avoid discontinuities</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-pitfalls">Common pitfalls</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/bluesky/hklpy2/edit/main/docs/guides/how_psi_scan.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/guides/how_psi_scan.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2026, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
