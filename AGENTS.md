@@ -233,6 +233,43 @@ The `Makefile` `pre` target also exports this variable automatically.
   ``Add ``scan_psi()```  sorts as ``"Add scan_psi()"`` (after ``"Add s"``),
   placing it after entries that begin with ``"Add h"``.
 
+## Versioning Policy
+
+The project follows `SemVer 2.0.0 <https://semver.org/>`_, with the
+relaxed pre-1.0 convention sanctioned by SemVer §4.
+
+- **Pre-1.0.0 (current phase):** SemVer §4 explicitly permits any
+  version progression in the ``0.y.z`` series ("Anything MAY change at
+  any time").  This project uses **PATCH bumps** (``0.6.x``) for
+  routine releases that batch backward-compatible additions, fixes,
+  and small enhancements.  MINOR bumps (``0.x.0 → 0.(x+1).0``) are
+  reserved for releases that contain a notable behavior change, a
+  larger feature set, or a deliberate pre-release milestone.
+
+- **At 1.0.0 and beyond:** the project commits to **strict SemVer**:
+
+  - **MAJOR** — incompatible (breaking) public-API changes
+  - **MINOR** — backward-compatible *additions* to the public API
+  - **PATCH** — backward-compatible bug fixes only
+
+  Once 1.0.0 ships, an additive release (e.g. a new public function or
+  a new optional parameter) **must** bump MINOR; a release that only
+  fixes bugs **must** bump PATCH.
+
+- **Choosing the version string for new decorators and release notes:**
+  use the upcoming release tag — i.e. the topmost unreleased section
+  in ``RELEASE_NOTES.rst``.  Pre-1.0, that is whatever the next
+  ``0.y.z`` tag will be (typically a PATCH bump from the last release).
+  Post-1.0, derive it from the highest-impact change in the unreleased
+  set per the strict-SemVer rules above.
+
+- **Public API surface:** for the purposes of these rules, the public
+  API is anything exported from the top-level ``hklpy2`` namespace, the
+  ``hklpy2.user`` module, the ``hklpy2.utils`` module's ``__all__``,
+  ``hklpy2.diffract`` (notably ``creator``, ``DiffractometerBase``),
+  ``hklpy2.run_utils``, the ``hklpy2.backends.base.SolverBase``
+  contract, and anything decorated with ``@versionadded``.
+
 ## Version Decorators
 
 The project uses Sphinx-style version decorators from the ``deprecated``
