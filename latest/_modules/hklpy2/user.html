@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=37711cf1"></script>
+    <script src="../../_static/documentation_options.js?v=79de126e"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -451,6 +451,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Movable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Readable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionchanged</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyRestTable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span>
@@ -719,11 +720,31 @@
 
 
 
+<span class="nd">@versionchanged</span><span class="p">(</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.1&quot;</span><span class="p">,</span>
+    <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+        <span class="s2">&quot;Accept a ``diffractometer`` argument; underlying implementation&quot;</span>
+        <span class="s2">&quot; moved to ``hklpy2.utils.solver_summary``.&quot;</span>
+    <span class="p">),</span>
+<span class="p">)</span>
 <div class="viewcode-block" id="solver_summary">
 <a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.solver_summary">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">solver_summary</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">solver_summary</span><span class="p">(</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DiffractometerBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Table of diffractometer solver&#39;s modes, axes, ...</span>
+
+<span class="sd">    PARAMETERS</span>
+
+<span class="sd">    diffractometer : DiffractometerBase, optional</span>
+<span class="sd">        The diffractometer to summarize.  When ``None`` (default), the</span>
+<span class="sd">        currently-selected diffractometer (set via</span>
+<span class="sd">        :func:`~hklpy2.user.set_diffractometer`) is used.</span>
+<span class="sd">    write : bool, optional</span>
+<span class="sd">        When ``True`` (default), print the table and return ``None``.</span>
+<span class="sd">        When ``False``, return the :class:`~pyRestTable.Table` object.</span>
 
 <span class="sd">    EXAMPLE:</span>
 
@@ -750,15 +771,20 @@
 <span class="sd">        emergence emergence          emergence, azimuth omega, chi, phi, tth                      x, y, z</span>
 <span class="sd">        ========= ================== ================== ==================== ==================== ===============</span>
 
+<span class="sd">    Pass any diffractometer directly (no need to call ``set_diffractometer``)::</span>
+
+<span class="sd">        &gt;&gt;&gt; e4cv = hklpy2.creator(name=&quot;e4cv&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; solver_summary(e4cv)</span>
+
 <span class="sd">    .. seealso:: :ref:`geometries.summary_tables`,</span>
-<span class="sd">        :meth:`hklpy2.backends.base.SolverBase.summary()`</span>
+<span class="sd">        :meth:`hklpy2.backends.base.SolverBase.summary()`,</span>
+<span class="sd">        :func:`hklpy2.utils.solver_summary`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">table</span> <span class="o">=</span> <span class="n">get_diffractometer</span><span class="p">()</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_summary</span>
-    <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">table</span>
-    <span class="k">return</span> <span class="kc">None</span></div>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">solver_summary</span> <span class="k">as</span> <span class="n">_impl</span>
+
+    <span class="k">if</span> <span class="n">diffractometer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">diffractometer</span> <span class="o">=</span> <span class="n">get_diffractometer</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">_impl</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="n">write</span><span class="p">)</span></div>
 
 
 
