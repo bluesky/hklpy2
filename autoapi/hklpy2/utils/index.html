@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=37711cf1"></script>
+    <script src="../../../_static/documentation_options.js?v=79de126e"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -836,6 +836,37 @@ a solution from a list of possible solutions.  Assign to diffractometer’s
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.utils.solver_summary">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.utils.</span></span><span class="sig-name descname"><span class="pre">solver_summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diffractometer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase" title="hklpy2.diffract.DiffractometerBase"><span class="pre">DiffractometerBase</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">write</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/utils.html#solver_summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.utils.solver_summary" title="Link to this definition">#</a></dt>
+<dd><div class="import-path docutils container">
+<p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.utils.solver_summary</span></code></p>
+</div>
+<p>Table of the diffractometer solver’s modes, axes, …</p>
+<p>PARAMETERS</p>
+<dl class="simple">
+<dt>diffractometer<span class="classifier">DiffractometerBase, optional</span></dt><dd><p>The diffractometer to summarize.  When <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), the
+currently-selected diffractometer (set via
+<a class="reference internal" href="../user/index.html#hklpy2.user.set_diffractometer" title="hklpy2.user.set_diffractometer"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_diffractometer()</span></code></a>) is used.</p>
+</dd>
+<dt>write<span class="classifier">bool, optional</span></dt><dd><p>When <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), print the table and return <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+When <code class="docutils literal notranslate"><span class="pre">False</span></code>, return the <code class="xref py py-class docutils literal notranslate"><span class="pre">Table</span></code> object.</p>
+</dd>
+</dl>
+<p>RETURNS</p>
+<p>pyRestTable.Table or None</p>
+<p>EXAMPLE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">diffract</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hklpy2</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">solver_summary</span><span class="p">(</span><span class="n">diffract</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>SEE ALSO</p>
+<blockquote>
+<div><p><a class="reference internal" href="../user/index.html#hklpy2.user.solver_summary" title="hklpy2.user.solver_summary"><code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.user.solver_summary()</span></code></a></p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="hklpy2.utils.unique_name">
 <span class="sig-prename descclassname"><span class="pre">hklpy2.utils.</span></span><span class="sig-name descname"><span class="pre">unique_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/utils.html#unique_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.utils.unique_name" title="Link to this definition">#</a></dt>
 <dd><div class="import-path docutils container">
@@ -951,6 +982,7 @@ considered parallel.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.pick_closest_solution"><code class="docutils literal notranslate"><span class="pre">pick_closest_solution()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.pick_first_solution"><code class="docutils literal notranslate"><span class="pre">pick_first_solution()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.roundoff"><code class="docutils literal notranslate"><span class="pre">roundoff()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.solver_summary"><code class="docutils literal notranslate"><span class="pre">solver_summary()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.unique_name"><code class="docutils literal notranslate"><span class="pre">unique_name()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.validate_and_canonical_unit"><code class="docutils literal notranslate"><span class="pre">validate_and_canonical_unit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.utils.validate_not_parallel"><code class="docutils literal notranslate"><span class="pre">validate_not_parallel()</span></code></a></li>

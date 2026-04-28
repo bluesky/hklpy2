@@ -333,6 +333,40 @@ Module Contents
    Round a number to specified precision.
 
 
+.. py:function:: solver_summary(diffractometer: DiffractometerBase | None = None, write: bool = True)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.utils.solver_summary``
+
+
+   Table of the diffractometer solver's modes, axes, ...
+
+   PARAMETERS
+
+   diffractometer : DiffractometerBase, optional
+       The diffractometer to summarize.  When ``None`` (default), the
+       currently-selected diffractometer (set via
+       :func:`~hklpy2.user.set_diffractometer`) is used.
+   write : bool, optional
+       When ``True`` (default), print the table and return ``None``.
+       When ``False``, return the :class:`~pyRestTable.Table` object.
+
+   RETURNS
+
+   pyRestTable.Table or None
+
+   EXAMPLE::
+
+       >>> import hklpy2
+       >>> diffract = hklpy2.creator(name="e4cv")
+       >>> hklpy2.utils.solver_summary(diffract)
+
+   SEE ALSO
+
+       :func:`hklpy2.user.solver_summary`
+
+
 .. py:function:: unique_name(prefix: str = '', length: int = 7) -> str
 
    .. container:: import-path
