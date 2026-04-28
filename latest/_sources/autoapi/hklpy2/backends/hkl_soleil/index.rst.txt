@@ -202,6 +202,26 @@ Module Contents
 
 
 
+   .. py:method:: default_mode(geometry: str, *, engine: str = 'hkl') -> str
+      :classmethod:
+
+
+      Return the first mode of *geometry*'s *engine*.
+
+      Queries |libhkl| directly via :func:`libhkl.factories` rather than the
+      :attr:`_geometry_registry` (which ``HklSolver`` does not populate).
+
+      :param geometry: Geometry name as known to |libhkl| (e.g. ``"E4CV"``).
+      :type geometry: str
+      :param engine: Engine name (default: ``"hkl"``).  When the named engine is not
+                     available for *geometry*, falls back to the first available
+                     engine.
+      :type engine: str, optional
+
+      :raises SolverError: If *geometry* is not known to |libhkl| or has no modes defined.
+
+
+
    .. py:property:: engine
       :type: libhkl
 

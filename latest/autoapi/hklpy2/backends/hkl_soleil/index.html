@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../../_static/documentation_options.js?v=d80f9208"></script>
+    <script src="../../../../_static/documentation_options.js?v=fe1d5400"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -729,6 +729,27 @@ separated.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.backends.hkl_soleil.HklSolver.default_mode">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">default_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hkl'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/hkl_soleil.html#HklSolver.default_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.hkl_soleil.HklSolver.default_mode" title="Link to this definition">#</a></dt>
+<dd><p>Return the first mode of <em>geometry</em>’s <em>engine</em>.</p>
+<p>Queries <strong>Hkl/Soleil</strong> directly via <code class="xref py py-func docutils literal notranslate"><span class="pre">libhkl.factories()</span></code> rather than the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">_geometry_registry</span></code> (which <code class="docutils literal notranslate"><span class="pre">HklSolver</span></code> does not populate).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Geometry name as known to <strong>Hkl/Soleil</strong> (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;E4CV&quot;</span></code>).</p></li>
+<li><p><strong>engine</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>optional</em>) – Engine name (default: <code class="docutils literal notranslate"><span class="pre">&quot;hkl&quot;</span></code>).  When the named engine is not
+available for <em>geometry</em>, falls back to the first available
+engine.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="../../exceptions/index.html#hklpy2.exceptions.SolverError" title="hklpy2.exceptions.SolverError"><strong>SolverError</strong></a> – If <em>geometry</em> is not known to <strong>Hkl/Soleil</strong> or has no modes defined.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="hklpy2.backends.hkl_soleil.HklSolver.engine">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">engine</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#hklpy2.backends.hkl_soleil.libhkl" title="hklpy2.backends.hkl_soleil.libhkl"><span class="pre">libhkl</span></a></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/hkl_soleil.html#HklSolver.engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.hkl_soleil.HklSolver.engine" title="Link to this definition">#</a></dt>
@@ -1059,6 +1080,7 @@ with <code class="docutils literal notranslate"><span class="pre">total=False</s
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.hkl_soleil.HklSolver.axes_r"><code class="docutils literal notranslate"><span class="pre">HklSolver.axes_r</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.hkl_soleil.HklSolver.axes_w"><code class="docutils literal notranslate"><span class="pre">HklSolver.axes_w</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.hkl_soleil.HklSolver.calculate_UB"><code class="docutils literal notranslate"><span class="pre">HklSolver.calculate_UB()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.hkl_soleil.HklSolver.default_mode"><code class="docutils literal notranslate"><span class="pre">HklSolver.default_mode()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.hkl_soleil.HklSolver.engine"><code class="docutils literal notranslate"><span class="pre">HklSolver.engine</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.hkl_soleil.HklSolver.engine_name"><code class="docutils literal notranslate"><span class="pre">HklSolver.engine_name</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.backends.hkl_soleil.HklSolver.engines"><code class="docutils literal notranslate"><span class="pre">HklSolver.engines</span></code></a></li>

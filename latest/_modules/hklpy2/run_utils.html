@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=d80f9208"></script>
+    <script src="../../_static/documentation_options.js?v=fe1d5400"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -838,8 +838,14 @@
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">MISSING_HEADER_KEY_MSG</span><span class="p">)</span>
 
     <span class="n">solver_cfg</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solver&quot;</span><span class="p">,</span> <span class="p">{})</span>
-    <span class="n">solver_name</span> <span class="o">=</span> <span class="n">solver_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;hkl_soleil&quot;</span><span class="p">)</span>
-    <span class="n">geometry</span> <span class="o">=</span> <span class="n">solver_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;E4CV&quot;</span><span class="p">)</span>
+    <span class="c1"># Default solver name remains &quot;hkl_soleil&quot; because the config</span>
+    <span class="c1"># does not include a way to discover a system-wide default solver</span>
+    <span class="c1"># (see #372 discussion); the geometry default now flows from the</span>
+    <span class="c1"># solver&#39;s own default_geometry() classmethod.</span>
+    <span class="n">solver_name</span> <span class="o">=</span> <span class="n">solver_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;hkl_soleil&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.solver_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_solver</span>
+
+    <span class="n">geometry</span> <span class="o">=</span> <span class="n">solver_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">get_solver</span><span class="p">(</span><span class="n">solver_name</span><span class="p">)</span><span class="o">.</span><span class="n">default_geometry</span><span class="p">()</span>
 
     <span class="n">solver_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">engine</span> <span class="o">=</span> <span class="n">solver_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;engine&quot;</span><span class="p">)</span>
