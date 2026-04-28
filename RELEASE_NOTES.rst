@@ -45,6 +45,12 @@ Enhancements
   remove hardcoded ``"E4CV"`` fallback in ``simulator_from_config()``.
   (:issue:`372`)
 
+Fixes
+-----
+
+* Add ``benchmark`` to ``hklpy2.utils.__all__`` so its API page renders.
+  (:issue:`375`)
+
 0.6.0
 #####
 

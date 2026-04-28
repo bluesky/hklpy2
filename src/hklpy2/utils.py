@@ -1,7 +1,7 @@
 """
 General-purpose utilities for |hklpy2|.
 
-.. rubric: Functions
+.. rubric:: Functions
 .. autosummary::
 
     ~axes_to_dict
@@ -21,7 +21,7 @@ General-purpose utilities for |hklpy2|.
     ~validate_and_canonical_unit
     ~validate_not_parallel
 
-.. rubric: Symbols
+.. rubric:: Symbols
 .. autosummary::
 
     ~DEFAULT_DIGITS
@@ -85,6 +85,7 @@ __all__ = [
     "UREG",
     # Functions
     "axes_to_dict",
+    "benchmark",
     "check_value_in_list",
     "compare_float_dicts",
     "convert_units",
