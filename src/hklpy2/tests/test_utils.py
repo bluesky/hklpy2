@@ -42,6 +42,7 @@ from ..utils import load_yaml_file
 from ..utils import pick_closest_solution
 from ..utils import pick_first_solution
 from ..utils import roundoff
+from ..utils import solver_summary
 from ..run_utils import ConfigurationRunWrapper
 from ..run_utils import simulator_from_config
 from ..run_utils import get_run_orientation
@@ -1289,3 +1290,74 @@ def test_module_all_covers_public_defs(parms, context):
         assert not missing, (
             f"{parms['module_name']}.__all__ is missing public defs: {missing!r}"
         )
+
+
+# ---------------------------------------------------------------------------
+# Issue #370: solver_summary() accepts a diffractometer argument.
+# ---------------------------------------------------------------------------
+
+from pyRestTable import Table  # noqa: E402
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(diffractometer=sim4c, write=True),
+            does_not_raise(),
+            id="utils.solver_summary(sim4c, write=True) prints, returns None",
+        ),
+        pytest.param(
+            dict(diffractometer=sim4c, write=False),
+            does_not_raise(),
+            id="utils.solver_summary(sim4c, write=False) returns Table",
+        ),
+        pytest.param(
+            dict(diffractometer=sim6c, write=False),
+            does_not_raise(),
+            id="utils.solver_summary(sim6c, write=False) returns Table",
+        ),
+        pytest.param(
+            dict(diffractometer="not-a-diffractometer", write=False),
+            pytest.raises(AttributeError),
+            id="non-diffractometer object raises AttributeError",
+        ),
+    ],
+)
+def test_solver_summary_with_diffractometer(parms, context, capsys):
+    with context:
+        result = solver_summary(**parms)
+        out, err = capsys.readouterr()
+        if parms["write"]:
+            assert result is None
+            assert len(out) > 0
+            assert err == ""
+        else:
+            assert isinstance(result, Table)
+            assert out == ""
+            assert err == ""
+            text = str(result)
+            # E4CV / E6C both have a 'bissector' mode in the hkl engine.
+            assert "bissector" in text
+
+
+def test_solver_summary_no_argument_uses_selected(capsys):
+    """utils.solver_summary() with no argument falls back to the selected diffractometer."""
+    from ..user import set_diffractometer
+
+    set_diffractometer(sim4c)
+    try:
+        result = solver_summary(write=False)
+        assert isinstance(result, Table)
+        assert "bissector" in str(result)
+    finally:
+        set_diffractometer(None)
+
+
+def test_solver_summary_no_argument_no_selection_raises():
+    """utils.solver_summary() with no argument and no selected diffractometer raises."""
+    from ..user import set_diffractometer
+
+    set_diffractometer(None)
+    with pytest.raises(ValueError, match=re.escape("No diffractometer selected")):
+        solver_summary(write=False)

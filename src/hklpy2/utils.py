@@ -98,6 +98,7 @@ __all__ = [
     "pick_closest_solution",
     "pick_first_solution",
     "roundoff",
+    "solver_summary",
     "unique_name",
     "validate_and_canonical_unit",
     "validate_not_parallel",
@@ -589,3 +590,57 @@ def benchmark(
         f"\n  target: {TARGET:,} ops/sec (+/-{tolerance:.0%})"
     )
     return None
+
+
+@versionadded(
+    version="0.6.1",
+    reason="Solver summary helper that accepts any diffractometer instance.",
+)
+def solver_summary(
+    diffractometer: "DiffractometerBase | None" = None,
+    write: bool = True,
+):
+    """
+    Table of the diffractometer solver's modes, axes, ...
+
+    PARAMETERS
+
+    diffractometer : DiffractometerBase, optional
+        The diffractometer to summarize.  When ``None`` (default), the
+        currently-selected diffractometer (set via
+        :func:`~hklpy2.user.set_diffractometer`) is used.
+    write : bool, optional
+        When ``True`` (default), print the table and return ``None``.
+        When ``False``, return the :class:`~pyRestTable.Table` object.
+
+    RETURNS
+
+    pyRestTable.Table or None
+
+    EXAMPLE::
+
+        >>> import hklpy2
+        >>> diffract = hklpy2.creator(name="e4cv")
+        >>> hklpy2.utils.solver_summary(diffract)
+
+    SEE ALSO
+
+        :func:`hklpy2.user.solver_summary`
+    """
+    if diffractometer is None:
+        # Lazy import to avoid circularity (user imports from utils).
+        from .user import get_diffractometer
+
+        diffractometer = get_diffractometer()
+        if diffractometer is None:
+            raise ValueError(
+                "No diffractometer selected and none provided."
+                " Pass a diffractometer instance, or call"
+                " 'set_diffractometer(diffr)' first."
+            )
+
+    table = diffractometer.core.solver_summary
+    if write:
+        print(table)
+        return None
+    return table

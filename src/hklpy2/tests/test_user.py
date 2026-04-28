@@ -524,6 +524,29 @@ def test_solver_summary(fourc, capsys):
     assert "h2, k2, l2, psi" in summary
 
 
+def test_solver_summary_accepts_diffractometer_arg(fourc, capsys):
+    """Issue #370: solver_summary(diffractometer) bypasses the selection."""
+    # Clear any selection to prove the argument is being used.
+    set_diffractometer(None)
+
+    # Pass the diffractometer directly, no set_diffractometer() call.
+    summary = solver_summary(fourc, write=False)
+    assert isinstance(summary, Table)
+    out, err = capsys.readouterr()
+    assert out == ""
+    assert err == ""
+    text = str(summary)
+    assert "bissector" in text
+    assert "h2, k2, l2, psi" in text
+
+    # write=True path also works.
+    result = solver_summary(fourc)
+    assert result is None
+    out, err = capsys.readouterr()
+    assert "bissector" in out
+    assert err == ""
+
+
 @pytest.mark.parametrize(
     "specs, mode, pseudos, text, context",
     [

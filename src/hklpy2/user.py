@@ -35,6 +35,7 @@ from typing import Union
 
 from bluesky.protocols import Movable
 from bluesky.protocols import Readable
+from deprecated.sphinx import versionchanged
 from pyRestTable import Table
 
 from .blocks.lattice import Lattice
@@ -291,9 +292,29 @@ def calc_UB(
     return get_diffractometer().core.calc_UB(r1, r2)
 
 
-def solver_summary(write=True) -> Table | None:
+@versionchanged(
+    version="0.6.1",
+    reason=(
+        "Accept a ``diffractometer`` argument; underlying implementation"
+        " moved to ``hklpy2.utils.solver_summary``."
+    ),
+)
+def solver_summary(
+    diffractometer: Optional[DiffractometerBase] = None,
+    write: bool = True,
+) -> Table | None:
     """
     Table of diffractometer solver's modes, axes, ...
+
+    PARAMETERS
+
+    diffractometer : DiffractometerBase, optional
+        The diffractometer to summarize.  When ``None`` (default), the
+        currently-selected diffractometer (set via
+        :func:`~hklpy2.user.set_diffractometer`) is used.
+    write : bool, optional
+        When ``True`` (default), print the table and return ``None``.
+        When ``False``, return the :class:`~pyRestTable.Table` object.
 
     EXAMPLE:
 
@@ -320,15 +341,20 @@ def solver_summary(write=True) -> Table | None:
         emergence emergence          emergence, azimuth omega, chi, phi, tth                      x, y, z
         ========= ================== ================== ==================== ==================== ===============
 
+    Pass any diffractometer directly (no need to call ``set_diffractometer``)::
+
+        >>> e4cv = hklpy2.creator(name="e4cv")
+        >>> solver_summary(e4cv)
+
     .. seealso:: :ref:`geometries.summary_tables`,
-        :meth:`hklpy2.backends.base.SolverBase.summary()`
+        :meth:`hklpy2.backends.base.SolverBase.summary()`,
+        :func:`hklpy2.utils.solver_summary`
     """
-    table = get_diffractometer().core.solver_summary
-    if write:
-        print(table)
-    else:
-        return table
-    return None
+    from .utils import solver_summary as _impl
+
+    if diffractometer is None:
+        diffractometer = get_diffractometer()
+    return _impl(diffractometer, write=write)
 
 
 def get_diffractometer() -> Union[DiffractometerBase, None]:
