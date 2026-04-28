@@ -68,6 +68,7 @@ from .typing import Matrix3x3
 
 if TYPE_CHECKING:
     from .backends.base import SolverBase  # noqa: F401
+    from .diffract import DiffractometerBase  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -437,7 +438,7 @@ def validate_and_canonical_unit(value: str, target_units: str) -> str:
 
 
 def benchmark(
-    diffractometer,
+    diffractometer: "DiffractometerBase",
     n: int = 500,
     print: bool = True,
     snapshot: bool = True,
@@ -509,7 +510,7 @@ def benchmark(
     if snapshot:
         from .run_utils import simulator_from_config
 
-        target = simulator_from_config(diffractometer.configuration)
+        target = simulator_from_config(diffractometer)
     else:
         target = diffractometer
 

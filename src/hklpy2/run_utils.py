@@ -19,7 +19,6 @@ from collections.abc import Iterator
 from typing import Any
 from typing import Mapping
 from typing import Sequence
-from typing import Union
 
 import pandas as pd
 import tqdm
@@ -340,7 +339,11 @@ def list_orientation_runs(
     version="0.4.0",
     reason="Create a simulated diffractometer from a saved configuration.",
 )
-def simulator_from_config(config: Union[dict, str, pathlib.Path]):
+@versionchanged(
+    version="0.6.1",
+    reason="Accept a ``DiffractometerBase`` instance directly.",
+)
+def simulator_from_config(config):
     """
     Create a simulated diffractometer from a saved configuration.
 
@@ -358,9 +361,14 @@ def simulator_from_config(config: Union[dict, str, pathlib.Path]):
 
     PARAMETERS
 
-    config : dict, str, or pathlib.Path
-        Configuration dictionary, or path to a YAML configuration file
-        previously saved with ``diffractometer.export()``.
+    config : dict, str, pathlib.Path, or DiffractometerBase
+        One of:
+
+        * a configuration dictionary,
+        * a path to a YAML configuration file previously saved with
+          ``diffractometer.export()``, or
+        * a :class:`~hklpy2.diffract.DiffractometerBase` instance (its
+          current configuration snapshot will be used).
 
     RETURNS
 
@@ -373,18 +381,30 @@ def simulator_from_config(config: Union[dict, str, pathlib.Path]):
         >>> sim = hklpy2.simulator_from_config("e4cv-config.yml")
         >>> sim.wh()
 
+        Or directly from an existing diffractometer::
+
+        >>> sim = hklpy2.simulator_from_config(diffractometer)
+
     SEE ALSO
 
         :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
     """
+    from .diffract import DiffractometerBase
     from .diffract import creator
 
+    if isinstance(config, DiffractometerBase):
+        logger.debug(
+            "simulator_from_config: snapshotting diffractometer %r",
+            getattr(config, "name", None),
+        )
+        config = config.configuration
     if isinstance(config, (str, pathlib.Path)):
         logger.debug("simulator_from_config: loading from file %r", str(config))
         config = load_yaml_file(config)
     if not isinstance(config, dict):
         raise TypeError(
-            f"Expected a dict or path to a YAML file. Received: {type(config)!r}"
+            "Expected a dict, path to a YAML file, or DiffractometerBase"
+            f" instance. Received: {type(config)!r}"
         )
     if "_header" not in config:
         raise KeyError(MISSING_HEADER_KEY_MSG)

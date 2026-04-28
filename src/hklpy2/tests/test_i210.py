@@ -46,7 +46,10 @@ TESTS_DIR = pathlib.Path(__file__).parent
         pytest.param(
             dict(config=42),
             pytest.raises(
-                TypeError, match=re.escape("Expected a dict or path to a YAML file.")
+                TypeError,
+                match=re.escape(
+                    "Expected a dict, path to a YAML file, or DiffractometerBase"
+                ),
             ),
             id="invalid config type raises TypeError",
         ),
@@ -475,3 +478,34 @@ def test_simulator_from_config_default_geometry(parms, context):
         assert mock_creator.called
         call_kwargs = mock_creator.call_args.kwargs
         assert call_kwargs["geometry"] == HklSolver.default_geometry()
+
+
+# ---------------------------------------------------------------------------
+# Issue #371: simulator_from_config() accepts a diffractometer instance
+# directly (in addition to dict / path / str).
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(config=TESTS_DIR / "e4cv-silicon-example.yml"),
+            does_not_raise(),
+            id="diffractometer instance: e4cv silicon",
+        ),
+    ],
+)
+def test_simulator_from_config_accepts_diffractometer(parms, context):
+    """Per #371: passing a diffractometer instance is equivalent to passing
+    its ``configuration`` snapshot."""
+    with context:
+        original = simulator_from_config(parms["config"])
+        # Pass the diffractometer instance directly (the new behaviour).
+        sim = simulator_from_config(original)
+
+        assert sim is not original  # a fresh instance, not the same object
+        assert sim.core.solver.geometry == original.core.solver.geometry
+        assert sim.real_axis_names == original.real_axis_names
+        assert sim.pseudo_axis_names == original.pseudo_axis_names
+        assert set(sim.core.samples.keys()) == set(original.core.samples.keys())
