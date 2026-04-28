@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=d80f9208"></script>
+    <script src="../../../_static/documentation_options.js?v=fe1d5400"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -464,6 +464,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyRestTable</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_value_in_list</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">istype</span>
@@ -704,7 +705,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Suppress base-class default-mode resolution: libhkl objects are</span>
+        <span class="c1"># not yet built, so self.modes would return [] at this point.  We</span>
+        <span class="c1"># resolve and apply the default mode ourselves below, after engine</span>
+        <span class="c1"># setup, so mode validation in self.mode = ... can succeed.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">_resolve_default_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Preface libhkl object names with &quot;_hkl&quot;.</span>
         <span class="c1"># Note: must keep the &#39;_hkl_engine_list&#39; object as class attribute or</span>
@@ -717,6 +722,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_engine_list</span><span class="o">.</span><span class="n">engine_get_by_name</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hkl_factory</span><span class="o">.</span><span class="n">create_new_geometry</span><span class="p">()</span>
 
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">default_mode</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="n">engine</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SolverError</span><span class="p">:</span>  <span class="c1"># pragma: no cover - defensive; libhkl raises first</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -997,6 +1007,64 @@
                 <span class="k">if</span> <span class="n">num_engines</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
             <span class="p">]</span>
         <span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="HklSolver.default_mode">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.default_mode">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default_mode</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">engine</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;hkl&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the first mode of *geometry*&#39;s *engine*.</span>
+
+<span class="sd">        Queries |libhkl| directly via :func:`libhkl.factories` rather than the</span>
+<span class="sd">        :attr:`_geometry_registry` (which ``HklSolver`` does not populate).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        geometry : str</span>
+<span class="sd">            Geometry name as known to |libhkl| (e.g. ``&quot;E4CV&quot;``).</span>
+<span class="sd">        engine : str, optional</span>
+<span class="sd">            Engine name (default: ``&quot;hkl&quot;``).  When the named engine is not</span>
+<span class="sd">            available for *geometry*, falls back to the first available</span>
+<span class="sd">            engine.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        SolverError</span>
+<span class="sd">            If *geometry* is not known to |libhkl| or has no modes defined.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">factories</span> <span class="o">=</span> <span class="n">libhkl</span><span class="o">.</span><span class="n">factories</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">geometry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">factories</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: geometry </span><span class="si">{</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2"> is not known to libhkl;&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; cannot pick a default mode.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">engine_list</span> <span class="o">=</span> <span class="n">factories</span><span class="p">[</span><span class="n">geometry</span><span class="p">]</span><span class="o">.</span><span class="n">create_new_engine_list</span><span class="p">()</span>
+        <span class="n">engines</span> <span class="o">=</span> <span class="n">engine_list</span><span class="o">.</span><span class="n">engines_get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">engines</span>
+        <span class="p">):</span>  <span class="c1"># pragma: no cover - libhkl-listed geometries always have engines</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: geometry </span><span class="si">{</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2"> has no engines;&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; cannot pick a default mode.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">chosen</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">eng</span> <span class="ow">in</span> <span class="n">engines</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">eng</span><span class="o">.</span><span class="n">name_get</span><span class="p">()</span> <span class="o">==</span> <span class="n">engine</span><span class="p">:</span>
+                <span class="n">chosen</span> <span class="o">=</span> <span class="n">eng</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">chosen</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">chosen</span> <span class="o">=</span> <span class="n">engines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">modes</span> <span class="o">=</span> <span class="n">chosen</span><span class="o">.</span><span class="n">modes_names_get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">modes</span>
+        <span class="p">):</span>  <span class="c1"># pragma: no cover - libhkl engines always declare at least one mode</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: geometry </span><span class="si">{</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2"> engine&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">chosen</span><span class="o">.</span><span class="n">name_get</span><span class="p">()</span><span class="si">!r}</span><span class="s2"> has no modes;&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; cannot pick a default mode.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">modes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="HklSolver.inverse">

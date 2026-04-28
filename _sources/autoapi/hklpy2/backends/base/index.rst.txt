@@ -19,7 +19,7 @@ base
 Module Contents
 ---------------
 
-.. py:class:: SolverBase(geometry: str, *, mode: str = '', **kwargs: Any)
+.. py:class:: SolverBase(geometry: str, *, mode: str = '', _resolve_default_mode: bool = True, **kwargs: Any)
 
    .. container:: import-path
 
@@ -94,6 +94,8 @@ Module Contents
    .. autosummary::
 
        ~_geometry_registry
+       ~default_geometry
+       ~default_mode
        ~register_geometry
 
    .. rubric:: Python Properties
@@ -177,6 +179,42 @@ Module Contents
       Calculate the UB (orientation) matrix with two reflections.
 
       The method of Busing & Levy, Acta Cryst 22 (1967) 457.
+
+
+
+   .. py:method:: default_geometry() -> str
+      :classmethod:
+
+
+      Return this solver's default geometry name.
+
+      The default is the **first** entry in :meth:`geometries`.  Subclasses
+      that do not use :attr:`_geometry_registry` (e.g.
+      :class:`~hklpy2.backends.hkl_soleil.HklSolver`) should override this
+      method.
+
+      :raises SolverError: If the solver has no registered geometries.
+
+
+
+   .. py:method:: default_mode(geometry: str) -> str
+      :classmethod:
+
+
+      Return the default mode for *geometry*.
+
+      Resolution order:
+
+      1. If a :class:`~hklpy2.backends.typing.GeometryDescriptor` is
+         registered for *geometry* and its
+         :attr:`~GeometryDescriptor.default_mode` is non-empty, return that.
+      2. Otherwise return the first entry in the descriptor's
+         :attr:`~GeometryDescriptor.modes`.
+
+      Subclasses that do not use :attr:`_geometry_registry` should override
+      this method to query their underlying library directly.
+
+      :raises SolverError: If *geometry* is not registered, or has no modes defined.
 
 
 
