@@ -551,8 +551,6 @@ class Core:
         is performed.
         """
         sample = self.sample
-        if sample is None:
-            return
         if sample.UB_is_stale:
             warnings.warn(
                 f"UB for sample {sample.name!r} is stale "

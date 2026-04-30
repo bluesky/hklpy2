@@ -283,3 +283,30 @@ def test_digits_change_does_not_cause_staleness(parms, context):
         first = e4cv.sample.reflections[e4cv.sample.reflections.order[0]]
         first.digits = first.digits + 1
         assert e4cv.sample.UB_is_stale is False
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="order-references-missing-name",
+        ),
+    ],
+)
+def test_compute_snapshot_with_missing_order_name(parms, context):
+    """``_compute_ub_snapshot`` must return ``None`` when ``order`` references
+    a reflection name that is no longer in the dict (defensive: catches the
+    inconsistent-state case where the dict is mutated without using
+    :meth:`Sample.remove_reflection`)."""
+    with context:
+        e4cv = _oriented_e4cv()
+        # Bypass remove_reflection (which would also clean up ``order``) by
+        # popping directly from the underlying dict.
+        e4cv.sample.reflections.pop(e4cv.sample.reflections.order[0])
+        # ``order`` still references the popped name; the snapshot must
+        # gracefully return None instead of raising KeyError.
+        assert e4cv.sample._compute_ub_snapshot() is None
+        # And UB_is_stale must report True (snapshot != stored snapshot).
+        assert e4cv.sample.UB_is_stale is True
