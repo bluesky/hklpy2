@@ -54,6 +54,9 @@ Fixes
 * ``how_analyzer.ipynb``: correct stale prose about config save/restore
   (axis names are stored, positions are not; solver mode is restored);
   remove duplicate Bragg-law cell. (:issue:`360`)
+* ``how_simulator_from_config.rst``: fix broken ``:func:`` reference
+  (module is ``hklpy2.run_utils``, not ``hklpy2.misc``); rename file
+  to match the function. (:issue:`387`)
 * ``pa()`` / ``wh(full=True)`` no longer crashes when an auxiliary
   component returns a structured (multi-field) position; rendered
   inline as ``name={field=value, ...}``. (:issue:`385`)
