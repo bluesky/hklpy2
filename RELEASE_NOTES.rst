@@ -43,6 +43,8 @@ New Features
   the detector arm. (:issue:`360`)
 * Add ``restore_samples`` / ``restore_extras`` / ``restore_presets``
   kwargs to ``restore()``. (:issue:`390`)
+* Add ``Sample.UB_is_stale`` and warn when ``forward`` / ``inverse``
+  run with stale UB. (:issue:`391`)
 
 Enhancements
 ------------
