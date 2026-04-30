@@ -11,6 +11,7 @@ library.
 
 import datetime
 import logging
+import warnings
 from collections.abc import Iterable
 from typing import TYPE_CHECKING
 from typing import Mapping
@@ -530,7 +531,35 @@ class Core:
         self.sample.U = self.solver.U
         self.sample.UB = ub
         self.update_solver()
+        # Snapshot the orientation-reflection state used to derive UB so
+        # ``Sample.UB_is_stale`` can later detect drift (:issue:`391`).
+        # Note: the U / UB setters above clear ``_ub_snapshot`` (direct
+        # assignment is treated as user ownership); the snapshot must be
+        # set after those writes, as the final step of a successful
+        # calc_UB.
+        self.sample._ub_snapshot = self.sample._compute_ub_snapshot()
         return ub
+
+    def _warn_if_ub_stale(self) -> None:
+        """
+        Emit a ``UserWarning`` when the current sample's UB is stale.
+
+        Called from :meth:`forward` and :meth:`inverse`.  Staleness is
+        detected via :attr:`Sample.UB_is_stale` (:issue:`391`); the
+        result of the call may not reflect the current orientation
+        reflections.  The user retains full control: no recomputation
+        is performed.
+        """
+        sample = self.sample
+        if sample.UB_is_stale:
+            warnings.warn(
+                f"UB for sample {sample.name!r} is stale "
+                "(orientation reflections changed since last calc_UB); "
+                "the result may not reflect the current orientation. "
+                "Call calc_UB() to refresh.",
+                UserWarning,
+                stacklevel=3,
+            )
 
     @property
     def extras(self) -> list[str]:
@@ -561,6 +590,7 @@ class Core:
             self.__class__.__name__,
             pseudos,
         )
+        self._warn_if_ub_stale()
 
         pdict = self.standardize_pseudos(pseudos)
         base_reals = self.diffractometer.real_position._asdict()  # Original values.
@@ -680,6 +710,8 @@ class Core:
         if self.solver is None or len(self.axes_xref) == 0:
             # Called from the constructor before solver is defined.
             return pseudos  # current values of pseudos
+
+        self._warn_if_ub_stale()
 
         # Just the reals expected by the solver.
         # Dictionary in order expected by the solver.

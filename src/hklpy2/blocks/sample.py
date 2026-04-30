@@ -9,9 +9,12 @@ A Crystalline Sample.
 import logging
 import math
 from typing import Mapping
+from typing import Optional
+from typing import Tuple
 from typing import Union
 
 import numpy as np
+from deprecated.sphinx import versionadded
 from numpy.linalg import norm
 
 from ..utils import _SolverDirty
@@ -21,6 +24,18 @@ from .lattice import Lattice
 from .lattice import LatticeDictType
 from .reflection import Reflection
 from .reflection import ReflectionsDict
+
+# Reflection fields that, when changed for an orienting reflection,
+# invalidate the previously computed UB.  ``digits`` is intentionally
+# omitted (presentation only); ``name`` is implicit in ``order[:2]``.
+_UB_REFLECTION_FIELDS: Tuple[str, ...] = (
+    "geometry",
+    "pseudos",
+    "reals",
+    "reals_units",
+    "wavelength",
+    "wavelength_units",
+)
 
 logger = logging.getLogger(__name__)
 
@@ -64,6 +79,7 @@ class Sample:
         ~remove_reflection
         ~U
         ~UB
+        ~UB_is_stale
     """
 
     def __init__(
@@ -79,6 +95,12 @@ class Sample:
             raise TypeError(f"Unexpected type {core=!r}, expected Core")
         self.name = name or unique_name()
         self.core = core
+        # Snapshot of the orientation-reflection state at the end of the
+        # last successful ``calc_UB``.  ``None`` means "no snapshot is
+        # stored", which is the case until ``calc_UB`` runs and any time
+        # the user takes ownership of U / UB by direct assignment.  See
+        # :issue:`391`.
+        self._ub_snapshot: Optional[tuple] = None
         self.lattice = lattice
         self.U = IDENTITY_MATRIX_3X3
         # Consider: UB = self.U @ self.lattice.B
@@ -218,6 +240,10 @@ class Sample:
         self._U = value
         # U changes require only a UB push; no full _sample rebuild.
         self.core.request_solver_update(_SolverDirty.UB)
+        # Direct assignment: the user has taken ownership of U; clear
+        # any prior calc_UB snapshot so ``UB_is_stale`` reports False
+        # until the next ``calc_UB`` (:issue:`391`).
+        self._ub_snapshot = None
 
     @property
     def UB(self) -> Matrix3x3:
@@ -237,3 +263,72 @@ class Sample:
         self._UB = value
         # UB changes require only a UB push; no full _sample rebuild.
         self.core.request_solver_update(_SolverDirty.UB)
+        # Direct assignment: the user has taken ownership of UB; clear
+        # any prior calc_UB snapshot so ``UB_is_stale`` reports False
+        # until the next ``calc_UB`` (:issue:`391`).
+        self._ub_snapshot = None
+
+    def _compute_ub_snapshot(self) -> Optional[tuple]:
+        """
+        Return a comparable snapshot of the current orientation-reflection state.
+
+        The snapshot captures the two orienting reflection names plus the
+        physics-relevant fields of those reflections (``geometry``,
+        ``pseudos``, ``reals``, ``reals_units``, ``wavelength``,
+        ``wavelength_units``).  Any change to those values invalidates a
+        previously computed UB.  Returns ``None`` when fewer than two
+        reflections are available (UB is not computable) or when an
+        ordered name no longer maps to a known reflection.
+        """
+        order = self.reflections.order
+        if len(order) < 2:
+            return None
+        head = tuple(order[:2])
+        try:
+            contents = tuple(
+                tuple(
+                    (field, self.reflections[name]._asdict()[field])
+                    for field in _UB_REFLECTION_FIELDS
+                )
+                for name in head
+            )
+        except KeyError:
+            # ``order`` references a name that is no longer in the dict.
+            return None
+        return (head, contents)
+
+    @property
+    @versionadded(
+        version="0.6.2",
+        reason=(
+            "Detect when the orientation reflections have changed since "
+            "the last ``calc_UB``, indicating the stored UB no longer "
+            "reflects the chosen orienting pair.  See :issue:`391`."
+        ),
+    )
+    def UB_is_stale(self) -> bool:
+        """
+        ``True`` iff the orientation reflections have changed since the
+        last successful ``calc_UB`` for this sample.
+
+        Returns ``False`` in any of these cases:
+
+        * ``calc_UB`` has not been called for this sample (no snapshot
+          to compare against),
+        * the user has assigned :attr:`U` or :attr:`UB` directly (they
+          have explicitly taken ownership of the matrix; the snapshot
+          is cleared),
+        * the orientation reflections (``reflections.order[:2]`` and
+          their physics-relevant contents) are unchanged since the last
+          ``calc_UB``.
+
+        Returns ``True`` when ``order[:2]`` itself changes (reorder,
+        prepend a new orienting reflection, remove an orienting one) or
+        when an in-place mutation of one of the orienting reflections
+        changes its ``pseudos``, ``reals``, ``wavelength``, or unit
+        fields.  Reflections outside ``order[:2]`` do not affect
+        staleness.
+        """
+        if self._ub_snapshot is None:
+            return False
+        return self._compute_ub_snapshot() != self._ub_snapshot

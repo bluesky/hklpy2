@@ -98,6 +98,8 @@ SPEC's ``or_swap`` command::
 
 The new :math:`UB` matrix is returned and stored automatically.
 
+.. _how_calc_ub.set_manually:
+
 How do I set UB manually from a known matrix?
 ----------------------------------------------
 
@@ -144,6 +146,58 @@ To remove all reflections and reset the sample to defaults::
     reflections and recreates a single default sample.  Use
     :func:`~hklpy2.user.remove_reflection` if you only want to discard
     one reflection while keeping others.
+
+.. _how_calc_ub.stale:
+
+How do I tell if my UB is stale?
+---------------------------------
+
+.. index::
+    pair: UB matrix; stale
+    see: UB_is_stale; stale UB
+
+After :func:`~hklpy2.user.calc_UB`, the stored :math:`UB` matrix
+reflects the two orienting reflections (the first two entries of
+``sample.reflections.order``) *as they were at the moment*
+:func:`~hklpy2.user.calc_UB` *ran*.  Several common edits leave the
+stored matrix inconsistent with the current orienting pair — a
+:term:`stale UB`.
+
+Triggers for stale UB include:
+
+* Removing one of the two orienting reflections (for example,
+  ``remove_reflection(r1.name)`` above).
+* Reassigning ``sample.reflections.order`` so a different reflection
+  becomes ``order[0]`` or ``order[1]``.
+* Editing the ``pseudos``, ``reals``, or ``wavelength`` of either
+  orienting reflection in place.
+
+Edits that do **not** invalidate the UB include: adding or removing a
+reflection that is not in ``order[:2]``, editing a non-orienting
+reflection, and assigning :attr:`~hklpy2.blocks.sample.Sample.U` /
+:attr:`~hklpy2.blocks.sample.Sample.UB` directly (the user has taken
+ownership of the matrix; see :ref:`how_calc_ub.set_manually`).
+
+Check the current state via
+:attr:`~hklpy2.blocks.sample.Sample.UB_is_stale`::
+
+    >>> fourc.sample.UB_is_stale
+    False
+    >>> remove_reflection(r1.name)
+    >>> fourc.sample.UB_is_stale
+    True
+
+When :meth:`~hklpy2.diffract.DiffractometerBase.forward` or
+:meth:`~hklpy2.diffract.DiffractometerBase.inverse` runs against a
+stale UB, a single ``UserWarning`` is emitted and :func:`pa`
+annotates its output with ``UB stale: True``.  Refresh the matrix by
+running :func:`~hklpy2.user.calc_UB` again with the desired
+orienting pair::
+
+    >>> r4 = setor(0, 4, 0, tth=69.0966, omega=-145.451, chi=90, phi=0)
+    >>> calc_UB(r4, r2)
+    >>> fourc.sample.UB_is_stale
+    False
 
 How do I refine the lattice parameters?
 -----------------------------------------

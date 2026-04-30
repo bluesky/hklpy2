@@ -1095,6 +1095,12 @@ class DiffractometerBase(PseudoPositioner):
             print(f"Orienting reflections: {self.sample.reflections.order}")
             print(f"U={format_array(self.sample.U)}")
             print(f"UB={format_array(self.sample.UB)}")
+            if self.sample.UB_is_stale:
+                # Surface UB staleness in pa() output (:issue:`391`).
+                print(
+                    "UB stale: True"
+                    "  (orientation reflections changed since last calc_UB)"
+                )
             for v in self.core.constraints.values():
                 print(f"constraint: {v}")
             print(f"Mode: {self.core.mode}")
