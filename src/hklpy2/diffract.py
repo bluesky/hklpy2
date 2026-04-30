@@ -792,7 +792,10 @@ class DiffractometerBase(PseudoPositioner):
         Names of all auxiliary positioners, in order of appearance.
 
         Auxiliary axes are all components using (subclasses of
-        'ophyd.PositionerBase') that are not pseudos or reals.
+        'ophyd.PositionerBase') that are not pseudos or reals.  This
+        includes nested ``ophyd.PseudoPositioner`` sub-devices; their
+        structured ``.position`` values are rendered inline by
+        :meth:`wh` (see issue :issue:`385`).
 
         Example::
 
@@ -898,7 +901,18 @@ class DiffractometerBase(PseudoPositioner):
             raise DiffractometerError(f"Diffractometer {self.name!r} is not connected.")
 
         def labeled_value(label, value):
-            return f"{label}={roundoff(value, digits)}"
+            rounded = roundoff(value, digits)
+            if isinstance(rounded, dict):
+                # Structured position (e.g. nested PseudoPositioner whose
+                # ``.position`` is a namedtuple).  Render as a dict literal:
+                # ``ana={energy=8.99, theta=12.0}``.  See issue #385.
+                body = ", ".join(f"{k}={v}" for k, v in rounded.items())
+                return f"{label}={{{body}}}"
+            if isinstance(rounded, list):
+                # Sequence-shaped position (rare).
+                body = ", ".join(str(v) for v in rounded)
+                return f"{label}=[{body}]"
+            return f"{label}={rounded}"
 
         def print_axes(names: list[str], preface: str = ""):
             pairs = []

@@ -1400,3 +1400,137 @@ def test_namespace_orientation_exports(parms, context):
     with context:
         obj = getattr(hklpy2, parms["name"])
         assert callable(obj)
+
+
+# ----- issue #385: nested PseudoPositioner auxiliary component ----------------
+
+from ophyd import PseudoPositioner as _OphydPseudoPositioner  # noqa: E402
+from ophyd import PseudoSingle as _OphydPseudoSingle  # noqa: E402
+from ophyd.pseudopos import pseudo_position_argument as _ppa  # noqa: E402
+from ophyd.pseudopos import real_position_argument as _rpa  # noqa: E402
+
+
+class _MiniAnalyzer(_OphydPseudoPositioner):
+    """Tiny nested PseudoPositioner used as an auxiliary in #385 tests.
+
+    ``.position`` returns a namedtuple ``MiniAnalyzerPos(energy=...)``
+    rather than a scalar — which is exactly what triggered the
+    original ``TypeError`` from ``round()`` in ``wh()``.
+    """
+
+    energy = Component(_OphydPseudoSingle, "")
+    theta = Component(SoftPositioner, init_pos=0.0, limits=(-180, 180))
+
+    @_ppa
+    def forward(self, p):
+        return self.RealPosition(theta=p.energy)
+
+    @_rpa
+    def inverse(self, r):
+        return self.PseudoPosition(energy=r.theta)
+
+
+class _ListPositionPositioner(SoftPositioner):
+    """Auxiliary positioner whose ``.position`` is a list.
+
+    Exercises the ``list`` branch of ``wh()``'s ``labeled_value``
+    (rare in practice but supported for completeness; see issue #385).
+    """
+
+    @property
+    def position(self):
+        # Return a list so ``roundoff()`` returns a list and
+        # ``labeled_value`` takes the ``isinstance(rounded, list)`` branch.
+        # Use the underlying _position (set by SoftPositioner.__init__)
+        # to avoid recursing into the property and to handle the
+        # uninitialized case.
+        base = self._position if self._position is not None else 0.0
+        return [base, base * 2]
+
+
+def _build_gonio_with_nested_pseudo(include_list_aux: bool = False):
+    """Build a 4-circle diffractometer with auxiliaries used by #385 tests."""
+    base = diffractometer_class_factory()
+
+    if include_list_aux:
+
+        class _GonioWithAna(base):
+            tablex = Component(SoftPositioner, init_pos=1.23456, limits=(-10, 10))
+            ana = Component(_MiniAnalyzer, "")
+            # Auxiliary whose .position is a list (rare).
+            vec = Component(_ListPositionPositioner, init_pos=0.5, limits=(-10, 10))
+
+    else:
+
+        class _GonioWithAna(base):
+            # scalar auxiliary (the "classic" auxiliary contract)
+            tablex = Component(SoftPositioner, init_pos=1.23456, limits=(-10, 10))
+            # nested PseudoPositioner auxiliary (the issue #385 case)
+            ana = Component(_MiniAnalyzer, "")
+
+    return _GonioWithAna(name="gonio")
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(check="auxiliary_axis_names_includes_both"),
+            does_not_raise(),
+            id="auxiliary_axis_names lists nested PseudoPositioner",
+        ),
+        pytest.param(
+            dict(check="wh_full_does_not_raise"),
+            does_not_raise(),
+            id="wh(full=True) renders nested PseudoPositioner inline",
+        ),
+        pytest.param(
+            dict(check="wh_default_does_not_raise"),
+            does_not_raise(),
+            id="wh() renders nested PseudoPositioner inline",
+        ),
+        pytest.param(
+            dict(check="wh_full_with_list_aux"),
+            does_not_raise(),
+            id="wh(full=True) renders list-shaped auxiliary inline",
+        ),
+    ],
+)
+def test_wh_nested_pseudopositioner_issue_385(parms, context, capsys):
+    """Regression: pa()/wh(full=True) must not crash on a nested PseudoPositioner.
+
+    Before #385, ``round(component.position, ndigits=...)`` raised
+    ``TypeError`` because ``component.position`` was a namedtuple.
+    """
+    with context:
+        gonio = _build_gonio_with_nested_pseudo()
+
+        if parms["check"] == "auxiliary_axis_names_includes_both":
+            names = gonio.auxiliary_axis_names
+            assert "tablex" in names
+            assert "ana" in names
+
+        elif parms["check"] == "wh_full_does_not_raise":
+            gonio.wh(full=True)
+            out = capsys.readouterr().out
+            # auxiliaries line is present
+            assert "auxiliaries:" in out
+            # scalar aux still rendered as label=value
+            assert "tablex=1.2346" in out
+            # nested PseudoPositioner rendered inline as ana={energy=...}
+            assert "ana={energy=" in out
+            assert "ana={energy=0" in out  # init_pos=0 -> energy=0
+
+        elif parms["check"] == "wh_default_does_not_raise":
+            gonio.wh()
+            out = capsys.readouterr().out
+            assert "auxiliaries:" in out
+            assert "ana={energy=" in out
+
+        elif parms["check"] == "wh_full_with_list_aux":
+            gonio = _build_gonio_with_nested_pseudo(include_list_aux=True)
+            gonio.wh(full=True)
+            out = capsys.readouterr().out
+            assert "auxiliaries:" in out
+            # List-shaped auxiliary rendered as vec=[v1, v2]
+            assert "vec=[0.5, 1.0]" in out
