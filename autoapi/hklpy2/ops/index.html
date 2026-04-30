@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=890ff59d"></script>
+    <script src="../../../_static/documentation_options.js?v=c675e3b8"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -541,7 +541,7 @@ library.</p>
 <td><p>Remove the named sample.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.ops.Core.request_solver_update" title="hklpy2.ops.Core.request_solver_update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">request_solver_update</span></code></a>([flag])</p></td>
-<td><p>Set (or clear) signal to trigger a solver update.</p></td>
+<td><p>Mark solver state as dirty (or clean).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.ops.Core.reset_constraints" title="hklpy2.ops.Core.reset_constraints"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset_constraints</span></code></a>()</p></td>
 <td><p>Restore diffractometer constraints to default settings.</p></td>
@@ -559,7 +559,7 @@ library.</p>
 <td><p>Convert user-supplied reals into dictionary in solver's order.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.ops.Core.update_solver" title="hklpy2.ops.Core.update_solver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_solver</span></code></a>([wavelength])</p></td>
-<td><p>Update solver data if needed.</p></td>
+<td><p>Push any dirty solver-state domains to the underlying solver.</p></td>
 </tr>
 </tbody>
 </table>
@@ -838,10 +838,20 @@ mode. To remove a single preset key, call
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2.ops.Core.request_solver_update">
-<span class="sig-name descname"><span class="pre">request_solver_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/ops.html#Core.request_solver_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.ops.Core.request_solver_update" title="Link to this definition">#</a></dt>
-<dd><p>Set (or clear) signal to trigger a solver update.</p>
+<span class="sig-name descname"><span class="pre">request_solver_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_SolverDirty</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/ops.html#Core.request_solver_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.ops.Core.request_solver_update" title="Link to this definition">#</a></dt>
+<dd><p>Mark solver state as dirty (or clean).</p>
+<p>PARAMETERS</p>
+<dl class="simple">
+<dt>flag<span class="classifier">bool or _SolverDirty</span></dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code> (default): mark all domains dirty (full re-sync).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: clear all dirty flags.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">_SolverDirty</span></code> value: mark the given domains dirty
+(additive – existing dirty flags are preserved).</p></li>
+</ul>
+</dd>
+</dl>
 <p>Needs to be a method (not a property) so it can be called from a
-wavelength method.</p>
+wavelength callback (see <code class="docutils literal notranslate"><span class="pre">DiffractometerBase.__init__</span></code>).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1006,7 +1016,19 @@ of those forms (plus <code class="docutils literal notranslate"><span class="pre
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2.ops.Core.update_solver">
 <span class="sig-name descname"><span class="pre">update_solver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/ops.html#Core.update_solver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.ops.Core.update_solver" title="Link to this definition">#</a></dt>
-<dd><p>Update solver data if needed.</p>
+<dd><p>Push any dirty solver-state domains to the underlying solver.</p>
+<p>Per-domain pushes are gated by <code class="xref py py-attr docutils literal notranslate"><span class="pre">_solver_dirty</span></code>
+(a <code class="xref py py-class docutils literal notranslate"><span class="pre">_SolverDirty</span></code> bitfield).  A SAMPLE
+re-push may invalidate the solver’s MODE / EXTRAS / U / UB
+state (this is permitted by the <code class="docutils literal notranslate"><span class="pre">SolverBase</span></code> contract and
+observed in some backends), so those domains are re-pushed
+implicitly whenever SAMPLE is re-pushed.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.2: </span>Switched from a single boolean flag to per-domain dirty flags
+(<code class="xref py py-class docutils literal notranslate"><span class="pre">_SolverDirty</span></code>) to fix stale solver
+state after sample switch (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/386">issue #386</a>) and after
+<code class="docutils literal notranslate"><span class="pre">calc_UB</span></code> (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/384">issue #384</a>).</p>
+</div>
 </dd></dl>
 
 </dd></dl>
