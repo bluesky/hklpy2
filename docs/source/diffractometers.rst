@@ -1,5 +1,5 @@
 .. author: make_geometries_doc.py
-.. solvers: hkl_soleil=5.1.3 th_tth=0.4.3.dev4+g998861fb2
+.. solvers: hkl_soleil=5.1.3 th_tth=0.6.2.dev4+gde2b3abb7.d20260430
 
 .. _geometries:
 
@@ -30,12 +30,12 @@ Solver Versions
 
 The geometry tables below were generated from these installed solver versions:
 
-========== =====================
+========== ===============================
 Solver     Version
-========== =====================
+========== ===============================
 hkl_soleil 5.1.3
-th_tth     0.4.3.dev4+g998861fb2
-========== =====================
+th_tth     0.6.2.dev4+gde2b3abb7.d20260430
+========== ===============================
 
 .. _geometries.number_of_reals:
 

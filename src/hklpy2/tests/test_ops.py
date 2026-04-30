@@ -651,7 +651,10 @@ def test_extras_getter(solver, geometry, solver_kwargs, mode, expected):
             {},
             "bissector",
             dict(h2=1),  # Parameter 'h2' not defined in the current mode.
-            pytest.raises(KeyError, match=re.escape("Unexpected extra axis name(s)")),
+            pytest.raises(
+                ConfigurationError,
+                match=re.escape("Unexpected extra axis name(s)"),
+            ),
             id="unexpected-extra",
         ),
         pytest.param(

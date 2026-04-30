@@ -39,73 +39,250 @@ from .models import TwoC
 
 
 @pytest.mark.parametrize(
-    "config_file",
-    ["e4cv_orient.yml", "fourc-configuration.yml"],
-)
-@pytest.mark.parametrize(
-    "pseudos, reals, positioner_class, context",
+    "parms, context",
     [
         pytest.param(
-            [],
-            dict(omega="IOC:m1", chi="IOC:m2", phi="IOC:m3", tth="IOC:m4"),
-            EpicsMotor,
+            dict(
+                pseudos=[],
+                reals=dict(omega="IOC:m1", chi="IOC:m2", phi="IOC:m3", tth="IOC:m4"),
+                positioner_class=EpicsMotor,
+            ),
             does_not_raise(),
             id="epics reals",
         ),
         pytest.param(
-            [],
-            dict(aaa=None, bbb=None, ccc=None),
-            SoftPositioner,
-            pytest.raises(KeyError, match=re.escape("tth")),
-            id="3 soft reals missing tth",
+            dict(
+                pseudos=[],
+                reals=dict(aaa=None, bbb=None, ccc=None),
+                positioner_class=SoftPositioner,
+            ),
+            does_not_raise(),
+            id="3 soft reals",
         ),
         pytest.param(
-            [],
-            dict(aaa=None, bbb=None, ccc=None, ddd=None),
-            SoftPositioner,
+            dict(
+                pseudos=[],
+                reals=dict(aaa=None, bbb=None, ccc=None, ddd=None),
+                positioner_class=SoftPositioner,
+            ),
             does_not_raise(),
             id="4 soft reals",
         ),
         pytest.param(
-            [],
-            dict(aaa=None, bbb=None, ccc=None, ddd=None, eee=None),
-            SoftPositioner,
+            dict(
+                pseudos=[],
+                reals=dict(aaa=None, bbb=None, ccc=None, ddd=None, eee=None),
+                positioner_class=SoftPositioner,
+            ),
             does_not_raise(),
             id="5 soft reals",
         ),
         pytest.param(
-            [],
-            dict(aaa="IOC:m1", bbb=None, ccc=None, ddd=None, eee=None),
-            (EpicsMotor, SoftPositioner),
+            dict(
+                pseudos=[],
+                reals=dict(aaa="IOC:m1", bbb=None, ccc=None, ddd=None, eee=None),
+                positioner_class=(EpicsMotor, SoftPositioner),
+            ),
             does_not_raise(),
             id="mixed epics and soft reals",
         ),
-        pytest.param([], {}, SoftPositioner, does_not_raise(), id="empty reals dict"),
         pytest.param(
-            "h k".split(),
-            {},
-            SoftPositioner,
-            pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
-            id="pseudo axis mismatch h k",
-        ),
-        pytest.param(
-            "h2 k2 l2 psi alpha beta".split(),
-            {},
-            SoftPositioner,
-            pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
-            id="pseudo axis mismatch 6 pseudos",
+            dict(pseudos=[], reals={}, positioner_class=SoftPositioner),
+            does_not_raise(),
+            id="empty reals dict",
         ),
     ],
 )
-def test_creator_reals(pseudos, reals, positioner_class, context, config_file):
+def test_creator_reals_construction(parms, context):
+    """``creator()`` builds the diffractometer with the requested axes
+    and positioner classes.  No ``restore()`` is performed here; that
+    coverage is split out into the simulator/hardware tests below."""
     with context:
-        sim = creator(pseudos=pseudos, reals=reals)
+        sim = creator(pseudos=parms["pseudos"], reals=parms["reals"])
         assert sim is not None
         for axis in sim.real_axis_names:
-            if len(reals) > 0:
-                assert axis in reals
-            assert isinstance(getattr(sim, axis), positioner_class)
-        sim.restore(HKLPY2_DIR / "tests" / config_file)
+            if len(parms["reals"]) > 0:
+                assert axis in parms["reals"]
+            assert isinstance(getattr(sim, axis), parms["positioner_class"])
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                pseudos=[],
+                reals=dict(aaa=None, bbb=None, ccc=None),
+                config="e4cv_orient.yml",
+            ),
+            pytest.raises(KeyError, match=re.escape("tth")),
+            id="missing-tth-real",
+        ),
+        pytest.param(
+            dict(pseudos="h k".split(), reals={}, config="e4cv_orient.yml"),
+            pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
+            id="2-pseudos-h-k",
+        ),
+        pytest.param(
+            dict(
+                pseudos="h2 k2 l2 psi alpha beta".split(),
+                reals={},
+                config="e4cv_orient.yml",
+            ),
+            pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
+            id="6-pseudos",
+        ),
+        pytest.param(
+            dict(
+                pseudos="h k".split(),
+                reals={},
+                config="fourc-configuration.yml",
+            ),
+            pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
+            id="2-pseudos-fourc-configuration",
+        ),
+    ],
+)
+def test_creator_reals_restore_axis_mismatch(parms, context):
+    """A simulator built with a non-canonical pseudo or real axis set
+    raises during ``restore()`` validation: ``ConfigurationError`` for
+    pseudo-axis mismatch (early validation in ``Configuration._valid``)
+    or ``KeyError`` for missing real-axis names (late lookup in
+    ``Core._fromdict``)."""
+    with context:
+        sim = creator(pseudos=parms["pseudos"], reals=parms["reals"])
+        sim.restore(HKLPY2_DIR / "tests" / parms["config"])
+
+
+# Parameter sets shared by the simulator-restore and hardware-restore
+# variants below.  Only the ``does_not_raise()`` (i.e. successfully
+# constructed) cases are exercised; the failure cases are already
+# covered by ``test_creator_reals_construction``.
+_SIM_RESTORE_PARAMS = [
+    pytest.param(
+        dict(
+            reals=dict(aaa=None, bbb=None, ccc=None, ddd=None),
+            config="e4cv_orient.yml",
+        ),
+        does_not_raise(),
+        id="4-soft-reals-e4cv_orient",
+    ),
+    pytest.param(
+        dict(
+            reals=dict(aaa=None, bbb=None, ccc=None, ddd=None),
+            config="fourc-configuration.yml",
+        ),
+        does_not_raise(),
+        id="4-soft-reals-fourc-configuration",
+    ),
+    pytest.param(
+        dict(reals={}, config="e4cv_orient.yml"),
+        does_not_raise(),
+        id="empty-reals-e4cv_orient",
+    ),
+    pytest.param(
+        dict(reals={}, config="fourc-configuration.yml"),
+        does_not_raise(),
+        id="empty-reals-fourc-configuration",
+    ),
+]
+
+_HW_RESTORE_PARAMS = [
+    pytest.param(
+        dict(
+            reals=dict(omega="IOC:m1", chi="IOC:m2", phi="IOC:m3", tth="IOC:m4"),
+            config="e4cv_orient.yml",
+        ),
+        does_not_raise(),
+        id="epics-reals-e4cv_orient",
+    ),
+    pytest.param(
+        dict(
+            reals=dict(omega="IOC:m1", chi="IOC:m2", phi="IOC:m3", tth="IOC:m4"),
+            config="fourc-configuration.yml",
+        ),
+        does_not_raise(),
+        id="epics-reals-fourc-configuration",
+    ),
+    pytest.param(
+        dict(
+            reals=dict(aaa="IOC:m1", bbb=None, ccc=None, ddd=None, eee=None),
+            config="e4cv_orient.yml",
+        ),
+        does_not_raise(),
+        id="mixed-reals-e4cv_orient",
+    ),
+    pytest.param(
+        dict(
+            reals=dict(aaa="IOC:m1", bbb=None, ccc=None, ddd=None, eee=None),
+            config="fourc-configuration.yml",
+        ),
+        does_not_raise(),
+        id="mixed-reals-fourc-configuration",
+    ),
+]
+
+
+@pytest.mark.parametrize("parms, context", _SIM_RESTORE_PARAMS)
+def test_creator_reals_restore_simulator(parms, context):
+    """A simulator (all SoftPositioner reals) restores a legacy YAML
+    silently and applies the saved sample/wavelength."""
+    import warnings
+
+    with context:
+        sim = creator(reals=parms["reals"])
+        assert sim.is_simulator is True
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", UserWarning)
+            sim.restore(HKLPY2_DIR / "tests" / parms["config"])
+
+        # The legacy fixtures save a non-default sample; restore on a
+        # simulator must adopt it.
+        assert sim.sample.name != DEFAULT_SAMPLE_NAME
+
+
+@pytest.mark.parametrize("parms, context", _HW_RESTORE_PARAMS)
+def test_creator_reals_restore_hardware_safe_defaults(parms, context):
+    """Hardware-backed restore() (any EpicsMotor real) emits the safety
+    UserWarning and skips dangerous sections by default."""
+    with context:
+        sim = creator(reals=parms["reals"])
+        assert sim.is_simulator is False
+
+        original_sample = sim.sample.name
+        original_wavelength = sim.beam.wavelength.get()
+
+        with pytest.warns(UserWarning, match=re.escape("hardware-backed")):
+            sim.restore(HKLPY2_DIR / "tests" / parms["config"])
+
+        # Dangerous sections were skipped: sample and wavelength unchanged.
+        assert sim.sample.name == original_sample
+        assert sim.beam.wavelength.get() == pytest.approx(original_wavelength)
+
+
+@pytest.mark.parametrize("parms, context", _HW_RESTORE_PARAMS)
+def test_creator_reals_restore_hardware_explicit_opt_in(parms, context):
+    """Hardware-backed restore() with explicit kwargs applies all
+    requested sections and emits no UserWarning."""
+    import warnings
+
+    with context:
+        sim = creator(reals=parms["reals"])
+        assert sim.is_simulator is False
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", UserWarning)
+            sim.restore(
+                HKLPY2_DIR / "tests" / parms["config"],
+                clear=True,
+                restore_samples=True,
+                restore_wavelength=True,
+                restore_extras=True,
+            )
+
+        # Sample restored from the saved configuration.
+        assert sim.sample.name != DEFAULT_SAMPLE_NAME
 
 
 @pytest.mark.parametrize(

@@ -25,6 +25,7 @@ from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
+from .exceptions import ConfigurationError
 from .exceptions import CoreError
 from .exceptions import NoForwardSolutions
 from .solver_utils import solver_factory
@@ -168,12 +169,35 @@ class Core:
         """Convert keys of axis dictionary from diffractometer to solver."""
         return {self.axes_xref[k]: v for k, v in axis_dict.items()}
 
-    def _fromdict(self, config: KeyValueMap) -> None:
+    @versionchanged(
+        version="0.6.2",
+        reason=(
+            "Honor ``restore_samples`` / ``restore_extras`` / "
+            "``restore_presets`` flags so callers can scope which sections "
+            "are applied; flag ``_SolverDirty.EXTRAS`` when the extras are "
+            "mutated so the next ``forward()`` reliably uses the restored "
+            "values; raise ``ConfigurationError`` (was ``KeyError``) when "
+            "incoming extras include unknown axis names.  See :issue:`390`."
+        ),
+    )
+    def _fromdict(
+        self,
+        config: KeyValueMap,
+        restore_samples: bool = True,
+        restore_extras: bool = True,
+        restore_presets: bool = True,
+    ) -> None:
         """Redefine diffractometer from a (configuration) dictionary."""
         # Since this code might raise, validate first.
         extras = self._validate_extras(config["axes"]["extra_axes"], self.all_extras)
-        if len(extras) > 0:
+        if restore_extras and len(extras) > 0:
             self._extras.update(extras)
+            # Mirror the ``Core.extras`` setter: any mutation of ``_extras``
+            # must mark the solver-side EXTRAS domain dirty so the next
+            # ``update_solver()`` re-pushes the new values.  Without this
+            # flag, restored extras would only reach the solver as a side
+            # effect of an unrelated SAMPLE re-push (#390).
+            self.request_solver_update(_SolverDirty.EXTRAS)
 
         digits = config.get("digits")
         if isinstance(digits, int) and 0 <= digits:
@@ -195,12 +219,13 @@ class Core:
                         if local in saved_axes_xref and local in saved
                     }
 
-        for key, sample in config["samples"].items():
-            sample_object = self.add_sample(key, 1, replace=True)
-            sample_object._fromdict(sample, core=self)
-        sname = config.get("sample_name")
-        if sname is not None:
-            self.sample = sname
+        if restore_samples:
+            for key, sample in config["samples"].items():
+                sample_object = self.add_sample(key, 1, replace=True)
+                sample_object._fromdict(sample, core=self)
+            sname = config.get("sample_name")
+            if sname is not None:
+                self.sample = sname
 
         for key, constraint in config["constraints"].items():
             if (
@@ -214,13 +239,22 @@ class Core:
                 constraint["label"] = axis_local
         self.constraints._fromdict(config["constraints"], core=self)
 
-        presets = config.get("presets", {})
-        for mode, mode_presets in presets.items():
-            if mode in self.modes:
-                self._mode_presets[mode] = {
-                    str(k): float(v) for k, v in mode_presets.items()
-                }
+        if restore_presets:
+            presets = config.get("presets", {})
+            for mode, mode_presets in presets.items():
+                if mode in self.modes:
+                    self._mode_presets[mode] = {
+                        str(k): float(v) for k, v in mode_presets.items()
+                    }
 
+    @versionchanged(
+        version="0.6.2",
+        reason=(
+            "Raise ``ConfigurationError`` instead of ``KeyError`` when the "
+            "supplied extras include axis names not known to the active "
+            "solver/mode.  See :issue:`390`."
+        ),
+    )
     def _validate_extras(
         self,
         values: NamedFloatDict,
@@ -234,7 +268,7 @@ class Core:
             else:
                 unexpected.append(key)
         if len(unexpected) > 0:
-            raise KeyError(
+            raise ConfigurationError(
                 f"Unexpected extra axis name(s) {unexpected!r}."
                 # ..
                 f"  Expected names: {expected}."

@@ -1,19 +1,12 @@
 #hklpy2 configuration file
 
 _header:
-  datetime: '2025-04-07'
-  hklpy2_version: 0.0.25.dev80+g1b7412b.d20240925
-  python_class: SimulatedE4CV
-  file: e4cv_orient.yml
-  comment: 'example: two samples, one oriented'
+  datetime: '2026-04-30 17:31:44.495500'
+  hklpy2_version: 0.6.2.dev4+gde2b3abb7.d20260430
+  python_class: Hklpy2Diffractometer
+  file: /home/beams1/JEMIAN/Documents/projects/Bluesky/hklpy2/src/hklpy2/tests/e4cv_orient.yml.reexport.tmp
+  comment: 're-exported for issue #390 schema sync (e4cv_orient.yml)'
 name: e4cv
-beam:
-  class: WavelengthXray
-  energy_units: keV
-  energy: 8.050921976530415
-  source_type: X-ray
-  wavelength_units: angstrom
-  wavelength: 1.54
 axes:
   pseudo_axes:
   - h
@@ -32,7 +25,13 @@ axes:
     chi: chi
     phi: phi
     tth: tth
-  extra_axes: {}
+  extra_axes:
+    h2: 0
+    k2: 0
+    l2: 0
+    psi: 0
+  auxiliary_axes: []
+digits: 4
 sample_name: vibranium
 samples:
   sample:
@@ -44,18 +43,21 @@ samples:
       alpha: 90.0
       beta: 90.0
       gamma: 90.0
+      digits: 4
+      angle_units: degrees
+      length_units: angstrom
     reflections: {}
     reflections_order: []
     U: &id001
-      - - 1
-        - 0
-        - 0
-      - - 0
-        - 1
-        - 0
-      - - 0
-        - 0
-        - 1
+    - - 1
+      - 0
+      - 0
+    - - 0
+      - 1
+      - 0
+    - - 0
+      - 0
+      - 1
     UB: *id001
     digits: 4
   vibranium:
@@ -67,6 +69,9 @@ samples:
       alpha: 90.0
       beta: 90.0
       gamma: 90.0
+      digits: 4
+      angle_units: degrees
+      length_units: angstrom
     reflections:
       r400:
         name: r400
@@ -80,7 +85,9 @@ samples:
           chi: 0
           phi: 0
           tth: 69.066
+        reals_units: angstrom
         wavelength: 1.54
+        wavelength_units: angstrom
         digits: 4
       r040:
         name: r040
@@ -94,7 +101,9 @@ samples:
           chi: 0
           phi: 90
           tth: 69.066
+        reals_units: angstrom
         wavelength: 1.54
+        wavelength_units: angstrom
         digits: 4
       r004:
         name: r004
@@ -108,7 +117,9 @@ samples:
           chi: 90
           phi: 0
           tth: 69.066
+        reals_units: angstrom
         wavelength: 1.54
+        wavelength_units: angstrom
         digits: 4
     reflections_order:
     - r040
@@ -117,22 +128,22 @@ samples:
     - - 0.000279252677
       - -0.999999961009
       - -2.2e-11
-    - - -7.7982e-8
+    - - -7.7982e-08
       - 0.0
       - -1
     - - 0.999999961009
       - 0.000279252677
-      - -7.7982e-8
+      - -7.7982e-08
     UB:
     - - 0.000279252677
       - -0.999999961009
       - -2.2e-11
-    - - -7.7982e-8
+    - - -7.7982e-08
       - 0.0
       - -1
     - - 0.999999961009
       - 0.000279252677
-      - -7.7982e-8
+      - -7.7982e-08
     digits: 4
 constraints:
   omega:
@@ -161,13 +172,22 @@ constraints:
     class: LimitsConstraint
 solver:
   name: hkl_soleil
+  description: HklSolver(name='hkl_soleil', version='5.1.3', geometry='E4CV', engine_name='hkl',
+    mode='bissector')
   geometry: E4CV
-  version: 5.0.0.3512
-  mode: bissector
-  description: HklSolver(name='hkl_soleil', version='5.0.0.3512', geometry='E4CV', engine_name='hkl', mode='bissector')
   real_axes:
   - omega
   - chi
   - phi
   - tth
+  version: 5.1.3
   engine: hkl
+  mode: bissector
+beam:
+  class: WavelengthXray
+  source_type: Synchrotron X-ray Source
+  energy: 8.050921976530415
+  wavelength: 1.54
+  energy_units: keV
+  wavelength_units: angstrom
+presets: {}
