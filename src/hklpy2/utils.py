@@ -56,6 +56,7 @@ import numpy as np
 import pint
 import yaml
 from deprecated.sphinx import versionadded
+from deprecated.sphinx import versionchanged
 
 from .exceptions import NoForwardSolutions
 from .typing import AnyAxesType
@@ -380,9 +381,51 @@ def pick_first_solution(
     return solutions[0]
 
 
-def roundoff(value: float, digits=4) -> float:
-    """Round a number to specified precision."""
-    return round(value, ndigits=digits) or 0  # "-0" becomes "0"
+@versionchanged(
+    version="0.6.2",
+    reason=(
+        "Accept structured inputs (namedtuple/Mapping/Sequence) and"
+        " recursively round their numeric leaves; opaque inputs fall"
+        " through to ``repr(value)``.  Scalar behavior is unchanged."
+    ),
+)
+def roundoff(value, digits=4):
+    """Round ``value`` to ``digits`` precision (fail-safe).
+
+    The historical scalar contract is preserved: a scalar input
+    returns a ``float`` (with ``-0`` collapsed to ``0``).
+
+    Structured inputs are handled recursively and never raise:
+
+    * ``namedtuple`` (has ``_fields`` and ``_asdict``) -> ``dict``
+      mapping each field name to its recursively-rounded value.
+    * :class:`~typing.Mapping` -> ``dict`` with the same keys and
+      recursively-rounded values.
+    * :class:`~typing.Sequence` (excluding ``str``/``bytes``) ->
+      ``list`` of recursively-rounded values.
+    * Anything else (including ``str``, ``bytes``, and objects without
+      ``__round__``) -> ``repr(value)``.
+
+    This keeps callers like :meth:`~hklpy2.diffract.DiffractometerBase.wh`
+    safe when an auxiliary component reports a structured position
+    (e.g. a nested ``ophyd.PseudoPositioner`` whose ``.position`` is a
+    namedtuple).  See issue :issue:`385`.
+    """
+    # namedtuple: detect via duck-typing (_fields + _asdict) and
+    # check before the generic Mapping/Sequence branches because a
+    # namedtuple is also a Sequence.
+    if hasattr(value, "_fields") and hasattr(value, "_asdict"):
+        return {k: roundoff(v, digits) for k, v in value._asdict().items()}
+    if isinstance(value, Mapping):
+        return {k: roundoff(v, digits) for k, v in value.items()}
+    if isinstance(value, (str, bytes)):
+        return repr(value)
+    if isinstance(value, Sequence):
+        return [roundoff(v, digits) for v in value]
+    try:
+        return round(value, ndigits=digits) or 0  # "-0" becomes "0"
+    except TypeError:
+        return repr(value)
 
 
 def unique_name(prefix: str = "", length: int = 7) -> str:

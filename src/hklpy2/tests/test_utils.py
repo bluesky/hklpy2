@@ -382,6 +382,87 @@ def test_roundoff(value, digits, expected_text):
     assert str(result) == expected_text
 
 
+# ----- structured-input behavior (issue #385) ---------------------------------
+
+_RoundoffPos = namedtuple("_RoundoffPos", "energy theta")
+_RoundoffNested = namedtuple("_RoundoffNested", "outer inner")
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(value=_RoundoffPos(8.98674, 12.00001), digits=4),
+            does_not_raise(),
+            id="namedtuple-returns-dict",
+        ),
+        pytest.param(
+            dict(value={"a": 1.23456, "b": 0.0}, digits=4),
+            does_not_raise(),
+            id="mapping-returns-dict",
+        ),
+        pytest.param(
+            dict(value=[1.23456, 0.0], digits=4),
+            does_not_raise(),
+            id="list-returns-list",
+        ),
+        pytest.param(
+            dict(value=(1.23456, 0.0), digits=4),
+            does_not_raise(),
+            id="tuple-returns-list",
+        ),
+        pytest.param(
+            dict(
+                value=_RoundoffNested(
+                    outer=_RoundoffPos(1.23456, 2.34567),
+                    inner={"x": 3.45678},
+                ),
+                digits=4,
+            ),
+            does_not_raise(),
+            id="nested-namedtuple-and-mapping",
+        ),
+        pytest.param(
+            dict(value="abc", digits=4),
+            does_not_raise(),
+            id="string-falls-through-to-repr",
+        ),
+        pytest.param(
+            dict(value=b"abc", digits=4),
+            does_not_raise(),
+            id="bytes-falls-through-to-repr",
+        ),
+        pytest.param(
+            dict(value=object(), digits=4),
+            does_not_raise(),
+            id="opaque-object-falls-through-to-repr",
+        ),
+    ],
+)
+def test_roundoff_structured(parms, context):
+    """Structured inputs are recursively rounded; opaque inputs fall back."""
+    with context:
+        result = roundoff(parms["value"], parms["digits"])
+        value = parms["value"]
+        if hasattr(value, "_fields") and hasattr(value, "_asdict"):
+            assert isinstance(result, dict)
+            assert set(result) == set(value._asdict())
+            # Nested namedtuple field becomes a dict.
+            for k, v in result.items():
+                if hasattr(getattr(value, k), "_fields"):
+                    assert isinstance(v, dict)
+        elif isinstance(value, dict):
+            assert isinstance(result, dict)
+            assert set(result) == set(value)
+        elif isinstance(value, (list, tuple)) and not isinstance(value, (str, bytes)):
+            assert isinstance(result, list)
+            assert len(result) == len(value)
+        else:
+            # str / bytes / opaque object -> repr fallback (always a str)
+            assert isinstance(result, str)
+            assert result == repr(value)
+
+
 @pytest.mark.parametrize(
     "devices, context",
     [

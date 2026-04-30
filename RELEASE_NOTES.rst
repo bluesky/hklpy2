@@ -41,12 +41,22 @@ New Features
 * Add how-to guide: polarization analyzer as auxiliary positioners on
   the detector arm. (:issue:`360`)
 
+Enhancements
+------------
+
+* ``roundoff()`` accepts namedtuple / mapping / sequence inputs and
+  recursively rounds their numeric leaves; opaque values fall through
+  to ``repr``; scalar behavior unchanged. (:issue:`385`)
+
 Fixes
 -----
 
 * ``how_analyzer.ipynb``: correct stale prose about config save/restore
   (axis names are stored, positions are not; solver mode is restored);
   remove duplicate Bragg-law cell. (:issue:`360`)
+* ``pa()`` / ``wh(full=True)`` no longer crashes when an auxiliary
+  component returns a structured (multi-field) position; rendered
+  inline as ``name={field=value, ...}``. (:issue:`385`)
 
 0.6.1
 #####
