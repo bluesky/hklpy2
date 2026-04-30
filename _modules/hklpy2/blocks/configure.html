@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=c675e3b8"></script>
+    <script src="../../../_static/documentation_options.js?v=012f7712"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -427,6 +427,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionchanged</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span>
 
@@ -456,11 +458,22 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return diffractometer&#39;s configuration as a dict.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>
 
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Add ``restore_samples`` / ``restore_extras`` / &quot;</span>
+            <span class="s2">&quot;``restore_presets`` flags so callers can scope which sections &quot;</span>
+            <span class="s2">&quot;of the configuration are applied.  See :issue:`390`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
         <span class="n">clear</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">restore_constraints</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">restore_samples</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">restore_extras</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">restore_presets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Restore diffractometer&#39;s configuration from a dict.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_valid</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>  <span class="c1"># will raise if invalid</span>
@@ -481,8 +494,21 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">config</span><span class="p">[</span><span class="s2">&quot;constraints&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">,</span>
+            <span class="n">restore_samples</span><span class="o">=</span><span class="n">restore_samples</span><span class="p">,</span>
+            <span class="n">restore_extras</span><span class="o">=</span><span class="n">restore_extras</span><span class="p">,</span>
+            <span class="n">restore_presets</span><span class="o">=</span><span class="n">restore_presets</span><span class="p">,</span>
+        <span class="p">)</span>
 
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Validate ``extra_axes`` early so a mismatch raises a clear &quot;</span>
+            <span class="s2">&quot;``ConfigurationError`` instead of a deep ``KeyError`` from &quot;</span>
+            <span class="s2">&quot;``Core._validate_extras``.  See :issue:`390`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate incoming configuration for current diffractometer.&quot;&quot;&quot;</span>
 
@@ -521,7 +547,18 @@
             <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solver&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;real_axes&quot;</span><span class="p">),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_real_axis_names</span><span class="p">,</span>
             <span class="s2">&quot;solver real axis mismatch: incoming=</span><span class="si">%r</span><span class="s2"> existing=</span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+        <span class="c1"># Validate extras early so a mismatch raises a clear</span>
+        <span class="c1"># ConfigurationError before Core._validate_extras would raise the</span>
+        <span class="c1"># opaque KeyError.</span>
+        <span class="n">incoming_extras</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;axes&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extra_axes&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">existing_extras</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">all_extras</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">unexpected</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">incoming_extras</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">existing_extras</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">unexpected</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;extra axis mismatch: unexpected extras </span><span class="si">{</span><span class="n">unexpected</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; not in solver-known extras </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">existing_extras</span><span class="p">)</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span></div>
 
 </pre></div>
 

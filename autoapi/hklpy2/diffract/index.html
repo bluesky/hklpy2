@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=c675e3b8"></script>
+    <script src="../../../_static/documentation_options.js?v=012f7712"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -589,19 +589,22 @@ Used by <a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.configuration" title="hklpy2.diffract.DiffractometerBase.configuration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration</span></code></a></p></td>
 <td><p>Diffractometer configuration (orientation).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.pseudo_axis_names" title="hklpy2.diffract.DiffractometerBase.pseudo_axis_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pseudo_axis_names</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.is_simulator" title="hklpy2.diffract.DiffractometerBase.is_simulator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_simulator</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> when every real positioner is an <code class="docutils literal notranslate"><span class="pre">ophyd.SoftPositioner</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.pseudo_axis_names" title="hklpy2.diffract.DiffractometerBase.pseudo_axis_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pseudo_axis_names</span></code></a></p></td>
 <td><p>Names of all the pseudo axes, in order of appearance.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.real_axis_names" title="hklpy2.diffract.DiffractometerBase.real_axis_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_axis_names</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.real_axis_names" title="hklpy2.diffract.DiffractometerBase.real_axis_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_axis_names</span></code></a></p></td>
 <td><p>Names of all the real axes, in order of appearance.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.reals_units" title="hklpy2.diffract.DiffractometerBase.reals_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reals_units</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.reals_units" title="hklpy2.diffract.DiffractometerBase.reals_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reals_units</span></code></a></p></td>
 <td><p>Engineering units for the reals (rotational) axes</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.sample" title="hklpy2.diffract.DiffractometerBase.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.sample" title="hklpy2.diffract.DiffractometerBase.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a></p></td>
 <td><p>Current sample object.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.samples" title="hklpy2.diffract.DiffractometerBase.samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">samples</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.samples" title="hklpy2.diffract.DiffractometerBase.samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">samples</span></code></a></p></td>
 <td><p>Dictionary of samples.</p></td>
 </tr>
 </tbody>
@@ -712,6 +715,15 @@ new digit count is used for their string representations.</p>
 <dd><p>Compute pseudo-space coordinates from reals (angles -&gt; hkl).</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.diffract.DiffractometerBase.is_simulator">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_simulator</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="reference internal" href="../../../_modules/hklpy2/diffract.html#DiffractometerBase.is_simulator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.diffract.DiffractometerBase.is_simulator" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> when every real positioner is an <code class="docutils literal notranslate"><span class="pre">ophyd.SoftPositioner</span></code>.</p>
+<p>Computed once in <code class="docutils literal notranslate"><span class="pre">__init__</span></code>; this is a classification of the
+components, not a liveness check.  Used by <a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.restore" title="hklpy2.diffract.DiffractometerBase.restore"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restore()</span></code></a> to choose
+conservative defaults on hardware-backed diffractometers.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2.diffract.DiffractometerBase.move_dict">
 <span class="sig-name descname"><span class="pre">move_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.typing.AxesDict" title="hklpy2.typing.AxesDict"><span class="pre">AxesDict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../typing/index.html#hklpy2.typing.BlueskyPlanType" title="hklpy2.typing.BlueskyPlanType"><span class="pre">BlueskyPlanType</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/diffract.html#DiffractometerBase.move_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.diffract.DiffractometerBase.move_dict" title="Link to this definition">#</a></dt>
@@ -785,7 +797,7 @@ new digit count is used for their string representations.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2.diffract.DiffractometerBase.restore">
-<span class="sig-name descname"><span class="pre">restore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_wavelength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/diffract.html#DiffractometerBase.restore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.diffract.DiffractometerBase.restore" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">restore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_wavelength</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_extras</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_presets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/diffract.html#DiffractometerBase.restore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.diffract.DiffractometerBase.restore" title="Link to this definition">#</a></dt>
 <dd><p>Restore diffractometer configuration.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
@@ -794,29 +806,61 @@ new digit count is used for their string representations.</p>
 <span class="n">e4cv</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="s2">&quot;e4cv-config.yml&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">restore()</span></code> itself never moves a motor.  However, several of the
+sections it can apply (samples / U / UB, extras, wavelength, solver
+mode) are inputs to the next <a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> call and would change
+the angles a subsequent move would target.  To prevent that from
+happening silently when the diffractometer is hardware-backed
+(<code class="docutils literal notranslate"><span class="pre">self.is_simulator</span> <span class="pre">==</span> <span class="pre">False</span></code>), each <code class="docutils literal notranslate"><span class="pre">restore_*</span></code> kwarg defaults
+to <code class="docutils literal notranslate"><span class="pre">None</span></code> and is resolved as follows:</p>
+<ul class="simple">
+<li><p><strong>simulator</strong> (<code class="docutils literal notranslate"><span class="pre">is_simulator</span> <span class="pre">==</span> <span class="pre">True</span></code>): all <code class="docutils literal notranslate"><span class="pre">restore_*</span></code>
+default to <code class="docutils literal notranslate"><span class="pre">True</span></code> except <code class="docutils literal notranslate"><span class="pre">restore_mode</span></code> which defaults to
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.  This preserves the historic behavior used by
+<code class="docutils literal notranslate"><span class="pre">simulator_from_config()</span></code>.</p></li>
+<li><p><strong>hardware-backed</strong> (<code class="docutils literal notranslate"><span class="pre">is_simulator</span> <span class="pre">==</span> <span class="pre">False</span></code>):
+<code class="docutils literal notranslate"><span class="pre">restore_constraints</span></code> and <code class="docutils literal notranslate"><span class="pre">restore_presets</span></code> default to
+<code class="docutils literal notranslate"><span class="pre">True</span></code> (these only narrow the search space or pre-load extras
+when a mode is later entered).  <code class="docutils literal notranslate"><span class="pre">restore_samples</span></code>,
+<code class="docutils literal notranslate"><span class="pre">restore_extras</span></code>, <code class="docutils literal notranslate"><span class="pre">restore_wavelength</span></code>, <code class="docutils literal notranslate"><span class="pre">restore_mode</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">clear</span></code> default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.  A single <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> is
+emitted listing the sections that were skipped, so the user can
+opt back in by passing the corresponding kwarg(s) explicitly.</p></li>
+</ul>
+<p>Passing any <code class="docutils literal notranslate"><span class="pre">restore_*</span></code> kwarg explicitly (<code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+always honors that value regardless of <code class="docutils literal notranslate"><span class="pre">is_simulator</span></code>.</p>
 <p>PARAMETERS</p>
-<dl>
+<dl class="simple">
 <dt>config<span class="classifier">dict, str, or pathlib object</span></dt><dd><p>Dictionary with configuration, or name (str or pathlib object) of
 diffractometer configuration YAML file.</p>
 </dd>
-<dt>clear<span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), remove any previous configuration of the
-diffractometer and reset it to default values before restoring the
-configuration.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, sample reflections will be append with all reflections
-included in the configuration data for that sample.  Existing
-reflections will not be changed.  The user may need to edit the
-list of reflections after <code class="docutils literal notranslate"><span class="pre">restore(clear=False)</span></code>.</p>
+<dt>clear<span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, reset constraints and samples to defaults before
+restoring.  If <code class="docutils literal notranslate"><span class="pre">False</span></code>, sample reflections from the
+configuration are appended to existing ones; existing reflections
+are not changed.  Default depends on <code class="docutils literal notranslate"><span class="pre">is_simulator</span></code> (see above).</p>
 </dd>
-<dt>restore_constraints<span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), restore any constraints provided.</p>
+<dt>restore_constraints<span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, restore constraints.  Default depends on
+<code class="docutils literal notranslate"><span class="pre">is_simulator</span></code> (see above).</p>
 </dd>
-<dt>restore_wavelength<span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), restore wavelength.</p>
+<dt>restore_wavelength<span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, restore wavelength / energy.  Default depends on
+<code class="docutils literal notranslate"><span class="pre">is_simulator</span></code> (see above).</p>
 </dd>
-<dt>restore_mode<span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">False</span></code> (default), the solver mode is not changed.  If the
-saved mode differs from the current mode, a warning is issued so
-the user can decide whether to apply it.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the saved mode is applied.  Use with caution on
-hardware-connected diffractometers — changing mode can cause
-<code class="docutils literal notranslate"><span class="pre">forward()</span></code> to move axes that were previously held fixed.</p>
+<dt>restore_mode<span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the saved solver mode is applied.  Use with caution
+on hardware-backed diffractometers — changing mode can cause
+<code class="docutils literal notranslate"><span class="pre">forward()</span></code> to target axes that were previously held fixed.
+Default depends on <code class="docutils literal notranslate"><span class="pre">is_simulator</span></code> (see above); a warning is
+emitted when defaults skip the mode and the saved mode differs
+from the current mode.</p>
+</dd>
+<dt>restore_samples<span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, restore samples (lattice, reflections, U, UB, and
+the active sample name).  Default depends on <code class="docutils literal notranslate"><span class="pre">is_simulator</span></code>
+(see above).</p>
+</dd>
+<dt>restore_extras<span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, restore solver extras (e.g. <code class="docutils literal notranslate"><span class="pre">h2</span></code>, <code class="docutils literal notranslate"><span class="pre">k2</span></code>, <code class="docutils literal notranslate"><span class="pre">l2</span></code>,
+<code class="docutils literal notranslate"><span class="pre">psi</span></code>).  Default depends on <code class="docutils literal notranslate"><span class="pre">is_simulator</span></code> (see above).</p>
+</dd>
+<dt>restore_presets<span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, restore per-mode axis presets.  Default depends on
+<code class="docutils literal notranslate"><span class="pre">is_simulator</span></code> (see above).</p>
 </dd>
 </dl>
 <p>Note: Can’t name this method “import”, it’s a reserved Python word.</p>
@@ -1168,6 +1212,7 @@ Used by <a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.diffract.DiffractometerBase.forward"><code class="docutils literal notranslate"><span class="pre">DiffractometerBase.forward()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.diffract.DiffractometerBase.full_position"><code class="docutils literal notranslate"><span class="pre">DiffractometerBase.full_position()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.diffract.DiffractometerBase.inverse"><code class="docutils literal notranslate"><span class="pre">DiffractometerBase.inverse()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.diffract.DiffractometerBase.is_simulator"><code class="docutils literal notranslate"><span class="pre">DiffractometerBase.is_simulator</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.diffract.DiffractometerBase.move_dict"><code class="docutils literal notranslate"><span class="pre">DiffractometerBase.move_dict()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.diffract.DiffractometerBase.move_forward_with_extras"><code class="docutils literal notranslate"><span class="pre">DiffractometerBase.move_forward_with_extras()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.diffract.DiffractometerBase.move_inverse_with_extras"><code class="docutils literal notranslate"><span class="pre">DiffractometerBase.move_inverse_with_extras()</span></code></a></li>

@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=c675e3b8"></script>
+    <script src="_static/documentation_options.js?v=012f7712"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -442,16 +442,24 @@ describe future plans.</p>
 <section id="new-features">
 <h3>New Features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">DiffractometerBase.is_simulator</span></code> property. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/390">issue #390</a>)</p></li>
 <li><p>Add how-to guide: polarization analyzer as auxiliary positioners on
 the detector arm. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/360">issue #360</a>)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">restore_samples</span></code> / <code class="docutils literal notranslate"><span class="pre">restore_extras</span></code> / <code class="docutils literal notranslate"><span class="pre">restore_presets</span></code>
+kwargs to <code class="docutils literal notranslate"><span class="pre">restore()</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/390">issue #390</a>)</p></li>
 </ul>
 </section>
 <section id="enhancements">
 <h3>Enhancements<a class="headerlink" href="#enhancements" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">restore()</span></code> defaults to safe behavior on hardware-backed
+diffractometers: skips wavelength / samples / extras / mode and emits
+a single <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/390">issue #390</a>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">roundoff()</span></code> accepts namedtuple / mapping / sequence inputs and
 recursively rounds their numeric leaves; opaque values fall through
 to <code class="docutils literal notranslate"><span class="pre">repr</span></code>; scalar behavior unchanged. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/385">issue #385</a>)</p></li>
+<li><p>Validate <code class="docutils literal notranslate"><span class="pre">extra_axes</span></code> early in <code class="docutils literal notranslate"><span class="pre">Configuration._valid</span></code> and raise
+<code class="docutils literal notranslate"><span class="pre">ConfigurationError</span></code> (was opaque <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>). (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/390">issue #390</a>)</p></li>
 </ul>
 </section>
 <section id="fixes">
@@ -466,6 +474,8 @@ to match the function. (<a class="extlink-issue reference external" href="https:
 <li><p><code class="docutils literal notranslate"><span class="pre">pa()</span></code> / <code class="docutils literal notranslate"><span class="pre">wh(full=True)</span></code> no longer crashes when an auxiliary
 component returns a structured (multi-field) position; rendered
 inline as <code class="docutils literal notranslate"><span class="pre">name={field=value,</span> <span class="pre">...}</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/385">issue #385</a>)</p></li>
+<li><p>Round-trip extras (<code class="docutils literal notranslate"><span class="pre">h2</span></code>, <code class="docutils literal notranslate"><span class="pre">k2</span></code>, <code class="docutils literal notranslate"><span class="pre">l2</span></code>, <code class="docutils literal notranslate"><span class="pre">psi</span></code>, …) through
+<code class="docutils literal notranslate"><span class="pre">export()</span></code> / <code class="docutils literal notranslate"><span class="pre">restore()</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/390">issue #390</a>)</p></li>
 <li><p>Fix stale <code class="docutils literal notranslate"><span class="pre">wh()</span></code> / <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> after <code class="docutils literal notranslate"><span class="pre">calc_UB</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/384">issue #384</a>)</p></li>
 <li><p>Fix stale <code class="docutils literal notranslate"><span class="pre">wh()</span></code> / <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> after sample switch; unknown
 sample names now raise <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/386">issue #386</a>)</p></li>
@@ -474,6 +484,9 @@ sample names now raise <code class="docutils literal notranslate"><span class="p
 <section id="maintenance">
 <h3>Maintenance<a class="headerlink" href="#maintenance" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Re-export legacy configuration YAMLs (<code class="docutils literal notranslate"><span class="pre">e4cv_orient</span></code>,
+<code class="docutils literal notranslate"><span class="pre">e4cv-silicon-example</span></code>, <code class="docutils literal notranslate"><span class="pre">fourc-i183</span></code>, <code class="docutils literal notranslate"><span class="pre">configuration_i240</span></code>) to
+current schema. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/390">issue #390</a>)</p></li>
 <li><p>Track solver-state dirty domains (sample, UB, mode, extras,
 wavelength) with a fine-grained <code class="docutils literal notranslate"><span class="pre">_SolverDirty</span></code> bitfield in
 <code class="docutils literal notranslate"><span class="pre">Core</span></code>. (<a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/386">issue #386</a>)</p></li>
