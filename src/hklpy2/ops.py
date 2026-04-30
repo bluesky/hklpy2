@@ -17,6 +17,8 @@ from typing import Mapping
 from typing import Optional
 from typing import Union
 
+from deprecated.sphinx import versionchanged
+
 from .backends.base import SolverBase
 from .blocks.configure import Configuration
 from .blocks.constraints import RealAxisConstraints
@@ -26,6 +28,7 @@ from .blocks.sample import Sample
 from .exceptions import CoreError
 from .exceptions import NoForwardSolutions
 from .solver_utils import solver_factory
+from .utils import _SolverDirty
 from .utils import axes_to_dict
 from .utils import convert_units
 from .utils import unique_name
@@ -120,9 +123,9 @@ class Core:
         self._sample_name = None
         self._samples = {}
         self._solver = None
+        self._solver_dirty = _SolverDirty.ALL
         self.constraints = None
         self.configuration = None
-        self.request_solver_update()
 
         if default_sample:
             # first sample is cubic, no reflections
@@ -375,7 +378,10 @@ class Core:
         lattice = Lattice(a, b, c, alpha, beta, gamma, digits=digits)
         self._samples[name] = Sample(self, name, lattice)
         self.sample = name
-        self.request_solver_update(True)  # 58  test_diffract line 410: 2 pi a
+        # The ``self.sample = name`` setter already flags SAMPLE | UB.
+        # An explicit ALL flag here keeps prior behavior for the eager
+        # ``solver.sample = ...`` push below (test_diffract line 410: 2 pi a).
+        self.request_solver_update(True)
         if self.solver is not None:
             self.solver.sample = self.to_solver_units()["sample"]
         return self.sample
@@ -439,6 +445,16 @@ class Core:
             self._axes_xref_reversed = {v: k for k, v in self.axes_xref.items()}
         return self._axes_xref_reversed
 
+    @versionchanged(
+        version="0.6.2",
+        reason=(
+            "No longer falsely clears all solver-dirty flags after computing "
+            "UB.  The U / UB push to the solver is now correctly tracked by "
+            "the fine-grained dirty bitfield, so ``inverse()`` / ``wh()`` "
+            "immediately after ``calc_UB()`` returns values consistent with "
+            "the freshly computed UB.  Fixes :issue:`384`."
+        ),
+    )
     def calc_UB(
         self, r1: Union[Reflection, str], r2: Union[Reflection, str]
     ) -> Matrix3x3:
@@ -469,9 +485,17 @@ class Core:
 
         solver_reflections = self._reflections_to_solver(two_reflections)
         ub = self.solver.calculate_UB(*solver_reflections)
+        # The solver has now computed U / UB and holds them internally.
+        # Mirror them into the Python Sample (the U / UB setters
+        # legitimately flag _SolverDirty.UB), then immediately re-push to
+        # the solver so the dirty flag is honestly clean.  (The prior
+        # implementation called request_solver_update(False) here, which
+        # would mask any other concurrently-dirty domain such as a
+        # pending sample switch -- the latent contributor to
+        # :issue:`384`.)
         self.sample.U = self.solver.U
         self.sample.UB = ub
-        self.request_solver_update(False)
+        self.update_solver()
         return ub
 
     @property
@@ -486,7 +510,7 @@ class Core:
         incoming = self._validate_extras(values, self.extras)
         if len(incoming) > 0:
             self._extras.update(incoming)
-            self.request_solver_update(True)
+            self.request_solver_update(_SolverDirty.EXTRAS)
 
     def forward(self, pseudos: AnyAxesType, wavelength: Optional[float] = None) -> list:
         """
@@ -676,7 +700,9 @@ class Core:
         """Return the current computation mode."""
         if self._mode is None:
             self._mode = self.solver.mode
-            self.request_solver_update(True)
+            # A mode change may reset the solver's extra-axis values,
+            # so EXTRAS must be re-pushed after MODE.
+            self.request_solver_update(_SolverDirty.MODE | _SolverDirty.EXTRAS)
         return self._mode
 
     @mode.setter
@@ -684,7 +710,9 @@ class Core:
         """Set the computation mode to be used."""
         if value in self.modes:
             self._mode = value
-            self.request_solver_update(True)
+            # A mode change may reset the solver's extra-axis values,
+            # so EXTRAS must be re-pushed after MODE.
+            self.request_solver_update(_SolverDirty.MODE | _SolverDirty.EXTRAS)
 
     @property
     def modes(self) -> list[str]:
@@ -921,14 +949,53 @@ class Core:
         self._samples.pop(name)
         self._sample_name = list(self.samples)[0]
 
-    def request_solver_update(self, flag: bool = True) -> None:
+    @versionchanged(
+        version="0.6.2",
+        reason=(
+            "Accepts ``_SolverDirty`` flags for fine-grained domain tracking. "
+            "Boolean argument is preserved for backward compatibility "
+            "(``True`` -> ``_SolverDirty.ALL``, ``False`` -> clear all)."
+        ),
+    )
+    def request_solver_update(self, flag: Union[bool, _SolverDirty] = True) -> None:
         """
-        Set (or clear) signal to trigger a solver update.
+        Mark solver state as dirty (or clean).
+
+        PARAMETERS
+
+        flag : bool or _SolverDirty
+            * ``True`` (default): mark all domains dirty (full re-sync).
+            * ``False``: clear all dirty flags.
+            * ``_SolverDirty`` value: mark the given domains dirty
+              (additive -- existing dirty flags are preserved).
 
         Needs to be a method (not a property) so it can be called from a
-        wavelength method.
+        wavelength callback (see ``DiffractometerBase.__init__``).
         """
-        self._solver_needs_update = flag
+        if isinstance(flag, bool):
+            if flag:
+                self._solver_dirty = _SolverDirty.ALL
+            else:
+                self._solver_dirty = _SolverDirty(0)
+        else:
+            self._solver_dirty |= flag
+
+    @property
+    def _solver_needs_update(self) -> bool:
+        """
+        Backward-compatible boolean view of :attr:`_solver_dirty`.
+
+        ``True`` iff any domain is dirty.  Setting to ``True`` marks all
+        domains dirty; setting to ``False`` clears all dirty flags.
+
+        .. versionchanged:: 0.6.2
+           Backed by the fine-grained :class:`_SolverDirty` bitfield.
+        """
+        return bool(self._solver_dirty)
+
+    @_solver_needs_update.setter
+    def _solver_needs_update(self, value: bool) -> None:
+        self._solver_dirty = _SolverDirty.ALL if value else _SolverDirty(0)
 
     def reset_constraints(self) -> None:
         """Restore diffractometer constraints to default settings."""
@@ -946,11 +1013,26 @@ class Core:
         return self.samples[self._sample_name]
 
     @sample.setter
+    @versionchanged(
+        version="0.6.2",
+        reason=(
+            "Re-syncs the solver with the new sample's lattice and stored UB "
+            "so subsequent ``inverse()`` / ``forward()`` / ``wh()`` calls "
+            "return values consistent with the new sample.  Raises "
+            "``KeyError`` for unknown sample names instead of silently "
+            "corrupting state.  Fixes :issue:`386`."
+        ),
+    )
     def sample(self, value: str) -> None:
+        if value not in self._samples:
+            raise KeyError(f"{value!r} not in sample list: {list(self._samples)!r}")
         self._sample_name = value
-        if self.solver is not None:
-            self.solver.U = self.sample.U
-            self.solver.UB = self.sample.UB
+        # The new sample's lattice and stored U / UB must be re-pushed to
+        # the solver on the next forward()/inverse().  The prior buggy
+        # behavior pushed only U / UB while leaving the solver's sample
+        # state (lattice + reflections) referring to the previous sample,
+        # so the new UB ended up combined with the old lattice (#386).
+        self.request_solver_update(_SolverDirty.SAMPLE | _SolverDirty.UB)
 
     @property
     def samples(self) -> Mapping[str, Sample]:
@@ -1160,17 +1242,45 @@ class Core:
         )
 
     def update_solver(self, wavelength: Optional[float] = None) -> None:
-        """Update solver data if needed."""
-        if self.solver.mode != self.mode or wavelength is not None:
-            self.request_solver_update(True)  # force the update
+        """
+        Push any dirty solver-state domains to the underlying solver.
 
-        if self._solver_needs_update:
-            std = self.to_solver_units(wavelength)
+        Per-domain pushes are gated by :attr:`_solver_dirty`
+        (a :class:`~hklpy2.utils._SolverDirty` bitfield).  A SAMPLE
+        re-push may invalidate the solver's MODE / EXTRAS / U / UB
+        state (this is permitted by the ``SolverBase`` contract and
+        observed in some backends), so those domains are re-pushed
+        implicitly whenever SAMPLE is re-pushed.
 
+        .. versionchanged:: 0.6.2
+           Switched from a single boolean flag to per-domain dirty flags
+           (:class:`~hklpy2.utils._SolverDirty`) to fix stale solver
+           state after sample switch (:issue:`386`) and after
+           ``calc_UB`` (:issue:`384`).
+        """
+        if self.solver.mode != self.mode:
+            self._solver_dirty |= _SolverDirty.MODE
+        if wavelength is not None:
+            self._solver_dirty |= _SolverDirty.WAVELENGTH
+
+        dirty = self._solver_dirty
+        if not dirty:
+            return
+
+        std = self.to_solver_units(wavelength)
+
+        if dirty & _SolverDirty.WAVELENGTH:
             self.solver.wavelength = std["wavelength"]
+        if dirty & _SolverDirty.SAMPLE:
+            # Full re-push of the solver's sample state (lattice +
+            # reflections).  Some backends reset MODE / EXTRAS / U / UB
+            # as a side effect of accepting a new sample, so flag those
+            # domains for re-push too.
             self.solver.sample = std["sample"]
+            dirty |= _SolverDirty.MODE | _SolverDirty.EXTRAS | _SolverDirty.UB
+        if dirty & _SolverDirty.MODE:
             self.solver.mode = self.mode
-
+        if dirty & _SolverDirty.EXTRAS:
             try:
                 self.solver.extras = {
                     axis: self._extras[axis]
@@ -1179,8 +1289,8 @@ class Core:
                 }
             except AttributeError:
                 pass  # Some solvers have no setter for extras
-
+        if dirty & _SolverDirty.UB:
             self.solver.U = self.sample.U
             self.solver.UB = self.sample.UB
 
-            self.request_solver_update(False)
+        self._solver_dirty = _SolverDirty(0)

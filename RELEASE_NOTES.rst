@@ -57,6 +57,16 @@ Fixes
 * ``pa()`` / ``wh(full=True)`` no longer crashes when an auxiliary
   component returns a structured (multi-field) position; rendered
   inline as ``name={field=value, ...}``. (:issue:`385`)
+* Fix stale ``wh()`` / ``inverse()`` after ``calc_UB``. (:issue:`384`)
+* Fix stale ``wh()`` / ``inverse()`` after sample switch; unknown
+  sample names now raise ``KeyError``. (:issue:`386`)
+
+Maintenance
+-----------
+
+* Track solver-state dirty domains (sample, UB, mode, extras,
+  wavelength) with a fine-grained ``_SolverDirty`` bitfield in
+  ``Core``. (:issue:`386`)
 
 0.6.1
 #####

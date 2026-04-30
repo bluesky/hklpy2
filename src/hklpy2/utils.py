@@ -1,6 +1,11 @@
 """
 General-purpose utilities for |hklpy2|.
 
+.. rubric:: Classes
+.. autosummary::
+
+    ~_SolverDirty
+
 .. rubric:: Functions
 .. autosummary::
 
@@ -44,6 +49,7 @@ import time
 import uuid
 import warnings
 from collections.abc import Iterable
+from enum import IntFlag
 from typing import TYPE_CHECKING
 from typing import Any
 from typing import Mapping
@@ -85,6 +91,8 @@ __all__ = [
     "MISSING_HEADER_KEY_MSG",
     "PINT_ERRORS",
     "UREG",
+    # Classes
+    "_SolverDirty",
     # Functions
     "axes_to_dict",
     "benchmark",
@@ -131,6 +139,49 @@ PINT_ERRORS = (pint.DimensionalityError, pint.UndefinedUnitError)
 
 DEFAULT_MOTOR_LABELS: Sequence[str] = ["motors"]
 """Default labels applied to real-axis positioners."""
+
+# ---------------------------------------------------------------------------
+# Classes
+# ---------------------------------------------------------------------------
+
+
+@versionadded(
+    version="0.6.2",
+    reason="Fine-grained dirty-domain tracking for the solver state.",
+)
+class _SolverDirty(IntFlag):
+    """
+    Bitfield identifying which solver state domains need to be re-pushed.
+
+    Used by :class:`~hklpy2.ops.Core` to track, at fine granularity, which
+    parts of the underlying solver's state have diverged from the canonical
+    Python-side state and therefore must be re-pushed before the next
+    ``forward()`` / ``inverse()`` call.
+
+    Members:
+
+    * ``SAMPLE`` -- the solver's sample state (lattice + reflections)
+      needs a full re-push.  A SAMPLE re-push may also invalidate the
+      solver's MODE / EXTRAS / U / UB state in some backends, so those
+      domains are re-pushed implicitly whenever SAMPLE is re-pushed.
+    * ``UB`` -- only the U and UB matrices need re-pushing.
+    * ``MODE`` -- the solver mode needs to be re-set.  A MODE change may
+      reset the solver's extra-axis values, so EXTRAS must be flagged
+      whenever MODE is flagged.
+    * ``EXTRAS`` -- the solver's extra-axis values need to be re-pushed.
+    * ``WAVELENGTH`` -- the wavelength needs to be re-pushed.
+    * ``ALL`` -- every domain (used for full re-sync).
+
+    .. seealso:: :issue:`384`, :issue:`386`
+    """
+
+    SAMPLE = 1
+    UB = 2
+    MODE = 4
+    EXTRAS = 8
+    WAVELENGTH = 16
+    ALL = SAMPLE | UB | MODE | EXTRAS | WAVELENGTH
+
 
 # ---------------------------------------------------------------------------
 # Functions
