@@ -1430,15 +1430,43 @@ class _MiniAnalyzer(_OphydPseudoPositioner):
         return self.PseudoPosition(energy=r.theta)
 
 
-def _build_gonio_with_nested_pseudo():
-    """Build a 4-circle diffractometer with a scalar aux and a nested PP aux."""
+class _ListPositionPositioner(SoftPositioner):
+    """Auxiliary positioner whose ``.position`` is a list.
+
+    Exercises the ``list`` branch of ``wh()``'s ``labeled_value``
+    (rare in practice but supported for completeness; see issue #385).
+    """
+
+    @property
+    def position(self):
+        # Return a list so ``roundoff()`` returns a list and
+        # ``labeled_value`` takes the ``isinstance(rounded, list)`` branch.
+        # Use the underlying _position (set by SoftPositioner.__init__)
+        # to avoid recursing into the property and to handle the
+        # uninitialized case.
+        base = self._position if self._position is not None else 0.0
+        return [base, base * 2]
+
+
+def _build_gonio_with_nested_pseudo(include_list_aux: bool = False):
+    """Build a 4-circle diffractometer with auxiliaries used by #385 tests."""
     base = diffractometer_class_factory()
 
-    class _GonioWithAna(base):
-        # scalar auxiliary (the "classic" auxiliary contract)
-        tablex = Component(SoftPositioner, init_pos=1.23456, limits=(-10, 10))
-        # nested PseudoPositioner auxiliary (the issue #385 case)
-        ana = Component(_MiniAnalyzer, "")
+    if include_list_aux:
+
+        class _GonioWithAna(base):
+            tablex = Component(SoftPositioner, init_pos=1.23456, limits=(-10, 10))
+            ana = Component(_MiniAnalyzer, "")
+            # Auxiliary whose .position is a list (rare).
+            vec = Component(_ListPositionPositioner, init_pos=0.5, limits=(-10, 10))
+
+    else:
+
+        class _GonioWithAna(base):
+            # scalar auxiliary (the "classic" auxiliary contract)
+            tablex = Component(SoftPositioner, init_pos=1.23456, limits=(-10, 10))
+            # nested PseudoPositioner auxiliary (the issue #385 case)
+            ana = Component(_MiniAnalyzer, "")
 
     return _GonioWithAna(name="gonio")
 
@@ -1460,6 +1488,11 @@ def _build_gonio_with_nested_pseudo():
             dict(check="wh_default_does_not_raise"),
             does_not_raise(),
             id="wh() renders nested PseudoPositioner inline",
+        ),
+        pytest.param(
+            dict(check="wh_full_with_list_aux"),
+            does_not_raise(),
+            id="wh(full=True) renders list-shaped auxiliary inline",
         ),
     ],
 )
@@ -1493,3 +1526,11 @@ def test_wh_nested_pseudopositioner_issue_385(parms, context, capsys):
             out = capsys.readouterr().out
             assert "auxiliaries:" in out
             assert "ana={energy=" in out
+
+        elif parms["check"] == "wh_full_with_list_aux":
+            gonio = _build_gonio_with_nested_pseudo(include_list_aux=True)
+            gonio.wh(full=True)
+            out = capsys.readouterr().out
+            assert "auxiliaries:" in out
+            # List-shaped auxiliary rendered as vec=[v1, v2]
+            assert "vec=[0.5, 1.0]" in out
