@@ -14,6 +14,7 @@ from typing import Union
 import numpy as np
 from numpy.linalg import norm
 
+from ..utils import _SolverDirty
 from ..utils import unique_name
 from ..typing import Matrix3x3
 from .lattice import Lattice
@@ -82,7 +83,8 @@ class Sample:
         self.U = IDENTITY_MATRIX_3X3
         # Consider: UB = self.U @ self.lattice.B
         self.UB = ((2 * math.pi / self.lattice.a) * np.array(self.U)).tolist()
-        self.core._solver_needs_update = True
+        # New sample requires a full solver re-sync (lattice + UB).
+        self.core.request_solver_update(_SolverDirty.SAMPLE | _SolverDirty.UB)
         self.reflections = ReflectionsDict()
 
     def __repr__(self) -> str:
@@ -152,13 +154,18 @@ class Sample:
         value._on_change = self._lattice_changed
 
         # Flag the solver for update so it receives the new lattice (#240).
+        # A lattice change requires a full re-push of the solver's
+        # sample state.  Some backends discard U / UB as a side effect,
+        # so mark both domains dirty.
         # Guard: during __init__, core is not yet fully wired.
         if hasattr(self, "_U"):
-            self.core._solver_needs_update = True
+            self.core.request_solver_update(_SolverDirty.SAMPLE | _SolverDirty.UB)
 
     def _lattice_changed(self):
         """Called by Lattice.__setattr__ when a parameter changes (#240)."""
-        self.core._solver_needs_update = True
+        # Lattice mutation invalidates the solver's sample state and,
+        # as a side effect of re-pushing it, U / UB in some backends.
+        self.core.request_solver_update(_SolverDirty.SAMPLE | _SolverDirty.UB)
 
     @property
     def name(self) -> str:
@@ -209,7 +216,8 @@ class Sample:
         self._validate_matrices(value, "U")
 
         self._U = value
-        self.core._solver_needs_update = True
+        # U changes require only a UB push; no full _sample rebuild.
+        self.core.request_solver_update(_SolverDirty.UB)
 
     @property
     def UB(self) -> Matrix3x3:
@@ -227,4 +235,5 @@ class Sample:
         self._validate_matrices(value, "UB")
 
         self._UB = value
-        self.core._solver_needs_update = True
+        # UB changes require only a UB push; no full _sample rebuild.
+        self.core.request_solver_update(_SolverDirty.UB)

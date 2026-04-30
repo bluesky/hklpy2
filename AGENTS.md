@@ -410,6 +410,43 @@ When the user says "the full workflow", execute these steps in order:
 - When updating a file, verify that a change has actually been made by comparing
   the mtime before and after the edits.
 
+## Solver-Backend Agnosticism (MANDATORY)
+
+The hklpy2 architecture deliberately separates the diffractometer/sample/UB
+layer (``hklpy2.ops``, ``hklpy2.diffract``, ``hklpy2.blocks.*``) from the
+solver-backend layer (``hklpy2.backends.*``).  ``hkl_soleil`` (libhkl) is
+**one of many possible solver backends**; others include ``th_tth``,
+``no_op``, and future libraries.  Code and comments must respect this
+boundary.
+
+**Rules for code, comments, and docstrings outside of ``hklpy2.backends.*``:**
+
+- **Do not name a specific backend** (e.g. ``libhkl``, ``hkl_soleil``,
+  ``Hkl.Sample``, ``Sample.new``, ``compute_UB_busing_levy``,
+  ``hkl_engine_list``) in code, comments, or docstrings outside the
+  ``hklpy2/backends/<name>/`` subtree.  Reference the abstract
+  ``SolverBase`` contract instead.
+- **Do not describe a backend's internal data structures or side effects**
+  (e.g. "libhkl wipes U/UB on Sample.new", "hkl_engine_list re-binds on
+  mode change") outside the backend module.  If a side effect is
+  observable through the ``SolverBase`` API, describe it in
+  solver-agnostic terms (e.g. "a SAMPLE rebuild may invalidate U/UB and
+  EXTRAS state in the solver"); if it is not observable through the
+  contract, the contract is incomplete and should be extended.
+- **Do not design Core / Diffractometer / Sample / Block APIs around the
+  features of any one backend.** Polymorphism over solver backends is
+  the design intent.
+- **Tests of solver-specific behavior** (e.g. confirming ``hkl_soleil``
+  honours a particular constraint) belong in ``hklpy2/backends/tests/``,
+  not in ``hklpy2/tests/``.
+- **Backend-specific quirks that leak through the abstraction** are bugs
+  to be fixed in the backend or the contract, not papered over by
+  branching on the backend name in higher-level code.
+
+When a solver-agnostic phrasing isn't obvious, default to describing
+*what* the abstract layer needs (e.g. "the solver's sample state must be
+re-pushed") rather than *how* the backend implements it.
+
 ## Code Coverage
 
 - Aim for 100% coverage, but prioritize meaningful tests over simply hitting every line.
