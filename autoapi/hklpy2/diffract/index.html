@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=8d1b82b0"></script>
+    <script src="../../../_static/documentation_options.js?v=890ff59d"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -643,7 +643,10 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">auxiliary_axis_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/diffract.html#DiffractometerBase.auxiliary_axis_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.diffract.DiffractometerBase.auxiliary_axis_names" title="Link to this definition">#</a></dt>
 <dd><p>Names of all auxiliary positioners, in order of appearance.</p>
 <p>Auxiliary axes are all components using (subclasses of
-‘ophyd.PositionerBase’) that are not pseudos or reals.</p>
+‘ophyd.PositionerBase’) that are not pseudos or reals.  This
+includes nested <code class="docutils literal notranslate"><span class="pre">ophyd.PseudoPositioner</span></code> sub-devices; their
+structured <code class="docutils literal notranslate"><span class="pre">.position</span></code> values are rendered inline by
+<a class="reference internal" href="#hklpy2.diffract.DiffractometerBase.wh" title="hklpy2.diffract.DiffractometerBase.wh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wh()</span></code></a> (see issue <a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/385">issue #385</a>).</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fourc</span><span class="o">.</span><span class="n">auxiliary_axis_names</span>
 <span class="go">[&#39;h2&#39;, &#39;k2&#39;, &#39;l2&#39;]</span>

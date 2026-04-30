@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=8d1b82b0"></script>
+    <script src="../../../_static/documentation_options.js?v=890ff59d"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -509,7 +509,7 @@
 <td><p>Choose first solution from list.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.utils.roundoff" title="hklpy2.utils.roundoff"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roundoff</span></code></a>(value[, digits])</p></td>
-<td><p>Round a number to specified precision.</p></td>
+<td><p>Round <code class="docutils literal notranslate"><span class="pre">value</span></code> to <code class="docutils literal notranslate"><span class="pre">digits</span></code> precision (fail-safe).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.utils.unique_name" title="hklpy2.utils.unique_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unique_name</span></code></a>([prefix, length])</p></td>
 <td><p>Short, unique name, first 7 (at most) characters of a unique, random uuid.</p></td>
@@ -828,11 +828,28 @@ a solution from a list of possible solutions.  Assign to diffractometer’s
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hklpy2.utils.roundoff">
-<span class="sig-prename descclassname"><span class="pre">hklpy2.utils.</span></span><span class="sig-name descname"><span class="pre">roundoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">digits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/utils.html#roundoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.utils.roundoff" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hklpy2.utils.</span></span><span class="sig-name descname"><span class="pre">roundoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">digits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2/utils.html#roundoff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.utils.roundoff" title="Link to this definition">#</a></dt>
 <dd><div class="import-path docutils container">
 <p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.utils.roundoff</span></code></p>
 </div>
-<p>Round a number to specified precision.</p>
+<p>Round <code class="docutils literal notranslate"><span class="pre">value</span></code> to <code class="docutils literal notranslate"><span class="pre">digits</span></code> precision (fail-safe).</p>
+<p>The historical scalar contract is preserved: a scalar input
+returns a <code class="docutils literal notranslate"><span class="pre">float</span></code> (with <code class="docutils literal notranslate"><span class="pre">-0</span></code> collapsed to <code class="docutils literal notranslate"><span class="pre">0</span></code>).</p>
+<p>Structured inputs are handled recursively and never raise:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">namedtuple</span></code> (has <code class="docutils literal notranslate"><span class="pre">_fields</span></code> and <code class="docutils literal notranslate"><span class="pre">_asdict</span></code>) -&gt; <code class="docutils literal notranslate"><span class="pre">dict</span></code>
+mapping each field name to its recursively-rounded value.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Mapping" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapping</span></code></a> -&gt; <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the same keys and
+recursively-rounded values.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> (excluding <code class="docutils literal notranslate"><span class="pre">str</span></code>/<code class="docutils literal notranslate"><span class="pre">bytes</span></code>) -&gt;
+<code class="docutils literal notranslate"><span class="pre">list</span></code> of recursively-rounded values.</p></li>
+<li><p>Anything else (including <code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">bytes</span></code>, and objects without
+<code class="docutils literal notranslate"><span class="pre">__round__</span></code>) -&gt; <code class="docutils literal notranslate"><span class="pre">repr(value)</span></code>.</p></li>
+</ul>
+<p>This keeps callers like <a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase.wh" title="hklpy2.diffract.DiffractometerBase.wh"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wh()</span></code></a>
+safe when an auxiliary component reports a structured position
+(e.g. a nested <code class="docutils literal notranslate"><span class="pre">ophyd.PseudoPositioner</span></code> whose <code class="docutils literal notranslate"><span class="pre">.position</span></code> is a
+namedtuple).  See issue <a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/385">issue #385</a>.</p>
 </dd></dl>
 
 <dl class="py function">
