@@ -15,6 +15,7 @@ from pyRestTable import Table
 from ..blocks.lattice import SI_LATTICE_PARAMETER
 from ..diffract import creator
 from ..incident import WavelengthXray
+from ..exceptions import ConfigurationError
 from ..exceptions import NoForwardSolutions
 from ..exceptions import ReflectionError
 from ..utils import roundoff
@@ -637,7 +638,9 @@ def test_cahkl_forward_raises(parms, context):
                 extras=dict(h4=2, k4=2, l4=0),
                 fail_on_exception=True,
             ),
-            pytest.raises(KeyError, match=re.escape("Unexpected extra axis name")),
+            pytest.raises(
+                ConfigurationError, match=re.escape("Unexpected extra axis name")
+            ),
             id="no hkl_4 extras",
         ),
     ],

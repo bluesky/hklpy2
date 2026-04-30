@@ -1,23 +1,13 @@
+#hklpy2 configuration file
+
 _header:
-  datetime: '2026-04-01 17:18:46.799850'
-  hklpy2_version: 0.3.2.dev42+gd62d70fb1
-  python_class: CradleDiffractometer
+  datetime: '2026-04-30 17:31:46.831426'
+  hklpy2_version: 0.6.2.dev4+gde2b3abb7.d20260430
+  python_class: Hklpy2Diffractometer
+  file: /home/beams1/JEMIAN/Documents/projects/Bluesky/hklpy2/src/hklpy2/tests/configuration_i240.yml.reexport.tmp
+  comment: 're-exported for issue #390 schema sync (configuration_i240.yml)'
+name: huber_euler_2
 axes:
-  axes_xref:
-    chi: chi
-    delta: delta
-    gamma: gamma
-    h: h
-    k: k
-    l: l
-    mu: mu
-    phi: phi
-    tau: tau
-  extra_axes:
-    h2: 0
-    k2: 0
-    l2: 0
-    psi: 0
   pseudo_axes:
   - h
   - k
@@ -29,53 +19,39 @@ axes:
   - phi
   - gamma
   - delta
-beam:
-  class: EpicsMonochromatorRO
-  energy: 12.648515270509348
-  energy_PV: 4idVDCM:BraggERdbkAO
-  energy_units: keV
-  source_type: Simulated read-only EPICS Monochromator
-  wavelength: 0.9802276500315853
-  wavelength_PV: 4idVDCM:BraggLambdaRdbkAO
-  wavelength_units: angstrom
-constraints:
-  chi:
-    class: LimitsConstraint
-    high_limit: 180.0
-    label: chi
-    low_limit: -180.0
-  delta:
-    class: LimitsConstraint
-    high_limit: 180.0
-    label: delta
-    low_limit: -180.0
-  gamma:
-    class: LimitsConstraint
-    high_limit: 180.0
-    label: gamma
-    low_limit: -180.0
-  mu:
-    class: LimitsConstraint
-    high_limit: 180.0
-    label: mu
-    low_limit: -180.0
-  phi:
-    class: LimitsConstraint
-    high_limit: 180.0
-    label: phi
-    low_limit: -180.0
-  tau:
-    class: LimitsConstraint
-    high_limit: 180.0
-    label: tau
-    low_limit: -180.0
+  axes_xref:
+    h: h
+    k: k
+    l: l
+    tau: tau
+    mu: mu
+    chi: chi
+    phi: phi
+    gamma: gamma
+    delta: delta
+  extra_axes:
+    h2: 0
+    k2: 0
+    l2: 0
+    psi: 0
+  auxiliary_axes: []
 digits: 4
-name: huber_euler_2
-presets:
-  4-circles constant phi horizontal: {}
 sample_name: test
 samples:
   sample:
+    name: sample
+    lattice:
+      a: 1
+      b: 1
+      c: 1
+      alpha: 90.0
+      beta: 90.0
+      gamma: 90.0
+      digits: 4
+      angle_units: degrees
+      length_units: angstrom
+    reflections: {}
+    reflections_order: []
     U:
     - - 1
       - 0
@@ -97,20 +73,58 @@ samples:
       - 0.0
       - 6.283185307179586
     digits: 4
-    lattice:
-      a: 1
-      alpha: 90.0
-      angle_units: degrees
-      b: 1
-      beta: 90.0
-      c: 1
-      digits: 4
-      gamma: 90.0
-      length_units: angstrom
-    name: sample
-    reflections: {}
-    reflections_order: []
   test:
+    name: test
+    lattice:
+      a: 2.0
+      b: 2.0
+      c: 2.0
+      alpha: 90.0
+      beta: 90.0
+      gamma: 90.0
+      digits: 4
+      angle_units: degrees
+      length_units: angstrom
+    reflections:
+      6857e45:
+        name: 6857e45
+        geometry: APS POLAR
+        pseudos:
+          h: 0
+          k: 0
+          l: 2
+        reals:
+          tau: 0
+          mu: 20
+          chi: 90
+          phi: 0
+          gamma: 40
+          delta: 0
+        reals_units: angstrom
+        wavelength: 0.9802276500315853
+        wavelength_units: angstrom
+        digits: 4
+      99b60e8:
+        name: 99b60e8
+        geometry: APS POLAR
+        pseudos:
+          h: 2
+          k: 0
+          l: 0
+        reals:
+          tau: 0
+          mu: 20
+          chi: 0
+          phi: 0
+          gamma: 40
+          delta: 0
+        reals_units: angstrom
+        wavelength: 0.9802276500315853
+        wavelength_units: angstrom
+        digits: 4
+    reflections_order:
+    - 6857e45
+    - 99b60e8
     U:
     - - 0.983381239497
       - 0.181552575871
@@ -132,63 +146,48 @@ samples:
       - -1.6439e-08
       - -1.256637165399
     digits: 4
-    lattice:
-      a: 2.0
-      alpha: 90.0
-      angle_units: degrees
-      b: 2.0
-      beta: 90.0
-      c: 2.0
-      digits: 4
-      gamma: 90.0
-      length_units: angstrom
-    name: test
-    reflections:
-      6857e45:
-        digits: 4
-        geometry: APS POLAR
-        name: 6857e45
-        pseudos:
-          h: 0
-          k: 0
-          l: 2
-        reals:
-          chi: 90
-          delta: 0
-          gamma: 40
-          mu: 20
-          phi: 0
-          tau: 0
-        reals_units: angstrom
-        wavelength: 0.9802276500315853
-        wavelength_units: angstrom
-      99b60e8:
-        digits: 4
-        geometry: APS POLAR
-        name: 99b60e8
-        pseudos:
-          h: 2
-          k: 0
-          l: 0
-        reals:
-          chi: 0
-          delta: 0
-          gamma: 40
-          mu: 20
-          phi: 0
-          tau: 0
-        reals_units: angstrom
-        wavelength: 0.9802276500315853
-        wavelength_units: angstrom
-    reflections_order:
-    - 6857e45
-    - 99b60e8
+constraints:
+  tau:
+    label: tau
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  mu:
+    label: mu
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  chi:
+    label: chi
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  phi:
+    label: phi
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  gamma:
+    label: gamma
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  delta:
+    label: delta
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
 solver:
+  name: hkl_soleil
   description: HklSolver(name='hkl_soleil', version='5.1.3', geometry='APS POLAR',
     engine_name='hkl', mode='4-circles constant phi horizontal')
-  engine: hkl
   geometry: APS POLAR
-  name: hkl_soleil
   real_axes:
   - tau
   - mu
@@ -197,3 +196,14 @@ solver:
   - gamma
   - delta
   version: 5.1.3
+  engine: hkl
+  mode: 4-circles constant phi horizontal
+beam:
+  class: WavelengthXray
+  source_type: Synchrotron X-ray Source
+  energy: 12.648510622463395
+  wavelength: 0.9802276500315853
+  energy_units: keV
+  wavelength_units: angstrom
+presets:
+  4-circles constant phi horizontal: {}

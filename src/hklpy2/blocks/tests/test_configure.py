@@ -307,3 +307,356 @@ def test_restore(diffractometer, clear, restore, file, context):
             clear=clear,
             restore_constraints=restore,
         )
+
+
+# ---------------------------------------------------------------------------
+# Issue #390: extras / safety controls round-trip
+# ---------------------------------------------------------------------------
+
+
+def _hardware_e4cv(name="hw_e4cv"):
+    """Return an E4CV diffractometer whose reals are EpicsMotor instances.
+
+    The EPICS PVs never need to connect for these tests; we only care
+    about ``is_simulator == False``.
+    """
+    return creator(
+        name=name,
+        reals=dict(
+            omega="NO_IOC:m1",
+            chi="NO_IOC:m2",
+            phi="NO_IOC:m3",
+            tth="NO_IOC:m4",
+        ),
+    )
+
+
+def _e6c_with_extras(name="e6c", h2=0.0, k2=0.0, l2=0.0, psi=0.0):
+    """Return an E6C diffractometer with the named extras pre-set."""
+    sim = creator(name=name, geometry="E6C")
+    # psi_constant is the canonical mode that exposes h2/k2/l2/psi extras.
+    sim.core.mode = "psi_constant_vertical"
+    sim.core.extras = dict(h2=h2, k2=k2, l2=l2, psi=psi)
+    return sim
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(reals=None, expected=True),
+            does_not_raise(),
+            id="default-creator-is-simulator",
+        ),
+        pytest.param(
+            dict(
+                reals=dict(
+                    omega="NO_IOC:m1",
+                    chi="NO_IOC:m2",
+                    phi="NO_IOC:m3",
+                    tth="NO_IOC:m4",
+                ),
+                expected=False,
+            ),
+            does_not_raise(),
+            id="all-epicsmotor-reals-not-simulator",
+        ),
+        pytest.param(
+            dict(
+                reals=dict(
+                    omega=None,
+                    chi=None,
+                    phi="NO_IOC:m3",
+                    tth=None,
+                ),
+                expected=False,
+            ),
+            does_not_raise(),
+            id="mixed-reals-not-simulator",
+        ),
+    ],
+)
+def test_is_simulator_property(parms, context):
+    with context:
+        kwargs = dict(name="probe")
+        if parms["reals"] is not None:
+            kwargs["reals"] = parms["reals"]
+        diff = creator(**kwargs)
+        assert diff.is_simulator is parms["expected"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(extras=dict(h2=1.0, k2=0.0, l2=0.0, psi=12.5)),
+            does_not_raise(),
+            id="e6c-psi-constant",
+        ),
+        pytest.param(
+            dict(extras=dict(h2=0.0, k2=2.0, l2=0.0, psi=-5.0)),
+            does_not_raise(),
+            id="e6c-k2-only",
+        ),
+        pytest.param(
+            dict(extras=dict(h2=1.5, k2=2.5, l2=3.5, psi=42.0)),
+            does_not_raise(),
+            id="e6c-mixed",
+        ),
+    ],
+)
+def test_extras_round_trip_simulator(parms, context, tmp_path):
+    """#390: non-zero extras survive export -> restore on a simulator,
+    and the values reach the solver (not just Core._extras)."""
+    with context:
+        orig = _e6c_with_extras(name="e6c_orig", **parms["extras"])
+        cfg_file = tmp_path / "e6c.yml"
+        orig.export(cfg_file, comment="extras round-trip")
+
+        fresh = creator(name="e6c_fresh", geometry="E6C")
+        fresh.core.mode = "psi_constant_vertical"
+        # All defaults (simulator) restore extras.
+        fresh.restore(cfg_file)
+
+        # Core-side state matches.
+        for axis, value in parms["extras"].items():
+            assert fresh.core.extras[axis] == pytest.approx(value), (
+                f"core extras: {axis=} got={fresh.core.extras[axis]!r}"
+                f" expected={value!r}"
+            )
+        # Solver-side state matches: the dirty-flag fix means update_solver
+        # has actually pushed the extras to the backend.
+        fresh.core.update_solver()
+        solver_extras = fresh.core.solver.extras
+        for axis, value in parms["extras"].items():
+            assert solver_extras[axis] == pytest.approx(value), (
+                f"solver extras: {axis=} got={solver_extras[axis]!r} expected={value!r}"
+            )
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(extras=dict(h2=1.0, k2=2.0, l2=0.0, psi=15.0)),
+            does_not_raise(),
+            id="extras-via-simulator-from-config",
+        ),
+    ],
+)
+def test_extras_round_trip_via_simulator_from_config(parms, context):
+    """#390: simulator_from_config(diff) preserves non-zero extras."""
+    from ...run_utils import simulator_from_config
+
+    with context:
+        orig = _e6c_with_extras(name="e6c_orig", **parms["extras"])
+        sim = simulator_from_config(orig)
+
+        for axis, value in parms["extras"].items():
+            assert sim.core.extras[axis] == pytest.approx(value), (
+                f"sim core extras: {axis=} got={sim.core.extras[axis]!r}"
+                f" expected={value!r}"
+            )
+        sim.core.update_solver()
+        for axis, value in parms["extras"].items():
+            assert sim.core.solver.extras[axis] == pytest.approx(value)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(corrupt_axis="bogus_axis"),
+            pytest.raises(ConfigurationError, match=re.escape("extra axis mismatch:")),
+            id="unknown-axis-validated-early",
+        ),
+    ],
+)
+def test_extras_validation_raises_configuration_error(parms, context, tmp_path):
+    """#390: unknown extras → clear ConfigurationError, not opaque KeyError."""
+    with context:
+        orig = _e6c_with_extras(name="e6c_orig", h2=1.0)
+        cfg_file = tmp_path / "e6c_bad.yml"
+        orig.export(cfg_file)
+
+        cfg = load_yaml_file(cfg_file)
+        # Inject an axis name the live solver does not know.
+        cfg["axes"]["extra_axes"][parms["corrupt_axis"]] = 1.0
+
+        fresh = creator(name="e6c_fresh", geometry="E6C")
+        fresh.core.mode = "psi_constant_vertical"
+        fresh.restore(cfg)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(restore_extras=False),
+            does_not_raise(),
+            id="explicit-restore-extras-False",
+        ),
+        pytest.param(
+            dict(restore_extras=True),
+            does_not_raise(),
+            id="explicit-restore-extras-True",
+        ),
+    ],
+)
+def test_restore_extras_kwarg_honored(parms, context, tmp_path):
+    """#390: ``restore_extras`` kwarg gates the extras restore."""
+    with context:
+        saved = dict(h2=4.0, k2=5.0, l2=6.0, psi=33.0)
+        orig = _e6c_with_extras(name="e6c_orig", **saved)
+        cfg_file = tmp_path / "e6c.yml"
+        orig.export(cfg_file)
+
+        fresh = creator(name="e6c_fresh", geometry="E6C")
+        fresh.core.mode = "psi_constant_vertical"
+        # Pre-set non-zero extras so we can detect whether they were touched.
+        sentinel = dict(h2=99.0, k2=99.0, l2=99.0, psi=99.0)
+        fresh.core.extras = sentinel
+
+        fresh.restore(cfg_file, **parms)
+
+        for axis in saved:
+            if parms["restore_extras"]:
+                assert fresh.core.extras[axis] == pytest.approx(saved[axis])
+            else:
+                assert fresh.core.extras[axis] == pytest.approx(sentinel[axis])
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="hardware-default-skips-dangerous-sections",
+        ),
+    ],
+)
+def test_restore_safe_defaults_on_hardware(parms, context, tmp_path):
+    """#390: hardware-backed diffractometer skips dangerous sections by
+    default and emits a single UserWarning."""
+    with context:
+        # Build a saved config from a simulator with non-default state.
+        sim_src = creator(name="sim_src")
+        sim_src.beam.wavelength.put(1.234)
+        sim_src.add_sample("alt", 5.0)
+        cfg_file = tmp_path / "sim_src.yml"
+        sim_src.export(cfg_file)
+
+        hw = _hardware_e4cv()
+        assert hw.is_simulator is False
+        original_wavelength = hw.beam.wavelength.get()
+        original_sample_name = hw.sample.name
+        original_sample_count = len(hw.samples)
+
+        with pytest.warns(UserWarning, match=re.escape("hardware-backed")):
+            hw.restore(cfg_file)
+
+        # Wavelength NOT changed.
+        assert hw.beam.wavelength.get() == pytest.approx(original_wavelength)
+        # Sample NOT changed (samples block skipped).
+        assert hw.sample.name == original_sample_name
+        assert len(hw.samples) == original_sample_count
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                restore_samples=True,
+                restore_wavelength=True,
+                restore_extras=True,
+                clear=True,
+            ),
+            does_not_raise(),
+            id="explicit-opt-in-on-hardware",
+        ),
+    ],
+)
+def test_restore_explicit_opt_in_on_hardware(parms, context, tmp_path):
+    """#390: explicit kwargs override safe defaults; no warning emitted."""
+    import warnings
+
+    with context:
+        sim_src = creator(name="sim_src")
+        sim_src.beam.wavelength.put(1.234)
+        sim_src.add_sample("alt", 5.0)
+        cfg_file = tmp_path / "sim_src.yml"
+        sim_src.export(cfg_file)
+
+        hw = _hardware_e4cv()
+        assert hw.is_simulator is False
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", UserWarning)
+            # Explicit opt-in must not trigger our hardware-backed warning.
+            # (Other unrelated UserWarnings would also surface as errors;
+            # there are none on this code path.)
+            hw.restore(cfg_file, **parms)
+
+        # All requested sections were applied.
+        assert hw.beam.wavelength.get() == pytest.approx(1.234)
+        assert "alt" in hw.samples
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="setter-on-hardware-is-conservative",
+        ),
+    ],
+)
+def test_configuration_setter_safe_on_hardware(parms, context, tmp_path):
+    """#390: assigning ``diff.configuration = cfg`` on a hardware-backed
+    diffractometer must not silently change inputs to the next forward()."""
+    with context:
+        sim_src = creator(name="sim_src")
+        sim_src.beam.wavelength.put(1.234)
+        sim_src.add_sample("alt", 5.0)
+        cfg = sim_src.configuration
+
+        hw = _hardware_e4cv()
+        original_wavelength = hw.beam.wavelength.get()
+        original_sample_name = hw.sample.name
+
+        with pytest.warns(UserWarning, match=re.escape("hardware-backed")):
+            hw.configuration = cfg
+
+        assert hw.beam.wavelength.get() == pytest.approx(original_wavelength)
+        assert hw.sample.name == original_sample_name
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(preset_mode="psi_constant_vertical", presets=dict(omega=12.34)),
+            does_not_raise(),
+            id="presets-round-trip",
+        ),
+    ],
+)
+def test_presets_round_trip(parms, context, tmp_path):
+    """Mode presets survive export -> restore."""
+    with context:
+        orig = creator(name="e6c_orig", geometry="E6C")
+        orig.core._mode_presets[parms["preset_mode"]] = {
+            str(k): float(v) for k, v in parms["presets"].items()
+        }
+        cfg_file = tmp_path / "presets.yml"
+        orig.export(cfg_file)
+
+        fresh = creator(name="e6c_fresh", geometry="E6C")
+        fresh.restore(cfg_file)
+
+        restored = fresh.core._mode_presets.get(parms["preset_mode"], {})
+        for axis, value in parms["presets"].items():
+            assert restored.get(axis) == pytest.approx(value)

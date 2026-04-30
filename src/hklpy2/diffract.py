@@ -36,6 +36,7 @@ from ophyd import PositionerBase
 from ophyd import PseudoPositioner
 from ophyd import PseudoSingle
 from ophyd import Signal
+from ophyd import SoftPositioner
 from ophyd.device import required_for_connection
 from ophyd.pseudopos import pseudo_position_argument
 from ophyd.pseudopos import real_position_argument
@@ -152,6 +153,7 @@ class DiffractometerBase(PseudoPositioner):
     .. autosummary::
         ~auxiliary_axis_names
         ~configuration
+        ~is_simulator
         ~pseudo_axis_names
         ~real_axis_names
         ~reals_units
@@ -221,6 +223,37 @@ class DiffractometerBase(PseudoPositioner):
                 if component.position is None:
                     # Set position of all uninitialized auxiliary pseudo axes.
                     component._position = 0.0
+
+        # Classify this diffractometer as simulator or hardware-backed.
+        # A diffractometer is a "simulator" when every real positioner is a
+        # SoftPositioner (or subclass).  Computed once here; consult
+        # ``self.is_simulator`` thereafter rather than re-deriving.  Use
+        # ``self._real`` (instances) rather than ``_get_real_positioners()``
+        # which yields the class-level Component descriptors.
+        real_instances = list(getattr(self, "_real", []) or [])
+        self._is_simulator = bool(real_instances) and all(
+            isinstance(obj, SoftPositioner) for obj in real_instances
+        )
+
+    @property
+    @versionadded(
+        version="0.6.2",
+        reason=(
+            "Identify a simulator (all real positioners are SoftPositioner) "
+            "vs a hardware-backed diffractometer.  Used by ``restore()`` to "
+            "choose conservative defaults that prevent inputs to the next "
+            "``forward()`` from being changed silently."
+        ),
+    )
+    def is_simulator(self) -> bool:
+        """
+        ``True`` when every real positioner is an ``ophyd.SoftPositioner``.
+
+        Computed once in ``__init__``; this is a classification of the
+        components, not a liveness check.  Used by :meth:`restore` to choose
+        conservative defaults on hardware-backed diffractometers.
+        """
+        return self._is_simulator
 
     def add_reflection(
         self,
@@ -297,9 +330,13 @@ class DiffractometerBase(PseudoPositioner):
         """
         Diffractometer configuration (orientation).
 
-        Delegates to :meth:`restore` so that geometry validation,
-        wavelength/beam restoration, and state clearing are all applied
-        consistently, identical to calling ``restore()`` directly.
+        Delegates to :meth:`restore` with no explicit kwargs, so the safety
+        defaults documented on :meth:`restore` apply.  In particular, when
+        the diffractometer is hardware-backed (``self.is_simulator`` is
+        ``False``) sections that change the inputs to the next
+        :meth:`forward` (samples, extras, wavelength, mode) are skipped and
+        a ``UserWarning`` is emitted; call :meth:`restore` directly with
+        explicit kwargs to opt in.
 
         PARAMETERS
 
@@ -333,13 +370,28 @@ class DiffractometerBase(PseudoPositioner):
             y.write("#hklpy2 configuration file\n\n")
             y.write(dump)
 
+    @versionchanged(
+        version="0.6.2",
+        reason=(
+            "Add ``restore_samples``, ``restore_extras``, ``restore_presets`` "
+            "kwargs.  When the diffractometer is hardware-backed "
+            "(``is_simulator == False``), defaults for sections that change "
+            "the inputs to the next ``forward()`` (samples / extras / "
+            "wavelength / mode) are flipped to ``False`` so a bare "
+            "``restore(file)`` cannot silently change those inputs.  Pass "
+            "the kwargs explicitly to override.  See :issue:`390`."
+        ),
+    )
     def restore(
         self,
         config,
-        clear=True,
-        restore_constraints=True,
-        restore_wavelength=True,
-        restore_mode=False,
+        clear=None,
+        restore_constraints=None,
+        restore_wavelength=None,
+        restore_mode=None,
+        restore_samples=None,
+        restore_extras=None,
+        restore_presets=None,
     ) -> None:
         """
         Restore diffractometer configuration.
@@ -351,32 +403,63 @@ class DiffractometerBase(PseudoPositioner):
             e4cv = hklpy2.creator(name="e4cv")
             e4cv.restore("e4cv-config.yml")
 
+        ``restore()`` itself never moves a motor.  However, several of the
+        sections it can apply (samples / U / UB, extras, wavelength, solver
+        mode) are inputs to the next :meth:`forward` call and would change
+        the angles a subsequent move would target.  To prevent that from
+        happening silently when the diffractometer is hardware-backed
+        (``self.is_simulator == False``), each ``restore_*`` kwarg defaults
+        to ``None`` and is resolved as follows:
+
+        * **simulator** (``is_simulator == True``): all ``restore_*``
+          default to ``True`` except ``restore_mode`` which defaults to
+          ``False``.  This preserves the historic behavior used by
+          ``simulator_from_config()``.
+        * **hardware-backed** (``is_simulator == False``):
+          ``restore_constraints`` and ``restore_presets`` default to
+          ``True`` (these only narrow the search space or pre-load extras
+          when a mode is later entered).  ``restore_samples``,
+          ``restore_extras``, ``restore_wavelength``, ``restore_mode``,
+          and ``clear`` default to ``False``.  A single ``UserWarning`` is
+          emitted listing the sections that were skipped, so the user can
+          opt back in by passing the corresponding kwarg(s) explicitly.
+
+        Passing any ``restore_*`` kwarg explicitly (``True`` or ``False``)
+        always honors that value regardless of ``is_simulator``.
+
         PARAMETERS
 
         config : dict, str, or pathlib object
             Dictionary with configuration, or name (str or pathlib object) of
             diffractometer configuration YAML file.
-        clear : bool
-            If ``True`` (default), remove any previous configuration of the
-            diffractometer and reset it to default values before restoring the
-            configuration.
-
-            If ``False``, sample reflections will be append with all reflections
-            included in the configuration data for that sample.  Existing
-            reflections will not be changed.  The user may need to edit the
-            list of reflections after ``restore(clear=False)``.
-        restore_constraints : bool
-            If ``True`` (default), restore any constraints provided.
-        restore_wavelength : bool
-            If ``True`` (default), restore wavelength.
-        restore_mode : bool
-            If ``False`` (default), the solver mode is not changed.  If the
-            saved mode differs from the current mode, a warning is issued so
-            the user can decide whether to apply it.
-
-            If ``True``, the saved mode is applied.  Use with caution on
-            hardware-connected diffractometers — changing mode can cause
-            ``forward()`` to move axes that were previously held fixed.
+        clear : bool, optional
+            If ``True``, reset constraints and samples to defaults before
+            restoring.  If ``False``, sample reflections from the
+            configuration are appended to existing ones; existing reflections
+            are not changed.  Default depends on ``is_simulator`` (see above).
+        restore_constraints : bool, optional
+            If ``True``, restore constraints.  Default depends on
+            ``is_simulator`` (see above).
+        restore_wavelength : bool, optional
+            If ``True``, restore wavelength / energy.  Default depends on
+            ``is_simulator`` (see above).
+        restore_mode : bool, optional
+            If ``True``, the saved solver mode is applied.  Use with caution
+            on hardware-backed diffractometers — changing mode can cause
+            ``forward()`` to target axes that were previously held fixed.
+            Default depends on ``is_simulator`` (see above); a warning is
+            emitted when defaults skip the mode and the saved mode differs
+            from the current mode.
+        restore_samples : bool, optional
+            If ``True``, restore samples (lattice, reflections, U, UB, and
+            the active sample name).  Default depends on ``is_simulator``
+            (see above).
+        restore_extras : bool, optional
+            If ``True``, restore solver extras (e.g. ``h2``, ``k2``, ``l2``,
+            ``psi``).  Default depends on ``is_simulator`` (see above).
+        restore_presets : bool, optional
+            If ``True``, restore per-mode axis presets.  Default depends on
+            ``is_simulator`` (see above).
 
         Note: Can't name this method "import", it's a reserved Python word.
         """
@@ -388,6 +471,67 @@ class DiffractometerBase(PseudoPositioner):
         if header is None:
             raise KeyError(MISSING_HEADER_KEY_MSG)
         # Note: python_class key is not testable, could be anything.
+
+        # Resolve safety defaults based on is_simulator.  Sections that
+        # change the inputs to the next forward() default OFF on a
+        # hardware-backed diffractometer; those that only narrow the
+        # search space (constraints) or are inert until a mode is later
+        # entered (presets) default ON regardless.
+        sim = self.is_simulator
+        defaults = dict(
+            clear=True if sim else False,
+            restore_constraints=True,
+            restore_wavelength=True if sim else False,
+            restore_mode=False,
+            restore_samples=True if sim else False,
+            restore_extras=True if sim else False,
+            restore_presets=True,
+        )
+        explicit_kwargs = dict(
+            clear=clear,
+            restore_constraints=restore_constraints,
+            restore_wavelength=restore_wavelength,
+            restore_mode=restore_mode,
+            restore_samples=restore_samples,
+            restore_extras=restore_extras,
+            restore_presets=restore_presets,
+        )
+        resolved = {
+            k: (defaults[k] if v is None else bool(v))
+            for k, v in explicit_kwargs.items()
+        }
+
+        # On a hardware-backed diffractometer, when the user did not pass
+        # any of the dangerous kwargs explicitly, emit a single UserWarning
+        # listing what was skipped so the behavior is loud (not silent).
+        if not sim:
+            dangerous = (
+                "clear restore_wavelength restore_samples restore_extras"
+            ).split()
+            user_passed_any_dangerous = any(
+                explicit_kwargs[k] is not None for k in dangerous
+            )
+            if not user_passed_any_dangerous:
+                skipped = [k for k in dangerous if not resolved[k]]
+                if skipped:
+                    import warnings
+
+                    warnings.warn(
+                        f"{self.name!r} is hardware-backed (is_simulator=False);"
+                        f" restore() skipped {skipped!r} to avoid silently"
+                        " changing inputs to the next forward().  Pass the"
+                        " corresponding restore_* kwarg(s) to opt in.",
+                        UserWarning,
+                        stacklevel=2,
+                    )
+
+        clear = resolved["clear"]
+        restore_constraints = resolved["restore_constraints"]
+        restore_wavelength = resolved["restore_wavelength"]
+        restore_mode = resolved["restore_mode"]
+        restore_samples = resolved["restore_samples"]
+        restore_extras = resolved["restore_extras"]
+        restore_presets = resolved["restore_presets"]
 
         bcfg = config["beam"].copy()
         if not restore_wavelength:
@@ -403,6 +547,9 @@ class DiffractometerBase(PseudoPositioner):
             config,
             clear=clear,
             restore_constraints=restore_constraints,
+            restore_samples=restore_samples,
+            restore_extras=restore_extras,
+            restore_presets=restore_presets,
         )
 
         saved_mode = config.get("solver", {}).get("mode")

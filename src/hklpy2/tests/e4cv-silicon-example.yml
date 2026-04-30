@@ -1,21 +1,13 @@
+#hklpy2 configuration file
+
 _header:
-  datetime: '2025-12-02 11:42:37.850111'
-  hklpy2_version: 0.2.3.dev48+ga78e98e25.d20251202
+  datetime: '2026-04-30 17:31:45.287102'
+  hklpy2_version: 0.6.2.dev4+gde2b3abb7.d20260430
   python_class: Hklpy2Diffractometer
+  file: /home/beams1/JEMIAN/Documents/projects/Bluesky/hklpy2/src/hklpy2/tests/e4cv-silicon-example.yml.reexport.tmp
+  comment: 're-exported for issue #390 schema sync (e4cv-silicon-example.yml)'
+name: fourc
 axes:
-  axes_xref:
-    chi: chi
-    h: h
-    k: k
-    l: l
-    omega: omega
-    phi: phi
-    tth: tth
-  extra_axes:
-    h2: 0
-    k2: 0
-    l2: 0
-    psi: 0
   pseudo_axes:
   - h
   - k
@@ -25,39 +17,37 @@ axes:
   - chi
   - phi
   - tth
-beam:
-  class: WavelengthXray
-  energy: 8.050921976530415
-  energy_units: keV
-  source_type: Synchrotron X-ray Source
-  wavelength: 1.54
-  wavelength_units: angstrom
-constraints:
-  chi:
-    class: LimitsConstraint
-    high_limit: 180.0
-    label: chi
-    low_limit: -180.0
-  omega:
-    class: LimitsConstraint
-    high_limit: 0.001
-    label: omega
-    low_limit: -180.0
-  phi:
-    class: LimitsConstraint
-    high_limit: 180.0
-    label: phi
-    low_limit: -180.0
-  tth:
-    class: LimitsConstraint
-    high_limit: 180.0
-    label: tth
-    low_limit: -0.001
+  axes_xref:
+    h: h
+    k: k
+    l: l
+    omega: omega
+    chi: chi
+    phi: phi
+    tth: tth
+  extra_axes:
+    h2: 0
+    k2: 0
+    l2: 0
+    psi: 0
+  auxiliary_axes: []
 digits: 4
-name: fourc
 sample_name: silicon
 samples:
   sample:
+    name: sample
+    lattice:
+      a: 1
+      b: 1
+      c: 1
+      alpha: 90.0
+      beta: 90.0
+      gamma: 90.0
+      digits: 4
+      angle_units: degrees
+      length_units: angstrom
+    reflections: {}
+    reflections_order: []
     U:
     - - 1
       - 0
@@ -79,20 +69,54 @@ samples:
       - 0.0
       - 6.283185307179586
     digits: 4
-    lattice:
-      a: 1
-      alpha: 90.0
-      angle_units: degrees
-      b: 1
-      beta: 90.0
-      c: 1
-      digits: 4
-      gamma: 90.0
-      length_units: angstrom
-    name: sample
-    reflections: {}
-    reflections_order: []
   silicon:
+    name: silicon
+    lattice:
+      a: 5.431020511
+      b: 5.431020511
+      c: 5.431020511
+      alpha: 90
+      beta: 90
+      gamma: 90
+      digits: 4
+      angle_units: degrees
+      length_units: angstrom
+    reflections:
+      r400:
+        name: r400
+        geometry: E4CV
+        pseudos:
+          h: 4
+          k: 0
+          l: 0
+        reals:
+          omega: -145.451
+          chi: 0
+          phi: 0
+          tth: 69.0966
+        reals_units: angstrom
+        wavelength: 1.54
+        wavelength_units: angstrom
+        digits: 4
+      r040:
+        name: r040
+        geometry: E4CV
+        pseudos:
+          h: 0
+          k: 4
+          l: 0
+        reals:
+          omega: -145.451
+          chi: 90
+          phi: 0
+          tth: 69.0966
+        reals_units: angstrom
+        wavelength: 1.54
+        wavelength_units: angstrom
+        digits: 4
+    reflections_order:
+    - r400
+    - r040
     U:
     - - -1.2217305e-05
       - -1.2217305e-05
@@ -114,62 +138,49 @@ samples:
       - 1.73e-10
       - 1.4134285e-05
     digits: 4
-    lattice:
-      a: 5.431020511
-      alpha: 90
-      angle_units: degrees
-      b: 5.431020511
-      beta: 90
-      c: 5.431020511
-      digits: 4
-      gamma: 90
-      length_units: angstrom
-    name: silicon
-    reflections:
-      r400:
-        digits: 4
-        geometry: E4CV
-        name: r_97f9
-        pseudos:
-          h: 4
-          k: 0
-          l: 0
-        reals:
-          chi: 0
-          omega: -145.451
-          phi: 0
-          tth: 69.0966
-        reals_units: angstrom
-        wavelength: 1.54
-        wavelength_units: angstrom
-      r040:
-        digits: 4
-        geometry: E4CV
-        name: r_da35
-        pseudos:
-          h: 0
-          k: 4
-          l: 0
-        reals:
-          chi: 90
-          omega: -145.451
-          phi: 0
-          tth: 69.0966
-        reals_units: angstrom
-        wavelength: 1.54
-        wavelength_units: angstrom
-    reflections_order:
-    - r400
-    - r040
+constraints:
+  omega:
+    label: omega
+    low_limit: -180.0
+    high_limit: 0.001
+    cut_point: -180.0
+    class: LimitsConstraint
+  chi:
+    label: chi
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  phi:
+    label: phi
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  tth:
+    label: tth
+    low_limit: -0.001
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
 solver:
-  description: HklSolver(name='hkl_soleil', version='5.1.3', geometry='E4CV', engine_name='hkl',
-    mode='constant_phi')
-  engine: hkl
-  geometry: E4CV
   name: hkl_soleil
+  description: HklSolver(name='hkl_soleil', version='5.1.3', geometry='E4CV', engine_name='hkl',
+    mode='bissector')
+  geometry: E4CV
   real_axes:
   - omega
   - chi
   - phi
   - tth
   version: 5.1.3
+  engine: hkl
+  mode: bissector
+beam:
+  class: WavelengthXray
+  source_type: Synchrotron X-ray Source
+  energy: 8.050921976530415
+  wavelength: 1.54
+  energy_units: keV
+  wavelength_units: angstrom
+presets: {}

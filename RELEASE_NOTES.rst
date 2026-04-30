@@ -38,15 +38,23 @@ Release expected by 2026-H2.
 New Features
 ------------
 
+* Add ``DiffractometerBase.is_simulator`` property. (:issue:`390`)
 * Add how-to guide: polarization analyzer as auxiliary positioners on
   the detector arm. (:issue:`360`)
+* Add ``restore_samples`` / ``restore_extras`` / ``restore_presets``
+  kwargs to ``restore()``. (:issue:`390`)
 
 Enhancements
 ------------
 
+* ``restore()`` defaults to safe behavior on hardware-backed
+  diffractometers: skips wavelength / samples / extras / mode and emits
+  a single ``UserWarning``. (:issue:`390`)
 * ``roundoff()`` accepts namedtuple / mapping / sequence inputs and
   recursively rounds their numeric leaves; opaque values fall through
   to ``repr``; scalar behavior unchanged. (:issue:`385`)
+* Validate ``extra_axes`` early in ``Configuration._valid`` and raise
+  ``ConfigurationError`` (was opaque ``KeyError``). (:issue:`390`)
 
 Fixes
 -----
@@ -60,6 +68,8 @@ Fixes
 * ``pa()`` / ``wh(full=True)`` no longer crashes when an auxiliary
   component returns a structured (multi-field) position; rendered
   inline as ``name={field=value, ...}``. (:issue:`385`)
+* Round-trip extras (``h2``, ``k2``, ``l2``, ``psi``, …) through
+  ``export()`` / ``restore()``. (:issue:`390`)
 * Fix stale ``wh()`` / ``inverse()`` after ``calc_UB``. (:issue:`384`)
 * Fix stale ``wh()`` / ``inverse()`` after sample switch; unknown
   sample names now raise ``KeyError``. (:issue:`386`)
@@ -67,6 +77,9 @@ Fixes
 Maintenance
 -----------
 
+* Re-export legacy configuration YAMLs (``e4cv_orient``,
+  ``e4cv-silicon-example``, ``fourc-i183``, ``configuration_i240``) to
+  current schema. (:issue:`390`)
 * Track solver-state dirty domains (sample, UB, mode, extras,
   wavelength) with a fine-grained ``_SolverDirty`` bitfield in
   ``Core``. (:issue:`386`)
