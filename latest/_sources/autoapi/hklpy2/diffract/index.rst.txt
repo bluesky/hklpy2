@@ -142,7 +142,10 @@ Module Contents
       Names of all auxiliary positioners, in order of appearance.
 
       Auxiliary axes are all components using (subclasses of
-      'ophyd.PositionerBase') that are not pseudos or reals.
+      'ophyd.PositionerBase') that are not pseudos or reals.  This
+      includes nested ``ophyd.PseudoPositioner`` sub-devices; their
+      structured ``.position`` values are rendered inline by
+      :meth:`wh` (see issue :issue:`385`).
 
       Example::
 

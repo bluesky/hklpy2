@@ -323,14 +323,33 @@ Module Contents
        :func:`~hklpy2.utils.pick_closest_solution`
 
 
-.. py:function:: roundoff(value: float, digits=4) -> float
+.. py:function:: roundoff(value, digits=4)
 
    .. container:: import-path
 
       Import: ``hklpy2.utils.roundoff``
 
 
-   Round a number to specified precision.
+   Round ``value`` to ``digits`` precision (fail-safe).
+
+   The historical scalar contract is preserved: a scalar input
+   returns a ``float`` (with ``-0`` collapsed to ``0``).
+
+   Structured inputs are handled recursively and never raise:
+
+   * ``namedtuple`` (has ``_fields`` and ``_asdict``) -> ``dict``
+     mapping each field name to its recursively-rounded value.
+   * :class:`~typing.Mapping` -> ``dict`` with the same keys and
+     recursively-rounded values.
+   * :class:`~typing.Sequence` (excluding ``str``/``bytes``) ->
+     ``list`` of recursively-rounded values.
+   * Anything else (including ``str``, ``bytes``, and objects without
+     ``__round__``) -> ``repr(value)``.
+
+   This keeps callers like :meth:`~hklpy2.diffract.DiffractometerBase.wh`
+   safe when an auxiliary component reports a structured position
+   (e.g. a nested ``ophyd.PseudoPositioner`` whose ``.position`` is a
+   namedtuple).  See issue :issue:`385`.
 
 
 .. py:function:: solver_summary(diffractometer: DiffractometerBase | None = None, write: bool = True)

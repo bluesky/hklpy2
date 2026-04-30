@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=8d1b82b0"></script>
+    <script src="../../_static/documentation_options.js?v=890ff59d"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -472,6 +472,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pint</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionchanged</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnyAxesType</span>
@@ -859,11 +860,53 @@
 
 
 
+<span class="nd">@versionchanged</span><span class="p">(</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span>
+    <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+        <span class="s2">&quot;Accept structured inputs (namedtuple/Mapping/Sequence) and&quot;</span>
+        <span class="s2">&quot; recursively round their numeric leaves; opaque inputs fall&quot;</span>
+        <span class="s2">&quot; through to ``repr(value)``.  Scalar behavior is unchanged.&quot;</span>
+    <span class="p">),</span>
+<span class="p">)</span>
 <div class="viewcode-block" id="roundoff">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.roundoff">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Round a number to specified precision.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="n">digits</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>  <span class="c1"># &quot;-0&quot; becomes &quot;0&quot;</span></div>
+<span class="k">def</span><span class="w"> </span><span class="nf">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Round ``value`` to ``digits`` precision (fail-safe).</span>
+
+<span class="sd">    The historical scalar contract is preserved: a scalar input</span>
+<span class="sd">    returns a ``float`` (with ``-0`` collapsed to ``0``).</span>
+
+<span class="sd">    Structured inputs are handled recursively and never raise:</span>
+
+<span class="sd">    * ``namedtuple`` (has ``_fields`` and ``_asdict``) -&gt; ``dict``</span>
+<span class="sd">      mapping each field name to its recursively-rounded value.</span>
+<span class="sd">    * :class:`~typing.Mapping` -&gt; ``dict`` with the same keys and</span>
+<span class="sd">      recursively-rounded values.</span>
+<span class="sd">    * :class:`~typing.Sequence` (excluding ``str``/``bytes``) -&gt;</span>
+<span class="sd">      ``list`` of recursively-rounded values.</span>
+<span class="sd">    * Anything else (including ``str``, ``bytes``, and objects without</span>
+<span class="sd">      ``__round__``) -&gt; ``repr(value)``.</span>
+
+<span class="sd">    This keeps callers like :meth:`~hklpy2.diffract.DiffractometerBase.wh`</span>
+<span class="sd">    safe when an auxiliary component reports a structured position</span>
+<span class="sd">    (e.g. a nested ``ophyd.PseudoPositioner`` whose ``.position`` is a</span>
+<span class="sd">    namedtuple).  See issue :issue:`385`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># namedtuple: detect via duck-typing (_fields + _asdict) and</span>
+    <span class="c1"># check before the generic Mapping/Sequence branches because a</span>
+    <span class="c1"># namedtuple is also a Sequence.</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;_asdict&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">roundoff</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">roundoff</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">roundoff</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="n">digits</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>  <span class="c1"># &quot;-0&quot; becomes &quot;0&quot;</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
 
 
