@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=890ff59d"></script>
+    <script src="../../../_static/documentation_options.js?v=c675e3b8"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -430,6 +430,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_SolverDirty</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_name</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span>
@@ -506,7 +507,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">IDENTITY_MATRIX_3X3</span>
         <span class="c1"># Consider: UB = self.U @ self.lattice.B</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_solver_needs_update</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># New sample requires a full solver re-sync (lattice + UB).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reflections</span> <span class="o">=</span> <span class="n">ReflectionsDict</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -588,13 +590,18 @@
         <span class="n">value</span><span class="o">.</span><span class="n">_on_change</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice_changed</span>
 
         <span class="c1"># Flag the solver for update so it receives the new lattice (#240).</span>
+        <span class="c1"># A lattice change requires a full re-push of the solver&#39;s</span>
+        <span class="c1"># sample state.  Some backends discard U / UB as a side effect,</span>
+        <span class="c1"># so mark both domains dirty.</span>
         <span class="c1"># Guard: during __init__, core is not yet fully wired.</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_U&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_solver_needs_update</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_lattice_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Called by Lattice.__setattr__ when a parameter changes (#240).&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_solver_needs_update</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># Lattice mutation invalidates the solver&#39;s sample state and,</span>
+        <span class="c1"># as a side effect of re-pushing it, U / UB in some backends.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Sample.name">
@@ -654,7 +661,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_matrices</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;U&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_U</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_solver_needs_update</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># U changes require only a UB push; no full _sample rebuild.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Sample.UB">
@@ -675,7 +683,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_matrices</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;UB&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_UB</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_solver_needs_update</span> <span class="o">=</span> <span class="kc">True</span></div>
+        <span class="c1"># UB changes require only a UB push; no full _sample rebuild.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span></div>
 
 </pre></div>
 

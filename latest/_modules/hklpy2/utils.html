@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=890ff59d"></script>
+    <script src="../../_static/documentation_options.js?v=c675e3b8"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -417,6 +417,11 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">General-purpose utilities for |hklpy2|.</span>
 
+<span class="sd">.. rubric:: Classes</span>
+<span class="sd">.. autosummary::</span>
+
+<span class="sd">    ~_SolverDirty</span>
+
 <span class="sd">.. rubric:: Functions</span>
 <span class="sd">.. autosummary::</span>
 
@@ -460,6 +465,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntFlag</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
@@ -501,6 +507,8 @@
     <span class="s2">&quot;MISSING_HEADER_KEY_MSG&quot;</span><span class="p">,</span>
     <span class="s2">&quot;PINT_ERRORS&quot;</span><span class="p">,</span>
     <span class="s2">&quot;UREG&quot;</span><span class="p">,</span>
+    <span class="c1"># Classes</span>
+    <span class="s2">&quot;_SolverDirty&quot;</span><span class="p">,</span>
     <span class="c1"># Functions</span>
     <span class="s2">&quot;axes_to_dict&quot;</span><span class="p">,</span>
     <span class="s2">&quot;benchmark&quot;</span><span class="p">,</span>
@@ -577,6 +585,49 @@
 <span class="n">DEFAULT_MOTOR_LABELS</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;motors&quot;</span><span class="p">]</span></div>
 
 <span class="sd">&quot;&quot;&quot;Default labels applied to real-axis positioners.&quot;&quot;&quot;</span>
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Classes</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
+<span class="nd">@versionadded</span><span class="p">(</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Fine-grained dirty-domain tracking for the solver state.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_SolverDirty</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bitfield identifying which solver state domains need to be re-pushed.</span>
+
+<span class="sd">    Used by :class:`~hklpy2.ops.Core` to track, at fine granularity, which</span>
+<span class="sd">    parts of the underlying solver&#39;s state have diverged from the canonical</span>
+<span class="sd">    Python-side state and therefore must be re-pushed before the next</span>
+<span class="sd">    ``forward()`` / ``inverse()`` call.</span>
+
+<span class="sd">    Members:</span>
+
+<span class="sd">    * ``SAMPLE`` -- the solver&#39;s sample state (lattice + reflections)</span>
+<span class="sd">      needs a full re-push.  A SAMPLE re-push may also invalidate the</span>
+<span class="sd">      solver&#39;s MODE / EXTRAS / U / UB state in some backends, so those</span>
+<span class="sd">      domains are re-pushed implicitly whenever SAMPLE is re-pushed.</span>
+<span class="sd">    * ``UB`` -- only the U and UB matrices need re-pushing.</span>
+<span class="sd">    * ``MODE`` -- the solver mode needs to be re-set.  A MODE change may</span>
+<span class="sd">      reset the solver&#39;s extra-axis values, so EXTRAS must be flagged</span>
+<span class="sd">      whenever MODE is flagged.</span>
+<span class="sd">    * ``EXTRAS`` -- the solver&#39;s extra-axis values need to be re-pushed.</span>
+<span class="sd">    * ``WAVELENGTH`` -- the wavelength needs to be re-pushed.</span>
+<span class="sd">    * ``ALL`` -- every domain (used for full re-sync).</span>
+
+<span class="sd">    .. seealso:: :issue:`384`, :issue:`386`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">SAMPLE</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">UB</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">MODE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">EXTRAS</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">WAVELENGTH</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">ALL</span> <span class="o">=</span> <span class="n">SAMPLE</span> <span class="o">|</span> <span class="n">UB</span> <span class="o">|</span> <span class="n">MODE</span> <span class="o">|</span> <span class="n">EXTRAS</span> <span class="o">|</span> <span class="n">WAVELENGTH</span>
+
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># Functions</span>

@@ -324,12 +324,20 @@ Module Contents
 
 
 
-   .. py:method:: request_solver_update(flag: bool = True) -> None
+   .. py:method:: request_solver_update(flag: Union[bool, ~hklpy2.utils._SolverDirty] = True) -> None
 
-      Set (or clear) signal to trigger a solver update.
+      Mark solver state as dirty (or clean).
+
+      PARAMETERS
+
+      flag : bool or _SolverDirty
+          * ``True`` (default): mark all domains dirty (full re-sync).
+          * ``False``: clear all dirty flags.
+          * ``_SolverDirty`` value: mark the given domains dirty
+            (additive -- existing dirty flags are preserved).
 
       Needs to be a method (not a property) so it can be called from a
-      wavelength method.
+      wavelength callback (see ``DiffractometerBase.__init__``).
 
 
 
@@ -508,7 +516,20 @@ Module Contents
 
    .. py:method:: update_solver(wavelength: Optional[float] = None) -> None
 
-      Update solver data if needed.
+      Push any dirty solver-state domains to the underlying solver.
+
+      Per-domain pushes are gated by :attr:`_solver_dirty`
+      (a :class:`~hklpy2.utils._SolverDirty` bitfield).  A SAMPLE
+      re-push may invalidate the solver's MODE / EXTRAS / U / UB
+      state (this is permitted by the ``SolverBase`` contract and
+      observed in some backends), so those domains are re-pushed
+      implicitly whenever SAMPLE is re-pushed.
+
+      .. versionchanged:: 0.6.2
+         Switched from a single boolean flag to per-domain dirty flags
+         (:class:`~hklpy2.utils._SolverDirty`) to fix stale solver
+         state after sample switch (:issue:`386`) and after
+         ``calc_UB`` (:issue:`384`).
 
 
 
