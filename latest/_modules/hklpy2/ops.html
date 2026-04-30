@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=c675e3b8"></script>
+    <script src="../../_static/documentation_options.js?v=012f7712"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -441,6 +441,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.reflection</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reflection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.sample</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoreError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.solver_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">solver_factory</span>
@@ -598,12 +599,35 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert keys of axis dictionary from diffractometer to solver.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">axes_xref</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">axis_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Honor ``restore_samples`` / ``restore_extras`` / &quot;</span>
+            <span class="s2">&quot;``restore_presets`` flags so callers can scope which sections &quot;</span>
+            <span class="s2">&quot;are applied; flag ``_SolverDirty.EXTRAS`` when the extras are &quot;</span>
+            <span class="s2">&quot;mutated so the next ``forward()`` reliably uses the restored &quot;</span>
+            <span class="s2">&quot;values; raise ``ConfigurationError`` (was ``KeyError``) when &quot;</span>
+            <span class="s2">&quot;incoming extras include unknown axis names.  See :issue:`390`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
+        <span class="n">restore_samples</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">restore_extras</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">restore_presets</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Redefine diffractometer from a (configuration) dictionary.&quot;&quot;&quot;</span>
         <span class="c1"># Since this code might raise, validate first.</span>
         <span class="n">extras</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_extras</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">][</span><span class="s2">&quot;extra_axes&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_extras</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">extras</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">restore_extras</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">extras</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_extras</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extras</span><span class="p">)</span>
+            <span class="c1"># Mirror the ``Core.extras`` setter: any mutation of ``_extras``</span>
+            <span class="c1"># must mark the solver-side EXTRAS domain dirty so the next</span>
+            <span class="c1"># ``update_solver()`` re-pushes the new values.  Without this</span>
+            <span class="c1"># flag, restored extras would only reach the solver as a side</span>
+            <span class="c1"># effect of an unrelated SAMPLE re-push (#390).</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">EXTRAS</span><span class="p">)</span>
 
         <span class="n">digits</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;digits&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">digits</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">digits</span><span class="p">:</span>
@@ -625,12 +649,13 @@
                         <span class="k">if</span> <span class="n">local</span> <span class="ow">in</span> <span class="n">saved_axes_xref</span> <span class="ow">and</span> <span class="n">local</span> <span class="ow">in</span> <span class="n">saved</span>
                     <span class="p">}</span>
 
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;samples&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">sample_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">sample_object</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">core</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">sname</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sample_name&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">sname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">sname</span>
+        <span class="k">if</span> <span class="n">restore_samples</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;samples&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">sample_object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">sample_object</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">core</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">sname</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sample_name&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">sname</span>
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;constraints&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="p">(</span>
@@ -644,13 +669,22 @@
                 <span class="n">constraint</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">axis_local</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;constraints&quot;</span><span class="p">],</span> <span class="n">core</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="n">presets</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;presets&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="k">for</span> <span class="n">mode</span><span class="p">,</span> <span class="n">mode_presets</span> <span class="ow">in</span> <span class="n">presets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mode_presets</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                <span class="p">}</span>
+        <span class="k">if</span> <span class="n">restore_presets</span><span class="p">:</span>
+            <span class="n">presets</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;presets&quot;</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="k">for</span> <span class="n">mode</span><span class="p">,</span> <span class="n">mode_presets</span> <span class="ow">in</span> <span class="n">presets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_mode_presets</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mode_presets</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="p">}</span>
 
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Raise ``ConfigurationError`` instead of ``KeyError`` when the &quot;</span>
+            <span class="s2">&quot;supplied extras include axis names not known to the active &quot;</span>
+            <span class="s2">&quot;solver/mode.  See :issue:`390`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_validate_extras</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">values</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">,</span>
@@ -664,7 +698,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">unexpected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unexpected</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Unexpected extra axis name(s) </span><span class="si">{</span><span class="n">unexpected</span><span class="si">!r}</span><span class="s2">.&quot;</span>
                 <span class="c1"># ..</span>
                 <span class="sa">f</span><span class="s2">&quot;  Expected names: </span><span class="si">{</span><span class="n">expected</span><span class="si">}</span><span class="s2">.&quot;</span>
