@@ -9,7 +9,7 @@ How to Create a Simulator from a Config
     simulator; from configuration
     configuration; restore as simulator
 
-:func:`~hklpy2.misc.simulator_from_config` creates a fully configured
+:func:`~hklpy2.run_utils.simulator_from_config` creates a fully configured
 simulated diffractometer — with no hardware connections — from a previously
 saved configuration file or dictionary.  All real-axis positioners are soft
 (simulated) positioners regardless of how they were defined in the original
