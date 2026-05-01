@@ -33,7 +33,9 @@ describe future plans.
 0.6.2
 #####
 
-Release expected by 2026-H2.
+Released 2026-05-01.
+
+Bug fixes and supporting enhancements & additions.
 
 New Features
 ------------
