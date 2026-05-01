@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=012f7712"></script>
+    <script src="_static/documentation_options.js?v=d5ae1df0"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -685,7 +685,7 @@ range are discarded.</p></td>
 </section>
 <section id="the-ub-matrix-looks-wrong-or-pa-and-configuration-show-different-values">
 <span id="faq-ub-wrong"></span><h2>The UB matrix looks wrong, or <code class="docutils literal notranslate"><span class="pre">pa()</span></code> and <code class="docutils literal notranslate"><span class="pre">configuration</span></code> show different values.<a class="headerlink" href="#the-ub-matrix-looks-wrong-or-pa-and-configuration-show-different-values" title="Link to this heading">#</a></h2>
-<p>Two common causes:</p>
+<p>Three common causes:</p>
 <ol class="arabic simple">
 <li><p><strong>Axis mapping is swapped.</strong>  If <code class="docutils literal notranslate"><span class="pre">axes_xref</span></code> has detector angles wired to
 sample-rotation slots (or vice versa), the UB calculation receives the wrong
@@ -696,6 +696,13 @@ See <a class="reference internal" href="guides/diffract.html#diffract-axes-reals
 matrix retains full floating-point precision.  A sign difference (e.g.
 <code class="docutils literal notranslate"><span class="pre">+0.0101</span></code> vs. <code class="docutils literal notranslate"><span class="pre">-0.0101</span></code>) on a near-zero element is a display rounding
 artefact.  Retrieve the full matrix via <code class="docutils literal notranslate"><span class="pre">diffractometer.sample.UB</span></code>.</p></li>
+<li><p><strong>The UB is :term:`stale UB &lt;stale ub&gt;`.</strong>  An orienting reflection was
+added, removed, reordered, or edited after <code class="docutils literal notranslate"><span class="pre">calc_UB()</span></code> last ran, so
+the stored matrix no longer reflects the chosen pair.  <code class="docutils literal notranslate"><span class="pre">pa()</span></code> shows
+<code class="docutils literal notranslate"><span class="pre">UB</span> <span class="pre">stale:</span> <span class="pre">True</span></code> and <code class="docutils literal notranslate"><span class="pre">forward()</span></code> / <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> emit a
+<code class="docutils literal notranslate"><span class="pre">UserWarning</span></code>.  Check
+<code class="docutils literal notranslate"><span class="pre">diffractometer.sample.UB_is_stale</span></code>; refresh by calling
+<code class="docutils literal notranslate"><span class="pre">calc_UB()</span></code> again.  See <a class="reference internal" href="guides/how_calc_ub.html#how-calc-ub-stale"><span class="std std-ref">How do I tell if my UB is stale?</span></a>.</p></li>
 </ol>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>

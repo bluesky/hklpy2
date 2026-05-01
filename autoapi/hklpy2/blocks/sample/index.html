@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../../_static/documentation_options.js?v=012f7712"></script>
+    <script src="../../../../_static/documentation_options.js?v=d5ae1df0"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -533,6 +533,9 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.sample.Sample.UB" title="hklpy2.blocks.sample.Sample.UB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UB</span></code></a></p></td>
 <td><p>Return the crystal orientation matrix, UB.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.sample.Sample.UB_is_stale" title="hklpy2.blocks.sample.Sample.UB_is_stale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UB_is_stale</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code> iff the orientation reflections have changed since the last successful <code class="docutils literal notranslate"><span class="pre">calc_UB</span></code> for this sample.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -551,6 +554,30 @@
 <li><p><span class="math notranslate nohighlight">\(B\)</span> - crystal lattice on the diffractometer</p></li>
 <li><p><span class="math notranslate nohighlight">\(U\)</span> - rotation matrix, relative orientation of crystal on diffractometer</p></li>
 </ul>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2.blocks.sample.Sample.UB_is_stale">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">UB_is_stale</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/sample.html#Sample.UB_is_stale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.sample.Sample.UB_is_stale" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> iff the orientation reflections have changed since the
+last successful <code class="docutils literal notranslate"><span class="pre">calc_UB</span></code> for this sample.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">False</span></code> in any of these cases:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">calc_UB</span></code> has not been called for this sample (no snapshot
+to compare against),</p></li>
+<li><p>the user has assigned <a class="reference internal" href="#hklpy2.blocks.sample.Sample.U" title="hklpy2.blocks.sample.Sample.U"><code class="xref py py-attr docutils literal notranslate"><span class="pre">U</span></code></a> or <a class="reference internal" href="#hklpy2.blocks.sample.Sample.UB" title="hklpy2.blocks.sample.Sample.UB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">UB</span></code></a> directly (they
+have explicitly taken ownership of the matrix; the snapshot
+is cleared),</p></li>
+<li><p>the orientation reflections (<code class="docutils literal notranslate"><span class="pre">reflections.order[:2]</span></code> and
+their physics-relevant contents) are unchanged since the last
+<code class="docutils literal notranslate"><span class="pre">calc_UB</span></code>.</p></li>
+</ul>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> when <code class="docutils literal notranslate"><span class="pre">order[:2]</span></code> itself changes (reorder,
+prepend a new orienting reflection, remove an orienting one) or
+when an in-place mutation of one of the orienting reflections
+changes its <code class="docutils literal notranslate"><span class="pre">pseudos</span></code>, <code class="docutils literal notranslate"><span class="pre">reals</span></code>, <code class="docutils literal notranslate"><span class="pre">wavelength</span></code>, or unit
+fields.  Reflections outside <code class="docutils literal notranslate"><span class="pre">order[:2]</span></code> do not affect
+staleness.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -655,6 +682,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.sample.Sample"><code class="docutils literal notranslate"><span class="pre">Sample</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.sample.Sample.U"><code class="docutils literal notranslate"><span class="pre">Sample.U</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.sample.Sample.UB"><code class="docutils literal notranslate"><span class="pre">Sample.UB</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.sample.Sample.UB_is_stale"><code class="docutils literal notranslate"><span class="pre">Sample.UB_is_stale</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.sample.Sample.core"><code class="docutils literal notranslate"><span class="pre">Sample.core</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.sample.Sample.digits"><code class="docutils literal notranslate"><span class="pre">Sample.digits</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.sample.Sample.lattice"><code class="docutils literal notranslate"><span class="pre">Sample.lattice</span></code></a></li>

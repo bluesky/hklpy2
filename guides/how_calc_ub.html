@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../_static/documentation_options.js?v=012f7712"></script>
+    <script src="../_static/documentation_options.js?v=d5ae1df0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -595,7 +595,7 @@ SPEC’s <code class="docutils literal notranslate"><span class="pre">or_swap</s
 <p>The new <span class="math notranslate nohighlight">\(UB\)</span> matrix is returned and stored automatically.</p>
 </section>
 <section id="how-do-i-set-ub-manually-from-a-known-matrix">
-<h2>How do I set UB manually from a known matrix?<a class="headerlink" href="#how-do-i-set-ub-manually-from-a-known-matrix" title="Link to this heading">#</a></h2>
+<span id="how-calc-ub-set-manually"></span><h2>How do I set UB manually from a known matrix?<a class="headerlink" href="#how-do-i-set-ub-manually-from-a-known-matrix" title="Link to this heading">#</a></h2>
 <p>Assign directly to <a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.UB" title="hklpy2.blocks.sample.Sample.UB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">UB</span></code></a> on the
 sample.  A plain nested Python list is sufficient — a numpy array is
 accepted but not required:</p>
@@ -638,6 +638,50 @@ including the <span class="math notranslate nohighlight">\(U\)</span> and <span 
 reflections and recreates a single default sample.  Use
 <a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.remove_reflection" title="hklpy2.user.remove_reflection"><code class="xref py py-func docutils literal notranslate"><span class="pre">remove_reflection()</span></code></a> if you only want to discard
 one reflection while keeping others.</p>
+</div>
+</section>
+<section id="how-do-i-tell-if-my-ub-is-stale">
+<span id="how-calc-ub-stale"></span><h2>How do I tell if my UB is stale?<a class="headerlink" href="#how-do-i-tell-if-my-ub-is-stale" title="Link to this heading">#</a></h2>
+<p id="index-1">After <a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.calc_UB" title="hklpy2.user.calc_UB"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_UB()</span></code></a>, the stored <span class="math notranslate nohighlight">\(UB\)</span> matrix
+reflects the two orienting reflections (the first two entries of
+<code class="docutils literal notranslate"><span class="pre">sample.reflections.order</span></code>) <em>as they were at the moment</em>
+<a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.calc_UB" title="hklpy2.user.calc_UB"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_UB()</span></code></a> <em>ran</em>.  Several common edits leave the
+stored matrix inconsistent with the current orienting pair — a
+<a class="reference internal" href="../glossary.html#term-stale-UB"><span class="xref std std-term">stale UB</span></a>.</p>
+<p>Triggers for stale UB include:</p>
+<ul class="simple">
+<li><p>Removing one of the two orienting reflections (for example,
+<code class="docutils literal notranslate"><span class="pre">remove_reflection(r1.name)</span></code> above).</p></li>
+<li><p>Reassigning <code class="docutils literal notranslate"><span class="pre">sample.reflections.order</span></code> so a different reflection
+becomes <code class="docutils literal notranslate"><span class="pre">order[0]</span></code> or <code class="docutils literal notranslate"><span class="pre">order[1]</span></code>.</p></li>
+<li><p>Editing the <code class="docutils literal notranslate"><span class="pre">pseudos</span></code>, <code class="docutils literal notranslate"><span class="pre">reals</span></code>, or <code class="docutils literal notranslate"><span class="pre">wavelength</span></code> of either
+orienting reflection in place.</p></li>
+</ul>
+<p>Edits that do <strong>not</strong> invalidate the UB include: adding or removing a
+reflection that is not in <code class="docutils literal notranslate"><span class="pre">order[:2]</span></code>, editing a non-orienting
+reflection, and assigning <a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.U" title="hklpy2.blocks.sample.Sample.U"><code class="xref py py-attr docutils literal notranslate"><span class="pre">U</span></code></a> /
+<a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.UB" title="hklpy2.blocks.sample.Sample.UB"><code class="xref py py-attr docutils literal notranslate"><span class="pre">UB</span></code></a> directly (the user has taken
+ownership of the matrix; see <a class="reference internal" href="#how-calc-ub-set-manually"><span class="std std-ref">How do I set UB manually from a known matrix?</span></a>).</p>
+<p>Check the current state via
+<a class="reference internal" href="../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.UB_is_stale" title="hklpy2.blocks.sample.Sample.UB_is_stale"><code class="xref py py-attr docutils literal notranslate"><span class="pre">UB_is_stale</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB_is_stale</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">remove_reflection</span><span class="p">(</span><span class="n">r1</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB_is_stale</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>When <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> or
+<a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> runs against a
+stale UB, a single <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> is emitted and <code class="xref py py-func docutils literal notranslate"><span class="pre">pa()</span></code>
+annotates its output with <code class="docutils literal notranslate"><span class="pre">UB</span> <span class="pre">stale:</span> <span class="pre">True</span></code>.  Refresh the matrix by
+running <a class="reference internal" href="../autoapi/hklpy2/user/index.html#hklpy2.user.calc_UB" title="hklpy2.user.calc_UB"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_UB()</span></code></a> again with the desired
+orienting pair:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">r4</span> <span class="o">=</span> <span class="n">setor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.0966</span><span class="p">,</span> <span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">calc_UB</span><span class="p">(</span><span class="n">r4</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB_is_stale</span>
+<span class="go">False</span>
+</pre></div>
 </div>
 </section>
 <section id="how-do-i-refine-the-lattice-parameters">
@@ -728,6 +772,7 @@ recorded incorrectly or the wrong geometry was selected.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-set-ub-manually-from-a-known-matrix">How do I set UB manually from a known matrix?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-inspect-the-current-ub-matrix">How do I inspect the current UB matrix?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-remove-a-reflection">How do I remove a reflection?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-tell-if-my-ub-is-stale">How do I tell if my UB is stale?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-refine-the-lattice-parameters">How do I refine the lattice parameters?</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-verify-the-ub-matrix-is-correct">How do I verify the UB matrix is correct?</a></li>
 </ul>
