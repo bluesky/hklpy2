@@ -53,6 +53,7 @@ Module Contents
        ~remove_reflection
        ~U
        ~UB
+       ~UB_is_stale
 
 
    .. py:property:: U
@@ -71,6 +72,32 @@ Module Contents
       * :math:`UB` - orientation matrix
       * :math:`B` - crystal lattice on the diffractometer
       * :math:`U` - rotation matrix, relative orientation of crystal on diffractometer
+
+
+   .. py:property:: UB_is_stale
+      :type: bool
+
+
+      ``True`` iff the orientation reflections have changed since the
+      last successful ``calc_UB`` for this sample.
+
+      Returns ``False`` in any of these cases:
+
+      * ``calc_UB`` has not been called for this sample (no snapshot
+        to compare against),
+      * the user has assigned :attr:`U` or :attr:`UB` directly (they
+        have explicitly taken ownership of the matrix; the snapshot
+        is cleared),
+      * the orientation reflections (``reflections.order[:2]`` and
+        their physics-relevant contents) are unchanged since the last
+        ``calc_UB``.
+
+      Returns ``True`` when ``order[:2]`` itself changes (reorder,
+      prepend a new orienting reflection, remove an orienting one) or
+      when an in-place mutation of one of the orienting reflections
+      changes its ``pseudos``, ``reals``, ``wavelength``, or unit
+      fields.  Reflections outside ``order[:2]`` do not affect
+      staleness.
 
 
    .. py:attribute:: core

@@ -221,6 +221,15 @@ Glossary
         *pseudo* and *real* axes for a defined *diffractometer* *geometry*.  The
         library also provides one or more diffractometer geometries.
 
+    stale UB
+        State of a *sample* whose stored *UB* matrix no longer reflects the
+        current orienting *reflections* (the first two entries of
+        ``Sample.reflections.order``).  Detected via
+        :attr:`~hklpy2.blocks.sample.Sample.UB_is_stale`; cleared by
+        running :meth:`~hklpy2.ops.Core.calc_UB` again or by direct
+        assignment to :attr:`~hklpy2.blocks.sample.Sample.U` /
+        :attr:`~hklpy2.blocks.sample.Sample.UB` (user takes ownership).
+
     U
     UB
         Orientation matrix (3 x 3).

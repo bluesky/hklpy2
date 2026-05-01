@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=012f7712"></script>
+    <script src="../../../_static/documentation_options.js?v=d5ae1df0"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -425,9 +425,12 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_SolverDirty</span>
@@ -437,6 +440,18 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">LatticeDictType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.reflection</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reflection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.reflection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReflectionsDict</span>
+
+<span class="c1"># Reflection fields that, when changed for an orienting reflection,</span>
+<span class="c1"># invalidate the previously computed UB.  ``digits`` is intentionally</span>
+<span class="c1"># omitted (presentation only); ``name`` is implicit in ``order[:2]``.</span>
+<span class="n">_UB_REFLECTION_FIELDS</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;geometry&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pseudos&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;reals&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;reals_units&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;wavelength&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;wavelength_units&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -485,6 +500,7 @@
 <span class="sd">        ~remove_reflection</span>
 <span class="sd">        ~U</span>
 <span class="sd">        ~UB</span>
+<span class="sd">        ~UB_is_stale</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -503,6 +519,12 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.core">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">core</span> <span class="o">=</span> <span class="n">core</span></div>
 
+        <span class="c1"># Snapshot of the orientation-reflection state at the end of the</span>
+        <span class="c1"># last successful ``calc_UB``.  ``None`` means &quot;no snapshot is</span>
+        <span class="c1"># stored&quot;, which is the case until ``calc_UB`` runs and any time</span>
+        <span class="c1"># the user takes ownership of U / UB by direct assignment.  See</span>
+        <span class="c1"># :issue:`391`.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ub_snapshot</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">lattice</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">IDENTITY_MATRIX_3X3</span>
         <span class="c1"># Consider: UB = self.U @ self.lattice.B</span>
@@ -663,6 +685,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_U</span> <span class="o">=</span> <span class="n">value</span>
         <span class="c1"># U changes require only a UB push; no full _sample rebuild.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span>
+        <span class="c1"># Direct assignment: the user has taken ownership of U; clear</span>
+        <span class="c1"># any prior calc_UB snapshot so ``UB_is_stale`` reports False</span>
+        <span class="c1"># until the next ``calc_UB`` (:issue:`391`).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ub_snapshot</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Sample.UB">
@@ -684,7 +710,79 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_UB</span> <span class="o">=</span> <span class="n">value</span>
         <span class="c1"># UB changes require only a UB push; no full _sample rebuild.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span>
+        <span class="c1"># Direct assignment: the user has taken ownership of UB; clear</span>
+        <span class="c1"># any prior calc_UB snapshot so ``UB_is_stale`` reports False</span>
+        <span class="c1"># until the next ``calc_UB`` (:issue:`391`).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ub_snapshot</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_ub_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a comparable snapshot of the current orientation-reflection state.</span>
+
+<span class="sd">        The snapshot captures the two orienting reflection names plus the</span>
+<span class="sd">        physics-relevant fields of those reflections (``geometry``,</span>
+<span class="sd">        ``pseudos``, ``reals``, ``reals_units``, ``wavelength``,</span>
+<span class="sd">        ``wavelength_units``).  Any change to those values invalidates a</span>
+<span class="sd">        previously computed UB.  Returns ``None`` when fewer than two</span>
+<span class="sd">        reflections are available (UB is not computable) or when an</span>
+<span class="sd">        ordered name no longer maps to a known reflection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">order</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+                <span class="nb">tuple</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reflections</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()[</span><span class="n">field</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">_UB_REFLECTION_FIELDS</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">head</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># ``order`` references a name that is no longer in the dict.</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">contents</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@versionadded</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Detect when the orientation reflections have changed since &quot;</span>
+            <span class="s2">&quot;the last ``calc_UB``, indicating the stored UB no longer &quot;</span>
+            <span class="s2">&quot;reflects the chosen orienting pair.  See :issue:`391`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+<div class="viewcode-block" id="Sample.UB_is_stale">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.UB_is_stale">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">UB_is_stale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ``True`` iff the orientation reflections have changed since the</span>
+<span class="sd">        last successful ``calc_UB`` for this sample.</span>
+
+<span class="sd">        Returns ``False`` in any of these cases:</span>
+
+<span class="sd">        * ``calc_UB`` has not been called for this sample (no snapshot</span>
+<span class="sd">          to compare against),</span>
+<span class="sd">        * the user has assigned :attr:`U` or :attr:`UB` directly (they</span>
+<span class="sd">          have explicitly taken ownership of the matrix; the snapshot</span>
+<span class="sd">          is cleared),</span>
+<span class="sd">        * the orientation reflections (``reflections.order[:2]`` and</span>
+<span class="sd">          their physics-relevant contents) are unchanged since the last</span>
+<span class="sd">          ``calc_UB``.</span>
+
+<span class="sd">        Returns ``True`` when ``order[:2]`` itself changes (reorder,</span>
+<span class="sd">        prepend a new orienting reflection, remove an orienting one) or</span>
+<span class="sd">        when an in-place mutation of one of the orienting reflections</span>
+<span class="sd">        changes its ``pseudos``, ``reals``, ``wavelength``, or unit</span>
+<span class="sd">        fields.  Reflections outside ``order[:2]`` do not affect</span>
+<span class="sd">        staleness.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ub_snapshot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_ub_snapshot</span><span class="p">()</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ub_snapshot</span></div>
+</div>
 
 </pre></div>
 

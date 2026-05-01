@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=012f7712"></script>
+    <script src="../../_static/documentation_options.js?v=d5ae1df0"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -427,6 +427,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
@@ -977,8 +978,36 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">U</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="n">ub</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
+        <span class="c1"># Snapshot the orientation-reflection state used to derive UB so</span>
+        <span class="c1"># ``Sample.UB_is_stale`` can later detect drift (:issue:`391`).</span>
+        <span class="c1"># Note: the U / UB setters above clear ``_ub_snapshot`` (direct</span>
+        <span class="c1"># assignment is treated as user ownership); the snapshot must be</span>
+        <span class="c1"># set after those writes, as the final step of a successful</span>
+        <span class="c1"># calc_UB.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">_ub_snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">_compute_ub_snapshot</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ub</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_warn_if_ub_stale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Emit a ``UserWarning`` when the current sample&#39;s UB is stale.</span>
+
+<span class="sd">        Called from :meth:`forward` and :meth:`inverse`.  Staleness is</span>
+<span class="sd">        detected via :attr:`Sample.UB_is_stale` (:issue:`391`); the</span>
+<span class="sd">        result of the call may not reflect the current orientation</span>
+<span class="sd">        reflections.  The user retains full control: no recomputation</span>
+<span class="sd">        is performed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span>
+        <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">UB_is_stale</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;UB for sample </span><span class="si">{</span><span class="n">sample</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is stale &quot;</span>
+                <span class="s2">&quot;(orientation reflections changed since last calc_UB); &quot;</span>
+                <span class="s2">&quot;the result may not reflect the current orientation. &quot;</span>
+                <span class="s2">&quot;Call calc_UB() to refresh.&quot;</span><span class="p">,</span>
+                <span class="ne">UserWarning</span><span class="p">,</span>
+                <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="p">)</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Core.extras">
@@ -1014,6 +1043,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
             <span class="n">pseudos</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warn_if_ub_stale</span><span class="p">()</span>
 
         <span class="n">pdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standardize_pseudos</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span>
         <span class="n">base_reals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_position</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>  <span class="c1"># Original values.</span>
@@ -1142,6 +1172,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes_xref</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># Called from the constructor before solver is defined.</span>
             <span class="k">return</span> <span class="n">pseudos</span>  <span class="c1"># current values of pseudos</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warn_if_ub_stale</span><span class="p">()</span>
 
         <span class="c1"># Just the reals expected by the solver.</span>
         <span class="c1"># Dictionary in order expected by the solver.</span>

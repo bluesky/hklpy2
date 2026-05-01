@@ -183,7 +183,7 @@ points in the ``forward()`` computation:
 The UB matrix looks wrong, or ``pa()`` and ``configuration`` show different values.
 ------------------------------------------------------------------------------------
 
-Two common causes:
+Three common causes:
 
 1. **Axis mapping is swapped.**  If ``axes_xref`` has detector angles wired to
    sample-rotation slots (or vice versa), the UB calculation receives the wrong
@@ -195,6 +195,14 @@ Two common causes:
    matrix retains full floating-point precision.  A sign difference (e.g.
    ``+0.0101`` vs. ``-0.0101``) on a near-zero element is a display rounding
    artefact.  Retrieve the full matrix via ``diffractometer.sample.UB``.
+
+3. **The UB is :term:`stale UB <stale ub>`.**  An orienting reflection was
+   added, removed, reordered, or edited after ``calc_UB()`` last ran, so
+   the stored matrix no longer reflects the chosen pair.  ``pa()`` shows
+   ``UB stale: True`` and ``forward()`` / ``inverse()`` emit a
+   ``UserWarning``.  Check
+   ``diffractometer.sample.UB_is_stale``; refresh by calling
+   ``calc_UB()`` again.  See :ref:`how_calc_ub.stale`.
 
 .. seealso::
 
