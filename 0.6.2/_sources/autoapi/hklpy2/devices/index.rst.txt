@@ -1,0 +1,146 @@
+devices
+=======
+
+.. py:module:: hklpy2.devices
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.devices``
+
+   Ophyd device construction helpers for |hklpy2|.
+
+   These utilities are called during diffractometer creation to build ophyd
+   ``Component`` and ``Device`` objects dynamically from axis specifications
+   and factory configurations.
+
+   .. autosummary::
+
+       ~VirtualPositionerBase
+       ~define_real_axis
+       ~dict_device_factory
+       ~dynamic_import
+       ~make_component
+       ~make_dynamic_instance
+       ~parse_factory_axes
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: VirtualPositionerBase(*, physical_name: str = '', **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.devices.VirtualPositionerBase``
+
+
+   Bases: :py:obj:`ophyd.SoftPositioner`
+
+
+   Base class for a diffractometer's virtual axis.
+
+   This base class also serves as an example where the virtual axis is twice
+   the value of the physical axis.  It is used as a Component of a
+   'DiffractometerBase' definition.  The ``physical_name`` is the name of a
+   sibling positioner attribute.
+
+
+   .. py:method:: forward(physical: float) -> float
+
+      Return virtual position from physical position.
+
+      Subclass should override.
+
+
+
+   .. py:method:: inverse(virtual: float) -> float
+
+      Return physical position from virtual position.
+
+      Subclass should override.
+
+
+
+   .. py:attribute:: physical
+
+
+.. py:function:: define_real_axis(specs: Union[None, str, ~hklpy2.typing.KeyValueMap], kwargs: ~hklpy2.typing.KeyValueMap) -> tuple[str, Sequence, Mapping]
+
+   .. container:: import-path
+
+      Import: ``hklpy2.devices.define_real_axis``
+
+
+   Return class and kwargs of a real axis from its 'specs'.
+
+
+.. py:function:: dict_device_factory(data: ~hklpy2.typing.KeyValueMap, **kwargs: Any) -> type
+
+   .. container:: import-path
+
+      Import: ``hklpy2.devices.dict_device_factory``
+
+
+   Create a ``DictionaryDevice()`` class using the supplied dictionary.
+
+   .. index:: factory; dict_device_factory, dict_device_factory
+
+.. py:function:: dynamic_import(full_path: str) -> type
+
+   .. container:: import-path
+
+      Import: ``hklpy2.devices.dynamic_import``
+
+
+   Import the object given its import path as text.
+
+   Motivated by specification of class names for plugins
+   when using ``apstools.devices.ad_creator()``.
+
+   EXAMPLES::
+
+       klass = dynamic_import("ophyd.EpicsMotor")
+       m1 = klass("gp:m1", name="m1")
+
+       creator = dynamic_import("hklpy2.diffract.creator")
+       fourc = creator(name="fourc")
+
+   From the `apstools <https://github.com/BCDA-APS/apstools>`_ package.
+
+
+.. py:function:: make_component(call_name: str, *args: Any, **kwargs: Any) -> ~ophyd.Component
+
+   .. container:: import-path
+
+      Import: ``hklpy2.devices.make_component``
+
+
+   Create an Component for a custom ophyd Device class.
+
+
+.. py:function:: make_dynamic_instance(call_name: str, *args: Any, **kwargs: Any) -> Any
+
+   .. container:: import-path
+
+      Import: ``hklpy2.devices.make_dynamic_instance``
+
+
+   Return an instance of the Python 'call_name'.
+
+
+.. py:function:: parse_factory_axes(*, space: Optional[str] = None, axes: Union[~hklpy2.typing.KeyValueMap, None, Sequence[str]] = None, order: Optional[Sequence[str]] = None, canonical: Optional[Sequence[str]] = None, labels: Optional[Sequence[str]] = None, **_ignored: Any) -> Mapping[str, Union[~ophyd.Component, Sequence[str]]]
+
+   .. container:: import-path
+
+      Import: ``hklpy2.devices.parse_factory_axes``
+
+
+   Parse a set of axis specifications, return Device class attributes.
+
+   Called from the diffract.diffractometer_class_factory().
+
+

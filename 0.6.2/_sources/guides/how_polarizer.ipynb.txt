@@ -1,0 +1,620 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Polarization Analyzer on the Detector Arm\n",
+    "\n",
+    "A polarization analyzer (often just *polarizer*) is a passive optical\n",
+    "element on the detector arm.  It is a crystal analyzer chosen so that the\n",
+    "Bragg angle is close to 45° — i.e. the scattering angle 2θ is near 90° —\n",
+    "which suppresses radiation polarized in the diffraction plane.  Rotating\n",
+    "the polarizer's diffraction plane around the beam (the `peta` axis)\n",
+    "selects which polarization direction is suppressed, allowing the beam\n",
+    "polarization state to be probed.\n",
+    "\n",
+    "The control system operates the polarizer motors; hklpy2 treats them as\n",
+    "**auxiliary positioners** that are read alongside the diffractometer but\n",
+    "do not affect reciprocal-space calculations.\n",
+    "\n",
+    "**Objective**\n",
+    "\n",
+    "Add three polarization-analyzer axes (`pth`, `ptth`, `peta`) to an E4CV\n",
+    "diffractometer, demonstrate their use in a Bluesky session, and show how\n",
+    "to save and restore the diffractometer configuration.\n",
+    "\n",
+    "**Polarizer axes** (nominal names used here)\n",
+    "\n",
+    "axis | description\n",
+    "--- | ---\n",
+    "`pth` | polarizer crystal Bragg angle (θ)\n",
+    "`ptth` | polarizer detector arm angle (2θ ≈ 90°)\n",
+    "`peta` | rotation of the polarizer diffraction plane around the beam\n",
+    "\n",
+    "These names are conventional; substitute the names used at your beamline.\n",
+    "Some installations add a fourth motor (`pchi`) for crystal alignment; it\n",
+    "is added to `reals` exactly like the others and is otherwise invisible to\n",
+    "the diffractometer.\n",
+    "\n",
+    "**Scope.** Only polarizers mounted between the sample and the detector\n",
+    "are in scope.  Upstream (incident-beam) polarizers are out of scope for\n",
+    "hklpy2."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Setup\n",
+    "\n",
+    "Create an E4CV diffractometer with the three polarizer axes declared\n",
+    "alongside the four standard real motors.  Pass all seven axes in the\n",
+    "`reals` dictionary; the four that the solver knows about (`omega`,\n",
+    "`chi`, `phi`, `tth`) are mapped automatically; the remaining three\n",
+    "(`pth`, `ptth`, `peta`) appear as *auxiliaries*.\n",
+    "\n",
+    "The solver axes (`omega`, `chi`, `phi`, `tth`) must appear in the order\n",
+    "the solver expects — giving them out of order will cause incorrect motor\n",
+    "mapping.  Auxiliary axes may be appended in any order after the solver\n",
+    "axes.  See the [Diffractometer axes](diffract.rst) guide for details."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:07.827441Z",
+     "iopub.status.busy": "2026-04-28T17:13:07.827304Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.497411Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.496919Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import hklpy2\n",
+    "\n",
+    "e4cv = hklpy2.creator(\n",
+    "    name=\"e4cv\",\n",
+    "    reals=dict(\n",
+    "        omega=None,  # simulated motor\n",
+    "        chi=None,\n",
+    "        phi=None,\n",
+    "        tth=None,\n",
+    "        pth=None,  # polarizer theta\n",
+    "        ptth=None,  # polarizer 2-theta\n",
+    "        peta=None,  # rotation about the beam\n",
+    "    ),\n",
+    ")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Show the diffractometer position summary.  The polarizer axes appear\n",
+    "under *auxiliaries*."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.499540Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.499136Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.502823Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.502292Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=1.0\n",
+      "pseudos: h=0, k=0, l=0\n",
+      "reals: omega=0, chi=0, phi=0, tth=0\n",
+      "auxiliaries: pth=0, ptth=0, peta=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "e4cv.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Show all ophyd component names."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.528270Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.528093Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.530725Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.530125Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "e4cv.component_names=('beam', 'h', 'k', 'l', 'omega', 'chi', 'phi', 'tth', 'pth', 'ptth', 'peta')\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(f\"{e4cv.component_names=}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Orient the diffractometer\n",
+    "\n",
+    "Add a sample and two orientation reflections, then compute the UB matrix.\n",
+    "The polarizer axes play no role in orientation."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.532329Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.532119Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.538712Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.538125Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "UB matrix computed.\n"
+     ]
+    }
+   ],
+   "source": [
+    "e4cv.core.add_sample(\"vibranium\", 4.04)\n",
+    "\n",
+    "r1 = e4cv.core.add_reflection(\n",
+    "    dict(h=4, k=0, l=0),\n",
+    "    dict(omega=-145.451, chi=0, phi=0, tth=69.066),\n",
+    ")\n",
+    "r2 = e4cv.core.add_reflection(\n",
+    "    dict(h=0, k=4, l=0),\n",
+    "    dict(omega=-145.451, chi=0, phi=90, tth=69.066),\n",
+    ")\n",
+    "e4cv.core.calc_UB(r1, r2)\n",
+    "print(\"UB matrix computed.\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Set the wavelength and position the polarizer near 90°\n",
+    "\n",
+    "The polarizer crystal is chosen so that its Bragg angle for the incident\n",
+    "wavelength is close to 45°, putting `ptth` near 90°.  The example below\n",
+    "uses pyrolytic graphite **PG(002)** with d-spacing 3.355 Å; a wavelength\n",
+    "of 4.7 Å gives `pth` ≈ 44.5° and `ptth` ≈ 89°.\n",
+    "\n",
+    "At a real beamline the wavelength is typically determined by the\n",
+    "monochromator and is read-only; the polarizer crystal and `pth`/`ptth`\n",
+    "are chosen accordingly."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.540089Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.539951Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.544693Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.544263Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "incident wavelength : 4.7000 Å\n",
+      "PG(002) d-spacing   : 3.3550 Å\n",
+      "pth                 : 44.4629 deg\n",
+      "ptth                : 88.9258 deg\n",
+      "peta                : 0.0000 deg\n",
+      "wavelength=4.7\n",
+      "pseudos: h=0, k=0, l=0\n",
+      "reals: omega=0, chi=0, phi=0, tth=0\n",
+      "auxiliaries: pth=44.4629, ptth=88.9258, peta=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "import math\n",
+    "\n",
+    "d_spacing = 3.355  # PG(002) d-spacing in angstroms\n",
+    "\n",
+    "# Set incident wavelength.  At a beamline this may be read-only.\n",
+    "e4cv.beam.wavelength.put(4.7)  # angstroms\n",
+    "\n",
+    "# Compute polarizer Bragg angle (pth) and arm angle (ptth ≈ 90°).\n",
+    "wavelength = e4cv.beam.wavelength.get()\n",
+    "e4cv.pth.move(math.degrees(math.asin(wavelength / (2 * d_spacing))))\n",
+    "e4cv.ptth.move(e4cv.pth.position * 2)\n",
+    "e4cv.peta.move(0)\n",
+    "\n",
+    "print(f\"incident wavelength : {wavelength:.4f} Å\")\n",
+    "print(f\"PG(002) d-spacing   : {d_spacing:.4f} Å\")\n",
+    "print(f\"pth                 : {e4cv.pth.position:.4f} deg\")\n",
+    "print(f\"ptth                : {e4cv.ptth.position:.4f} deg\")\n",
+    "print(f\"peta                : {e4cv.peta.position:.4f} deg\")\n",
+    "e4cv.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Rotate the diffraction plane around the beam\n",
+    "\n",
+    "With `ptth` close to 90°, radiation polarized in the polarizer's\n",
+    "diffraction plane is suppressed.  Rotating `peta` rotates that\n",
+    "diffraction plane around the beam, selecting which linear polarization\n",
+    "component is suppressed.  `pth` and `ptth` are unchanged by `peta`.\n",
+    "\n",
+    "The cells below move `peta` to several positions.  In a real session\n",
+    "this would be wrapped in a Bluesky plan (e.g. `bp.scan` over `peta`)\n",
+    "and the detector signal would be recorded at each step."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.545948Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.545810Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.548661Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.548160Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "peta =   0.00 deg | pth = 44.4629 | ptth = 88.9258\n",
+      "peta =  45.00 deg | pth = 44.4629 | ptth = 88.9258\n",
+      "peta =  90.00 deg | pth = 44.4629 | ptth = 88.9258\n"
+     ]
+    }
+   ],
+   "source": [
+    "for angle in (0, 45, 90):\n",
+    "    e4cv.peta.move(angle)\n",
+    "    print(\n",
+    "        f\"peta = {e4cv.peta.position:6.2f} deg | \"\n",
+    "        f\"pth = {e4cv.pth.position:.4f} | \"\n",
+    "        f\"ptth = {e4cv.ptth.position:.4f}\"\n",
+    "    )"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Read all axes together\n",
+    "\n",
+    "Because the polarizer axes are ophyd components on the diffractometer\n",
+    "device, they are included in `read()` and will be recorded in every\n",
+    "Bluesky run document automatically."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.549993Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.549861Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.555415Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.554949Z"
+    }
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "OrderedDict([('e4cv_beam_wavelength',\n",
+       "              {'value': 4.7, 'timestamp': 1777396392.54133}),\n",
+       "             ('e4cv_beam_energy',\n",
+       "              {'value': 2.63796166890571, 'timestamp': 1777396392.2805746}),\n",
+       "             ('e4cv_h', {'value': 0, 'timestamp': 1777396392.2809193}),\n",
+       "             ('e4cv_h_setpoint',\n",
+       "              {'value': 0, 'timestamp': 1777396392.2809606}),\n",
+       "             ('e4cv_k', {'value': 0, 'timestamp': 1777396392.2811275}),\n",
+       "             ('e4cv_k_setpoint',\n",
+       "              {'value': 0, 'timestamp': 1777396392.2811594}),\n",
+       "             ('e4cv_l', {'value': 0, 'timestamp': 1777396392.281286}),\n",
+       "             ('e4cv_l_setpoint',\n",
+       "              {'value': 0, 'timestamp': 1777396392.2813118}),\n",
+       "             ('e4cv_omega', {'value': 0, 'timestamp': 1777396392.5514412}),\n",
+       "             ('e4cv_chi', {'value': 0, 'timestamp': 1777396392.5514452}),\n",
+       "             ('e4cv_phi', {'value': 0, 'timestamp': 1777396392.551448}),\n",
+       "             ('e4cv_tth', {'value': 0, 'timestamp': 1777396392.5514514}),\n",
+       "             ('e4cv_pth',\n",
+       "              {'value': 44.462885420892945, 'timestamp': 1777396392.5514534}),\n",
+       "             ('e4cv_ptth',\n",
+       "              {'value': 88.92577084178589, 'timestamp': 1777396392.5514557}),\n",
+       "             ('e4cv_peta', {'value': 90, 'timestamp': 1777396392.551458})])"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "e4cv.read()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Verify the polarizer wavelength\n",
+    "\n",
+    "Back-compute the polarizer wavelength from the current `pth` position\n",
+    "using Bragg's law (`λ = 2 d sin θ`) and confirm it matches the incident\n",
+    "wavelength."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.556791Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.556569Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.559431Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.558885Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "pth                  : 44.4629 deg\n",
+      "Polarizer wavelength : 4.7000 Å\n",
+      "Incident wavelength  : 4.7000 Å\n"
+     ]
+    }
+   ],
+   "source": [
+    "polarizer_wavelength = 2 * d_spacing * math.sin(math.radians(e4cv.pth.position))\n",
+    "print(f\"pth                  : {e4cv.pth.position:.4f} deg\")\n",
+    "print(f\"Polarizer wavelength : {polarizer_wavelength:.4f} Å\")\n",
+    "print(f\"Incident wavelength  : {e4cv.beam.wavelength.get():.4f} Å\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Save the diffractometer configuration\n",
+    "\n",
+    "Export the diffractometer configuration (orientation, sample,\n",
+    "reflections, constraints) to a YAML file.  The auxiliary axis *names*\n",
+    "(`pth`, `ptth`, `peta`) are recorded in the file so the diffractometer\n",
+    "can be rebuilt with the same axes.  Auxiliary axis *positions* are not\n",
+    "stored and must be restored separately (e.g. from EPICS PV readback, or\n",
+    "by moving them explicitly after restore)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.560682Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.560552Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.570876Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.570375Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Configuration saved to e4cv-polarizer.yml\n"
+     ]
+    }
+   ],
+   "source": [
+    "config_file = \"e4cv-polarizer.yml\"\n",
+    "e4cv.export(config_file, comment=\"E4CV with polarizer axes example\")\n",
+    "print(f\"Configuration saved to {config_file}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Restore the configuration\n",
+    "\n",
+    "Restore the diffractometer from the saved file.  The auxiliary axes\n",
+    "(`pth`, `ptth`, `peta`) are recreated automatically from the\n",
+    "configuration — no `reals=` argument is needed.  Their positions\n",
+    "default to zero and must be set explicitly."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.572198Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.572061Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.833685Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.833020Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "wavelength=4.7\n",
+      "pseudos: h=0, k=0, l=0\n",
+      "reals: omega=0, chi=0, phi=0, tth=0\n",
+      "auxiliaries: pth=0, ptth=0, peta=0\n"
+     ]
+    }
+   ],
+   "source": [
+    "e4cv2 = hklpy2.simulator_from_config(config_file)\n",
+    "e4cv2.wh()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The orientation (UB matrix, sample, reflections) and the solver mode\n",
+    "are fully restored.  Two items are not stored in the configuration\n",
+    "file and must be set explicitly as part of session startup:\n",
+    "\n",
+    "- **Polarizer positions** — default to zero; move them as shown above.\n",
+    "- **Incident wavelength** — restored to the value at export time, but\n",
+    "  at a beamline this is typically driven live by the monochromator.\n",
+    "\n",
+    "(The `peta` rotation around the beam is also independent of the\n",
+    "diffractometer orientation; it can be set at any time without affecting\n",
+    "`forward()`/`inverse()`.)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Verify the restored orientation\n",
+    "\n",
+    "Confirm that `forward()` gives the same result on both the original and\n",
+    "restored diffractometers."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.835308Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.835105Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.849537Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.848834Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "original: forward{'h': 1, 'k': 0, 'l': 0} -> -35.5690\n",
+      "restored: forward{'h': 1, 'k': 0, 'l': 0} -> -35.5690\n"
+     ]
+    }
+   ],
+   "source": [
+    "hkl = dict(h=1, k=0, l=0)\n",
+    "print(f\"original: forward{hkl} -> {e4cv.forward(**hkl)[0]:.4f}\")\n",
+    "print(f\"restored: forward{hkl} -> {e4cv2.forward(**hkl)[0]:.4f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Optional fourth axis: `pchi`\n",
+    "\n",
+    "Some installations add a fourth motor (`pchi`) for crystal alignment.\n",
+    "It is added to `reals` exactly like the others:\n",
+    "\n",
+    "```python\n",
+    "e4cv = hklpy2.creator(\n",
+    "    name=\"e4cv\",\n",
+    "    reals=dict(\n",
+    "        omega=None, chi=None, phi=None, tth=None,\n",
+    "        pth=None, ptth=None, peta=None, pchi=None,\n",
+    "    ),\n",
+    ")\n",
+    "```\n",
+    "\n",
+    "`pchi` is invisible to the diffractometer crystallography and is read,\n",
+    "saved, and restored alongside the other auxiliaries."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Clean up the example file"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-04-28T17:13:12.851288Z",
+     "iopub.status.busy": "2026-04-28T17:13:12.851135Z",
+     "iopub.status.idle": "2026-04-28T17:13:12.854419Z",
+     "shell.execute_reply": "2026-04-28T17:13:12.853796Z"
+    }
+   },
+   "outputs": [],
+   "source": [
+    "import pathlib\n",
+    "\n",
+    "pathlib.Path(config_file).unlink(missing_ok=True)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "hklpy2",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.9"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}

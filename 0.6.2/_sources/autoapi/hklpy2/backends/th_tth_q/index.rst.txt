@@ -1,0 +1,187 @@
+th_tth_q
+========
+
+.. py:module:: hklpy2.backends.th_tth_q
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.backends.th_tth_q``
+
+   "th_tth" example solver in Python.
+
+   Transformations between :math:`\theta,2\theta` and :math:`Q`.
+
+   Example::
+
+       import hklpy2
+       SolverClass = hklpy2.get_solver("th_tth")
+       solver = SolverClass()
+
+   .. autosummary::
+
+       ~ThTthSolver
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: BISECTOR_MODE
+   :value: 'bissector'
+
+
+.. py:data:: TH_TTH_Q_GEOMETRY
+   :value: 'TH TTH Q'
+
+
+.. py:class:: ThTthSolver(geometry: str, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.backends.th_tth_q.ThTthSolver``
+
+
+   Bases: :py:obj:`hklpy2.backends.base.SolverBase`
+
+
+   ``"th_tth"`` (any OS) :math:`\theta,2\theta` and :math:`Q`.
+
+   ============== =================
+   transformation equation
+   ============== =================
+   ``forward()``  :math:`\theta = \sin^{-1}(q\lambda / 4\pi)`
+   ``inverse()``  :math:`q = (4\pi / \lambda) \sin(\theta)`
+   ============== =================
+
+   Wavelength is specified either directly (``solver.wavelength = 1.0``) or
+   by adding at least one :index:`reflection` (see
+   :class:`~hklpy2.blocks.reflection.Reflection`).  All
+   reflections must have the same :index:`wavelength`.
+
+   No orientation matrix is used in this geometry.
+
+   New geometries can be added at runtime via
+   :meth:`~hklpy2.backends.base.SolverBase.register_geometry`.
+
+   .. rubric:: Python Methods
+
+   .. autosummary::
+
+       ~addReflection
+       ~calculate_UB
+       ~extra_axis_names
+       ~forward
+       ~geometries
+       ~inverse
+       ~pseudo_axis_names
+       ~real_axis_names
+       ~refineLattice
+       ~removeAllReflections
+
+   .. rubric:: Python Properties
+
+   .. autosummary::
+
+       ~geometry
+       ~lattice
+       ~mode
+       ~modes
+       ~sample
+
+
+   .. py:method:: addReflection(value: ~hklpy2.backends.typing.ReflectionDict) -> None
+
+      Add coordinates of a diffraction condition (a reflection).
+
+
+
+   .. py:method:: calculate_UB(r1: ~hklpy2.backends.typing.ReflectionDict, r2: ~hklpy2.backends.typing.ReflectionDict) -> ~hklpy2.typing.Matrix3x3
+
+      Calculate the UB (orientation) matrix with two reflections.
+
+      The method of Busing & Levy, Acta Cryst 22 (1967) 457.
+
+
+
+   .. py:property:: extra_axis_names
+      :type: List[str]
+
+
+      Ordered list of any extra axis names (such as x, y, z).
+
+
+   .. py:method:: forward(pseudos: ~hklpy2.typing.NamedFloatDict) -> List[~hklpy2.typing.NamedFloatDict]
+
+      Transform pseudos to list of reals.
+
+
+
+   .. py:method:: geometries() -> List[str]
+      :classmethod:
+
+
+      Sorted list of registered geometry names.
+
+
+
+   .. py:method:: inverse(reals: ~hklpy2.typing.NamedFloatDict) -> ~hklpy2.typing.NamedFloatDict
+
+      Transform reals to pseudos.
+
+
+
+   .. py:property:: modes
+      :type: List[str]
+
+
+      List of the geometry operating modes.
+
+
+   .. py:attribute:: name
+      :value: 'th_tth'
+
+
+      Name of this Solver.
+
+
+   .. py:property:: pseudo_axis_names
+      :type: List[str]
+
+
+      Ordered list of the pseudo axis names (such as h, k, l).
+
+
+   .. py:property:: real_axis_names
+      :type: List[str]
+
+
+      Ordered list of the real axis names (such as th, tth).
+
+
+   .. py:method:: refineLattice(reflections: list[~hklpy2.backends.typing.ReflectionDict]) -> ~hklpy2.typing.NamedFloatDict | None
+
+      No lattice refinement in this |solver|.
+
+
+
+   .. py:method:: removeAllReflections() -> None
+
+      Remove all reflections.
+
+
+
+   .. py:attribute:: version
+
+      Version of this Solver.
+
+
+   .. py:property:: wavelength
+      :type: float
+
+
+      Diffractometer wavelength, for forward() and inverse().
+
+
