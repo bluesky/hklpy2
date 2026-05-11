@@ -1,0 +1,288 @@
+reflection
+==========
+
+.. py:module:: hklpy2.blocks.reflection
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.blocks.reflection``
+
+   Coordinates of a crystalline reflection.
+
+   Associates diffractometer angles (real-space) with crystalline reciprocal-space
+   (pseudo) coordinates.
+
+   .. autosummary::
+
+       ~Reflection
+       ~ReflectionsDict
+       ~UNUSED_REFLECTION
+
+
+
+
+
+
+Module Contents
+---------------
+
+.. py:data:: DEFAULT_REFLECTION_DIGITS
+   :type:  int
+   :value: 4
+
+
+.. py:class:: Reflection(name: str, pseudos: ~hklpy2.typing.NamedFloatDict, reals: ~hklpy2.typing.NamedFloatDict, wavelength: float, geometry: str, pseudo_axis_names: list[str], real_axis_names: list[str], *, core: Optional[Any] = None, digits: Optional[int] = None, reals_units: Optional[str] = None, wavelength_units: Optional[str] = None)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.reflection.Reflection``
+
+
+   Coordinates real and pseudo axes.
+
+   Two reflections can be added, subtracted, or compared for equality.
+
+   .. note:: Internal use only.
+
+      It is expected this class is called from a method of
+      :class:`~hklpy2.ops.Core`, not directly by the user.
+
+   .. rubric:: Parameters
+
+   * ``name`` (str): Reference name for this reflection.
+   * ``pseudos`` (dict): Unordered dictionary of pseudo-space axes and values.
+   * ``reals`` (dict): Unordered dictionary of real-space axes and values.
+   * ``wavelength`` (float): Wavelength of incident radiation.
+   * ``geometry`` (str): Geometry name for this reflection.
+   * ``pseudo_names`` ([str]): Ordered list of pseudo names for this geometry.
+   * ``rnames`` ([str]): Ordered list of real names for this geometry.
+   * ``wavelength_units`` (str): Engineering units of wavelength.
+
+   Optional items (such as 'azimuth', 'h1', 'h2', zones, ...) are not
+   part of a "reflection".
+
+   .. autosummary::
+
+       ~__add__
+       ~__eq__
+       ~__sub__
+       ~_asdict
+       ~_fromdict
+       ~_validate_pseudos
+       ~_validate_reals
+       ~_validate_wavelength
+       ~pseudos
+       ~reals
+       ~wavelength
+
+
+   .. py:attribute:: digits
+      :value: 4
+
+
+
+   .. py:attribute:: geometry
+
+
+   .. py:property:: name
+      :type: str
+
+
+      Sample name.
+
+
+   .. py:attribute:: pseudo_axis_names
+
+
+   .. py:property:: pseudos
+      :type: ~hklpy2.typing.NamedFloatDict
+
+
+      Ordered dictionary of diffractometer's reciprocal-space axes.
+
+      Dictionary keys are the axis names, as defined by the diffractometer.
+
+
+   .. py:attribute:: real_axis_names
+
+
+   .. py:property:: reals
+      :type: ~hklpy2.typing.NamedFloatDict
+
+
+      Ordered dictionary of diffractometer's real-space axes.
+
+      Dictionary keys are the axis names, as defined by the diffractometer.
+
+
+   .. py:property:: reals_units
+      :type: str
+
+
+      Engineering units of this reflection's real-space axes.
+
+
+   .. py:property:: wavelength
+      :type: float
+
+
+      Wavelength of reflection.
+
+
+   .. py:property:: wavelength_units
+      :type: str
+
+
+      Engineering units of this reflection's wavelength.
+
+
+.. py:class:: ReflectionsDict(*args, **kwargs)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.blocks.reflection.ReflectionsDict``
+
+
+   Bases: :py:obj:`dict`
+
+
+   Dictionary of Reflections.
+
+   .. autosummary::
+
+       ~_asdict
+       ~_fromdict
+       ~_request_solver_update
+       ~_validate_reflection
+       ~add
+       ~clear
+       ~order
+       ~pop
+       ~prune
+       ~set_orientation_reflections
+       ~setor
+       ~swap
+
+   .. versionchanged:: 0.7.0
+      Mutating operations now flag the owning
+      :class:`~hklpy2.ops.Core` with
+      ``_SolverDirty.SAMPLE | _SolverDirty.UB`` whenever the change
+      affects an entry referenced by :attr:`order` (the orienting
+      reflections the solver actually sees).  This includes
+      :meth:`add`, :meth:`swap`, :meth:`set_orientation_reflections`
+      / :meth:`setor`, the :attr:`order` setter, and any dict-API
+      mutation (``pop``, ``__setitem__``, ``__delitem__``, ``clear``,
+      ``update``, ``popitem``) that touches an ordered name.
+      Previously these mutations left the solver with a stale
+      reflection list.  See :issue:`397`.
+
+   .. versionchanged:: 0.7.0
+      Mutations that would leave the sample *half-defined* (two or
+      more reflections still in the dict, but fewer than two named
+      in :attr:`order`) now raise :class:`~hklpy2.exceptions.ReflectionError`.
+      The user must explicitly designate the new orienting pair (via
+      :meth:`set_orientation_reflections` or by assigning :attr:`order`)
+      **before** removing the current one, or remove non-orienting
+      reflections first so the sample falls below the orientation
+      threshold.  See :issue:`399`.
+
+
+   .. py:method:: add(reflection: Reflection, replace: bool = False) -> None
+
+      Add a single orientation reflection.
+
+
+
+   .. py:method:: clear()
+
+      D.clear() -> None.  Remove all items from D.
+
+
+
+   .. py:attribute:: geometry
+      :value: None
+
+
+
+   .. py:property:: order
+      :type: list[Reflection]
+
+
+      Ordered list of reflection names used for orientation.
+
+
+   .. py:method:: pop(*args, **kwargs)
+
+      D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
+
+      If the key is not found, return the default if given; otherwise,
+      raise a KeyError.
+
+
+
+   .. py:method:: popitem()
+
+      Remove and return a (key, value) pair as a 2-tuple.
+
+      Pairs are returned in LIFO (last-in, first-out) order.
+      Raises KeyError if the dict is empty.
+
+
+
+   .. py:method:: prune() -> None
+
+      Remove any undefined reflections from order list.
+
+
+
+   .. py:method:: set_orientation_reflections(reflections: list[Reflection]) -> None
+
+      Designate the order of the reflections to be used.
+
+      .. note:: Raises ``KeyError`` if any
+         ``reflections`` are not already defined.
+
+         This method does not *add* any new reflections.
+
+      .. rubric:: Parameters
+
+      * ``reflections`` ([Reflection]) : List of
+        :class:`hklpy2.blocks.reflection.Reflection` objects.
+
+
+
+   .. py:method:: setdefault(key, default=None)
+
+      Insert key with a value of default if key is not in the dictionary.
+
+      Return the value for key if key is in the dictionary, else default.
+
+
+
+   .. py:attribute:: setor
+
+      Common alias for :meth:`~set_orientation_reflections`.
+
+
+   .. py:method:: swap() -> list[Reflection]
+
+      Swap the first two orientation reflections.
+
+
+
+   .. py:method:: update(*args, **kwargs)
+
+      D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+      If E is present and has a .keys() method, then does:  for k in E.keys(): D[k] = E[k]
+      If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v
+      In either case, this is followed by: for k in F:  D[k] = F[k]
+
+
+
+.. py:data:: UNUSED_REFLECTION
+   :type:  str
+   :value: 'unused'
+
+
+   Identifies an unused reflection in the ReflectionsDict.
+
