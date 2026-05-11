@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=564e28ff"></script>
+    <script src="../../../_static/documentation_options.js?v=298bdb69"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -908,6 +908,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">v</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">()}</span>
 
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.3&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Re-key restored reflections by the diffractometer&#39;s local &quot;</span>
+            <span class="s2">&quot;real-axis names instead of the solver&#39;s canonical names, &quot;</span>
+            <span class="s2">&quot;matching every other consumer of ``Reflection.reals``.  &quot;</span>
+            <span class="s2">&quot;Fixes ``KeyError`` from ``forward()`` / ``benchmark`` after &quot;</span>
+            <span class="s2">&quot;``restore()`` / ``simulator_from_config`` when local and &quot;</span>
+            <span class="s2">&quot;canonical names differ.  See :issue:`398`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">config</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
@@ -923,8 +934,8 @@
                 <span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="n">axis</span><span class="p">:</span> <span class="n">value</span>
                     <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-                        <span class="c1"># core.diffractometer.real_axis_names,</span>
-                        <span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span>
+                        <span class="c1"># core.solver.real_axis_names,</span>
+                        <span class="n">core</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span>
                         <span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
                     <span class="p">)</span>
                 <span class="p">}</span>
