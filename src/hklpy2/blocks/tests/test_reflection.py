@@ -287,17 +287,22 @@ def test_ReflectionsDict(parms, representation, context, expected):
             assert len(db.order) == i
 
             r1 = list(db.values())[0]
-            db.setor([r1])
-            assert len(db._asdict()) == i  # unchanged
-            assert len(db.order) == 1
+            # Strict orientation-health check (#399) refuses to leave
+            # ``order`` shorter than two while ``len(db) >= 2``; only
+            # exercise the single-element ``setor`` / ``order`` paths
+            # when the dict is below the orientation threshold.
+            if i < 2:
+                db.setor([r1])
+                assert len(db._asdict()) == i  # unchanged
+                assert len(db.order) == 1
 
-            db.set_orientation_reflections([r1])
-            assert len(db._asdict()) == i  # unchanged
-            assert len(db.order) == 1
+                db.set_orientation_reflections([r1])
+                assert len(db._asdict()) == i  # unchanged
+                assert len(db.order) == 1
 
-            db.order = [r1.name]
-            assert len(db._asdict()) == i  # unchanged
-            assert len(db.order) == 1
+                db.order = [r1.name]
+                assert len(db._asdict()) == i  # unchanged
+                assert len(db.order) == 1
 
         assert representation in repr(db)
 
@@ -402,9 +407,14 @@ def test_duplicate_reflection(reflection, context):
     [
         pytest.param([r_1, r_4, r_5], ["r1", "r4"], does_not_raise(), id="swap-r1-r4"),
         pytest.param([r_1, r_4, r_5], ["r5", "r4"], does_not_raise(), id="swap-r5-r4"),
+        # The strict orientation-health check (#399) blocks setting
+        # ``order`` to fewer than two entries while two or more
+        # reflections remain in the dict, so swap()'s "need two
+        # reflections" error path is reached only with a dict that has
+        # fewer than two entries.
         pytest.param(
-            [r_1, r_4, r_5],
-            ["r5"],
+            [r_1],
+            ["r1"],
             pytest.raises(
                 ReflectionError,
                 match=re.escape("Need at least two reflections to swap."),
@@ -412,7 +422,7 @@ def test_duplicate_reflection(reflection, context):
             id="swap-single-reflection-error",
         ),
         pytest.param(
-            [r_1, r_4, r_5],
+            [],
             [],
             pytest.raises(
                 ReflectionError,

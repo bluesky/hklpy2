@@ -13,7 +13,9 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 """
 
 import logging
+from contextlib import contextmanager
 from typing import Any
+from typing import Iterable
 from typing import Mapping
 from typing import Optional
 from typing import Union
@@ -390,7 +392,7 @@ class ReflectionsDict(dict):
         ~setor
         ~swap
 
-    .. versionchanged:: 0.6.3
+    .. versionchanged:: 0.7.0
        Mutating operations now flag the owning
        :class:`~hklpy2.ops.Core` with
        ``_SolverDirty.SAMPLE | _SolverDirty.UB`` whenever the change
@@ -402,18 +404,35 @@ class ReflectionsDict(dict):
        ``update``, ``popitem``) that touches an ordered name.
        Previously these mutations left the solver with a stale
        reflection list.  See :issue:`397`.
+
+    .. versionchanged:: 0.7.0
+       Mutations that would leave the sample *half-defined* (two or
+       more reflections still in the dict, but fewer than two named
+       in :attr:`order`) now raise :class:`~hklpy2.exceptions.ReflectionError`.
+       The user must explicitly designate the new orienting pair (via
+       :meth:`set_orientation_reflections` or by assigning :attr:`order`)
+       **before** removing the current one, or remove non-orienting
+       reflections first so the sample falls below the orientation
+       threshold.  See :issue:`399`.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._order = []
         self.geometry = None
+
         # Back-reference to the owning ``Core``.  Wired by
         # :class:`~hklpy2.blocks.sample.Sample` after construction so that
         # mutating operations can flag the solver-dirty bitfield.  May be
         # ``None`` when the dict is used standalone (e.g. in low-level
         # tests); in that case ``_request_solver_update`` is a no-op.
         self._core: Optional[Any] = None
+
+        # Re-entrancy counter for the strict orientation-health check
+        # (issue #399).  Incremented while inside multi-step internal
+        # operations (``add``, ``_fromdict``) that legitimately
+        # traverse intermediate states which would otherwise raise.
+        self._strict_check_suspended: int = 0
 
     def _request_solver_update(
         self,
@@ -429,6 +448,68 @@ class ReflectionsDict(dict):
         """
         if self._core is not None:
             self._core.request_solver_update(flags)
+
+    @contextmanager
+    def _suspend_strict_check(self):
+        """
+        Suspend :meth:`_check_strict_order_health` for the duration of
+        a multi-step internal operation (issue #399).
+        """
+        self._strict_check_suspended += 1
+        try:
+            yield
+        finally:
+            self._strict_check_suspended -= 1
+
+    def _check_strict_order_health(
+        self,
+        prospective_order: Iterable[str],
+        prospective_keys: Iterable[str],
+    ) -> None:
+        """
+        Refuse mutations that would leave the sample half-defined.
+
+        A sample is *half-defined* when the dict still holds two or
+        more reflections but :attr:`order` -- restricted to names that
+        actually exist in the dict -- has fewer than two entries.  In
+        that state ``calc_UB`` cannot be repeated and the previously
+        computed UB silently references a no-longer-orienting pair.
+
+        The strict policy refuses such mutations at the source so the
+        user explicitly designates the new orienting pair (via
+        :meth:`set_orientation_reflections` or by assigning
+        :attr:`order`) before removing the current one, or removes
+        non-orienting reflections first so the sample falls below the
+        orientation threshold.  See :issue:`399`.
+
+        Parameters
+        ----------
+        prospective_order : Iterable[str]
+            The proposed value of :attr:`order` after the pending
+            mutation.
+        prospective_keys : Iterable[str]
+            The proposed set of dict keys after the pending mutation.
+
+        Raises
+        ------
+        ReflectionError
+            If the post-mutation state would be half-defined.
+        """
+        if self._strict_check_suspended:
+            return
+        prospective_keys = set(prospective_keys)
+        prospective_order = list(prospective_order)
+        effective = [n for n in prospective_order if n in prospective_keys]
+        if len(prospective_keys) >= 2 and len(effective) < 2:
+            raise ReflectionError(
+                "Refusing to leave the sample half-defined: the pending"
+                f" mutation would leave {len(effective)} orientation"
+                f" reflection(s) in `order` while {len(prospective_keys)}"
+                " reflections remain in the sample.  UB requires two"
+                " orientation reflections.  Designate a new orienting"
+                " pair first (`reflections.set_orientation_reflections("
+                "[r1, r2])` or `reflections.order = [...]`)."
+            )
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ReflectionsDict):
@@ -449,7 +530,7 @@ class ReflectionsDict(dict):
         return {v.name: v._asdict() for v in self.values()}
 
     @versionchanged(
-        version="0.6.3",
+        version="0.7.0",
         reason=(
             "Re-key restored reflections by the diffractometer's local "
             "real-axis names instead of the solver's canonical names, "
@@ -467,40 +548,53 @@ class ReflectionsDict(dict):
         """Add or redefine reflections from a (configuration) dictionary."""
         from ..ops import Core
 
-        for refl_config in config.values():
-            if isinstance(core, Core):
-                # Remap the names of all the real axes to the current solver.
-                # Real axes MUST be specified in the order specified by the solver.
-                refl_config["reals"] = {
-                    axis: value
-                    for axis, value in zip(
-                        # core.solver.real_axis_names,
-                        core.diffractometer.real_axis_names,
-                        refl_config["reals"].values(),
-                    )
-                }
+        # Restoring reflections is a multi-step internal operation that
+        # legitimately traverses intermediate states which would
+        # otherwise trip the strict orientation-health check (#399).
+        with self._suspend_strict_check():
+            for refl_config in config.values():
+                if isinstance(core, Core):
+                    # Remap the names of all the real axes to the current solver.
+                    # Real axes MUST be specified in the order specified by the solver.
+                    refl_config["reals"] = {
+                        axis: value
+                        for axis, value in zip(
+                            # core.solver.real_axis_names,
+                            core.diffractometer.real_axis_names,
+                            refl_config["reals"].values(),
+                        )
+                    }
 
-            reflection = Reflection(
-                refl_config["name"],
-                refl_config["pseudos"],
-                refl_config["reals"],
-                wavelength=refl_config["wavelength"],
-                wavelength_units=refl_config.get("wavelength_units"),
-                geometry=refl_config["geometry"],
-                pseudo_axis_names=list(refl_config["pseudos"]),
-                real_axis_names=list(refl_config["reals"]),
-                digits=refl_config.get("digits"),
-                core=core,
-            )
-            self.add(reflection, replace=True)
+                reflection = Reflection(
+                    refl_config["name"],
+                    refl_config["pseudos"],
+                    refl_config["reals"],
+                    wavelength=refl_config["wavelength"],
+                    wavelength_units=refl_config.get("wavelength_units"),
+                    geometry=refl_config["geometry"],
+                    pseudo_axis_names=list(refl_config["pseudos"]),
+                    real_axis_names=list(refl_config["reals"]),
+                    digits=refl_config.get("digits"),
+                    core=core,
+                )
+                self.add(reflection, replace=True)
 
     @versionchanged(
-        version="0.6.3",
+        version="0.7.0",
         reason=(
             "Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning "
             "``Core`` so the solver is re-synced on the next "
             "``update_solver()`` (the order of orienting reflections is "
             "part of the solver-side sample state).  See :issue:`397`."
+        ),
+    )
+    @versionchanged(
+        version="0.7.0",
+        reason=(
+            "Refuse to designate an orienting list that would leave the "
+            "sample half-defined (fewer than two orientation reflections "
+            "while two or more reflections remain in the sample); raises "
+            "``ReflectionError``.  See :issue:`399`."
         ),
     )
     def set_orientation_reflections(
@@ -526,7 +620,7 @@ class ReflectionsDict(dict):
     """Common alias for :meth:`~set_orientation_reflections`."""
 
     @versionchanged(
-        version="0.6.3",
+        version="0.7.0",
         reason=(
             "Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning "
             "``Core`` so the next ``update_solver()`` pushes the new "
@@ -535,20 +629,28 @@ class ReflectionsDict(dict):
     )
     def add(self, reflection: Reflection, replace: bool = False) -> None:
         """Add a single orientation reflection."""
-        self._validate_reflection(reflection, replace)
+        # ``add`` is a multi-step operation: ``_validate_reflection``
+        # may pop a duplicate, ``__setitem__`` then inserts, and
+        # ``prune`` rewrites ``order``.  Each individual step could
+        # transiently look half-defined (#399); suspend the strict
+        # check for the whole sequence and let the final post-state
+        # speak for itself (the new reflection is always appended to
+        # ``order``, so the post-state cannot be half-defined).
+        with self._suspend_strict_check():
+            self._validate_reflection(reflection, replace)
 
-        self[reflection.name] = reflection
-        if reflection.name not in self.order:
-            self.order.append(reflection.name)
-        self.prune()
-        self._request_solver_update()
+            self[reflection.name] = reflection
+            if reflection.name not in self.order:
+                self.order.append(reflection.name)
+            self.prune()
+            self._request_solver_update()
 
     def prune(self) -> None:
         """Remove any undefined reflections from order list."""
         self.order = [refl for refl in self.order if refl in self]
 
     @versionchanged(
-        version="0.6.3",
+        version="0.7.0",
         reason=(
             "Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning "
             "``Core`` so the solver re-receives the new orientation order. "
@@ -581,12 +683,19 @@ class ReflectionsDict(dict):
     # read-only and unchanged.
 
     def __setitem__(self, key, value):
+        # ``__setitem__`` either replaces an existing entry or adds a
+        # new one; neither shrinks the dict or ``order``.  The strict
+        # check (#399) cannot be tripped, but include it for symmetry.
+        prospective_keys = set(self) | {key}
+        self._check_strict_order_health(self._order, prospective_keys)
         affects_order = key in self._order
         super().__setitem__(key, value)
         if affects_order:
             self._request_solver_update()
 
     def __delitem__(self, key):
+        prospective_keys = set(self) - {key}
+        self._check_strict_order_health(self._order, prospective_keys)
         affects_order = key in self._order
         super().__delitem__(key)
         if affects_order:
@@ -595,6 +704,9 @@ class ReflectionsDict(dict):
     def pop(self, *args, **kwargs):
         # Mirror ``dict.pop`` signature: pop(key[, default]).
         key = args[0] if args else None
+        if key in self:
+            prospective_keys = set(self) - {key}
+            self._check_strict_order_health(self._order, prospective_keys)
         affects_order = key in self._order
         result = super().pop(*args, **kwargs)
         if affects_order:
@@ -602,20 +714,33 @@ class ReflectionsDict(dict):
         return result
 
     def popitem(self):
-        # ``popitem`` returns the (key, value) it removed; check after.
+        # ``dict.popitem`` removes the last-inserted entry (CPython
+        # 3.7+).  Peek the prospective key so the strict check can
+        # run before the mutation.  When the dict is empty,
+        # ``super().popitem()`` raises ``KeyError`` and the strict
+        # check is unreachable.
+        if len(self) > 0:
+            popped_key = next(reversed(self))
+            prospective_keys = set(self) - {popped_key}
+            self._check_strict_order_health(self._order, prospective_keys)
         result = super().popitem()
         if result[0] in self._order:
             self._request_solver_update()
         return result
 
     def clear(self):
+        # ``clear`` always leaves the dict empty, so the post-state is
+        # never half-defined; the strict check is a no-op here.
         affects_order = any(name in self._order for name in self)
         super().clear()
         if affects_order:
             self._request_solver_update()
 
     def update(self, *args, **kwargs):
-        # Determine the set of incoming keys without mutating yet.
+        # ``update`` only inserts or replaces keys, never deletes; the
+        # post-state cannot be half-defined when starting from a
+        # well-defined state.  The strict check is included for
+        # symmetry but will not fire in normal use.
         if args:
             other = args[0]
             if hasattr(other, "keys"):
@@ -625,6 +750,8 @@ class ReflectionsDict(dict):
         else:
             incoming = set()
         incoming.update(kwargs)
+        prospective_keys = set(self) | incoming
+        self._check_strict_order_health(self._order, prospective_keys)
         affects_order = any(k in self._order for k in incoming)
         super().update(*args, **kwargs)
         if affects_order:
@@ -692,7 +819,9 @@ class ReflectionsDict(dict):
 
     @order.setter
     def order(self, value: list[Reflection]):
-        self._order = list(value)
+        new_order = list(value)
+        self._check_strict_order_health(new_order, set(self))
+        self._order = new_order
         # The orientation order is part of the solver-side sample state;
         # mark the owning Core dirty so update_solver() re-pushes it
         # (issue #397).

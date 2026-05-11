@@ -186,6 +186,62 @@ def test_order_affecting_high_level_api_flags(parms, context):
 # -- Dict-API mutations: only flag when the touched key is in ``order``.
 
 
+def _setup_for_action(action):
+    """
+    Build a sim with a setup tailored to the test action.
+
+    The strict orientation-health check (#399) refuses transitions
+    into a half-defined state (``len(reflections) >= 2`` while
+    ``order`` shrinks below two effective entries).  Each test action
+    therefore needs a setup whose post-mutation state stays
+    well-defined so the original flag-behavior contract from #397 can
+    be observed in isolation.
+
+    Layout:
+
+    * removal of an orienting key (``del``/``pop``/``remove_reflection``)
+      starts with two reflections and a two-entry ``order``; the
+      removal drops the dict to one entry, which is below the
+      orientation threshold and therefore strict-allowed.
+    * ``popitem`` of an orienting key starts with a single reflection.
+    * non-orienting actions start with three reflections and a
+      two-entry ``order``; the third reflection is the unambiguous
+      non-orienting target.
+    * ``clear`` and ``update`` actions (which never shrink ``order``
+      below two effective entries) reuse the three-reflection setup
+      for variety.
+    """
+    one_orienting_actions = {"popitem_in_order"}
+    drop_orienting_actions = {
+        "setitem_replace_in_order",
+        "del_in_order",
+        "pop_in_order",
+        "update_overwrites_in_order",
+        "remove_reflection_in_order",
+    }
+
+    if action in one_orienting_actions:
+        sim = _build_sim_with_reflections(n_reflections=1)
+        return sim
+    if action in drop_orienting_actions:
+        sim = _build_sim_with_reflections(n_reflections=2)
+        sim.sample.reflections.order = ["r006", "r100"]
+        return sim
+    # Default: three reflections, order = [r006, r100], r006b is the
+    # non-orienting reflection.
+    sim = _build_sim_with_reflections(n_reflections=2)
+    third = SAMPLE_DEF["reflections"][2]
+    sim.add_reflection(
+        pseudos=third["pseudos"],
+        reals=third["reals"],
+        name=third["name"],
+    )
+    sim.sample.reflections.order = ["r006", "r100"]
+    assert "r006b" in sim.sample.reflections
+    assert "r006b" not in sim.sample.reflections.order
+    return sim
+
+
 @pytest.mark.parametrize(
     "parms, context",
     [
@@ -301,28 +357,11 @@ def test_dict_api_mutations_flag_only_when_order_affected(parms, context):
     replacing them does not require a solver re-push.
     """
     with context:
-        sim = _build_sim_with_reflections(n_reflections=2)
+        action = parms["action"]
+        sim = _setup_for_action(action)
         refls = sim.sample.reflections
-        # Pin ``order`` to just ``r006`` so we have a clear distinction
-        # between "in order" and "not in order".
-        refls.order = ["r006"]
-        # Add a third reflection to the dict but NOT to ``order`` so we
-        # have an unambiguous non-orienting reflection.
-        third = SAMPLE_DEF["reflections"][2]
-        sim.add_reflection(
-            pseudos=third["pseudos"],
-            reals=third["reals"],
-            name=third["name"],
-        )
-        # ``add_reflection`` re-appends r006b to order; rewrite to drop
-        # it again so ``r006b`` is unambiguously not in ``order``.
-        refls.order = ["r006"]
-        assert refls.order == ["r006"]
-        assert "r100" in refls and "r100" not in refls.order
-        assert "r006b" in refls and "r006b" not in refls.order
 
         _clean(sim)
-        action = parms["action"]
 
         if action == "setitem_replace_in_order":
             refls["r006"] = _new_like(refls["r006"], "r006")
@@ -331,11 +370,8 @@ def test_dict_api_mutations_flag_only_when_order_affected(parms, context):
         elif action == "pop_in_order":
             refls.pop("r006")
         elif action == "popitem_in_order":
-            # Remove all non-orienting entries first so popitem is forced
-            # to remove the orienting one.
-            del refls["r100"]
-            del refls["r006b"]
-            _clean(sim)
+            # Single-reflection setup; popitem removes the only entry
+            # (which is also the only orienting reflection).
             refls.popitem()
         elif action == "clear_with_order":
             refls.clear()
@@ -346,16 +382,19 @@ def test_dict_api_mutations_flag_only_when_order_affected(parms, context):
         elif action == "setitem_new_key":
             refls["brand_new"] = _new_like(refls["r006"], "brand_new")
         elif action == "setitem_replace_not_in_order":
-            refls["r100"] = _new_like(refls["r100"], "r100")
+            refls["r006b"] = _new_like(refls["r006b"], "r006b")
         elif action == "del_not_in_order":
-            del refls["r100"]
+            del refls["r006b"]
         elif action == "pop_not_in_order":
-            refls.pop("r100")
+            refls.pop("r006b")
         elif action == "pop_missing_with_default":
             result = refls.pop("nonexistent", "fallback")
             assert result == "fallback"
         elif action == "clear_empty_order":
-            refls.order = []
+            # Drop ``order`` to two-then-empty in two well-defined
+            # steps before clearing the dict.
+            with refls._suspend_strict_check():
+                refls.order = []
             _clean(sim)
             refls.clear()
         elif action == "update_new_keys_only":
@@ -374,7 +413,7 @@ def test_dict_api_mutations_flag_only_when_order_affected(parms, context):
         elif action == "setdefault_existing":
             refls.setdefault("r006", refls["r006"])
         elif action == "remove_reflection_not_in_order":
-            sim.sample.remove_reflection("r100")
+            sim.sample.remove_reflection("r006b")
         else:
             raise AssertionError(f"unknown action {action!r}")
 

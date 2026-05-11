@@ -62,7 +62,13 @@ def _setup_initial(action: str):
     elif action == "remove_non_orienting":
         sample.remove_reflection("r400")
     elif action == "remove_order_zero":
-        sample.remove_reflection(refls.order[0])
+        # Removing an orienting reflection while two or more remain is
+        # normally refused under the strict orientation-health check
+        # (#399).  This test deliberately constructs the half-defined
+        # state to verify that ``Sample.UB_is_stale`` reports it; the
+        # strict check is suspended for the setup only.
+        with refls._suspend_strict_check():
+            sample.remove_reflection(refls.order[0])
     elif action == "mutate_orienting_pseudos":
         first = refls[refls.order[0]]
         # Bump h by 1 to force a content change (any change suffices).
@@ -303,8 +309,12 @@ def test_compute_snapshot_with_missing_order_name(parms, context):
     with context:
         e4cv = _oriented_e4cv()
         # Bypass remove_reflection (which would also clean up ``order``) by
-        # popping directly from the underlying dict.
-        e4cv.sample.reflections.pop(e4cv.sample.reflections.order[0])
+        # popping directly from the underlying dict.  The strict
+        # orientation-health check (#399) refuses this transition
+        # under normal use; suspend it for the setup so the defensive
+        # snapshot path can be exercised.
+        with e4cv.sample.reflections._suspend_strict_check():
+            e4cv.sample.reflections.pop(e4cv.sample.reflections.order[0])
         # ``order`` still references the popped name; the snapshot must
         # gracefully return None instead of raising KeyError.
         assert e4cv.sample._compute_ub_snapshot() is None

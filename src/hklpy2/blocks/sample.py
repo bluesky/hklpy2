@@ -141,7 +141,7 @@ class Sample:
         self.lattice = self.core.refine_lattice()
 
     @versionchanged(
-        version="0.6.3",
+        version="0.7.0",
         reason=(
             "When the removed reflection was an orienting reflection "
             "(in ``reflections.order``), flag "
@@ -150,6 +150,16 @@ class Sample:
             "the next ``update_solver()``.  Removing a non-orienting "
             "reflection does not affect the solver and is not flagged. "
             "See :issue:`397`."
+        ),
+    )
+    @versionchanged(
+        version="0.7.0",
+        reason=(
+            "Refuse to remove an orienting reflection when doing so "
+            "would leave the sample half-defined (fewer than two "
+            "orientation reflections while two or more reflections "
+            "remain in the sample); raises ``ReflectionError``.  See "
+            ":issue:`399`."
         ),
     )
     def remove_reflection(self, name: str) -> None:
