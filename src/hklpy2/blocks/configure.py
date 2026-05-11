@@ -22,7 +22,7 @@ from ..typing import KeyValueMap
 logger = logging.getLogger(__name__)
 
 
-CONFIG_SCHEMA_VERSION: int = 1
+CONFIG_SCHEMA_VERSION: int = 2
 """
 Integer revision of the configuration file schema written by
 :meth:`~hklpy2.ops.Core._asdict` and validated by
@@ -32,6 +32,10 @@ Bump monotonically when the on-disk configuration layout changes in a way
 that older readers might mishandle.
 
 .. versionadded:: 0.7.0
+   Initial value ``2``: ``axes.auxiliary_axes`` is a list of records
+   (``{"name", "category", ...}``) rather than a flat list of names.
+   The flat-list form is still accepted on read for backward
+   compatibility.  See :issue:`388`.
 """
 
 

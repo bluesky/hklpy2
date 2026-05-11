@@ -29,7 +29,11 @@ from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsMotor
 from ophyd import PVPositioner
+from ophyd import PseudoPositioner
 from ophyd import SoftPositioner
+from ophyd.pseudopos import PseudoSingle
+from ophyd.pseudopos import pseudo_position_argument
+from ophyd.pseudopos import real_position_argument
 
 from .typing import KeyValueMap
 
@@ -38,8 +42,10 @@ logger = logging.getLogger(__name__)
 __all__ = [
     "VirtualPositionerBase",
     "define_real_axis",
+    "describe_aux",
     "dict_device_factory",
     "dynamic_import",
+    "make_aux_pseudo_positioner_class",
     "make_component",
     "make_dynamic_instance",
     "parse_factory_axes",
@@ -218,6 +224,15 @@ def define_real_axis(
         class_name = specs.pop("class", None)
         if class_name is None:
             raise KeyError("Expected 'class' key, received None")
+        # ``class`` may be either a dotted import-path string (the
+        # historic form) or a callable resolved at runtime — the latter
+        # supports nested PseudoPositioner stand-ins built by
+        # :func:`hklpy2.run_utils.simulator_from_config` (issue #388).
+        if not isinstance(class_name, str) and not callable(class_name):
+            raise TypeError(
+                "define_real_axis: 'class' must be a dotted import path"
+                f" (str) or a callable; got {type(class_name).__name__!r}."
+            )
         for label in specs.pop("labels", []):
             if label not in kwargs["labels"]:
                 kwargs["labels"].append(label)
@@ -290,9 +305,30 @@ def dynamic_import(full_path: str) -> type:
     return import_object
 
 
-def make_component(call_name: str, *args: Any, **kwargs: Any) -> Component:
-    """Create an Component for a custom ophyd Device class."""
-    CallableObject = dynamic_import(call_name)
+def make_component(call_name: Any, *args: Any, **kwargs: Any) -> Component:
+    """
+    Create an :class:`~ophyd.Component` for a custom ophyd Device class.
+
+    ``call_name`` may be either a dotted import path (``str``) or an
+    already-resolved callable (``type``).  The callable form is used by
+    :func:`hklpy2.run_utils.simulator_from_config` when restoring a
+    nested ``PseudoPositioner`` auxiliary whose synthetic stand-in class
+    is built at runtime and therefore cannot be addressed by an import
+    path.
+
+    .. versionchanged:: 0.7.0
+       Accept a callable in addition to a dotted import-path string.
+       See :issue:`388`.
+    """
+    if isinstance(call_name, str):
+        CallableObject = dynamic_import(call_name)
+    elif callable(call_name):
+        CallableObject = call_name
+    else:
+        raise TypeError(
+            "make_component: call_name must be a dotted import path"
+            f" (str) or a callable; got {type(call_name).__name__!r}."
+        )
     return make_dynamic_instance(
         "ophyd.Component",
         CallableObject,
@@ -379,3 +415,104 @@ def parse_factory_axes(
     attributes["_" + space.rstrip("s")] = order
 
     return attributes
+
+
+# ---------------------------------------------------------------------------
+# Auxiliary sub-device round-trip support (issue #388)
+# ---------------------------------------------------------------------------
+
+
+@versionadded(
+    version="0.7.0",
+    reason=(
+        "Describe an auxiliary component as a schema-v2 record so its "
+        "internal structure (e.g. nested ``PseudoPositioner``) can survive "
+        "export/restore.  See :issue:`388`."
+    ),
+)
+def describe_aux(diffractometer: object, name: str) -> dict:
+    """
+    Build a single ``axes.auxiliary_axes`` record for ``name``.
+
+    Categorises the auxiliary into one of the schema-v2 categories:
+
+    * ``"scalar"`` — a plain :class:`~ophyd.PositionerBase` (the historic
+      default; the round-tripped simulator stand-in is an
+      :class:`~ophyd.SoftPositioner`).
+    * ``"pseudo_positioner"`` — a nested
+      :class:`~ophyd.pseudopos.PseudoPositioner`; sub-axis names are
+      recorded as ordered ``pseudos`` / ``reals`` lists.  ``class`` /
+      ``module`` are advisory metadata only — never imported by hklpy2 on
+      restore.
+    """
+    component = getattr(diffractometer, name)
+    if isinstance(component, PseudoPositioner):
+        cls = component.__class__
+        return {
+            "name": name,
+            "category": "pseudo_positioner",
+            "pseudos": [p.attr_name for p in component.pseudo_positioners],
+            "reals": [r.attr_name for r in component.real_positioners],
+            "class": cls.__name__,
+            "module": cls.__module__,
+        }
+    return {"name": name, "category": "scalar"}
+
+
+@versionadded(
+    version="0.7.0",
+    reason=(
+        "Build a synthetic structural stand-in for a nested "
+        "``PseudoPositioner`` auxiliary on restore.  See :issue:`388`."
+    ),
+)
+def make_aux_pseudo_positioner_class(
+    name: str,
+    pseudos: Sequence[str],
+    reals: Sequence[str],
+) -> type:
+    """
+    Build a synthetic :class:`~ophyd.pseudopos.PseudoPositioner` subclass
+    with the given sub-axis names.
+
+    The resulting class is **structural only**: ``forward()`` and
+    ``inverse()`` return zeros for every sub-axis.  Its purpose is to
+    let downstream code (printers, plan inspection, etc.) traverse the
+    same component tree the original device exposed.
+    """
+    if not pseudos:
+        raise ValueError(
+            f"pseudo_positioner aux {name!r} must declare at least one pseudo"
+        )
+    if not reals:
+        raise ValueError(
+            f"pseudo_positioner aux {name!r} must declare at least one real"
+        )
+
+    body: dict = {}
+    for p in pseudos:
+        body[p] = Component(PseudoSingle, kind="hinted")
+    for r in reals:
+        body[r] = Component(
+            SoftPositioner,
+            kind="hinted",
+            limits=(-1e9, 1e9),
+            init_pos=0,
+        )
+
+    n_pseudos = len(pseudos)
+    n_reals = len(reals)
+
+    @pseudo_position_argument
+    def forward(self, pp):  # noqa: ARG001
+        return self.RealPosition(*([0.0] * n_reals))
+
+    @real_position_argument
+    def inverse(self, rp):  # noqa: ARG001
+        return self.PseudoPosition(*([0.0] * n_pseudos))
+
+    body["forward"] = forward
+    body["inverse"] = inverse
+
+    cls_name = f"_AuxPseudoPositioner_{name}"
+    return type(cls_name, (PseudoPositioner,), body)

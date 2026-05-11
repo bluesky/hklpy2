@@ -133,10 +133,27 @@ class Core:
             # first sample is cubic, no reflections
             self.add_sample(DEFAULT_SAMPLE_NAME, 1)
 
+    @versionchanged(
+        version="0.7.0",
+        reason=(
+            "``axes.auxiliary_axes`` is now a list of "
+            "``{name, category, …}`` records (schema v2) instead of a "
+            "flat list of names; nested ``PseudoPositioner`` auxiliaries "
+            "round-trip with their sub-axis structure preserved.  See "
+            ":issue:`388`."
+        ),
+    )
     def _asdict(self) -> KeyValueMap:
         """Describe the diffractometer as a dictionary."""
         from .__init__ import __version__
         from .blocks.configure import CONFIG_SCHEMA_VERSION
+
+        # ``describe_aux`` lives in :mod:`hklpy2.devices` so the
+        # ophyd-typing introspection (``isinstance(..., PseudoPositioner)``)
+        # stays in the ophyd-construction module, preserving
+        # ``ops.py``'s ophyd-free separation of concerns.  See
+        # :issue:`388`.
+        from .devices import describe_aux
 
         header: ConfigHeaderDict = {
             "datetime": str(datetime.datetime.now()),
@@ -152,7 +169,10 @@ class Core:
                 "real_axes": self.diffractometer.real_axis_names,
                 "axes_xref": self.axes_xref,
                 "extra_axes": self.all_extras,
-                "auxiliary_axes": self.diffractometer.auxiliary_axis_names,
+                "auxiliary_axes": [
+                    describe_aux(self.diffractometer, name)
+                    for name in self.diffractometer.auxiliary_axis_names
+                ],
             },
             "digits": self.diffractometer.digits,
             "sample_name": self.sample.name,
