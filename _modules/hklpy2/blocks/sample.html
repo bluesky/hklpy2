@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=298bdb69"></script>
+    <script src="../../../_static/documentation_options.js?v=c9fd9afc"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -568,7 +568,7 @@
 
 
     <span class="nd">@versionchanged</span><span class="p">(</span>
-        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.3&quot;</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.7.0&quot;</span><span class="p">,</span>
         <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;When the removed reflection was an orienting reflection &quot;</span>
             <span class="s2">&quot;(in ``reflections.order``), flag &quot;</span>
@@ -577,6 +577,16 @@
             <span class="s2">&quot;the next ``update_solver()``.  Removing a non-orienting &quot;</span>
             <span class="s2">&quot;reflection does not affect the solver and is not flagged. &quot;</span>
             <span class="s2">&quot;See :issue:`397`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.7.0&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Refuse to remove an orienting reflection when doing so &quot;</span>
+            <span class="s2">&quot;would leave the sample half-defined (fewer than two &quot;</span>
+            <span class="s2">&quot;orientation reflections while two or more reflections &quot;</span>
+            <span class="s2">&quot;remain in the sample); raises ``ReflectionError``.  See &quot;</span>
+            <span class="s2">&quot;:issue:`399`.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
 <div class="viewcode-block" id="Sample.remove_reflection">
