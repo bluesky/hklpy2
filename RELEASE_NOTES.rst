@@ -30,10 +30,15 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-0.6.3
+0.7.0
 #####
 
-Bug fix release.
+Bug fixes plus a behavior change to orientation-reflection management.
+
+Breaking Changes
+----------------
+
+* Refuse mutations that would leave the sample half-defined. (:issue:`399`)
 
 Fixes
 -----

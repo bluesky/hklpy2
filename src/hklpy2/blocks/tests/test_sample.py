@@ -4,7 +4,7 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ...diffract import creator
-from ...exceptions import CoreError
+from ...exceptions import ReflectionError
 from ...utils import IDENTITY_MATRIX_3X3
 from ...utils import load_yaml
 from ...utils import unique_name
@@ -235,7 +235,19 @@ def test_fromdict():
     "remove, context",
     [
         pytest.param(None, does_not_raise(), id="all-reflections"),
-        pytest.param("r004", pytest.raises(CoreError), id="remove-r004"),
+        # ``r004`` is one of the orienting reflections (calc_UB used
+        # r040 + r004 in the helper).  Under the strict
+        # orientation-health check (#399), popping it while two
+        # reflections remain in the sample is refused with a
+        # ``ReflectionError`` before ``refine_lattice`` is reached.
+        pytest.param(
+            "r004",
+            pytest.raises(
+                ReflectionError,
+                match=re.escape("Refusing to leave the sample half-defined"),
+            ),
+            id="remove-r004",
+        ),
         pytest.param("wrong", pytest.raises(KeyError), id="remove-nonexistent"),
     ],
 )
@@ -251,7 +263,20 @@ def test_refine_lattice(remove, context):
 @pytest.mark.parametrize(
     "rname, context",
     [
-        pytest.param("r400", does_not_raise(), id="existing-reflection"),
+        # ``r004`` is the non-orienting reflection (calc_UB below uses
+        # r040 + r400), so removing it is permitted by the strict
+        # orientation-health check (#399).
+        pytest.param("r004", does_not_raise(), id="existing-non-orienting-reflection"),
+        # Removing an orienting reflection while two or more remain is
+        # refused under the strict policy (#399).
+        pytest.param(
+            "r400",
+            pytest.raises(
+                ReflectionError,
+                match=re.escape("Refusing to leave the sample half-defined"),
+            ),
+            id="orienting-reflection-refused",
+        ),
         pytest.param(
             "r1",
             pytest.raises(KeyError, match=re.escape("Reflection 'r1' is not found")),
