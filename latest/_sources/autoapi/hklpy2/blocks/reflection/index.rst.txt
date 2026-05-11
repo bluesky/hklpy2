@@ -163,7 +163,7 @@ Module Contents
        ~setor
        ~swap
 
-   .. versionchanged:: 0.6.3
+   .. versionchanged:: 0.7.0
       Mutating operations now flag the owning
       :class:`~hklpy2.ops.Core` with
       ``_SolverDirty.SAMPLE | _SolverDirty.UB`` whenever the change
@@ -175,6 +175,16 @@ Module Contents
       ``update``, ``popitem``) that touches an ordered name.
       Previously these mutations left the solver with a stale
       reflection list.  See :issue:`397`.
+
+   .. versionchanged:: 0.7.0
+      Mutations that would leave the sample *half-defined* (two or
+      more reflections still in the dict, but fewer than two named
+      in :attr:`order`) now raise :class:`~hklpy2.exceptions.ReflectionError`.
+      The user must explicitly designate the new orienting pair (via
+      :meth:`set_orientation_reflections` or by assigning :attr:`order`)
+      **before** removing the current one, or remove non-orienting
+      reflections first so the sample falls below the orientation
+      threshold.  See :issue:`399`.
 
 
    .. py:method:: add(reflection: Reflection, replace: bool = False) -> None

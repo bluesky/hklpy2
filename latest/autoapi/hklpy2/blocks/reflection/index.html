@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../../_static/documentation_options.js?v=298bdb69"></script>
+    <script src="../../../../_static/documentation_options.js?v=c9fd9afc"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -670,7 +670,7 @@ part of a “reflection”.</p>
 </table>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.6.3: </span>Mutating operations now flag the owning
+<p><span class="versionmodified changed">Changed in version 0.7.0: </span>Mutating operations now flag the owning
 <a class="reference internal" href="../../ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> with
 <code class="docutils literal notranslate"><span class="pre">_SolverDirty.SAMPLE</span> <span class="pre">|</span> <span class="pre">_SolverDirty.UB</span></code> whenever the change
 affects an entry referenced by <a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.order" title="hklpy2.blocks.reflection.ReflectionsDict.order"><code class="xref py py-attr docutils literal notranslate"><span class="pre">order</span></code></a> (the orienting
@@ -681,6 +681,16 @@ mutation (<code class="docutils literal notranslate"><span class="pre">pop</span
 <code class="docutils literal notranslate"><span class="pre">update</span></code>, <code class="docutils literal notranslate"><span class="pre">popitem</span></code>) that touches an ordered name.
 Previously these mutations left the solver with a stale
 reflection list.  See <a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/397">issue #397</a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.0: </span>Mutations that would leave the sample <em>half-defined</em> (two or
+more reflections still in the dict, but fewer than two named
+in <a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.order" title="hklpy2.blocks.reflection.ReflectionsDict.order"><code class="xref py py-attr docutils literal notranslate"><span class="pre">order</span></code></a>) now raise <a class="reference internal" href="../../exceptions/index.html#hklpy2.exceptions.ReflectionError" title="hklpy2.exceptions.ReflectionError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReflectionError</span></code></a>.
+The user must explicitly designate the new orienting pair (via
+<a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections" title="hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_orientation_reflections()</span></code></a> or by assigning <a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.order" title="hklpy2.blocks.reflection.ReflectionsDict.order"><code class="xref py py-attr docutils literal notranslate"><span class="pre">order</span></code></a>)
+<strong>before</strong> removing the current one, or remove non-orienting
+reflections first so the sample falls below the orientation
+threshold.  See <a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/399">issue #399</a>.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.add">
