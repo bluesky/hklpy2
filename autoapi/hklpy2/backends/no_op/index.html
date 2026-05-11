@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../../_static/documentation_options.js?v=5a4b5a0a"></script>
+    <script src="../../../../_static/documentation_options.js?v=564e28ff"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -566,6 +566,28 @@
 <span class="sig-name descname"><span class="pre">calculate_UB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.backends.typing.ReflectionDict" title="hklpy2.backends.typing.ReflectionDict"><span class="pre">ReflectionDict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.backends.typing.ReflectionDict" title="hklpy2.backends.typing.ReflectionDict"><span class="pre">ReflectionDict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../../typing/index.html#hklpy2.typing.Matrix3x3" title="hklpy2.typing.Matrix3x3"><span class="pre">Matrix3x3</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/backends/no_op.html#NoOpSolver.calculate_UB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.backends.no_op.NoOpSolver.calculate_UB" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the UB (orientation) matrix with two reflections.</p>
 <p>The method of Busing &amp; Levy, Acta Cryst 22 (1967) 457.</p>
+<p class="rubric">Implementation contract</p>
+<p><code class="docutils literal notranslate"><span class="pre">calculate_UB</span></code> is the authoritative installer of its own
+orientation pair.  Every conformant implementation <strong>must</strong>
+execute these steps, in order:</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#hklpy2.backends.no_op.NoOpSolver.removeAllReflections" title="hklpy2.backends.no_op.NoOpSolver.removeAllReflections"><code class="xref py py-meth docutils literal notranslate"><span class="pre">removeAllReflections()</span></code></a> – discard any reflections
+previously stored in the solver-side sample state.</p></li>
+<li><p><a class="reference internal" href="#hklpy2.backends.no_op.NoOpSolver.addReflection" title="hklpy2.backends.no_op.NoOpSolver.addReflection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addReflection(r1)</span></code></a> – install the
+first orientation reflection from the supplied dict.</p></li>
+<li><p><a class="reference internal" href="#hklpy2.backends.no_op.NoOpSolver.addReflection" title="hklpy2.backends.no_op.NoOpSolver.addReflection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addReflection(r2)</span></code></a> – install the
+second orientation reflection from the supplied dict.</p></li>
+<li><p>Invoke the backend library’s Busing &amp; Levy routine on the
+freshly-installed pair to compute <em>UB</em>.</p></li>
+<li><p>Return <em>UB</em> as a 3x3 <code class="docutils literal notranslate"><span class="pre">list[list[float]]</span></code>.</p></li>
+</ol>
+<p>The implementation <strong>must not</strong> assume that the solver’s
+reflection list already contains <code class="docutils literal notranslate"><span class="pre">r1</span></code> and <code class="docutils literal notranslate"><span class="pre">r2</span></code>.  The
+<a class="reference internal" href="../../ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> layer pushes the python-side sample
+state via <code class="xref py py-meth docutils literal notranslate"><span class="pre">update_solver()</span></code> before invoking
+<code class="docutils literal notranslate"><span class="pre">calculate_UB</span></code>, but <code class="docutils literal notranslate"><span class="pre">calculate_UB</span></code> itself is the
+authoritative installer of the orienting pair so that the
+result is reproducible from the supplied arguments alone.</p>
 </dd></dl>
 
 <dl class="py property">

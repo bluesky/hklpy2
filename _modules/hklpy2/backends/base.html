@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=5a4b5a0a"></script>
+    <script src="../../../_static/documentation_options.js?v=564e28ff"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -786,6 +786,30 @@
 <span class="sd">        Calculate the UB (orientation) matrix with two reflections.</span>
 
 <span class="sd">        The method of Busing &amp; Levy, Acta Cryst 22 (1967) 457.</span>
+
+<span class="sd">        .. rubric:: Implementation contract</span>
+
+<span class="sd">        ``calculate_UB`` is the authoritative installer of its own</span>
+<span class="sd">        orientation pair.  Every conformant implementation **must**</span>
+<span class="sd">        execute these steps, in order:</span>
+
+<span class="sd">        1. :meth:`removeAllReflections` -- discard any reflections</span>
+<span class="sd">           previously stored in the solver-side sample state.</span>
+<span class="sd">        2. :meth:`addReflection(r1) &lt;addReflection&gt;` -- install the</span>
+<span class="sd">           first orientation reflection from the supplied dict.</span>
+<span class="sd">        3. :meth:`addReflection(r2) &lt;addReflection&gt;` -- install the</span>
+<span class="sd">           second orientation reflection from the supplied dict.</span>
+<span class="sd">        4. Invoke the backend library&#39;s Busing &amp; Levy routine on the</span>
+<span class="sd">           freshly-installed pair to compute *UB*.</span>
+<span class="sd">        5. Return *UB* as a 3x3 ``list[list[float]]``.</span>
+
+<span class="sd">        The implementation **must not** assume that the solver&#39;s</span>
+<span class="sd">        reflection list already contains ``r1`` and ``r2``.  The</span>
+<span class="sd">        :class:`~hklpy2.ops.Core` layer pushes the python-side sample</span>
+<span class="sd">        state via :meth:`update_solver` before invoking</span>
+<span class="sd">        ``calculate_UB``, but ``calculate_UB`` itself is the</span>
+<span class="sd">        authoritative installer of the orienting pair so that the</span>
+<span class="sd">        result is reproducible from the supplied arguments alone.</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
         <span class="c1"># return self.UB</span>
@@ -979,7 +1003,28 @@
 <div class="viewcode-block" id="SolverBase.refineLattice">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase.refineLattice">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ReflectionDict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Refine the lattice parameters from a list of reflections.&quot;&quot;&quot;</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Refine the lattice parameters from a list of reflections.</span>
+
+<span class="sd">        .. rubric:: Implementation contract</span>
+
+<span class="sd">        Like :meth:`calculate_UB`, ``refineLattice`` is the authoritative</span>
+<span class="sd">        installer of its input reflections.  Every conformant</span>
+<span class="sd">        implementation **must**:</span>
+
+<span class="sd">        1. :meth:`removeAllReflections` -- discard any reflections</span>
+<span class="sd">           previously stored in the solver-side sample state.</span>
+<span class="sd">        2. :meth:`addReflection(r) &lt;addReflection&gt;` for each ``r`` in</span>
+<span class="sd">           ``reflections`` -- install the supplied reflections.</span>
+<span class="sd">        3. Invoke the backend library&#39;s lattice-refinement routine on</span>
+<span class="sd">           the freshly-installed list.</span>
+<span class="sd">        4. Return the refined lattice parameters as a</span>
+<span class="sd">           :data:`~hklpy2.typing.NamedFloatDict` (or ``None`` if the</span>
+<span class="sd">           backend does not support refinement).</span>
+
+<span class="sd">        The implementation **must not** assume that the solver&#39;s</span>
+<span class="sd">        reflection list already contains the supplied reflections.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
 
     <span class="nd">@abstractmethod</span>

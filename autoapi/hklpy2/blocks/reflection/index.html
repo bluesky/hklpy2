@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../../_static/documentation_options.js?v=5a4b5a0a"></script>
+    <script src="../../../../_static/documentation_options.js?v=564e28ff"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -636,34 +636,62 @@ part of a “reflection”.</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_fromdict</span></code>(config[, core])</p></td>
 <td><p>Add or redefine reflections from a (configuration) dictionary.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_validate_reflection</span></code>(reflection, replace)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_request_solver_update</span></code>(flags)</p></td>
+<td><p>Flag the owning <a class="reference internal" href="../../ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> as solver-dirty.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">_validate_reflection</span></code>(reflection, replace)</p></td>
 <td><p>Validate the new reflection (raise exception if invalid).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.add" title="hklpy2.blocks.reflection.ReflectionsDict.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(reflection[, replace])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.add" title="hklpy2.blocks.reflection.ReflectionsDict.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(reflection[, replace])</p></td>
 <td><p>Add a single orientation reflection.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.clear" title="hklpy2.blocks.reflection.ReflectionsDict.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>()</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.order" title="hklpy2.blocks.reflection.ReflectionsDict.order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">order</span></code></a></p></td>
 <td><p>Ordered list of reflection names used for orientation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.prune" title="hklpy2.blocks.reflection.ReflectionsDict.prune"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prune</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.pop" title="hklpy2.blocks.reflection.ReflectionsDict.pop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code></a>(k[,d])</p></td>
+<td><p>If the key is not found, return the default if given; otherwise, raise a KeyError.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.prune" title="hklpy2.blocks.reflection.ReflectionsDict.prune"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prune</span></code></a>()</p></td>
 <td><p>Remove any undefined reflections from order list.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections" title="hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_orientation_reflections</span></code></a>(reflections)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections" title="hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_orientation_reflections</span></code></a>(reflections)</p></td>
 <td><p>Designate the order of the reflections to be used.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.setor" title="hklpy2.blocks.reflection.ReflectionsDict.setor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setor</span></code></a>(reflections)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.setor" title="hklpy2.blocks.reflection.ReflectionsDict.setor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setor</span></code></a>(reflections)</p></td>
 <td><p>Common alias for <a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections" title="hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_orientation_reflections()</span></code></a>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.swap" title="hklpy2.blocks.reflection.ReflectionsDict.swap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swap</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.swap" title="hklpy2.blocks.reflection.ReflectionsDict.swap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swap</span></code></a>()</p></td>
 <td><p>Swap the first two orientation reflections.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.3: </span>Mutating operations now flag the owning
+<a class="reference internal" href="../../ops/index.html#hklpy2.ops.Core" title="hklpy2.ops.Core"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> with
+<code class="docutils literal notranslate"><span class="pre">_SolverDirty.SAMPLE</span> <span class="pre">|</span> <span class="pre">_SolverDirty.UB</span></code> whenever the change
+affects an entry referenced by <a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.order" title="hklpy2.blocks.reflection.ReflectionsDict.order"><code class="xref py py-attr docutils literal notranslate"><span class="pre">order</span></code></a> (the orienting
+reflections the solver actually sees).  This includes
+<a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.add" title="hklpy2.blocks.reflection.ReflectionsDict.add"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code></a>, <a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.swap" title="hklpy2.blocks.reflection.ReflectionsDict.swap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">swap()</span></code></a>, <a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections" title="hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_orientation_reflections()</span></code></a>
+/ <a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.setor" title="hklpy2.blocks.reflection.ReflectionsDict.setor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setor()</span></code></a>, the <a class="reference internal" href="#hklpy2.blocks.reflection.ReflectionsDict.order" title="hklpy2.blocks.reflection.ReflectionsDict.order"><code class="xref py py-attr docutils literal notranslate"><span class="pre">order</span></code></a> setter, and any dict-API
+mutation (<code class="docutils literal notranslate"><span class="pre">pop</span></code>, <code class="docutils literal notranslate"><span class="pre">__setitem__</span></code>, <code class="docutils literal notranslate"><span class="pre">__delitem__</span></code>, <code class="docutils literal notranslate"><span class="pre">clear</span></code>,
+<code class="docutils literal notranslate"><span class="pre">update</span></code>, <code class="docutils literal notranslate"><span class="pre">popitem</span></code>) that touches an ordered name.
+Previously these mutations left the solver with a stale
+reflection list.  See <a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/397">issue #397</a>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reflection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#hklpy2.blocks.reflection.Reflection" title="hklpy2.blocks.reflection.Reflection"><span class="pre">Reflection</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/reflection.html#ReflectionsDict.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.reflection.ReflectionsDict.add" title="Link to this definition">#</a></dt>
 <dd><p>Add a single orientation reflection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/reflection.html#ReflectionsDict.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.reflection.ReflectionsDict.clear" title="Link to this definition">#</a></dt>
+<dd><p>D.clear() -&gt; None.  Remove all items from D.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -675,6 +703,22 @@ part of a “reflection”.</p>
 <dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.order">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">order</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hklpy2.blocks.reflection.Reflection" title="hklpy2.blocks.reflection.Reflection"><span class="pre">Reflection</span></a><span class="p"><span class="pre">]</span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/reflection.html#ReflectionsDict.order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.reflection.ReflectionsDict.order" title="Link to this definition">#</a></dt>
 <dd><p>Ordered list of reflection names used for orientation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/reflection.html#ReflectionsDict.pop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.reflection.ReflectionsDict.pop" title="Link to this definition">#</a></dt>
+<dd><p>D.pop(k[,d]) -&gt; v, remove specified key and return the corresponding value.</p>
+<p>If the key is not found, return the default if given; otherwise,
+raise a KeyError.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.popitem">
+<span class="sig-name descname"><span class="pre">popitem</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/reflection.html#ReflectionsDict.popitem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.reflection.ReflectionsDict.popitem" title="Link to this definition">#</a></dt>
+<dd><p>Remove and return a (key, value) pair as a 2-tuple.</p>
+<p>Pairs are returned in LIFO (last-in, first-out) order.
+Raises KeyError if the dict is empty.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -700,6 +744,13 @@ part of a “reflection”.</p>
 </ul>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.setdefault">
+<span class="sig-name descname"><span class="pre">setdefault</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/reflection.html#ReflectionsDict.setdefault"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.reflection.ReflectionsDict.setdefault" title="Link to this definition">#</a></dt>
+<dd><p>Insert key with a value of default if key is not in the dictionary.</p>
+<p>Return the value for key if key is in the dictionary, else default.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.setor">
 <span class="sig-name descname"><span class="pre">setor</span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/reflection.html#ReflectionsDict.setor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.reflection.ReflectionsDict.setor" title="Link to this definition">#</a></dt>
@@ -710,6 +761,15 @@ part of a “reflection”.</p>
 <dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.swap">
 <span class="sig-name descname"><span class="pre">swap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#hklpy2.blocks.reflection.Reflection" title="hklpy2.blocks.reflection.Reflection"><span class="pre">Reflection</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/reflection.html#ReflectionsDict.swap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.reflection.ReflectionsDict.swap" title="Link to this definition">#</a></dt>
 <dd><p>Swap the first two orientation reflections.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2.blocks.reflection.ReflectionsDict.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/hklpy2/blocks/reflection.html#ReflectionsDict.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.blocks.reflection.ReflectionsDict.update" title="Link to this definition">#</a></dt>
+<dd><p>D.update([E, ]**F) -&gt; None.  Update D from mapping/iterable E and F.
+If E is present and has a .keys() method, then does:  for k in E.keys(): D[k] = E[k]
+If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v
+In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 </dd></dl>
 
 </dd></dl>
@@ -787,12 +847,17 @@ part of a “reflection”.</p>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.add"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.add()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.clear"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.clear()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.geometry"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.geometry</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.order"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.order</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.pop"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.pop()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.popitem"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.popitem()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.prune"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.prune()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.set_orientation_reflections()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.setdefault"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.setdefault()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.setor"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.setor</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.swap"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.swap()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.ReflectionsDict.update"><code class="docutils literal notranslate"><span class="pre">ReflectionsDict.update()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.blocks.reflection.UNUSED_REFLECTION"><code class="docutils literal notranslate"><span class="pre">UNUSED_REFLECTION</span></code></a></li>
