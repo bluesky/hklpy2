@@ -372,10 +372,13 @@ def test_simulator_from_config_auxiliary_axes_roundtrip(tmp_path):
     sim.core.calc_UB(r1, r2)
 
     # Export — auxiliary_axes must appear in the saved config.
+    # Schema v2 (issue #388): record form, not flat list of names.
     config_file = tmp_path / "e4cv-analyzer.yml"
     sim.export(str(config_file))
     cfg = yaml.safe_load(config_file.read_text())
-    assert cfg["axes"].get("auxiliary_axes") == ["atheta", "attheta"]
+    aux = cfg["axes"].get("auxiliary_axes")
+    assert [rec["name"] for rec in aux] == ["atheta", "attheta"]
+    assert all(rec["category"] == "scalar" for rec in aux)
 
     # Restore without reals= — auxiliary axes come from the config automatically.
     sim2 = simulator_from_config(config_file)

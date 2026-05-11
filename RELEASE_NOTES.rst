@@ -43,6 +43,8 @@ Breaking Changes
 Enhancements
 ------------
 
+* Add ``register_aux_reconstructor()`` for custom auxiliary sub-devices. (:issue:`388`)
+* Round-trip nested ``PseudoPositioner`` auxiliaries through export / restore. (:issue:`388`)
 * Warn on restore from older or unknown configuration schema. (:issue:`396`)
 
 Fixes

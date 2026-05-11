@@ -15,6 +15,8 @@ and retrieve orientation information from previously recorded runs.
 import logging
 import pathlib
 import sys
+import warnings
+from collections.abc import Callable
 from collections.abc import Iterator
 from typing import Any
 from typing import Mapping
@@ -35,10 +37,113 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "ConfigurationRunWrapper",
+    "register_aux_reconstructor",
     "simulator_from_config",
     "get_run_orientation",
     "list_orientation_runs",
 ]
+
+
+# ---------------------------------------------------------------------------
+# Auxiliary-axis reconstruction (issue #388)
+# ---------------------------------------------------------------------------
+
+#: Built-in / user-registered callables that turn an aux record (``dict``
+#: with ``name`` / ``category`` / …) into a ``creator()`` ``reals=`` value
+#: (``None`` for a scalar SoftPositioner, or a dict-spec describing a
+#: nested PseudoPositioner stand-in).  Keyed by the record's
+#: ``category``.  Use :func:`register_aux_reconstructor` to register a
+#: custom builder; built-ins live in :data:`_BUILTIN_AUX_RECONSTRUCTORS`.
+_AUX_RECONSTRUCTORS: dict[str, Callable[[Mapping[str, Any]], Any]] = {}
+
+
+@versionadded(
+    version="0.7.0",
+    reason="Public hook for restoring custom auxiliary sub-devices.  See :issue:`388`.",
+)
+def register_aux_reconstructor(
+    category: str,
+    builder: Callable[[Mapping[str, Any]], Any],
+) -> None:
+    """
+    Register a builder for a given aux-record ``category``.
+
+    The ``builder`` receives a normalised record (``dict`` with at least
+    ``name`` and ``category``) and returns whatever
+    :func:`~hklpy2.diffract.creator` accepts as a ``reals=`` value:
+
+    * ``None`` for a scalar :class:`~ophyd.SoftPositioner` (the
+      historic default);
+    * a ``dict`` spec of the form ``{"class": <callable or import path>,
+      ...kwargs}`` for any nested device.
+
+    Built-in categories — ``"scalar"`` and ``"pseudo_positioner"`` —
+    may be overridden by a later registration.
+
+    PARAMETERS
+
+    category : str
+        The ``category`` value the builder handles (e.g. a custom
+        ``"device_group"``).
+    builder : callable
+        ``builder(record) -> creator-reals-spec``.
+    """
+    if not isinstance(category, str) or not category:
+        raise ValueError(f"category must be a non-empty str; got {category!r}")
+    if not callable(builder):
+        raise TypeError(f"builder must be callable; got {type(builder).__name__!r}")
+    _AUX_RECONSTRUCTORS[category] = builder
+
+
+def _normalize_aux_record(entry: Any) -> dict:
+    """Coerce a v1 (str) or v2 (dict) aux entry into the v2 record form."""
+    from .exceptions import ConfigurationError
+
+    if isinstance(entry, str):  # legacy v1 form
+        return {"name": entry, "category": "scalar"}
+    if not isinstance(entry, Mapping):
+        raise ConfigurationError(
+            f"auxiliary_axes entry must be a str (legacy) or dict; got {entry!r}"
+        )
+    rec = dict(entry)
+    if "name" not in rec or not isinstance(rec["name"], str) or not rec["name"]:
+        raise ConfigurationError(
+            f"auxiliary_axes record is missing a non-empty 'name': {entry!r}"
+        )
+    rec.setdefault("category", "scalar")
+    if rec["category"] not in _AUX_RECONSTRUCTORS:
+        warnings.warn(
+            (
+                f"Unknown auxiliary_axes category {rec['category']!r}"
+                f" for {rec['name']!r}; falling back to scalar SoftPositioner."
+            ),
+            UserWarning,
+            stacklevel=3,
+        )
+        rec["category"] = "scalar"
+    return rec
+
+
+def _build_scalar_aux(record: Mapping[str, Any]) -> Any:
+    """Built-in builder for ``category == 'scalar'``: a SoftPositioner."""
+    return None  # creator() interprets None as a default SoftPositioner
+
+
+def _build_pseudo_positioner_aux(record: Mapping[str, Any]) -> dict:
+    """Built-in builder for ``category == 'pseudo_positioner'``."""
+    from .devices import make_aux_pseudo_positioner_class
+
+    cls = make_aux_pseudo_positioner_class(
+        name=record["name"],
+        pseudos=record.get("pseudos") or [],
+        reals=record.get("reals") or [],
+    )
+    return {"class": cls, "kind": "hinted"}
+
+
+# Register built-ins.  Users may override via register_aux_reconstructor().
+_AUX_RECONSTRUCTORS["scalar"] = _build_scalar_aux
+_AUX_RECONSTRUCTORS["pseudo_positioner"] = _build_pseudo_positioner_aux
 
 
 class ConfigurationRunWrapper:
@@ -343,6 +448,15 @@ def list_orientation_runs(
     version="0.6.1",
     reason="Accept a ``DiffractometerBase`` instance directly.",
 )
+@versionchanged(
+    version="0.7.0",
+    reason=(
+        "Restore nested ``PseudoPositioner`` auxiliaries as structural "
+        "stand-ins (forward/inverse return zeros).  ``axes.auxiliary_axes`` "
+        "is now a list of ``{name, category, …}`` records; the legacy flat "
+        "list of names is still accepted on read.  See :issue:`388`."
+    ),
+)
 def simulator_from_config(config):
     """
     Create a simulated diffractometer from a saved configuration.
@@ -462,10 +576,20 @@ def simulator_from_config(config):
 
     reals_dict = {name: None for name in real_axes}
 
-    # Restore auxiliary axes saved in the config (backward-compatible: absent in old files).
-    for name in axes_cfg.get("auxiliary_axes", []):
-        if name not in reals_dict:
-            reals_dict[name] = None
+    # Restore auxiliary axes saved in the config.  Backward-compatible:
+    #   * absent in very old files (handled by .get() default);
+    #   * v1 schema: flat list of names (str) — normalised to scalar records;
+    #   * v2 schema: list of {name, category, ...} records.
+    # See issue #388.
+    for entry in axes_cfg.get("auxiliary_axes", []):
+        record = _normalize_aux_record(entry)
+        aux_name = record["name"]
+        if aux_name in reals_dict:
+            # An aux that overlaps with a real axis is not an auxiliary;
+            # leave the real-axis entry alone.
+            continue
+        builder = _AUX_RECONSTRUCTORS[record["category"]]
+        reals_dict[aux_name] = builder(record)
 
     # Pass _real and _pseudo so creator() maps axes in solver-expected order
     # even when diffractometer names differ from solver canonical names.
