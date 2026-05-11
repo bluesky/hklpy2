@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=5a4b5a0a"></script>
+    <script src="../../../_static/documentation_options.js?v=564e28ff"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -434,9 +434,12 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionchanged</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReflectionError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_SolverDirty</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_value_in_list</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_float_dicts</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
@@ -833,13 +836,29 @@
 
 <span class="sd">        ~_asdict</span>
 <span class="sd">        ~_fromdict</span>
+<span class="sd">        ~_request_solver_update</span>
 <span class="sd">        ~_validate_reflection</span>
 <span class="sd">        ~add</span>
+<span class="sd">        ~clear</span>
 <span class="sd">        ~order</span>
+<span class="sd">        ~pop</span>
 <span class="sd">        ~prune</span>
 <span class="sd">        ~set_orientation_reflections</span>
 <span class="sd">        ~setor</span>
 <span class="sd">        ~swap</span>
+
+<span class="sd">    .. versionchanged:: 0.6.3</span>
+<span class="sd">       Mutating operations now flag the owning</span>
+<span class="sd">       :class:`~hklpy2.ops.Core` with</span>
+<span class="sd">       ``_SolverDirty.SAMPLE | _SolverDirty.UB`` whenever the change</span>
+<span class="sd">       affects an entry referenced by :attr:`order` (the orienting</span>
+<span class="sd">       reflections the solver actually sees).  This includes</span>
+<span class="sd">       :meth:`add`, :meth:`swap`, :meth:`set_orientation_reflections`</span>
+<span class="sd">       / :meth:`setor`, the :attr:`order` setter, and any dict-API</span>
+<span class="sd">       mutation (``pop``, ``__setitem__``, ``__delitem__``, ``clear``,</span>
+<span class="sd">       ``update``, ``popitem``) that touches an ordered name.</span>
+<span class="sd">       Previously these mutations left the solver with a stale</span>
+<span class="sd">       reflection list.  See :issue:`397`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -849,6 +868,27 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.geometry">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span></div>
 
+        <span class="c1"># Back-reference to the owning ``Core``.  Wired by</span>
+        <span class="c1"># :class:`~hklpy2.blocks.sample.Sample` after construction so that</span>
+        <span class="c1"># mutating operations can flag the solver-dirty bitfield.  May be</span>
+        <span class="c1"># ``None`` when the dict is used standalone (e.g. in low-level</span>
+        <span class="c1"># tests); in that case ``_request_solver_update`` is a no-op.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_request_solver_update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="n">_SolverDirty</span> <span class="o">=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Flag the owning :class:`~hklpy2.ops.Core` as solver-dirty.</span>
+
+<span class="sd">        Mutating operations on the reflection dict invalidate the</span>
+<span class="sd">        solver-side sample state (and, transitively, U / UB on backends</span>
+<span class="sd">        that recompute them when sample state is re-pushed).  See</span>
+<span class="sd">        :issue:`397`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ReflectionsDict</span><span class="p">):</span>
@@ -903,6 +943,15 @@
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reflection</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.3&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning &quot;</span>
+            <span class="s2">&quot;``Core`` so the solver is re-synced on the next &quot;</span>
+            <span class="s2">&quot;``update_solver()`` (the order of orienting reflections is &quot;</span>
+            <span class="s2">&quot;part of the solver-side sample state).  See :issue:`397`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 <div class="viewcode-block" id="ReflectionsDict.set_orientation_reflections">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_orientation_reflections</span><span class="p">(</span>
@@ -931,6 +980,14 @@
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Common alias for :meth:`~set_orientation_reflections`.&quot;&quot;&quot;</span>
 
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.3&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning &quot;</span>
+            <span class="s2">&quot;``Core`` so the next ``update_solver()`` pushes the new &quot;</span>
+            <span class="s2">&quot;reflection list to the solver.  See :issue:`397`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 <div class="viewcode-block" id="ReflectionsDict.add">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.add">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">Reflection</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -940,7 +997,8 @@
         <span class="bp">self</span><span class="p">[</span><span class="n">reflection</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reflection</span>
         <span class="k">if</span> <span class="n">reflection</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reflection</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="ReflectionsDict.prune">
@@ -950,6 +1008,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">refl</span> <span class="k">for</span> <span class="n">refl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="k">if</span> <span class="n">refl</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span></div>
 
 
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.3&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning &quot;</span>
+            <span class="s2">&quot;``Core`` so the solver re-receives the new orientation order. &quot;</span>
+            <span class="s2">&quot;See :issue:`397`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 <div class="viewcode-block" id="ReflectionsDict.swap">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.swap">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">swap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reflection</span><span class="p">]:</span>
@@ -959,7 +1025,95 @@
         <span class="n">rname1</span><span class="p">,</span> <span class="n">rname2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">rname2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rname1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span></div>
+
+
+    <span class="c1"># ---- dict mutation overrides (issue #397)</span>
+    <span class="c1">#</span>
+    <span class="c1"># ``ReflectionsDict`` subclasses ``dict``; users (and internal code)</span>
+    <span class="c1"># may mutate it via the dict API.  Override the mutating dict methods</span>
+    <span class="c1"># so a mutation that *touches an entry referenced by* :attr:`order`</span>
+    <span class="c1"># flags the owning ``Core`` as solver-dirty.  The solver only sees</span>
+    <span class="c1"># ordered (orienting) reflections, so a mutation that does not</span>
+    <span class="c1"># affect ``order`` -- e.g. adding a brand-new reflection that the</span>
+    <span class="c1"># caller has not yet placed in ``order``, or replacing/removing a</span>
+    <span class="c1"># reflection that is not in ``order`` -- does not require a</span>
+    <span class="c1"># solver-side re-push.  ``add()`` always appends new names to</span>
+    <span class="c1"># ``order`` and reassigns it via the order setter, so its flagging</span>
+    <span class="c1"># path is unaffected.  ``__getitem__`` / ``get`` / iteration are</span>
+    <span class="c1"># read-only and unchanged.</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ReflectionsDict.pop">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.pop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Mirror ``dict.pop`` signature: pop(key[, default]).</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.popitem">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.popitem">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">popitem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># ``popitem`` returns the (key, value) it removed; check after.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.clear">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.clear">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.update">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Determine the set of incoming keys without mutating yet.</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;keys&quot;</span><span class="p">):</span>
+                <span class="n">incoming</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">incoming</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">other</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">incoming</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">incoming</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">incoming</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.setdefault">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.setdefault">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># ``setdefault`` only mutates the dict when ``key`` is absent;</span>
+        <span class="c1"># such an insertion cannot affect ``order`` (the new key is not</span>
+        <span class="c1"># in ``order`` yet).  Either branch is therefore a no-op for</span>
+        <span class="c1"># solver-dirty flagging.</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_validate_reflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">Reflection</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1020,7 +1174,11 @@
 
     <span class="nd">@order</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reflection</span><span class="p">]):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="c1"># The orientation order is part of the solver-side sample state;</span>
+        <span class="c1"># mark the owning Core dirty so update_solver() re-pushes it</span>
+        <span class="c1"># (issue #397).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span></div>
 
 </pre></div>
 

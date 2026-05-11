@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=5a4b5a0a"></script>
+    <script src="../../../_static/documentation_options.js?v=564e28ff"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -431,6 +431,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionchanged</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_SolverDirty</span>
@@ -566,6 +567,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">refine_lattice</span><span class="p">()</span></div>
 
 
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.3&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;When the removed reflection was an orienting reflection &quot;</span>
+            <span class="s2">&quot;(in ``reflections.order``), flag &quot;</span>
+            <span class="s2">&quot;``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning &quot;</span>
+            <span class="s2">&quot;``Core`` so the solver-side reflection list is re-pushed on &quot;</span>
+            <span class="s2">&quot;the next ``update_solver()``.  Removing a non-orienting &quot;</span>
+            <span class="s2">&quot;reflection does not affect the solver and is not flagged. &quot;</span>
+            <span class="s2">&quot;See :issue:`397`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 <div class="viewcode-block" id="Sample.remove_reflection">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.Sample.remove_reflection">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_reflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -574,7 +587,12 @@
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reflection </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is not found.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+            <span class="c1"># ``list.remove`` is an in-place mutation of the list returned</span>
+            <span class="c1"># by the ``order`` property; reassign so the order setter</span>
+            <span class="c1"># runs and flags the solver-dirty bitfield (issue #397).</span>
+            <span class="n">new_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span><span class="p">)</span>
+            <span class="n">new_order</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="n">new_order</span></div>
 
 
     <span class="c1"># --------- get/set properties</span>
@@ -652,6 +670,10 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ReflectionsDict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply ReflectionsDict() object, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="c1"># Wire the back-reference so any subsequent mutation of the dict</span>
+        <span class="c1"># flags the solver-dirty bitfield on the owning Core</span>
+        <span class="c1"># (issue #397).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_validate_matrices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Matrix3x3</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;(internal) Validate U &amp; UB matrices.&quot;&quot;&quot;</span>

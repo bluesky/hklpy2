@@ -152,18 +152,40 @@ Module Contents
 
        ~_asdict
        ~_fromdict
+       ~_request_solver_update
        ~_validate_reflection
        ~add
+       ~clear
        ~order
+       ~pop
        ~prune
        ~set_orientation_reflections
        ~setor
        ~swap
 
+   .. versionchanged:: 0.6.3
+      Mutating operations now flag the owning
+      :class:`~hklpy2.ops.Core` with
+      ``_SolverDirty.SAMPLE | _SolverDirty.UB`` whenever the change
+      affects an entry referenced by :attr:`order` (the orienting
+      reflections the solver actually sees).  This includes
+      :meth:`add`, :meth:`swap`, :meth:`set_orientation_reflections`
+      / :meth:`setor`, the :attr:`order` setter, and any dict-API
+      mutation (``pop``, ``__setitem__``, ``__delitem__``, ``clear``,
+      ``update``, ``popitem``) that touches an ordered name.
+      Previously these mutations left the solver with a stale
+      reflection list.  See :issue:`397`.
+
 
    .. py:method:: add(reflection: Reflection, replace: bool = False) -> None
 
       Add a single orientation reflection.
+
+
+
+   .. py:method:: clear()
+
+      D.clear() -> None.  Remove all items from D.
 
 
 
@@ -177,6 +199,24 @@ Module Contents
 
 
       Ordered list of reflection names used for orientation.
+
+
+   .. py:method:: pop(*args, **kwargs)
+
+      D.pop(k[,d]) -> v, remove specified key and return the corresponding value.
+
+      If the key is not found, return the default if given; otherwise,
+      raise a KeyError.
+
+
+
+   .. py:method:: popitem()
+
+      Remove and return a (key, value) pair as a 2-tuple.
+
+      Pairs are returned in LIFO (last-in, first-out) order.
+      Raises KeyError if the dict is empty.
+
 
 
    .. py:method:: prune() -> None
@@ -201,6 +241,14 @@ Module Contents
 
 
 
+   .. py:method:: setdefault(key, default=None)
+
+      Insert key with a value of default if key is not in the dictionary.
+
+      Return the value for key if key is in the dictionary, else default.
+
+
+
    .. py:attribute:: setor
 
       Common alias for :meth:`~set_orientation_reflections`.
@@ -209,6 +257,15 @@ Module Contents
    .. py:method:: swap() -> list[Reflection]
 
       Swap the first two orientation reflections.
+
+
+
+   .. py:method:: update(*args, **kwargs)
+
+      D.update([E, ]**F) -> None.  Update D from mapping/iterable E and F.
+      If E is present and has a .keys() method, then does:  for k in E.keys(): D[k] = E[k]
+      If E is present and lacks a .keys() method, then does:  for k, v in E: D[k] = v
+      In either case, this is followed by: for k in F:  D[k] = F[k]
 
 
 
