@@ -18,9 +18,12 @@ from typing import Mapping
 from typing import Optional
 from typing import Union
 
+from deprecated.sphinx import versionchanged
+
 from ..exceptions import ConfigurationError
 from ..exceptions import ReflectionError
 from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import _SolverDirty
 from ..utils import check_value_in_list
 from ..utils import compare_float_dicts
 from ..utils import convert_units
@@ -376,19 +379,56 @@ class ReflectionsDict(dict):
 
         ~_asdict
         ~_fromdict
+        ~_request_solver_update
         ~_validate_reflection
         ~add
+        ~clear
         ~order
+        ~pop
         ~prune
         ~set_orientation_reflections
         ~setor
         ~swap
+
+    .. versionchanged:: 0.6.3
+       Mutating operations now flag the owning
+       :class:`~hklpy2.ops.Core` with
+       ``_SolverDirty.SAMPLE | _SolverDirty.UB`` whenever the change
+       affects an entry referenced by :attr:`order` (the orienting
+       reflections the solver actually sees).  This includes
+       :meth:`add`, :meth:`swap`, :meth:`set_orientation_reflections`
+       / :meth:`setor`, the :attr:`order` setter, and any dict-API
+       mutation (``pop``, ``__setitem__``, ``__delitem__``, ``clear``,
+       ``update``, ``popitem``) that touches an ordered name.
+       Previously these mutations left the solver with a stale
+       reflection list.  See :issue:`397`.
     """
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._order = []
         self.geometry = None
+        # Back-reference to the owning ``Core``.  Wired by
+        # :class:`~hklpy2.blocks.sample.Sample` after construction so that
+        # mutating operations can flag the solver-dirty bitfield.  May be
+        # ``None`` when the dict is used standalone (e.g. in low-level
+        # tests); in that case ``_request_solver_update`` is a no-op.
+        self._core: Optional[Any] = None
+
+    def _request_solver_update(
+        self,
+        flags: _SolverDirty = _SolverDirty.SAMPLE | _SolverDirty.UB,
+    ) -> None:
+        """
+        Flag the owning :class:`~hklpy2.ops.Core` as solver-dirty.
+
+        Mutating operations on the reflection dict invalidate the
+        solver-side sample state (and, transitively, U / UB on backends
+        that recompute them when sample state is re-pushed).  See
+        :issue:`397`.
+        """
+        if self._core is not None:
+            self._core.request_solver_update(flags)
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ReflectionsDict):
@@ -443,6 +483,15 @@ class ReflectionsDict(dict):
             )
             self.add(reflection, replace=True)
 
+    @versionchanged(
+        version="0.6.3",
+        reason=(
+            "Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning "
+            "``Core`` so the solver is re-synced on the next "
+            "``update_solver()`` (the order of orienting reflections is "
+            "part of the solver-side sample state).  See :issue:`397`."
+        ),
+    )
     def set_orientation_reflections(
         self,
         reflections: list[Reflection],
@@ -465,6 +514,14 @@ class ReflectionsDict(dict):
     setor = set_orientation_reflections
     """Common alias for :meth:`~set_orientation_reflections`."""
 
+    @versionchanged(
+        version="0.6.3",
+        reason=(
+            "Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning "
+            "``Core`` so the next ``update_solver()`` pushes the new "
+            "reflection list to the solver.  See :issue:`397`."
+        ),
+    )
     def add(self, reflection: Reflection, replace: bool = False) -> None:
         """Add a single orientation reflection."""
         self._validate_reflection(reflection, replace)
@@ -473,11 +530,20 @@ class ReflectionsDict(dict):
         if reflection.name not in self.order:
             self.order.append(reflection.name)
         self.prune()
+        self._request_solver_update()
 
     def prune(self) -> None:
         """Remove any undefined reflections from order list."""
         self.order = [refl for refl in self.order if refl in self]
 
+    @versionchanged(
+        version="0.6.3",
+        reason=(
+            "Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning "
+            "``Core`` so the solver re-receives the new orientation order. "
+            "See :issue:`397`."
+        ),
+    )
     def swap(self) -> list[Reflection]:
         """Swap the first two orientation reflections."""
         if len(self.order) < 2:
@@ -485,7 +551,80 @@ class ReflectionsDict(dict):
         rname1, rname2 = self.order[:2]
         self._order[0] = rname2
         self._order[1] = rname1
+        self._request_solver_update()
         return self.order
+
+    # ---- dict mutation overrides (issue #397)
+    #
+    # ``ReflectionsDict`` subclasses ``dict``; users (and internal code)
+    # may mutate it via the dict API.  Override the mutating dict methods
+    # so a mutation that *touches an entry referenced by* :attr:`order`
+    # flags the owning ``Core`` as solver-dirty.  The solver only sees
+    # ordered (orienting) reflections, so a mutation that does not
+    # affect ``order`` -- e.g. adding a brand-new reflection that the
+    # caller has not yet placed in ``order``, or replacing/removing a
+    # reflection that is not in ``order`` -- does not require a
+    # solver-side re-push.  ``add()`` always appends new names to
+    # ``order`` and reassigns it via the order setter, so its flagging
+    # path is unaffected.  ``__getitem__`` / ``get`` / iteration are
+    # read-only and unchanged.
+
+    def __setitem__(self, key, value):
+        affects_order = key in self._order
+        super().__setitem__(key, value)
+        if affects_order:
+            self._request_solver_update()
+
+    def __delitem__(self, key):
+        affects_order = key in self._order
+        super().__delitem__(key)
+        if affects_order:
+            self._request_solver_update()
+
+    def pop(self, *args, **kwargs):
+        # Mirror ``dict.pop`` signature: pop(key[, default]).
+        key = args[0] if args else None
+        affects_order = key in self._order
+        result = super().pop(*args, **kwargs)
+        if affects_order:
+            self._request_solver_update()
+        return result
+
+    def popitem(self):
+        # ``popitem`` returns the (key, value) it removed; check after.
+        result = super().popitem()
+        if result[0] in self._order:
+            self._request_solver_update()
+        return result
+
+    def clear(self):
+        affects_order = any(name in self._order for name in self)
+        super().clear()
+        if affects_order:
+            self._request_solver_update()
+
+    def update(self, *args, **kwargs):
+        # Determine the set of incoming keys without mutating yet.
+        if args:
+            other = args[0]
+            if hasattr(other, "keys"):
+                incoming = set(other.keys())
+            else:
+                incoming = {k for k, _ in other}
+        else:
+            incoming = set()
+        incoming.update(kwargs)
+        affects_order = any(k in self._order for k in incoming)
+        super().update(*args, **kwargs)
+        if affects_order:
+            self._request_solver_update()
+
+    def setdefault(self, key, default=None):
+        # ``setdefault`` only mutates the dict when ``key`` is absent;
+        # such an insertion cannot affect ``order`` (the new key is not
+        # in ``order`` yet).  Either branch is therefore a no-op for
+        # solver-dirty flagging.
+        return super().setdefault(key, default)
 
     def _validate_reflection(self, reflection: Reflection, replace: bool) -> None:
         """Validate the new reflection (raise exception if invalid)."""
@@ -543,3 +682,7 @@ class ReflectionsDict(dict):
     @order.setter
     def order(self, value: list[Reflection]):
         self._order = list(value)
+        # The orientation order is part of the solver-side sample state;
+        # mark the owning Core dirty so update_solver() re-pushes it
+        # (issue #397).
+        self._request_solver_update()

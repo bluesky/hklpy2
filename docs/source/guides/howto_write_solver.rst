@@ -175,7 +175,7 @@ method (or property)            description
 ``name``                        (string attribute) Name of this solver.
 ``version``                     (string attribute) Version of this solver.
 ``addReflection(reflection)``   Add an observed diffraction reflection.
-``calculate_UB(r1, r2)``        Calculate the UB matrix with two reflections.
+``calculate_UB(r1, r2)``        Calculate the UB matrix with two reflections.  Self-installs ``r1`` and ``r2`` (see :ref:`calculate_UB() contract <howto.solvers.write.calculate_ub_contract>`).
 ``extra_axis_names``            Returns list of any extra axes in the current *mode*.
 ``forward(pseudos)``            Compute list of solutions(reals) from pseudos.  A single-element list is acceptable (see :ref:`forward() contract <howto.solvers.write.forward_contract>`).
 ``geometries``                  ``@classmethod`` [#classmethod_decorator]_ : Returns list of all geometries support by this solver.
@@ -183,7 +183,7 @@ method (or property)            description
 ``modes``                       Returns list of all modes support by this geometry.
 ``pseudo_axis_names``           Returns list of all pseudos support by this geometry.
 ``real_axis_names``             Returns list of all reals support by this geometry.
-``refineLattice(reflections)``  Return refined lattice parameters given reflections.
+``refineLattice(reflections)``  Return refined lattice parameters given reflections.  Self-installs ``reflections`` (see :ref:`calculate_UB() contract <howto.solvers.write.calculate_ub_contract>`).
 ``removeAllReflections()``      Clears sample of all stored reflections.
 ==============================  ==================
 
@@ -262,6 +262,39 @@ layers.
         s3      -> s4 [label="one solution"]
         s4      -> result
     }
+
+.. _howto.solvers.write.calculate_ub_contract:
+
+``calculate_UB()`` Contract
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``calculate_UB(r1, r2)`` is the **authoritative installer of its own
+orientation pair**.  Every conformant implementation must execute the
+following steps, in order:
+
+1. ``self.removeAllReflections()`` -- discard any reflections previously
+   stored in the solver-side sample state.
+2. ``self.addReflection(r1)`` -- install the first orientation
+   reflection from the supplied dict.
+3. ``self.addReflection(r2)`` -- install the second orientation
+   reflection from the supplied dict.
+4. Invoke the backend library's Busing & Levy routine
+   (Acta Cryst 22 (1967) 457) on the freshly-installed pair to
+   compute *UB*.
+5. Return *UB* as a 3x3 ``list[list[float]]``.
+
+Implementations **must not** assume that the solver's reflection list
+already contains ``r1`` and ``r2``.  The :class:`~hklpy2.ops.Core`
+layer pushes the python-side sample state via
+:meth:`~hklpy2.ops.Core.update_solver` before invoking
+``calculate_UB``, but ``calculate_UB`` itself is the authoritative
+installer of the orienting pair so the result is reproducible from
+the supplied arguments alone.
+
+The same self-install pattern applies to
+:meth:`~hklpy2.backends.base.SolverBase.refineLattice`: remove all,
+add each supplied reflection, then invoke the backend's refinement
+routine.
 
 .. _howto.solvers.write.backend_requirements:
 
