@@ -22,8 +22,8 @@ diffractometer computation library.
     - https://xrayutilities.sourceforge.io/_modules/xrayutilities/experiment.html#QConversion
     - https://github.com/DiamondLightSource/diffcalc
     - SPEC server mode
-    - https://github.com/prjemian/pyub
-    - https://github.com/prjemian/chewacla
+    - https://github.com/BCDA-APS/ad_hoc_diffractometer
+    - https://github.com/prjemian/hklpy2_solvers
 
 Steps
 -----
