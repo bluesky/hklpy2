@@ -38,6 +38,7 @@ Bug fix release.
 Fixes
 -----
 
+* Fix ``forward()`` after ``restore()`` when real-axis names are renamed. (:issue:`398`)
 * Reflection mutations now flag the solver-dirty bitfield. (:issue:`397`)
 
 Maintenance

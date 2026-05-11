@@ -448,6 +448,17 @@ class ReflectionsDict(dict):
         self.prune()
         return {v.name: v._asdict() for v in self.values()}
 
+    @versionchanged(
+        version="0.6.3",
+        reason=(
+            "Re-key restored reflections by the diffractometer's local "
+            "real-axis names instead of the solver's canonical names, "
+            "matching every other consumer of ``Reflection.reals``.  "
+            "Fixes ``KeyError`` from ``forward()`` / ``benchmark`` after "
+            "``restore()`` / ``simulator_from_config`` when local and "
+            "canonical names differ.  See :issue:`398`."
+        ),
+    )
     def _fromdict(
         self,
         config: Mapping[str, Union[float, int, str]],
@@ -463,8 +474,8 @@ class ReflectionsDict(dict):
                 refl_config["reals"] = {
                     axis: value
                     for axis, value in zip(
-                        # core.diffractometer.real_axis_names,
-                        core.solver.real_axis_names,
+                        # core.solver.real_axis_names,
+                        core.diffractometer.real_axis_names,
                         refl_config["reals"].values(),
                     )
                 }
