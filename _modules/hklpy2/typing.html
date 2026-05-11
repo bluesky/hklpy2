@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=c9fd9afc"></script>
+    <script src="../../_static/documentation_options.js?v=6b5b8eee"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -571,7 +571,7 @@
 
 <div class="viewcode-block" id="ConfigHeaderDict">
 <a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.ConfigHeaderDict">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ConfigHeaderDict</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfigHeaderDict</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Typed structure for the configuration ``_header`` block.</span>
 
@@ -586,6 +586,15 @@
 <span class="sd">        Version of |hklpy2| used to write the configuration.</span>
 <span class="sd">    python_class : str</span>
 <span class="sd">        ``__class__.__name__`` of the diffractometer.</span>
+<span class="sd">    config_schema_version : int</span>
+<span class="sd">        Integer revision of the configuration file schema.  Compared by</span>
+<span class="sd">        :meth:`~hklpy2.diffract.DiffractometerBase.restore` to detect</span>
+<span class="sd">        files written by older or unknown schemas.  Absent in files</span>
+<span class="sd">        written by versions of |hklpy2| prior to the introduction of the</span>
+<span class="sd">        schema-version field.</span>
+
+<span class="sd">    .. versionchanged:: 0.7.0</span>
+<span class="sd">       Added ``config_schema_version``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ConfigHeaderDict.datetime">
@@ -599,6 +608,10 @@
 <div class="viewcode-block" id="ConfigHeaderDict.python_class">
 <a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.ConfigHeaderDict.python_class">[docs]</a>
     <span class="n">python_class</span><span class="p">:</span> <span class="nb">str</span></div>
+
+<div class="viewcode-block" id="ConfigHeaderDict.config_schema_version">
+<a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.ConfigHeaderDict.config_schema_version">[docs]</a>
+    <span class="n">config_schema_version</span><span class="p">:</span> <span class="nb">int</span></div>
 </div>
 
 </pre></div>

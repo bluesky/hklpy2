@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=c9fd9afc"></script>
+    <script src="../../_static/documentation_options.js?v=6b5b8eee"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -566,11 +566,13 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Describe the diffractometer as a dictionary.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.__init__</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.configure</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONFIG_SCHEMA_VERSION</span>
 
         <span class="n">header</span><span class="p">:</span> <span class="n">ConfigHeaderDict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;datetime&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()),</span>
             <span class="s2">&quot;hklpy2_version&quot;</span><span class="p">:</span> <span class="n">__version__</span><span class="p">,</span>
             <span class="s2">&quot;python_class&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="s2">&quot;config_schema_version&quot;</span><span class="p">:</span> <span class="n">CONFIG_SCHEMA_VERSION</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;_header&quot;</span><span class="p">:</span> <span class="n">header</span><span class="p">,</span>
