@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=c9fd9afc"></script>
+    <script src="../../../_static/documentation_options.js?v=6b5b8eee"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -613,7 +613,21 @@ information alongside saved diffractometer configurations.</p>
 </dd>
 <dt>python_class<span class="classifier">str</span></dt><dd><p><code class="docutils literal notranslate"><span class="pre">__class__.__name__</span></code> of the diffractometer.</p>
 </dd>
+<dt>config_schema_version<span class="classifier">int</span></dt><dd><p>Integer revision of the configuration file schema.  Compared by
+<a class="reference internal" href="../diffract/index.html#hklpy2.diffract.DiffractometerBase.restore" title="hklpy2.diffract.DiffractometerBase.restore"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restore()</span></code></a> to detect
+files written by older or unknown schemas.  Absent in files
+written by versions of <strong>hklpy2</strong> prior to the introduction of the
+schema-version field.</p>
+</dd>
 </dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.0: </span>Added <code class="docutils literal notranslate"><span class="pre">config_schema_version</span></code>.</p>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="hklpy2.typing.ConfigHeaderDict.config_schema_version">
+<span class="sig-name descname"><span class="pre">config_schema_version</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><a class="reference internal" href="../../../_modules/hklpy2/typing.html#ConfigHeaderDict.config_schema_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.typing.ConfigHeaderDict.config_schema_version" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="hklpy2.typing.ConfigHeaderDict.datetime">
 <span class="sig-name descname"><span class="pre">datetime</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="reference internal" href="../../../_modules/hklpy2/typing.html#ConfigHeaderDict.datetime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.typing.ConfigHeaderDict.datetime" title="Link to this definition">#</a></dt>
@@ -730,6 +744,7 @@ information alongside saved diffractometer configurations.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.typing.AxesTuple"><code class="docutils literal notranslate"><span class="pre">AxesTuple</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.typing.BlueskyPlanType"><code class="docutils literal notranslate"><span class="pre">BlueskyPlanType</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.typing.ConfigHeaderDict"><code class="docutils literal notranslate"><span class="pre">ConfigHeaderDict</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.typing.ConfigHeaderDict.config_schema_version"><code class="docutils literal notranslate"><span class="pre">ConfigHeaderDict.config_schema_version</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.typing.ConfigHeaderDict.datetime"><code class="docutils literal notranslate"><span class="pre">ConfigHeaderDict.datetime</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.typing.ConfigHeaderDict.hklpy2_version"><code class="docutils literal notranslate"><span class="pre">ConfigHeaderDict.hklpy2_version</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.typing.ConfigHeaderDict.python_class"><code class="docutils literal notranslate"><span class="pre">ConfigHeaderDict.python_class</span></code></a></li>

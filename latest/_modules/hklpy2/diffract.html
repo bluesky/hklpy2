@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=c9fd9afc"></script>
+    <script src="../../_static/documentation_options.js?v=6b5b8eee"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -457,6 +457,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.pseudopos</span><span class="w"> </span><span class="kn">import</span> <span class="n">pseudo_position_argument</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.pseudopos</span><span class="w"> </span><span class="kn">import</span> <span class="n">real_position_argument</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.configure</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_schema_version</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.reflection</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reflection</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.sample</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sample</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.incident</span><span class="w"> </span><span class="kn">import</span> <span class="n">WavelengthXray</span>
@@ -836,6 +837,14 @@
             <span class="s2">&quot;the kwargs explicitly to override.  See :issue:`390`.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.7.0&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Emit a ``UserWarning`` when the configuration ``_header`` &quot;</span>
+            <span class="s2">&quot;lacks ``config_schema_version`` or carries a value that does &quot;</span>
+            <span class="s2">&quot;not match the current schema.  See :issue:`396`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
 <div class="viewcode-block" id="DiffractometerBase.restore">
 <a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.restore">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">restore</span><span class="p">(</span>
@@ -927,6 +936,7 @@
         <span class="k">if</span> <span class="n">header</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">MISSING_HEADER_KEY_MSG</span><span class="p">)</span>
         <span class="c1"># Note: python_class key is not testable, could be anything.</span>
+        <span class="n">_check_schema_version</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
 
         <span class="c1"># Resolve safety defaults based on is_simulator.  Sections that</span>
         <span class="c1"># change the inputs to the next forward() default OFF on a</span>

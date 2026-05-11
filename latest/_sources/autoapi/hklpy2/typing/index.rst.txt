@@ -106,6 +106,19 @@ Module Contents
        Version of |hklpy2| used to write the configuration.
    python_class : str
        ``__class__.__name__`` of the diffractometer.
+   config_schema_version : int
+       Integer revision of the configuration file schema.  Compared by
+       :meth:`~hklpy2.diffract.DiffractometerBase.restore` to detect
+       files written by older or unknown schemas.  Absent in files
+       written by versions of |hklpy2| prior to the introduction of the
+       schema-version field.
+
+   .. versionchanged:: 0.7.0
+      Added ``config_schema_version``.
+
+
+   .. py:attribute:: config_schema_version
+      :type:  int
 
 
    .. py:attribute:: datetime
