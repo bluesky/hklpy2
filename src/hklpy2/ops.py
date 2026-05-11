@@ -136,11 +136,13 @@ class Core:
     def _asdict(self) -> KeyValueMap:
         """Describe the diffractometer as a dictionary."""
         from .__init__ import __version__
+        from .blocks.configure import CONFIG_SCHEMA_VERSION
 
         header: ConfigHeaderDict = {
             "datetime": str(datetime.datetime.now()),
             "hklpy2_version": __version__,
             "python_class": self.diffractometer.__class__.__name__,
+            "config_schema_version": CONFIG_SCHEMA_VERSION,
         }
         return {
             "_header": header,

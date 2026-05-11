@@ -41,6 +41,7 @@ from ophyd.device import required_for_connection
 from ophyd.pseudopos import pseudo_position_argument
 from ophyd.pseudopos import real_position_argument
 
+from .blocks.configure import _check_schema_version
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .incident import WavelengthXray
@@ -382,6 +383,14 @@ class DiffractometerBase(PseudoPositioner):
             "the kwargs explicitly to override.  See :issue:`390`."
         ),
     )
+    @versionchanged(
+        version="0.7.0",
+        reason=(
+            "Emit a ``UserWarning`` when the configuration ``_header`` "
+            "lacks ``config_schema_version`` or carries a value that does "
+            "not match the current schema.  See :issue:`396`."
+        ),
+    )
     def restore(
         self,
         config,
@@ -471,6 +480,7 @@ class DiffractometerBase(PseudoPositioner):
         if header is None:
             raise KeyError(MISSING_HEADER_KEY_MSG)
         # Note: python_class key is not testable, could be anything.
+        _check_schema_version(header)
 
         # Resolve safety defaults based on is_simulator.  Sections that
         # change the inputs to the next forward() default OFF on a
