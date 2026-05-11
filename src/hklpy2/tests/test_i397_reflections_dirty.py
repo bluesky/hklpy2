@@ -267,6 +267,16 @@ def test_order_affecting_high_level_api_flags(parms, context):
             id="update with no incoming keys does not flag",
         ),
         pytest.param(
+            dict(action="update_iterable_of_pairs", flags=False),
+            does_not_raise(),
+            id="update from iterable of (key, value) pairs does not flag",
+        ),
+        pytest.param(
+            dict(action="update_kwargs_only", flags=False),
+            does_not_raise(),
+            id="update with kwargs only (no positional arg) does not flag",
+        ),
+        pytest.param(
             dict(action="setdefault_new", flags=False),
             does_not_raise(),
             id="setdefault inserting a new key does not flag",
@@ -342,7 +352,8 @@ def test_dict_api_mutations_flag_only_when_order_affected(parms, context):
         elif action == "pop_not_in_order":
             refls.pop("r100")
         elif action == "pop_missing_with_default":
-            assert refls.pop("nonexistent", "fallback") == "fallback"
+            result = refls.pop("nonexistent", "fallback")
+            assert result == "fallback"
         elif action == "clear_empty_order":
             refls.order = []
             _clean(sim)
@@ -351,6 +362,10 @@ def test_dict_api_mutations_flag_only_when_order_affected(parms, context):
             refls.update({"brand_new": _new_like(refls["r006"], "brand_new")})
         elif action == "update_empty":
             refls.update({})
+        elif action == "update_iterable_of_pairs":
+            refls.update([("brand_new", _new_like(refls["r006"], "brand_new"))])
+        elif action == "update_kwargs_only":
+            refls.update(brand_new=_new_like(refls["r006"], "brand_new"))
         elif action == "setdefault_new":
             refls.setdefault(
                 "default_new",
