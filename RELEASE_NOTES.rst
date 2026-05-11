@@ -33,6 +33,8 @@ describe future plans.
 0.7.0
 #####
 
+Released 2026-05-11.
+
 Bug fixes plus a behavior change to orientation-reflection management.
 
 Breaking Changes
