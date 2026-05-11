@@ -40,6 +40,11 @@ Breaking Changes
 
 * Refuse mutations that would leave the sample half-defined. (:issue:`399`)
 
+Enhancements
+------------
+
+* Warn on restore from older or unknown configuration schema. (:issue:`396`)
+
 Fixes
 -----
 

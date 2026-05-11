@@ -13,7 +13,9 @@ from ...utils import load_yaml_file
 from ...tests.models import E4CV_CONFIG_FILE
 from ...tests.models import add_oriented_vibranium_to_e4cv
 from ...tests.models import e4cv_config
+from ..configure import CONFIG_SCHEMA_VERSION
 from ..configure import Configuration
+from ..configure import _check_schema_version
 
 e4cv = creator(name="e4cv")
 add_oriented_vibranium_to_e4cv(e4cv)
@@ -27,6 +29,11 @@ twopi = 2 * math.pi
     [
         pytest.param("_header.datetime", None, id="header-datetime"),
         pytest.param("_header.hklpy2_version", __version__, id="header-hklpy2-version"),
+        pytest.param(
+            "_header.config_schema_version",
+            CONFIG_SCHEMA_VERSION,
+            id="header-config-schema-version",
+        ),
         pytest.param(
             "_header.python_class", e4cv.__class__.__name__, id="header-python-class"
         ),
@@ -660,3 +667,132 @@ def test_presets_round_trip(parms, context, tmp_path):
         restored = fresh.core._mode_presets.get(parms["preset_mode"], {})
         for axis, value in parms["presets"].items():
             assert restored.get(axis) == pytest.approx(value)
+
+
+# ---------------------------------------------------------------------------
+# Issue #396: warn when restoring an older / unknown configuration schema
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(version=CONFIG_SCHEMA_VERSION, expect_warning=False),
+            does_not_raise(),
+            id="current-schema-no-warning",
+        ),
+        pytest.param(
+            dict(version="__omit__", expect_warning="no schema version"),
+            does_not_raise(),
+            id="missing-schema-version",
+        ),
+        pytest.param(
+            dict(version=CONFIG_SCHEMA_VERSION - 1, expect_warning="older"),
+            does_not_raise(),
+            id="older-schema",
+        ),
+        pytest.param(
+            dict(version=CONFIG_SCHEMA_VERSION + 1, expect_warning="newer"),
+            does_not_raise(),
+            id="newer-schema",
+        ),
+        pytest.param(
+            dict(version="bogus", expect_warning="Unrecognized"),
+            does_not_raise(),
+            id="non-int-schema",
+        ),
+        pytest.param(
+            dict(version=True, expect_warning="Unrecognized"),
+            does_not_raise(),
+            id="bool-schema-rejected",
+        ),
+    ],
+)
+def test_check_schema_version(parms, context):
+    """``_check_schema_version`` warns on missing / older / newer / bogus."""
+    import warnings as _warnings
+
+    with context:
+        header: dict = {"datetime": "x", "hklpy2_version": "y", "python_class": "z"}
+        if parms["version"] != "__omit__":
+            header["config_schema_version"] = parms["version"]
+
+        with _warnings.catch_warnings(record=True) as caught:
+            _warnings.simplefilter("always")
+            _check_schema_version(header)
+
+        schema_warnings = [
+            w
+            for w in caught
+            if issubclass(w.category, UserWarning)
+            and "schema" in str(w.message).lower()
+        ]
+        if parms["expect_warning"] is False:
+            assert schema_warnings == [], f"unexpected warnings: {schema_warnings!r}"
+        else:
+            assert len(schema_warnings) == 1, (
+                f"expected one schema warning, got: {schema_warnings!r}"
+            )
+            assert parms["expect_warning"] in str(schema_warnings[0].message)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(mutate=None, expect_warning=False),
+            does_not_raise(),
+            id="round-trip-no-warning",
+        ),
+        pytest.param(
+            dict(mutate="drop", expect_warning="no schema version"),
+            does_not_raise(),
+            id="drop-version-warns",
+        ),
+        pytest.param(
+            dict(mutate=("set", CONFIG_SCHEMA_VERSION - 1), expect_warning="older"),
+            does_not_raise(),
+            id="older-version-warns",
+        ),
+        pytest.param(
+            dict(mutate=("set", CONFIG_SCHEMA_VERSION + 1), expect_warning="newer"),
+            does_not_raise(),
+            id="newer-version-warns",
+        ),
+    ],
+)
+def test_restore_emits_schema_warning(parms, context, tmp_path):
+    """End-to-end: ``restore()`` surfaces the schema warning."""
+    import warnings as _warnings
+
+    with context:
+        # Round-trip a fresh export through restore() to drive the
+        # warning path on a real diffractometer.
+        orig = creator(name="e4cv_schema_orig")
+        cfg_file = tmp_path / "schema.yml"
+        orig.export(cfg_file)
+        config = load_yaml_file(cfg_file)
+
+        if parms["mutate"] == "drop":
+            config["_header"].pop("config_schema_version", None)
+        elif isinstance(parms["mutate"], tuple) and parms["mutate"][0] == "set":
+            config["_header"]["config_schema_version"] = parms["mutate"][1]
+
+        target = creator(name="e4cv_schema_target")
+        with _warnings.catch_warnings(record=True) as caught:
+            _warnings.simplefilter("always")
+            target.restore(config)
+
+        schema_warnings = [
+            w
+            for w in caught
+            if issubclass(w.category, UserWarning)
+            and "schema" in str(w.message).lower()
+        ]
+        if parms["expect_warning"] is False:
+            assert schema_warnings == [], f"unexpected warnings: {schema_warnings!r}"
+        else:
+            assert any(
+                parms["expect_warning"] in str(w.message) for w in schema_warnings
+            ), f"expected {parms['expect_warning']!r} in {schema_warnings!r}"

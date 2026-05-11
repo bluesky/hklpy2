@@ -120,7 +120,7 @@ NamedFloatDict = Mapping[str, NUMERIC]
 # ---------------------------------------------------------------------------
 
 
-class ConfigHeaderDict(TypedDict):
+class ConfigHeaderDict(TypedDict, total=False):
     """
     Typed structure for the configuration ``_header`` block.
 
@@ -135,8 +135,18 @@ class ConfigHeaderDict(TypedDict):
         Version of |hklpy2| used to write the configuration.
     python_class : str
         ``__class__.__name__`` of the diffractometer.
+    config_schema_version : int
+        Integer revision of the configuration file schema.  Compared by
+        :meth:`~hklpy2.diffract.DiffractometerBase.restore` to detect
+        files written by older or unknown schemas.  Absent in files
+        written by versions of |hklpy2| prior to the introduction of the
+        schema-version field.
+
+    .. versionchanged:: 0.7.0
+       Added ``config_schema_version``.
     """
 
     datetime: str
     hklpy2_version: str
     python_class: str
+    config_schema_version: int

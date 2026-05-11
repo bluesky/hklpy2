@@ -9,14 +9,92 @@ Export and restore sample UB matrix and other diffractometer configuration.
 """
 
 import logging
+import warnings
 from typing import Any
+from typing import Mapping
 
+from deprecated.sphinx import versionadded
 from deprecated.sphinx import versionchanged
 
 from ..exceptions import ConfigurationError
 from ..typing import KeyValueMap
 
 logger = logging.getLogger(__name__)
+
+
+CONFIG_SCHEMA_VERSION: int = 1
+"""
+Integer revision of the configuration file schema written by
+:meth:`~hklpy2.ops.Core._asdict` and validated by
+:meth:`~hklpy2.diffract.DiffractometerBase.restore`.
+
+Bump monotonically when the on-disk configuration layout changes in a way
+that older readers might mishandle.
+
+.. versionadded:: 0.7.0
+"""
+
+
+@versionadded(
+    version="0.7.0",
+    reason="Warn when restoring a configuration whose schema is missing, older, or newer.",
+)
+def _check_schema_version(header: Mapping[str, Any]) -> None:
+    """
+    Emit a :class:`UserWarning` if the configuration ``_header`` does not
+    match the current :data:`CONFIG_SCHEMA_VERSION`.
+
+    Always proceeds (warn-and-proceed); never raises.
+
+    PARAMETERS
+
+    header : Mapping
+        The ``_header`` block from a loaded configuration dict.
+    """
+    version = header.get("config_schema_version")
+    if version is None:
+        warnings.warn(
+            (
+                "Configuration file has no schema version; it was written"
+                " by an older hklpy2 (pre-schema-versioning).  Loading"
+                f" against current schema v{CONFIG_SCHEMA_VERSION}."
+            ),
+            UserWarning,
+            stacklevel=3,
+        )
+        return
+    if not isinstance(version, int) or isinstance(version, bool):
+        warnings.warn(
+            (
+                f"Unrecognized configuration schema version: {version!r}."
+                f"  Expected an int (current schema v{CONFIG_SCHEMA_VERSION})."
+            ),
+            UserWarning,
+            stacklevel=3,
+        )
+        return
+    if version == CONFIG_SCHEMA_VERSION:
+        return
+    if version < CONFIG_SCHEMA_VERSION:
+        warnings.warn(
+            (
+                f"Configuration schema v{version} is older than current"
+                f" v{CONFIG_SCHEMA_VERSION}; some fields may have changed"
+                " meaning."
+            ),
+            UserWarning,
+            stacklevel=3,
+        )
+        return
+    # version > CONFIG_SCHEMA_VERSION
+    warnings.warn(
+        (
+            f"Configuration schema v{version} is newer than supported"
+            f" v{CONFIG_SCHEMA_VERSION}; some fields may be ignored."
+        ),
+        UserWarning,
+        stacklevel=3,
+    )
 
 
 class Configuration:

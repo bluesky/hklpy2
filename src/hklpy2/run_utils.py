@@ -408,6 +408,9 @@ def simulator_from_config(config):
         )
     if "_header" not in config:
         raise KeyError(MISSING_HEADER_KEY_MSG)
+    from .blocks.configure import _check_schema_version
+
+    _check_schema_version(config["_header"])
 
     solver_cfg = config.get("solver", {})
     # Default solver name remains "hkl_soleil" because the config
