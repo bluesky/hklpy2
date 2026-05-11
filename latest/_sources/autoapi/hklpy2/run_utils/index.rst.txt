@@ -241,6 +241,36 @@ Module Contents
    :type \*\*kwargs: dict[str:str]
 
 
+.. py:function:: register_aux_reconstructor(category: str, builder: ~collections.abc.Callable[[Mapping[str, Any]], Any]) -> None
+
+   .. container:: import-path
+
+      Import: ``hklpy2.run_utils.register_aux_reconstructor``
+
+
+   Register a builder for a given aux-record ``category``.
+
+   The ``builder`` receives a normalised record (``dict`` with at least
+   ``name`` and ``category``) and returns whatever
+   :func:`~hklpy2.diffract.creator` accepts as a ``reals=`` value:
+
+   * ``None`` for a scalar :class:`~ophyd.SoftPositioner` (the
+     historic default);
+   * a ``dict`` spec of the form ``{"class": <callable or import path>,
+     ...kwargs}`` for any nested device.
+
+   Built-in categories — ``"scalar"`` and ``"pseudo_positioner"`` —
+   may be overridden by a later registration.
+
+   PARAMETERS
+
+   category : str
+       The ``category`` value the builder handles (e.g. a custom
+       ``"device_group"``).
+   builder : callable
+       ``builder(record) -> creator-reals-spec``.
+
+
 .. py:function:: simulator_from_config(config)
 
    .. container:: import-path

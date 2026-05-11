@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=6b5b8eee"></script>
+    <script src="../../../_static/documentation_options.js?v=b3227c86"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -487,7 +487,7 @@ and factory configurations.</p>
 <td><p>Import the object given its import path as text.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2.devices.make_component" title="hklpy2.devices.make_component"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_component</span></code></a>(call_name, *args, **kwargs)</p></td>
-<td><p>Create an Component for a custom ophyd Device class.</p></td>
+<td><p>Create an <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> for a custom ophyd Device class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2.devices.make_dynamic_instance" title="hklpy2.devices.make_dynamic_instance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_dynamic_instance</span></code></a>(call_name, *args, **kwargs)</p></td>
 <td><p>Return an instance of the Python 'call_name'.</p></td>
@@ -543,6 +543,26 @@ sibling positioner attribute.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.devices.describe_aux">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.devices.</span></span><span class="sig-name descname"><span class="pre">describe_aux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diffractometer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/devices.html#describe_aux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.devices.describe_aux" title="Link to this definition">#</a></dt>
+<dd><div class="import-path docutils container">
+<p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.devices.describe_aux</span></code></p>
+</div>
+<p>Build a single <code class="docutils literal notranslate"><span class="pre">axes.auxiliary_axes</span></code> record for <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+<p>Categorises the auxiliary into one of the schema-v2 categories:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;scalar&quot;</span></code> — a plain <code class="xref py py-class docutils literal notranslate"><span class="pre">PositionerBase</span></code> (the historic
+default; the round-tripped simulator stand-in is an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SoftPositioner</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;pseudo_positioner&quot;</span></code> — a nested
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/reference/positioners.html#ophyd.pseudopos.PseudoPositioner" title="(in ophyd v1.11.1.dev14+ged7d4bb73)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PseudoPositioner</span></code></a>; sub-axis names are
+recorded as ordered <code class="docutils literal notranslate"><span class="pre">pseudos</span></code> / <code class="docutils literal notranslate"><span class="pre">reals</span></code> lists.  <code class="docutils literal notranslate"><span class="pre">class</span></code> /
+<code class="docutils literal notranslate"><span class="pre">module</span></code> are advisory metadata only — never imported by hklpy2 on
+restore.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="hklpy2.devices.dict_device_factory">
 <span class="sig-prename descclassname"><span class="pre">hklpy2.devices.</span></span><span class="sig-name descname"><span class="pre">dict_device_factory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../typing/index.html#hklpy2.typing.KeyValueMap" title="hklpy2.typing.KeyValueMap"><span class="pre">KeyValueMap</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/devices.html#dict_device_factory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.devices.dict_device_factory" title="Link to this definition">#</a></dt>
 <dd><div class="import-path docutils container">
@@ -572,12 +592,36 @@ when using <code class="docutils literal notranslate"><span class="pre">apstools
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="hklpy2.devices.make_aux_pseudo_positioner_class">
+<span class="sig-prename descclassname"><span class="pre">hklpy2.devices.</span></span><span class="sig-name descname"><span class="pre">make_aux_pseudo_positioner_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pseudos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)"><span class="pre">type</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/devices.html#make_aux_pseudo_positioner_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.devices.make_aux_pseudo_positioner_class" title="Link to this definition">#</a></dt>
+<dd><div class="import-path docutils container">
+<p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.devices.make_aux_pseudo_positioner_class</span></code></p>
+</div>
+<p>Build a synthetic <a class="reference external" href="https://blueskyproject.io/ophyd/user/reference/positioners.html#ophyd.pseudopos.PseudoPositioner" title="(in ophyd v1.11.1.dev14+ged7d4bb73)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PseudoPositioner</span></code></a> subclass
+with the given sub-axis names.</p>
+<p>The resulting class is <strong>structural only</strong>: <code class="docutils literal notranslate"><span class="pre">forward()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">inverse()</span></code> return zeros for every sub-axis.  Its purpose is to
+let downstream code (printers, plan inspection, etc.) traverse the
+same component tree the original device exposed.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="hklpy2.devices.make_component">
-<span class="sig-prename descclassname"><span class="pre">hklpy2.devices.</span></span><span class="sig-name descname"><span class="pre">make_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Component</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/devices.html#make_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.devices.make_component" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hklpy2.devices.</span></span><span class="sig-name descname"><span class="pre">make_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">call_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Component</span></span></span><a class="reference internal" href="../../../_modules/hklpy2/devices.html#make_component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.devices.make_component" title="Link to this definition">#</a></dt>
 <dd><div class="import-path docutils container">
 <p>Import: <code class="docutils literal notranslate"><span class="pre">hklpy2.devices.make_component</span></code></p>
 </div>
-<p>Create an Component for a custom ophyd Device class.</p>
+<p>Create an <code class="xref py py-class docutils literal notranslate"><span class="pre">Component</span></code> for a custom ophyd Device class.</p>
+<p><code class="docutils literal notranslate"><span class="pre">call_name</span></code> may be either a dotted import path (<code class="docutils literal notranslate"><span class="pre">str</span></code>) or an
+already-resolved callable (<code class="docutils literal notranslate"><span class="pre">type</span></code>).  The callable form is used by
+<a class="reference internal" href="../run_utils/index.html#hklpy2.run_utils.simulator_from_config" title="hklpy2.run_utils.simulator_from_config"><code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.run_utils.simulator_from_config()</span></code></a> when restoring a
+nested <code class="docutils literal notranslate"><span class="pre">PseudoPositioner</span></code> auxiliary whose synthetic stand-in class
+is built at runtime and therefore cannot be addressed by an import
+path.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.0: </span>Accept a callable in addition to a dotted import-path string.
+See <a class="extlink-issue reference external" href="https://github.com/bluesky/hklpy2/issues/388">issue #388</a>.</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -657,8 +701,10 @@ when using <code class="docutils literal notranslate"><span class="pre">apstools
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.devices.define_real_axis"><code class="docutils literal notranslate"><span class="pre">define_real_axis()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.devices.describe_aux"><code class="docutils literal notranslate"><span class="pre">describe_aux()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.devices.dict_device_factory"><code class="docutils literal notranslate"><span class="pre">dict_device_factory()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.devices.dynamic_import"><code class="docutils literal notranslate"><span class="pre">dynamic_import()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.devices.make_aux_pseudo_positioner_class"><code class="docutils literal notranslate"><span class="pre">make_aux_pseudo_positioner_class()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.devices.make_component"><code class="docutils literal notranslate"><span class="pre">make_component()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.devices.make_dynamic_instance"><code class="docutils literal notranslate"><span class="pre">make_dynamic_instance()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2.devices.parse_factory_axes"><code class="docutils literal notranslate"><span class="pre">parse_factory_axes()</span></code></a></li>
