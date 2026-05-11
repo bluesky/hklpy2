@@ -350,3 +350,94 @@ def test_make_aux_pseudo_positioner_class(parms, context):
         assert tuple(rp) == tuple([0.0] * len(parms["reals"]))
         pp = instance.inverse(instance.RealPosition(*([1.0] * len(parms["reals"]))))
         assert tuple(pp) == tuple([0.0] * len(parms["pseudos"]))
+
+
+# ---------------------------------------------------------------------------
+# define_real_axis() / make_component() callable-class acceptance (#388)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(spec={"class": 42}),
+            pytest.raises(
+                TypeError,
+                match=re.escape("must be a dotted import path (str) or a callable"),
+            ),
+            id="define-real-axis-bogus-class",
+        ),
+        pytest.param(
+            dict(spec={"class": "ophyd.SoftPositioner"}),
+            does_not_raise(),
+            id="define-real-axis-string-class",
+        ),
+    ],
+)
+def test_define_real_axis_class_kind(parms, context):
+    """``define_real_axis`` rejects non-str non-callable ``class`` values."""
+    from ..devices import define_real_axis
+
+    with context:
+        define_real_axis(parms["spec"], dict(labels=[]))
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(call_name=42),
+            pytest.raises(
+                TypeError,
+                match=re.escape("must be a dotted import path"),
+            ),
+            id="make-component-bogus-call-name",
+        ),
+        pytest.param(
+            dict(call_name="ophyd.SoftPositioner"),
+            does_not_raise(),
+            id="make-component-string-call-name",
+        ),
+    ],
+)
+def test_make_component_call_name_kind(parms, context):
+    """``make_component`` rejects non-str non-callable ``call_name`` values."""
+    from ..devices import make_component
+
+    with context:
+        make_component(parms["call_name"])
+
+
+# ---------------------------------------------------------------------------
+# simulator_from_config(): aux name overlapping a real axis is left alone
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(overlap_name="omega"),
+            does_not_raise(),
+            id="aux-name-collides-with-real-axis",
+        ),
+    ],
+)
+def test_simulator_from_config_aux_overlapping_real(parms, context):
+    """An aux record whose name matches a real axis is silently skipped."""
+    from hklpy2 import creator
+
+    with context:
+        donor = creator(name="donor")
+        cfg = donor.configuration
+        # Inject an aux record whose name shadows a real axis.
+        cfg["axes"]["auxiliary_axes"] = [
+            {"name": parms["overlap_name"], "category": "scalar"}
+        ]
+
+        sim = simulator_from_config(cfg)
+        # The real-axis omega remains a SoftPositioner (not overwritten),
+        # and is not surfaced as an auxiliary.
+        assert parms["overlap_name"] in sim.real_axis_names
+        assert parms["overlap_name"] not in sim.auxiliary_axis_names
