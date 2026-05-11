@@ -30,6 +30,16 @@ describe future plans.
 
     Release expected 2026-Q3.
 
+0.6.3
+#####
+
+Bug fix release.
+
+Fixes
+-----
+
+* Reflection mutations now flag the solver-dirty bitfield. (:issue:`397`)
+
 0.6.2
 #####
 

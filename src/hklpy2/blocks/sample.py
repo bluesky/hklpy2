@@ -15,6 +15,7 @@ from typing import Union
 
 import numpy as np
 from deprecated.sphinx import versionadded
+from deprecated.sphinx import versionchanged
 from numpy.linalg import norm
 
 from ..utils import _SolverDirty
@@ -139,13 +140,30 @@ class Sample:
         """Refine the lattice parameters from 3 or more reflections."""
         self.lattice = self.core.refine_lattice()
 
+    @versionchanged(
+        version="0.6.3",
+        reason=(
+            "When the removed reflection was an orienting reflection "
+            "(in ``reflections.order``), flag "
+            "``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning "
+            "``Core`` so the solver-side reflection list is re-pushed on "
+            "the next ``update_solver()``.  Removing a non-orienting "
+            "reflection does not affect the solver and is not flagged. "
+            "See :issue:`397`."
+        ),
+    )
     def remove_reflection(self, name: str) -> None:
         """Remove the named reflection."""
         if name not in self.reflections:
             raise KeyError(f"Reflection {name!r} is not found.")
         self.reflections.pop(name)
         if name in self.reflections.order:
-            self.reflections.order.remove(name)
+            # ``list.remove`` is an in-place mutation of the list returned
+            # by the ``order`` property; reassign so the order setter
+            # runs and flags the solver-dirty bitfield (issue #397).
+            new_order = list(self.reflections.order)
+            new_order.remove(name)
+            self.reflections.order = new_order
 
     # --------- get/set properties
 
@@ -210,6 +228,10 @@ class Sample:
         if not isinstance(value, ReflectionsDict):
             raise TypeError(f"Must supply ReflectionsDict() object, received {value!r}")
         self._reflections = value
+        # Wire the back-reference so any subsequent mutation of the dict
+        # flags the solver-dirty bitfield on the owning Core
+        # (issue #397).
+        self._reflections._core = self.core
 
     def _validate_matrices(self, value: Matrix3x3, name: str) -> None:
         """(internal) Validate U & UB matrices."""

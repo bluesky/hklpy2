@@ -205,10 +205,32 @@ The `Makefile` `pre` target also exports this variable automatically.
   feature, fix, enhancement, or maintenance change.
 - Add the entry under the current development version heading (the topmost
   unreleased section inside the ``.. comment`` block).
-- Entries must be **terse**: one line preferred, two lines maximum.
-  State *what* changed, not *how* or *why*. Omit implementation details,
-  lists of function names, and inline API cross-references unless the
-  function name is the entire point of the entry.
+- Entries **MUST** be terse.  This is non-negotiable.
+  - **One line is the target.**  Two lines is the absolute maximum,
+    permitted only when a single line genuinely cannot convey the
+    change.  If you find yourself reaching for a second line, the
+    fix is almost always to *cut words*, not to add a line.
+  - State *what* changed in user-visible terms.  Do **not** state
+    *how* it was implemented, *why* the change was needed,
+    workarounds, internals, design rationale, or which symbol was
+    touched.  Those belong in the issue, the PR description, the
+    docstring, or a ``@versionchanged`` decorator — never in the
+    release notes.
+  - Do **not** list affected functions, classes, modules, files,
+    code paths, or call sites.  Mention a specific symbol only when
+    that symbol *is* the entry (a brand-new public function, a
+    renamed public class, a removed public attribute).
+  - Do **not** describe the mechanism (e.g. "by adding a callback",
+    "via a new bitfield", "through a wrapper class") or the trigger
+    (e.g. "after a sample switch", "when called from inside
+    ``calc_UB``").  The user does not care.
+  - Prefer plain present-tense verbs (Add, Fix, Remove, Rename,
+    Deprecate).  Avoid filler ("now", "no longer", "properly",
+    "correctly", "as expected") unless removing the filler changes
+    the meaning.
+  - Before submitting, re-read each entry and delete every word
+    that is not load-bearing.  If the entry is still over one line,
+    repeat.
 - Always end with the issue or PR reference: ``:issue:`N``` or ``:pr:`N```.
 - Good examples::
 
