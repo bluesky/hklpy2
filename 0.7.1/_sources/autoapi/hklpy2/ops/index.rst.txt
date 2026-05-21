@@ -1,0 +1,535 @@
+ops
+===
+
+.. py:module:: hklpy2.ops
+
+.. autoapi-nested-parse::
+
+   Import: ``hklpy2.ops``
+
+   Operate the diffractometer using a |solver| library and geometry.
+
+   Intermediate layer between DiffractometerBase Device and backend |solver|
+   library.
+
+   .. autosummary::
+
+       ~Core
+
+
+
+
+Module Contents
+---------------
+
+.. py:class:: Core(diffractometer: ~hklpy2.diffract.DiffractometerBase, default_sample: bool = True)
+
+   .. container:: import-path
+
+      Import: ``hklpy2.ops.Core``
+
+
+   Core operations of a diffractometer, coordinating with sample & |solver|.
+
+   PARAMETERS
+
+   diffractometer (DiffractometerBase):
+       The diffractometer parent.
+   default_sample (bool):
+       If 'True' (default), create a 'sample' with 1 angstrom cubic lattice.
+
+   .. rubric:: Python Methods
+
+   .. autosummary::
+
+       ~_asdict
+       ~_fromdict
+       ~_validate_pseudos
+       ~add_reflection
+       ~add_sample
+       ~assign_axes
+       ~calc_UB
+       ~forward
+       ~geometries
+       ~inverse
+       ~local_pseudo_axes
+       ~local_real_axes
+       ~refine_lattice
+       ~remove_sample
+       ~request_solver_update
+       ~reset_constraints
+       ~reset_samples
+       ~set_solver
+       ~standardize_pseudos
+       ~standardize_reals
+       ~update_solver
+
+   .. rubric:: Python Properties
+
+   .. autosummary::
+
+       ~all_extras
+       ~constant_axis_names
+       ~extras
+       ~geometry
+       ~mode
+       ~modes
+       ~presets
+       ~sample
+       ~solver
+       ~solver_extra_axis_names
+       ~solver_name
+       ~solver_pseudo_axis_names
+       ~solver_real_axis_names
+       ~solver_signature
+       ~solver_summary
+
+
+   .. py:method:: add_reflection(pseudos: ~hklpy2.typing.AnyAxesType, reals: Union[~hklpy2.typing.AnyAxesType, None] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> ~hklpy2.blocks.reflection.Reflection
+
+      Add a new reflection.
+
+      PARAMETERS
+
+      pseudos various:
+          Pseudo-space axes and values.
+      reals various:
+          Dictionary of real-space axes and values.
+      wavelength float:
+          Wavelength of incident radiation. The created Reflection will
+          use ``wavelength_units`` from the optional parameter below; if
+          that is ``None``, the diffractometer's current
+          ``beam.wavelength_units`` is used. When preparing data for the
+          solver, Core converts each reflection's wavelength into the
+          solver's internal units (``INTERNAL_LENGTH_UNITS``).
+      wavelength_units str or None:
+          Units for the ``wavelength`` value (e.g. "angstrom"). If
+          provided, this overrides the diffractometer beam units for the
+          new Reflection; otherwise the beam units are used. The
+          Reflection stores this string and Core will convert values for
+          solver consumption.
+      name str:
+          Reference name for this reflection.  If ``None``, a random name will
+          be assigned.
+      replace bool:
+          When ``True``, replace existing reflection of this name.
+          (default: ``False``)
+
+
+
+   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> ~hklpy2.blocks.sample.Sample
+
+      Add a new sample.
+
+
+
+   .. py:property:: all_extras
+      :type: list[str]
+
+
+      Sorted dictionary of |solver| extra parameters in any mode.
+
+
+   .. py:method:: assign_axes(pseudos: list[str], reals: list[str]) -> None
+
+      Designate attributes for use by the PseudoPositioner class.
+
+      Result is re-definition of 'self.axes_xref'.
+
+
+
+   .. py:attribute:: axes_xref
+
+
+   .. py:property:: axes_xref_reversed
+      :type: Mapping[str, str]
+
+
+      Map axis names from solver to diffractometer.
+
+
+   .. py:method:: calc_UB(r1: Union[~hklpy2.blocks.reflection.Reflection, str], r2: Union[~hklpy2.blocks.reflection.Reflection, str]) -> ~hklpy2.typing.Matrix3x3
+
+      Calculate and return the UB (orientation) matrix with two reflections.
+
+      The method of Busing & Levy, Acta Cryst 22 (1967) 457.
+
+
+
+   .. py:attribute:: configuration
+      :value: None
+
+
+
+   .. py:property:: constant_axis_names
+      :type: list[str]
+
+
+      List of axis names (diffractometer names) that are held constant
+      in the current mode.
+
+      These are the axes that will use preset values (or current motor
+      positions if no presets are set) when computing ``forward()``
+      solutions.
+
+      EXAMPLE::
+
+          >>> diffractometer.core.mode = "constant_phi"
+          >>> diffractometer.core.constant_axis_names
+          ['phi']
+          >>> diffractometer.core.mode = "bissector"
+          >>> diffractometer.core.constant_axis_names
+          []
+
+
+   .. py:attribute:: constraints
+      :value: None
+
+
+
+   .. py:attribute:: diffractometer
+
+
+   .. py:property:: extras
+      :type: list[str]
+
+
+      Ordered dictionary of |solver| extra parameters in current mode.
+
+
+   .. py:method:: forward(pseudos: ~hklpy2.typing.AnyAxesType, wavelength: Optional[float] = None) -> list
+
+      Compute [{names:reals}] from {names: pseudos} (hkl -> angles).
+
+      Delegates to :meth:`SolverBase.forward() <hklpy2.backends.base.SolverBase.forward>`
+      which returns all solutions the backend engine can find (one or
+      more).  Each solution is then filtered against the active
+      :attr:`constraints`; only solutions that satisfy all constraints
+      are included in the returned list.
+
+
+
+   .. py:method:: geometries() -> list[str]
+
+      Return all available |solver| geometries.
+
+
+
+   .. py:property:: geometry
+      :type: str
+
+
+      Return the |solver| geometry.
+
+
+   .. py:method:: inverse(reals: Union[~hklpy2.typing.AnyAxesType, None], wavelength: Optional[float] = None) -> ~hklpy2.typing.AxesDict
+
+      Compute (pseudos) from {names: reals} (angles -> hkl).
+
+
+
+   .. py:property:: local_pseudo_axes
+      :type: list[str]
+
+
+      List of the diffractometer pseudo axes expected by the solver.
+
+      This becomes useful when additional pseudo axes are named
+      as ophyd Components in the diffractometer.
+
+
+   .. py:property:: local_real_axes
+      :type: list[str]
+
+
+      List of the diffractometer real axes expected by the solver.
+
+      This becomes useful when additional real axes are named
+      as ophyd Components in the diffractometer.
+
+
+   .. py:property:: mode
+      :type: str
+
+
+      Return the current computation mode.
+
+
+   .. py:property:: modes
+      :type: list[str]
+
+
+      Return the list of available |solver| modes.
+
+
+   .. py:property:: presets
+      :type: ~hklpy2.typing.NamedFloatDict
+
+
+      Preset values for constant-axis modes.
+
+      When using a mode that holds one or more axes at constant values (such
+      as ``constant_phi``), these preset values override the current
+      diffractometer motor positions when computing ``forward()`` solutions.
+
+      NOTE: Presets affect **computed solutions** from ``forward()``. They
+      do **not** move any motor.
+
+      The presets are stored per-mode: changing the mode switches to that
+      mode's saved presets. Presets default to an empty dictionary ``{}``
+      for each mode. Presets only contain axes that are read-only (constant)
+      in the current mode.
+
+      The getter returns the **live mutable dictionary** for the current
+      mode. To remove a single preset key, call
+      ``diffractometer.core.presets.pop("phi")``.
+
+      Returns a dictionary of axis name:value pairs for the current mode.
+
+      EXAMPLE::
+
+          >>> diffractometer.core.mode = "constant_phi"
+          >>> diffractometer.core.presets = {"phi": 45.0}  # Set phi preset
+          >>> diffractometer.core.presets
+          {'phi': 45.0}
+
+          >>> # Remove a single preset entry
+          >>> diffractometer.core.presets.pop("phi")
+          45.0
+          >>> diffractometer.core.presets
+          {}
+
+          >>> # Each mode stores its own preset dict
+          >>> diffractometer.core.presets = {"phi": 45.0}
+          >>> diffractometer.core.mode = "constant_omega"
+          >>> diffractometer.core.presets = {"omega": 30.0}
+
+          >>> # Switch back — phi preset is restored
+          >>> diffractometer.core.mode = "constant_phi"
+          >>> diffractometer.core.presets
+          {'phi': 45.0}
+
+
+   .. py:method:: refine_lattice(*reflections: list[~hklpy2.blocks.reflection.Reflection]) -> ~hklpy2.blocks.lattice.Lattice
+
+      Return the sample lattice computed from 3 or more reflections.
+
+      Do not change the sample lattice.  Let the user decide that.
+
+
+
+   .. py:method:: remove_sample(name: str)
+
+      Remove the named sample.  No error if name is not known.
+
+
+
+   .. py:method:: request_solver_update(flag: Union[bool, ~hklpy2.utils._SolverDirty] = True) -> None
+
+      Mark solver state as dirty (or clean).
+
+      PARAMETERS
+
+      flag : bool or _SolverDirty
+          * ``True`` (default): mark all domains dirty (full re-sync).
+          * ``False``: clear all dirty flags.
+          * ``_SolverDirty`` value: mark the given domains dirty
+            (additive -- existing dirty flags are preserved).
+
+      Needs to be a method (not a property) so it can be called from a
+      wavelength callback (see ``DiffractometerBase.__init__``).
+
+
+
+   .. py:method:: reset_constraints() -> None
+
+      Restore diffractometer constraints to default settings.
+
+
+
+   .. py:method:: reset_samples() -> None
+
+      Restore diffractometer samples to default settings.
+
+
+
+   .. py:property:: sample
+      :type: ~hklpy2.blocks.sample.Sample
+
+
+      Current Sample (Python object).
+
+
+   .. py:property:: samples
+      :type: Mapping[str, ~hklpy2.blocks.sample.Sample]
+
+
+      Sample dictionary.
+
+
+   .. py:method:: set_solver(name: str, geometry: str, **kwargs: dict) -> ~hklpy2.backends.base.SolverBase
+
+      Create an instance of the backend |solver| library and geometry.
+
+      PARAMETERS
+
+      solver str:
+          Name of the |solver| library.
+      geometry str:
+          Name of the |solver| geometry.
+      kwargs dict:
+          Any keyword arguments needed by the |solver|.
+
+
+
+   .. py:property:: solver
+      :type: ~hklpy2.backends.base.SolverBase
+
+
+      Backend |solver| object.
+
+
+   .. py:property:: solver_constant_axis_names
+      :type: list[str]
+
+
+      Ordered list of |solver| real axis names that are constant in the current mode.
+
+      These are axes that are read (not written) by the solver in the current
+      mode. They will use preset values (or current motor positions if no
+      presets are set) when computing ``forward()`` solutions.
+
+      Constant axes are computed as: all real axis names - written axis names.
+
+
+   .. py:property:: solver_extra_axis_names
+      :type: list[str]
+
+
+      Ordered list of any |solver| extra axis names in current mode.
+
+
+   .. py:property:: solver_name
+      :type: str
+
+
+      Name of |solver|.
+
+
+   .. py:property:: solver_pseudo_axis_names
+      :type: list[str]
+
+
+      Ordered list of |solver| pseudo axis names.
+
+
+   .. py:property:: solver_real_axis_names
+      :type: list[str]
+
+
+      Ordered list of |solver| real axis names.
+
+
+   .. py:property:: solver_signature
+      :type: str
+
+
+      Return 'repr(self.solver)' for use as ophyd.AttributeSignal.
+
+
+   .. py:property:: solver_summary
+      :type: str
+
+
+      Return table of solver's geometry (modes, axes)..
+
+
+   .. py:property:: solver_written_axis_names
+      :type: list[str]
+
+
+      Ordered list of |solver| real axis names that are solved in the current mode.
+
+      These are axes that are written (computed) by the solver in the current
+      mode.
+
+
+   .. py:method:: standardize_pseudos(pseudos: ~hklpy2.typing.AnyAxesType) -> ~hklpy2.typing.AxesDict
+
+      Convert user-supplied pseudos into dictionary in solver's order.
+
+      User could provide pseudos in several forms:
+
+      * dict: {"h": 0, "k": 1, "l": -1}
+      * namedtuple: (h=0.0, k=1.0, l=-1.0)
+      * numpy array: numpy.array([0, 1, -1])
+      * ordered list: [0, 1, -1]  (for h, k, l)
+      * ordered tuple: (0, 1, -1)  (for h, k, l)
+
+      .. note::
+
+          This method operates at the **solver / Core layer** and returns an
+          ordered :obj:`~hklpy2.typing.AxesDict` keyed by solver axis names.
+          It is complementary to — not a replacement for — the ophyd
+          ``@pseudo_position_argument`` decorator used on
+          :meth:`~hklpy2.diffract.Diffractometer.forward`.  That decorator
+          normalises flexible user input into an ophyd ``PseudoPosition``
+          namedtuple at the *diffractometer* layer; this method converts any
+          of those forms (plus numpy arrays) into the ``AxesDict`` that the
+          solver expects.
+
+
+
+   .. py:method:: standardize_reals(reals: Union[~hklpy2.typing.AnyAxesType, None]) -> ~hklpy2.typing.AxesDict
+
+      Convert user-supplied reals into dictionary in solver's order.
+
+      User could provide reals in several forms:
+
+      * None: current positions (read from the diffractometer)
+      * dict: {"omega": 120, "chi": 35.3, "phi": 45, "tth": -120}
+      * namedtuple: (omega=120, chi=35.3, phi=45, tth=-120)
+      * numpy array: numpy.array([120, 35.3, 45, -120])
+      * ordered list: [120, 35.3, 45, -120]  (for omega, chi, phi, tth)
+      * ordered tuple: (120, 35.3, 45, -120)  (for omega, chi, phi, tth)
+
+      .. note::
+
+          This method operates at the **solver / Core layer** and returns an
+          ordered :obj:`~hklpy2.typing.AxesDict` keyed by solver axis names.
+          It is complementary to — not a replacement for — the ophyd
+          ``@real_position_argument`` decorator used on
+          :meth:`~hklpy2.diffract.Diffractometer.inverse` and
+          :meth:`~hklpy2.diffract.Diffractometer.move_reals`.  That decorator
+          normalises flexible user input into an ophyd ``RealPosition``
+          namedtuple at the *diffractometer* layer; this method converts any
+          of those forms (plus ``None`` and numpy arrays) into the
+          ``AxesDict`` that the solver expects.
+
+
+
+   .. py:method:: to_solver_units(wavelength: Optional[float] = None) -> dict
+
+      Convert quantities from diffractometer units to solver units.
+
+
+
+   .. py:method:: update_solver(wavelength: Optional[float] = None) -> None
+
+      Push any dirty solver-state domains to the underlying solver.
+
+      Per-domain pushes are gated by :attr:`_solver_dirty`
+      (a :class:`~hklpy2.utils._SolverDirty` bitfield).  A SAMPLE
+      re-push may invalidate the solver's MODE / EXTRAS / U / UB
+      state (this is permitted by the ``SolverBase`` contract and
+      observed in some backends), so those domains are re-pushed
+      implicitly whenever SAMPLE is re-pushed.
+
+      .. versionchanged:: 0.6.2
+         Switched from a single boolean flag to per-domain dirty flags
+         (:class:`~hklpy2.utils._SolverDirty`) to fix stale solver
+         state after sample switch (:issue:`386`) and after
+         ``calc_UB`` (:issue:`384`).
+
+
+

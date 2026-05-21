@@ -1,0 +1,74 @@
+// hklpy2 -- Solvers detail
+digraph hklpy2_solvers {
+    graph [rankdir=LR, splines=ortho, nodesep=0.6, ranksep=1.0,
+           fontname="sans-serif", fontsize=12, bgcolor="transparent",
+           compound=true]
+    node  [shape=box, style="rounded,filled", fontname="sans-serif",
+           fontsize=12, margin="0.20,0.10"]
+    edge  [fontname="sans-serif", fontsize=11]
+
+    subgraph cluster_core {
+        label="Core"
+        style=filled
+        fillcolor="#fffbe8"
+        color="#a07820"
+        fontname="sans-serif"
+        fontsize=12
+
+        core_box [label="Core\n(see Core diagram)",
+                  fillcolor="#fdf3dc", color="#a07820",
+                  style="rounded,filled,dashed"]
+    }
+
+    subgraph cluster_solver {
+        label="Solver adapter  (built-in)"
+        style=filled
+        fillcolor="#f4f0ff"
+        color="#6a3a98"
+        fontname="sans-serif"
+        fontsize=12
+
+        solverbase   [label="SolverBase\n(adapter interface)",
+                      fillcolor="#e8e0f8", color="#6a3a98"]
+        hklsolver    [label="HklSolver",
+                      fillcolor="#e8e0f8", color="#6a3a98"]
+        thttthsolver [label="ThTthSolver",
+                      fillcolor="#e8e0f8", color="#6a3a98"]
+        noopsolver   [label="NoOpSolver",
+                      fillcolor="#e8e0f8", color="#6a3a98"]
+    }
+
+    subgraph cluster_ext_solver {
+        label="Additional Solvers"
+        style=dashed
+        color="#6a3a98"
+        fontname="sans-serif"
+        fontsize=12
+
+        extsolver [label="ExternalSolver\n(subclass of SolverBase)",
+                   fillcolor="#e8e0f8", color="#6a3a98",
+                   style="rounded,filled,dashed"]
+    }
+
+    subgraph cluster_backend {
+        label="Backend libraries"
+        style=dashed
+        color="#888888"
+        fontname="sans-serif"
+        fontsize=12
+
+        libhkl  [label="libhkl",
+                 fillcolor="#e0e0e0", color="#666666"]
+        otherbk [label="other backend\nlibraries ...",
+                 fillcolor="#e0e0e0", color="#666666",
+                 style="rounded,filled,dashed"]
+    }
+
+    core_box   -> solverbase   [xlabel="calculations"]
+    solverbase -> hklsolver    [style=dashed, xlabel="subclass", dir=none]
+    solverbase -> thttthsolver [style=dashed, dir=none]
+    solverbase -> noopsolver   [style=dashed, dir=none]
+    solverbase -> extsolver    [style=dashed, xlabel="entry points", dir=none]
+    hklsolver  -> libhkl
+    extsolver  -> otherbk      [style=dashed]
+}
