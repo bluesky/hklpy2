@@ -318,6 +318,17 @@ Module Contents
 
        >>> sim = hklpy2.simulator_from_config(diffractometer)
 
+   .. rubric:: Solver construction kwargs
+
+   Every key in the persisted ``solver:`` block *except* the reserved
+   set ``{"name", "description", "geometry", "real_axes", "version",
+   "mode"}`` is forwarded to the solver's constructor as a
+   ``solver_kwargs`` entry.  This lets a solver persist arbitrary
+   construction state by overriding its ``_metadata`` property and
+   accepting the matching keyword in its ``__init__``.  See
+   :issue:`405`.  Solver authors are responsible for choosing
+   ``_metadata`` key names that do not collide with the reserved set.
+
    SEE ALSO
 
        :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
