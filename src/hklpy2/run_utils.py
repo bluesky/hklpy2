@@ -45,6 +45,30 @@ __all__ = [
 
 
 # ---------------------------------------------------------------------------
+# Reserved keys in the persisted ``solver:`` configuration block.
+#
+# Every other key found in ``solver:`` at restore time is forwarded into
+# ``solver_kwargs`` so that solver-specific construction state persisted via
+# a ``_metadata`` override survives the export/restore round-trip
+# (issue #405).  Out-of-tree solver authors should avoid collisions with
+# this set when extending ``_metadata``.
+#
+# Reserved key meanings:
+#   * ``name``         — selects the solver class
+#   * ``geometry``     — selects the solver geometry
+#   * ``real_axes``    — solver-canonical real-axis ordering
+#   * ``description``  — informational only
+#   * ``version``      — informational only
+#   * ``mode``         — re-applied post-construction by
+#                        ``Diffractometer.restore()``; must not also flow
+#                        as a construction kwarg
+# ---------------------------------------------------------------------------
+_RESERVED_SOLVER_KEYS: frozenset[str] = frozenset(
+    {"name", "description", "geometry", "real_axes", "version", "mode"}
+)
+
+
+# ---------------------------------------------------------------------------
 # Auxiliary-axis reconstruction (issue #388)
 # ---------------------------------------------------------------------------
 
@@ -457,6 +481,15 @@ def list_orientation_runs(
         "list of names is still accepted on read.  See :issue:`388`."
     ),
 )
+@versionchanged(
+    version="0.7.1",
+    reason=(
+        "Forward every non-reserved key in the ``solver:`` block as a "
+        "``solver_kwargs`` entry so that solver-specific construction "
+        "state persisted via ``_metadata`` survives the round-trip.  "
+        "See :issue:`405`."
+    ),
+)
 def simulator_from_config(config):
     """
     Create a simulated diffractometer from a saved configuration.
@@ -499,6 +532,17 @@ def simulator_from_config(config):
 
         >>> sim = hklpy2.simulator_from_config(diffractometer)
 
+    .. rubric:: Solver construction kwargs
+
+    Every key in the persisted ``solver:`` block *except* the reserved
+    set ``{"name", "description", "geometry", "real_axes", "version",
+    "mode"}`` is forwarded to the solver's constructor as a
+    ``solver_kwargs`` entry.  This lets a solver persist arbitrary
+    construction state by overriding its ``_metadata`` property and
+    accepting the matching keyword in its ``__init__``.  See
+    :issue:`405`.  Solver authors are responsible for choosing
+    ``_metadata`` key names that do not collide with the reserved set.
+
     SEE ALSO
 
         :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
@@ -536,10 +580,18 @@ def simulator_from_config(config):
 
     geometry = solver_cfg.get("geometry") or get_solver(solver_name).default_geometry()
 
-    solver_kwargs: dict = {}
-    engine = solver_cfg.get("engine")
-    if engine is not None:
-        solver_kwargs["engine"] = engine
+    # Generic forwarding (issue #405): every non-reserved key in the
+    # ``solver:`` block flows through to the solver constructor via
+    # ``solver_kwargs``.  This subsumes the previous ``engine`` special
+    # case and lets out-of-tree solvers persist construction state by
+    # overriding ``_metadata`` -- no new abstract API is required.
+    solver_kwargs: dict = {
+        k: v for k, v in solver_cfg.items() if k not in _RESERVED_SOLVER_KEYS
+    }
+    if solver_kwargs:
+        logger.debug(
+            "simulator_from_config: forwarding solver_kwargs=%r", solver_kwargs
+        )
 
     axes_cfg = config.get("axes", {})
     axes_xref = axes_cfg.get("axes_xref", {})

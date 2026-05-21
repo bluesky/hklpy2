@@ -30,6 +30,14 @@ describe future plans.
 
     Release expected 2026-Q3.
 
+0.7.1
+#####
+
+Enhancements
+------------
+
+* Forward non-reserved ``solver:`` keys as ``solver_kwargs`` in ``simulator_from_config()``. (:issue:`405`)
+
 0.7.0
 #####
 
