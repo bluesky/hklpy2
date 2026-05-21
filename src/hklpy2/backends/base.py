@@ -302,7 +302,31 @@ class SolverBase(ABC):
 
     @property
     def _metadata(self) -> SolverMetadataDict:
-        """Dictionary with this solver's summary metadata."""
+        """
+        Dictionary with this solver's summary metadata.
+
+        .. rubric:: Persistence and round-trip contract
+
+        The dictionary returned here becomes the ``solver:`` block in
+        the YAML configuration produced by
+        :meth:`~hklpy2.diffract.DiffractometerBase.export`.  On restore,
+        :func:`~hklpy2.run_utils.simulator_from_config` forwards every
+        key *except* the reserved set
+        ``{"name", "description", "geometry", "real_axes", "version",
+        "mode"}`` into the solver constructor as a ``solver_kwargs``
+        entry (see :issue:`405`).
+
+        Subclasses that override ``_metadata`` to persist additional
+        solver construction state are responsible for:
+
+        * choosing key names that do not collide with the reserved set
+          listed above, and
+        * accepting the matching keyword argument(s) in their
+          ``__init__`` so the persisted state is actually re-applied.
+
+        Subclasses are encouraged to call ``super()._metadata`` and
+        extend the returned dictionary rather than replacing it.
+        """
         return {
             "name": self.name,
             "description": repr(self),
