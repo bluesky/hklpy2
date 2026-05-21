@@ -14,7 +14,7 @@ from typing import List
 
 import pytest
 
-import hklpy2
+from hklpy2 import creator
 from hklpy2 import solver_utils
 from hklpy2.backends.no_op import NoOpSolver
 from hklpy2.backends.typing import GeometryDescriptor
@@ -133,7 +133,7 @@ def _patched_solvers(monkeypatch):
 def test_solver_kwargs_roundtrip(parms, context, _patched_solvers, caplog):
     """Non-reserved ``solver:`` keys flow through ``solver_kwargs``."""
     with context:
-        original = hklpy2.creator(
+        original = creator(
             name="standin",
             solver=_StandInSolver.name,
             geometry="STANDIN",
@@ -181,7 +181,7 @@ def test_multiple_non_reserved_keys_forwarded(parms, context, _patched_solvers):
         # Build a minimal config dict by hand so we exercise the
         # forwarding path on arbitrary extra keys without depending on
         # the stand-in's ``_metadata`` shape.
-        original = hklpy2.creator(
+        original = creator(
             name="standin",
             solver=_StandInSolver.name,
             geometry="STANDIN",
@@ -241,7 +241,7 @@ def test_hkl_soleil_engine_still_forwarded(parms, context):
     """
     pytest.importorskip("hkl")
     with context:
-        original = hklpy2.creator(
+        original = creator(
             name="sixc",
             geometry="E6C",
             solver_kwargs={"engine": "psi"},
