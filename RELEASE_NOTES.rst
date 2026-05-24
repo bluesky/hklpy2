@@ -30,6 +30,14 @@ describe future plans.
 
     Release expected 2026-Q3.
 
+    0.7.2
+    #####
+
+    Fixes
+    -----
+
+    * Flush pending solver writes before snapshotting ``configuration``. (:issue:`407`)
+
 0.7.1
 #####
 
