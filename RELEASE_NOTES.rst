@@ -30,13 +30,18 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    0.7.2
-    #####
+    SEMVER
+    ######
 
-    Fixes
-    -----
+0.7.2
+#####
 
-    * Flush pending solver writes before snapshotting ``configuration``. (:issue:`407`)
+Released 2026-05-23.
+
+Fixes
+-----
+
+* Flush pending solver writes before snapshotting ``configuration``. (:issue:`407`)
 
 0.7.1
 #####
