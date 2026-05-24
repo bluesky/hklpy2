@@ -1,0 +1,1394 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hklpy2.blocks.reflection &#8212; hklpy2 0.7</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=84a6b490" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+
+    <script src="../../../_static/documentation_options.js?v=6dfdf7c3"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/blocks/reflection';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '0.7.2';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.7" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">hklpy2 0.7</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Tutorial: Your First Diffractometer
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/hklpy2/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../license.html">
+    License
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorial.html">
+    Tutorial: Your First Diffractometer
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../release_notes.html">
+    Releases
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../autoapi/hklpy2/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../license.html">
+    License
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/bluesky/hklpy2" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">hklpy2.blocks.reflection</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for hklpy2.blocks.reflection</h1><div class="highlight"><pre>
+<span></span><span class="c1"># pylint: disable=too-many-arguments</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Coordinates of a crystalline reflection.</span>
+
+<span class="sd">Associates diffractometer angles (real-space) with crystalline reciprocal-space</span>
+<span class="sd">(pseudo) coordinates.</span>
+
+<span class="sd">.. autosummary::</span>
+
+<span class="sd">    ~Reflection</span>
+<span class="sd">    ~ReflectionsDict</span>
+<span class="sd">    ~UNUSED_REFLECTION</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionchanged</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReflectionError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_SolverDirty</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_value_in_list</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_float_dicts</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_and_canonical_unit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DEFAULT_REFLECTION_DIGITS">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.DEFAULT_REFLECTION_DIGITS">[docs]</a>
+<span class="n">DEFAULT_REFLECTION_DIGITS</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span></div>
+
+
+<div class="viewcode-block" id="UNUSED_REFLECTION">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.UNUSED_REFLECTION">[docs]</a>
+<span class="n">UNUSED_REFLECTION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;unused&quot;</span></div>
+
+<span class="sd">&quot;&quot;&quot;Identifies an unused reflection in the ReflectionsDict.&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="Reflection">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Reflection</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coordinates real and pseudo axes.</span>
+
+<span class="sd">    Two reflections can be added, subtracted, or compared for equality.</span>
+
+<span class="sd">    .. note:: Internal use only.</span>
+
+<span class="sd">       It is expected this class is called from a method of</span>
+<span class="sd">       :class:`~hklpy2.ops.Core`, not directly by the user.</span>
+
+<span class="sd">    .. rubric:: Parameters</span>
+
+<span class="sd">    * ``name`` (str): Reference name for this reflection.</span>
+<span class="sd">    * ``pseudos`` (dict): Unordered dictionary of pseudo-space axes and values.</span>
+<span class="sd">    * ``reals`` (dict): Unordered dictionary of real-space axes and values.</span>
+<span class="sd">    * ``wavelength`` (float): Wavelength of incident radiation.</span>
+<span class="sd">    * ``geometry`` (str): Geometry name for this reflection.</span>
+<span class="sd">    * ``pseudo_names`` ([str]): Ordered list of pseudo names for this geometry.</span>
+<span class="sd">    * ``rnames`` ([str]): Ordered list of real names for this geometry.</span>
+<span class="sd">    * ``wavelength_units`` (str): Engineering units of wavelength.</span>
+
+<span class="sd">    Optional items (such as &#39;azimuth&#39;, &#39;h1&#39;, &#39;h2&#39;, zones, ...) are not</span>
+<span class="sd">    part of a &quot;reflection&quot;.</span>
+
+<span class="sd">    .. autosummary::</span>
+
+<span class="sd">        ~__add__</span>
+<span class="sd">        ~__eq__</span>
+<span class="sd">        ~__sub__</span>
+<span class="sd">        ~_asdict</span>
+<span class="sd">        ~_fromdict</span>
+<span class="sd">        ~_validate_pseudos</span>
+<span class="sd">        ~_validate_reals</span>
+<span class="sd">        ~_validate_wavelength</span>
+<span class="sd">        ~pseudos</span>
+<span class="sd">        ~reals</span>
+<span class="sd">        ~wavelength</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pseudos</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">,</span>
+        <span class="n">reals</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">,</span>
+        <span class="n">wavelength</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pseudo_axis_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">real_axis_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">core</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">digits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">reals_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">wavelength_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">Core</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">Core</span><span class="p">):</span>
+            <span class="c1"># What if axes names in wrong sequence?  Required order is assumed.</span>
+            <span class="c1"># What if axes renamed?  All reflections must use the same real_axis_names.</span>
+            <span class="n">axes_local</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_axis_names</span>
+            <span class="n">axes_solver</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">real_axis_names</span>
+            <span class="k">if</span> <span class="n">real_axis_names</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="n">axes_local</span><span class="p">,</span> <span class="n">axes_solver</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ReflectionError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">real_axis_names</span><span class="si">=}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; do not match diffractometer (</span><span class="si">{</span><span class="n">axes_local</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; or solver (</span><span class="si">{</span><span class="n">axes_solver</span><span class="si">}</span><span class="s2">).&quot;</span>
+                <span class="p">)</span>
+
+<div class="viewcode-block" id="Reflection.digits">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.digits">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="o">=</span> <span class="n">DEFAULT_REFLECTION_DIGITS</span> <span class="k">if</span> <span class="n">digits</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">digits</span></div>
+
+<div class="viewcode-block" id="Reflection.geometry">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.geometry">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span></div>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+<div class="viewcode-block" id="Reflection.pseudo_axis_names">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.pseudo_axis_names">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span> <span class="o">=</span> <span class="n">pseudo_axis_names</span></div>
+
+<div class="viewcode-block" id="Reflection.real_axis_names">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.real_axis_names">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span> <span class="o">=</span> <span class="n">real_axis_names</span></div>
+
+
+        <span class="c1"># property setters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span> <span class="o">=</span> <span class="n">pseudos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reals</span> <span class="o">=</span> <span class="n">reals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reals_units</span> <span class="o">=</span> <span class="n">reals_units</span> <span class="ow">or</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">wavelength</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span> <span class="o">=</span> <span class="n">wavelength_units</span> <span class="ow">or</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a Reflection object to this one and return as a new Reflection.</span>
+
+<span class="sd">        Combines the pseudos and reals of self and other.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Reflection</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Unsupported operand type(s) for +: &#39;Reflection&#39;&quot;</span>
+                <span class="c1">#</span>
+                <span class="sa">f</span><span class="s2">&quot; and &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Create a new Reflection with combined pseudo and real values.</span>
+        <span class="n">new_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_plus_</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">new_pseudos</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">pseudos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="c1">#</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span>
+        <span class="p">}</span>
+        <span class="n">new_reals</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">reals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">Reflection</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">new_name</span><span class="p">,</span>
+            <span class="n">pseudos</span><span class="o">=</span><span class="n">new_pseudos</span><span class="p">,</span>
+            <span class="n">reals</span><span class="o">=</span><span class="n">new_reals</span><span class="p">,</span>
+            <span class="n">wavelength</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span>  <span class="c1"># Preserve wavelength from self.</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+            <span class="n">pseudo_axis_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">,</span>
+            <span class="n">real_axis_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compare this reflection with another for equality.</span>
+
+<span class="sd">        Precision is controlled by rounding to smallest number of digits</span>
+<span class="sd">        between the reflections.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">digits</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span> <span class="n">r2</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+        <span class="n">pseudos_ok</span> <span class="o">=</span> <span class="n">compare_float_dicts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">r2</span><span class="o">.</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+        <span class="n">reals_ok</span> <span class="o">=</span> <span class="n">compare_float_dicts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">,</span> <span class="n">r2</span><span class="o">.</span><span class="n">reals</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span>
+        <span class="c1"># Convert r2 wavelength to this reflection&#39;s units before comparing</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r2_wl_in_self_units</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                <span class="n">r2</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">r2</span><span class="o">.</span><span class="n">wavelength_units</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="c1"># If conversion fails, fall back to raw comparison (will likely fail)</span>
+            <span class="n">r2_wl_in_self_units</span> <span class="o">=</span> <span class="n">r2</span><span class="o">.</span><span class="n">wavelength</span>
+        <span class="n">wavelength_ok</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span>
+            <span class="n">r2_wl_in_self_units</span><span class="p">,</span> <span class="n">digits</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">pseudos_ok</span> <span class="ow">and</span> <span class="n">reals_ok</span> <span class="ow">and</span> <span class="n">wavelength_ok</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Standard brief representation of reflection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pseudos</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># roundoff</span>
+            <span class="c1">#</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">]</span>
+        <span class="n">guts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;name=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pseudos</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">guts</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">object</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Subtract another Reflection from this one and return as a new Reflection.</span>
+
+<span class="sd">        Subtracts the pseudos and reals of other from self.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Reflection</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+
+        <span class="c1"># Create a new Reflection with subtracted pseudo and real values.</span>
+        <span class="n">new_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_minus_</span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">new_pseudos</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">pseudos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="c1">#</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span>
+        <span class="p">}</span>
+        <span class="n">new_reals</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">reals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">Reflection</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">new_name</span><span class="p">,</span>
+            <span class="n">pseudos</span><span class="o">=</span><span class="n">new_pseudos</span><span class="p">,</span>
+            <span class="n">reals</span><span class="o">=</span><span class="n">new_reals</span><span class="p">,</span>
+            <span class="n">wavelength</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span>  <span class="c1"># Preserve wavelength from self.</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+            <span class="n">pseudo_axis_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">,</span>
+            <span class="n">real_axis_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Describe this reflection as a dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
+            <span class="s2">&quot;pseudos&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">,</span>
+            <span class="s2">&quot;reals&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">,</span>
+            <span class="s2">&quot;reals_units&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">reals_units</span><span class="p">,</span>
+            <span class="s2">&quot;wavelength&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span>
+            <span class="s2">&quot;wavelength_units&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="p">,</span>
+            <span class="s2">&quot;digits&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Redefine this reflection from a (configuration) dictionary.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Mismatched name for reflection </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                <span class="c1">#</span>
+                <span class="sa">f</span><span class="s2">&quot; Received configuration: </span><span class="si">{</span><span class="n">config</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Mismatched geometry for reflection </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; Expected geometry: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; Received configuration: </span><span class="si">{</span><span class="n">config</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;pseudos&quot;</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Mismatched pseudo axis names for reflection </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; Expected: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span><span class="p">)</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; Received: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;pseudos&#39;</span><span class="p">])</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="n">ConfigurationError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Mismatched real axis names for reflection </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; Expected: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reals</span><span class="p">)</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; Received: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;reals&#39;</span><span class="p">])</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">digits</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;digits&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pseudos</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;pseudos&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reals_units</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reals_units&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reals_units</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reals</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wavelength_units&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wavelength&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_pseudos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise Exception if pseudos do not match expectations.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dict, received pseudos=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">check_value_in_list</span><span class="p">(</span><span class="s2">&quot;pseudo axis&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="c1"># fmt: off</span>
+                <span class="k">raise</span> <span class="n">ReflectionError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Missing pseudo axis </span><span class="si">{</span><span class="n">key</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; Required names: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pseudo_axis_names</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># fmt: on</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_reals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise Exception if reals do not match expectations.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dict, received reals=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">check_value_in_list</span><span class="p">(</span><span class="s2">&quot;real axis&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                <span class="c1"># fmt: off</span>
+                <span class="k">raise</span> <span class="n">ReflectionError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Missing real axis </span><span class="si">{</span><span class="n">key</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; Required names: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">real_axis_names</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># fmt: on</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise exception if pseudos do not match expectations.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply number, received </span><span class="si">{</span><span class="n">value</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must be &gt;=0, received </span><span class="si">{</span><span class="n">value</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># --------- get/set properties</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Reflection.name">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sample name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span></div>
+
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply str, received name=</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Reflection.pseudos">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.pseudos">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pseudos</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ordered dictionary of diffractometer&#39;s reciprocal-space axes.</span>
+
+<span class="sd">        Dictionary keys are the axis names, as defined by the diffractometer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pseudos</span></div>
+
+
+    <span class="nd">@pseudos</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pseudos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_pseudos</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pseudos</span> <span class="o">=</span> <span class="n">values</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Reflection.reals">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.reals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ordered dictionary of diffractometer&#39;s real-space axes.</span>
+
+<span class="sd">        Dictionary keys are the axis names, as defined by the diffractometer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reals</span></div>
+
+
+    <span class="nd">@reals</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_reals</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reals</span> <span class="o">=</span> <span class="n">values</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Reflection.reals_units">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.reals_units">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reals_units</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Engineering units of this reflection&#39;s real-space axes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reals_units</span></div>
+
+
+    <span class="nd">@reals_units</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reals_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">validate_and_canonical_unit</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reals_units</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Reflection.wavelength">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.wavelength">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wavelength of reflection.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span></div>
+
+
+    <span class="nd">@wavelength</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_wavelength</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Reflection.wavelength_units">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection.wavelength_units">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wavelength_units</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Engineering units of this reflection&#39;s wavelength.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_units</span></div>
+
+
+    <span class="nd">@wavelength_units</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wavelength_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Ensure that new value is convertible to the internal wavelength units.</span>
+        <span class="n">validate_and_canonical_unit</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_units</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="ReflectionsDict">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ReflectionsDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dictionary of Reflections.</span>
+
+<span class="sd">    .. autosummary::</span>
+
+<span class="sd">        ~_asdict</span>
+<span class="sd">        ~_fromdict</span>
+<span class="sd">        ~_request_solver_update</span>
+<span class="sd">        ~_validate_reflection</span>
+<span class="sd">        ~add</span>
+<span class="sd">        ~clear</span>
+<span class="sd">        ~order</span>
+<span class="sd">        ~pop</span>
+<span class="sd">        ~prune</span>
+<span class="sd">        ~set_orientation_reflections</span>
+<span class="sd">        ~setor</span>
+<span class="sd">        ~swap</span>
+
+<span class="sd">    .. versionchanged:: 0.7.0</span>
+<span class="sd">       Mutating operations now flag the owning</span>
+<span class="sd">       :class:`~hklpy2.ops.Core` with</span>
+<span class="sd">       ``_SolverDirty.SAMPLE | _SolverDirty.UB`` whenever the change</span>
+<span class="sd">       affects an entry referenced by :attr:`order` (the orienting</span>
+<span class="sd">       reflections the solver actually sees).  This includes</span>
+<span class="sd">       :meth:`add`, :meth:`swap`, :meth:`set_orientation_reflections`</span>
+<span class="sd">       / :meth:`setor`, the :attr:`order` setter, and any dict-API</span>
+<span class="sd">       mutation (``pop``, ``__setitem__``, ``__delitem__``, ``clear``,</span>
+<span class="sd">       ``update``, ``popitem``) that touches an ordered name.</span>
+<span class="sd">       Previously these mutations left the solver with a stale</span>
+<span class="sd">       reflection list.  See :issue:`397`.</span>
+
+<span class="sd">    .. versionchanged:: 0.7.0</span>
+<span class="sd">       Mutations that would leave the sample *half-defined* (two or</span>
+<span class="sd">       more reflections still in the dict, but fewer than two named</span>
+<span class="sd">       in :attr:`order`) now raise :class:`~hklpy2.exceptions.ReflectionError`.</span>
+<span class="sd">       The user must explicitly designate the new orienting pair (via</span>
+<span class="sd">       :meth:`set_orientation_reflections` or by assigning :attr:`order`)</span>
+<span class="sd">       **before** removing the current one, or remove non-orienting</span>
+<span class="sd">       reflections first so the sample falls below the orientation</span>
+<span class="sd">       threshold.  See :issue:`399`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="viewcode-block" id="ReflectionsDict.geometry">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.geometry">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+        <span class="c1"># Back-reference to the owning ``Core``.  Wired by</span>
+        <span class="c1"># :class:`~hklpy2.blocks.sample.Sample` after construction so that</span>
+        <span class="c1"># mutating operations can flag the solver-dirty bitfield.  May be</span>
+        <span class="c1"># ``None`` when the dict is used standalone (e.g. in low-level</span>
+        <span class="c1"># tests); in that case ``_request_solver_update`` is a no-op.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Re-entrancy counter for the strict orientation-health check</span>
+        <span class="c1"># (issue #399).  Incremented while inside multi-step internal</span>
+        <span class="c1"># operations (``add``, ``_fromdict``) that legitimately</span>
+        <span class="c1"># traverse intermediate states which would otherwise raise.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_strict_check_suspended</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_request_solver_update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">flags</span><span class="p">:</span> <span class="n">_SolverDirty</span> <span class="o">=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Flag the owning :class:`~hklpy2.ops.Core` as solver-dirty.</span>
+
+<span class="sd">        Mutating operations on the reflection dict invalidate the</span>
+<span class="sd">        solver-side sample state (and, transitively, U / UB on backends</span>
+<span class="sd">        that recompute them when sample state is re-pushed).  See</span>
+<span class="sd">        :issue:`397`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
+
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_suspend_strict_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Suspend :meth:`_check_strict_order_health` for the duration of</span>
+<span class="sd">        a multi-step internal operation (issue #399).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_strict_check_suspended</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_strict_check_suspended</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_strict_order_health</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">prospective_order</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">prospective_keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Refuse mutations that would leave the sample half-defined.</span>
+
+<span class="sd">        A sample is *half-defined* when the dict still holds two or</span>
+<span class="sd">        more reflections but :attr:`order` -- restricted to names that</span>
+<span class="sd">        actually exist in the dict -- has fewer than two entries.  In</span>
+<span class="sd">        that state ``calc_UB`` cannot be repeated and the previously</span>
+<span class="sd">        computed UB silently references a no-longer-orienting pair.</span>
+
+<span class="sd">        The strict policy refuses such mutations at the source so the</span>
+<span class="sd">        user explicitly designates the new orienting pair (via</span>
+<span class="sd">        :meth:`set_orientation_reflections` or by assigning</span>
+<span class="sd">        :attr:`order`) before removing the current one, or removes</span>
+<span class="sd">        non-orienting reflections first so the sample falls below the</span>
+<span class="sd">        orientation threshold.  See :issue:`399`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        prospective_order : Iterable[str]</span>
+<span class="sd">            The proposed value of :attr:`order` after the pending</span>
+<span class="sd">            mutation.</span>
+<span class="sd">        prospective_keys : Iterable[str]</span>
+<span class="sd">            The proposed set of dict keys after the pending mutation.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ReflectionError</span>
+<span class="sd">            If the post-mutation state would be half-defined.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strict_check_suspended</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">prospective_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">prospective_keys</span><span class="p">)</span>
+        <span class="n">prospective_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prospective_order</span><span class="p">)</span>
+        <span class="n">effective</span> <span class="o">=</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">prospective_order</span> <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">prospective_keys</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prospective_keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">effective</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ReflectionError</span><span class="p">(</span>
+                <span class="s2">&quot;Refusing to leave the sample half-defined: the pending&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; mutation would leave </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">effective</span><span class="p">)</span><span class="si">}</span><span class="s2"> orientation&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; reflection(s) in `order` while </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">prospective_keys</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot; reflections remain in the sample.  UB requires two&quot;</span>
+                <span class="s2">&quot; orientation reflections.  Designate a new orienting&quot;</span>
+                <span class="s2">&quot; pair first (`reflections.set_orientation_reflections(&quot;</span>
+                <span class="s2">&quot;[r1, r2])` or `reflections.order = [...]`).&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ReflectionsDict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_order</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">geometry</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Describe the reflections list as an ordered dictionary.</span>
+
+<span class="sd">        Order by reflections order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">v</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">()}</span>
+
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.7.0&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Re-key restored reflections by the diffractometer&#39;s local &quot;</span>
+            <span class="s2">&quot;real-axis names instead of the solver&#39;s canonical names, &quot;</span>
+            <span class="s2">&quot;matching every other consumer of ``Reflection.reals``.  &quot;</span>
+            <span class="s2">&quot;Fixes ``KeyError`` from ``forward()`` / ``benchmark`` after &quot;</span>
+            <span class="s2">&quot;``restore()`` / ``simulator_from_config`` when local and &quot;</span>
+            <span class="s2">&quot;canonical names differ.  See :issue:`398`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fromdict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+        <span class="n">core</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add or redefine reflections from a (configuration) dictionary.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">Core</span>
+
+        <span class="c1"># Restoring reflections is a multi-step internal operation that</span>
+        <span class="c1"># legitimately traverses intermediate states which would</span>
+        <span class="c1"># otherwise trip the strict orientation-health check (#399).</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_suspend_strict_check</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">refl_config</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">Core</span><span class="p">):</span>
+                    <span class="c1"># Remap the names of all the real axes to the current solver.</span>
+                    <span class="c1"># Real axes MUST be specified in the order specified by the solver.</span>
+                    <span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="n">axis</span><span class="p">:</span> <span class="n">value</span>
+                        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                            <span class="c1"># core.solver.real_axis_names,</span>
+                            <span class="n">core</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span>
+                            <span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+                        <span class="p">)</span>
+                    <span class="p">}</span>
+
+                <span class="n">reflection</span> <span class="o">=</span> <span class="n">Reflection</span><span class="p">(</span>
+                    <span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                    <span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;pseudos&quot;</span><span class="p">],</span>
+                    <span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">],</span>
+                    <span class="n">wavelength</span><span class="o">=</span><span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;wavelength&quot;</span><span class="p">],</span>
+                    <span class="n">wavelength_units</span><span class="o">=</span><span class="n">refl_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wavelength_units&quot;</span><span class="p">),</span>
+                    <span class="n">geometry</span><span class="o">=</span><span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">],</span>
+                    <span class="n">pseudo_axis_names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;pseudos&quot;</span><span class="p">]),</span>
+                    <span class="n">real_axis_names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">refl_config</span><span class="p">[</span><span class="s2">&quot;reals&quot;</span><span class="p">]),</span>
+                    <span class="n">digits</span><span class="o">=</span><span class="n">refl_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;digits&quot;</span><span class="p">),</span>
+                    <span class="n">core</span><span class="o">=</span><span class="n">core</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">reflection</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.7.0&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning &quot;</span>
+            <span class="s2">&quot;``Core`` so the solver is re-synced on the next &quot;</span>
+            <span class="s2">&quot;``update_solver()`` (the order of orienting reflections is &quot;</span>
+            <span class="s2">&quot;part of the solver-side sample state).  See :issue:`397`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.7.0&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Refuse to designate an orienting list that would leave the &quot;</span>
+            <span class="s2">&quot;sample half-defined (fewer than two orientation reflections &quot;</span>
+            <span class="s2">&quot;while two or more reflections remain in the sample); raises &quot;</span>
+            <span class="s2">&quot;``ReflectionError``.  See :issue:`399`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+<div class="viewcode-block" id="ReflectionsDict.set_orientation_reflections">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.set_orientation_reflections">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_orientation_reflections</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reflection</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Designate the order of the reflections to be used.</span>
+
+<span class="sd">        .. note:: Raises ``KeyError`` if any</span>
+<span class="sd">           ``reflections`` are not already defined.</span>
+
+<span class="sd">           This method does not *add* any new reflections.</span>
+
+<span class="sd">        .. rubric:: Parameters</span>
+
+<span class="sd">        * ``reflections`` ([Reflection]) : List of</span>
+<span class="sd">          :class:`hklpy2.blocks.reflection.Reflection` objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reflections</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.setor">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.setor">[docs]</a>
+    <span class="n">setor</span> <span class="o">=</span> <span class="n">set_orientation_reflections</span></div>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Common alias for :meth:`~set_orientation_reflections`.&quot;&quot;&quot;</span>
+
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.7.0&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning &quot;</span>
+            <span class="s2">&quot;``Core`` so the next ``update_solver()`` pushes the new &quot;</span>
+            <span class="s2">&quot;reflection list to the solver.  See :issue:`397`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+<div class="viewcode-block" id="ReflectionsDict.add">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">Reflection</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single orientation reflection.&quot;&quot;&quot;</span>
+        <span class="c1"># ``add`` is a multi-step operation: ``_validate_reflection``</span>
+        <span class="c1"># may pop a duplicate, ``__setitem__`` then inserts, and</span>
+        <span class="c1"># ``prune`` rewrites ``order``.  Each individual step could</span>
+        <span class="c1"># transiently look half-defined (#399); suspend the strict</span>
+        <span class="c1"># check for the whole sequence and let the final post-state</span>
+        <span class="c1"># speak for itself (the new reflection is always appended to</span>
+        <span class="c1"># ``order``, so the post-state cannot be half-defined).</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_suspend_strict_check</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_reflection</span><span class="p">(</span><span class="n">reflection</span><span class="p">,</span> <span class="n">replace</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="p">[</span><span class="n">reflection</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">reflection</span>
+            <span class="k">if</span> <span class="n">reflection</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reflection</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">prune</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.prune">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.prune">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prune</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove any undefined reflections from order list.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">refl</span> <span class="k">for</span> <span class="n">refl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="k">if</span> <span class="n">refl</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span></div>
+
+
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.7.0&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Flag ``_SolverDirty.SAMPLE | _SolverDirty.UB`` on the owning &quot;</span>
+            <span class="s2">&quot;``Core`` so the solver re-receives the new orientation order. &quot;</span>
+            <span class="s2">&quot;See :issue:`397`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+<div class="viewcode-block" id="ReflectionsDict.swap">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.swap">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">swap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reflection</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Swap the first two orientation reflections.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ReflectionError</span><span class="p">(</span><span class="s2">&quot;Need at least two reflections to swap.&quot;</span><span class="p">)</span>
+        <span class="n">rname1</span><span class="p">,</span> <span class="n">rname2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">rname2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rname1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span></div>
+
+
+    <span class="c1"># ---- dict mutation overrides (issue #397)</span>
+    <span class="c1">#</span>
+    <span class="c1"># ``ReflectionsDict`` subclasses ``dict``; users (and internal code)</span>
+    <span class="c1"># may mutate it via the dict API.  Override the mutating dict methods</span>
+    <span class="c1"># so a mutation that *touches an entry referenced by* :attr:`order`</span>
+    <span class="c1"># flags the owning ``Core`` as solver-dirty.  The solver only sees</span>
+    <span class="c1"># ordered (orienting) reflections, so a mutation that does not</span>
+    <span class="c1"># affect ``order`` -- e.g. adding a brand-new reflection that the</span>
+    <span class="c1"># caller has not yet placed in ``order``, or replacing/removing a</span>
+    <span class="c1"># reflection that is not in ``order`` -- does not require a</span>
+    <span class="c1"># solver-side re-push.  ``add()`` always appends new names to</span>
+    <span class="c1"># ``order`` and reassigns it via the order setter, so its flagging</span>
+    <span class="c1"># path is unaffected.  ``__getitem__`` / ``get`` / iteration are</span>
+    <span class="c1"># read-only and unchanged.</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="c1"># ``__setitem__`` either replaces an existing entry or adds a</span>
+        <span class="c1"># new one; neither shrinks the dict or ``order``.  The strict</span>
+        <span class="c1"># check (#399) cannot be tripped, but include it for symmetry.</span>
+        <span class="n">prospective_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">|</span> <span class="p">{</span><span class="n">key</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_strict_order_health</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="n">prospective_keys</span><span class="p">)</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">prospective_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="n">key</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_strict_order_health</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="n">prospective_keys</span><span class="p">)</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ReflectionsDict.pop">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.pop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Mirror ``dict.pop`` signature: pop(key[, default]).</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">prospective_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="n">key</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_strict_order_health</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="n">prospective_keys</span><span class="p">)</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.popitem">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.popitem">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">popitem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># ``dict.popitem`` removes the last-inserted entry (CPython</span>
+        <span class="c1"># 3.7+).  Peek the prospective key so the strict check can</span>
+        <span class="c1"># run before the mutation.  When the dict is empty,</span>
+        <span class="c1"># ``super().popitem()`` raises ``KeyError`` and the strict</span>
+        <span class="c1"># check is unreachable.</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">popped_key</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+            <span class="n">prospective_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="n">popped_key</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_strict_order_health</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="n">prospective_keys</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.clear">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.clear">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># ``clear`` always leaves the dict empty, so the post-state is</span>
+        <span class="c1"># never half-defined; the strict check is a no-op here.</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.update">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># ``update`` only inserts or replaces keys, never deletes; the</span>
+        <span class="c1"># post-state cannot be half-defined when starting from a</span>
+        <span class="c1"># well-defined state.  The strict check is included for</span>
+        <span class="c1"># symmetry but will not fire in normal use.</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">&quot;keys&quot;</span><span class="p">):</span>
+                <span class="n">incoming</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">incoming</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">other</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">incoming</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">incoming</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">prospective_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">|</span> <span class="n">incoming</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_strict_order_health</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="n">prospective_keys</span><span class="p">)</span>
+        <span class="n">affects_order</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">incoming</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">affects_order</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ReflectionsDict.setdefault">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.setdefault">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># ``setdefault`` only mutates the dict when ``key`` is absent;</span>
+        <span class="c1"># such an insertion cannot affect ``order`` (the new key is not</span>
+        <span class="c1"># in ``order`` yet).  Either branch is therefore a no-op for</span>
+        <span class="c1"># solver-dirty flagging.</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_reflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflection</span><span class="p">:</span> <span class="n">Reflection</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the new reflection (raise exception if invalid).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reflection</span><span class="p">,</span> <span class="n">Reflection</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="c1">#</span>
+                <span class="sa">f</span><span class="s2">&quot;Unexpected </span><span class="si">{</span><span class="n">reflection</span><span class="si">=!r}</span><span class="s2">.  Must be a &#39;Reflection&#39; type.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># matching content</span>
+        <span class="n">matching</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="n">reflection</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">reflection</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="c1"># matching name</span>
+            <span class="k">if</span> <span class="n">reflection</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">matching</span><span class="p">:</span>
+                <span class="n">matching</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reflection</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
+            <span class="c1"># remove ALL matches (name or content matches)</span>
+            <span class="k">for</span> <span class="n">nm</span> <span class="ow">in</span> <span class="n">matching</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">nm</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Replacing known reflection </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+            <span class="n">matching</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">matching</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># still?</span>
+            <span class="k">if</span> <span class="n">reflection</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">matching</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ReflectionError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Reflection name </span><span class="si">{</span><span class="n">reflection</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is known.&quot;</span>
+                    <span class="c1">#</span>
+                    <span class="s2">&quot;  Use &#39;replace=True&#39; to overwrite.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ReflectionError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Reflection </span><span class="si">{</span><span class="n">reflection</span><span class="si">!r}</span><span class="s2"> matches one or more&quot;</span>
+                    <span class="s2">&quot; existing reflections.  Use &#39;replace=True&#39; to overwrite.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">reflection</span><span class="o">.</span><span class="n">geometry</span>
+
+        <span class="k">if</span> <span class="n">reflection</span><span class="o">.</span><span class="n">geometry</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+            <span class="c1"># fmt: off</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;geometry does not match previous reflections:&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; received </span><span class="si">{</span><span class="n">reflection</span><span class="o">.</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; previous: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+            <span class="c1"># fmt: on</span>
+
+    <span class="c1"># ---- get/set properties</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="ReflectionsDict.order">
+<a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/reflection/index.html#hklpy2.blocks.reflection.ReflectionsDict.order">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reflection</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of reflection names used for orientation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span></div>
+
+
+    <span class="nd">@order</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reflection</span><span class="p">]):</span>
+        <span class="n">new_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_strict_order_health</span><span class="p">(</span><span class="n">new_order</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">new_order</span>
+        <span class="c1"># The orientation order is part of the solver-side sample state;</span>
+        <span class="c1"># mark the owning Core dirty so update_solver() re-pushes it</span>
+        <span class="c1"># (issue #397).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request_solver_update</span><span class="p">()</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2023-2026, Argonne National Laboratory.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.18.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
