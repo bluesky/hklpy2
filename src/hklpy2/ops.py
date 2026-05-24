@@ -143,10 +143,28 @@ class Core:
             ":issue:`388`."
         ),
     )
+    @versionchanged(
+        version="0.7.2",
+        reason=(
+            "Flush any dirty solver-state domains before reading "
+            "``solver._metadata`` so the snapshot reflects pending writes "
+            "(e.g. a recent ``core.mode = …`` assignment) instead of the "
+            "previous solver state.  See :issue:`407`."
+        ),
+    )
     def _asdict(self) -> KeyValueMap:
         """Describe the diffractometer as a dictionary."""
         from .__init__ import __version__
         from .blocks.configure import CONFIG_SCHEMA_VERSION
+
+        # Ensure the snapshot reflects any pending solver writes.  The
+        # ``solver:`` block is sourced from ``self.solver._metadata``,
+        # which reads live solver state; without this flush a recent
+        # ``core.mode = …`` (or any other deferred push) would be lost
+        # on export.  Gated on the dirty bitfield so the fast path is
+        # unaffected when nothing has changed.  See :issue:`407`.
+        if self._solver_dirty:
+            self.update_solver()
 
         # ``describe_aux`` lives in :mod:`hklpy2.devices` so the
         # ophyd-typing introspection (``isinstance(..., PseudoPositioner)``)
