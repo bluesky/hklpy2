@@ -4,8 +4,8 @@
 This is a first-cut checklist for the v2 release.
 It could be re-organized.
 
-* [ ] community wish list
-  * [ ] user-requested changes
+* [x] community wish list
+  * [x] user-requested changes
   * [x] move libhkl to be a replaceable back-end computation library
   * [x] easy to save/restore configuration
   * [x] easy to use different *engines*
@@ -25,15 +25,16 @@ It could be re-organized.
   * [x] Simulating diffraction and diffractometer modes
   * [x] Built in reciprocal space plans (or scans)
   * [x] Choice of calculation engines other than the hkl C package
-  * Solver API
+  * [x] Solver API
     * [x] a structure (dict or struct) describing a geometry (motors, reference positions, and constraints)
     * [x] observed mapping between real and reciprocal space to give you the "U" of the UB matrix
-    * [ ] the crystallography to give you the "B" (:issue:`129`)
+    * [-] the crystallography to give you the "B" (:issue:`129`)
     * [x] Solver: custom project
     * [x] Solver: python-wrapped components from `libhkl`
-    * [ ] Solver: SPEC (:issue:`9`)
-    * [ ] easy to switch between solvers at run time so that new things can be validated (:issue:`187`)
-  * [ ] [analyzers and polarizers](https://github.com/bluesky/hklpy/issues/92) (:issue:`222`)
+    * [!] Solver: SPEC (:issue:`9`), see https://github.com/prjemian/hklpy2_solvers/issues/5
+    * [!] easy to switch between solvers at run time so that new things can be validated (:issue:`187`)
+      * Easy to create new diffractometer with different solver.
+  * [x] [analyzers and polarizers](https://github.com/bluesky/hklpy/issues/92) (:issue:`222`)
   * Reflections
     * [x] [reflection is a Python class](https://github.com/bluesky/hklpy/issues/189)
     * [x] [`addReflection()`, when to use current positions](https://github.com/bluesky/hklpy/issues/219)
@@ -46,14 +47,20 @@ It could be re-organized.
     * [x] [modify existing sample](https://github.com/bluesky/hklpy/issues/157)
     * [x] [control display precision in `wh()` and `pa()`](https://github.com/bluesky/hklpy/issues/179)
     * [x] [crystallographic *zones*](https://github.com/bluesky/hklpy/issues/291)
-* [ ] Solvers
+* [x] Solvers
   * [x] `libhkl`
-  * [ ] [*ad-hoc* geometries](https://github.com/bluesky/hklpy/issues/244) (:issue:`96`)
-  * [ ] [diffcalc](https://github.com/bluesky/hklpy/issues/163) (:issue:`10`)
-  * [ ] [SPEC server](https://certif.com/spec_help/server.html) (:issue:`9`)
+  * [x] [*ad-hoc* geometries](https://github.com/bluesky/hklpy/issues/244) (:issue:`96`)
+    * [x] [back-end library](https://github.com/BCDA-APS/ad_hoc_diffractometer)
+    * [x] [solver](https://github.com/BCDA-APS/ad_hoc_diffractometer) how-to
+  * [x] [diffcalc](https://github.com/bluesky/hklpy/issues/163) (:issue:`10`)
+    * [x] [back-end library](https://github.com/DiamondLightSource/diffcalc-core)
+    * [x] [solver](https://prjemian.github.io/hklpy2_solvers/latest/guide_diffcalc.html) how-to
+  * [!] [SPEC server](https://certif.com/spec_help/server.html) (:issue:`9`)
+    * [x] [deferred](https://github.com/prjemian/hklpy2_solvers/issues/5)
   * [x] [TwoC unknown](https://github.com/bluesky/hklpy/issues/165)
-  * [ ] [xrayutilities](https://github.com/bluesky/hklpy/issues/162) (:issue:`95`)
-* [ ] Documentation
+  * [!] [xrayutilities](https://github.com/bluesky/hklpy/issues/162) (:issue:`95`)
+    * [x] Deemed [not possible](https://github.com/prjemian/hklpy2_solvers/issues/3) with current xrayutilties code base.
+* [x] Documentation
   * [x] Choosing the default `forward()` solution. (:issue:`71`, :issue:`224`)
   * [x] documentation from hklpy.
   * [x] How to calculate UB from 2 reflections.
@@ -114,12 +121,12 @@ It could be re-organized.
   * [x] solver : set
   * [x] transformation : forward (pseudos -> reals)
   * [x] transformation : inverse (reals -> pseudos)
-* [ ] Performance
-  * [ ] minimum 2,000 `inverse()` operations/second (:issue:`223`)
-  * [ ] minimum 2,000 `forward()` operations/second (:issue:`221`)
-* [ ] Backends - feature support
-  * [ ] *ad hoc* geometries (:issue:`96`)
-  * [ ] diffcalc_dls (:issue:`10`)
+* [x] Performance
+  * [x] minimum 2,000 `inverse()` operations/second (:issue:`223`)
+  * [x] minimum 2,000 `forward()` operations/second (:issue:`221`)
+* [x] Backends - feature support
+  * [x] *ad hoc* geometries (:issue:`96`)
+  * [x] diffcalc_dls (:issue:`10`)
   * [x] hkl_soleil (libhkl)
     * [x] axes : expected pseudos
     * [x] axes : expected reals
@@ -144,7 +151,7 @@ It could be re-organized.
     * [x] transformation : forward (pseudos -> reals)
     * [x] transformation : inverse (reals -> pseudos)
   * [x] no_op
-  * [ ] SPEC server (:issue:`9`)
+  * [!] SPEC server (:issue:`9`), see https://github.com/prjemian/hklpy2_solvers/issues/5
   * [x] th_tth
     * axes : expected
       * [x] pseudos
@@ -167,4 +174,4 @@ It could be re-organized.
       * [x] forward (pseudos -> reals)
       * [x] inverse (reals -> pseudos)
     * [x] wavelength : set
-  * [ ] xrayutilities (:issue:`95`)
+  * [!] xrayutilities (:issue:`95`), see https://github.com/prjemian/hklpy2_solvers/issues/3
