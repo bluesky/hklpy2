@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../_static/documentation_options.js?v=6aed9efd"></script>
+    <script src="../../_static/documentation_options.js?v=7e60c8c0"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -571,10 +571,28 @@
             <span class="s2">&quot;:issue:`388`.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.7.2&quot;</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Flush any dirty solver-state domains before reading &quot;</span>
+            <span class="s2">&quot;``solver._metadata`` so the snapshot reflects pending writes &quot;</span>
+            <span class="s2">&quot;(e.g. a recent ``core.mode = …`` assignment) instead of the &quot;</span>
+            <span class="s2">&quot;previous solver state.  See :issue:`407`.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Describe the diffractometer as a dictionary.&quot;&quot;&quot;</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.__init__</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.configure</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONFIG_SCHEMA_VERSION</span>
+
+        <span class="c1"># Ensure the snapshot reflects any pending solver writes.  The</span>
+        <span class="c1"># ``solver:`` block is sourced from ``self.solver._metadata``,</span>
+        <span class="c1"># which reads live solver state; without this flush a recent</span>
+        <span class="c1"># ``core.mode = …`` (or any other deferred push) would be lost</span>
+        <span class="c1"># on export.  Gated on the dirty bitfield so the fast path is</span>
+        <span class="c1"># unaffected when nothing has changed.  See :issue:`407`.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
 
         <span class="c1"># ``describe_aux`` lives in :mod:`hklpy2.devices` so the</span>
         <span class="c1"># ophyd-typing introspection (``isinstance(..., PseudoPositioner)``)</span>
