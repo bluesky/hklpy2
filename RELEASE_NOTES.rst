@@ -33,6 +33,11 @@ describe future plans.
     SEMVER
     ######
 
+    Maintenance
+    -----------
+
+    * DOC: Feature checklist (from project planning phase) is now complete.
+
 0.7.2
 #####
 
