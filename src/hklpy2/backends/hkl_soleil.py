@@ -1,3 +1,5 @@
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 r"""
 "hkl_soleil" solver, provides **Hkl**, Synchrotron Soleil.
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
 Tests for the stale-UB ``UserWarning`` in :class:`hklpy2.ops.Core`
 and the ``pa()`` annotation (:issue:`391`).

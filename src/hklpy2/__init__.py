@@ -1,13 +1,6 @@
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """Package-level initialization."""
-
-# -----------------------------------------------------------------------------
-# copyright (c) 2023-2026, UChicago Argonne, LLC
-#
-# Distributed under the terms of the
-# Argonne National Laboratory Open Source License.
-#
-# The full license is in the file LICENSE, distributed with this software.
-# -----------------------------------------------------------------------------
 
 import importlib.metadata
 

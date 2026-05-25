@@ -28,7 +28,9 @@ import hklpy2
 
 project = metadata["name"]
 github_url = metadata["urls"]["source"]
-copyright = toml["tool"]["copyright"]["copyright"]
+# Static year range; kept in sync with .copyright.txt and LICENSE by
+# scripts/update_copyright_year.py (registered as a pre-commit hook).
+copyright = "2023-2026, UChicago Argonne, LLC"
 author = metadata["authors"][0]["name"]
 description = metadata["description"]
 today_fmt = "%Y-%m-%d %H:%M"

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
 Update the copyright end year in tracked source files to the current year.
 
@@ -12,9 +14,12 @@ the pre-commit convention:
 
 Files checked (paths relative to the repository root):
 
-* pyproject.toml              – ``[tool.copyright]`` value
-* src/hklpy2/__init__.py      – comment header
-* docs/source/index.rst       – summary table row
+* ``.copyright.txt``          – per-file header template
+* ``LICENSE``                 – line-1 copyright statement (only the year
+                                range is rewritten; the licence body is
+                                verbatim per ANL legal and is never touched
+                                by this script)
+* ``docs/source/conf.py``     – Sphinx ``copyright`` value
 
 The script rewrites the pattern ``<START_YEAR>-<OLD_YEAR>`` →
 ``<START_YEAR>-<CURRENT_YEAR>`` wherever it appears in those files, leaving
@@ -36,9 +41,9 @@ REPO_ROOT = pathlib.Path(__file__).parent.parent
 
 # Files that contain the copyright year span, relative to the repo root.
 TARGET_FILES: list[pathlib.Path] = [
-    REPO_ROOT / "pyproject.toml",
-    REPO_ROOT / "src" / "hklpy2" / "__init__.py",
-    REPO_ROOT / "docs" / "source" / "index.rst",
+    REPO_ROOT / ".copyright.txt",
+    REPO_ROOT / "LICENSE",
+    REPO_ROOT / "docs" / "source" / "conf.py",
 ]
 
 # Matches e.g. "2023-2025" and captures the start year and old end year.

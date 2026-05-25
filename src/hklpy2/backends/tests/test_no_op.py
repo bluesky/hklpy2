@@ -1,3 +1,5 @@
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """Test the no_op solver class."""
 
 from ...utils import IDENTITY_MATRIX_3X3

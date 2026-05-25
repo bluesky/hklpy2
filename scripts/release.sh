@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 # release.sh - Interactive release checklist for hklpy2
 #
 # Usage:

@@ -1,3 +1,5 @@
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
 Tests for issue #388: round-trip of auxiliary sub-devices (scalar +
 nested ``PseudoPositioner``) through the export / restore schema (v2).
