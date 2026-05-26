@@ -173,16 +173,17 @@ SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 The `Lucas-C/insert-license` pre-commit hook propagates that header to
 every covered file on each commit.  Three hook instances cover:
 
-- `src/hklpy2/**/*.py` (excluding `_version.py` and any `dev_*.py`
-  files; tests live inside `src/hklpy2/` so are covered here)
+- `src/hklpy2/**/*.py` (excluding `_version.py`; tests live inside
+  `src/hklpy2/` so are covered here)
 - `scripts/*.py`
 - `scripts/*.sh` (Bash uses `#` comments so the same template applies)
 
 To change the per-file header text project-wide, edit only
 `.copyright.txt` and run `pre-commit run --all-files`.
 
-`dev_*` files are intentionally excluded from header stamping; they are
-developer scratch/experimental code.
+Developer scratch files matching `dev_*` are `.gitignore`-d in this
+repo, so they never reach the hook even though they live in covered
+directories.
 
 ### 2. Year-range bump — `scripts/update_copyright_year.py`
 

@@ -1,29 +1,33 @@
 #!/usr/bin/env python3
 # Copyright (c) 2023-2026 UChicago Argonne, LLC
 # SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
+# Copyright (c) 2026-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
 Update the copyright end year in tracked source files to the current year.
 
 Designed to be used as a pre-commit hook (local repo hook).  Exit codes follow
 the pre-commit convention:
 
-* 0 – nothing changed (all files already have the correct year).
-* 1 – one or more files were modified; pre-commit will mark the hook as
+* 0 - nothing changed (all files already have the correct year).
+* 1 - one or more files were modified; pre-commit will mark the hook as
       "failed" so the developer sees the diff and stages the updated files
       before retrying the commit.
 
+The script rewrites the pattern ``<START_YEAR>-<OLD_YEAR>`` ->
+``<START_YEAR>-<CURRENT_YEAR>`` wherever it appears in each target file,
+leaving everything else untouched.
+
 Files checked (paths relative to the repository root):
 
-* ``.copyright.txt``          – per-file header template
-* ``LICENSE``                 – line-1 copyright statement (only the year
+* ``.copyright.txt``          - per-file header template
+* ``LICENSE``                 - line-1 copyright statement (only the year
                                 range is rewritten; the licence body is
                                 verbatim per ANL legal and is never touched
                                 by this script)
-* ``docs/source/conf.py``     – Sphinx ``copyright`` value
+* ``docs/source/conf.py``     - Sphinx ``copyright`` value
 
-The script rewrites the pattern ``<START_YEAR>-<OLD_YEAR>`` →
-``<START_YEAR>-<CURRENT_YEAR>`` wherever it appears in those files, leaving
-everything else untouched.
+To add a new target, append to :data:`TARGET_FILES` below.
 """
 
 from __future__ import annotations
@@ -46,7 +50,7 @@ TARGET_FILES: list[pathlib.Path] = [
     REPO_ROOT / "docs" / "source" / "conf.py",
 ]
 
-# Matches e.g. "2023-2025" and captures the start year and old end year.
+# Matches e.g. "2026-2026" and captures the start year and old end year.
 YEAR_RANGE_PATTERN = re.compile(r"(\d{4})-(\d{4})")
 
 CURRENT_YEAR = str(datetime.now().year)
@@ -89,7 +93,7 @@ def main() -> int:
 
     for filepath in TARGET_FILES:
         if not filepath.exists():
-            print(f"WARNING: {filepath} not found – skipping.", file=sys.stderr)
+            print(f"WARNING: {filepath} not found - skipping.", file=sys.stderr)
             continue
         if update_file(filepath, CURRENT_YEAR):
             changed.append(filepath)
