@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # Copyright (c) 2023-2026 UChicago Argonne, LLC
 # SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
-# Copyright (c) 2026-2026 UChicago Argonne, LLC
-# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
 Update the copyright end year in tracked source files to the current year.
 
