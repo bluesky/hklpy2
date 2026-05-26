@@ -1,1 +1,3 @@
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 NO_OP_SOLVER_TYPE_STR = "<class 'hklpy2.backends.no_op.NoOpSolver'>"

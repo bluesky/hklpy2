@@ -1,3 +1,5 @@
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
 Custom exception classes for |hklpy2|.
 

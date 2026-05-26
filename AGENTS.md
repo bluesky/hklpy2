@@ -155,6 +155,76 @@ PRs opened or modified by automated agents must follow the "Agent pytest style" 
 - Inputs: file diffs, test results, config files, repository metadata
 - Outputs: patch/commit, tests, updated docs, CI status
 
+## Copyright handling
+
+The repo uses three coordinated mechanisms to keep copyright text
+consistent.  All three are wired into pre-commit and run automatically.
+
+### 1. Per-file headers — `.copyright.txt` + `insert-license`
+
+`.copyright.txt` is the single source of truth for the per-file header
+text:
+
+```text
+Copyright (c) 2023-2026 UChicago Argonne, LLC
+SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
+```
+
+The `Lucas-C/insert-license` pre-commit hook propagates that header to
+every covered file on each commit.  Three hook instances cover:
+
+- `src/hklpy2/**/*.py` (excluding `_version.py`; tests live inside
+  `src/hklpy2/` so are covered here)
+- `scripts/*.py`
+- `scripts/*.sh` (Bash uses `#` comments so the same template applies)
+
+To change the per-file header text project-wide, edit only
+`.copyright.txt` and run `pre-commit run --all-files`.
+
+Developer scratch files matching `dev_*` are `.gitignore`-d in this
+repo, so they never reach the hook even though they live in covered
+directories.
+
+### 2. Year-range bump — `scripts/update_copyright_year.py`
+
+A **local** pre-commit hook (`update-copyright-year`) runs the
+`scripts/update_copyright_year.py` script on every commit.  The script
+rewrites the pattern `<START>-<OLD_END>` → `<START>-<CURRENT_YEAR>` in
+each file listed in its `TARGET_FILES`:
+
+- `.copyright.txt`
+- `LICENSE` (line 1 only — the licence body is verbatim per ANL legal
+  and is never edited)
+- `docs/source/conf.py`
+
+The script exits non-zero when it changes anything, so pre-commit fails
+and the developer stages the rewrite before retrying the commit.  On
+January 1 of any year, the next commit on any branch will bring every
+year span forward.
+
+### 3. Sphinx docs — static year range in `conf.py`
+
+`docs/source/conf.py` declares `copyright` as a static year-range string,
+not a build-time-dynamic `datetime.now().year` expression.  This is
+intentional: the bump script is the single mechanism that keeps
+`LICENSE`, `.copyright.txt`, and the rendered docs aligned, and a
+dynamic expression would hide drift between them.
+
+### What NOT to edit by hand
+
+- The `Copyright (c) YYYY-YYYY ...` line on individual covered files —
+  edit `.copyright.txt` and re-run pre-commit instead.
+- The end year in `LICENSE` line 1, `docs/source/conf.py`, or
+  `.copyright.txt` on January 1 — the bump script handles it.
+- The body of `LICENSE` — verbatim per ANL legal.
+
+### What to edit by hand
+
+- The **start** year in any year range (project inception year);
+  the script never touches it.
+- Adding new files to `TARGET_FILES` if a new file legitimately
+  contains a year range.
+
 ## Running locally
 
 - Setup: create virtualenv, `pip install -e .[all]`

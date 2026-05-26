@@ -1,3 +1,5 @@
+# Copyright (c) 2023-2026 UChicago Argonne, LLC
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
 Tests for ``Sample.UB_is_stale`` (:issue:`391`).
 
