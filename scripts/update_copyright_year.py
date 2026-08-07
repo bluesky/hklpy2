@@ -87,6 +87,7 @@ def update_file(path: pathlib.Path, current_year: str) -> bool:
 
 
 def main() -> int:
+    """entry"""
     changed: list[pathlib.Path] = []
 
     for filepath in TARGET_FILES:
