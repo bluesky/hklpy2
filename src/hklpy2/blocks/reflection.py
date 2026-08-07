@@ -181,7 +181,7 @@ class Reflection:
             #
             for k, v in self.pseudos.items()
         ]
-        guts = [f"name={self.name!r}"] + pseudos
+        guts = [f"name={self.name!r}", *pseudos]
         return f"{self.__class__.__name__}({', '.join(guts)})"
 
     def __sub__(self, other: object) -> object:

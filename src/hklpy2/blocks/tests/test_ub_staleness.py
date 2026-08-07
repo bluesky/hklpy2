@@ -60,7 +60,7 @@ def _setup_initial(action: str):
         assert "r400" in refls and "r400" not in refls.order
     elif action == "add_and_prepend":
         # Prepend an existing non-orienting reflection to ``order``.
-        refls.order = ["r400"] + list(refls.order)
+        refls.order = ["r400", *refls.order]
     elif action == "remove_non_orienting":
         sample.remove_reflection("r400")
     elif action == "remove_order_zero":

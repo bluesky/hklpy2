@@ -60,8 +60,8 @@ r_5 = ["r5", {"a": 1, "b": 4}, dict(c=1, d=2), 1, "abcd", ["a", "b"], ["c", "d"]
 @pytest.mark.parametrize(
     "name, pseudos, reals, wavelength, geometry, pseudo_axis_names, real_axis_names, context",
     [
-        r100_parms + [does_not_raise()],  # good case
-        r010_parms + [does_not_raise()],  # good case
+        [*r100_parms, does_not_raise()],  # good case
+        [*r010_parms, does_not_raise()],  # good case
         pytest.param(
             1,  # wrong type
             dict(h=1, k=0, l=0),

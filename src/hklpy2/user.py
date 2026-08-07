@@ -256,15 +256,13 @@ def cahkl_table(*reflections: list[AxesTuple], digits=4) -> Table:
     core = get_diffractometer().core
     reals = get_diffractometer().real_axis_names
     table = Table()
-    table.labels = ["(hkl)", "#"] + reals
+    table.labels = ["(hkl)", "#", *reals]
     for r in reflections:
         pseudos = core.standardize_pseudos(r)
         rstr = "(" + " ".join([str(v) for v in brief(pseudos)]) + ")"
-        i = 0
-        for solution in core.forward(r):
-            i += 1
+        for i, solution in enumerate(core.forward(r), start=1):
             s = core.standardize_reals(solution)
-            table.addRow([rstr, i] + brief(s))
+            table.addRow([rstr, i, *brief(s)])
     print(table)
 
 
@@ -503,9 +501,9 @@ def remove_reflection(name: str, error: bool = True) -> None:
     """
     try:
         get_diffractometer().sample.remove_reflection(name)
-    except KeyError as exinfo:
+    except KeyError:
         if error:
-            raise exinfo
+            raise
 
 
 def remove_sample(name: str, error: bool = True) -> None:
@@ -538,9 +536,9 @@ def remove_sample(name: str, error: bool = True) -> None:
     """
     try:
         get_diffractometer().core.remove_sample(name)
-    except (KeyError, CoreError) as exinfo:
+    except (KeyError, CoreError):
         if error:
-            raise exinfo
+            raise
 
 
 def scan_extra(

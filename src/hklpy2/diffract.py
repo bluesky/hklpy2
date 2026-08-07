@@ -853,7 +853,7 @@ class DiffractometerBase(PseudoPositioner):
                     yield from _record(all_controls)
                 except Exception as reason:
                     if fail_on_exception:
-                        raise reason
+                        raise
                     else:
                         # Scan axis beyond limits will trigger this code.
                         print(f"FAIL: {axis}={value} {reason}")  # Inform the user!

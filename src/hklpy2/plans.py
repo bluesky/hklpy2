@@ -271,7 +271,7 @@ def scan_zone(
 
             # read
             yield from bps.create("primary")
-            for item in detectors + [diffractometer]:
+            for item in [*detectors, diffractometer]:
                 yield from bps.read(item)
             yield from bps.save()
 
