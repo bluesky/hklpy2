@@ -87,7 +87,7 @@ def update_file(path: pathlib.Path, current_year: str) -> bool:
 
 
 def main() -> int:
-    """entry"""
+    """Update copyright year in target files; return 0 if unchanged, 1 if modified."""
     changed: list[pathlib.Path] = []
 
     for filepath in TARGET_FILES:
