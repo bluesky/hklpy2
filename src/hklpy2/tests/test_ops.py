@@ -702,6 +702,749 @@ def test_extras_setter(
 
 
 @pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="x",
+                value=0.5,
+            ),
+            does_not_raise(),
+            id="setitem-single-key",
+        ),
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="invalid_key",
+                value=0.5,
+            ),
+            pytest.raises(
+                ConfigurationError,
+                match=re.escape("Unexpected extra axis name(s)"),
+            ),
+            id="setitem-invalid-key",
+        ),
+    ],
+)
+def test_extras_dict_direct_setitem(parms, context):
+    """Test setting individual extras via direct key assignment (issue #414)."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        sim.core.extras[parms["key"]] = parms["value"]
+
+        # Verify the value persists through fresh access
+        assert sim.core.extras[parms["key"]] == parms["value"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                updates=dict(x=0.5, y=0.25),
+            ),
+            does_not_raise(),
+            id="update-multiple-keys",
+        ),
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                updates=dict(x=0.5, invalid_key=0.1),
+            ),
+            pytest.raises(
+                ConfigurationError,
+                match=re.escape("Unexpected extra axis name(s)"),
+            ),
+            id="update-with-invalid-key",
+        ),
+    ],
+)
+def test_extras_dict_update_method(parms, context):
+    """Test updating extras via .update() method."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        sim.core.extras.update(parms["updates"])
+
+        for key, value in parms["updates"].items():
+            if key in sim.core.extras:
+                assert sim.core.extras[key] == value
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="x",
+            ),
+            pytest.raises(
+                TypeError, match=re.escape("Deletion of extras is not allowed")
+            ),
+            id="deletion-forbidden",
+        ),
+    ],
+)
+def test_extras_dict_deletion_forbidden(parms, context):
+    """Test that deletion via del is not permitted (issue #414 requirement)."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        del sim.core.extras[parms["key"]]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+            ),
+            does_not_raise(),
+            id="extras-clear-resets",
+        ),
+    ],
+)
+def test_extras_dict_clear_method(parms, context):
+    """Test .clear() method resets extras to 0.0."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        if len(sim.core.extras) > 0:
+            # Set some values
+            keys = list(sim.core.extras.keys())[:1]
+            sim.core.extras[keys[0]] = 1.5
+            assert sim.core.extras[keys[0]] != 0.0
+
+            # Clear
+            sim.core.extras.clear()
+
+            # All should be 0.0
+            assert all(v == 0.0 for v in sim.core.extras.values())
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="x",
+                value=0.5,
+            ),
+            does_not_raise(),
+            id="issue414-direct-assignment",
+        ),
+    ],
+)
+def test_extras_dict_issue414_solved(parms, context):
+    """Test that issue #414 is solved: direct key assignment now works."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        key = parms["key"]
+        value = parms["value"]
+
+        # This is the exact use case from issue #414
+        sim.core.extras[key] = value
+
+        # Verify it was actually set and persists
+        assert sim.core.extras[key] == value
+
+        # Verify through fresh property access
+        fresh_extras = sim.core.extras
+        assert fresh_extras[key] == value
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="x",
+                value=0.5,
+            ),
+            does_not_raise(),
+            id="backwards-compat-setter",
+        ),
+    ],
+)
+def test_extras_dict_backwards_compatible(parms, context):
+    """Test that old setter pattern still works (backwards compatibility)."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        # Old pattern (setter with dict)
+        old_dict = dict(sim.core.extras)
+        old_dict[parms["key"]] = parms["value"]
+        sim.core.extras = old_dict
+
+        # Verify it was set
+        assert sim.core.extras[parms["key"]] == parms["value"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+            ),
+            does_not_raise(),
+            id="dict-subclass",
+        ),
+    ],
+)
+def test_extras_dict_is_dict(parms, context):
+    """Test that extras property returns a proper dict subclass."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        extras = sim.core.extras
+
+        # Should be a dict instance
+        assert isinstance(extras, dict)
+
+        # Should support dict methods
+        assert callable(extras.get)
+        assert callable(extras.update)
+        assert callable(extras.clear)
+        assert callable(extras.items)
+        assert callable(extras.keys)
+        assert callable(extras.values)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="E4CV",
+                mode="bissector",
+            ),
+            does_not_raise(),
+            id="empty-extras-mode",
+        ),
+    ],
+)
+def test_extras_dict_empty_mode(parms, context):
+    """Test extras dict behavior when mode has no extras."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        extras = sim.core.extras
+        assert len(extras) == 0
+        assert isinstance(extras, dict)
+
+        # Safe to call methods on empty dict
+        assert list(extras.keys()) == []
+        assert list(extras.values()) == []
+        extras.clear()  # Should be safe
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="x",
+                value=0.5,
+            ),
+            does_not_raise(),
+            id="fresh-instance-each-access",
+        ),
+    ],
+)
+def test_extras_dict_fresh_instance(parms, context):
+    """Test that each access to .extras returns a fresh ExtrasDict instance."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        extras1 = sim.core.extras
+        extras2 = sim.core.extras
+
+        # Different objects
+        assert extras1 is not extras2
+
+        # But same content
+        assert dict(extras1) == dict(extras2)
+
+        # Set value in one view
+        extras1[parms["key"]] = parms["value"]
+
+        # Should persist to Core state
+        assert sim.core.extras[parms["key"]] == parms["value"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="x",
+                value=0.5,
+            ),
+            does_not_raise(),
+            id="setitem-update-solver",
+        ),
+    ],
+)
+def test_extras_dict_setitem_updates_solver(parms, context):
+    """Test that setitem automatically flags solver for update."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        key = parms["key"]
+        value = parms["value"]
+
+        # Set value
+        sim.core.extras[key] = value
+
+        # Trigger solver update
+        sim.core.update_solver()
+
+        # Value should persist through update
+        assert sim.core.extras[key] == value
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                updates=dict(x=0.5, y=0.25),
+            ),
+            does_not_raise(),
+            id="update-with-kwargs",
+        ),
+    ],
+)
+def test_extras_dict_update_with_kwargs(parms, context):
+    """Test update() with keyword arguments."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        sim.core.extras.update(**parms["updates"])
+
+        for key, value in parms["updates"].items():
+            if key in sim.core.extras:
+                assert sim.core.extras[key] == value
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="x",
+                default=0.5,
+            ),
+            does_not_raise(),
+            id="setdefault-existing-key",
+        ),
+    ],
+)
+def test_extras_dict_setdefault_method(parms, context):
+    """Test setdefault() method."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        key = parms["key"]
+        default = parms["default"]
+
+        # Set initial value
+        sim.core.extras[key] = default
+        initial = sim.core.extras[key]
+
+        # setdefault should return existing value
+        result = sim.core.extras.setdefault(key, 0.0)
+        assert result == initial
+        assert sim.core.extras[key] == initial
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="z",
+                default=0.5,
+            ),
+            does_not_raise(),
+            id="setdefault-new-key",
+        ),
+    ],
+)
+def test_extras_dict_setdefault_new_key(parms, context):
+    """Test setdefault() when key not yet in view (exercises line 194-197)."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        key = parms["key"]
+        default = parms["default"]
+
+        # Get a fresh view and pop the key to remove it from view
+        view = sim.core.extras
+        view.pop(key, None)  # Remove from view only
+        assert key not in view
+
+        # setdefault on key not in view should set and return default
+        result = view.setdefault(key, default)
+        assert result == default
+        # Fresh access should show the new value
+        assert sim.core.extras[key] == default
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+            ),
+            does_not_raise(),
+            id="clear-full-coverage",
+        ),
+    ],
+)
+def test_extras_dict_clear_full_coverage(parms, context):
+    """Test clear() method with all paths (exercises line 235-239)."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        if len(sim.core.extras) > 0:
+            # Set multiple values
+            keys = list(sim.core.extras.keys())
+            for i, key in enumerate(keys):
+                sim.core.extras[key] = (i + 1) * 0.1
+
+            # Verify they're set
+            for key in keys:
+                assert sim.core.extras[key] != 0.0
+
+            # Clear
+            sim.core.extras.clear()
+
+            # All should be 0.0
+            for key in sim.core.extras.keys():
+                assert sim.core.extras[key] == 0.0
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="x",
+            ),
+            pytest.raises(KeyError),
+            id="pop-no-default-raises",
+        ),
+    ],
+)
+def test_extras_dict_pop_without_default(parms, context):
+    """Test pop() without default raises KeyError (exercises line 221-222 path)."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        # Try to pop a key that doesn't exist without default
+        # First ensure it's not there
+        view = sim.core.extras
+        view.pop(parms["key"], None)  # Remove from view if present
+
+        # Now try to pop without default - should raise KeyError
+        view.pop("definitely_not_a_key_xyz")
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+            ),
+            pytest.raises(
+                ConfigurationError,
+                match=re.escape("Unexpected extra axis name(s)"),
+            ),
+            id="update-validation-fails",
+        ),
+    ],
+)
+def test_extras_dict_update_validation_fails(parms, context):
+    """Test update() validation failure (exercises line 157-161 path)."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        # Try to update with invalid keys
+        sim.core.extras.update({"invalid_key_xyz": 0.5})
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+            ),
+            pytest.raises(
+                TypeError, match=re.escape("Deletion of extras is not allowed")
+            ),
+            id="delitem-forbidden",
+        ),
+    ],
+)
+def test_extras_dict_delitem_raises(parms, context):
+    """Test __delitem__ raises TypeError (exercises line 135 path)."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        if len(sim.core.extras) > 0:
+            key = list(sim.core.extras.keys())[0]
+            del sim.core.extras[key]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                updates=dict(x=0.5, y=0.25, z=0.1),
+            ),
+            does_not_raise(),
+            id="update-multiple-keys-full",
+        ),
+    ],
+)
+def test_extras_dict_update_full_coverage(parms, context):
+    """Test update() with multiple keys for full coverage (exercises line 162-166 path)."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        # Update with multiple keys
+        sim.core.extras.update(parms["updates"])
+
+        # Verify all were set
+        for key, value in parms["updates"].items():
+            if key in sim.core.extras:
+                assert sim.core.extras[key] == value
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+            ),
+            does_not_raise(),
+            id="sync-from-core",
+        ),
+    ],
+)
+def test_extras_dict_sync_from_core(parms, context):
+    """Test _sync_from_core() to ensure dict view is properly synced."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        # Modify core state directly
+        if len(sim.core.extras) > 0:
+            keys = list(sim.core.extras.keys())
+            for key in keys:
+                sim.core._extras[key] = 999.0
+
+            # Get fresh view which should sync from core
+            extras2 = sim.core.extras
+
+            # Should reflect the changes
+            for key in keys:
+                assert extras2[key] == 999.0
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+                key="x",
+            ),
+            does_not_raise(),
+            id="pop-returns-value",
+        ),
+    ],
+)
+def test_extras_dict_pop_method(parms, context):
+    """Test pop() method."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        key = parms["key"]
+
+        # Pop from view
+        view = sim.core.extras
+        original = view.get(key)
+        popped = view.pop(key, None)
+
+        # Should match original value
+        assert popped == original
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode_1="constant_incidence",
+                mode_2="eulerians",
+            ),
+            does_not_raise(),
+            id="mode-change-resets-extras",
+        ),
+    ],
+)
+def test_extras_dict_mode_change(parms, context):
+    """Test that extras are properly handled during mode changes."""
+    with context:
+        sim = creator(
+            name="sim",
+            solver=parms["solver"],
+            geometry=parms["geometry"],
+            solver_kwargs=dict(engine="eulerians"),
+        )
+
+        # Set mode 1
+        sim.core.mode = parms["mode_1"]
+
+        # Change mode
+        sim.core.mode = parms["mode_2"]
+
+        # Extras should exist and be a dict
+        assert isinstance(sim.core.extras, dict)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                solver="hkl_soleil",
+                geometry="K6C",
+                mode="constant_incidence",
+            ),
+            does_not_raise(),
+            id="issue414-comprehensive",
+        ),
+    ],
+)
+def test_extras_dict_issue414_comprehensive(parms, context):
+    """Comprehensive test covering all issue #414 mutation patterns."""
+    with context:
+        sim = creator(name="sim", solver=parms["solver"], geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+
+        if len(sim.core.extras) > 0:
+            keys = list(sim.core.extras.keys())
+
+            # Pattern 1: Direct assignment (the main request)
+            sim.core.extras[keys[0]] = 0.1
+            assert sim.core.extras[keys[0]] == 0.1
+
+            # Pattern 2: Dict assignment (original way - still works)
+            sim.core.extras = {k: 0.2 for k in keys[:1]}
+            assert sim.core.extras[keys[0]] == 0.2
+
+            # Pattern 3: .update() method
+            sim.core.extras.update({k: 0.3 for k in keys[:1]})
+            assert sim.core.extras[keys[0]] == 0.3
+
+            # Pattern 4: .setdefault() method
+            sim.core.extras.setdefault(keys[0], 0.4)
+            assert sim.core.extras[keys[0]] == 0.3  # Value unchanged
+
+            # Pattern 5: .clear() method
+            sim.core.extras.clear()
+            assert all(v == 0.0 for v in sim.core.extras.values())
+
+
+@pytest.mark.parametrize(
     "setup, config, context",
     [
         pytest.param(

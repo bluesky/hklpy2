@@ -30,8 +30,13 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    SEMVER
-    ######
+    0.7.3
+    #####
+
+    Enhancements
+    -----------
+
+    * Allow individual extras to be set by key assignment: ``core.extras["key"] = value``. (:issue:`414`)
 
     Maintenance
     -----------

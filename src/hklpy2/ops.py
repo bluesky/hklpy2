@@ -20,6 +20,7 @@ from typing import Mapping
 from typing import Optional
 from typing import Union
 
+from deprecated.sphinx import versionadded
 from deprecated.sphinx import versionchanged
 
 from .backends.base import SolverBase
@@ -51,6 +52,193 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 DEFAULT_EXTRA_VALUE: float = 0
 DEFAULT_SAMPLE_NAME: str = "sample"
+
+
+@versionadded(
+    version="0.7.3", reason="Allow setting extras by individual key assignment."
+)
+class ExtrasDict(dict):
+    """
+    Dict subclass that manages extras with validation and solver updates.
+
+    This custom dict intercepts mutations (setitem, update, setdefault, pop, etc.)
+    to validate incoming extras and automatically flag the solver for update.
+    It provides a read-only view filtered to the current mode's extras.
+
+    Deletion is not permitted; extras for a mode are fixed.
+    """
+
+    def __init__(self, core: "Core", *args, **kwargs):
+        """
+        Initialize ExtrasDict with a reference to the Core instance.
+
+        Parameters
+        ----------
+        core : Core
+            The Core instance that manages extras state.
+        """
+        super().__init__(*args, **kwargs)
+        # Store reference to Core using name mangling to avoid conflicts
+        self.__core = core
+
+    @property
+    def _core(self) -> "Core":
+        """Reference to the parent Core instance."""
+        return self.__core
+
+    def _sync_from_core(self) -> None:
+        """Synchronize dict contents from Core's current mode extras."""
+        every = self._core.all_extras
+        mode_extras = {axis: every[axis] for axis in self._core.solver_extra_axis_names}
+        # Clear and repopulate to match current mode
+        dict.clear(self)
+        dict.update(self, mode_extras)
+
+    def _validate_and_sync(self, key: str, value: float) -> None:
+        """Validate a single key/value pair and update Core state."""
+        # Check that key is in the expected extras for current mode
+        expected = {
+            axis: self._core.all_extras[axis]
+            for axis in self._core.solver_extra_axis_names
+        }
+        if key not in expected:
+            raise ConfigurationError(
+                f"Unexpected extra axis name(s) {[key]!r}."
+                f"  Expected names: {list(expected.keys())}."
+            )
+        # Update Core's internal extras storage
+        self._core._extras[key] = value
+        self._core.request_solver_update(_SolverDirty.EXTRAS)
+
+    def __setitem__(self, key: str, value: float) -> None:
+        """
+        Set extras by key with validation.
+
+        Validates the key is in the current mode's extras,
+        updates Core's internal state, and flags solver for update.
+
+        Parameters
+        ----------
+        key : str
+            The extra axis name.
+        value : float
+            The value to set.
+
+        Raises
+        ------
+        ConfigurationError
+            If the key is not in the current mode's extras.
+        """
+        self._validate_and_sync(key, value)
+        dict.__setitem__(self, key, value)
+
+    def __delitem__(self, key: str) -> None:
+        """Deletion is not permitted; extras for a mode are fixed."""
+        raise TypeError("Deletion of extras is not allowed.")
+
+    def update(self, *args, **kwargs) -> None:
+        """
+        Update extras with validation of all keys.
+
+        Accepts dict, iterable of pairs, or keyword arguments.
+        All keys are validated before any updates are applied.
+
+        Raises
+        ------
+        ConfigurationError
+            If any key is not in the current mode's extras.
+        """
+        # Parse arguments using dict's update logic
+        other = dict(*args, **kwargs)
+        # Validate all keys upfront
+        expected = {
+            axis: self._core.all_extras[axis]
+            for axis in self._core.solver_extra_axis_names
+        }
+        unexpected = [k for k in other.keys() if k not in expected]
+        if unexpected:
+            raise ConfigurationError(
+                f"Unexpected extra axis name(s) {unexpected!r}."
+                f"  Expected names: {list(expected.keys())}."
+            )
+        # If validation passes, update all at once
+        for key, value in other.items():
+            self._core._extras[key] = value
+        self._core.request_solver_update(_SolverDirty.EXTRAS)
+        dict.update(self, other)
+
+    def setdefault(self, key: str, default: float = 0) -> float:
+        """
+        Set default for a key with validation.
+
+        If key is in current mode's extras, return its value.
+        Otherwise, set it to default and return default.
+
+        Parameters
+        ----------
+        key : str
+            The extra axis name.
+        default : float, optional
+            The default value (default: 0).
+
+        Returns
+        -------
+        float
+            The value for the key.
+
+        Raises
+        ------
+        ConfigurationError
+            If the key is not in the current mode's extras.
+        """
+        if key in self:
+            return self[key]
+        # Validate and set the default
+        self._validate_and_sync(key, default)
+        dict.__setitem__(self, key, default)
+        return default
+
+    def pop(self, key: str, *args) -> float:
+        """
+        Pop a key with a default fallback.
+
+        Note: This removes the key from the ExtrasDict view but does NOT
+        delete it from Core's internal state (deletion is not permitted).
+        The key will reappear if the mode changes and changes back.
+
+        Parameters
+        ----------
+        key : str
+            The extra axis name.
+        *args
+            Optional default value if key is not present.
+
+        Returns
+        -------
+        float
+            The value associated with the key, or the default if not present.
+
+        Raises
+        ------
+        KeyError
+            If key is not present and no default is provided.
+        """
+        # Only pop from dict view, don't modify Core state
+        return dict.pop(self, key, *args)
+
+    def clear(self) -> None:
+        """
+        Clear all extras with validation.
+
+        This sets all current mode extras to their default value (0.0)
+        and flags the solver for update.
+        """
+        # Reset all current mode extras to default
+        for key in self._core.solver_extra_axis_names:
+            self._core._extras[key] = DEFAULT_EXTRA_VALUE
+        self._core.request_solver_update(_SolverDirty.EXTRAS)
+        dict.clear(self)
+        self._sync_from_core()
 
 
 class Core:
@@ -604,15 +792,47 @@ class Core:
             )
 
     @property
-    def extras(self) -> list[str]:
-        """Ordered dictionary of |solver| extra parameters in current mode."""
-        every = self.all_extras
-        return {axis: every[axis] for axis in self.solver_extra_axis_names}
+    def extras(self) -> ExtrasDict:
+        """Ordered dictionary of |solver| extra parameters in current mode.
+
+        Returns an ExtrasDict that supports item-by-item assignment with
+        automatic validation and solver updates. Individual keys can be
+        set directly via key assignment, ``.update()``, or other dict methods.
+
+        See :ref:`how_extras` for comprehensive examples and usage patterns.
+
+        Examples
+        --------
+        >>> psic.core.extras["alpha_i"] = 0.2
+        >>> psic.core.extras.update({"alpha_i": 0.2, "beta_out": 0.1})
+        >>> psic.core.extras.clear()
+        >>> psic.core.extras.setdefault("alpha_i", 0.0)
+        """
+        # Create a fresh ExtrasDict synced to current mode
+        extras_dict = ExtrasDict(self)
+        extras_dict._sync_from_core()
+        return extras_dict
 
     @extras.setter
     def extras(self, values: NamedFloatDict) -> None:
-        """Set |solver| extra parameters for the current mode."""
-        incoming = self._validate_extras(values, self.extras)
+        """Set |solver| extra parameters for the current mode.
+
+        Parameters
+        ----------
+        values : NamedFloatDict
+            A dict of extra axis names and their values. May be a partial dict;
+            unspecified extras retain their current values.
+
+        Raises
+        ------
+        ConfigurationError
+            If any key is not a valid extra for the current mode.
+        """
+        # Get the current expected extras for validation
+        current_extras = {
+            axis: self.all_extras[axis] for axis in self.solver_extra_axis_names
+        }
+        incoming = self._validate_extras(values, current_extras)
         if len(incoming) > 0:
             self._extras.update(incoming)
             self.request_solver_update(_SolverDirty.EXTRAS)
