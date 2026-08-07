@@ -219,7 +219,7 @@ def psi_scan(start, finish, np):
 
     print(e4cv.info)
     print(f"{e4cv.UB=!r}")
-    e4cv.wh
+    e4cv.wh()
 
     print()
     print(f"Scan psi from {start} to {finish} with {np} points. {e4cv.mode=!r}")

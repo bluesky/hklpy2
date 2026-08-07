@@ -139,11 +139,9 @@ def add_sample(
     diffractometer = _choice.diffractometer
     if name in diffractometer.samples:
         logger.warning(
-            (
-                f"Sample {name!r} is already defined."
-                "  Add 'replace=True' to redefine this sample name."
-                "  Call 'set_lattice(a, ...)' to define a new lattice."
-            )
+            f"Sample {name!r} is already defined."
+            "  Add 'replace=True' to redefine this sample name."
+            "  Call 'set_lattice(a, ...)' to define a new lattice."
         )
     else:
         diffractometer.add_sample(

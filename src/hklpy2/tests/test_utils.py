@@ -934,9 +934,11 @@ def test_virtual_axis_finish_setup_trigger():
     multi = SpecialCase("", name="multi")
     assert multi.connected
     assert not multi.virtual._setup_finished
-    multi.physical.position
+    _ = multi.physical.position  # access triggers no setup (not the virtual axis)
     assert not multi.virtual._setup_finished
-    multi.virtual.position
+    _ = (
+        multi.virtual.position
+    )  # access triggers lazy _finish_setup() (see __getattribute__)
     assert multi.virtual._setup_finished
 
 

@@ -498,9 +498,7 @@ class SolverBase(ABC):
         A mode defines which axes will be modified by the
         :meth:`forward` computation.
         """
-        try:
-            self._mode
-        except AttributeError:
+        if not hasattr(self, "_mode"):
             self._mode = ""
         return self._mode
 
