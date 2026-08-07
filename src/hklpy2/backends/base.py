@@ -343,7 +343,7 @@ class SolverBase(ABC):
                 self.mode = mode
                 names += self.extra_axis_names
             self.mode = original  # put it back
-            self._all_extra_axis_names = sorted(list(set(names)))
+            self._all_extra_axis_names = sorted(set(names))
         return self._all_extra_axis_names
 
     @abstractmethod

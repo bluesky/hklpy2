@@ -113,7 +113,7 @@ def test_SolverBase():
     }
     assert md == expected
 
-    expected = "\n".join(
+    expected = "\n".join(  # fmt: skip
         [
             "==== ========= ======= =========== ========",
             "mode pseudo(s) real(s) writable(s) extra(s)",
@@ -147,7 +147,7 @@ def test_SolverBase_abstractmethods():
     # Need to test certain abstract methods of base class code
     # that require values not in the base class.
     solver = ThTthSolver(TH_TTH_Q_GEOMETRY)
-    expected = "\n".join(
+    expected = "\n".join(  # fmt: skip
         [
             "========= ========= ======= =========== ========",
             "mode      pseudo(s) real(s) writable(s) extra(s)",

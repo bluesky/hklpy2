@@ -56,7 +56,7 @@ def solver_versions() -> dict[str, str]:
         Solver = hklpy2.get_solver(sname)
         if not Solver.geometries():
             continue
-        gname = sorted(Solver.geometries())[0]
+        gname = min(Solver.geometries())
         versions[sname] = Solver(gname).version
     return versions
 

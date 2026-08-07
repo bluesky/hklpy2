@@ -462,12 +462,12 @@ class DiffractometerBase(PseudoPositioner):
         # entered (presets) default ON regardless.
         sim = self.is_simulator
         defaults = {
-            "clear": True if sim else False,
+            "clear": bool(sim),
             "restore_constraints": True,
-            "restore_wavelength": True if sim else False,
+            "restore_wavelength": bool(sim),
             "restore_mode": False,
-            "restore_samples": True if sim else False,
-            "restore_extras": True if sim else False,
+            "restore_samples": bool(sim),
+            "restore_extras": bool(sim),
             "restore_presets": True,
         }
         explicit_kwargs = {
@@ -839,7 +839,7 @@ class DiffractometerBase(PseudoPositioner):
                     yield from _record(all_controls)
                 except Exception as reason:
                     if fail_on_exception:
-                        raise reason
+                        raise
                     else:
                         # Scan axis beyond limits will trigger this code.
                         print(f"FAIL: {axis}={value} {reason}")  # Inform the user!
@@ -854,7 +854,7 @@ class DiffractometerBase(PseudoPositioner):
           removed but at least one decimal retained (e.g. 4 -> 4.0).
         - Other types: fall back to built-in repr.
         """
-        if isinstance(x, float) or isinstance(x, np.floating):
+        if isinstance(x, (float, np.floating)):
             s = f"{x:.{digits}f}"
             if "." in s:
                 s = s.rstrip("0").rstrip(".")
@@ -1105,7 +1105,7 @@ def creator(
     name: str = "",
     solver: str = "hkl_soleil",
     geometry: str = "E4CV",
-    beam_kwargs: dict[str, object] = None,
+    beam_kwargs: dict[str, object] | None = None,
     solver_kwargs: dict[str, object] = {},  # noqa: B006
     _pseudo: Sequence[str] | None = None,
     pseudos: list = [],  # noqa: B006
@@ -1251,7 +1251,7 @@ def diffractometer_class_factory(
     *,
     solver: str = "hkl_soleil",
     geometry: str = "E4CV",
-    beam_kwargs: dict[str, object] = None,
+    beam_kwargs: dict[str, object] | None = None,
     solver_kwargs: dict[str, object] = {"engine": "hkl"},  # noqa: B006
     _pseudo: Sequence[str] | None = None,
     pseudos: list = [],  # noqa: B006

@@ -428,7 +428,7 @@ class HklSolver(SolverBase):
     @extras.setter
     def extras(self, values: NamedFloatDict) -> None:
         known_names = self.extra_axis_names
-        for k in values.keys():
+        for k in values:
             if k not in known_names:
                 raise KeyError(
                     f"Unexpected dictionary key received: {k!r}"

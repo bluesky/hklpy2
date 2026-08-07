@@ -432,9 +432,8 @@ class Core:
         replace: bool = False,
     ) -> Sample:
         """Add a new sample."""
-        if name in self.samples:
-            if not replace:
-                raise CoreError(f"Sample {name=!r} already defined.")
+        if name in self.samples and not replace:
+            raise CoreError(f"Sample {name=!r} already defined.")
         lattice = Lattice(a, b, c, alpha, beta, gamma, digits=digits)
         self._samples[name] = Sample(self, name, lattice)
         self.sample = name
@@ -931,10 +930,8 @@ class Core:
         rnames = [r.name for r in reflections]
         if len(reflections) < 3:
             raise CoreError(
-                # fmt: off
                 "Must have at least 3 reflections to refine lattice."
                 f" Known reflections: {rnames}"
-                # fmt: on
             )
 
         logger.debug("Refining lattice using reflections %r", rnames)
@@ -1006,7 +1003,7 @@ class Core:
             raise CoreError("Cannot remove last sample.")
 
         self._samples.pop(name)
-        self._sample_name = list(self.samples)[0]
+        self._sample_name = next(iter(self.samples))
 
     @versionchanged(
         version="0.6.2",

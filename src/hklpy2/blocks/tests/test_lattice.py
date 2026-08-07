@@ -217,7 +217,7 @@ def test_lattice_eq_fallback_raw_comparison(monkeypatch):
 
     # Now make a different lattice; fallback comparison should detect inequality
     l2b = Lattice(5.0, length_units="angstrom", angle_units="degrees")
-    assert not (l1 == l2b)
+    assert l1 != l2b
 
 
 @pytest.mark.parametrize(

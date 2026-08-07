@@ -495,9 +495,9 @@ def remove_reflection(name: str, error: bool = True) -> None:
     """
     try:
         get_diffractometer().sample.remove_reflection(name)
-    except KeyError as exinfo:
+    except KeyError:
         if error:
-            raise exinfo
+            raise
 
 
 def remove_sample(name: str, error: bool = True) -> None:
@@ -530,9 +530,9 @@ def remove_sample(name: str, error: bool = True) -> None:
     """
     try:
         get_diffractometer().core.remove_sample(name)
-    except (KeyError, CoreError) as exinfo:
+    except (KeyError, CoreError):
         if error:
-            raise exinfo
+            raise
 
 
 def scan_extra(
