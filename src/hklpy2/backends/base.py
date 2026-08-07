@@ -200,9 +200,7 @@ class SolverBase(ABC):
         True
         """
         if not isinstance(descriptor, GeometryDescriptor):
-            raise TypeError(
-                f"Expected GeometryDescriptor, received {type(descriptor)!r}."
-            )
+            raise TypeError(f"Expected GeometryDescriptor, received {type(descriptor)!r}.")
         cls._geometry_registry[descriptor.name] = descriptor
         logger.debug("Registered geometry %r on %s", descriptor.name, cls.__name__)
 
@@ -224,9 +222,7 @@ class SolverBase(ABC):
         """
         names = cls.geometries()
         if not names:
-            raise SolverError(
-                f"{cls.__name__} has no registered geometries; cannot pick a default."
-            )
+            raise SolverError(f"{cls.__name__} has no registered geometries; cannot pick a default.")
         return names[0]
 
     @versionadded(version="0.6.1", reason="Solver default geometry/mode contract.")
@@ -254,17 +250,13 @@ class SolverBase(ABC):
         descriptor = cls._geometry_registry.get(geometry)
         if descriptor is None:
             raise SolverError(
-                f"{cls.__name__} has no registered geometry {geometry!r};"
-                f" cannot pick a default mode."
+                f"{cls.__name__} has no registered geometry {geometry!r}; cannot pick a default mode."
             )
         if descriptor.default_mode:
             return descriptor.default_mode
         if descriptor.modes:
             return descriptor.modes[0]
-        raise SolverError(
-            f"Geometry {geometry!r} on {cls.__name__} defines no modes;"
-            f" cannot pick a default mode."
-        )
+        raise SolverError(f"Geometry {geometry!r} on {cls.__name__} defines no modes; cannot pick a default mode.")
 
     def __init__(
         self,
@@ -481,8 +473,7 @@ class SolverBase(ABC):
     @geometry.setter
     def geometry(self, value: str) -> None:
         raise AttributeError(
-            "Cannot change 'geometry' after solver is created."
-            "  Make a new solver for each geometry."
+            "Cannot change 'geometry' after solver is created.  Make a new solver for each geometry."
         )
 
     @abstractmethod

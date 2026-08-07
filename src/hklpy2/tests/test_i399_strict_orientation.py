@@ -425,9 +425,7 @@ def test_state_unchanged_when_strict_check_raises(parms, context):
         else:
             raise AssertionError(f"unknown action {action!r}")
 
-        assert list(refls.keys()) == keys_before, (
-            "Dict keys changed despite the exception"
-        )
+        assert list(refls.keys()) == keys_before, "Dict keys changed despite the exception"
         assert list(refls.order) == order_before, "Order changed despite the exception"
 
 

@@ -308,9 +308,7 @@ def test_creator_reals_restore_hardware_explicit_opt_in(parms, context):
         ),
         pytest.param(
             dict(forward_solution_function="cannot.find.this.function"),
-            pytest.raises(
-                ModuleNotFoundError, match=re.escape("No module named 'cannot'")
-            ),
+            pytest.raises(ModuleNotFoundError, match=re.escape("No module named 'cannot'")),
             id="invalid module raises",
         ),
     ],
@@ -389,12 +387,8 @@ def test_limits(axis, value, context):
             does_not_raise(),
             id="MultiAxis99",
         ),
-        pytest.param(
-            NoOpTh2Th, "q".split(), "th tth".split(), does_not_raise(), id="NoOpTh2Th"
-        ),
-        pytest.param(
-            TwoC, "q".split(), "theta ttheta".split(), does_not_raise(), id="TwoC"
-        ),
+        pytest.param(NoOpTh2Th, "q".split(), "th tth".split(), does_not_raise(), id="NoOpTh2Th"),
+        pytest.param(TwoC, "q".split(), "theta ttheta".split(), does_not_raise(), id="TwoC"),
     ],
 )
 def test_diffractometer_class_models(base, pseudos, reals, context):
@@ -693,9 +687,7 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
             id="dict position",
         ),
         pytest.param(
-            namedtuple(
-                "RealTuple", "omega chi phi tth".split(), defaults=[1, 2, 3, 4]
-            )(),
+            namedtuple("RealTuple", "omega chi phi tth".split(), defaults=[1, 2, 3, 4])(),
             does_not_raise(),
             id="namedtuple position",
         ),
@@ -706,9 +698,7 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
         ),
         pytest.param(
             {"omega": 1, "chi": 2, "phi": 3, "delta": -4},
-            pytest.raises(
-                TypeError, match=re.escape("unexpected keyword argument 'delta'")
-            ),
+            pytest.raises(TypeError, match=re.escape("unexpected keyword argument 'delta'")),
             id="unknown axis raises",
         ),
     ],
@@ -747,9 +737,7 @@ def test_orientation():
     fourc = creator()
     fourc.add_sample("silicon", SI_LATTICE_PARAMETER)
     fourc.beam.wavelength.put(1.0)
-    assert math.isclose(fourc.beam.wavelength.get(), 1.0, abs_tol=0.01), (
-        f"{fourc.beam.wavelength.get()=!r}"
-    )
+    assert math.isclose(fourc.beam.wavelength.get(), 1.0, abs_tol=0.01), f"{fourc.beam.wavelength.get()=!r}"
 
     fourc.add_reflection(
         (4, 0, 0),
@@ -764,9 +752,7 @@ def test_orientation():
         name="(040)",
     )
 
-    assert math.isclose(fourc.beam.wavelength.get(), 1.0, abs_tol=0.01), (
-        f"{fourc.beam.wavelength.get()=!r}"
-    )
+    assert math.isclose(fourc.beam.wavelength.get(), 1.0, abs_tol=0.01), f"{fourc.beam.wavelength.get()=!r}"
     assert fourc.sample.reflections.order == "(400) (040)".split()
 
     result = fourc.core.calc_UB(*fourc.sample.reflections.order)
@@ -839,9 +825,7 @@ def test_remove_sample():
             1,
             False,
             1,
-            pytest.raises(
-                ReflectionError, match=re.escape("Use 'replace=True' to overwrite.")
-            ),
+            pytest.raises(ReflectionError, match=re.escape("Use 'replace=True' to overwrite.")),
             id="duplicate name no replace raises",
         ),
         pytest.param(
@@ -891,9 +875,7 @@ def test_remove_sample():
             1,  # same data
             False,
             1,
-            pytest.raises(
-                ReflectionError, match=re.escape("Use 'replace=True' to overwrite.")
-            ),
+            pytest.raises(ReflectionError, match=re.escape("Use 'replace=True' to overwrite.")),
             id="same data different name raises",
         ),
         pytest.param(
@@ -1002,9 +984,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             "psi_constant",
             pytest.raises(
                 ValueError,
-                match=re.escape(
-                    "Must specify scan axes in groups of 3, received ('oddball',)"
-                ),
+                match=re.escape("Must specify scan axes in groups of 3, received ('oddball',)"),
             ),
             id="incomplete axis group raises",
         ),
@@ -1014,9 +994,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             "psi_constant",
             pytest.raises(
                 ValueError,
-                match=re.escape(
-                    "Must specify scan axes in groups of 3, received ('psi',)"
-                ),
+                match=re.escape("Must specify scan axes in groups of 3, received ('psi',)"),
             ),
             id="psi only no range raises",
         ),
@@ -1024,9 +1002,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
             [[noisy_det], "psi", 0, 1],
             dict(pseudos=None, reals=None),
             "psi_constant",
-            pytest.raises(
-                ValueError, match=re.escape("Must define either pseudos or reals.")
-            ),
+            pytest.raises(ValueError, match=re.escape("Must define either pseudos or reals.")),
             id="no pseudos or reals raises",
         ),
         pytest.param(
@@ -1036,9 +1012,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
                 reals=dict(omega=1, chi=2, phi=3, tth=4),
             ),
             "psi_constant",
-            pytest.raises(
-                ValueError, match=re.escape("Cannot define both pseudos and reals.")
-            ),
+            pytest.raises(ValueError, match=re.escape("Cannot define both pseudos and reals.")),
             id="both pseudos and reals raises",
         ),
         pytest.param(
@@ -1047,9 +1021,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
                 pseudos=dict(h=2, k=-1, l=0),
             ),
             "psi_constant",
-            pytest.raises(
-                KeyError, match=re.escape("Extra axis may only be used once,")
-            ),
+            pytest.raises(KeyError, match=re.escape("Extra axis may only be used once,")),
             id="duplicate scan axis raises",
         ),
         pytest.param(
@@ -1193,9 +1165,7 @@ def test_e4cv_constant_phi():
         pytest.param([1.0, 2.0, 3.0], does_not_raise(), id="float list"),
         pytest.param(
             None,
-            pytest.raises(
-                TypeError, match=re.escape("Pseudos must be tuple, list, or dict.")
-            ),
+            pytest.raises(TypeError, match=re.escape("Pseudos must be tuple, list, or dict.")),
             id="None raises TypeError",
         ),
         pytest.param(
@@ -1250,7 +1220,6 @@ def test_e4cv_constant_phi():
 )
 def test_miller_args(miller, context):
     """Test the Miller indices arguments: h, k, l."""
-
     with context:
         e4cv = creator()
         e4cv.add_reflection(miller)
@@ -1316,9 +1285,7 @@ def test_failed_restore():
         e4cv.restore(config)
 
     config.pop("_header")
-    with pytest.raises(
-        KeyError, match=re.escape("Configuration is missing '_header' key")
-    ):
+    with pytest.raises(KeyError, match=re.escape("Configuration is missing '_header' key")):
         e4cv = creator()
         e4cv.restore(config)
 
@@ -1336,9 +1303,7 @@ def test_failed_restore():
             pytest.raises(TypeError, match=re.escape("Expected a list")),
             id="pseudos string raises",
         ),
-        pytest.param(
-            {"reals": "omega chi phi tth".split()}, does_not_raise(), id="reals list"
-        ),
+        pytest.param({"reals": "omega chi phi tth".split()}, does_not_raise(), id="reals list"),
         pytest.param(
             {
                 "reals": dict(
@@ -1461,8 +1426,8 @@ def test_make_wrapped_namedtuple_class_none_and_marked():
 
     # Create a namedtuple class and mark it as already wrapped with digits=4
     Orig = namedtuple("OrigX", "a b")
-    setattr(Orig, "_hklpy2_wrapped", True)
-    setattr(Orig, "_hklpy2_wrapped_digits", 4)
+    Orig._hklpy2_wrapped = True
+    Orig._hklpy2_wrapped_digits = 4
     # When requesting the same digit count, the original class should be returned.
     returned = DiffractometerBase._make_wrapped_namedtuple_class(Orig, 4)
     assert returned is Orig
@@ -1494,9 +1459,7 @@ def test_digits_property(value, context):
             d.digits = other
             # Verify the instance-level namedtuple classes were re-wrapped
             if hasattr(d, "PseudoPosition"):
-                assert (
-                    getattr(d.PseudoPosition, "_hklpy2_wrapped_digits", None) == other
-                )
+                assert getattr(d.PseudoPosition, "_hklpy2_wrapped_digits", None) == other
             if hasattr(d, "RealPosition"):
                 assert getattr(d.RealPosition, "_hklpy2_wrapped_digits", None) == other
     finally:
@@ -1536,9 +1499,7 @@ def test_configuration_setter_delegates_to_restore(parms, context):
     with context:
         config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
         e4cv = creator()
-        assert math.isclose(
-            e4cv.beam.wavelength.get(), DEFAULT_WAVELENGTH, abs_tol=0.001
-        )
+        assert math.isclose(e4cv.beam.wavelength.get(), DEFAULT_WAVELENGTH, abs_tol=0.001)
         # Use the property setter – should behave identically to restore()
         e4cv.configuration = config
         # Wavelength in e4cv_orient.yml is 1.54

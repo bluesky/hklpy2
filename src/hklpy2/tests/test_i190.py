@@ -466,9 +466,7 @@ def test_presets_ignored_for_computed_axes(e4cv, parms, context):
             dict(presets="bad_input"),
             pytest.raises(
                 TypeError,
-                match=re.escape(
-                    "Unexpected type: 'bad_input'.  Expected 'AnyAxesType'."
-                ),
+                match=re.escape("Unexpected type: 'bad_input'.  Expected 'AnyAxesType'."),
             ),
             id="string input raises TypeError",
         ),

@@ -106,9 +106,7 @@ class Reflection:
             axes_solver = core.solver.real_axis_names
             if real_axis_names not in (axes_local, axes_solver):
                 raise ReflectionError(
-                    f"{real_axis_names=}"
-                    f" do not match diffractometer ({axes_local})"
-                    f" or solver ({axes_solver})."
+                    f"{real_axis_names=} do not match diffractometer ({axes_local}) or solver ({axes_solver})."
                 )
 
         self.digits = DEFAULT_REFLECTION_DIGITS if digits is None else digits
@@ -162,21 +160,16 @@ class Reflection:
         Precision is controlled by rounding to smallest number of digits
         between the reflections.
         """
-
         digits = min(self.digits, r2.digits)
         pseudos_ok = compare_float_dicts(self.pseudos, r2.pseudos, digits)
         reals_ok = compare_float_dicts(self.reals, r2.reals, digits)
         # Convert r2 wavelength to this reflection's units before comparing
         try:
-            r2_wl_in_self_units = convert_units(
-                r2.wavelength, r2.wavelength_units, self.wavelength_units
-            )
+            r2_wl_in_self_units = convert_units(r2.wavelength, r2.wavelength_units, self.wavelength_units)
         except Exception:
             # If conversion fails, fall back to raw comparison (will likely fail)
             r2_wl_in_self_units = r2.wavelength
-        wavelength_ok = round(self.wavelength, digits) == round(
-            r2_wl_in_self_units, digits
-        )
+        wavelength_ok = round(self.wavelength, digits) == round(r2_wl_in_self_units, digits)
         return pseudos_ok and reals_ok and wavelength_ok
 
     def __repr__(self) -> str:
@@ -516,11 +509,7 @@ class ReflectionsDict(dict):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ReflectionsDict):
             return NotImplemented
-        return (
-            super().__eq__(other)
-            and self._order == other._order
-            and self.geometry == other.geometry
-        )
+        return super().__eq__(other) and self._order == other._order and self.geometry == other.geometry
 
     def _asdict(self) -> Mapping[str, Union[float, int, str]]:
         """

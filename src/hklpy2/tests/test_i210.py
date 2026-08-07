@@ -49,17 +49,13 @@ TESTS_DIR = pathlib.Path(__file__).parent
             dict(config=42),
             pytest.raises(
                 TypeError,
-                match=re.escape(
-                    "Expected a dict, path to a YAML file, or DiffractometerBase"
-                ),
+                match=re.escape("Expected a dict, path to a YAML file, or DiffractometerBase"),
             ),
             id="invalid config type raises TypeError",
         ),
         pytest.param(
             dict(config={"solver": {}, "axes": {}}),
-            pytest.raises(
-                KeyError, match=re.escape("Configuration is missing '_header' key.")
-            ),
+            pytest.raises(KeyError, match=re.escape("Configuration is missing '_header' key.")),
             id="missing _header raises KeyError",
         ),
     ],
@@ -365,12 +361,8 @@ def test_simulator_from_config_auxiliary_axes_roundtrip(tmp_path):
         reals=dict(omega=None, chi=None, phi=None, tth=None, atheta=None, attheta=None),
     )
     sim.core.add_sample("vibranium", 4.04)
-    r1 = sim.core.add_reflection(
-        dict(h=4, k=0, l=0), dict(omega=-145.451, chi=0, phi=0, tth=69.066)
-    )
-    r2 = sim.core.add_reflection(
-        dict(h=0, k=4, l=0), dict(omega=-145.451, chi=0, phi=90, tth=69.066)
-    )
+    r1 = sim.core.add_reflection(dict(h=4, k=0, l=0), dict(omega=-145.451, chi=0, phi=0, tth=69.066))
+    r2 = sim.core.add_reflection(dict(h=0, k=4, l=0), dict(omega=-145.451, chi=0, phi=90, tth=69.066))
     sim.core.calc_UB(r1, r2)
 
     # Export — auxiliary_axes must appear in the saved config.
@@ -398,9 +390,7 @@ def test_simulator_from_config_auxiliary_axes_roundtrip(tmp_path):
     "parms, context",
     [
         pytest.param(
-            dict(
-                config="e4cv_orient.yml", restore_mode=True, expected_mode="bissector"
-            ),
+            dict(config="e4cv_orient.yml", restore_mode=True, expected_mode="bissector"),
             does_not_raise(),
             id="restore_mode=True applies saved mode",
         ),
@@ -472,12 +462,14 @@ def test_simulator_from_config_default_geometry(parms, context):
             "solver": {"name": "hkl_soleil"},
             "axes": {"axes_xref": {}, "pseudo_axes": [], "real_axes": []},
         }
-        with mock.patch(
-            "hklpy2.diffract.creator",
-            side_effect=RuntimeError("stop here"),
-        ) as mock_creator:
-            with pytest.raises(RuntimeError, match="stop here"):
-                simulator_from_config(cfg)
+        with (
+            mock.patch(
+                "hklpy2.diffract.creator",
+                side_effect=RuntimeError("stop here"),
+            ) as mock_creator,
+            pytest.raises(RuntimeError, match="stop here"),
+        ):
+            simulator_from_config(cfg)
         # The resolved geometry passed to creator() must equal
         # HklSolver.default_geometry() (i.e. the fallback ran).
         assert mock_creator.called

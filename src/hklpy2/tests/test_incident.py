@@ -56,9 +56,7 @@ def check_keys(wl, ref, tol=0.001):
             _WavelengthBase,
             dict(wavelength=0.5),
             {},
-            pytest.raises(
-                ReadOnlyError, match=re.escape("The signal wl_wavelength is readonly.")
-            ),
+            pytest.raises(ReadOnlyError, match=re.escape("The signal wl_wavelength is readonly.")),
             id="WavelengthBase-readonly-error",
         ),
         pytest.param(
@@ -171,9 +169,7 @@ def test_constructors(Klass, parms, ref, context):
         pytest.param(
             Wavelength,
             {"class": "Wavelength", "wavelength_units": "kg"},  # incompatible
-            pytest.raises(
-                pint.DimensionalityError, match=re.escape(INTERNAL_LENGTH_UNITS)
-            ),
+            pytest.raises(pint.DimensionalityError, match=re.escape(INTERNAL_LENGTH_UNITS)),
             id="Wavelength-incompatible-units-kg-error",
         ),
         pytest.param(
@@ -185,9 +181,7 @@ def test_constructors(Klass, parms, ref, context):
         pytest.param(
             Wavelength,
             {"class": "Wavelength", "energy_units": "pg"},
-            pytest.raises(
-                pint.DimensionalityError, match=re.escape("kiloelectron_volt")
-            ),
+            pytest.raises(pint.DimensionalityError, match=re.escape("kiloelectron_volt")),
             id="Wavelength-energy-units-pg-error",
         ),
         pytest.param(
@@ -205,9 +199,7 @@ def test_constructors(Klass, parms, ref, context):
         pytest.param(
             WavelengthXray,
             {"class": "WavelengthXray", "source_type": "unit testing"},
-            pytest.raises(
-                AssertionError, match=re.escape(DEFAULT_SOURCE_TYPE)
-            ),  # Can't change after constructor.
+            pytest.raises(AssertionError, match=re.escape(DEFAULT_SOURCE_TYPE)),  # Can't change after constructor.
             id="WavelengthXray-source-type-immutable-error",
         ),
     ],

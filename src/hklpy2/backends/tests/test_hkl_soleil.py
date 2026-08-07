@@ -89,9 +89,7 @@ def test_HklSolver():
     with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.lattice = 1.0
 
-    with pytest.raises(
-        ValueError, match=re.escape("Must provide 3 or more reflections")
-    ):
+    with pytest.raises(ValueError, match=re.escape("Must provide 3 or more reflections")):
         solver.refineLattice([])
 
     with pytest.raises(TypeError, match=re.escape("Must supply")):
@@ -104,13 +102,9 @@ def test_HklSolver():
     [
         pytest.param("E4CV", "hkl", ["omega", "chi", "phi", "tth"], id="E4CV"),
         pytest.param("E4CH", "hkl", ["omega", "chi", "phi", "tth"], id="E4CH"),
-        pytest.param(
-            "E6C", "hkl", ["mu", "omega", "chi", "phi", "gamma", "delta"], id="E6C"
-        ),
+        pytest.param("E6C", "hkl", ["mu", "omega", "chi", "phi", "gamma", "delta"], id="E6C"),
         pytest.param("K4CV", "hkl", ["komega", "kappa", "kphi", "tth"], id="K4CV"),
-        pytest.param(
-            "K6C", "hkl", ["mu", "komega", "kappa", "kphi", "gamma", "delta"], id="K6C"
-        ),
+        pytest.param("K6C", "hkl", ["mu", "komega", "kappa", "kphi", "gamma", "delta"], id="K6C"),
         pytest.param(
             "PETRA3 P09 EH2",
             "hkl",
@@ -248,9 +242,7 @@ def test_affine():
             id="engines is a dict",
         ),
         pytest.param(
-            dict(
-                key="engines", subkey="hkl", field="pseudos", expected=["h", "k", "l"]
-            ),
+            dict(key="engines", subkey="hkl", field="pseudos", expected=["h", "k", "l"]),
             does_not_raise(),
             id="hkl engine pseudos are h k l",
         ),
@@ -384,14 +376,8 @@ def test_summary(parms, context):
             assert summary.labels == parms["expected"]
         elif check == "engine_row":
             # Find the row matching engine+mode.
-            rows = [
-                row
-                for row in summary.rows
-                if row[0] == parms["engine"] and row[1] == parms["mode"]
-            ]
-            assert len(rows) == 1, (
-                f"Expected 1 row for {parms['engine']}/{parms['mode']}"
-            )
+            rows = [row for row in summary.rows if row[0] == parms["engine"] and row[1] == parms["mode"]]
+            assert len(rows) == 1, f"Expected 1 row for {parms['engine']}/{parms['mode']}"
             row = rows[0]
             assert row[2] == parms["pseudos"]
             assert row[3] == parms["reals"]
@@ -416,7 +402,7 @@ def test__details(geometry):
     review = diffractometer.core.solver._details
     assert isinstance(review, dict)
     keys = "name geometry engine sample lattice U UB wavelength mode extras".split()
-    assert list(sorted(review.keys())) == sorted(keys)
+    assert sorted(review.keys()) == sorted(keys)
     assert review["engine"] == "hkl"
     assert review["geometry"] == geometry
     assert review["name"] == "hkl_soleil"
@@ -543,9 +529,7 @@ def test_sample_property():
             ),
             pytest.raises(
                 ValueError,
-                match=re.escape(
-                    "UB calculation failed: the two reflections are colinear"
-                ),
+                match=re.escape("UB calculation failed: the two reflections are colinear"),
             ),
             id="colinear reflections raise ValueError",
         ),
@@ -714,9 +698,7 @@ def test_hkl_solver_metadata_live(parms, context):
 def test_hkl_default_mode(parms, context):
     """HklSolver.default_mode(geometry, engine=...) queries libhkl directly."""
     with context:
-        result = hkl_soleil.HklSolver.default_mode(
-            parms["geometry"], engine=parms["engine"]
-        )
+        result = hkl_soleil.HklSolver.default_mode(parms["geometry"], engine=parms["engine"])
         assert result == parms["expected"]
 
 

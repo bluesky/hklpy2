@@ -128,7 +128,6 @@ def to_hkl(arr: npt.NDArray[np.float64]) -> libhkl.Matrix:  # type: ignore
     -------
     Hkl.Matrix
     """
-
     if isinstance(arr, libhkl.Matrix):
         return arr
 
@@ -494,7 +493,6 @@ class HklSolver(SolverBase):
 
         Geometry is not usable without a computational engine.
         """
-
         factories = libhkl.factories()
 
         def num_engines(geometry):
@@ -537,18 +535,12 @@ class HklSolver(SolverBase):
         factories = libhkl.factories()
         if geometry not in factories:
             raise SolverError(
-                f"{cls.__name__}: geometry {geometry!r} is not known to libhkl;"
-                f" cannot pick a default mode."
+                f"{cls.__name__}: geometry {geometry!r} is not known to libhkl; cannot pick a default mode."
             )
         engine_list = factories[geometry].create_new_engine_list()
         engines = engine_list.engines_get()
-        if (
-            not engines
-        ):  # pragma: no cover - libhkl-listed geometries always have engines
-            raise SolverError(
-                f"{cls.__name__}: geometry {geometry!r} has no engines;"
-                f" cannot pick a default mode."
-            )
+        if not engines:  # pragma: no cover - libhkl-listed geometries always have engines
+            raise SolverError(f"{cls.__name__}: geometry {geometry!r} has no engines; cannot pick a default mode.")
         chosen = None
         for eng in engines:
             if eng.name_get() == engine:
@@ -557,9 +549,7 @@ class HklSolver(SolverBase):
         if chosen is None:
             chosen = engines[0]
         modes = chosen.modes_names_get()
-        if (
-            not modes
-        ):  # pragma: no cover - libhkl engines always declare at least one mode
+        if not modes:  # pragma: no cover - libhkl engines always declare at least one mode
             raise SolverError(
                 f"{cls.__name__}: geometry {geometry!r} engine"
                 f" {chosen.name_get()!r} has no modes;"
@@ -780,7 +770,7 @@ class HklSolver(SolverBase):
                     "reals": engine.axis_names_get(AXES_WRITTEN),
                 }
                 extras += eng_desc["modes"][mode_name]["extras"]
-            eng_desc["extras"] = list(sorted(set(extras)))
+            eng_desc["extras"] = sorted(set(extras))
         return description
 
     @property

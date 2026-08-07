@@ -73,9 +73,7 @@ __all__ = [
 # ---------------------------------------------------------------------------
 
 
-def _find_psi_mode(
-    diffractometer: DiffractometerBase, mode_override: Optional[str]
-) -> str:
+def _find_psi_mode(diffractometer: DiffractometerBase, mode_override: Optional[str]) -> str:
     """Return the name of the psi-capable mode, or raise.
 
     Parameters
@@ -97,9 +95,7 @@ def _find_psi_mode(
     available = diffractometer.core.modes
     if mode_override is not None:
         if mode_override not in available:
-            raise ValueError(
-                f"mode={mode_override!r} not in available modes: {available}"
-            )
+            raise ValueError(f"mode={mode_override!r} not in available modes: {available}")
         return mode_override
 
     candidates = [m for m in available if "psi" in m.lower()]
@@ -110,17 +106,12 @@ def _find_psi_mode(
             "Pass mode= to specify the mode name explicitly."
         )
     if len(candidates) > 1:
-        raise ValueError(
-            f"Multiple psi-capable modes found: {candidates}. "
-            "Pass mode= to select one explicitly."
-        )
+        raise ValueError(f"Multiple psi-capable modes found: {candidates}. Pass mode= to select one explicitly.")
     logger.debug("scan_psi: auto-detected psi mode %r", candidates[0])
     return candidates[0]
 
 
-def _find_psi_axis(
-    diffractometer: DiffractometerBase, psi_axis_override: Optional[str]
-) -> str:
+def _find_psi_axis(diffractometer: DiffractometerBase, psi_axis_override: Optional[str]) -> str:
     """Return the name of the psi extra axis in the current mode, or raise.
 
     Must be called *after* the desired psi mode has been set on the
@@ -143,22 +134,17 @@ def _find_psi_axis(
     extra_axes = diffractometer.core.solver_extra_axis_names
     if psi_axis_override is not None:
         if psi_axis_override not in extra_axes:
-            raise ValueError(
-                f"psi_axis={psi_axis_override!r} not in extra axes for "
-                f"current mode: {extra_axes}"
-            )
+            raise ValueError(f"psi_axis={psi_axis_override!r} not in extra axes for current mode: {extra_axes}")
         return psi_axis_override
 
     candidates = [ax for ax in extra_axes if "psi" in ax.lower()]
     if len(candidates) == 0:
         raise ValueError(
-            f"No psi extra axis found in {extra_axes}. "
-            "Pass psi_axis= to specify the axis name explicitly."
+            f"No psi extra axis found in {extra_axes}. Pass psi_axis= to specify the axis name explicitly."
         )
     if len(candidates) > 1:
         raise ValueError(
-            f"Multiple psi-like extra axes found: {candidates}. "
-            "Pass psi_axis= to select one explicitly."
+            f"Multiple psi-like extra axes found: {candidates}. Pass psi_axis= to select one explicitly."
         )
     logger.debug("scan_psi: auto-detected psi axis %r", candidates[0])
     return candidates[0]

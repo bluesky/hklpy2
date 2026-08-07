@@ -53,9 +53,7 @@ class _StandInSolver(NoOpSolver):
         self._marker = marker
         self._another = another
         _LAST_INIT_KWARGS.clear()
-        _LAST_INIT_KWARGS.update(
-            {"geometry": geometry, "marker": marker, "another": another}
-        )
+        _LAST_INIT_KWARGS.update({"geometry": geometry, "marker": marker, "another": another})
 
     @property
     def _metadata(self):
@@ -91,7 +89,6 @@ _StandInSolver.register_geometry(
 @pytest.fixture
 def _patched_solvers(monkeypatch):
     """Make the stand-in solver discoverable via ``get_solver``."""
-
     real_get_solver = solver_utils.get_solver
     real_solvers = solver_utils.solvers
 
@@ -102,9 +99,7 @@ def _patched_solvers(monkeypatch):
 
     def fake_solvers():
         mapping = dict(real_solvers())
-        mapping[_StandInSolver.name] = (
-            f"{_StandInSolver.__module__}:{_StandInSolver.__name__}"
-        )
+        mapping[_StandInSolver.name] = f"{_StandInSolver.__module__}:{_StandInSolver.__name__}"
         return mapping
 
     monkeypatch.setattr(solver_utils, "get_solver", fake_get_solver)
@@ -160,9 +155,7 @@ def test_solver_kwargs_roundtrip(parms, context, _patched_solvers, caplog):
         assert sim.core.solver._marker == parms["marker"]
 
         # Debug logging announces forwarded kwargs (issue #405).
-        forwarded_msgs = [
-            r.message for r in caplog.records if "forwarding solver_kwargs" in r.message
-        ]
+        forwarded_msgs = [r.message for r in caplog.records if "forwarding solver_kwargs" in r.message]
         assert forwarded_msgs, "expected a 'forwarding solver_kwargs' debug line"
         assert "marker" in forwarded_msgs[0]
 

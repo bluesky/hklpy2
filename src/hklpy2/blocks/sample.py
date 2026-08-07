@@ -258,9 +258,7 @@ class Sample:
         if not np.allclose(norm(arr, axis=1), [1, 1, 1], atol=1e-6):
             raise ValueError(f"{name} matrix rows must be normalized. Received {value}")
         if not np.allclose(norm(arr.T, axis=1), [1, 1, 1], atol=1e-6):
-            raise ValueError(
-                f"{name} matrix columns must be normalized. Received {value}"
-            )
+            raise ValueError(f"{name} matrix columns must be normalized. Received {value}")
 
     @property
     def U(self) -> Matrix3x3:
@@ -320,10 +318,7 @@ class Sample:
         head = tuple(order[:2])
         try:
             contents = tuple(
-                tuple(
-                    (field, self.reflections[name]._asdict()[field])
-                    for field in _UB_REFLECTION_FIELDS
-                )
+                tuple((field, self.reflections[name]._asdict()[field]) for field in _UB_REFLECTION_FIELDS)
                 for name in head
             )
         except KeyError:

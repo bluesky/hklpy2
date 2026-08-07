@@ -95,9 +95,7 @@ def main() -> int:
             continue
         if update_file(filepath, CURRENT_YEAR):
             changed.append(filepath)
-            print(
-                f"Updated copyright end year to {CURRENT_YEAR} in: {filepath.relative_to(REPO_ROOT)}"
-            )
+            print(f"Updated copyright end year to {CURRENT_YEAR} in: {filepath.relative_to(REPO_ROOT)}")
 
     if changed:
         print(

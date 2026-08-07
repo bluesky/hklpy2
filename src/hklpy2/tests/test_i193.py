@@ -250,9 +250,7 @@ def test_issue_193(parms, context):
         e4cv = _make_e4cv(constraints=parms["constraints"])
         e4cv.phi.move(parms["phi"])
 
-        solutions = e4cv.core.forward(
-            dict(h=parms["hkl"][0], k=parms["hkl"][1], l=parms["hkl"][2])
-        )
+        solutions = e4cv.core.forward(dict(h=parms["hkl"][0], k=parms["hkl"][1], l=parms["hkl"][2]))
 
         if not solutions:
             raise NoForwardSolutions("No solutions.")

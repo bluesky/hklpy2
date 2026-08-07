@@ -84,9 +84,7 @@ def _patched_solvers(monkeypatch):
 
     def fake_solvers():
         mapping = dict(real_solvers())
-        mapping[_StandInSolver407.name] = (
-            f"{_StandInSolver407.__module__}:{_StandInSolver407.__name__}"
-        )
+        mapping[_StandInSolver407.name] = f"{_StandInSolver407.__module__}:{_StandInSolver407.__name__}"
         return mapping
 
     monkeypatch.setattr(solver_utils, "get_solver", fake_get_solver)
@@ -198,6 +196,4 @@ def test_clean_bitfield_skips_flush(parms, context, _patched_solvers, monkeypatc
         monkeypatch.setattr(sim.core, "update_solver", spy)
         _ = sim.configuration
 
-        assert calls == [], (
-            f"expected no update_solver() calls on clean snapshot, got {calls}"
-        )
+        assert calls == [], f"expected no update_solver() calls on clean snapshot, got {calls}"

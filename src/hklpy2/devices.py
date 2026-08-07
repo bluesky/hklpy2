@@ -156,9 +156,7 @@ class VirtualPositionerBase(SoftPositioner):
             return
 
         self._setup_finished = True
-        logger.debug(
-            "VirtualPositionerBase._finish_setup() completed for %r", self.name
-        )
+        logger.debug("VirtualPositionerBase._finish_setup() completed for %r", self.name)
         # Call 'self._cb_update_position' when readback updates.
         readback.subscribe(self._cb_update_position)
         self._recompute_limits()
@@ -194,7 +192,6 @@ class VirtualPositionerBase(SoftPositioner):
         additional steps in this method ensure that final setup is called under
         the correct conditions.
         """
-
         if name == "position":  # Caution here to avoid recursion.
             if not self._setup_finished and self.connected:
                 try:
@@ -383,7 +380,7 @@ def parse_factory_axes(
     if len(set(_axes)) < len(_axes):
         raise ValueError(f"Duplicates in axes={_axes}")
     if isinstance(_axes, list):  # make axes a dict now
-        _axes = {k: None for k in _axes}
+        _axes = dict.fromkeys(_axes)
 
     if not learn_order and len(order) != len(set(order)):
         raise ValueError(f"Duplicates in {order=}.")
@@ -483,13 +480,9 @@ def make_aux_pseudo_positioner_class(
     same component tree the original device exposed.
     """
     if not pseudos:
-        raise ValueError(
-            f"pseudo_positioner aux {name!r} must declare at least one pseudo"
-        )
+        raise ValueError(f"pseudo_positioner aux {name!r} must declare at least one pseudo")
     if not reals:
-        raise ValueError(
-            f"pseudo_positioner aux {name!r} must declare at least one real"
-        )
+        raise ValueError(f"pseudo_positioner aux {name!r} must declare at least one real")
 
     body: dict = {}
     for p in pseudos:

@@ -79,8 +79,7 @@ class ConstraintBase(ABC):
 
         if self.__class__.__name__ != config["class"]:
             raise ConfigurationError(
-                f"Wrong configuration class {self.__class__.__name__}({self.label!r})."
-                f" Received: {config!r}"
+                f"Wrong configuration class {self.__class__.__name__}({self.label!r}). Received: {config!r}"
             )
 
         if isinstance(core, Core):
@@ -192,10 +191,7 @@ class LimitsConstraint(ConstraintBase):
 
     def __repr__(self) -> str:
         """Return a nicely-formatted string."""
-        return (
-            f"{self.low_limit} <= {self.label} <= {self.high_limit}"
-            f" [cut={self.cut_point}]"
-        )
+        return f"{self.low_limit} <= {self.label} <= {self.high_limit} [cut={self.cut_point}]"
 
     def _fromdict(self, config: KeyValueMap, core: Optional[Any] = None) -> None:
         """
@@ -211,9 +207,7 @@ class LimitsConstraint(ConstraintBase):
         self._fields = [f for f in self._fields if f != "cut_point"]
         super()._fromdict(config, core=core)
         self._fields = saved_fields
-        self.cut_point = config.get(
-            "cut_point", DEFAULT_CUT_POINT
-        )  # validated by setter
+        self.cut_point = config.get("cut_point", DEFAULT_CUT_POINT)  # validated by setter
 
     @property
     def cut_point(self) -> float:
@@ -228,9 +222,7 @@ class LimitsConstraint(ConstraintBase):
     def cut_point(self, value: float) -> None:
         value = float(value)
         if not math.isfinite(value):
-            raise ConstraintsError(
-                f"cut_point must be a finite number, received {value!r}."
-            )
+            raise ConstraintsError(f"cut_point must be a finite number, received {value!r}.")
         self._cut_point = value
 
     @property
@@ -308,8 +300,7 @@ class LimitsConstraint(ConstraintBase):
         """
         if self.label not in values:
             raise ConstraintsError(
-                f"Supplied values ({values!r}) did not include this"
-                f" constraint's label {self.label!r}."
+                f"Supplied values ({values!r}) did not include this constraint's label {self.label!r}."
             )
 
         value = values[self.label]

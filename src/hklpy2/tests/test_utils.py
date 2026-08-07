@@ -139,9 +139,7 @@ def RE(cat):
         pytest.param(
             (1, 2),
             "h k l".split(),
-            pytest.raises(
-                ValueError, match=re.escape("Expected at least 3 axes, received 2")
-            ),
+            pytest.raises(ValueError, match=re.escape("Expected at least 3 axes, received 2")),
             id="too-few-axes",
         ),
         pytest.param(
@@ -168,9 +166,7 @@ def RE(cat):
         pytest.param(
             [1.1, 2.2, 3.3, 4, "text"],
             "able baker charlie delta echo".split(),
-            pytest.raises(
-                TypeError, match=re.escape("Expected a number. Received: 'text'")
-            ),
+            pytest.raises(TypeError, match=re.escape("Expected a number. Received: 'text'")),
             id="non-numeric-element",
         ),
         pytest.param(
@@ -193,15 +189,9 @@ def test_axes_to_dict(input, names, context):
     "a1, a2, tol, equal, context",
     [
         pytest.param({}, {}, 0.1, True, does_not_raise(), id="empty-dicts"),
-        pytest.param(
-            {"a": 0.1}, {"a": 0.1}, 0.1, True, does_not_raise(), id="equal-values"
-        ),
-        pytest.param(
-            {"a": 0.1}, {"a": 1.1}, 0.1, False, does_not_raise(), id="unequal-values"
-        ),
-        pytest.param(
-            {"a": 0.1}, {"b": 0.1}, 0.1, False, does_not_raise(), id="different-keys"
-        ),
+        pytest.param({"a": 0.1}, {"a": 0.1}, 0.1, True, does_not_raise(), id="equal-values"),
+        pytest.param({"a": 0.1}, {"a": 1.1}, 0.1, False, does_not_raise(), id="unequal-values"),
+        pytest.param({"a": 0.1}, {"b": 0.1}, 0.1, False, does_not_raise(), id="different-keys"),
         pytest.param({"a": 0.1}, {}, 0.1, False, does_not_raise(), id="one-empty"),
         pytest.param(
             {},
@@ -211,12 +201,8 @@ def test_axes_to_dict(input, names, context):
             pytest.raises(ValueError, match=re.escape("should be tol >0")),
             id="negative-tol",
         ),
-        pytest.param(
-            {"a": 0.11}, {"a": 0.12}, 1, True, does_not_raise(), id="within-tol"
-        ),
-        pytest.param(
-            {"a": 0.11}, {"a": 0.12}, 2, False, does_not_raise(), id="outside-tol"
-        ),
+        pytest.param({"a": 0.11}, {"a": 0.12}, 1, True, does_not_raise(), id="within-tol"),
+        pytest.param({"a": 0.11}, {"a": 0.12}, 2, False, does_not_raise(), id="outside-tol"),
     ],
 )
 def test_compare_float_dicts(a1, a2, tol, equal, context):
@@ -230,16 +216,12 @@ def test_compare_float_dicts(a1, a2, tol, equal, context):
         pytest.param({"aa": 1, "bb": "two"}, does_not_raise(), id="valid-dict"),
         pytest.param(
             1,
-            pytest.raises(
-                AttributeError, match=re.escape("object has no attribute 'items'")
-            ),
+            pytest.raises(AttributeError, match=re.escape("object has no attribute 'items'")),
             id="int-input",
         ),
         pytest.param(
             [1],
-            pytest.raises(
-                AttributeError, match=re.escape("object has no attribute 'items'")
-            ),
+            pytest.raises(AttributeError, match=re.escape("object has no attribute 'items'")),
             id="list-input",
         ),
     ],
@@ -270,12 +252,8 @@ def test_dict_device_factory(data, context):
 @pytest.mark.parametrize(
     "source, context, answer",
     [
-        pytest.param(
-            [[1], [2, 3, 4]], does_not_raise(), [1, 2, 3, 4], id="nested-sublists"
-        ),
-        pytest.param(
-            [[1, 2], [3, 4]], does_not_raise(), [1, 2, 3, 4], id="equal-sublists"
-        ),
+        pytest.param([[1], [2, 3, 4]], does_not_raise(), [1, 2, 3, 4], id="nested-sublists"),
+        pytest.param([[1, 2], [3, 4]], does_not_raise(), [1, 2, 3, 4], id="equal-sublists"),
         pytest.param([1, 2, 3, 4], does_not_raise(), [1, 2, 3, 4], id="flat-list"),
         pytest.param([], does_not_raise(), [], id="empty-list"),
         pytest.param(
@@ -581,9 +559,7 @@ def test_list_orientation_runs(devices, cat, RE):
 @pytest.mark.parametrize(
     "value, annotation, context",
     [
-        pytest.param(
-            {"h": 1.2, "k": 1, "l": -1}, AxesDict, does_not_raise(), id="dict-AxesDict"
-        ),
+        pytest.param({"h": 1.2, "k": 1, "l": -1}, AxesDict, does_not_raise(), id="dict-AxesDict"),
         pytest.param(
             namedtuple("Position", "a b c d".split())(1, 2, 3, 4),
             AxesTuple,
@@ -618,9 +594,7 @@ def test_list_orientation_runs(devices, cat, RE):
             does_not_raise(),
             id="ndarray-AnyAxesType",
         ),
-        pytest.param(
-            None, Union[AnyAxesType, None], does_not_raise(), id="None-Optional"
-        ),
+        pytest.param(None, Union[AnyAxesType, None], does_not_raise(), id="None-Optional"),
         pytest.param(
             None,
             AnyAxesType,
@@ -659,16 +633,12 @@ def test_axes_type_annotations(value, annotation, context):
         pytest.param("hklpy2.diffract.creator", does_not_raise(), id="creator"),
         pytest.param(
             "hklpy2.diffract.does_not_exist",
-            pytest.raises(
-                AttributeError, match=re.escape("has no attribute 'does_not_exist'")
-            ),
+            pytest.raises(AttributeError, match=re.escape("has no attribute 'does_not_exist'")),
             id="missing-attr",
         ),
         pytest.param(
             "does.not.exist",
-            pytest.raises(
-                ModuleNotFoundError, match=re.escape("No module named 'does'")
-            ),
+            pytest.raises(ModuleNotFoundError, match=re.escape("No module named 'does'")),
             id="missing-module",
         ),
         pytest.param(
@@ -830,9 +800,7 @@ def test_choice_function(pos, possibilities, function, selected, context):
     [
         pytest.param(
             {},
-            pytest.raises(
-                ValueError, match=re.escape("Must provide a value for 'physical_name'.")
-            ),
+            pytest.raises(ValueError, match=re.escape("Must provide a value for 'physical_name'.")),
             id="missing-physical-name",
         ),
         pytest.param(
@@ -860,9 +828,7 @@ def test_VirtualPositionerBase(specs, context):
         ),
         pytest.param(
             dict(),
-            pytest.raises(
-                ValueError, match=re.escape("Must provide a value for 'physical_name'.")
-            ),
+            pytest.raises(ValueError, match=re.escape("Must provide a value for 'physical_name'.")),
             id="missing-physical-name",
         ),
         pytest.param(
@@ -921,17 +887,13 @@ def test_virtual_axis(specs, context):
 @pytest.mark.parametrize(
     "klass, specs, context",
     [
-        pytest.param(
-            EpicsMotor, dict(prefix="IOC:m1"), does_not_raise(), id="EpicsMotor"
-        ),
+        pytest.param(EpicsMotor, dict(prefix="IOC:m1"), does_not_raise(), id="EpicsMotor"),
         pytest.param(MyPVPositioner, dict(), does_not_raise(), id="PVPositioner"),
         pytest.param(SoftPositioner, dict(), does_not_raise(), id="SoftPositioner"),
         pytest.param(
             Signal,
             dict(),
-            pytest.raises(
-                TypeError, match=re.escape("Unknown 'readback' for 'gonio_linear'.")
-            ),
+            pytest.raises(TypeError, match=re.escape("Unknown 'readback' for 'gonio_linear'.")),
             id="Signal-invalid",
         ),
     ],
@@ -1104,9 +1066,7 @@ def test_istype_with_numpy_scalar_and_none():
                 order="th tth".split(),
                 canonical="aaa bbb ccc".split(),
             ),
-            pytest.raises(
-                ValueError, match=re.escape("len(order)=2 must be >= len(canonical)=3")
-            ),
+            pytest.raises(ValueError, match=re.escape("len(order)=2 must be >= len(canonical)=3")),
             id="ValueError: 'len(order)=2 must be >= len(canonical)=3'",
         ),
         pytest.param(
@@ -1349,19 +1309,9 @@ def test_module_all_covers_public_defs(parms, context):
         for node in tree.body:
             if isinstance(node, ast.Assign):
                 for tgt in node.targets:
-                    if (
-                        isinstance(tgt, ast.Name)
-                        and tgt.id == "__all__"
-                        and isinstance(node.value, ast.List)
-                    ):
-                        all_list = [
-                            e.value
-                            for e in node.value.elts
-                            if isinstance(e, ast.Constant)
-                        ]
-        assert all_list is not None, (
-            f"{parms['module_name']} has no __all__ to validate"
-        )
+                    if isinstance(tgt, ast.Name) and tgt.id == "__all__" and isinstance(node.value, ast.List):
+                        all_list = [e.value for e in node.value.elts if isinstance(e, ast.Constant)]
+        assert all_list is not None, f"{parms['module_name']} has no __all__ to validate"
         # Collect public top-level defs (functions and classes).
         public_defs = [
             node.name
@@ -1370,9 +1320,7 @@ def test_module_all_covers_public_defs(parms, context):
             and not node.name.startswith("_")
         ]
         missing = [n for n in public_defs if n not in all_list]
-        assert not missing, (
-            f"{parms['module_name']}.__all__ is missing public defs: {missing!r}"
-        )
+        assert not missing, f"{parms['module_name']}.__all__ is missing public defs: {missing!r}"
 
 
 # ---------------------------------------------------------------------------

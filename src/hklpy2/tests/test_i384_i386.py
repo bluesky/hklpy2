@@ -120,10 +120,7 @@ def _pseudos_at_probe(sim):
             dict(action="switch", target="does_not_exist"),
             pytest.raises(
                 KeyError,
-                match=re.escape(
-                    "'does_not_exist' not in sample list: "
-                    "['sample', 'cubic_a', 'cubic_b']"
-                ),
+                match=re.escape("'does_not_exist' not in sample list: ['sample', 'cubic_a', 'cubic_b']"),
             ),
             id="switch-to-unknown-sample-raises-KeyError",
         ),
@@ -176,11 +173,8 @@ def test_solver_resyncs_after_state_change(parms, context):
         expected = _pseudos_at_probe(ref)
 
         for axis in ("h", "k", "l"):
-            assert np.isclose(
-                getattr(actual, axis), getattr(expected, axis), atol=TOL
-            ), (
-                f"axis {axis}: actual={actual} expected={expected} "
-                f"(action={action}, target={target})"
+            assert np.isclose(getattr(actual, axis), getattr(expected, axis), atol=TOL), (
+                f"axis {axis}: actual={actual} expected={expected} (action={action}, target={target})"
             )
 
 

@@ -54,9 +54,7 @@ DEFAULT_EXTRA_VALUE: float = 0
 DEFAULT_SAMPLE_NAME: str = "sample"
 
 
-@versionadded(
-    version="0.7.3", reason="Allow setting extras by individual key assignment."
-)
+@versionadded(version="0.7.3", reason="Allow setting extras by individual key assignment.")
 class ExtrasDict(dict):
     """
     Dict subclass that manages extras with validation and solver updates.
@@ -97,14 +95,10 @@ class ExtrasDict(dict):
     def _validate_and_sync(self, key: str, value: float) -> None:
         """Validate a single key/value pair and update Core state."""
         # Check that key is in the expected extras for current mode
-        expected = {
-            axis: self._core.all_extras[axis]
-            for axis in self._core.solver_extra_axis_names
-        }
+        expected = {axis: self._core.all_extras[axis] for axis in self._core.solver_extra_axis_names}
         if key not in expected:
             raise ConfigurationError(
-                f"Unexpected extra axis name(s) {[key]!r}."
-                f"  Expected names: {list(expected.keys())}."
+                f"Unexpected extra axis name(s) {[key]!r}.  Expected names: {list(expected.keys())}."
             )
         # Update Core's internal extras storage
         self._core._extras[key] = value
@@ -151,15 +145,11 @@ class ExtrasDict(dict):
         # Parse arguments using dict's update logic
         other = dict(*args, **kwargs)
         # Validate all keys upfront
-        expected = {
-            axis: self._core.all_extras[axis]
-            for axis in self._core.solver_extra_axis_names
-        }
+        expected = {axis: self._core.all_extras[axis] for axis in self._core.solver_extra_axis_names}
         unexpected = [k for k in other.keys() if k not in expected]
         if unexpected:
             raise ConfigurationError(
-                f"Unexpected extra axis name(s) {unexpected!r}."
-                f"  Expected names: {list(expected.keys())}."
+                f"Unexpected extra axis name(s) {unexpected!r}.  Expected names: {list(expected.keys())}."
             )
         # If validation passes, update all at once
         for key, value in other.items():
@@ -378,8 +368,7 @@ class Core:
                 "axes_xref": self.axes_xref,
                 "extra_axes": self.all_extras,
                 "auxiliary_axes": [
-                    describe_aux(self.diffractometer, name)
-                    for name in self.diffractometer.auxiliary_axis_names
+                    describe_aux(self.diffractometer, name) for name in self.diffractometer.auxiliary_axis_names
                 ],
             },
             "digits": self.diffractometer.digits,
@@ -431,7 +420,7 @@ class Core:
             self.request_solver_update(_SolverDirty.EXTRAS)
 
         digits = config.get("digits")
-        if isinstance(digits, int) and 0 <= digits:
+        if isinstance(digits, int) and digits >= 0:
             self.diffractometer.digits = digits
 
         # Fix #243: YAML serialises reals dict keys alphabetically.  Reorder
@@ -474,9 +463,7 @@ class Core:
             presets = config.get("presets", {})
             for mode, mode_presets in presets.items():
                 if mode in self.modes:
-                    self._mode_presets[mode] = {
-                        str(k): float(v) for k, v in mode_presets.items()
-                    }
+                    self._mode_presets[mode] = {str(k): float(v) for k, v in mode_presets.items()}
 
     @versionchanged(
         version="0.6.2",
@@ -607,9 +594,7 @@ class Core:
         # Thread the current beam wavelength units into the new Reflection
         # prefer an explicit wavelength_units argument; otherwise use beam units
         wl_units = (
-            wavelength_units
-            if wavelength_units is not None
-            else self.diffractometer.beam.wavelength_units.get()
+            wavelength_units if wavelength_units is not None else self.diffractometer.beam.wavelength_units.get()
         )
         refl = Reflection(
             name or unique_name(),
@@ -720,9 +705,7 @@ class Core:
             "the freshly computed UB.  Fixes :issue:`384`."
         ),
     )
-    def calc_UB(
-        self, r1: Union[Reflection, str], r2: Union[Reflection, str]
-    ) -> Matrix3x3:
+    def calc_UB(self, r1: Union[Reflection, str], r2: Union[Reflection, str]) -> Matrix3x3:
         """
         Calculate and return the UB (orientation) matrix with two reflections.
 
@@ -829,9 +812,7 @@ class Core:
             If any key is not a valid extra for the current mode.
         """
         # Get the current expected extras for validation
-        current_extras = {
-            axis: self.all_extras[axis] for axis in self.solver_extra_axis_names
-        }
+        current_extras = {axis: self.all_extras[axis] for axis in self.solver_extra_axis_names}
         incoming = self._validate_extras(values, current_extras)
         if len(incoming) > 0:
             self._extras.update(incoming)
@@ -1197,17 +1178,14 @@ class Core:
         if len(reflections) < 3:
             raise CoreError(
                 # fmt: off
-                "Must have at least 3 reflections to refine lattice."
-                f" Known reflections: {rnames}"
+                f"Must have at least 3 reflections to refine lattice. Known reflections: {rnames}"
                 # fmt: on
             )
 
         logger.debug("Refining lattice using reflections %r", rnames)
         lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
         if lattice is None:
-            raise CoreError(
-                f"Solver {self.solver.geometry!r} does not support lattice refinement."
-            )
+            raise CoreError(f"Solver {self.solver.geometry!r} does not support lattice refinement.")
 
         # apply unit conversions solver to lattice after refineLattice
         angle_units_solver = self.solver.ANGLE_UNITS
@@ -1216,9 +1194,7 @@ class Core:
         length_units_uc = self.sample.lattice.length_units
         for parm, value in lattice.items():
             if parm in "a b c".split():
-                lattice[parm] = convert_units(
-                    value, length_units_solver, length_units_uc
-                )
+                lattice[parm] = convert_units(value, length_units_solver, length_units_uc)
             elif parm in "alpha beta gamma".split():
                 lattice[parm] = convert_units(
                     value,
@@ -1258,10 +1234,7 @@ class Core:
             refl_dict["reals"] = reals
 
             # determine the original wavelength_units from reflection or incident beam
-            refl_wl_units = (
-                refl_dict.get("wavelength_units")
-                or self.diffractometer.beam.wavelength_units.get()
-            )
+            refl_wl_units = refl_dict.get("wavelength_units") or self.diffractometer.beam.wavelength_units.get()
             refl_dict[k] = convert_units(refl_dict[k], refl_wl_units, wl_units_solver)
 
             reflections.append(refl_dict)
@@ -1526,7 +1499,6 @@ class Core:
             of those forms (plus ``None`` and numpy arrays) into the
             ``AxesDict`` that the solver expects.
         """
-
         if reals is None:  # write ordered dict
             reals = {
                 k: getattr(self.diffractometer, k).position
@@ -1546,13 +1518,9 @@ class Core:
         length_units_solver = self.solver.LENGTH_UNITS
         for k in "a b c  alpha beta gamma".split():
             if k in "a b c".split():
-                lattice[k] = convert_units(
-                    lattice[k], length_units_uc, length_units_solver
-                )
+                lattice[k] = convert_units(lattice[k], length_units_uc, length_units_solver)
             else:
-                lattice[k] = convert_units(
-                    lattice[k], angle_units_uc, angle_units_solver
-                )
+                lattice[k] = convert_units(lattice[k], angle_units_uc, angle_units_solver)
 
         reflections = self._reflections_to_solver(self.sample.reflections)
         wavelength = wavelength or self.diffractometer.beam.wavelength.get()

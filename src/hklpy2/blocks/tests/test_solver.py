@@ -8,9 +8,7 @@ import pytest
 from ...solver_utils import get_solver
 
 
-@pytest.mark.parametrize(
-    "solver_name, geometry", [["hkl_soleil", "E4CV"], ["no_op", "anything"]]
-)
+@pytest.mark.parametrize("solver_name, geometry", [["hkl_soleil", "E4CV"], ["no_op", "anything"]])
 def test_solvers(solver_name, geometry):
     from importlib.metadata import entry_points
 

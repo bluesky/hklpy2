@@ -351,9 +351,7 @@ def test_set_diffractometer(fourc):
     set_diffractometer(fourc)
     assert get_diffractometer() == fourc
 
-    with pytest.raises(
-        TypeError, match=re.escape("must be an hklpy2 'DiffractometerBase' subclass")
-    ):
+    with pytest.raises(TypeError, match=re.escape("must be an hklpy2 'DiffractometerBase' subclass")):
         set_diffractometer(object())
 
 
@@ -371,9 +369,7 @@ def test_set_lattice(fourc):
 @pytest.mark.parametrize(
     "beam_kwargs, wavelength, units, context",
     [
-        pytest.param(
-            {"class": WavelengthXray}, 1.5, "angstrom", does_not_raise(), id="xray-1.5A"
-        ),
+        pytest.param({"class": WavelengthXray}, 1.5, "angstrom", does_not_raise(), id="xray-1.5A"),
         pytest.param(
             {"class": WavelengthXray},
             1.54,
@@ -381,12 +377,8 @@ def test_set_lattice(fourc):
             does_not_raise(),
             id="xray-1.54A",
         ),
-        pytest.param(
-            {"class": WavelengthXray}, 120, "pm", does_not_raise(), id="xray-120pm"
-        ),
-        pytest.param(
-            {"class": WavelengthXray}, 121, "pm", does_not_raise(), id="xray-121pm"
-        ),
+        pytest.param({"class": WavelengthXray}, 120, "pm", does_not_raise(), id="xray-120pm"),
+        pytest.param({"class": WavelengthXray}, 121, "pm", does_not_raise(), id="xray-121pm"),
         pytest.param(
             {
                 "class": "hklpy2.incident.EpicsWavelengthRO",
@@ -394,9 +386,7 @@ def test_set_lattice(fourc):
             },
             2,
             "angstrom",
-            pytest.raises(
-                TypeError, match=re.escape("'set_wavelength()' not supported")
-            ),
+            pytest.raises(TypeError, match=re.escape("'set_wavelength()' not supported")),
             id="TypeError: set_wavelength(2), EpicsWavelengthRO",
         ),
         pytest.param(
@@ -407,9 +397,7 @@ def test_set_lattice(fourc):
             },
             2,
             "angstrom",
-            pytest.raises(
-                TypeError, match=re.escape("'set_wavelength()' not supported")
-            ),
+            pytest.raises(TypeError, match=re.escape("'set_wavelength()' not supported")),
             id="TypeError: set_wavelength, EpicsMonochromatorRO",
         ),
         pytest.param(
@@ -640,9 +628,7 @@ def test_cahkl_forward_raises(parms, context):
                 extras=dict(h4=2, k4=2, l4=0),
                 fail_on_exception=True,
             ),
-            pytest.raises(
-                ConfigurationError, match=re.escape("Unexpected extra axis name")
-            ),
+            pytest.raises(ConfigurationError, match=re.escape("Unexpected extra axis name")),
             id="no hkl_4 extras",
         ),
     ],

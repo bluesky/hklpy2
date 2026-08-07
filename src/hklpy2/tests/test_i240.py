@@ -55,10 +55,7 @@ def test_i240_as_user():
     ub_original = polar.core.calc_UB(*list(polar.sample.reflections)[:2])
     assert np.isclose(
         np.linalg.norm(ub_original),  # ||UB||
-        2
-        * np.pi
-        * np.sqrt(3)
-        / SAMPLE_LATTICE_ORIGINAL,  # scales with lattice parameter
+        2 * np.pi * np.sqrt(3) / SAMPLE_LATTICE_ORIGINAL,  # scales with lattice parameter
         atol=TOL,
     )
 

@@ -19,9 +19,7 @@ from ..sample import Sample
 @pytest.mark.parametrize(
     "context",
     [
-        pytest.param(
-            pytest.raises(TypeError, match=re.escape("expected Core")), id="no-core"
-        ),
+        pytest.param(pytest.raises(TypeError, match=re.escape("expected Core")), id="no-core"),
     ],
 )
 def test_sample_constructor_no_core(context):
@@ -32,9 +30,7 @@ def test_sample_constructor_no_core(context):
 @pytest.mark.parametrize(
     "lattice, sname, context, expect",
     [
-        pytest.param(
-            Lattice(4), "sample name", does_not_raise(), None, id="valid-named"
-        ),
+        pytest.param(Lattice(4), "sample name", does_not_raise(), None, id="valid-named"),
         pytest.param(Lattice(4), None, does_not_raise(), None, id="valid-unnamed"),
         pytest.param(
             None,
@@ -220,8 +216,8 @@ def test_fromdict():
     assert sample.lattice != cfg_latt, f"{sample.lattice=!r}  {cfg_latt=!r}"
     assert len(sample.reflections) == 0
     assert len(sample.reflections.order) == 0
-    assert sample.U != config["U"]
-    assert sample.UB != config["UB"]
+    assert config["U"] != sample.U
+    assert config["UB"] != sample.UB
 
     sample._fromdict(config)
     assert sample.name == config["name"]
@@ -229,8 +225,8 @@ def test_fromdict():
     assert sample.lattice == cfg_latt, f"{sample.lattice=!r}  {cfg_latt=!r}"
     assert len(sample.reflections) == 3
     assert sample.reflections.order == config["reflections_order"]
-    assert sample.U == config["U"]
-    assert sample.UB == config["UB"]
+    assert config["U"] == sample.U
+    assert config["UB"] == sample.UB
 
 
 @pytest.mark.parametrize(

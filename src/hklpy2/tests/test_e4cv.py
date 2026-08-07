@@ -98,9 +98,7 @@ def test_inverse(ppos, rpos, context):
         ),
         pytest.param(
             [sim4c.tth, 10_000, 10_002, 3],
-            pytest.raises(
-                ophyd.utils.errors.LimitError, match=re.escape("not within limits")
-            ),
+            pytest.raises(ophyd.utils.errors.LimitError, match=re.escape("not within limits")),
             id="beyond-limits",
         ),
     ],

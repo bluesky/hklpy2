@@ -148,10 +148,7 @@ class Lattice:
 
         if min(self.a, self.b, self.c) <= 0:
             raise ValueError("Lattice lengths must be positive.")
-        if (
-            min(self.alpha, self.beta, self.gamma) <= 0
-            or max(self.alpha, self.beta, self.gamma) >= 180
-        ):
+        if min(self.alpha, self.beta, self.gamma) <= 0 or max(self.alpha, self.beta, self.gamma) >= 180:
             raise ValueError("Lattice angles must be within range 0 .. 180.")
         sgamma = np.sin(self.gamma)
         if abs(sgamma) < tol:
@@ -225,20 +222,12 @@ class Lattice:
         try:
             # Convert lengths to internal length units
             for k in ("a", "b", "c"):
-                vals_self[k] = convert_units(
-                    vals_self[k], self.length_units, INTERNAL_LENGTH_UNITS
-                )
-                vals_other[k] = convert_units(
-                    vals_other[k], latt.length_units, INTERNAL_LENGTH_UNITS
-                )
+                vals_self[k] = convert_units(vals_self[k], self.length_units, INTERNAL_LENGTH_UNITS)
+                vals_other[k] = convert_units(vals_other[k], latt.length_units, INTERNAL_LENGTH_UNITS)
             # Convert angles to internal angle units
             for k in ("alpha", "beta", "gamma"):
-                vals_self[k] = convert_units(
-                    vals_self[k], self.angle_units, INTERNAL_ANGLE_UNITS
-                )
-                vals_other[k] = convert_units(
-                    vals_other[k], latt.angle_units, INTERNAL_ANGLE_UNITS
-                )
+                vals_self[k] = convert_units(vals_self[k], self.angle_units, INTERNAL_ANGLE_UNITS)
+                vals_other[k] = convert_units(vals_other[k], latt.angle_units, INTERNAL_ANGLE_UNITS)
         except Exception:
             # Fallback: use raw attribute values (no unit conversion)
             vals_self = {k: getattr(self, k) for k in keys}
@@ -252,11 +241,7 @@ class Lattice:
         """
         system = self.crystal_system
         parm_names = self.system_parameter_names(system)
-        parameters = [
-            f"{k}={round(v, self.digits)}"
-            for k, v in self._asdict().items()
-            if k in parm_names
-        ]
+        parameters = [f"{k}={round(v, self.digits)}" for k, v in self._asdict().items() if k in parm_names]
         parameters.append(f"{system=!r}")
         return f"{self.__class__.__name__}({', '.join(parameters)})"
 
@@ -314,9 +299,7 @@ class Lattice:
 
         determinant = np.linalg.det(A)
         if abs(determinant) < self.tol:
-            raise ValueError(
-                "Unit cell volume too small (potentially singular matrix)."
-            )
+            raise ValueError("Unit cell volume too small (potentially singular matrix).")
         factor = 1.0 / determinant
         if with_2pi:
             factor *= 2 * np.pi
@@ -396,18 +379,10 @@ class Lattice:
             return math.isclose(value, ref, abs_tol=tol)
 
         def angles(alpha, beta, gamma):
-            return (
-                very_close(self.alpha, alpha)
-                and very_close(self.beta, beta)
-                and very_close(self.gamma, gamma)
-            )
+            return very_close(self.alpha, alpha) and very_close(self.beta, beta) and very_close(self.gamma, gamma)
 
         def edges(a, b, c):
-            return (
-                very_close(self.a, a)
-                and very_close(self.b, b)
-                and very_close(self.c, c)
-            )
+            return very_close(self.a, a) and very_close(self.b, b) and very_close(self.c, c)
 
         def all_angles(ref):
             return angles(ref, ref, ref)
@@ -426,25 +401,13 @@ class Lattice:
         if all_angles(90) and not very_close(self.a, self.b):
             return CrystalSystem.orthorhombic.name
 
-        if (
-            all_angles(90)
-            and very_close(self.a, self.b)
-            and not very_close(self.a, self.c)
-        ):
+        if all_angles(90) and very_close(self.a, self.b) and not very_close(self.a, self.c):
             return CrystalSystem.tetragonal.name
 
-        if (
-            not very_close(self.alpha, 90)
-            and all_angles(self.alpha)
-            and all_edges(self.a)
-        ):
+        if not very_close(self.alpha, 90) and all_angles(self.alpha) and all_edges(self.a):
             return CrystalSystem.rhombohedral.name
 
-        if (
-            angles(90, 90, 120)
-            and very_close(self.a, self.b)
-            and not very_close(self.a, self.c)
-        ):
+        if angles(90, 90, 120) and very_close(self.a, self.b) and not very_close(self.a, self.c):
             return CrystalSystem.hexagonal.name
 
         if all_angles(90) and all_edges(self.a):

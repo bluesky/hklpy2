@@ -53,9 +53,7 @@ def test_solver():
     with pytest.raises(SolverError, match=re.escape("'tth' not defined.")):
         solver.inverse(dict(th=0))
 
-    with pytest.raises(
-        SolverError, match=re.escape("Wavelength is not set. Add a reflection")
-    ):
+    with pytest.raises(SolverError, match=re.escape("Wavelength is not set. Add a reflection")):
         solver.inverse(dict(th=0, tth=20))
 
     with pytest.raises(TypeError, match=re.escape("Must supply number")):
@@ -205,9 +203,7 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
         ),
         pytest.param(
             "wrong object",
-            pytest.raises(
-                TypeError, match=re.escape("Must supply SolverReflection (dict)")
-            ),
+            pytest.raises(TypeError, match=re.escape("Must supply SolverReflection (dict)")),
             id="Wrong object type",
         ),
         pytest.param(

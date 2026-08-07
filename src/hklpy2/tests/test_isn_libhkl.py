@@ -404,9 +404,7 @@ def test_ISN_Diffractometer():
         phi = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
         pitch = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
         yaw = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
-        radius = Component(
-            SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted"
-        )
+        radius = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
 
         def __init__(self, *args, **kwargs):
             super().__init__(

@@ -83,8 +83,7 @@ def test_simulator_from_config_preserves_reflection_reals_keys(parms, context):
         for name in ("r1", "r2"):
             restored_keys = list(sim.sample.reflections[name]._asdict()["reals"])
             assert restored_keys == parms["reals"], (
-                f"Reflection {name!r}: expected local keys "
-                f"{parms['reals']!r}, got {restored_keys!r}"
+                f"Reflection {name!r}: expected local keys {parms['reals']!r}, got {restored_keys!r}"
             )
 
         # And ``forward()`` on the restored copy must succeed and match.
@@ -141,8 +140,7 @@ def test_export_restore_preserves_reflection_reals_keys(parms, context, tmp_path
         for name in ("r1", "r2"):
             restored_keys = list(restored.sample.reflections[name]._asdict()["reals"])
             assert restored_keys == parms["reals"], (
-                f"Reflection {name!r}: expected local keys "
-                f"{parms['reals']!r}, got {restored_keys!r}"
+                f"Reflection {name!r}: expected local keys {parms['reals']!r}, got {restored_keys!r}"
             )
 
         restored_forward = restored.forward(*PROBE)
@@ -215,6 +213,5 @@ def test_round_trip_preserves_UB(parms, context):
         ub_original = np.array(original.sample.UB)
         ub_restored = np.array(sim.sample.UB)
         assert np.allclose(ub_original, ub_restored, atol=1e-9), (
-            f"UB drift after round-trip: original={ub_original!r}, "
-            f"restored={ub_restored!r}"
+            f"UB drift after round-trip: original={ub_original!r}, restored={ub_restored!r}"
         )

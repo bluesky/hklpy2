@@ -169,16 +169,10 @@ def test_normalize_aux_record_unknown_category_warns_and_degrades():
     """Unknown category emits ``UserWarning`` and degrades to ``scalar``."""
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
-        record = _normalize_aux_record(
-            {"name": "weird", "category": "no-such-category"}
-        )
+        record = _normalize_aux_record({"name": "weird", "category": "no-such-category"})
 
     assert record["category"] == "scalar"
-    matching = [
-        w
-        for w in caught
-        if issubclass(w.category, UserWarning) and "no-such-category" in str(w.message)
-    ]
+    matching = [w for w in caught if issubclass(w.category, UserWarning) and "no-such-category" in str(w.message)]
     assert len(matching) == 1, f"expected one UserWarning, got: {matching!r}"
 
 
@@ -228,12 +222,8 @@ def test_simulator_from_config_aux_roundtrip(parms, context):
             from ophyd import PseudoPositioner
 
             assert isinstance(sim.ana, PseudoPositioner)
-            assert [p.attr_name for p in sim.ana.pseudo_positioners] == parms[
-                "expected_pseudos"
-            ]
-            assert [r.attr_name for r in sim.ana.real_positioners] == parms[
-                "expected_reals"
-            ]
+            assert [p.attr_name for p in sim.ana.pseudo_positioners] == parms["expected_pseudos"]
+            assert [r.attr_name for r in sim.ana.real_positioners] == parms["expected_reals"]
 
         elif parms["check"] == "wh-full-does-not-raise":
             sim.wh(full=True)
@@ -434,9 +424,7 @@ def test_simulator_from_config_aux_overlapping_real(parms, context):
         donor = creator(name="donor")
         cfg = donor.configuration
         # Inject an aux record whose name shadows a real axis.
-        cfg["axes"]["auxiliary_axes"] = [
-            {"name": parms["overlap_name"], "category": "scalar"}
-        ]
+        cfg["axes"]["auxiliary_axes"] = [{"name": parms["overlap_name"], "category": "scalar"}]
 
         sim = simulator_from_config(cfg)
         # The real-axis omega remains a SoftPositioner (not overwritten),

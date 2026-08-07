@@ -508,21 +508,14 @@ class DiffractometerBase(PseudoPositioner):
             restore_extras=restore_extras,
             restore_presets=restore_presets,
         )
-        resolved = {
-            k: (defaults[k] if v is None else bool(v))
-            for k, v in explicit_kwargs.items()
-        }
+        resolved = {k: (defaults[k] if v is None else bool(v)) for k, v in explicit_kwargs.items()}
 
         # On a hardware-backed diffractometer, when the user did not pass
         # any of the dangerous kwargs explicitly, emit a single UserWarning
         # listing what was skipped so the behavior is loud (not silent).
         if not sim:
-            dangerous = (
-                "clear restore_wavelength restore_samples restore_extras"
-            ).split()
-            user_passed_any_dangerous = any(
-                explicit_kwargs[k] is not None for k in dangerous
-            )
+            dangerous = ("clear restore_wavelength restore_samples restore_extras").split()
+            user_passed_any_dangerous = any(explicit_kwargs[k] is not None for k in dangerous)
             if not user_passed_any_dangerous:
                 skipped = [k for k in dangerous if not resolved[k]]
                 if skipped:
@@ -618,9 +611,7 @@ class DiffractometerBase(PseudoPositioner):
 
         # Transform axes dict to args for bps.mv(position, value)
         moves = list(
-            flatten_lists(
-                [[getattr(self, k), v] for k, v in axes.items()]
-            )  # move the diffractometer axes
+            flatten_lists([[getattr(self, k), v] for k, v in axes.items()])  # move the diffractometer axes
         )
         yield from bps.mv(*moves)
 
@@ -729,9 +720,7 @@ class DiffractometerBase(PseudoPositioner):
                 series=numpy.linspace(start, finish, num=num),
                 start=start,
                 finish=finish,
-                signal=Signal(
-                    value=start, kind="hinted", name=f"{self.name}_extras_{axis}"
-                ),
+                signal=Signal(value=start, kind="hinted", name=f"{self.name}_extras_{axis}"),
             )
             extras[axis] = start
         return movers
@@ -749,10 +738,7 @@ class DiffractometerBase(PseudoPositioner):
                 "mode": self.core.mode,
                 "extra_axes": self.core.solver_extra_axis_names,
             },
-            "axes": {
-                axis: dict(start=start, finish=finish)
-                for axis, start, finish in partition(3, args)
-            },
+            "axes": {axis: dict(start=start, finish=finish) for axis, start, finish in partition(3, args)},
             "num": num,
             "pseudos": pseudos,
             "reals": reals,
@@ -829,9 +815,7 @@ class DiffractometerBase(PseudoPositioner):
         movers = self._scan_extra_build_movers(args, num, extras)
         _md = self._scan_extra_metadata(args, num, pseudos, reals, extras, md)
 
-        all_controls = list(
-            set(list(detectors) + [movers[axis]["signal"] for axis in movers])
-        )
+        all_controls = list(set(list(detectors) + [movers[axis]["signal"] for axis in movers]))
 
         def _move_axes(pseudos, reals, extras):
             """Move extras, then reals or pseudos, move to the solution."""
@@ -939,8 +923,8 @@ class DiffractometerBase(PseudoPositioner):
             {"__repr__": __repr__, "__str__": __str__},
         )
 
-        setattr(new_cls, "_hklpy2_wrapped", True)
-        setattr(new_cls, "_hklpy2_wrapped_digits", digits)
+        new_cls._hklpy2_wrapped = True
+        new_cls._hklpy2_wrapped_digits = digits
         return new_cls
 
     # ---- get/set properties
@@ -984,19 +968,13 @@ class DiffractometerBase(PseudoPositioner):
     @digits.setter
     def digits(self, digits: int) -> None:
         if not isinstance(digits, int) or digits < 0:
-            raise ValueError(
-                f"Digits must be a non-negative integer, received {digits}."
-            )
+            raise ValueError(f"Digits must be a non-negative integer, received {digits}.")
         self._position_repr_digits = digits
 
         if hasattr(self, "PseudoPosition"):
-            self.PseudoPosition = self._make_wrapped_namedtuple_class(
-                self.PseudoPosition, digits
-            )
+            self.PseudoPosition = self._make_wrapped_namedtuple_class(self.PseudoPosition, digits)
         if hasattr(self, "RealPosition"):
-            self.RealPosition = self._make_wrapped_namedtuple_class(
-                self.RealPosition, digits
-            )
+            self.RealPosition = self._make_wrapped_namedtuple_class(self.RealPosition, digits)
 
     @property
     def pseudo_axis_names(self) -> None:
@@ -1055,7 +1033,6 @@ class DiffractometerBase(PseudoPositioner):
 
     def wh(self, digits=4, full=False) -> None:
         """Concise report of the current diffractometer positions."""
-
         if not self.connected:
             raise DiffractometerError(f"Diffractometer {self.name!r} is not connected.")
 
@@ -1109,10 +1086,7 @@ class DiffractometerBase(PseudoPositioner):
             print(f"UB={format_array(self.sample.UB)}")
             if self.sample.UB_is_stale:
                 # Surface UB staleness in pa() output (:issue:`391`).
-                print(
-                    "UB stale: True"
-                    "  (orientation reflections changed since last calc_UB)"
-                )
+                print("UB stale: True  (orientation reflections changed since last calc_UB)")
             for v in self.core.constraints.values():
                 print(f"constraint: {v}")
             print(f"Mode: {self.core.mode}")
@@ -1163,7 +1137,7 @@ def creator(
     """
     Factory function to create a diffractometer instance.
 
-    EXAMPLES:
+    EXAMPLES
 
     Four-circle diffractometer, vertical orientation, Eulerian rotations,
     canonical real axis names, EPICS motor PVs::
@@ -1380,7 +1354,7 @@ def diffractometer_class_factory(
         raise TypeError(f"Expected a list.  Received {pseudos=!r}")
     if not isinstance(reals, dict):
         if isinstance(reals, list):
-            reals = {axis: None for axis in reals}
+            reals = dict.fromkeys(reals)
         else:
             raise TypeError(f"Expected a dict.  Received {reals=!r}")
 

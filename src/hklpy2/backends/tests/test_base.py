@@ -91,9 +91,7 @@ def test_SolverBase():
     assert solver.extra_axis_names == [], f"{solver.extra_axis_names=}"
     assert solver.extras == {}, f"{solver.extras=}"
     assert solver.forward({}) == [{}]
-    assert (
-        list(solver._metadata) == "name description geometry real_axes version".split()
-    )
+    assert list(solver._metadata) == "name description geometry real_axes version".split()
     assert solver.mode == ""
     assert solver.inverse({}) == {}
     assert solver.inverse({}) == {}

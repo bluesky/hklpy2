@@ -201,7 +201,7 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
     * ordered list: ``[0, 1, -1]  (for h, k, l)``
     * ordered tuple: ``(0, 1, -1)  (for h, k, l)``
 
-    PARAMETERS:
+    PARAMETERS
 
     input : AnyAxesType
         Positions, specified as dict, list, or tuple.
@@ -364,7 +364,7 @@ def load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping:
     if not path.exists():
         raise FileExistsError(f"YAML file '{path}' does not exist.")
     logger.debug("Loading YAML file %r", str(path))
-    with open(path, "r") as f:
+    with open(path) as f:
         return load_yaml(f.read())
 
 
@@ -488,9 +488,7 @@ def unique_name(prefix: str = "", length: int = 7) -> str:
     return prefix + str(uuid.uuid4())[: max(1, min(length, 7))]
 
 
-def validate_not_parallel(
-    hkl: Sequence[float], hkl2: Sequence[float], tol: float = 1e-6
-) -> None:
+def validate_not_parallel(hkl: Sequence[float], hkl2: Sequence[float], tol: float = 1e-6) -> None:
     """Raise ValueError if two vectors are parallel or anti-parallel.
 
     Parameters

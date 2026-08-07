@@ -14,22 +14,12 @@ from ..lattice import Lattice
     "system, a, others, context",
     [
         pytest.param("cubic", 5, dict(), does_not_raise(), id="cubic"),
-        pytest.param(
-            "hexagonal", 4, dict(c=3, gamma=120), does_not_raise(), id="hexagonal"
-        ),
-        pytest.param(
-            "rhombohedral", 4, dict(alpha=80.2), does_not_raise(), id="rhombohedral-80"
-        ),
-        pytest.param(
-            "rhombohedral", 4, dict(alpha=120), does_not_raise(), id="rhombohedral-120"
-        ),
+        pytest.param("hexagonal", 4, dict(c=3, gamma=120), does_not_raise(), id="hexagonal"),
+        pytest.param("rhombohedral", 4, dict(alpha=80.2), does_not_raise(), id="rhombohedral-80"),
+        pytest.param("rhombohedral", 4, dict(alpha=120), does_not_raise(), id="rhombohedral-120"),
         pytest.param("tetragonal", 4, dict(c=3), does_not_raise(), id="tetragonal"),
-        pytest.param(
-            "orthorhombic", 4, dict(b=5, c=3), does_not_raise(), id="orthorhombic"
-        ),
-        pytest.param(
-            "monoclinic", 4, dict(b=5, c=3, beta=75), does_not_raise(), id="monoclinic"
-        ),
+        pytest.param("orthorhombic", 4, dict(b=5, c=3), does_not_raise(), id="orthorhombic"),
+        pytest.param("monoclinic", 4, dict(b=5, c=3, beta=75), does_not_raise(), id="monoclinic"),
         pytest.param(
             "triclinic",
             4,
@@ -41,9 +31,7 @@ from ..lattice import Lattice
             "hexagonal",
             4,
             dict(gamma=120),  # hexagonal needs a != c
-            pytest.raises(
-                LatticeError, match=re.escape("Unrecognized crystal system:")
-            ),
+            pytest.raises(LatticeError, match=re.escape("Unrecognized crystal system:")),
             id="hexagonal-needs-a-ne-c",
         ),
     ],
@@ -65,12 +53,8 @@ def test_repr(system, a, others, context):
     "args, kwargs, expected",
     [
         pytest.param([5], {}, (5, 5, 5, 90, 90, 90), id="cubic"),
-        pytest.param(
-            [4], dict(c=3.0, gamma=120), (4, 4, 3, 90, 90, 120), id="hexagonal"
-        ),
-        pytest.param(
-            [4], dict(alpha=80.1), (4, 4, 4, 80.1, 80.1, 80.1), id="rhombohedral"
-        ),
+        pytest.param([4], dict(c=3.0, gamma=120), (4, 4, 3, 90, 90, 120), id="hexagonal"),
+        pytest.param([4], dict(alpha=80.1), (4, 4, 4, 80.1, 80.1, 80.1), id="rhombohedral"),
         pytest.param([4], dict(c=3), (4, 4, 3, 90, 90, 90), id="tetragonal"),
         pytest.param([4, 5, 3], {}, (4, 5, 3, 90, 90, 90), id="orthorhombic"),
         pytest.param([4, 5, 3], dict(beta=75), (4, 5, 3, 90, 75, 90), id="monoclinic"),
@@ -236,9 +220,7 @@ def test_lattice_eq_fallback_raw_comparison(monkeypatch):
                 "gamma": 1.0,
                 "tol": 1e-6,
             },
-            pytest.raises(
-                ValueError, match=re.escape("Inconsistent lattice parameters")
-            ),
+            pytest.raises(ValueError, match=re.escape("Inconsistent lattice parameters")),
             id="inconsistent-params",
         ),
         pytest.param(
@@ -399,9 +381,7 @@ def test_equality_within_context(l1_kwargs, l2_kwargs, context, expect_equal):
         ),
         pytest.param(
             dict(a=1.0, b=1.0, c=1.0, alpha=160.0, beta=160.0, gamma=1.0, tol=1e-6),
-            pytest.raises(
-                ValueError, match=re.escape("Inconsistent lattice parameters")
-            ),
+            pytest.raises(ValueError, match=re.escape("Inconsistent lattice parameters")),
             id="inconsistent-imaginary-cz",
         ),
     ],
@@ -462,16 +442,12 @@ def test_compute_cartesian_and_B_on_cubic_inside_context():
     [
         pytest.param(
             {"a": 0.0},
-            pytest.raises(
-                ValueError, match=re.escape("Lattice lengths must be positive.")
-            ),
+            pytest.raises(ValueError, match=re.escape("Lattice lengths must be positive.")),
             id="zero-length",
         ),
         pytest.param(
             {"a": -1.0},
-            pytest.raises(
-                ValueError, match=re.escape("Lattice lengths must be positive.")
-            ),
+            pytest.raises(ValueError, match=re.escape("Lattice lengths must be positive.")),
             id="negative-length",
         ),
     ],
@@ -516,9 +492,7 @@ def test_invalid_angles_range(params, context):
             1e-13,
             pytest.raises(
                 ValueError,
-                match=re.escape(
-                    "Lattice gamma angle is too close to 0 or 180 degrees."
-                ),
+                match=re.escape("Lattice gamma angle is too close to 0 or 180 degrees."),
             ),
             id="gamma-near-zero",
         ),
@@ -547,18 +521,12 @@ def test_init_handles_float_conversion_exception(monkeypatch):
     monkeypatch.setattr(lattice_mod, "float", _bad_float, raising=False)
 
     # Avoid calling the real heavy numeric methods after __init__'s try/except.
-    monkeypatch.setattr(
-        lattice_mod.Lattice, "compute_cartesian_lattice", lambda self: np.eye(3)
-    )
-    monkeypatch.setattr(
-        lattice_mod.Lattice, "compute_B", lambda self, with_2pi=True: np.eye(3)
-    )
+    monkeypatch.setattr(lattice_mod.Lattice, "compute_cartesian_lattice", lambda self: np.eye(3))
+    monkeypatch.setattr(lattice_mod.Lattice, "compute_B", lambda self, with_2pi=True: np.eye(3))
 
     from contextlib import nullcontext as does_not_raise
 
     with does_not_raise():
-        lat = lattice_mod.Lattice(
-            3.0, b=3.0, c=3.0, alpha=100.0, beta=100.0, gamma=100.0
-        )
+        lat = lattice_mod.Lattice(3.0, b=3.0, c=3.0, alpha=100.0, beta=100.0, gamma=100.0)
 
     assert isinstance(lat, lattice_mod.Lattice)

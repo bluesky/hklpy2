@@ -111,9 +111,7 @@ class _WavelengthBase(Device):
     wavelength_units = Component(SignalRO, value=INTERNAL_LENGTH_UNITS, kind="config")
     """Constant engineering units of wavelength. (Same units as unit cell lengths.)"""
 
-    wavelength_deadband = Component(
-        Signal, value=DEFAULT_WAVELENGTH_DEADBAND, kind="config"
-    )
+    wavelength_deadband = Component(Signal, value=DEFAULT_WAVELENGTH_DEADBAND, kind="config")
     """Allowed variation in wavelength before signaling change to diffractometer."""
 
     _keyset: list[str] = "source_type wavelength wavelength_units".split()
@@ -234,9 +232,7 @@ class Wavelength(_WavelengthBase):
 class WavelengthXray(Wavelength):
     """Monochromatic X-ray wavelength and photon energy."""
 
-    energy = Component(
-        AttributeSignal, attr="_energy", kind="hinted", write_access=True
-    )
+    energy = Component(AttributeSignal, attr="_energy", kind="hinted", write_access=True)
     """
     Monochromatic X-ray photon energy (:math:`E`).
 
@@ -364,9 +360,7 @@ class EpicsMonochromatorRO(EpicsWavelengthRO):
     energy = FC(EpicsSignalRO, "{prefix}{_pv_energy}", kind="hinted")
     energy_units = Component(SignalRO, value=INTERNAL_XRAY_ENERGY_UNITS, kind="config")
 
-    _keyset: list[str] = (
-        "source_type energy wavelength energy_units wavelength_units".split()
-    )
+    _keyset: list[str] = "source_type energy wavelength energy_units wavelength_units".split()
     """List of Component names for '_asdict()' and '_fromdict()'."""
 
     def __init__(

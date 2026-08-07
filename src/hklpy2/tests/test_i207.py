@@ -112,12 +112,8 @@ def test_calc_UB_swapped_axes_xref(polar_swapped, parms, context):
     'rows must be normalized' error) when reals dict order does not match
     solver axis order and _real is not supplied to creator().
     """
-    r1 = polar_swapped.add_reflection(
-        parms["r1_hkl"], parms["r1_reals"], wavelength=1.7225, name="r1"
-    )
-    r2 = polar_swapped.add_reflection(
-        parms["r2_hkl"], parms["r2_reals"], wavelength=1.7225, name="r2"
-    )
+    r1 = polar_swapped.add_reflection(parms["r1_hkl"], parms["r1_reals"], wavelength=1.7225, name="r1")
+    r2 = polar_swapped.add_reflection(parms["r2_hkl"], parms["r2_reals"], wavelength=1.7225, name="r2")
     with context:
         polar_swapped.core.calc_UB(r1, r2)
 
@@ -144,12 +140,8 @@ def test_calc_UB_fixed_real_order(polar_fixed, parms, context):
     With _real supplied to creator(), the same hardware axes and reflections
     produce a valid UB matrix.
     """
-    r1 = polar_fixed.add_reflection(
-        parms["r1_hkl"], parms["r1_reals"], wavelength=1.7225, name="r1"
-    )
-    r2 = polar_fixed.add_reflection(
-        parms["r2_hkl"], parms["r2_reals"], wavelength=1.7225, name="r2"
-    )
+    r1 = polar_fixed.add_reflection(parms["r1_hkl"], parms["r1_reals"], wavelength=1.7225, name="r1")
+    r2 = polar_fixed.add_reflection(parms["r2_hkl"], parms["r2_reals"], wavelength=1.7225, name="r2")
     with context:
         ub = polar_fixed.core.calc_UB(r1, r2)
         assert ub is not None

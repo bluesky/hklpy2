@@ -50,18 +50,10 @@ def test_raises():
         pytest.param(20, 10, 20, True, id="reversed-at-hi"),
         # floating-point boundary cases (issue #242): solver may return
         # values like 180.0000001 which must still be accepted at limit=180
-        pytest.param(
-            -180, 180, 180 + ENDPOINT_TOLERANCE * 0.5, True, id="fp-at-hi-within-tol"
-        ),
-        pytest.param(
-            -180, 180, -180 - ENDPOINT_TOLERANCE * 0.5, True, id="fp-at-lo-within-tol"
-        ),
-        pytest.param(
-            -180, 180, 180 + ENDPOINT_TOLERANCE * 2, False, id="fp-beyond-hi-tol"
-        ),
-        pytest.param(
-            -180, 180, -180 - ENDPOINT_TOLERANCE * 2, False, id="fp-beyond-lo-tol"
-        ),
+        pytest.param(-180, 180, 180 + ENDPOINT_TOLERANCE * 0.5, True, id="fp-at-hi-within-tol"),
+        pytest.param(-180, 180, -180 - ENDPOINT_TOLERANCE * 0.5, True, id="fp-at-lo-within-tol"),
+        pytest.param(-180, 180, 180 + ENDPOINT_TOLERANCE * 2, False, id="fp-beyond-hi-tol"),
+        pytest.param(-180, 180, -180 - ENDPOINT_TOLERANCE * 2, False, id="fp-beyond-lo-tol"),
     ],
 )
 def test_LimitsConstraint(lo, hi, value, result):
@@ -94,15 +86,11 @@ def test_RealAxisConstraints(reals, result):
 @pytest.mark.parametrize(
     "supplied, kwargs, context",
     [
-        pytest.param(
-            "you me".split(), dict(you=0, me=0), does_not_raise(), id="matching-keys"
-        ),
+        pytest.param("you me".split(), dict(you=0, me=0), does_not_raise(), id="matching-keys"),
         pytest.param(
             "tinker evers chance".split(),
             dict(you=0, me=0),
-            pytest.raises(
-                ConstraintsError, match=re.escape("did not include this constraint")
-            ),
+            pytest.raises(ConstraintsError, match=re.escape("did not include this constraint")),
             id="mismatched-keys",
         ),
     ],
@@ -159,9 +147,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     "cut_point": -180.0,
                 },
             },
-            pytest.raises(
-                ConfigurationError, match=re.escape("Missing key for LimitsConstraint")
-            ),
+            pytest.raises(ConfigurationError, match=re.escape("Missing key for LimitsConstraint")),
             id="missing-high-limit",
         ),
         pytest.param(
@@ -174,9 +160,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     "cut_point": -180.0,
                 },
             },
-            pytest.raises(
-                ConfigurationError, match=re.escape("Missing key for LimitsConstraint")
-            ),
+            pytest.raises(ConfigurationError, match=re.escape("Missing key for LimitsConstraint")),
             id="missing-low-limit",
         ),
         pytest.param(
@@ -189,9 +173,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     "cut_point": -180.0,
                 },
             },
-            pytest.raises(
-                ConfigurationError, match=re.escape(" Expected key: 'label'.")
-            ),
+            pytest.raises(ConfigurationError, match=re.escape(" Expected key: 'label'.")),
             id="missing-label",
         ),
         pytest.param(
@@ -257,9 +239,7 @@ def test_fromdict_KeyError():
         "low_limit": 30.0,
         "cut_point": -180.0,
     }
-    with pytest.raises(
-        KeyError, match=re.escape(" not found in diffractometer reals: ")
-    ):
+    with pytest.raises(KeyError, match=re.escape(" not found in diffractometer reals: ")):
         e4cv = creator(
             name="e4cv",
             reals=dict(aaa=None, bbb=None, ccc=None, ddd=None),
@@ -297,23 +277,17 @@ def test_repr():
         ),
         pytest.param(
             dict(cut_point=float("inf")),
-            pytest.raises(
-                ConstraintsError, match=re.escape("cut_point must be a finite number")
-            ),
+            pytest.raises(ConstraintsError, match=re.escape("cut_point must be a finite number")),
             id="inf rejected",
         ),
         pytest.param(
             dict(cut_point=float("-inf")),
-            pytest.raises(
-                ConstraintsError, match=re.escape("cut_point must be a finite number")
-            ),
+            pytest.raises(ConstraintsError, match=re.escape("cut_point must be a finite number")),
             id="-inf rejected",
         ),
         pytest.param(
             dict(cut_point=float("nan")),
-            pytest.raises(
-                ConstraintsError, match=re.escape("cut_point must be a finite number")
-            ),
+            pytest.raises(ConstraintsError, match=re.escape("cut_point must be a finite number")),
             id="nan rejected",
         ),
     ],
@@ -334,16 +308,12 @@ def test_cut_point_validation(parms, context):
         ),
         pytest.param(
             dict(attr="cut_point", value=float("nan")),
-            pytest.raises(
-                ConstraintsError, match=re.escape("cut_point must be a finite number")
-            ),
+            pytest.raises(ConstraintsError, match=re.escape("cut_point must be a finite number")),
             id="cut_point nan rejected post-construction",
         ),
         pytest.param(
             dict(attr="cut_point", value=float("inf")),
-            pytest.raises(
-                ConstraintsError, match=re.escape("cut_point must be a finite number")
-            ),
+            pytest.raises(ConstraintsError, match=re.escape("cut_point must be a finite number")),
             id="cut_point inf rejected post-construction",
         ),
         pytest.param(
@@ -464,8 +434,7 @@ def test_apply_cut(parms, context):
     with context:
         result = c.apply_cut(parms["value"])
         assert abs(result - parms["expected"]) < ENDPOINT_TOLERANCE, (
-            f"apply_cut({parms['value']!r}, cut={parms['cut']!r})"
-            f" expected {parms['expected']!r}, got {result!r}"
+            f"apply_cut({parms['value']!r}, cut={parms['cut']!r}) expected {parms['expected']!r}, got {result!r}"
         )
 
 
@@ -564,8 +533,7 @@ def test_cut_point_and_valid(parms, context):
         wrapped = c.apply_cut(parms["raw_angle"])
         result = c.valid(axis=wrapped)
         assert result == parms["expect_valid"], (
-            f"raw={parms['raw_angle']}, wrapped={wrapped}, "
-            f"limits={parms['limits']}, cut={parms['cut_point']}"
+            f"raw={parms['raw_angle']}, wrapped={wrapped}, limits={parms['limits']}, cut={parms['cut_point']}"
         )
 
 

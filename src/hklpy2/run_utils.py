@@ -39,10 +39,10 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "ConfigurationRunWrapper",
-    "register_aux_reconstructor",
-    "simulator_from_config",
     "get_run_orientation",
     "list_orientation_runs",
+    "register_aux_reconstructor",
+    "simulator_from_config",
 ]
 
 
@@ -128,14 +128,10 @@ def _normalize_aux_record(entry: Any) -> dict:
     if isinstance(entry, str):  # legacy v1 form
         return {"name": entry, "category": "scalar"}
     if not isinstance(entry, Mapping):
-        raise ConfigurationError(
-            f"auxiliary_axes entry must be a str (legacy) or dict; got {entry!r}"
-        )
+        raise ConfigurationError(f"auxiliary_axes entry must be a str (legacy) or dict; got {entry!r}")
     rec = dict(entry)
     if "name" not in rec or not isinstance(rec["name"], str) or not rec["name"]:
-        raise ConfigurationError(
-            f"auxiliary_axes record is missing a non-empty 'name': {entry!r}"
-        )
+        raise ConfigurationError(f"auxiliary_axes record is missing a non-empty 'name': {entry!r}")
     rec.setdefault("category", "scalar")
     if rec["category"] not in _AUX_RECONSTRUCTORS:
         warnings.warn(
@@ -288,9 +284,7 @@ class ConfigurationRunWrapper:
         return (yield from bpp.inject_md_wrapper(plan, {self.start_key: cfg}))
 
 
-@versionadded(
-    version="0.2.3", reason="Retrieve diffractometer orientation from a Tiled run."
-)
+@versionadded(version="0.2.3", reason="Retrieve diffractometer orientation from a Tiled run.")
 @versionchanged(version="0.4.0", reason="Exported from top-level ``hklpy2`` namespace.")
 def get_run_orientation(
     run: Any,
@@ -377,9 +371,7 @@ def get_run_orientation(
     return info
 
 
-@versionadded(
-    version="0.2.3", reason="List runs that contain diffractometer orientation data."
-)
+@versionadded(version="0.2.3", reason="List runs that contain diffractometer orientation data.")
 @versionchanged(version="0.4.0", reason="Exported from top-level ``hklpy2`` namespace.")
 def list_orientation_runs(
     catalog: Any,
@@ -563,8 +555,7 @@ def simulator_from_config(config):
         config = load_yaml_file(config)
     if not isinstance(config, dict):
         raise TypeError(
-            "Expected a dict, path to a YAML file, or DiffractometerBase"
-            f" instance. Received: {type(config)!r}"
+            f"Expected a dict, path to a YAML file, or DiffractometerBase instance. Received: {type(config)!r}"
         )
     if "_header" not in config:
         raise KeyError(MISSING_HEADER_KEY_MSG)
@@ -587,20 +578,14 @@ def simulator_from_config(config):
     # ``solver_kwargs``.  This subsumes the previous ``engine`` special
     # case and lets out-of-tree solvers persist construction state by
     # overriding ``_metadata`` -- no new abstract API is required.
-    solver_kwargs: dict = {
-        k: v for k, v in solver_cfg.items() if k not in _RESERVED_SOLVER_KEYS
-    }
+    solver_kwargs: dict = {k: v for k, v in solver_cfg.items() if k not in _RESERVED_SOLVER_KEYS}
     if solver_kwargs:
-        logger.debug(
-            "simulator_from_config: forwarding solver_kwargs=%r", solver_kwargs
-        )
+        logger.debug("simulator_from_config: forwarding solver_kwargs=%r", solver_kwargs)
 
     axes_cfg = config.get("axes", {})
     axes_xref = axes_cfg.get("axes_xref", {})
     pseudo_axes = axes_cfg.get("pseudo_axes", [])
-    real_axes = [
-        ax for ax in axes_cfg.get("real_axes", []) if ax not in set(pseudo_axes)
-    ]
+    real_axes = [ax for ax in axes_cfg.get("real_axes", []) if ax not in set(pseudo_axes)]
 
     # Sort diffractometer real axis names into the order the solver expects,
     # using axes_xref (diffractometer_name -> solver_canonical_name) and
@@ -608,11 +593,7 @@ def simulator_from_config(config):
     solver_real_order = solver_cfg.get("real_axes", [])
     if solver_real_order:
         solver_to_diff_real = {v: k for k, v in axes_xref.items() if k in real_axes}
-        real_axes = [
-            solver_to_diff_real[s]
-            for s in solver_real_order
-            if s in solver_to_diff_real
-        ]
+        real_axes = [solver_to_diff_real[s] for s in solver_real_order if s in solver_to_diff_real]
 
     # Sort diffractometer pseudo axis names into the order the solver expects,
     # using axes_xref (diffractometer_name -> solver_canonical_name).
@@ -623,12 +604,10 @@ def simulator_from_config(config):
     # fall back to the order in axes.pseudo_axes if no xref is available.
     pseudo_solver_order = [axes_xref.get(p, p) for p in pseudo_axes]
     pseudo_axes_ordered = [
-        solver_to_diff_pseudo[s]
-        for s in pseudo_solver_order
-        if s in solver_to_diff_pseudo
+        solver_to_diff_pseudo[s] for s in pseudo_solver_order if s in solver_to_diff_pseudo
     ] or pseudo_axes
 
-    reals_dict = {name: None for name in real_axes}
+    reals_dict = dict.fromkeys(real_axes)
 
     # Restore auxiliary axes saved in the config.  Backward-compatible:
     #   * absent in very old files (handled by .get() default);

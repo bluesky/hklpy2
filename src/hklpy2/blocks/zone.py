@@ -99,9 +99,7 @@ class OrthonormalZone:
         elif b1 is not None and b2 is not None:
             self.define_axis(b1, b2)
         elif b1 is not None or b2 is not None:
-            raise ValueError(
-                "Both b1 and b2 must be provided to define axis from vectors"
-            )
+            raise ValueError("Both b1 and b2 must be provided to define axis from vectors")
 
     def __repr__(self) -> str:
         """Text representation of a zone object."""

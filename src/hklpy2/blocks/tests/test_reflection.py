@@ -266,9 +266,7 @@ def test_Reflection(
     [
         pytest.param([r100_parms], "(100)", does_not_raise(), None, id="single-r100"),
         pytest.param([r010_parms], "(010)", does_not_raise(), None, id="single-r010"),
-        pytest.param(
-            [r100_parms, r010_parms], "(100)", does_not_raise(), None, id="r100-r010"
-        ),
+        pytest.param([r100_parms, r010_parms], "(100)", does_not_raise(), None, id="r100-r010"),
         pytest.param([r_1], "r1", does_not_raise(), None, id="single-r1"),
         pytest.param([r_2], "r2", does_not_raise(), None, id="single-r2"),
         pytest.param([r_1, r_4], "r4", does_not_raise(), None, id="r1-r4"),
@@ -344,9 +342,7 @@ def test_ReflectionsDict_eq(parms, context):
         pytest.param([r_2], does_not_raise(), id="single-r2"),
         pytest.param(
             [r_1, r_2],
-            pytest.raises(
-                ReflectionError, match=re.escape("matches one or more existing")
-            ),
+            pytest.raises(ReflectionError, match=re.escape("matches one or more existing")),
             id="duplicate-content",
         ),
         pytest.param([r_1, r_4], does_not_raise(), id="r1-r4-compatible"),
@@ -390,9 +386,7 @@ def test_IncompatibleReflectionsDict(parms, context):
         ),
         pytest.param(
             r_2,
-            pytest.raises(
-                ReflectionError, match=re.escape("matches one or more existing")
-            ),
+            pytest.raises(ReflectionError, match=re.escape("matches one or more existing")),
             id="same-content",
         ),
     ],
@@ -474,9 +468,7 @@ def test_swap(reflections, order, context):
                 "wavelength": 1.54,
                 "digits": 4,
             },
-            pytest.raises(
-                ConfigurationError, match=re.escape("Mismatched name for reflection")
-            ),
+            pytest.raises(ConfigurationError, match=re.escape("Mismatched name for reflection")),
             id="mismatched-name",
         ),
         pytest.param(
@@ -575,9 +567,7 @@ def test_wrong_real_names():
             id="add_diff",
         ),
         # error cases for addition (non-Reflection operand)
-        pytest.param(
-            r_1, 5, pytest.raises(TypeError), None, None, id="add_type_error_int"
-        ),
+        pytest.param(r_1, 5, pytest.raises(TypeError), None, None, id="add_type_error_int"),
         pytest.param(
             r_1,
             ["not", "a", "reflection"],
@@ -622,9 +612,7 @@ def test_reflection_add(left, right, ctx, expect_pseudos, expect_reals):
             id="sub_diff",
         ),
         # error cases for subtraction (non-Reflection operand)
-        pytest.param(
-            r_1, 5, pytest.raises(TypeError), None, None, id="sub_type_error_int"
-        ),
+        pytest.param(r_1, 5, pytest.raises(TypeError), None, None, id="sub_type_error_int"),
         pytest.param(
             r_1,
             ["not", "a", "reflection"],
@@ -745,9 +733,7 @@ def test_reflectionsdict_fromdict_defaults(config, explicit_digits, context):
 def _make_simple_reflection(name: str = "r"):
     pseudos = {"a": 1.0, "b": 2.0}
     reals = {"x": 0.0, "y": 0.0}
-    return Reflection(
-        name, pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys())
-    )
+    return Reflection(name, pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys()))
 
 
 @pytest.mark.parametrize(
@@ -799,15 +785,11 @@ def test_add_and_sub_success_case():
         pytest.param(None, INTERNAL_LENGTH_UNITS, does_not_raise(), id="default-units"),
     ],
 )
-def test_asdict_fromdict_preserves_wavelength_units(
-    initial_units, expect_units, context
-):
+def test_asdict_fromdict_preserves_wavelength_units(initial_units, expect_units, context):
     pseudos = {"h": 1, "k": 0, "l": 0}
     reals = {"omega": 0, "chi": 0, "phi": 0, "tth": 0}
     if initial_units is None:
-        r = Reflection(
-            "r1", pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys())
-        )
+        r = Reflection("r1", pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys()))
     else:
         r = Reflection(
             "r1",
@@ -824,9 +806,7 @@ def test_asdict_fromdict_preserves_wavelength_units(
     assert d["wavelength_units"] == expect_units
 
     # create a new Reflection with same name/geometry to test _fromdict
-    r2 = Reflection(
-        "r1", pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys())
-    )
+    r2 = Reflection("r1", pseudos, reals, 1.0, "geo", list(pseudos.keys()), list(reals.keys()))
     with context:
         r2._fromdict(d)
     assert r2.wavelength_units == expect_units
@@ -977,9 +957,7 @@ def test_reflections_to_solver_converts_per_reflection_units():
         pytest.param(None, "angstrom", "angstrom", id="beam-angstrom-fallback"),
     ],
 )
-def test_add_reflection_wavelength_units_preference(
-    explicit_units, beam_units, expect_units
-):
+def test_add_reflection_wavelength_units_preference(explicit_units, beam_units, expect_units):
     """Combined test for explicit wavelength_units preference and beam-unit fallback."""
     sim = creator()
     # if a beam unit is provided, set it on the diffractometer

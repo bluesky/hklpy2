@@ -107,9 +107,7 @@ class _SelectedDiffractometer:
         """Name the diffractometer to be used."""
         if not isinstance(diffractometer, DiffractometerBase):
             if diffractometer is not None:
-                raise TypeError(
-                    f"{diffractometer} must be an hklpy2 'DiffractometerBase' subclass."
-                )
+                raise TypeError(f"{diffractometer} must be an hklpy2 'DiffractometerBase' subclass.")
         self._selection = diffractometer
 
 
@@ -297,8 +295,7 @@ def calc_UB(
 @versionchanged(
     version="0.6.1",
     reason=(
-        "Accept a ``diffractometer`` argument; underlying implementation"
-        " moved to ``hklpy2.utils.solver_summary``."
+        "Accept a ``diffractometer`` argument; underlying implementation moved to ``hklpy2.utils.solver_summary``."
     ),
 )
 def solver_summary(
@@ -738,12 +735,9 @@ def set_wavelength(value: float, units=None) -> None:
 
         >>> set_wavelength(123.45, units="pm")
     """
-
     beam = _choice.diffractometer.beam
     if not beam.wavelength.write_access:
-        raise TypeError(
-            f"'set_wavelength()' not supported for {beam.wavelength.name!r}."
-        )
+        raise TypeError(f"'set_wavelength()' not supported for {beam.wavelength.name!r}.")
     if units is not None:
         beam.wavelength_units.put(units)
     beam.wavelength.put(value)

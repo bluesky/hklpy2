@@ -117,9 +117,7 @@ class ThTthSolver(SolverBase):
         wavelengths = [r["wavelength"] for r in self._reflections]
         if min(wavelengths) != max(wavelengths):
             self._reflections.pop(-1)
-            raise SolverError(
-                f"All reflections must have same wavelength. Received: {wavelengths!r}"
-            )
+            raise SolverError(f"All reflections must have same wavelength. Received: {wavelengths!r}")
         self.wavelength = wavelengths[0]
 
     def calculate_UB(self, r1: ReflectionDict, r2: ReflectionDict) -> Matrix3x3:

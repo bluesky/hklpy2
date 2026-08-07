@@ -62,9 +62,7 @@ def solver_factory(
     """
     Create a |solver| object with geometry and axes.
     """
-    logger.debug(
-        "Creating solver %r geometry=%r kwargs=%r", solver_name, geometry, kwargs
-    )
+    logger.debug("Creating solver %r geometry=%r kwargs=%r", solver_name, geometry, kwargs)
     solver_class = get_solver(solver_name)
     return solver_class(geometry, **kwargs)
 

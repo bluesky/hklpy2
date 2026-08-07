@@ -48,6 +48,8 @@ import numpy.typing as npt
 from bluesky.utils import Msg
 
 __all__ = [
+    "INPUT_VECTOR",
+    "NUMERIC",
     "AnyAxesType",
     "AxesArray",
     "AxesDict",
@@ -55,11 +57,9 @@ __all__ = [
     "AxesTuple",
     "BlueskyPlanType",
     "ConfigHeaderDict",
-    "INPUT_VECTOR",
     "KeyValueMap",
     "Matrix3x3",
     "NamedFloatDict",
-    "NUMERIC",
 ]
 
 # ---------------------------------------------------------------------------

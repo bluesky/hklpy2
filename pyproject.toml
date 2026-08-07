@@ -147,6 +147,89 @@ exclude_also = [
     "^\\s*\\.\\.\\.\\s*$",
 ]
 
+[tool.ruff]
+line-length = 115  # matches .flake8 and [tool.black]
+target-version = "py310"  # project's minimum Python version
+
+[tool.ruff.lint]
+# Rules that are enabled by default in ruff but conflict with this project's style
+# Suppress these to allow pre-existing code patterns
+ignore = [
+    # Code style - these are preferences, not correctness issues
+    "C408",     # unnecessary-collection-call (prefer dict() over {})
+    "SIM905",   # split-static-string (prefer str.split() over list literals)
+    # Type annotations - we use Union/Optional for clarity in some contexts
+    "UP045",    # non-pep604-annotation-optional (Optional[X] vs X | None)
+    "UP007",    # non-pep604-annotation-union (Union[X, Y] vs X | Y)
+    "UP006",    # non-pep585-annotation (List[X] vs list[X], Dict vs dict)
+    # Import sorting - pre-commit handles this, ruff rules can conflict
+    "I001",     # unsorted-imports (isort integration; pre-commit/isort manages)
+    # Minor style issues that don't affect correctness
+    "PLR2044",  # empty-comment (comments with just # characters)
+    "SIM118",   # in-dict-keys (key in dict vs key in dict.keys())
+    "SIM210",   # if-expr-with-true-false (conditional expressions)
+    "RUF100",   # unused-noqa (some noqa's are for specific ruff versions)
+    "UP035",    # deprecated-import (typing imports handled differently)
+    "SIM102",   # collapsible-if (readability preference)
+    # Docstring style - we don't enforce PEP 257 strictly in this project
+    "D100",     # Missing module docstring
+    "D102",     # Missing docstring in public method
+    "D104",     # Missing docstring in public package
+    "D105",     # Missing docstring in magic method
+    "D106",     # Missing docstring in public nested class
+    "D107",     # Missing docstring in __init__
+    "D200",     # One-line docstring should fit on one line
+    "D205",     # 1 blank line required between summary and description
+    "D209",     # Multi-line docstring closing quotes should be on a separate line
+    "D212",     # Multi-line docstring summary should start at the first line
+    "D213",     # Multi-line docstring summary should start at the second line
+    "D400",     # First line should end with a period
+    "D401",     # First line should be in imperative mood
+    "D405",     # Section name should be properly capitalized
+    "D407",     # Missing dashed underline after section
+    "D412",     # Blank line required before section
+    "D413",     # Missing blank line after last section
+    "D415",     # First line should end with a period, question mark, or exclamation point
+    "D417",     # Missing argument description in docstring
+    # Exception handling - we allow vanilla exception raising
+    "TRY003",   # Avoid specifying long messages outside the exception class
+    # Other - legacy code patterns we allow
+    "N802",     # function-name-should-be-lowercase (some functions use different naming)
+    "N806",     # non-lowercase-variable-in-function (convention preference)
+    "B905",     # zip-without-explicit-strict (older code may not use strict)
+    "E501",     # line-too-long (we use line-length = 115)
+]
+
+# Extend select to ensure important rules are checked
+select = [
+    "E",        # pycodestyle errors
+    "W",        # pycodestyle warnings
+    "F",        # pyflakes
+    "N",        # pep8-naming
+    "D",        # pydocstyle
+    "I",        # isort (import sorting)
+    "S",        # bandit (security)
+    "B",        # flake8-bugbear
+    "A",        # flake8-builtins
+    "C4",       # flake8-comprehensions
+    "RUF",      # ruff-specific rules
+    "TRY",      # tryceratops (exception handling)
+    "SIM",      # flake8-simplify (some)
+    "UP",       # pyupgrade (some)
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Test files can use more permissive rules
+"**/tests/*" = [
+    "D100",     # Missing module docstring
+    "D103",     # Missing function docstring
+]
+# Documentation examples are not part of the main codebase
+"docs/**/*.py" = ["ALL"]
+"docs/**/*.ipynb" = ["ALL"]
+# Auto-generated or vendored code
+"*/_version.py" = ["ALL"]
+
 [tool.pytest.ini_options]
 addopts = ["--import-mode=importlib", "-m", "not benchmark"]
 markers = [

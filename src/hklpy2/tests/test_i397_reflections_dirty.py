@@ -180,8 +180,7 @@ def test_order_affecting_high_level_api_flags(parms, context):
             raise AssertionError(f"unknown action {action!r}")
 
         assert sim.core._solver_dirty == _SolverDirty.SAMPLE | _SolverDirty.UB, (
-            f"Expected SAMPLE|UB, got {sim.core._solver_dirty!r} "
-            f"after action {action!r}"
+            f"Expected SAMPLE|UB, got {sim.core._solver_dirty!r} after action {action!r}"
         )
 
 
@@ -421,13 +420,11 @@ def test_dict_api_mutations_flag_only_when_order_affected(parms, context):
 
         if parms["flags"]:
             assert sim.core._solver_dirty == _SolverDirty.SAMPLE | _SolverDirty.UB, (
-                f"Expected SAMPLE|UB, got {sim.core._solver_dirty!r} "
-                f"after action {action!r}"
+                f"Expected SAMPLE|UB, got {sim.core._solver_dirty!r} after action {action!r}"
             )
         else:
             assert sim.core._solver_dirty == _SolverDirty(0), (
-                f"Expected no flag, got {sim.core._solver_dirty!r} "
-                f"after action {action!r}"
+                f"Expected no flag, got {sim.core._solver_dirty!r} after action {action!r}"
             )
 
 
@@ -534,8 +531,6 @@ def test_known_failure_modes_unchanged(parms, context):
     with context:
         sim = _build_sim_with_reflections(n_reflections=2)
         if parms["method"] == "set_orientation_reflections":
-            sim.sample.reflections.set_orientation_reflections(
-                [sim.sample.reflections["unknown"]]
-            )
+            sim.sample.reflections.set_orientation_reflections([sim.sample.reflections["unknown"]])
         elif parms["method"] == "remove_reflection":
             sim.sample.remove_reflection("unknown")

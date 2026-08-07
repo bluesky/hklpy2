@@ -20,9 +20,7 @@ import pytest
 from ..diffract import creator
 from .models import add_oriented_vibranium_to_e4cv
 
-_STALE_PATTERN = re.compile(
-    r"UB for sample .* is stale .*orientation reflections changed"
-)
+_STALE_PATTERN = re.compile(r"UB for sample .* is stale .*orientation reflections changed")
 
 
 def _oriented_e4cv():
@@ -78,10 +76,7 @@ def test_stale_ub_warning(parms, context):
                 e4cv.core.inverse(dict(omega=-145.451, chi=0, phi=0, tth=69.066))
 
         stale_warnings = [
-            w
-            for w in caught
-            if issubclass(w.category, UserWarning)
-            and _STALE_PATTERN.search(str(w.message))
+            w for w in caught if issubclass(w.category, UserWarning) and _STALE_PATTERN.search(str(w.message))
         ]
         if parms["expect_warning"]:
             assert len(stale_warnings) == 1, [str(w.message) for w in caught]
@@ -150,9 +145,6 @@ def test_recalc_clears_warning(parms, context):
             e4cv.core.forward(dict(h=1, k=0, l=0))
 
         stale = [
-            w
-            for w in caught
-            if issubclass(w.category, UserWarning)
-            and _STALE_PATTERN.search(str(w.message))
+            w for w in caught if issubclass(w.category, UserWarning) and _STALE_PATTERN.search(str(w.message))
         ]
         assert stale == []

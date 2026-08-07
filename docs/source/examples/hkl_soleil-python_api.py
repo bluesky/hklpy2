@@ -21,10 +21,7 @@ class Table(pyRestTable.Table):
         if keys == self.labels:
             self.addRow(list(dd.values()))
         else:
-            raise KeyError(
-                "All rows must have same keys."
-                f"  Received {keys!r}, expected {self.labels!r}."
-            )
+            raise KeyError(f"All rows must have same keys.  Received {keys!r}, expected {self.labels!r}.")
 
 
 def to_hkl(arr):
@@ -63,9 +60,7 @@ class Diffractometer:
         self.engine = self.engines.engine_get_by_name(engine)
         self._solutions = []
 
-    def _get_as_dict(
-        self, obj: object, part: str, digits: int = DEFAULT_DIGITS
-    ) -> dict:
+    def _get_as_dict(self, obj: object, part: str, digits: int = DEFAULT_DIGITS) -> dict:
         names = getattr(obj, f"{part}_names_get")()
         values = getattr(obj, f"{part}_values_get")(UNITS)
         return dict(zip(names, self._roundoff(values, digits=digits)))
@@ -199,7 +194,7 @@ class Diffractometer:
             keys, values = [], []
             for k, v in axes.items():
                 keys.append(f"{k:8s}")
-                values.append(f"{str(round(v, ndigits=3) or 0.0):8s}")
+                values.append(f"{round(v, ndigits=3) or 0.0!s:8s}")
             print(" ".join(keys))
             print(" ".join(values))
             print()

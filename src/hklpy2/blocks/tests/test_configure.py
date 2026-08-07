@@ -36,43 +36,29 @@ twopi = 2 * math.pi
             CONFIG_SCHEMA_VERSION,
             id="header-config-schema-version",
         ),
-        pytest.param(
-            "_header.python_class", e4cv.__class__.__name__, id="header-python-class"
-        ),
+        pytest.param("_header.python_class", e4cv.__class__.__name__, id="header-python-class"),
         pytest.param("axes.axes_xref", e4cv.core.axes_xref, id="axes-xref"),
         pytest.param("axes.extra_axes", e4cv.core.all_extras, id="axes-extra"),
         pytest.param("axes.pseudo_axes", e4cv.pseudo_axis_names, id="axes-pseudo"),
         pytest.param("axes.real_axes", e4cv.real_axis_names, id="axes-real"),
-        pytest.param(
-            "beam.energy_units", e4cv.beam.energy_units.get(), id="beam-energy-units"
-        ),
+        pytest.param("beam.energy_units", e4cv.beam.energy_units.get(), id="beam-energy-units"),
         pytest.param("beam.energy", e4cv.beam.energy.get(), id="beam-energy"),
-        pytest.param(
-            "beam.source_type", e4cv.beam.source_type.get(), id="beam-source-type"
-        ),
+        pytest.param("beam.source_type", e4cv.beam.source_type.get(), id="beam-source-type"),
         pytest.param(
             "beam.wavelength_units",
             e4cv.beam.wavelength_units.get(),
             id="beam-wavelength-units",
         ),
-        pytest.param(
-            "beam.wavelength", e4cv.beam.wavelength.get(), id="beam-wavelength"
-        ),
-        pytest.param(
-            "constraints.chi.high_limit", 180.2, id="constraint-chi-high-limit"
-        ),
+        pytest.param("beam.wavelength", e4cv.beam.wavelength.get(), id="beam-wavelength"),
+        pytest.param("constraints.chi.high_limit", 180.2, id="constraint-chi-high-limit"),
         pytest.param("constraints.omega.label", "omega", id="constraint-omega-label"),
-        pytest.param(
-            "constraints.tth.low_limit", -180.2, id="constraint-tth-low-limit"
-        ),
+        pytest.param("constraints.tth.low_limit", -180.2, id="constraint-tth-low-limit"),
         pytest.param("name", e4cv.name, id="diffractometer-name"),
         pytest.param("sample_name", e4cv.sample.name, id="sample-name"),
         pytest.param("samples.sample.lattice.a", 1, id="sample-lattice-a"),
         pytest.param("samples.sample.lattice.alpha", 90, id="sample-lattice-alpha"),
         pytest.param("samples.sample.name", "sample", id="sample-default-name"),
-        pytest.param(
-            "samples.sample.reflections_order", [], id="sample-reflections-order-empty"
-        ),
+        pytest.param("samples.sample.reflections_order", [], id="sample-reflections-order-empty"),
         pytest.param("samples.sample.reflections", {}, id="sample-reflections-empty"),
         pytest.param(
             "samples.sample.U",
@@ -90,9 +76,7 @@ twopi = 2 * math.pi
             "r040 r004".split(),
             id="vibranium-reflections-order-r040-r400",
         ),
-        pytest.param(
-            "samples.vibranium.reflections.r004.name", "r004", id="vibranium-r004-name"
-        ),
+        pytest.param("samples.vibranium.reflections.r004.name", "r004", id="vibranium-r004-name"),
         pytest.param(
             "samples.vibranium.reflections.r004.pseudos.h",
             0,
@@ -118,9 +102,7 @@ twopi = 2 * math.pi
         pytest.param("solver.engine", e4cv.core.solver.engine_name, id="solver-engine"),
         pytest.param("solver.geometry", e4cv.core.geometry, id="solver-geometry"),
         pytest.param("solver.name", e4cv.core.solver_name, id="solver-name"),
-        pytest.param(
-            "solver.real_axes", e4cv.core.solver_real_axis_names, id="solver-real-axes"
-        ),
+        pytest.param("solver.real_axes", e4cv.core.solver_real_axis_names, id="solver-real-axes"),
     ],
 )
 def test_Configuration(keypath, value):
@@ -210,9 +192,7 @@ def test_fromdict():
                 # verify the field is present (done above) and readable.
                 assert isinstance(cfg[field], float)
             else:
-                assert cfg[field] != getattr(constraint, field), (
-                    f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
-                )
+                assert cfg[field] != getattr(constraint, field), f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
     # A few pre-checks
     assert "geometry" not in config
     assert "solver" in config
@@ -226,9 +206,7 @@ def test_fromdict():
     sample = config["sample_name"]
     assert sample == fourc.sample.name, f"{sample=!r}  {fourc.sample.name=!r}"
     assert len(fourc.samples) == len(config["samples"]), f"{config['samples']=!r}"
-    assert (
-        fourc.sample.reflections.order == config["samples"][sample]["reflections_order"]
-    )
+    assert fourc.sample.reflections.order == config["samples"][sample]["reflections_order"]
 
     assert len(fourc.sample.reflections) == 3
     sample_cfg = config["samples"][config["sample_name"]]
@@ -258,9 +236,7 @@ def test_fromdict():
         assert cfg["class"] == constraint.__class__.__name__
         for field in constraint._fields:
             assert field in cfg, f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
-            assert cfg[field] == getattr(constraint, field), (
-                f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
-            )
+            assert cfg[field] == getattr(constraint, field), f"{key=!r}  {field=!r}  {constraint=!r}  {cfg=!r}"
 
 
 @pytest.mark.parametrize(
@@ -430,8 +406,7 @@ def test_extras_round_trip_simulator(parms, context, tmp_path):
         # Core-side state matches.
         for axis, value in parms["extras"].items():
             assert fresh.core.extras[axis] == pytest.approx(value), (
-                f"core extras: {axis=} got={fresh.core.extras[axis]!r}"
-                f" expected={value!r}"
+                f"core extras: {axis=} got={fresh.core.extras[axis]!r} expected={value!r}"
             )
         # Solver-side state matches: the dirty-flag fix means update_solver
         # has actually pushed the extras to the backend.
@@ -463,8 +438,7 @@ def test_extras_round_trip_via_simulator_from_config(parms, context):
 
         for axis, value in parms["extras"].items():
             assert sim.core.extras[axis] == pytest.approx(value), (
-                f"sim core extras: {axis=} got={sim.core.extras[axis]!r}"
-                f" expected={value!r}"
+                f"sim core extras: {axis=} got={sim.core.extras[axis]!r} expected={value!r}"
             )
         sim.core.update_solver()
         for axis, value in parms["extras"].items():
@@ -657,9 +631,7 @@ def test_presets_round_trip(parms, context, tmp_path):
     """Mode presets survive export -> restore."""
     with context:
         orig = creator(name="e6c_orig", geometry="E6C")
-        orig.core._mode_presets[parms["preset_mode"]] = {
-            str(k): float(v) for k, v in parms["presets"].items()
-        }
+        orig.core._mode_presets[parms["preset_mode"]] = {str(k): float(v) for k, v in parms["presets"].items()}
         cfg_file = tmp_path / "presets.yml"
         orig.export(cfg_file)
 
@@ -725,17 +697,12 @@ def test_check_schema_version(parms, context):
             _check_schema_version(header)
 
         schema_warnings = [
-            w
-            for w in caught
-            if issubclass(w.category, UserWarning)
-            and "schema" in str(w.message).lower()
+            w for w in caught if issubclass(w.category, UserWarning) and "schema" in str(w.message).lower()
         ]
         if parms["expect_warning"] is False:
             assert schema_warnings == [], f"unexpected warnings: {schema_warnings!r}"
         else:
-            assert len(schema_warnings) == 1, (
-                f"expected one schema warning, got: {schema_warnings!r}"
-            )
+            assert len(schema_warnings) == 1, f"expected one schema warning, got: {schema_warnings!r}"
             assert parms["expect_warning"] in str(schema_warnings[0].message)
 
 
@@ -787,14 +754,11 @@ def test_restore_emits_schema_warning(parms, context, tmp_path):
             target.restore(config)
 
         schema_warnings = [
-            w
-            for w in caught
-            if issubclass(w.category, UserWarning)
-            and "schema" in str(w.message).lower()
+            w for w in caught if issubclass(w.category, UserWarning) and "schema" in str(w.message).lower()
         ]
         if parms["expect_warning"] is False:
             assert schema_warnings == [], f"unexpected warnings: {schema_warnings!r}"
         else:
-            assert any(
-                parms["expect_warning"] in str(w.message) for w in schema_warnings
-            ), f"expected {parms['expect_warning']!r} in {schema_warnings!r}"
+            assert any(parms["expect_warning"] in str(w.message) for w in schema_warnings), (
+                f"expected {parms['expect_warning']!r} in {schema_warnings!r}"
+            )

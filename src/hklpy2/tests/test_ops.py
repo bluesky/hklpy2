@@ -162,9 +162,7 @@ fourc = creator()
 def test_asdict(geometry, solver, name, keypath, value):
     """."""
     diffractometer = creator(name=name, geometry=geometry, solver=solver)
-    assert isinstance(diffractometer, DiffractometerBase), (
-        f"{geometry=} {solver=} {name=}"
-    )
+    assert isinstance(diffractometer, DiffractometerBase), f"{geometry=} {solver=} {name=}"
     assert isinstance(diffractometer.core, Core), f"{geometry=} {solver=} {name=}"
 
     db = diffractometer.core._asdict()
@@ -271,18 +269,14 @@ def test_unknown_reflection():
             "h k l".split(),
             dict(a=1, b=2, c=3, d=4),  # cannot use number as value
             "h b c d".split(),  # duplicate name is pseudos and reals
-            pytest.raises(
-                TypeError, match=re.escape("Incorrect type 'int' for specs=")
-            ),
+            pytest.raises(TypeError, match=re.escape("Incorrect type 'int' for specs=")),
             id="Incorrect type 'int' for specs=",
         ),
         pytest.param(
             "h k l".split(),
             dict(a=None, b="m5", c=None, d=None),
             "h b c d".split(),  # same name used in both pseudos and reals
-            pytest.raises(
-                ValueError, match=re.escape("Axis name cannot be in more than list.")
-            ),
+            pytest.raises(ValueError, match=re.escape("Axis name cannot be in more than list.")),
             id="Axis name cannot be in more than list.",
         ),
         pytest.param(
@@ -338,9 +332,7 @@ def test_assign_axes(pseudos, reals, assign, context):
 
 def test_repeat_sample():
     geom = creator(name="geom")
-    with pytest.raises(
-        CoreError, match=re.escape("Sample name='sample' already defined.")
-    ):
+    with pytest.raises(CoreError, match=re.escape("Sample name='sample' already defined.")):
         geom.add_sample("sample", 4.1)
 
 
@@ -379,9 +371,7 @@ def test_repeat_sample():
             TwoC(name="cc"),
             ["another"],
             "local_pseudo_axes",
-            pytest.raises(
-                AssertionError, match=re.escape("assert ['q'] == ['another']")
-            ),
+            pytest.raises(AssertionError, match=re.escape("assert ['q'] == ['another']")),
             id="pseudo-twoc-wrong",
         ),
         pytest.param(
@@ -464,9 +454,7 @@ def test_local_pseudo_axes(gonio, axes, prop, context):
         pytest.param(MultiAxis99(name="ma99"), does_not_raise(), id="with-solver"),
         pytest.param(
             MultiAxis99NoSolver(name="ma99"),
-            pytest.raises(
-                CoreError, match=re.escape("Did you forget to call `assign_axes()`?")
-            ),
+            pytest.raises(CoreError, match=re.escape("Did you forget to call `assign_axes()`?")),
             id="no-solver",
         ),
     ],
@@ -515,9 +503,7 @@ def test_signature(solver: str, geometry: str):
     "solver, geometry, mode",
     [
         pytest.param("hkl_soleil", "E4CV", "bissector", id="e4cv-bissector"),
-        pytest.param(
-            "hkl_soleil", "E4CV", "double_diffraction", id="e4cv-double-diffraction"
-        ),
+        pytest.param("hkl_soleil", "E4CV", "double_diffraction", id="e4cv-double-diffraction"),
         pytest.param("th_tth", "TH TTH Q", "bissector", id="thtthq-bissector"),
     ],
 )
@@ -558,9 +544,7 @@ def test_solver_summary(solver: str, geometry: str):
             "azimuth chi h2 incidence k2 l2 omega phi psi x y z".split(),
             id="k6c",
         ),
-        pytest.param(
-            "hkl_soleil", "APS POLAR", {}, "h2 k2 l2 psi".split(), id="aps-polar"
-        ),
+        pytest.param("hkl_soleil", "APS POLAR", {}, "h2 k2 l2 psi".split(), id="aps-polar"),
         pytest.param(
             "hkl_soleil",
             "APS POLAR",
@@ -579,7 +563,7 @@ def test_all_extras(solver, geometry, solver_kwargs, expected):
         solver_kwargs=solver_kwargs,
     )
     assert isinstance(sim.core.all_extras, dict)
-    assert list(sim.core.all_extras) == list(sorted(expected))
+    assert list(sim.core.all_extras) == sorted(expected)
 
 
 @pytest.mark.parametrize(
@@ -618,9 +602,7 @@ def test_all_extras(solver, geometry, solver_kwargs, expected):
             "h2 k2 l2".split(),
             id="aps-polar-psi-vertical",
         ),
-        pytest.param(
-            "th_tth", "TH TTH Q", {}, "bissector", [], id="th-tth-q-bissector"
-        ),
+        pytest.param("th_tth", "TH TTH Q", {}, "bissector", [], id="th-tth-q-bissector"),
     ],
 )
 def test_extras_getter(solver, geometry, solver_kwargs, mode, expected):
@@ -794,9 +776,7 @@ def test_extras_dict_update_method(parms, context):
                 mode="constant_incidence",
                 key="x",
             ),
-            pytest.raises(
-                TypeError, match=re.escape("Deletion of extras is not allowed")
-            ),
+            pytest.raises(TypeError, match=re.escape("Deletion of extras is not allowed")),
             id="deletion-forbidden",
         ),
     ],
@@ -1251,9 +1231,7 @@ def test_extras_dict_update_validation_fails(parms, context):
                 geometry="K6C",
                 mode="constant_incidence",
             ),
-            pytest.raises(
-                TypeError, match=re.escape("Deletion of extras is not allowed")
-            ),
+            pytest.raises(TypeError, match=re.escape("Deletion of extras is not allowed")),
             id="delitem-forbidden",
         ),
     ],
@@ -1428,11 +1406,11 @@ def test_extras_dict_issue414_comprehensive(parms, context):
             assert sim.core.extras[keys[0]] == 0.1
 
             # Pattern 2: Dict assignment (original way - still works)
-            sim.core.extras = {k: 0.2 for k in keys[:1]}
+            sim.core.extras = dict.fromkeys(keys[:1], 0.2)
             assert sim.core.extras[keys[0]] == 0.2
 
             # Pattern 3: .update() method
-            sim.core.extras.update({k: 0.3 for k in keys[:1]})
+            sim.core.extras.update(dict.fromkeys(keys[:1], 0.3))
             assert sim.core.extras[keys[0]] == 0.3
 
             # Pattern 4: .setdefault() method
@@ -1550,9 +1528,7 @@ def test_extras_dict_issue414_comprehensive(parms, context):
                 "samples": {},
                 "constraints": {"not_dict": 0},
             },
-            pytest.raises(
-                TypeError, match=re.escape("'int' object is not subscriptable")
-            ),
+            pytest.raises(TypeError, match=re.escape("'int' object is not subscriptable")),
             id="constraint-not-subscriptable",
         ),
         pytest.param(  # 12
@@ -1582,9 +1558,7 @@ def test_extras_dict_issue414_comprehensive(parms, context):
                 "samples": {},
                 "constraints": {"tth": {"class": 0}},
             },
-            pytest.raises(
-                ConfigurationError, match=re.escape("Wrong configuration class")
-            ),
+            pytest.raises(ConfigurationError, match=re.escape("Wrong configuration class")),
             id="constraint-wrong-class",
         ),
         pytest.param(  # 15
@@ -1624,9 +1598,7 @@ def test_extras_dict_issue414_comprehensive(parms, context):
                 "samples": {},
                 "constraints": {"tth": {"class": "LimitsConstraint", "label": 0}},
             },
-            pytest.raises(
-                KeyError, match=re.escape("Constraint label axis=0 not found")
-            ),
+            pytest.raises(KeyError, match=re.escape("Constraint label axis=0 not found")),
             id="constraint-label-not-found",
         ),
         pytest.param(  # 19
@@ -1807,16 +1779,10 @@ def test_add_reflection(parms, context):
     "rnames, context",
     [
         pytest.param([], does_not_raise(), id="no-reflections"),
-        pytest.param(
-            ["r400", "r040", "r004"], does_not_raise(), id="three-reflections"
-        ),
+        pytest.param(["r400", "r040", "r004"], does_not_raise(), id="three-reflections"),
         pytest.param([], does_not_raise(), id="no-reflections-again"),
-        pytest.param(
-            ["r400", "r040"], pytest.raises(CoreError), id="too-few-reflections"
-        ),
-        pytest.param(
-            ["r400", "r040", "wrong"], pytest.raises(KeyError), id="unknown-reflection"
-        ),
+        pytest.param(["r400", "r040"], pytest.raises(CoreError), id="too-few-reflections"),
+        pytest.param(["r400", "r040", "wrong"], pytest.raises(KeyError), id="unknown-reflection"),
     ],
 )
 def test_refine_lattice(rnames, context):
@@ -1846,7 +1812,5 @@ def test_refine_lattice_unsupported_solver(parms, context):
         sim.wavelength = 1.0
         # Add 3 reflections to pass the minimum-count guard.
         for i, tth in enumerate([30, 60, 90]):
-            sim.add_reflection(
-                (tth / 2,), reals=dict(th=tth / 2, tth=tth), name=f"r{i}"
-            )
+            sim.add_reflection((tth / 2,), reals=dict(th=tth / 2, tth=tth), name=f"r{i}")
         sim.core.refine_lattice()

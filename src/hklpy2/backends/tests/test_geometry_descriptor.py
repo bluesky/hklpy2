@@ -111,19 +111,13 @@ def test_geometry_descriptor_defaults(parms, context):
 @pytest.mark.parametrize(
     "parms, context",
     [
-        pytest.param(
-            dict(), does_not_raise(), id="extra_axis_names not shared between instances"
-        ),
+        pytest.param(dict(), does_not_raise(), id="extra_axis_names not shared between instances"),
     ],
 )
 def test_geometry_descriptor_field_independence(parms, context):
     with context:
-        desc_a = GeometryDescriptor(
-            name="A", pseudo_axis_names=[], real_axis_names=[], modes=[]
-        )
-        desc_b = GeometryDescriptor(
-            name="B", pseudo_axis_names=[], real_axis_names=[], modes=[]
-        )
+        desc_a = GeometryDescriptor(name="A", pseudo_axis_names=[], real_axis_names=[], modes=[])
+        desc_b = GeometryDescriptor(name="B", pseudo_axis_names=[], real_axis_names=[], modes=[])
         desc_a.extra_axis_names["mode_x"] = ["psi"]
         assert "mode_x" not in desc_b.extra_axis_names
 
