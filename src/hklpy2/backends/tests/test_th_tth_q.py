@@ -6,14 +6,11 @@ from contextlib import nullcontext as does_not_raise
 import numpy as np
 import pytest
 
-from ...utils import IDENTITY_MATRIX_3X3
 from ...exceptions import SolverError
-from ...solver_utils import get_solver
-from ...solver_utils import solver_factory
+from ...solver_utils import get_solver, solver_factory
+from ...utils import IDENTITY_MATRIX_3X3
 from ..base import SolverBase
-from ..th_tth_q import BISECTOR_MODE
-from ..th_tth_q import TH_TTH_Q_GEOMETRY
-from ..th_tth_q import ThTthSolver
+from ..th_tth_q import BISECTOR_MODE, TH_TTH_Q_GEOMETRY, ThTthSolver
 
 
 def test_solver():
@@ -28,7 +25,7 @@ def test_solver():
 
     assert solver.geometry == gname
     assert solver.pseudo_axis_names == ["q"]
-    assert solver.real_axis_names == "th tth".split()
+    assert solver.real_axis_names == ["th", "tth"]
     assert solver.extra_axis_names == []
     assert solver.refineLattice([]) is None
     assert solver.calculate_UB(None, None) == IDENTITY_MATRIX_3X3
@@ -45,18 +42,18 @@ def test_solver():
         solver.forward({})
 
     with pytest.raises(SolverError, match=re.escape("Wavelength is not set.")):
-        solver.forward(dict(q=0.1))
+        solver.forward({"q": 0.1})
 
     with pytest.raises(TypeError, match=re.escape("Must supply dict")):
         solver.inverse([0, 20])
 
     with pytest.raises(SolverError, match=re.escape("'tth' not defined.")):
-        solver.inverse(dict(th=0))
+        solver.inverse({"th": 0})
 
     with pytest.raises(
         SolverError, match=re.escape("Wavelength is not set. Add a reflection")
     ):
-        solver.inverse(dict(th=0, tth=20))
+        solver.inverse({"th": 0, "tth": 20})
 
     with pytest.raises(TypeError, match=re.escape("Must supply number")):
         solver.wavelength = "-1"
@@ -191,15 +188,15 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
     "value, context",
     [
         pytest.param(
-            dict(
-                name="r1",
-                pseudos=dict(q=0),
-                reals=dict(th=0, tth=0),
-                wavelength=1.0,
-                geometry=TH_TTH_Q_GEOMETRY,
-                pseudo_axis_names=["q"],
-                real_axis_names=["th", "tth"],
-            ),
+            {
+                "name": "r1",
+                "pseudos": {"q": 0},
+                "reals": {"th": 0, "tth": 0},
+                "wavelength": 1.0,
+                "geometry": TH_TTH_Q_GEOMETRY,
+                "pseudo_axis_names": ["q"],
+                "real_axis_names": ["th", "tth"],
+            },
             does_not_raise(),
             id="standard case",
         ),
@@ -211,15 +208,15 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
             id="Wrong object type",
         ),
         pytest.param(
-            dict(
-                name="r1",
-                pseudos=dict(q=0),
-                reals=dict(th=0, tth=0),
-                wavelength=10.0,
-                geometry=TH_TTH_Q_GEOMETRY,
-                pseudo_axis_names=["q"],
-                real_axis_names=["th", "tth"],
-            ),
+            {
+                "name": "r1",
+                "pseudos": {"q": 0},
+                "reals": {"th": 0, "tth": 0},
+                "wavelength": 10.0,
+                "geometry": TH_TTH_Q_GEOMETRY,
+                "pseudo_axis_names": ["q"],
+                "real_axis_names": ["th", "tth"],
+            },
             pytest.raises(
                 SolverError,
                 match=re.escape("All reflections must have same wavelength"),
@@ -231,15 +228,15 @@ def test_transforms(transform, wavelength, inputs, outputs, tol):
 def test_reflections(value, context):
     with context:
         solver = solver_factory("th_tth", "TH TTH Q")
-        r0 = dict(
-            name="r0",
-            pseudos=dict(q=0.1),
-            reals=dict(th=0, tth=1),
-            wavelength=1.0,
-            geometry=TH_TTH_Q_GEOMETRY,
-            pseudo_axis_names=["q"],
-            real_axis_names=["th", "tth"],
-        )
+        r0 = {
+            "name": "r0",
+            "pseudos": {"q": 0.1},
+            "reals": {"th": 0, "tth": 1},
+            "wavelength": 1.0,
+            "geometry": TH_TTH_Q_GEOMETRY,
+            "pseudo_axis_names": ["q"],
+            "real_axis_names": ["th", "tth"],
+        }
         solver.addReflection(r0)  # pre-existing
         solver.addReflection(value)
 
@@ -248,12 +245,12 @@ def test_reflections(value, context):
     "parms, context",
     [
         pytest.param(
-            dict(geometry=TH_TTH_Q_GEOMETRY),
+            {"geometry": TH_TTH_Q_GEOMETRY},
             does_not_raise(),
             id="known geometry returns bisector mode",
         ),
         pytest.param(
-            dict(geometry="UNKNOWN"),
+            {"geometry": "UNKNOWN"},
             does_not_raise(),
             id="unknown geometry returns empty list",
         ),
@@ -274,17 +271,17 @@ def test_modes(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(num_reflections=0),
+            {"num_reflections": 0},
             does_not_raise(),
             id="remove reflections from empty solver",
         ),
         pytest.param(
-            dict(num_reflections=1),
+            {"num_reflections": 1},
             does_not_raise(),
             id="remove reflections after adding one",
         ),
         pytest.param(
-            dict(num_reflections=2),
+            {"num_reflections": 2},
             does_not_raise(),
             id="remove reflections after adding two",
         ),
@@ -294,15 +291,15 @@ def test_removeAllReflections(parms, context):
     with context:
         solver = solver_factory("th_tth", TH_TTH_Q_GEOMETRY)
         reflections = [
-            dict(
-                name=f"r{i}",
-                pseudos=dict(q=float(i) + 0.1),
-                reals=dict(th=float(i), tth=float(i) * 2),
-                wavelength=1.0,
-                geometry=TH_TTH_Q_GEOMETRY,
-                pseudo_axis_names=["q"],
-                real_axis_names=["th", "tth"],
-            )
+            {
+                "name": f"r{i}",
+                "pseudos": {"q": float(i) + 0.1},
+                "reals": {"th": float(i), "tth": float(i) * 2},
+                "wavelength": 1.0,
+                "geometry": TH_TTH_Q_GEOMETRY,
+                "pseudo_axis_names": ["q"],
+                "real_axis_names": ["th", "tth"],
+            }
             for i in range(parms["num_reflections"])
         ]
         for r in reflections:

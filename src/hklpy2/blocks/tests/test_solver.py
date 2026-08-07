@@ -49,17 +49,17 @@ def test_HklSolver():
     assert solver.engine_name == "hkl"
 
     reals = solver.real_axis_names
-    assert reals == "omega chi phi tth".split()
+    assert reals == ["omega", "chi", "phi", "tth"]
 
     pseudos = solver.pseudo_axis_names
-    assert pseudos == "h k l".split()
+    assert pseudos == ["h", "k", "l"]
 
     solver = Solver(gname)  # new geometry
     assert solver.geometry == gname  # did not change
     assert solver.engine_name == "hkl"
 
     reals = solver.real_axis_names
-    assert reals == "mu eta phi nu delta".split()
+    assert reals == ["mu", "eta", "phi", "nu", "delta"]
 
     pseudos = solver.pseudo_axis_names
-    assert pseudos == "h k l".split()
+    assert pseudos == ["h", "k", "l"]

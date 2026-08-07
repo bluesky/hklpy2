@@ -13,58 +13,44 @@ Base class for all diffractometers
 
 import logging
 import pathlib
-from collections.abc import Iterable
-from typing import Any
-from typing import Callable
-from typing import NamedTuple
-from typing import Optional
-from typing import Sequence
-from typing import Type
-from typing import TypeVar
-from typing import Union
-from typing import cast
+from collections.abc import Callable, Iterable, Sequence
+from typing import Any, NamedTuple, TypeVar, cast
 
 import numpy as np
 import yaml
-from bluesky.protocols import Movable
-from deprecated.sphinx import versionadded
-from deprecated.sphinx import versionchanged
-from bluesky.protocols import Readable
+from bluesky.protocols import Movable, Readable
 from bluesky.utils import plan
 from cytoolz import partition
+from deprecated.sphinx import versionadded, versionchanged
 from ophyd import Component as Cpt
-from ophyd import Kind
-from ophyd import PositionerBase
-from ophyd import PseudoPositioner
-from ophyd import PseudoSingle
-from ophyd import Signal
-from ophyd import SoftPositioner
+from ophyd import (
+    Kind,
+    PositionerBase,
+    PseudoPositioner,
+    PseudoSingle,
+    Signal,
+    SoftPositioner,
+)
 from ophyd.device import required_for_connection
-from ophyd.pseudopos import pseudo_position_argument
-from ophyd.pseudopos import real_position_argument
+from ophyd.pseudopos import pseudo_position_argument, real_position_argument
 
 from .blocks.configure import _check_schema_version
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
-from .incident import WavelengthXray
 from .exceptions import DiffractometerError
-from .utils import DEFAULT_DIGITS
-from .utils import INTERNAL_ANGLE_UNITS
-from .utils import MISSING_HEADER_KEY_MSG
-from .utils import load_yaml_file
-from .utils import pick_first_solution
-from .utils import roundoff
-from .utils import validate_and_canonical_unit
-from .typing import AnyAxesType
-from .typing import AxesDict
-from .typing import BlueskyPlanType
-from .typing import KeyValueMap
+from .incident import WavelengthXray
+from .typing import AnyAxesType, AxesDict, BlueskyPlanType, KeyValueMap
+from .utils import (
+    DEFAULT_DIGITS,
+    INTERNAL_ANGLE_UNITS,
+    MISSING_HEADER_KEY_MSG,
+    load_yaml_file,
+    pick_first_solution,
+    roundoff,
+    validate_and_canonical_unit,
+)
 
-__all__ = """
-    DiffractometerBase
-    diffractometer_class_factory
-    creator
-""".split()
+__all__ = ["DiffractometerBase", "creator", "diffractometer_class_factory"]
 logger = logging.getLogger(__name__)
 
 DEFAULT_PHOTON_ENERGY_KEV = 8.0
@@ -187,13 +173,13 @@ class DiffractometerBase(PseudoPositioner):
         self,
         prefix: str = "",
         *,
-        solver: Optional[str] = None,
-        geometry: Optional[str] = None,
+        solver: str | None = None,
+        geometry: str | None = None,
         solver_kwargs: dict = {},  # noqa: B006
         pseudos: list[str] = [],  # noqa: B006
         reals: list[str] = [],  # noqa: B006
-        reals_units: Optional[str] = None,
-        forward_solution_function: Optional[Callable] = None,
+        reals_units: str | None = None,
+        forward_solution_function: Callable | None = None,
         **kwargs,
     ) -> None:
         from .ops import Core
@@ -262,9 +248,9 @@ class DiffractometerBase(PseudoPositioner):
         self,
         pseudos,
         reals=None,
-        wavelength: Optional[float] = None,
-        wavelength_units: Optional[str] = None,
-        name: Optional[str] = None,
+        wavelength: float | None = None,
+        wavelength_units: str | None = None,
+        name: str | None = None,
         replace: bool = False,
     ) -> Reflection:
         """
@@ -302,26 +288,16 @@ class DiffractometerBase(PseudoPositioner):
         self,
         name: str,
         a: float,
-        b: Optional[float] = None,
-        c: Optional[float] = None,
+        b: float | None = None,
+        c: float | None = None,
         alpha: float = 90.0,  # degrees
-        beta: Optional[float] = None,  # degrees
-        gamma: Optional[float] = None,  # degrees
+        beta: float | None = None,  # degrees
+        gamma: float | None = None,  # degrees
         digits: int = 4,
         replace: bool = False,
     ) -> Sample:
         """Add a new sample."""
-        return self.core.add_sample(
-            name,
-            a,
-            b,
-            c,
-            alpha,
-            beta,
-            gamma,
-            digits,
-            replace,
-        )
+        return self.core.add_sample(name, a, b, c, alpha, beta, gamma, digits, replace)
 
     @property
     def configuration(self) -> KeyValueMap:
@@ -362,13 +338,8 @@ class DiffractometerBase(PseudoPositioner):
         """
         path = pathlib.Path(file)
         config = self.configuration
-        config["_header"].update(dict(file=str(file), comment=str(comment)))
-        dump = yaml.dump(
-            config,
-            indent=2,
-            default_flow_style=False,
-            sort_keys=False,
-        )
+        config["_header"].update({"file": str(file), "comment": str(comment)})
+        dump = yaml.dump(config, indent=2, default_flow_style=False, sort_keys=False)
         with open(path, "w") as y:
             y.write("#hklpy2 configuration file\n\n")
             y.write(dump)
@@ -490,24 +461,24 @@ class DiffractometerBase(PseudoPositioner):
         # search space (constraints) or are inert until a mode is later
         # entered (presets) default ON regardless.
         sim = self.is_simulator
-        defaults = dict(
-            clear=True if sim else False,
-            restore_constraints=True,
-            restore_wavelength=True if sim else False,
-            restore_mode=False,
-            restore_samples=True if sim else False,
-            restore_extras=True if sim else False,
-            restore_presets=True,
-        )
-        explicit_kwargs = dict(
-            clear=clear,
-            restore_constraints=restore_constraints,
-            restore_wavelength=restore_wavelength,
-            restore_mode=restore_mode,
-            restore_samples=restore_samples,
-            restore_extras=restore_extras,
-            restore_presets=restore_presets,
-        )
+        defaults = {
+            "clear": True if sim else False,
+            "restore_constraints": True,
+            "restore_wavelength": True if sim else False,
+            "restore_mode": False,
+            "restore_samples": True if sim else False,
+            "restore_extras": True if sim else False,
+            "restore_presets": True,
+        }
+        explicit_kwargs = {
+            "clear": clear,
+            "restore_constraints": restore_constraints,
+            "restore_wavelength": restore_wavelength,
+            "restore_mode": restore_mode,
+            "restore_samples": restore_samples,
+            "restore_extras": restore_extras,
+            "restore_presets": restore_presets,
+        }
         resolved = {
             k: (defaults[k] if v is None else bool(v))
             for k, v in explicit_kwargs.items()
@@ -517,9 +488,12 @@ class DiffractometerBase(PseudoPositioner):
         # any of the dangerous kwargs explicitly, emit a single UserWarning
         # listing what was skipped so the behavior is loud (not silent).
         if not sim:
-            dangerous = (
-                "clear restore_wavelength restore_samples restore_extras"
-            ).split()
+            dangerous = [
+                "clear",
+                "restore_wavelength",
+                "restore_samples",
+                "restore_extras",
+            ]
             user_passed_any_dangerous = any(
                 explicit_kwargs[k] is not None for k in dangerous
             )
@@ -581,7 +555,7 @@ class DiffractometerBase(PseudoPositioner):
                 )
 
     @pseudo_position_argument
-    def forward(self, pseudos: dict, wavelength: Optional[float] = None) -> NamedTuple:
+    def forward(self, pseudos: dict, wavelength: float | None = None) -> NamedTuple:
         """Compute real-space coordinates from pseudos (hkl -> angles)."""
         logger.debug("forward: pseudos=%r", pseudos)
         solutions = self.core.forward(pseudos, wavelength=wavelength)
@@ -599,7 +573,7 @@ class DiffractometerBase(PseudoPositioner):
         return pdict
 
     @real_position_argument
-    def inverse(self, reals: tuple, wavelength: Optional[float] = None) -> NamedTuple:
+    def inverse(self, reals: tuple, wavelength: float | None = None) -> NamedTuple:
         """Compute pseudo-space coordinates from reals (angles -> hkl)."""
         logger.debug("inverse: reals=%r", reals)
         pos = self.core.inverse(reals, wavelength=wavelength)
@@ -626,9 +600,7 @@ class DiffractometerBase(PseudoPositioner):
 
     @plan
     def move_forward_with_extras(
-        self,
-        pseudos: AnyAxesType,
-        extras: AxesDict,
+        self, pseudos: AnyAxesType, extras: AxesDict
     ) -> BlueskyPlanType:
         """
         (plan stub) Compute forward solution at fixed pseudos and extras.
@@ -651,9 +623,7 @@ class DiffractometerBase(PseudoPositioner):
 
     @plan
     def move_inverse_with_extras(
-        self,
-        reals: AnyAxesType,
-        extras: AxesDict,
+        self, reals: AnyAxesType, extras: AxesDict
     ) -> BlueskyPlanType:
         """
         (plan stub) Compute inverse solution at fixed reals and extras.
@@ -725,14 +695,14 @@ class DiffractometerBase(PseudoPositioner):
 
         movers = {}
         for axis, start, finish in partition(3, args):
-            movers[axis] = dict(
-                series=numpy.linspace(start, finish, num=num),
-                start=start,
-                finish=finish,
-                signal=Signal(
+            movers[axis] = {
+                "series": numpy.linspace(start, finish, num=num),
+                "start": start,
+                "finish": finish,
+                "signal": Signal(
                     value=start, kind="hinted", name=f"{self.name}_extras_{axis}"
                 ),
-            )
+            }
             extras[axis] = start
         return movers
 
@@ -750,7 +720,7 @@ class DiffractometerBase(PseudoPositioner):
                 "extra_axes": self.core.solver_extra_axis_names,
             },
             "axes": {
-                axis: dict(start=start, finish=finish)
+                axis: {"start": start, "finish": finish}
                 for axis, start, finish in partition(3, args)
             },
             "num": num,
@@ -766,13 +736,13 @@ class DiffractometerBase(PseudoPositioner):
     def scan_extra(
         self,
         detectors: Iterable[Readable],
-        *args: Union[Movable, Any],  # axis, start, finish, [...]
-        num: Optional[int] = 2,
-        pseudos: Optional[dict] = None,  # h, k, l
-        reals: Optional[dict] = None,  # angles
-        extras: Optional[dict] = None,
-        fail_on_exception: Optional[bool] = False,
-        md: Optional[dict] = None,
+        *args: Movable | Any,  # axis, start, finish, [...]
+        num: int | None = 2,
+        pseudos: dict | None = None,  # h, k, l
+        reals: dict | None = None,  # angles
+        extras: dict | None = None,
+        fail_on_exception: bool | None = False,
+        md: dict | None = None,
     ) -> BlueskyPlanType:
         """
         Scan extra diffractometer parameter(s), such as 'psi'.
@@ -877,10 +847,7 @@ class DiffractometerBase(PseudoPositioner):
         return (yield from _inner())
 
     @staticmethod
-    def _format_value_for_repr(
-        x: Union[float, np.floating],
-        digits: int,
-    ) -> str:
+    def _format_value_for_repr(x: float | np.floating, digits: int) -> str:
         """Format numeric values for display without changing them.
 
         - Floats: fixed-point with `digits` decimals, trailing zeros
@@ -898,10 +865,8 @@ class DiffractometerBase(PseudoPositioner):
 
     @classmethod
     def _make_wrapped_namedtuple_class(
-        cls,
-        orig_cls: Optional[Type[T]],
-        digits: int,
-    ) -> Optional[Type[T]]:
+        cls, orig_cls: type[T] | None, digits: int
+    ) -> type[T] | None:
         """Return a lightweight subclass of ``orig_cls`` with concise repr.
 
         Avoid re-wrapping when the same digit count is already applied.
@@ -911,15 +876,10 @@ class DiffractometerBase(PseudoPositioner):
             return None
 
         existing_digits = cast(
-            Optional[int],
-            getattr(orig_cls, "_hklpy2_wrapped_digits", None),
+            int | None, getattr(orig_cls, "_hklpy2_wrapped_digits", None)
         )
-        if (
-            getattr(orig_cls, "_hklpy2_wrapped", False)
-            #
-            and existing_digits == digits
-        ):
-            return cast(Type[T], orig_cls)
+        if getattr(orig_cls, "_hklpy2_wrapped", False) and existing_digits == digits:
+            return cast(type[T], orig_cls)
 
         orig_name = orig_cls.__name__
 
@@ -934,13 +894,11 @@ class DiffractometerBase(PseudoPositioner):
             return self.__repr__()
 
         new_cls = type(
-            orig_name,
-            (orig_cls,),
-            {"__repr__": __repr__, "__str__": __str__},
+            orig_name, (orig_cls,), {"__repr__": __repr__, "__str__": __str__}
         )
 
-        setattr(new_cls, "_hklpy2_wrapped", True)
-        setattr(new_cls, "_hklpy2_wrapped_digits", digits)
+        new_cls._hklpy2_wrapped = True
+        new_cls._hklpy2_wrapped_digits = digits
         return new_cls
 
     # ---- get/set properties
@@ -1043,7 +1001,7 @@ class DiffractometerBase(PseudoPositioner):
         return self.core.samples
 
     @property
-    def sample(self) -> Union[None, Sample]:
+    def sample(self) -> None | Sample:
         """Current sample object."""
         if self.core is None:
             return None
@@ -1120,7 +1078,7 @@ class DiffractometerBase(PseudoPositioner):
             if len(mode_presets) > 0:
                 print(f"presets: {mode_presets}")
             beam = self.beam._asdict()
-            for key in "energy wavelength".split():
+            for key in ["energy", "wavelength"]:
                 if key in beam:
                     beam[key] = roundoff(beam[key], digits)
             print(f"beam={beam}")
@@ -1149,15 +1107,15 @@ def creator(
     geometry: str = "E4CV",
     beam_kwargs: dict[str, object] = None,
     solver_kwargs: dict[str, object] = {},  # noqa: B006
-    _pseudo: Optional[Sequence[str]] = None,
+    _pseudo: Sequence[str] | None = None,
     pseudos: list = [],  # noqa: B006
-    _real: Optional[Sequence[str]] = None,
-    reals: Optional[Union[Sequence[str], KeyValueMap]] = {},  # noqa: B006
-    motor_labels: Optional[Sequence[str]] = ["motors"],  # noqa: B006
+    _real: Sequence[str] | None = None,
+    reals: Sequence[str] | KeyValueMap | None = {},  # noqa: B006
+    motor_labels: Sequence[str] | None = ["motors"],
     labels: list = ["diffractometer"],  # noqa: B006
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],  # noqa: B006
-    forward_solution_function: Optional[str] = None,
+    forward_solution_function: str | None = None,
     **kwargs,
 ) -> DiffractometerBase:
     """
@@ -1295,14 +1253,14 @@ def diffractometer_class_factory(
     geometry: str = "E4CV",
     beam_kwargs: dict[str, object] = None,
     solver_kwargs: dict[str, object] = {"engine": "hkl"},  # noqa: B006
-    _pseudo: Optional[Sequence[str]] = None,
+    _pseudo: Sequence[str] | None = None,
     pseudos: list = [],  # noqa: B006
-    _real: Optional[Sequence[str]] = None,
+    _real: Sequence[str] | None = None,
     reals: list[str] | dict[str, str | None] = {},  # noqa: B006
-    motor_labels: Optional[Sequence[str]] = ["motors"],  # noqa: B006
+    motor_labels: Sequence[str] | None = ["motors"],
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],  # noqa: B006
-    forward_solution_function: Optional[str] = None,
+    forward_solution_function: str | None = None,
 ) -> DiffractometerBase:
     """
     Build a custom class for this diffractometer geometry.
@@ -1370,11 +1328,9 @@ def diffractometer_class_factory(
 
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     """
-    from .devices import dynamic_import
-    from .devices import make_component
-    from .devices import parse_factory_axes
-    from .utils import DEFAULT_MOTOR_LABELS
+    from .devices import dynamic_import, make_component, parse_factory_axes
     from .solver_utils import solver_factory
+    from .utils import DEFAULT_MOTOR_LABELS
 
     if not isinstance(pseudos, list):
         raise TypeError(f"Expected a list.  Received {pseudos=!r}")
@@ -1393,9 +1349,7 @@ def diffractometer_class_factory(
 
     if forward_solution_function is None:
         forward_solution_function = "hklpy2.utils.pick_first_solution"
-    attributes["_forward_solution"] = dynamic_import(
-        forward_solution_function,
-    )
+    attributes["_forward_solution"] = dynamic_import(forward_solution_function)
 
     # Find the chosen solver.  It describes its various axes.
     solver_object = solver_factory(solver, geometry, **solver_kwargs)

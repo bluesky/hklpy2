@@ -8,16 +8,15 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ... import __version__
-from ...diffract import DiffractometerBase
-from ...diffract import creator
+from ...diffract import DiffractometerBase, creator
 from ...exceptions import ConfigurationError
+from ...tests.models import (
+    E4CV_CONFIG_FILE,
+    add_oriented_vibranium_to_e4cv,
+    e4cv_config,
+)
 from ...utils import load_yaml_file
-from ...tests.models import E4CV_CONFIG_FILE
-from ...tests.models import add_oriented_vibranium_to_e4cv
-from ...tests.models import e4cv_config
-from ..configure import CONFIG_SCHEMA_VERSION
-from ..configure import Configuration
-from ..configure import _check_schema_version
+from ..configure import CONFIG_SCHEMA_VERSION, Configuration, _check_schema_version
 
 e4cv = creator(name="e4cv")
 add_oriented_vibranium_to_e4cv(e4cv)
@@ -87,7 +86,7 @@ twopi = 2 * math.pi
         pytest.param("samples.vibranium.name", "vibranium", id="vibranium-name"),
         pytest.param(
             "samples.vibranium.reflections_order",
-            "r040 r004".split(),
+            ["r040", "r004"],
             id="vibranium-reflections-order-r040-r400",
         ),
         pytest.param(
@@ -167,7 +166,7 @@ def test_asdict():
         if not isinstance(module_config, dict):
             module_config = module_config._asdict()
         module_config["_header"].pop("datetime", None)
-        for section in "axes samples constraints solver".split():
+        for section in ["axes", "samples", "constraints", "solver"]:
             assert cfg[section] == module_config[section]
 
 
@@ -311,11 +310,7 @@ def test_fromdict():
 def test_restore(diffractometer, clear, restore, file, context):
     with context:
         assert isinstance(diffractometer, DiffractometerBase)
-        diffractometer.restore(
-            file,
-            clear=clear,
-            restore_constraints=restore,
-        )
+        diffractometer.restore(file, clear=clear, restore_constraints=restore)
 
 
 # ---------------------------------------------------------------------------
@@ -331,12 +326,12 @@ def _hardware_e4cv(name="hw_e4cv"):
     """
     return creator(
         name=name,
-        reals=dict(
-            omega="NO_IOC:m1",
-            chi="NO_IOC:m2",
-            phi="NO_IOC:m3",
-            tth="NO_IOC:m4",
-        ),
+        reals={
+            "omega": "NO_IOC:m1",
+            "chi": "NO_IOC:m2",
+            "phi": "NO_IOC:m3",
+            "tth": "NO_IOC:m4",
+        },
     )
 
 
@@ -345,7 +340,7 @@ def _e6c_with_extras(name="e6c", h2=0.0, k2=0.0, l2=0.0, psi=0.0):
     sim = creator(name=name, geometry="E6C")
     # psi_constant is the canonical mode that exposes h2/k2/l2/psi extras.
     sim.core.mode = "psi_constant_vertical"
-    sim.core.extras = dict(h2=h2, k2=k2, l2=l2, psi=psi)
+    sim.core.extras = {"h2": h2, "k2": k2, "l2": l2, "psi": psi}
     return sim
 
 
@@ -353,33 +348,28 @@ def _e6c_with_extras(name="e6c", h2=0.0, k2=0.0, l2=0.0, psi=0.0):
     "parms, context",
     [
         pytest.param(
-            dict(reals=None, expected=True),
+            {"reals": None, "expected": True},
             does_not_raise(),
             id="default-creator-is-simulator",
         ),
         pytest.param(
-            dict(
-                reals=dict(
-                    omega="NO_IOC:m1",
-                    chi="NO_IOC:m2",
-                    phi="NO_IOC:m3",
-                    tth="NO_IOC:m4",
-                ),
-                expected=False,
-            ),
+            {
+                "reals": {
+                    "omega": "NO_IOC:m1",
+                    "chi": "NO_IOC:m2",
+                    "phi": "NO_IOC:m3",
+                    "tth": "NO_IOC:m4",
+                },
+                "expected": False,
+            },
             does_not_raise(),
             id="all-epicsmotor-reals-not-simulator",
         ),
         pytest.param(
-            dict(
-                reals=dict(
-                    omega=None,
-                    chi=None,
-                    phi="NO_IOC:m3",
-                    tth=None,
-                ),
-                expected=False,
-            ),
+            {
+                "reals": {"omega": None, "chi": None, "phi": "NO_IOC:m3", "tth": None},
+                "expected": False,
+            },
             does_not_raise(),
             id="mixed-reals-not-simulator",
         ),
@@ -387,7 +377,7 @@ def _e6c_with_extras(name="e6c", h2=0.0, k2=0.0, l2=0.0, psi=0.0):
 )
 def test_is_simulator_property(parms, context):
     with context:
-        kwargs = dict(name="probe")
+        kwargs = {"name": "probe"}
         if parms["reals"] is not None:
             kwargs["reals"] = parms["reals"]
         diff = creator(**kwargs)
@@ -398,17 +388,17 @@ def test_is_simulator_property(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(extras=dict(h2=1.0, k2=0.0, l2=0.0, psi=12.5)),
+            {"extras": {"h2": 1.0, "k2": 0.0, "l2": 0.0, "psi": 12.5}},
             does_not_raise(),
             id="e6c-psi-constant",
         ),
         pytest.param(
-            dict(extras=dict(h2=0.0, k2=2.0, l2=0.0, psi=-5.0)),
+            {"extras": {"h2": 0.0, "k2": 2.0, "l2": 0.0, "psi": -5.0}},
             does_not_raise(),
             id="e6c-k2-only",
         ),
         pytest.param(
-            dict(extras=dict(h2=1.5, k2=2.5, l2=3.5, psi=42.0)),
+            {"extras": {"h2": 1.5, "k2": 2.5, "l2": 3.5, "psi": 42.0}},
             does_not_raise(),
             id="e6c-mixed",
         ),
@@ -447,10 +437,10 @@ def test_extras_round_trip_simulator(parms, context, tmp_path):
     "parms, context",
     [
         pytest.param(
-            dict(extras=dict(h2=1.0, k2=2.0, l2=0.0, psi=15.0)),
+            {"extras": {"h2": 1.0, "k2": 2.0, "l2": 0.0, "psi": 15.0}},
             does_not_raise(),
             id="extras-via-simulator-from-config",
-        ),
+        )
     ],
 )
 def test_extras_round_trip_via_simulator_from_config(parms, context):
@@ -475,10 +465,10 @@ def test_extras_round_trip_via_simulator_from_config(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(corrupt_axis="bogus_axis"),
+            {"corrupt_axis": "bogus_axis"},
             pytest.raises(ConfigurationError, match=re.escape("extra axis mismatch:")),
             id="unknown-axis-validated-early",
-        ),
+        )
     ],
 )
 def test_extras_validation_raises_configuration_error(parms, context, tmp_path):
@@ -501,12 +491,12 @@ def test_extras_validation_raises_configuration_error(parms, context, tmp_path):
     "parms, context",
     [
         pytest.param(
-            dict(restore_extras=False),
+            {"restore_extras": False},
             does_not_raise(),
             id="explicit-restore-extras-False",
         ),
         pytest.param(
-            dict(restore_extras=True),
+            {"restore_extras": True},
             does_not_raise(),
             id="explicit-restore-extras-True",
         ),
@@ -515,7 +505,7 @@ def test_extras_validation_raises_configuration_error(parms, context, tmp_path):
 def test_restore_extras_kwarg_honored(parms, context, tmp_path):
     """#390: ``restore_extras`` kwarg gates the extras restore."""
     with context:
-        saved = dict(h2=4.0, k2=5.0, l2=6.0, psi=33.0)
+        saved = {"h2": 4.0, "k2": 5.0, "l2": 6.0, "psi": 33.0}
         orig = _e6c_with_extras(name="e6c_orig", **saved)
         cfg_file = tmp_path / "e6c.yml"
         orig.export(cfg_file)
@@ -523,7 +513,7 @@ def test_restore_extras_kwarg_honored(parms, context, tmp_path):
         fresh = creator(name="e6c_fresh", geometry="E6C")
         fresh.core.mode = "psi_constant_vertical"
         # Pre-set non-zero extras so we can detect whether they were touched.
-        sentinel = dict(h2=99.0, k2=99.0, l2=99.0, psi=99.0)
+        sentinel = {"h2": 99.0, "k2": 99.0, "l2": 99.0, "psi": 99.0}
         fresh.core.extras = sentinel
 
         fresh.restore(cfg_file, **parms)
@@ -539,10 +529,8 @@ def test_restore_extras_kwarg_honored(parms, context, tmp_path):
     "parms, context",
     [
         pytest.param(
-            dict(),
-            does_not_raise(),
-            id="hardware-default-skips-dangerous-sections",
-        ),
+            {}, does_not_raise(), id="hardware-default-skips-dangerous-sections"
+        )
     ],
 )
 def test_restore_safe_defaults_on_hardware(parms, context, tmp_path):
@@ -576,15 +564,15 @@ def test_restore_safe_defaults_on_hardware(parms, context, tmp_path):
     "parms, context",
     [
         pytest.param(
-            dict(
-                restore_samples=True,
-                restore_wavelength=True,
-                restore_extras=True,
-                clear=True,
-            ),
+            {
+                "restore_samples": True,
+                "restore_wavelength": True,
+                "restore_extras": True,
+                "clear": True,
+            },
             does_not_raise(),
             id="explicit-opt-in-on-hardware",
-        ),
+        )
     ],
 )
 def test_restore_explicit_opt_in_on_hardware(parms, context, tmp_path):
@@ -615,13 +603,7 @@ def test_restore_explicit_opt_in_on_hardware(parms, context, tmp_path):
 
 @pytest.mark.parametrize(
     "parms, context",
-    [
-        pytest.param(
-            dict(),
-            does_not_raise(),
-            id="setter-on-hardware-is-conservative",
-        ),
-    ],
+    [pytest.param({}, does_not_raise(), id="setter-on-hardware-is-conservative")],
 )
 def test_configuration_setter_safe_on_hardware(parms, context, tmp_path):
     """#390: assigning ``diff.configuration = cfg`` on a hardware-backed
@@ -647,10 +629,10 @@ def test_configuration_setter_safe_on_hardware(parms, context, tmp_path):
     "parms, context",
     [
         pytest.param(
-            dict(preset_mode="psi_constant_vertical", presets=dict(omega=12.34)),
+            {"preset_mode": "psi_constant_vertical", "presets": {"omega": 12.34}},
             does_not_raise(),
             id="presets-round-trip",
-        ),
+        )
     ],
 )
 def test_presets_round_trip(parms, context, tmp_path):
@@ -680,32 +662,32 @@ def test_presets_round_trip(parms, context, tmp_path):
     "parms, context",
     [
         pytest.param(
-            dict(version=CONFIG_SCHEMA_VERSION, expect_warning=False),
+            {"version": CONFIG_SCHEMA_VERSION, "expect_warning": False},
             does_not_raise(),
             id="current-schema-no-warning",
         ),
         pytest.param(
-            dict(version="__omit__", expect_warning="no schema version"),
+            {"version": "__omit__", "expect_warning": "no schema version"},
             does_not_raise(),
             id="missing-schema-version",
         ),
         pytest.param(
-            dict(version=CONFIG_SCHEMA_VERSION - 1, expect_warning="older"),
+            {"version": CONFIG_SCHEMA_VERSION - 1, "expect_warning": "older"},
             does_not_raise(),
             id="older-schema",
         ),
         pytest.param(
-            dict(version=CONFIG_SCHEMA_VERSION + 1, expect_warning="newer"),
+            {"version": CONFIG_SCHEMA_VERSION + 1, "expect_warning": "newer"},
             does_not_raise(),
             id="newer-schema",
         ),
         pytest.param(
-            dict(version="bogus", expect_warning="Unrecognized"),
+            {"version": "bogus", "expect_warning": "Unrecognized"},
             does_not_raise(),
             id="non-int-schema",
         ),
         pytest.param(
-            dict(version=True, expect_warning="Unrecognized"),
+            {"version": True, "expect_warning": "Unrecognized"},
             does_not_raise(),
             id="bool-schema-rejected",
         ),
@@ -743,22 +725,22 @@ def test_check_schema_version(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(mutate=None, expect_warning=False),
+            {"mutate": None, "expect_warning": False},
             does_not_raise(),
             id="round-trip-no-warning",
         ),
         pytest.param(
-            dict(mutate="drop", expect_warning="no schema version"),
+            {"mutate": "drop", "expect_warning": "no schema version"},
             does_not_raise(),
             id="drop-version-warns",
         ),
         pytest.param(
-            dict(mutate=("set", CONFIG_SCHEMA_VERSION - 1), expect_warning="older"),
+            {"mutate": ("set", CONFIG_SCHEMA_VERSION - 1), "expect_warning": "older"},
             does_not_raise(),
             id="older-version-warns",
         ),
         pytest.param(
-            dict(mutate=("set", CONFIG_SCHEMA_VERSION + 1), expect_warning="newer"),
+            {"mutate": ("set", CONFIG_SCHEMA_VERSION + 1), "expect_warning": "newer"},
             does_not_raise(),
             id="newer-version-warns",
         ),

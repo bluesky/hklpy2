@@ -20,19 +20,13 @@ together with a choice of operating *mode*, can:
 """
 
 import math
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
 
 from deprecated.sphinx import versionadded
 
-from ..exceptions import ConfigurationError
-from ..exceptions import ConstraintsError
-from ..typing import NUMERIC
-from ..typing import KeyValueMap
+from ..exceptions import ConfigurationError, ConstraintsError
+from ..typing import NUMERIC, KeyValueMap
 
 ENDPOINT_TOLERANCE: float = 1e-4  # for comparisons, less than motion step size
 UNDEFINED_LABEL: str = "undefined"
@@ -59,7 +53,7 @@ class ConstraintBase(ABC):
         ~valid
     """
 
-    _fields: List[str] = []
+    _fields: list[str] = []
     label: str = UNDEFINED_LABEL
 
     def __repr__(self) -> str:
@@ -73,7 +67,7 @@ class ConstraintBase(ABC):
         result["class"] = self.__class__.__name__
         return result
 
-    def _fromdict(self, config: KeyValueMap, core: Optional[Any] = None):
+    def _fromdict(self, config: KeyValueMap, core: Any | None = None):
         """Redefine this constraint from a (configuration) dictionary."""
         from ..ops import Core
 
@@ -106,7 +100,7 @@ class ConstraintBase(ABC):
                 )
 
     @abstractmethod
-    def valid(self, **values: Dict[str, NUMERIC]) -> bool:
+    def valid(self, **values: dict[str, NUMERIC]) -> bool:
         """
         Is this constraint satisifed by current value(s)?
 
@@ -169,25 +163,23 @@ class LimitsConstraint(ConstraintBase):
 
     def __init__(
         self,
-        low_limit: Optional[float] = -180,
-        high_limit: Optional[float] = 180,
-        label: Optional[str] = None,
+        low_limit: float | None = -180,
+        high_limit: float | None = 180,
+        label: str | None = None,
         cut_point: float = DEFAULT_CUT_POINT,
     ) -> None:
         if label is None:
             raise ConstraintsError("Must provide a value for 'label'.")
 
         self.label = label
-        self._fields = "label low_limit high_limit cut_point".split()
+        self._fields = ["label", "low_limit", "high_limit", "cut_point"]
 
         if low_limit is None:
             low_limit = -180
         if high_limit is None:
             high_limit = 180
 
-        self._low_limit, self._high_limit = sorted(
-            map(float, [low_limit, high_limit]),
-        )
+        self._low_limit, self._high_limit = sorted(map(float, [low_limit, high_limit]))
         self.cut_point = cut_point  # validated by property setter
 
     def __repr__(self) -> str:
@@ -197,7 +189,7 @@ class LimitsConstraint(ConstraintBase):
             f" [cut={self.cut_point}]"
         )
 
-    def _fromdict(self, config: KeyValueMap, core: Optional[Any] = None) -> None:
+    def _fromdict(self, config: KeyValueMap, core: Any | None = None) -> None:
         """
         Redefine this constraint from a (configuration) dictionary.
 
@@ -294,7 +286,7 @@ class LimitsConstraint(ConstraintBase):
             raise ConstraintsError(f"Use exactly two values.  Received: {values!r}")
         self._low_limit, self._high_limit = sorted(map(float, values))
 
-    def valid(self, **values: Dict[str, NUMERIC]) -> bool:
+    def valid(self, **values: dict[str, NUMERIC]) -> bool:
         """
         True if low <= value <= high.
 
@@ -332,7 +324,7 @@ class RealAxisConstraints(dict):
         ~valid
     """
 
-    def __init__(self, reals: List[str]) -> None:
+    def __init__(self, reals: list[str]) -> None:
         for k in reals:
             self[k] = LimitsConstraint(label=k)
 
@@ -349,7 +341,7 @@ class RealAxisConstraints(dict):
         for k, v in config.items():
             self[k]._fromdict(v, core=core)
 
-    def valid(self, **reals: Dict[str, NUMERIC]) -> bool:
+    def valid(self, **reals: dict[str, NUMERIC]) -> bool:
         """Are all constraints satisfied?"""
         findings = [constraint.valid(**reals) for constraint in self.values()]
         return False not in findings

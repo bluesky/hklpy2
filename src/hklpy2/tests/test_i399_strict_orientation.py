@@ -23,32 +23,30 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from .. import creator
-from ..blocks.reflection import Reflection
-from ..blocks.reflection import ReflectionsDict
+from ..blocks.reflection import Reflection, ReflectionsDict
 from ..exceptions import ReflectionError
 
-
-SAMPLE_DEF = dict(
-    name="sapphire",
-    lattice=dict(a=4.785, c=12.991, gamma=120),
-    reflections=[
-        dict(
-            name="r006",
-            pseudos=(0, 0, 6),
-            reals=dict(omega=20.97, chi=90, phi=0, tth=41.9419),
-        ),
-        dict(
-            name="r100",
-            pseudos=(1, 0, 0),
-            reals=dict(omega=30, chi=0, phi=0, tth=60),
-        ),
-        dict(
-            name="r006b",
-            pseudos=(0, 0, 6),
-            reals=dict(omega=20.3654, chi=89.32, phi=0, tth=41.9394),
-        ),
+SAMPLE_DEF = {
+    "name": "sapphire",
+    "lattice": {"a": 4.785, "c": 12.991, "gamma": 120},
+    "reflections": [
+        {
+            "name": "r006",
+            "pseudos": (0, 0, 6),
+            "reals": {"omega": 20.97, "chi": 90, "phi": 0, "tth": 41.9419},
+        },
+        {
+            "name": "r100",
+            "pseudos": (1, 0, 0),
+            "reals": {"omega": 30, "chi": 0, "phi": 0, "tth": 60},
+        },
+        {
+            "name": "r006b",
+            "pseudos": (0, 0, 6),
+            "reals": {"omega": 20.3654, "chi": 89.32, "phi": 0, "tth": 41.9394},
+        },
     ],
-)
+}
 
 
 def _build_three_oriented():
@@ -63,9 +61,7 @@ def _build_three_oriented():
     )
     for refl in SAMPLE_DEF["reflections"]:
         sim.add_reflection(
-            pseudos=refl["pseudos"],
-            reals=refl["reals"],
-            name=refl["name"],
+            pseudos=refl["pseudos"], reals=refl["reals"], name=refl["name"]
         )
     sim.sample.reflections.order = ["r006", "r100"]
     return sim
@@ -97,54 +93,54 @@ HALF_DEFINED_MSG = re.escape("Refusing to leave the sample half-defined")
         # Path 1: Sample.remove_reflection on an orienting reflection
         # while two or more remain.
         pytest.param(
-            dict(action="sample_remove_orienting"),
+            {"action": "sample_remove_orienting"},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="path-1-Sample.remove_reflection-on-orienting",
         ),
         # Path 2: __delitem__ on an orienting key.
         pytest.param(
-            dict(action="del_orienting"),
+            {"action": "del_orienting"},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="path-2-__delitem__-on-orienting",
         ),
         # Path 3: pop on an orienting key.
         pytest.param(
-            dict(action="pop_orienting"),
+            {"action": "pop_orienting"},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="path-3-pop-on-orienting",
         ),
         # Path 4: popitem when it would remove an orienting key.
         pytest.param(
-            dict(action="popitem_orienting"),
+            {"action": "popitem_orienting"},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="path-4-popitem-on-orienting",
         ),
         # Path 8: order setter assigned a list of length < 2 while
         # two or more reflections remain.
         pytest.param(
-            dict(action="order_setter_length_zero"),
+            {"action": "order_setter_length_zero"},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="path-8a-order-setter-empty",
         ),
         pytest.param(
-            dict(action="order_setter_length_one"),
+            {"action": "order_setter_length_one"},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="path-8b-order-setter-single-entry",
         ),
         pytest.param(
-            dict(action="order_setter_two_but_one_unknown"),
+            {"action": "order_setter_two_but_one_unknown"},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="path-8c-order-setter-two-but-one-unknown-name",
         ),
         # Path 9: set_orientation_reflections / setor with < 2
         # reflections from a multi-reflection dict.
         pytest.param(
-            dict(action="setor_single_reflection"),
+            {"action": "setor_single_reflection"},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="path-9a-set_orientation_reflections-single-entry",
         ),
         pytest.param(
-            dict(action="setor_alias_single_reflection"),
+            {"action": "setor_alias_single_reflection"},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="path-9b-setor-alias-single-entry",
         ),
@@ -230,62 +226,62 @@ def test_strict_check_raises_on_half_defined_transition(parms, context):
         # Removing the only orienting reflection while the dict drops
         # below two entries: not half-defined.
         pytest.param(
-            dict(action="remove_orienting_drops_below_two"),
+            {"action": "remove_orienting_drops_below_two"},
             does_not_raise(),
             id="remove-orienting-when-dict-drops-below-two",
         ),
         # Removing a non-orienting reflection: order is untouched.
         pytest.param(
-            dict(action="remove_non_orienting"),
+            {"action": "remove_non_orienting"},
             does_not_raise(),
             id="remove-non-orienting",
         ),
         # Order setter assigned a valid two-reflection list.
         pytest.param(
-            dict(action="order_setter_two_valid"),
+            {"action": "order_setter_two_valid"},
             does_not_raise(),
             id="order-setter-two-valid-entries",
         ),
         # Atomic rewrite to a valid pair (issue acceptance criterion).
         pytest.param(
-            dict(action="atomic_swap_via_order_setter"),
+            {"action": "atomic_swap_via_order_setter"},
             does_not_raise(),
             id="atomic-swap-via-order-setter",
         ),
         # set_orientation_reflections with two reflections.
         pytest.param(
-            dict(action="setor_two_reflections"),
+            {"action": "setor_two_reflections"},
             does_not_raise(),
             id="setor-two-reflections",
         ),
         # __setitem__ does not shrink dict or order; never half-defined.
         pytest.param(
-            dict(action="setitem_replace_orienting"),
+            {"action": "setitem_replace_orienting"},
             does_not_raise(),
             id="setitem-replace-orienting-key",
         ),
         # update overwriting an orienting key: same as setitem.
         pytest.param(
-            dict(action="update_overwrites_orienting"),
+            {"action": "update_overwrites_orienting"},
             does_not_raise(),
             id="update-overwrites-orienting-key",
         ),
         # update inserting only new keys: dict grows, order unchanged.
         pytest.param(
-            dict(action="update_new_keys"),
+            {"action": "update_new_keys"},
             does_not_raise(),
             id="update-inserts-new-keys",
         ),
         # clear: post-state is always empty (not half-defined).
         pytest.param(
-            dict(action="clear_three_reflections"),
+            {"action": "clear_three_reflections"},
             does_not_raise(),
             id="clear-three-reflections",
         ),
         # Sample with a single reflection: removing it is allowed
         # (dict drops to 0; not half-defined).
         pytest.param(
-            dict(action="single_reflection_removal"),
+            {"action": "single_reflection_removal"},
             does_not_raise(),
             id="single-reflection-removal",
         ),
@@ -295,9 +291,7 @@ def test_strict_check_raises_on_half_defined_transition(parms, context):
         # strict check on the order setter sees a length-2 list and
         # accepts it.
         pytest.param(
-            dict(action="calc_UB_round_trip"),
-            does_not_raise(),
-            id="calc_UB-still-works",
+            {"action": "calc_UB_round_trip"}, does_not_raise(), id="calc_UB-still-works"
         ),
     ],
 )
@@ -371,27 +365,27 @@ def test_strict_check_does_not_fire_on_well_defined_transitions(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(action="del_orienting"),
+            {"action": "del_orienting"},
             does_not_raise(),
             id="state-preserved-after-del-raises",
         ),
         pytest.param(
-            dict(action="pop_orienting"),
+            {"action": "pop_orienting"},
             does_not_raise(),
             id="state-preserved-after-pop-raises",
         ),
         pytest.param(
-            dict(action="sample_remove_orienting"),
+            {"action": "sample_remove_orienting"},
             does_not_raise(),
             id="state-preserved-after-Sample.remove_reflection-raises",
         ),
         pytest.param(
-            dict(action="order_setter"),
+            {"action": "order_setter"},
             does_not_raise(),
             id="state-preserved-after-order-setter-raises",
         ),
         pytest.param(
-            dict(action="setor"),
+            {"action": "setor"},
             does_not_raise(),
             id="state-preserved-after-setor-raises",
         ),
@@ -439,10 +433,10 @@ def test_state_unchanged_when_strict_check_raises(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(),
+            {},
             pytest.raises(ReflectionError, match=HALF_DEFINED_MSG),
             id="standalone-ReflectionsDict-still-enforces",
-        ),
+        )
     ],
 )
 def test_strict_check_works_standalone(parms, context):
@@ -484,10 +478,8 @@ def test_strict_check_works_standalone(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(),
-            does_not_raise(),
-            id="suspend-mechanism-allows-half-defined-setup",
-        ),
+            {}, does_not_raise(), id="suspend-mechanism-allows-half-defined-setup"
+        )
     ],
 )
 def test_suspend_mechanism_bypasses_strict_check(parms, context):

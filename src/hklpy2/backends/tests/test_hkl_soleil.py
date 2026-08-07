@@ -8,8 +8,8 @@ import numpy as np
 import pytest
 from pyRestTable import Table
 
-from ...utils import IDENTITY_MATRIX_3X3
 from ...ops import Core
+from ...utils import IDENTITY_MATRIX_3X3
 from .. import hkl_soleil
 from ..hkl_soleil import HklSolverMetadataDict
 from ..typing import SolverMetadataDict
@@ -36,12 +36,12 @@ def kryptonite():
     sample = Sample(core, "kryptonite", Lattice(0.01))  # should be interesting
     r1 = Reflection(
         name="r1",
-        pseudos=dict(h=1, k=0, l=0),
-        reals=dict(omega=1, chi=0, phi=0, tth=2),
+        pseudos={"h": 1, "k": 0, "l": 0},
+        reals={"omega": 1, "chi": 0, "phi": 0, "tth": 2},
         wavelength=1.54,
         geometry="E4CV",
-        pseudo_axis_names="h k l".split(),
-        real_axis_names="omega chi phi tth".split(),
+        pseudo_axis_names=["h", "k", "l"],
+        real_axis_names=["omega", "chi", "phi", "tth"],
     )
     sample.reflections.add(r1)
     return sample
@@ -55,8 +55,7 @@ def test_hkl_soleil():
     np.testing.assert_array_equal(hkl_soleil.to_numpy(arr), arr)
 
     with pytest.raises(
-        ValueError,
-        match=re.escape("Expected shape (3, 3), received arr=array([1, 2])"),
+        ValueError, match=re.escape("Expected shape (3, 3), received arr=array([1, 2])")
     ):
         hkl_soleil.to_hkl([1, 2])
 
@@ -78,13 +77,13 @@ def test_HklSolver():
         solver.addReflection(1.0)
 
     with pytest.raises(KeyError, match=re.escape("Unexpected dictionary key received")):
-        solver.extras = dict(trombone=0)
+        solver.extras = {"trombone": 0}
 
     with pytest.raises(ValueError, match=re.escape("Wrong dictionary keys received")):
-        solver.inverse(dict(a=1, b=2, c=3, d=4))
+        solver.inverse({"a": 1, "b": 2, "c": 3, "d": 4})
 
     with pytest.raises(TypeError, match=re.escape("All values must be numbers")):
-        solver.inverse(dict(omega="1", chi=0, phi=0, tth=0))
+        solver.inverse({"omega": "1", "chi": 0, "phi": 0, "tth": 0})
 
     with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.lattice = 1.0
@@ -159,7 +158,7 @@ def test_engine(gname, ename, reals):
     assert engine.name_get() == ename
 
     p_axes = engine.pseudo_axis_names_get()
-    assert p_axes == "h k l".split(), f"{p_axes=}"
+    assert p_axes == ["h", "k", "l"], f"{p_axes=}"
 
 
 def test_geometries():
@@ -168,14 +167,13 @@ def test_geometries():
 
     glist = solver.geometries()
     assert len(glist) >= 18
-    for gname in "E4CV E4CH E6C K4CV K6C ZAXIS".split():
+    for gname in ["E4CV", "E4CH", "E6C", "K4CV", "K6C", "ZAXIS"]:
         assert gname in glist, f"{gname=}  {glist=}"
 
 
 def test_affine():
     """Test the lattice parameter refinement."""
-    from ... import SI_LATTICE_PARAMETER
-    from ... import creator
+    from ... import SI_LATTICE_PARAMETER, creator
     from ...blocks.lattice import SI_LATTICE_PARAMETER_UNCERTAINTY
 
     e4cv = creator(name="e4cv")
@@ -184,19 +182,19 @@ def test_affine():
     e4cv.add_sample("silicon", SI_LATTICE_PARAMETER)
     e4cv.add_reflection(
         (4, 0, 0),
-        dict(tth=69.1, omega=-145.5, chi=0, phi=0),
+        {"tth": 69.1, "omega": -145.5, "chi": 0, "phi": 0},
         wavelength=1.54,
         name="r1",
     )
     e4cv.add_reflection(
         (0, 4, 0),
-        dict(tth=69.1, omega=-145.5, chi=90, phi=0),
+        {"tth": 69.1, "omega": -145.5, "chi": 90, "phi": 0},
         wavelength=1.54,
         name="r2",
     )
     e4cv.add_reflection(
         (0, 0, 4),
-        dict(tth=69.1, omega=-145.5, chi=0, phi=90),
+        {"tth": 69.1, "omega": -145.5, "chi": 0, "phi": 90},
         wavelength=1.54,
         name="r3",
     )
@@ -238,38 +236,39 @@ def test_affine():
     "parms, context",
     [
         pytest.param(
-            dict(key="name", expected="K4CV"),
-            does_not_raise(),
-            id="name is K4CV",
+            {"key": "name", "expected": "K4CV"}, does_not_raise(), id="name is K4CV"
         ),
         pytest.param(
-            dict(key="engines", expected=dict),
+            {"key": "engines", "expected": dict},
             does_not_raise(),
             id="engines is a dict",
         ),
         pytest.param(
-            dict(
-                key="engines", subkey="hkl", field="pseudos", expected=["h", "k", "l"]
-            ),
+            {
+                "key": "engines",
+                "subkey": "hkl",
+                "field": "pseudos",
+                "expected": ["h", "k", "l"],
+            },
             does_not_raise(),
             id="hkl engine pseudos are h k l",
         ),
         pytest.param(
-            dict(
-                key="engines",
-                subkey="hkl",
-                field="reals",
-                expected=["komega", "kappa", "kphi", "tth"],
-            ),
+            {
+                "key": "engines",
+                "subkey": "hkl",
+                "field": "reals",
+                "expected": ["komega", "kappa", "kphi", "tth"],
+            },
             does_not_raise(),
             id="hkl engine reals are komega kappa kphi tth",
         ),
         pytest.param(
-            dict(
-                key="engines",
-                subkey="hkl",
-                field="modes",
-                expected=[
+            {
+                "key": "engines",
+                "subkey": "hkl",
+                "field": "modes",
+                "expected": [
                     "bissector",
                     "constant_omega",
                     "constant_chi",
@@ -277,17 +276,17 @@ def test_affine():
                     "double_diffraction",
                     "psi_constant",
                 ],
-            ),
+            },
             does_not_raise(),
             id="hkl engine has expected modes",
         ),
         pytest.param(
-            dict(key="engines", subkey="q", field="pseudos", expected=["q"]),
+            {"key": "engines", "subkey": "q", "field": "pseudos", "expected": ["q"]},
             does_not_raise(),
             id="q engine pseudo is q",
         ),
         pytest.param(
-            dict(key="engines", subkey="q", field="reals", expected=["tth"]),
+            {"key": "engines", "subkey": "q", "field": "reals", "expected": ["tth"]},
             does_not_raise(),
             id="q engine real is tth",
         ),
@@ -327,14 +326,12 @@ def test_summary_dict(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(check="type"),
-            does_not_raise(),
-            id="solver_summary returns a Table",
+            {"check": "type"}, does_not_raise(), id="solver_summary returns a Table"
         ),
         pytest.param(
-            dict(
-                check="columns",
-                expected=[
+            {
+                "check": "columns",
+                "expected": [
                     "engine",
                     "mode",
                     "pseudo(s)",
@@ -342,28 +339,34 @@ def test_summary_dict(parms, context):
                     "writable(s)",
                     "extra(s)",
                 ],
-            ),
+            },
             does_not_raise(),
             id="table has expected columns",
         ),
         pytest.param(
-            dict(
-                check="engine_row",
-                engine="hkl",
-                mode="bissector",
-                pseudos="h, k, l",
-                reals="komega, kappa, kphi, tth",
-            ),
+            {
+                "check": "engine_row",
+                "engine": "hkl",
+                "mode": "bissector",
+                "pseudos": "h, k, l",
+                "reals": "komega, kappa, kphi, tth",
+            },
             does_not_raise(),
             id="hkl bissector row present",
         ),
         pytest.param(
-            dict(check="engine_row", engine="q", mode="q", pseudos="q", reals="tth"),
+            {
+                "check": "engine_row",
+                "engine": "q",
+                "mode": "q",
+                "pseudos": "q",
+                "reals": "tth",
+            },
             does_not_raise(),
             id="q engine row present",
         ),
         pytest.param(
-            dict(check="engine_count", engine="hkl", expected=6),
+            {"check": "engine_count", "engine": "hkl", "expected": 6},
             does_not_raise(),
             id="hkl engine has 6 mode rows",
         ),
@@ -402,10 +405,7 @@ def test_summary(parms, context):
 
 @pytest.mark.parametrize(
     "geometry",
-    [
-        pytest.param("APS POLAR", id="APS-POLAR"),
-        pytest.param("ZAXIS", id="ZAXIS"),
-    ],
+    [pytest.param("APS POLAR", id="APS-POLAR"), pytest.param("ZAXIS", id="ZAXIS")],
 )
 def test__details(geometry):
     from ... import creator
@@ -415,28 +415,38 @@ def test__details(geometry):
 
     review = diffractometer.core.solver._details
     assert isinstance(review, dict)
-    keys = "name geometry engine sample lattice U UB wavelength mode extras".split()
-    assert list(sorted(review.keys())) == sorted(keys)
+    keys = [
+        "name",
+        "geometry",
+        "engine",
+        "sample",
+        "lattice",
+        "U",
+        "UB",
+        "wavelength",
+        "mode",
+        "extras",
+    ]
+    assert sorted(review.keys()) == sorted(keys)
     assert review["engine"] == "hkl"
     assert review["geometry"] == geometry
     assert review["name"] == "hkl_soleil"
 
 
 def test_reflections():
-    from ... import SI_LATTICE_PARAMETER
-    from ... import creator
+    from ... import SI_LATTICE_PARAMETER, creator
 
     sim = creator()
     sim.add_sample("silicon", SI_LATTICE_PARAMETER)
     sim.add_reflection(
         (4, 0, 0),
-        dict(tth=69.0966, omega=-145.451, chi=0, phi=0),
+        {"tth": 69.0966, "omega": -145.451, "chi": 0, "phi": 0},
         wavelength=1.54,
         name="(400)",
     )
     sim.add_reflection(
         (0, 4, 0),
-        dict(tth=69.0966, omega=-145.451, chi=90, phi=0),
+        {"tth": 69.0966, "omega": -145.451, "chi": 90, "phi": 0},
         wavelength=1.54,
         name="(040)",
     )
@@ -451,20 +461,19 @@ def test_reflections():
 
 
 def test_sample_property():
-    from ... import SI_LATTICE_PARAMETER
-    from ... import creator
+    from ... import SI_LATTICE_PARAMETER, creator
 
     sim = creator()
     sim.add_sample("silicon", SI_LATTICE_PARAMETER)
     sim.add_reflection(
         (4, 0, 0),
-        dict(tth=69.0966, omega=-145.451, chi=0, phi=0),
+        {"tth": 69.0966, "omega": -145.451, "chi": 0, "phi": 0},
         wavelength=1.54,
         name="(400)",
     )
     sim.add_reflection(
         (0, 4, 0),
-        dict(tth=69.0966, omega=-145.451, chi=90, phi=0),
+        {"tth": 69.0966, "omega": -145.451, "chi": 90, "phi": 0},
         wavelength=1.54,
         name="(040)",
     )
@@ -489,37 +498,37 @@ def test_sample_property():
     "parms, context",
     [
         pytest.param(
-            dict(
+            {
                 # Two valid silicon reflections — UB should succeed.
-                r1=dict(
-                    pseudos=dict(h=4, k=0, l=0),
-                    reals=dict(omega=-145.451, chi=0, phi=0, tth=69.0966),
-                    wavelength=1.54,
-                ),
-                r2=dict(
-                    pseudos=dict(h=0, k=4, l=0),
-                    reals=dict(omega=-145.451, chi=90, phi=0, tth=69.0966),
-                    wavelength=1.54,
-                ),
-            ),
+                "r1": {
+                    "pseudos": {"h": 4, "k": 0, "l": 0},
+                    "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
+                    "wavelength": 1.54,
+                },
+                "r2": {
+                    "pseudos": {"h": 0, "k": 4, "l": 0},
+                    "reals": {"omega": -145.451, "chi": 90, "phi": 0, "tth": 69.0966},
+                    "wavelength": 1.54,
+                },
+            },
             does_not_raise(),
             id="valid reflections produce non-degenerate UB",
         ),
         pytest.param(
-            dict(
+            {
                 # Detector angles (tth) both zero → scattering vector Q=0
                 # → libhkl silently returns all-zero U matrix.
-                r1=dict(
-                    pseudos=dict(h=4, k=0, l=0),
-                    reals=dict(omega=0, chi=0, phi=0, tth=0),
-                    wavelength=1.54,
-                ),
-                r2=dict(
-                    pseudos=dict(h=0, k=4, l=0),
-                    reals=dict(omega=0, chi=90, phi=0, tth=0),
-                    wavelength=1.54,
-                ),
-            ),
+                "r1": {
+                    "pseudos": {"h": 4, "k": 0, "l": 0},
+                    "reals": {"omega": 0, "chi": 0, "phi": 0, "tth": 0},
+                    "wavelength": 1.54,
+                },
+                "r2": {
+                    "pseudos": {"h": 0, "k": 4, "l": 0},
+                    "reals": {"omega": 0, "chi": 90, "phi": 0, "tth": 0},
+                    "wavelength": 1.54,
+                },
+            },
             pytest.raises(
                 ValueError,
                 match=re.escape("UB calculation produced a degenerate U matrix"),
@@ -527,20 +536,20 @@ def test_sample_property():
             id="degenerate reflections (tth=0) raise ValueError",
         ),
         pytest.param(
-            dict(
+            {
                 # Strictly colinear reflections (same direction, different
                 # magnitude) → libhkl raises GError, re-raised as ValueError.
-                r1=dict(
-                    pseudos=dict(h=1, k=0, l=0),
-                    reals=dict(omega=-145.451, chi=0, phi=0, tth=69.0966),
-                    wavelength=1.54,
-                ),
-                r2=dict(
-                    pseudos=dict(h=2, k=0, l=0),
-                    reals=dict(omega=-145.451, chi=0, phi=0, tth=69.0966),
-                    wavelength=1.54,
-                ),
-            ),
+                "r1": {
+                    "pseudos": {"h": 1, "k": 0, "l": 0},
+                    "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
+                    "wavelength": 1.54,
+                },
+                "r2": {
+                    "pseudos": {"h": 2, "k": 0, "l": 0},
+                    "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
+                    "wavelength": 1.54,
+                },
+            },
             pytest.raises(
                 ValueError,
                 match=re.escape(
@@ -550,7 +559,7 @@ def test_sample_property():
             id="colinear reflections raise ValueError",
         ),
         pytest.param(
-            dict(
+            {
                 # Non-orthonormal U: reals dict supplied in wrong order to
                 # creator() without _real, causing axes_xref to map detector
                 # arm angles to sample rotation slots and vice versa.
@@ -558,29 +567,39 @@ def test_sample_property():
                 # angle values the solver receives after the positional swap:
                 #   user.chi (sample rotation) → solver.gamma (detector arm)
                 # r1: solver.gamma=90, r2: solver.gamma=0 → degenerate geometry.
-                r1=dict(
-                    pseudos=dict(h=0, k=0, l=2),
-                    reals=dict(mu=20, omega=0, chi=40, phi=0, gamma=90, delta=0),
-                    wavelength=1.7225,
-                ),
-                r2=dict(
-                    pseudos=dict(h=2, k=0, l=0),
-                    reals=dict(mu=20, omega=0, chi=40, phi=0, gamma=0, delta=0),
-                    wavelength=1.7225,
-                ),
-            ),
-            pytest.raises(
-                ValueError,
-                match=re.escape("Check that the 'reals' dict"),
-            ),
+                "r1": {
+                    "pseudos": {"h": 0, "k": 0, "l": 2},
+                    "reals": {
+                        "mu": 20,
+                        "omega": 0,
+                        "chi": 40,
+                        "phi": 0,
+                        "gamma": 90,
+                        "delta": 0,
+                    },
+                    "wavelength": 1.7225,
+                },
+                "r2": {
+                    "pseudos": {"h": 2, "k": 0, "l": 0},
+                    "reals": {
+                        "mu": 20,
+                        "omega": 0,
+                        "chi": 40,
+                        "phi": 0,
+                        "gamma": 0,
+                        "delta": 0,
+                    },
+                    "wavelength": 1.7225,
+                },
+            },
+            pytest.raises(ValueError, match=re.escape("Check that the 'reals' dict")),
             id="non-orthonormal U (wrong reals order, no _real) raises ValueError",
         ),
     ],
 )
 def test_calculate_UB_degenerate(parms, context):
     """calculate_UB raises ValueError for degenerate or colinear reflections."""
-    from ... import SI_LATTICE_PARAMETER
-    from ... import creator
+    from ... import SI_LATTICE_PARAMETER, creator
 
     geometry = "E6C" if "gamma" in parms["r1"]["reals"] else "E4CV"
     sample_lattice = 5.0 if geometry == "E6C" else SI_LATTICE_PARAMETER
@@ -604,8 +623,8 @@ def test_calculate_UB_degenerate(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                meta=HklSolverMetadataDict(
+            {
+                "meta": HklSolverMetadataDict(
                     name="hkl_soleil",
                     description="HklSolver(...)",
                     geometry="E4CV",
@@ -613,13 +632,13 @@ def test_calculate_UB_degenerate(parms, context):
                     version="v5.0.0.3434",
                     engine="hkl",
                 )
-            ),
+            },
             does_not_raise(),
             id="HklSolverMetadataDict hkl engine",
         ),
         pytest.param(
-            dict(
-                meta=HklSolverMetadataDict(
+            {
+                "meta": HklSolverMetadataDict(
                     name="hkl_soleil",
                     description="HklSolver(...)",
                     geometry="E6C",
@@ -627,7 +646,7 @@ def test_calculate_UB_degenerate(parms, context):
                     version="v5.0.0.3434",
                     engine="psi",
                 )
-            ),
+            },
             does_not_raise(),
             id="HklSolverMetadataDict psi engine",
         ),
@@ -653,12 +672,12 @@ def test_hkl_solver_metadata_dict(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(geometry="E4CV", engine="hkl"),
+            {"geometry": "E4CV", "engine": "hkl"},
             does_not_raise(),
             id="HklSolver._metadata returns HklSolverMetadataDict for E4CV",
         ),
         pytest.param(
-            dict(geometry="E6C", engine="hkl"),
+            {"geometry": "E6C", "engine": "hkl"},
             does_not_raise(),
             id="HklSolver._metadata returns HklSolverMetadataDict for E6C",
         ),
@@ -687,22 +706,22 @@ def test_hkl_solver_metadata_live(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(geometry="E4CV", engine="hkl", expected="bissector"),
+            {"geometry": "E4CV", "engine": "hkl", "expected": "bissector"},
             does_not_raise(),
             id="E4CV/hkl -> bissector",
         ),
         pytest.param(
-            dict(geometry="E4CV", engine="psi", expected="psi"),
+            {"geometry": "E4CV", "engine": "psi", "expected": "psi"},
             does_not_raise(),
             id="E4CV/psi -> psi",
         ),
         pytest.param(
-            dict(geometry="E4CV", engine="MISSING", expected="bissector"),
+            {"geometry": "E4CV", "engine": "MISSING", "expected": "bissector"},
             does_not_raise(),
             id="missing engine falls back to first engine",
         ),
         pytest.param(
-            dict(geometry="UNKNOWN GEO", engine="hkl", expected=None),
+            {"geometry": "UNKNOWN GEO", "engine": "hkl", "expected": None},
             pytest.raises(
                 __import__("hklpy2.exceptions", fromlist=["SolverError"]).SolverError,
                 match=re.escape("'UNKNOWN GEO' is not known to libhkl"),
@@ -724,12 +743,12 @@ def test_hkl_default_mode(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(geometry="E4CV", engine="hkl", expected_mode="bissector"),
+            {"geometry": "E4CV", "engine": "hkl", "expected_mode": "bissector"},
             does_not_raise(),
             id="E4CV/hkl applies bissector at construction",
         ),
         pytest.param(
-            dict(geometry="E4CV", engine="psi", expected_mode="psi"),
+            {"geometry": "E4CV", "engine": "psi", "expected_mode": "psi"},
             does_not_raise(),
             id="E4CV/psi applies psi at construction",
         ),

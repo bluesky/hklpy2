@@ -19,57 +19,55 @@ from ..typing import ConfigHeaderDict
     "parms, context",
     [
         pytest.param(
-            dict(name="KeyValueMap"),
+            {"name": "KeyValueMap"},
             does_not_raise(),
             id="KeyValueMap defined in hklpy2.typing",
         ),
         pytest.param(
-            dict(name="NUMERIC"),
-            does_not_raise(),
-            id="NUMERIC defined in hklpy2.typing",
+            {"name": "NUMERIC"}, does_not_raise(), id="NUMERIC defined in hklpy2.typing"
         ),
         pytest.param(
-            dict(name="INPUT_VECTOR"),
+            {"name": "INPUT_VECTOR"},
             does_not_raise(),
             id="INPUT_VECTOR defined in hklpy2.typing",
         ),
         pytest.param(
-            dict(name="AxesArray"),
+            {"name": "AxesArray"},
             does_not_raise(),
             id="AxesArray defined in hklpy2.typing",
         ),
         pytest.param(
-            dict(name="AxesDict"),
+            {"name": "AxesDict"},
             does_not_raise(),
             id="AxesDict defined in hklpy2.typing",
         ),
         pytest.param(
-            dict(name="AxesList"),
+            {"name": "AxesList"},
             does_not_raise(),
             id="AxesList defined in hklpy2.typing",
         ),
         pytest.param(
-            dict(name="AxesTuple"),
+            {"name": "AxesTuple"},
             does_not_raise(),
             id="AxesTuple defined in hklpy2.typing",
         ),
         pytest.param(
-            dict(name="AnyAxesType"),
+            {"name": "AnyAxesType"},
             does_not_raise(),
             id="AnyAxesType defined in hklpy2.typing",
         ),
         pytest.param(
-            dict(name="Matrix3x3"),
+            {"name": "Matrix3x3"},
             does_not_raise(),
             id="Matrix3x3 defined in hklpy2.typing",
         ),
         pytest.param(
-            dict(name="NamedFloatDict"),
+            {"name": "NamedFloatDict"},
             does_not_raise(),
             id="NamedFloatDict defined in hklpy2.typing",
         ),
         pytest.param(
-            dict(name="BlueskyPlanType"),
+            {"name": "BlueskyPlanType"},
             does_not_raise(),
             id="BlueskyPlanType defined in hklpy2.typing",
         ),
@@ -93,50 +91,34 @@ def test_module_exports(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(value={"h": 1.0, "k": 0.0}),
+            {"value": {"h": 1.0, "k": 0.0}},
             does_not_raise(),
             id="KeyValueMap accepts dict",
         ),
         pytest.param(
-            dict(value=np.array([1.0, 0.0, -1.0])),
+            {"value": np.array([1.0, 0.0, -1.0])},
             does_not_raise(),
             id="AxesArray accepts ndarray",
         ),
         pytest.param(
-            dict(value={"omega": 10.0}),
-            does_not_raise(),
-            id="AxesDict accepts dict",
+            {"value": {"omega": 10.0}}, does_not_raise(), id="AxesDict accepts dict"
         ),
         pytest.param(
-            dict(value=[1.0, 0.0]),
-            does_not_raise(),
-            id="AxesList accepts list",
+            {"value": [1.0, 0.0]}, does_not_raise(), id="AxesList accepts list"
         ),
         pytest.param(
-            dict(value=(1.0, 0.0)),
-            does_not_raise(),
-            id="AxesTuple accepts tuple",
+            {"value": (1.0, 0.0)}, does_not_raise(), id="AxesTuple accepts tuple"
         ),
         pytest.param(
-            dict(value=[[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+            {"value": [[1, 0, 0], [0, 1, 0], [0, 0, 1]]},
             does_not_raise(),
             id="Matrix3x3 accepts list of lists",
         ),
         pytest.param(
-            dict(value={"a": 5.431}),
-            does_not_raise(),
-            id="NamedFloatDict accepts dict",
+            {"value": {"a": 5.431}}, does_not_raise(), id="NamedFloatDict accepts dict"
         ),
-        pytest.param(
-            dict(value=3.14),
-            does_not_raise(),
-            id="NUMERIC accepts float",
-        ),
-        pytest.param(
-            dict(value=42),
-            does_not_raise(),
-            id="NUMERIC accepts int",
-        ),
+        pytest.param({"value": 3.14}, does_not_raise(), id="NUMERIC accepts float"),
+        pytest.param({"value": 42}, does_not_raise(), id="NUMERIC accepts int"),
     ],
 )
 def test_alias_runtime_values(parms, context):
@@ -155,29 +137,29 @@ def test_alias_runtime_values(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                header=ConfigHeaderDict(
+            {
+                "header": ConfigHeaderDict(
                     datetime="2026-04-03T12:00:00",
                     hklpy2_version="1.0.0",
                     python_class="MyDiffractometer",
                 )
-            ),
+            },
             does_not_raise(),
             id="valid ConfigHeaderDict",
         ),
         pytest.param(
-            dict(
-                header=ConfigHeaderDict(
+            {
+                "header": ConfigHeaderDict(
                     datetime="2025-01-01T00:00:00",
                     hklpy2_version="0.9.0",
                     python_class="DiffractometerBase",
                 )
-            ),
+            },
             does_not_raise(),
             id="valid ConfigHeaderDict alternate values",
         ),
         pytest.param(
-            dict(value="not a dict"),
+            {"value": "not a dict"},
             pytest.raises(TypeError, match=re.escape("is not a")),
             id="ConfigHeaderDict rejects non-dict",
         ),
@@ -201,10 +183,10 @@ def test_config_header_dict_construct(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(name="ConfigHeaderDict"),
+            {"name": "ConfigHeaderDict"},
             does_not_raise(),
             id="ConfigHeaderDict importable from hklpy2.typing",
-        ),
+        )
     ],
 )
 def test_config_header_dict_module_export(parms, context):

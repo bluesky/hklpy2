@@ -30,11 +30,13 @@ from contextlib import nullcontext as does_not_raise
 import numpy as np
 import pytest
 
-from hklpy2.backends.hkl_soleil import LIBHKL_DETECTOR_TYPE
-from hklpy2.backends.hkl_soleil import LIBHKL_USER_UNITS
-from hklpy2.backends.hkl_soleil import HklSolver
-from hklpy2.backends.hkl_soleil import NoForwardSolutions
-from hklpy2.backends.hkl_soleil import libhkl
+from hklpy2.backends.hkl_soleil import (
+    LIBHKL_DETECTOR_TYPE,
+    LIBHKL_USER_UNITS,
+    HklSolver,
+    NoForwardSolutions,
+    libhkl,
+)
 
 GEOMETRY = "E6C"
 SOLVER = "hkl_soleil"
@@ -89,16 +91,12 @@ def test_libhkl():
 
     geometry.wavelength_set(WAVELENGTH, LIBHKL_USER_UNITS)
     assert math.isclose(
-        geometry.wavelength_get(LIBHKL_USER_UNITS),
-        WAVELENGTH,
-        abs_tol=0.001,
+        geometry.wavelength_get(LIBHKL_USER_UNITS), WAVELENGTH, abs_tol=0.001
     )
 
     geometry.axis_values_set(REALS_REFERENCE, LIBHKL_USER_UNITS)
     assert np.allclose(
-        geometry.axis_values_get(LIBHKL_USER_UNITS),
-        REALS_REFERENCE,
-        atol=0.001,
+        geometry.axis_values_get(LIBHKL_USER_UNITS), REALS_REFERENCE, atol=0.001
     )
 
     sample_name = f"{SAMPLE_NAME}:{str(uuid.uuid4())[:7]}"
@@ -109,38 +107,25 @@ def test_libhkl():
     a, alpha = SAMPLE_LATTICE_A, math.radians(90)
     sample.lattice_set(libhkl.Lattice.new(a, a, a, alpha, alpha, alpha))
     assert np.allclose(
-        sample.lattice_get().get(LIBHKL_USER_UNITS),
-        [a, a, a, 90, 90, 90],
-        atol=0.01,
+        sample.lattice_get().get(LIBHKL_USER_UNITS), [a, a, a, 90, 90, 90], atol=0.01
     )
     assert len(sample.reflections_get()) == 0
 
     # . add reflections
     geometry.axis_values_set(R001[1], LIBHKL_USER_UNITS)
-    r001 = sample.add_reflection(
-        geometry,
-        detector,
-        *list(R001[0]),
-    )
+    r001 = sample.add_reflection(geometry, detector, *list(R001[0]))
     assert r001 is not None
     assert len(sample.reflections_get()) == 1
 
     geometry.axis_values_set(R100[1], LIBHKL_USER_UNITS)
-    r100 = sample.add_reflection(
-        geometry,
-        detector,
-        *list(R100[0]),
-    )
+    r100 = sample.add_reflection(geometry, detector, *list(R100[0]))
     assert r100 is not None
     assert len(sample.reflections_get()) == 2
 
     # sample.compute_UB_busing_levy(*sample.reflections_get())
     sample.compute_UB_busing_levy(r001, r100)
     matrix = sample.UB_get()
-    UB = np.array(
-        [[matrix.get(i, j) for j in range(3)] for i in range(3)],
-        dtype=float,
-    )
+    UB = np.array([[matrix.get(i, j) for j in range(3)] for i in range(3)], dtype=float)
     assert np.allclose(UB, UB_R001_R100, atol=0.001)
 
     # - - - - - - - - - - - - - - - - Test inverse() calculations
@@ -161,10 +146,7 @@ def test_libhkl():
             geometry.axis_values_set(REALS_REFERENCE, LIBHKL_USER_UNITS)
             # Hkl.GeometryList (not a Python dict) has a '.items()' method.
             raw = list(
-                engine.pseudo_axis_values_set(
-                    libhkl_pseudos,
-                    LIBHKL_USER_UNITS,
-                ).items()
+                engine.pseudo_axis_values_set(libhkl_pseudos, LIBHKL_USER_UNITS).items()
             )
         except Exception:
             raw = []
@@ -173,9 +155,7 @@ def test_libhkl():
         for i, glist_item in enumerate(raw):
             geo = glist_item.geometry_get()
             assert np.allclose(
-                geo.axis_values_get(LIBHKL_USER_UNITS),
-                reals[i],
-                atol=0.01,
+                geo.axis_values_get(LIBHKL_USER_UNITS), reals[i], atol=0.01
             ), f"{i=} {reals[i]=}"
 
 
@@ -194,36 +174,36 @@ def test_HklSolver():
     assert solver.mode == MODE
 
     a, alpha = SAMPLE_LATTICE_A, 90
-    solver.sample = dict(
-        name=SAMPLE_NAME,
-        lattice=dict(
-            a=a,
-            b=a,
-            c=a,
-            alpha=alpha,
-            beta=alpha,
-            gamma=alpha,
-        ),
-        order=[],
-        reflections=[],
-    )
+    solver.sample = {
+        "name": SAMPLE_NAME,
+        "lattice": {
+            "a": a,
+            "b": a,
+            "c": a,
+            "alpha": alpha,
+            "beta": alpha,
+            "gamma": alpha,
+        },
+        "order": [],
+        "reflections": [],
+    }
     assert solver.sample["name"] != SAMPLE_NAME
     assert solver.sample["lattice"]["a"] == SAMPLE_LATTICE_A
     assert len(solver.sample["reflections"]) == 0
 
-    r001 = dict(
-        name="r001",
-        pseudos=dict(zip(solver.pseudo_axis_names, R001[0])),
-        reals=dict(zip(solver.real_axis_names, R001[1])),
-        wavelength=WAVELENGTH,
-    )
+    r001 = {
+        "name": "r001",
+        "pseudos": dict(zip(solver.pseudo_axis_names, R001[0])),
+        "reals": dict(zip(solver.real_axis_names, R001[1])),
+        "wavelength": WAVELENGTH,
+    }
 
-    r100 = dict(
-        name="r100",
-        pseudos=dict(zip(solver.pseudo_axis_names, R100[0])),
-        reals=dict(zip(solver.real_axis_names, R100[1])),
-        wavelength=WAVELENGTH,
-    )
+    r100 = {
+        "name": "r100",
+        "pseudos": dict(zip(solver.pseudo_axis_names, R100[0])),
+        "reals": dict(zip(solver.real_axis_names, R100[1])),
+        "wavelength": WAVELENGTH,
+    }
     assert len(solver.reflections) == 0
 
     UB = solver.calculate_UB(r001, r100)
@@ -234,29 +214,15 @@ def test_HklSolver():
     assert len(refs) == 2
 
     refs = list(refs.values())
-    assert np.allclose(
-        list(refs[0]["pseudos"].values()),
-        (0, 0, 1),
-        atol=0.001,
-    )
-    assert np.allclose(
-        list(refs[1]["pseudos"].values()),
-        (1, 0, 0),
-        atol=0.001,
-    )
-    assert np.allclose(
-        UB,
-        UB_R001_R100,
-        atol=0.001,
-    )
+    assert np.allclose(list(refs[0]["pseudos"].values()), (0, 0, 1), atol=0.001)
+    assert np.allclose(list(refs[1]["pseudos"].values()), (1, 0, 0), atol=0.001)
+    assert np.allclose(UB, UB_R001_R100, atol=0.001)
 
     # - - - - - - - - - - - - - - - - Test inverse() calculations
     for reflection in (r001, r100):
         pseudos = list(solver.inverse(reflection["reals"]).values())
         assert np.allclose(
-            list(pseudos),
-            list(reflection["pseudos"].values()),
-            atol=0.001,
+            list(pseudos), list(reflection["pseudos"].values()), atol=0.001
         )
 
     # - - - - - - - - - - - - - - - - Test forward() calculations
@@ -273,41 +239,37 @@ def test_HklSolver():
 @pytest.mark.parametrize(
     "parms, context",
     [
+        pytest.param({"geometry": GEOMETRY}, does_not_raise(), id="no radius axis"),
         pytest.param(
-            dict(geometry=GEOMETRY),
-            does_not_raise(),
-            id="no radius axis",
-        ),
-        pytest.param(
-            dict(
-                geometry=GEOMETRY,
-                reals="mu eta chi phi yaw pitch".split(),
-            ),
+            {
+                "geometry": GEOMETRY,
+                "reals": ["mu", "eta", "chi", "phi", "yaw", "pitch"],
+            },
             does_not_raise(),
             id="only ISN reals",
         ),
         pytest.param(
-            dict(
-                geometry=GEOMETRY,
-                reals="mu eta chi phi yaw pitch radius".split(),
-            ),
+            {
+                "geometry": GEOMETRY,
+                "reals": ["mu", "eta", "chi", "phi", "yaw", "pitch", "radius"],
+            },
             does_not_raise(),
             id="all ISN axes",
         ),
         pytest.param(
-            dict(
-                geometry=GEOMETRY,
-                reals="chi eta mu phi pitch radius yaw".split(),
-                _real="mu eta chi phi yaw pitch".split(),
-            ),
+            {
+                "geometry": GEOMETRY,
+                "reals": ["chi", "eta", "mu", "phi", "pitch", "radius", "yaw"],
+                "_real": ["mu", "eta", "chi", "phi", "yaw", "pitch"],
+            },
             does_not_raise(),
             id="sorted ISN axes",
         ),
         pytest.param(
-            dict(
-                geometry=GEOMETRY,
-                reals="aaa bbb ccc ddd eee fff ggg hhh".split(),
-            ),
+            {
+                "geometry": GEOMETRY,
+                "reals": ["aaa", "bbb", "ccc", "ddd", "eee", "fff", "ggg", "hhh"],
+            },
             does_not_raise(),
             id="custom AXES names",
         ),
@@ -336,20 +298,14 @@ def test_hklpy2(parms, context):
         r001 = psic.core.add_reflection(*R001, name="r001")
         r100 = psic.core.add_reflection(*R100, name="r100")
         assert len(psic.core.sample.reflections) == 2
-        assert np.allclose(
-            psic.core.calc_UB(r001, r100),
-            UB_R001_R100,
-            atol=0.001,
-        )
+        assert np.allclose(psic.core.calc_UB(r001, r100), UB_R001_R100, atol=0.001)
 
         # - - - - - - - - - - - - - - - - Test inverse() calculations
         # pseudos = inverse(reals)
         for reflection in (r001, r100):
             pseudos = psic.core.inverse(reflection.reals)
             assert np.allclose(
-                list(pseudos.values()),
-                list(reflection.pseudos.values()),
-                atol=0.001,
+                list(pseudos.values()), list(reflection.pseudos.values()), atol=0.001
             )
 
         # - - - - - - - - - - - - - - - - Test forward() calculations
@@ -360,43 +316,30 @@ def test_hklpy2(parms, context):
 
         # list of reals = forward(pseudos)
         for pseudos, reals in FORWARD_SOLUTIONS.items():
-            solutions = psic.core.forward(
-                dict(
-                    zip(
-                        psic.pseudo_axis_names,
-                        pseudos,
-                    )
-                )
-            )
+            solutions = psic.core.forward(dict(zip(psic.pseudo_axis_names, pseudos)))
             assert len(solutions) == len(reals)
 
             if len(solutions):
                 assessments = [
-                    np.allclose(
-                        list(sol),
-                        reals[i],
-                        atol=0.01,
-                    )
+                    np.allclose(list(sol), reals[i], atol=0.01)
                     for i, sol in enumerate(solutions)
                 ]
                 assert True in assessments, f"{solutions=} {reals=}"
 
 
 def test_ISN_Diffractometer():
-    from ophyd import Component
-    from ophyd import SoftPositioner
+    from ophyd import Component, SoftPositioner
 
-    from hklpy2.diffract import DiffractometerBase
-    from hklpy2.diffract import Hklpy2PseudoAxis
+    from hklpy2.diffract import DiffractometerBase, Hklpy2PseudoAxis
 
     class Diffractometer(DiffractometerBase):
         """Example custom diffractometer"""
 
-        _real = "mu eta chi phi yaw pitch".split()
+        _real = ["mu", "eta", "chi", "phi", "yaw", "pitch"]
 
         h = Component(Hklpy2PseudoAxis, "", kind="hinted")
         k = Component(Hklpy2PseudoAxis, "", kind="hinted")
-        l = Component(Hklpy2PseudoAxis, "", kind="hinted")  # noqa E741
+        l = Component(Hklpy2PseudoAxis, "", kind="hinted")
 
         mu = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
         eta = Component(SoftPositioner, limits=(-180, 180), init_pos=0, kind="hinted")
@@ -409,12 +352,7 @@ def test_ISN_Diffractometer():
         )
 
         def __init__(self, *args, **kwargs):
-            super().__init__(
-                *args,
-                solver=SOLVER,
-                geometry=GEOMETRY,
-                **kwargs,
-            )
+            super().__init__(*args, solver=SOLVER, geometry=GEOMETRY, **kwargs)
 
     psic = Diffractometer("", name="psic")
     assert psic.connected
@@ -433,20 +371,14 @@ def test_ISN_Diffractometer():
     r001 = psic.core.add_reflection(*R001, name="r001")
     r100 = psic.core.add_reflection(*R100, name="r100")
     assert len(psic.core.sample.reflections) == 2
-    assert np.allclose(
-        psic.core.calc_UB(r001, r100),
-        UB_R001_R100,
-        atol=0.001,
-    )
+    assert np.allclose(psic.core.calc_UB(r001, r100), UB_R001_R100, atol=0.001)
 
     # - - - - - - - - - - - - - - - - Test inverse() calculations
     # pseudos = inverse(reals)
     for reflection in (r001, r100):
         pseudos = psic.core.inverse(reflection.reals)
         assert np.allclose(
-            list(pseudos.values()),
-            list(reflection.pseudos.values()),
-            atol=0.001,
+            list(pseudos.values()), list(reflection.pseudos.values()), atol=0.001
         )
 
     # - - - - - - - - - - - - - - - - Test forward() calculations
@@ -457,23 +389,12 @@ def test_ISN_Diffractometer():
 
     # list of reals = forward(pseudos)
     for pseudos, reals in FORWARD_SOLUTIONS.items():
-        solutions = psic.core.forward(
-            dict(
-                zip(
-                    psic.pseudo_axis_names,
-                    pseudos,
-                )
-            )
-        )
+        solutions = psic.core.forward(dict(zip(psic.pseudo_axis_names, pseudos)))
         assert len(solutions) == len(reals)
 
         if len(solutions):
             assessments = [
-                np.allclose(
-                    list(sol),
-                    reals[i],
-                    atol=0.01,
-                )
+                np.allclose(list(sol), reals[i], atol=0.01)
                 for i, sol in enumerate(solutions)
             ]
             assert True in assessments, f"{solutions=} {reals=}"

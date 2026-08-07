@@ -26,27 +26,27 @@ TESTS_DIR = pathlib.Path(__file__).parent
     "parms, context",
     [
         pytest.param(
-            dict(config=TESTS_DIR / "e4cv-silicon-example.yml"),
+            {"config": TESTS_DIR / "e4cv-silicon-example.yml"},
             does_not_raise(),
             id="e4cv silicon from path",
         ),
         pytest.param(
-            dict(config=TESTS_DIR / "fourc-configuration.yml"),
+            {"config": TESTS_DIR / "fourc-configuration.yml"},
             does_not_raise(),
             id="fourc custom axes from path",
         ),
         pytest.param(
-            dict(config=TESTS_DIR / "tardis.yml"),
+            {"config": TESTS_DIR / "tardis.yml"},
             does_not_raise(),
             id="tardis E6C from path",
         ),
         pytest.param(
-            dict(config=str(TESTS_DIR / "e4cv-silicon-example.yml")),
+            {"config": str(TESTS_DIR / "e4cv-silicon-example.yml")},
             does_not_raise(),
             id="e4cv silicon from str path",
         ),
         pytest.param(
-            dict(config=42),
+            {"config": 42},
             pytest.raises(
                 TypeError,
                 match=re.escape(
@@ -56,7 +56,7 @@ TESTS_DIR = pathlib.Path(__file__).parent
             id="invalid config type raises TypeError",
         ),
         pytest.param(
-            dict(config={"solver": {}, "axes": {}}),
+            {"config": {"solver": {}, "axes": {}}},
             pytest.raises(
                 KeyError, match=re.escape("Configuration is missing '_header' key.")
             ),
@@ -78,33 +78,33 @@ def test_simulator_from_config(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                config=TESTS_DIR / "e4cv-silicon-example.yml",
-                expected_solver="hkl_soleil",
-                expected_geometry="E4CV",
-                expected_sample="silicon",
-            ),
+            {
+                "config": TESTS_DIR / "e4cv-silicon-example.yml",
+                "expected_solver": "hkl_soleil",
+                "expected_geometry": "E4CV",
+                "expected_sample": "silicon",
+            },
             does_not_raise(),
             id="e4cv silicon: solver, geometry, sample restored",
         ),
         pytest.param(
-            dict(
-                config=TESTS_DIR / "fourc-configuration.yml",
-                expected_solver="hkl_soleil",
-                expected_geometry="E4CV",
-                expected_sample="vibranium",
-                expected_real_axes=["theta", "chi", "phi", "ttheta"],
-            ),
+            {
+                "config": TESTS_DIR / "fourc-configuration.yml",
+                "expected_solver": "hkl_soleil",
+                "expected_geometry": "E4CV",
+                "expected_sample": "vibranium",
+                "expected_real_axes": ["theta", "chi", "phi", "ttheta"],
+            },
             does_not_raise(),
             id="fourc: custom axis names preserved",
         ),
         pytest.param(
-            dict(
-                config=TESTS_DIR / "tardis.yml",
-                expected_solver="hkl_soleil",
-                expected_geometry="E6C",
-                expected_sample="KCF",
-            ),
+            {
+                "config": TESTS_DIR / "tardis.yml",
+                "expected_solver": "hkl_soleil",
+                "expected_geometry": "E6C",
+                "expected_sample": "KCF",
+            },
             does_not_raise(),
             id="tardis E6C: geometry and sample restored",
         ),
@@ -127,10 +127,10 @@ def test_simulator_from_config_orientation(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(config=TESTS_DIR / "e4cv-silicon-example.yml"),
+            {"config": TESTS_DIR / "e4cv-silicon-example.yml"},
             does_not_raise(),
             id="simulator has soft positioners (no hardware)",
-        ),
+        )
     ],
 )
 def test_simulator_is_simulated(parms, context):
@@ -145,10 +145,10 @@ def test_simulator_is_simulated(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(config=TESTS_DIR / "e4cv-silicon-example.yml"),
+            {"config": TESTS_DIR / "e4cv-silicon-example.yml"},
             does_not_raise(),
             id="simulator_from_config accessible from hklpy2 namespace",
-        ),
+        )
     ],
 )
 def test_simulator_from_config_in_namespace(parms, context):
@@ -162,10 +162,10 @@ def test_simulator_from_config_in_namespace(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(config=TESTS_DIR / "e4cv-silicon-example.yml"),
+            {"config": TESTS_DIR / "e4cv-silicon-example.yml"},
             does_not_raise(),
             id="roundtrip: config from simulator matches original",
-        ),
+        )
     ],
 )
 def test_simulator_roundtrip(parms, context):
@@ -185,24 +185,24 @@ def test_simulator_roundtrip(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                config=TESTS_DIR / "tardis.yml",
+            {
+                "config": TESTS_DIR / "tardis.yml",
                 # tardis axes_xref: theta->mu, mu->omega, chi->chi,
                 # phi->phi, delta->gamma, gamma->delta
                 # solver E6C canonical order: [mu, omega, chi, phi, gamma, delta]
                 # diffractometer order must follow: theta, mu, chi, phi, delta, gamma
-                expected_real_axes=["theta", "mu", "chi", "phi", "delta", "gamma"],
-            ),
+                "expected_real_axes": ["theta", "mu", "chi", "phi", "delta", "gamma"],
+            },
             does_not_raise(),
             id="tardis: out-of-order axes_xref correctly reordered",
         ),
         pytest.param(
-            dict(
-                config=TESTS_DIR / "fourc-configuration.yml",
+            {
+                "config": TESTS_DIR / "fourc-configuration.yml",
                 # fourc axes_xref: theta->omega, chi->chi, phi->phi, ttheta->tth
                 # solver E4CV canonical order: [omega, chi, phi, tth]
-                expected_real_axes=["theta", "chi", "phi", "ttheta"],
-            ),
+                "expected_real_axes": ["theta", "chi", "phi", "ttheta"],
+            },
             does_not_raise(),
             id="fourc: custom axis names reordered to match solver",
         ),
@@ -219,18 +219,18 @@ def test_simulator_axis_order(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                config=TESTS_DIR / "e4cv-silicon-example.yml",
-                expected_pseudo_axes=["h", "k", "l"],
-            ),
+            {
+                "config": TESTS_DIR / "e4cv-silicon-example.yml",
+                "expected_pseudo_axes": ["h", "k", "l"],
+            },
             does_not_raise(),
             id="e4cv: pseudo axes in solver-expected order",
         ),
         pytest.param(
-            dict(
-                config=TESTS_DIR / "tardis.yml",
-                expected_pseudo_axes=["h", "k", "l"],
-            ),
+            {
+                "config": TESTS_DIR / "tardis.yml",
+                "expected_pseudo_axes": ["h", "k", "l"],
+            },
             does_not_raise(),
             id="tardis: pseudo axes in solver-expected order",
         ),
@@ -287,17 +287,15 @@ def _config_with_positionally_wrong_reals():
     "parms, context",
     [
         pytest.param(
-            dict(config=_I243_CONFIG_FILE),
+            {"config": _I243_CONFIG_FILE},
             does_not_raise(),
             id="from file: correct UB norm",
         ),
         pytest.param(
-            dict(config=_I243_CONFIG),
-            does_not_raise(),
-            id="from dict: correct UB norm",
+            {"config": _I243_CONFIG}, does_not_raise(), id="from dict: correct UB norm"
         ),
         pytest.param(
-            dict(config=_config_with_positionally_wrong_reals()),
+            {"config": _config_with_positionally_wrong_reals()},
             pytest.raises(ValueError, match=re.escape("degenerate U matrix")),
             id="pre-#243 positional mis-assignment: degenerate U matrix",
         ),
@@ -327,12 +325,12 @@ def test_simulator_from_config_reflection_axis_order(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(config="e4cv_orient.yml"),
+            {"config": "e4cv_orient.yml"},
             does_not_raise(),
             id="E4CV vibranium: backward compatible, no auxiliary_axes in old config",
         ),
         pytest.param(
-            dict(config="e4cv-silicon-example.yml"),
+            {"config": "e4cv-silicon-example.yml"},
             does_not_raise(),
             id="E4CV silicon: backward compatible",
         ),
@@ -362,14 +360,22 @@ def test_simulator_from_config_auxiliary_axes_roundtrip(tmp_path):
     # Build diffractometer with auxiliary axes and orient it.
     sim = hklpy2.creator(
         name="e4cv",
-        reals=dict(omega=None, chi=None, phi=None, tth=None, atheta=None, attheta=None),
+        reals={
+            "omega": None,
+            "chi": None,
+            "phi": None,
+            "tth": None,
+            "atheta": None,
+            "attheta": None,
+        },
     )
     sim.core.add_sample("vibranium", 4.04)
     r1 = sim.core.add_reflection(
-        dict(h=4, k=0, l=0), dict(omega=-145.451, chi=0, phi=0, tth=69.066)
+        {"h": 4, "k": 0, "l": 0}, {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.066}
     )
     r2 = sim.core.add_reflection(
-        dict(h=0, k=4, l=0), dict(omega=-145.451, chi=0, phi=90, tth=69.066)
+        {"h": 0, "k": 4, "l": 0},
+        {"omega": -145.451, "chi": 0, "phi": 90, "tth": 69.066},
     )
     sim.core.calc_UB(r1, r2)
 
@@ -388,28 +394,27 @@ def test_simulator_from_config_auxiliary_axes_roundtrip(tmp_path):
     assert "attheta" in sim2.component_names
 
     # Orientation is preserved — forward() gives consistent results.
-    assert np.isclose(
-        sim.forward(h=1, k=0, l=0)[0],
-        sim2.forward(h=1, k=0, l=0)[0],
-    )
+    assert np.isclose(sim.forward(h=1, k=0, l=0)[0], sim2.forward(h=1, k=0, l=0)[0])
 
 
 @pytest.mark.parametrize(
     "parms, context",
     [
         pytest.param(
-            dict(
-                config="e4cv_orient.yml", restore_mode=True, expected_mode="bissector"
-            ),
+            {
+                "config": "e4cv_orient.yml",
+                "restore_mode": True,
+                "expected_mode": "bissector",
+            },
             does_not_raise(),
             id="restore_mode=True applies saved mode",
         ),
         pytest.param(
-            dict(
-                config="e4cv_orient.yml",
-                restore_mode=False,
-                expected_mode="constant_phi",
-            ),
+            {
+                "config": "e4cv_orient.yml",
+                "restore_mode": False,
+                "expected_mode": "constant_phi",
+            },
             pytest.warns(UserWarning, match="differs from current mode"),
             id="restore_mode=False warns when saved mode differs from current",
         ),
@@ -426,10 +431,7 @@ def test_restore_mode(parms, context):
         sim = hklpy2.creator(name="e4cv")
         # Set a mode that differs from the saved mode (bissector).
         sim.core.mode = "constant_phi"
-        sim.restore(
-            TESTS_DIR / parms["config"],
-            restore_mode=parms["restore_mode"],
-        )
+        sim.restore(TESTS_DIR / parms["config"], restore_mode=parms["restore_mode"])
         assert sim.core.mode == parms["expected_mode"]
 
 
@@ -443,10 +445,10 @@ def test_restore_mode(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(strip_geometry=True),
+            {"strip_geometry": True},
             does_not_raise(),
             id="missing solver.geometry resolved via default_geometry()",
-        ),
+        )
     ],
 )
 def test_simulator_from_config_default_geometry(parms, context):
@@ -472,12 +474,13 @@ def test_simulator_from_config_default_geometry(parms, context):
             "solver": {"name": "hkl_soleil"},
             "axes": {"axes_xref": {}, "pseudo_axes": [], "real_axes": []},
         }
-        with mock.patch(
-            "hklpy2.diffract.creator",
-            side_effect=RuntimeError("stop here"),
-        ) as mock_creator:
-            with pytest.raises(RuntimeError, match="stop here"):
-                simulator_from_config(cfg)
+        with (
+            mock.patch(
+                "hklpy2.diffract.creator", side_effect=RuntimeError("stop here")
+            ) as mock_creator,
+            pytest.raises(RuntimeError, match="stop here"),
+        ):
+            simulator_from_config(cfg)
         # The resolved geometry passed to creator() must equal
         # HklSolver.default_geometry() (i.e. the fallback ran).
         assert mock_creator.called
@@ -495,10 +498,10 @@ def test_simulator_from_config_default_geometry(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(config=TESTS_DIR / "e4cv-silicon-example.yml"),
+            {"config": TESTS_DIR / "e4cv-silicon-example.yml"},
             does_not_raise(),
             id="diffractometer instance: e4cv silicon",
-        ),
+        )
     ],
 )
 def test_simulator_from_config_accepts_diffractometer(parms, context):

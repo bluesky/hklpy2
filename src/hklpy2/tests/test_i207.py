@@ -55,7 +55,14 @@ def polar_swapped():
         geometry="APS POLAR",
         # Hardware axis names in user's order — NOT the solver's order.
         # This is the exact pattern from the issue report.
-        reals=dict(tau=None, mu=None, gamma=None, delta=None, chi=None, phi=None),
+        reals={
+            "tau": None,
+            "mu": None,
+            "gamma": None,
+            "delta": None,
+            "chi": None,
+            "phi": None,
+        },
         # _real is NOT provided — this is the bug.
     )
     sim.add_sample("test", 5.0)  # cubic, a=5 Å
@@ -75,10 +82,17 @@ def polar_fixed():
         name="polar",
         solver="hkl_soleil",
         geometry="APS POLAR",
-        reals=dict(tau=None, mu=None, gamma=None, delta=None, chi=None, phi=None),
+        reals={
+            "tau": None,
+            "mu": None,
+            "gamma": None,
+            "delta": None,
+            "chi": None,
+            "phi": None,
+        },
         # _real declares which local name maps to each solver axis slot:
         # solver order: tau, mu, chi, phi, gamma, delta
-        _real="tau mu chi phi gamma delta".split(),
+        _real=["tau", "mu", "chi", "phi", "gamma", "delta"],
     )
     sim.add_sample("test", 5.0)  # cubic, a=5 Å
     sim.beam.wavelength.put(1.7225)
@@ -89,21 +103,35 @@ def polar_fixed():
     "parms, context",
     [
         pytest.param(
-            dict(
+            {
                 # The exact reflections from the user's issue #207 report.
                 # With the swapped axes_xref, solver receives gamma=0,delta=0
                 # for both reflections → Q=0 → all-zero U matrix.
-                r1_hkl=(1, 0, 0),
-                r1_reals=dict(tau=0, mu=20, gamma=40, delta=0, chi=0, phi=0),
-                r2_hkl=(0, 0, 3),
-                r2_reals=dict(tau=0, mu=20, gamma=40, delta=0, chi=-90, phi=0),
-            ),
+                "r1_hkl": (1, 0, 0),
+                "r1_reals": {
+                    "tau": 0,
+                    "mu": 20,
+                    "gamma": 40,
+                    "delta": 0,
+                    "chi": 0,
+                    "phi": 0,
+                },
+                "r2_hkl": (0, 0, 3),
+                "r2_reals": {
+                    "tau": 0,
+                    "mu": 20,
+                    "gamma": 40,
+                    "delta": 0,
+                    "chi": -90,
+                    "phi": 0,
+                },
+            },
             pytest.raises(
                 ValueError,
                 match=re.escape("UB calculation produced a degenerate U matrix"),
             ),
             id="issue-207 missing _real yields degenerate UB",
-        ),
+        )
     ],
 )
 def test_calc_UB_swapped_axes_xref(polar_swapped, parms, context):
@@ -126,17 +154,31 @@ def test_calc_UB_swapped_axes_xref(polar_swapped, parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
+            {
                 # Same hardware axis names and reflections as the swapped case,
                 # but with _real supplied to creator() — UB succeeds.
-                r1_hkl=(1, 0, 0),
-                r1_reals=dict(tau=0, mu=20, gamma=40, delta=0, chi=0, phi=0),
-                r2_hkl=(0, 0, 3),
-                r2_reals=dict(tau=0, mu=20, gamma=40, delta=0, chi=-90, phi=0),
-            ),
+                "r1_hkl": (1, 0, 0),
+                "r1_reals": {
+                    "tau": 0,
+                    "mu": 20,
+                    "gamma": 40,
+                    "delta": 0,
+                    "chi": 0,
+                    "phi": 0,
+                },
+                "r2_hkl": (0, 0, 3),
+                "r2_reals": {
+                    "tau": 0,
+                    "mu": 20,
+                    "gamma": 40,
+                    "delta": 0,
+                    "chi": -90,
+                    "phi": 0,
+                },
+            },
             does_not_raise(),
             id="issue-207 with _real supplied succeeds",
-        ),
+        )
     ],
 )
 def test_calc_UB_fixed_real_order(polar_fixed, parms, context):

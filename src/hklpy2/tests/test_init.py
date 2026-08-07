@@ -34,7 +34,7 @@ def test_get_version_with_version_module(mocker, version_module, expected_versio
 @pytest.mark.parametrize(
     "side_effect, expected_version",
     [
-        (Exception("Not found"), "0+unknown"),  # Test fallback scenario
+        (Exception("Not found"), "0+unknown")  # Test fallback scenario
     ],
 )
 def test_get_version_fallback(mocker, side_effect, expected_version):

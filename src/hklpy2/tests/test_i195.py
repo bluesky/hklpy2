@@ -33,29 +33,16 @@ from ..exceptions import NoForwardSolutions
 @pytest.mark.parametrize(
     "phi_current, phi_limits, context",
     [
-        pytest.param(
-            0.0,
-            (-180, 180),
-            does_not_raise(),
-            id="phi=0 (matches or1)",
-        ),
+        pytest.param(0.0, (-180, 180), does_not_raise(), id="phi=0 (matches or1)"),
         pytest.param(
             45.0,
             (-180, 180),
             does_not_raise(),
             id="phi=45 (between or1 and or2 — primary bug case)",
         ),
+        pytest.param(90.0, (-180, 180), does_not_raise(), id="phi=90 (matches or2)"),
         pytest.param(
-            90.0,
-            (-180, 180),
-            does_not_raise(),
-            id="phi=90 (matches or2)",
-        ),
-        pytest.param(
-            -30.0,
-            (-180, 180),
-            does_not_raise(),
-            id="phi=-30 (outside or1/or2 range)",
+            -30.0, (-180, 180), does_not_raise(), id="phi=-30 (outside or1/or2 range)"
         ),
         pytest.param(
             45.0,
@@ -94,13 +81,13 @@ def test_issue_195(phi_current, phi_limits, context):
         # phi=90 (from or2).  The fix ensures forward() uses phi_current.
         or1 = e4cv.add_reflection(
             (4, 0, 0),
-            dict(tth=69.0966, omega=-145.451, chi=0, phi=0),
+            {"tth": 69.0966, "omega": -145.451, "chi": 0, "phi": 0},
             wavelength=1.54,
             name="r400",
         )
         or2 = e4cv.add_reflection(
             (0, 4, 0),
-            dict(tth=69.0966, omega=-145.451, chi=0, phi=90),
+            {"tth": 69.0966, "omega": -145.451, "chi": 0, "phi": 90},
             wavelength=1.54,
             name="r040",
         )
@@ -112,10 +99,10 @@ def test_issue_195(phi_current, phi_limits, context):
 
         # All solutions from core.forward() must use the current phi.
         # (Empty for the failure case; the loop body is skipped.)
-        for solution in e4cv.core.forward(dict(h=1, k=1, l=1)):
+        for solution in e4cv.core.forward({"h": 1, "k": 1, "l": 1}):
             assert_almost_equal(solution.phi, phi_current, decimal=4)
 
         # diffractometer.forward() raises NoForwardSolutions when the
         # constraint filters out every solution (the failure case).
-        position = e4cv.forward(dict(h=1, k=1, l=1))
+        position = e4cv.forward({"h": 1, "k": 1, "l": 1})
         assert_almost_equal(position.phi, phi_current, decimal=4)

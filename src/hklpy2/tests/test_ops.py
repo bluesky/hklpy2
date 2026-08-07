@@ -11,20 +11,12 @@ from contextlib import nullcontext as does_not_raise
 import pyRestTable
 import pytest
 
-from ..diffract import DiffractometerBase
-from ..diffract import creator
-from ..exceptions import ConfigurationError
-from ..exceptions import ReflectionError
-from ..ops import DEFAULT_SAMPLE_NAME
-from ..ops import Core
-from ..exceptions import CoreError
+from ..diffract import DiffractometerBase, creator
+from ..exceptions import ConfigurationError, CoreError, ReflectionError
+from ..ops import DEFAULT_SAMPLE_NAME, Core
 from ..tests.models import add_oriented_vibranium_to_e4cv
-from ..user import set_diffractometer
-from ..user import setor
-from .models import AugmentedFourc
-from .models import MultiAxis99
-from .models import MultiAxis99NoSolver
-from .models import TwoC
+from ..user import set_diffractometer, setor
+from .models import AugmentedFourc, MultiAxis99, MultiAxis99NoSolver, TwoC
 
 SKIP_EXACT_VALUE_TEST = str(uuid.uuid4())
 
@@ -91,7 +83,6 @@ fourc = creator()
             SKIP_EXACT_VALUE_TEST,
             id="e4cv-solver-version",
         ),
-        #
         pytest.param(
             "TH TTH Q",
             "th_tth",
@@ -189,11 +180,11 @@ def test_asdict(geometry, solver, name, keypath, value):
         # * namedtuple: (h=0.0, k=1.0, l=-1.0)
         # * ordered list: [0, 1, -1]  (for h, k, l)
         # * ordered tuple: (0, 1, -1)  (for h, k, l)
-        pytest.param(dict(h=1, k=2, l=3), does_not_raise(), id="dict"),
+        pytest.param({"h": 1, "k": 2, "l": 3}, does_not_raise(), id="dict"),
         pytest.param([1, 2, 3], does_not_raise(), id="list"),
         pytest.param((1, 2, 3), does_not_raise(), id="tuple"),
         pytest.param(
-            namedtuple("PseudoTuple", "h k l".split())(1, 2, 3),
+            namedtuple("PseudoTuple", ["h", "k", "l"])(1, 2, 3),
             does_not_raise(),
             id="namedtuple",
         ),
@@ -206,7 +197,7 @@ def test_asdict(geometry, solver, name, keypath, value):
             id="extra-inputs",
         ),
         pytest.param(
-            dict(h=1, k=2, lll=3),
+            {"h": 1, "k": 2, "lll": 3},
             pytest.raises(KeyError, match=re.escape("Missing axis 'l'")),
             id="missing-axis",
         ),
@@ -226,7 +217,9 @@ def test_standardize_pseudos(pseudos, context):
 @pytest.mark.parametrize(
     "reals, context",
     [
-        pytest.param(dict(omega=1, chi=2, phi=3, tth=4), does_not_raise(), id="dict"),
+        pytest.param(
+            {"omega": 1, "chi": 2, "phi": 3, "tth": 4}, does_not_raise(), id="dict"
+        ),
         pytest.param([1, 2, 3, 4], does_not_raise(), id="list"),
         pytest.param((1, 2, 3, 4), does_not_raise(), id="tuple"),
         pytest.param(None, does_not_raise(), id="none"),
@@ -239,7 +232,7 @@ def test_standardize_pseudos(pseudos, context):
             id="extra-inputs",
         ),
         pytest.param(
-            dict(theta=1, chi=2, phi=3, ttheta=4),
+            {"theta": 1, "chi": 2, "phi": 3, "ttheta": 4},
             pytest.raises(KeyError, match=re.escape("Missing axis 'omega'.")),
             id="missing-axis",
         ),
@@ -268,61 +261,59 @@ def test_unknown_reflection():
     "pseudos, reals, assign, context",
     [
         pytest.param(
-            "h k l".split(),
-            dict(a=1, b=2, c=3, d=4),  # cannot use number as value
-            "h b c d".split(),  # duplicate name is pseudos and reals
+            ["h", "k", "l"],
+            {"a": 1, "b": 2, "c": 3, "d": 4},  # cannot use number as value
+            ["h", "b", "c", "d"],  # duplicate name is pseudos and reals
             pytest.raises(
                 TypeError, match=re.escape("Incorrect type 'int' for specs=")
             ),
             id="Incorrect type 'int' for specs=",
         ),
         pytest.param(
-            "h k l".split(),
-            dict(a=None, b="m5", c=None, d=None),
-            "h b c d".split(),  # same name used in both pseudos and reals
+            ["h", "k", "l"],
+            {"a": None, "b": "m5", "c": None, "d": None},
+            ["h", "b", "c", "d"],  # same name used in both pseudos and reals
             pytest.raises(
                 ValueError, match=re.escape("Axis name cannot be in more than list.")
             ),
             id="Axis name cannot be in more than list.",
         ),
         pytest.param(
-            "h k l".split(),
-            dict(a=None, b="m5", c=None, d=None),
-            "x y z".split(),  # unknown names
+            ["h", "k", "l"],
+            {"a": None, "b": "m5", "c": None, "d": None},
+            ["x", "y", "z"],  # unknown names
             pytest.raises(KeyError, match=re.escape("Unknown real='x'.")),
             id="unknown-real",
         ),
         pytest.param(
-            "h k l".split(),
-            dict(a=None, b="m5", c=None, d=None),
-            "b a d c".split(),  # known names, specify in different order
+            ["h", "k", "l"],
+            {"a": None, "b": "m5", "c": None, "d": None},
+            ["b", "a", "d", "c"],  # known names, specify in different order
             does_not_raise(),
             id="reorder-reals",
         ),
         pytest.param(
-            "h k l".split(),
-            dict(
-                a=None,
-                b="m5",
-                c=None,
-                d={"prefix": "m6"},
-            ),
-            "a b c d".split(),  # standard order
+            ["h", "k", "l"],
+            {"a": None, "b": "m5", "c": None, "d": {"prefix": "m6"}},
+            ["a", "b", "c", "d"],  # standard order
             pytest.raises(
-                KeyError,
-                match=re.escape("Expected 'class' key, received None"),
+                KeyError, match=re.escape("Expected 'class' key, received None")
             ),
             id="Expected 'class' key, received None",
         ),
         pytest.param(
-            "h k l".split(),
-            dict(
-                a=None,
-                b="m5",
-                c={"class": "ophyd.SoftPositioner", "init_pos": 10, "limits": (0, 50)},
-                d={"class": "ophyd.EpicsMotor", "prefix": "m6", "labels": ["test"]},
-            ),
-            "a b c d".split(),  # standard order
+            ["h", "k", "l"],
+            {
+                "a": None,
+                "b": "m5",
+                "c": {
+                    "class": "ophyd.SoftPositioner",
+                    "init_pos": 10,
+                    "limits": (0, 50),
+                },
+                "d": {"class": "ophyd.EpicsMotor", "prefix": "m6", "labels": ["test"]},
+            },
+            ["a", "b", "c", "d"],  # standard order
             does_not_raise(),
             id="Ok: mixed reals",
         ),
@@ -333,7 +324,7 @@ def test_assign_axes(pseudos, reals, assign, context):
         geom = creator(name="flaky", pseudos=pseudos, reals=reals)
         assert geom.pseudo_axis_names == pseudos
         assert geom.real_axis_names == list(reals)
-        geom.core.assign_axes("h k l".split(), assign)
+        geom.core.assign_axes(["h", "k", "l"], assign)
 
 
 def test_repeat_sample():
@@ -349,20 +340,20 @@ def test_repeat_sample():
     [
         pytest.param(
             fourc,
-            "h k l".split(),
+            ["h", "k", "l"],
             "local_pseudo_axes",
             does_not_raise(),
             id="pseudo-fourc",
         ),
         pytest.param(
             creator(name="k4cv", geometry="K4CV"),
-            "h k l".split(),
+            ["h", "k", "l"],
             "local_pseudo_axes",
             does_not_raise(),
             id="pseudo-k4cv",
         ),
         pytest.param(
-            creator(name="sixc", geometry="E6C", solver_kwargs=dict(engine="psi")),
+            creator(name="sixc", geometry="E6C", solver_kwargs={"engine": "psi"}),
             ["psi"],
             "local_pseudo_axes",
             does_not_raise(),
@@ -370,7 +361,7 @@ def test_repeat_sample():
         ),
         pytest.param(
             AugmentedFourc(name="a4c"),
-            "h k l".split(),
+            ["h", "k", "l"],
             "local_pseudo_axes",
             does_not_raise(),
             id="pseudo-augmented",
@@ -401,28 +392,28 @@ def test_repeat_sample():
         # ------------------
         pytest.param(
             fourc,
-            "omega chi phi tth".split(),
+            ["omega", "chi", "phi", "tth"],
             "local_real_axes",
             does_not_raise(),
             id="real-fourc",
         ),
         pytest.param(
             creator(name="k4cv", geometry="K4CV"),
-            "komega kappa kphi tth".split(),
+            ["komega", "kappa", "kphi", "tth"],
             "local_real_axes",
             does_not_raise(),
             id="real-k4cv",
         ),
         pytest.param(
-            creator(name="sixc", geometry="E6C", solver_kwargs=dict(engine="psi")),
-            "mu omega chi phi gamma delta".split(),
+            creator(name="sixc", geometry="E6C", solver_kwargs={"engine": "psi"}),
+            ["mu", "omega", "chi", "phi", "gamma", "delta"],
             "local_real_axes",
             does_not_raise(),
             id="real-e6c-psi",
         ),
         pytest.param(
             AugmentedFourc(name="a4c_again"),
-            "omega chi phi tth".split(),
+            ["omega", "chi", "phi", "tth"],
             "local_real_axes",
             does_not_raise(),
             id="real-augmented",
@@ -550,22 +541,35 @@ def test_solver_summary(solver: str, geometry: str):
 @pytest.mark.parametrize(
     "solver, geometry, solver_kwargs, expected",
     [
-        pytest.param("hkl_soleil", "E4CV", {}, "h2 k2 l2 psi".split(), id="e4cv"),
+        pytest.param("hkl_soleil", "E4CV", {}, ["h2", "k2", "l2", "psi"], id="e4cv"),
         pytest.param(
             "hkl_soleil",
             "K6C",
             {},
-            "azimuth chi h2 incidence k2 l2 omega phi psi x y z".split(),
+            [
+                "azimuth",
+                "chi",
+                "h2",
+                "incidence",
+                "k2",
+                "l2",
+                "omega",
+                "phi",
+                "psi",
+                "x",
+                "y",
+                "z",
+            ],
             id="k6c",
         ),
         pytest.param(
-            "hkl_soleil", "APS POLAR", {}, "h2 k2 l2 psi".split(), id="aps-polar"
+            "hkl_soleil", "APS POLAR", {}, ["h2", "k2", "l2", "psi"], id="aps-polar"
         ),
         pytest.param(
             "hkl_soleil",
             "APS POLAR",
             {"engine": "psi"},
-            "h2 k2 l2".split(),
+            ["h2", "k2", "l2"],
             id="aps-polar-psi",
         ),
         pytest.param("th_tth", "TH TTH Q", {}, [], id="th-tth-q"),
@@ -573,13 +577,10 @@ def test_solver_summary(solver: str, geometry: str):
 )
 def test_all_extras(solver, geometry, solver_kwargs, expected):
     sim = creator(
-        name="sim",
-        solver=solver,
-        geometry=geometry,
-        solver_kwargs=solver_kwargs,
+        name="sim", solver=solver, geometry=geometry, solver_kwargs=solver_kwargs
     )
     assert isinstance(sim.core.all_extras, dict)
-    assert list(sim.core.all_extras) == list(sorted(expected))
+    assert list(sim.core.all_extras) == sorted(expected)
 
 
 @pytest.mark.parametrize(
@@ -591,7 +592,7 @@ def test_all_extras(solver, geometry, solver_kwargs, expected):
             "K6C",
             {},
             "constant_incidence",
-            "x y z incidence azimuth".split(),
+            ["x", "y", "z", "incidence", "azimuth"],
             id="k6c-constant-incidence",
         ),
         pytest.param(
@@ -615,7 +616,7 @@ def test_all_extras(solver, geometry, solver_kwargs, expected):
             "APS POLAR",
             {"engine": "psi"},
             "psi_vertical",
-            "h2 k2 l2".split(),
+            ["h2", "k2", "l2"],
             id="aps-polar-psi-vertical",
         ),
         pytest.param(
@@ -625,10 +626,7 @@ def test_all_extras(solver, geometry, solver_kwargs, expected):
 )
 def test_extras_getter(solver, geometry, solver_kwargs, mode, expected):
     sim = creator(
-        name="sim",
-        solver=solver,
-        geometry=geometry,
-        solver_kwargs=solver_kwargs,
+        name="sim", solver=solver, geometry=geometry, solver_kwargs=solver_kwargs
     )
     sim.core.mode = mode
     assert isinstance(sim.core.extras, dict)
@@ -643,7 +641,7 @@ def test_extras_getter(solver, geometry, solver_kwargs, mode, expected):
             "E4CV",
             {},
             "bissector",
-            dict(),
+            {},
             does_not_raise(),
             id="empty-extras",
         ),
@@ -652,47 +650,36 @@ def test_extras_getter(solver, geometry, solver_kwargs, mode, expected):
             "E4CV",
             {},
             "bissector",
-            dict(h2=1),  # Parameter 'h2' not defined in the current mode.
+            {"h2": 1},  # Parameter 'h2' not defined in the current mode.
             pytest.raises(
-                ConfigurationError,
-                match=re.escape("Unexpected extra axis name(s)"),
+                ConfigurationError, match=re.escape("Unexpected extra axis name(s)")
             ),
             id="unexpected-extra",
         ),
         pytest.param(
             "hkl_soleil",
             "ZAXIS",
-            dict(engine="qper_qpar"),
+            {"engine": "qper_qpar"},
             "qper, qpar",
-            dict(x=1, y=2, z=3),
+            {"x": 1, "y": 2, "z": 3},
             does_not_raise(),
             id="zaxis-qper-qpar",
         ),
         pytest.param(
             "hkl_soleil",
             "SOLEIL SIXS MED2+3 v2",
-            dict(engine="hkl"),
+            {"engine": "hkl"},
             "emergence_fixed",
-            dict(z=3),  # incomplete dictionary is OK
+            {"z": 3},  # incomplete dictionary is OK
             does_not_raise(),
             id="partial-extras",
         ),
     ],
 )
-def test_extras_setter(
-    solver,
-    geometry,
-    solver_kwargs,
-    mode,
-    values,
-    context,
-):
+def test_extras_setter(solver, geometry, solver_kwargs, mode, values, context):
     with context:
         sim = creator(
-            name="sim",
-            solver=solver,
-            geometry=geometry,
-            solver_kwargs=solver_kwargs,
+            name="sim", solver=solver, geometry=geometry, solver_kwargs=solver_kwargs
         )
         sim.core.mode = mode
         sim.core.extras = values
@@ -718,95 +705,61 @@ def test_extras_setter(
         ),
         pytest.param(  # 2
             {},
-            {
-                "axes": {"extra_axes": 0},
-            },
+            {"axes": {"extra_axes": 0}},
             pytest.raises(AttributeError, match=re.escape("'items'")),
             id="extra_axes-not-dict",
         ),
         pytest.param(  # 3
             {},
-            {
-                "axes": {"extra_axes": {}},
-            },
+            {"axes": {"extra_axes": {}}},
             pytest.raises(KeyError, match=re.escape("'samples'")),
             id="missing-samples",
         ),
         pytest.param(  # 4
             {},
-            {
-                "axes": {"extra_axes": {}},
-                "samples": 0,
-            },
+            {"axes": {"extra_axes": {}}, "samples": 0},
             pytest.raises(AttributeError, match=re.escape("'items'")),
             id="samples-not-dict",
         ),
         pytest.param(  # 5
             {},
-            {
-                "axes": {"extra_axes": {}},
-                "samples": {},
-            },
+            {"axes": {"extra_axes": {}}, "samples": {}},
             pytest.raises(KeyError, match=re.escape("'constraints'")),
             id="missing-constraints",
         ),
         pytest.param(  # 6
             {},
-            {
-                "axes": {"extra_axes": {}},
-                "samples": {},
-                "sample_name": 0,
-            },
+            {"axes": {"extra_axes": {}}, "samples": {}, "sample_name": 0},
             pytest.raises(KeyError, match=re.escape("0")),
             id="sample_name-int",
         ),
         pytest.param(  # 7
             {},
-            {
-                "axes": {"extra_axes": {}},
-                "samples": {},
-                "sample_name": "wrong_name",
-            },
+            {"axes": {"extra_axes": {}}, "samples": {}, "sample_name": "wrong_name"},
             pytest.raises(KeyError, match=re.escape("'wrong_name'")),
             id="sample_name-wrong",
         ),
         pytest.param(  # 8
             {},
-            {
-                "axes": {"extra_axes": {}},
-                "samples": {},
-                "sample_name": "sample",
-            },
+            {"axes": {"extra_axes": {}}, "samples": {}, "sample_name": "sample"},
             pytest.raises(KeyError, match=re.escape("'constraints'")),
             id="sample-no-constraints",
         ),
         pytest.param(  # 9
             {},
-            {
-                "axes": {"extra_axes": {}},
-                "samples": {},
-                "constraints": 0,
-            },
+            {"axes": {"extra_axes": {}}, "samples": {}, "constraints": 0},
             pytest.raises(AttributeError, match=re.escape("'items'")),
             id="constraints-not-dict",
         ),
         pytest.param(  # 10
             {},
-            {
-                "axes": {"extra_axes": {}},
-                "samples": {},
-                "constraints": {},
-            },
+            {"axes": {"extra_axes": {}}, "samples": {}, "constraints": {}},
             does_not_raise(),
             id="empty-constraints-ok",
         ),
         pytest.param(  # 11
             {},
-            {
-                "axes": {"extra_axes": {}},
-                "samples": {},
-                "constraints": {"not_dict": 0},
-            },
+            {"axes": {"extra_axes": {}}, "samples": {}, "constraints": {"not_dict": 0}},
             pytest.raises(
                 TypeError, match=re.escape("'int' object is not subscriptable")
             ),
@@ -916,15 +869,7 @@ def test_extras_setter(
         pytest.param(  # 21
             {},
             {
-                "axes": {
-                    "extra_axes": {},
-                    "real_axes": [
-                        "omega",
-                        "chi",
-                        "phi",
-                        "tth",
-                    ],
-                },
+                "axes": {"extra_axes": {}, "real_axes": ["omega", "chi", "phi", "tth"]},
                 "samples": {},
                 "constraints": {
                     "tth": {
@@ -943,12 +888,7 @@ def test_extras_setter(
             {
                 "axes": {
                     "extra_axes": {},
-                    "real_axes": [
-                        "omega",
-                        "chi",
-                        "phi",
-                        "tth",
-                    ],
+                    "real_axes": ["omega", "chi", "phi", "tth"],
                     "axes_xref": {},
                 },
                 "samples": {},
@@ -969,12 +909,7 @@ def test_extras_setter(
             {
                 "axes": {
                     "extra_axes": {},
-                    "real_axes": [
-                        "omega",
-                        "chi",
-                        "phi",
-                        "tth",
-                    ],
+                    "real_axes": ["omega", "chi", "phi", "tth"],
                     "axes_xref": {"tth": "tth"},
                 },
                 "samples": {},
@@ -1002,35 +937,35 @@ def test__fromdict(setup, config, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                pseudos=(0, 1, 0),
-                reals=None,
-                wavelength=1.2,
-                name="r2",
-                replace=False,
-            ),
+            {
+                "pseudos": (0, 1, 0),
+                "reals": None,
+                "wavelength": 1.2,
+                "name": "r2",
+                "replace": False,
+            },
             does_not_raise(),
             id="add-r2",
         ),
         pytest.param(  # issue 97
-            dict(
-                pseudos=(0, 1, 0),
-                reals=None,
-                wavelength=None,  # in #97, this raised exception
-                name="r2",
-                replace=False,
-            ),
+            {
+                "pseudos": (0, 1, 0),
+                "reals": None,
+                "wavelength": None,  # in #97, this raised exception
+                "name": "r2",
+                "replace": False,
+            },
             does_not_raise(),
             id="add-r2-no-wavelength",
         ),
         pytest.param(
-            dict(
-                pseudos=(0, 1, 0),
-                reals=None,
-                wavelength=1.2,
-                name="r1",
-                replace=False,
-            ),
+            {
+                "pseudos": (0, 1, 0),
+                "reals": None,
+                "wavelength": 1.2,
+                "name": "r1",
+                "replace": False,
+            },
             pytest.raises(
                 ReflectionError,
                 match=re.escape(" known.  Use 'replace=True' to overwrite."),
@@ -1038,11 +973,11 @@ def test__fromdict(setup, config, context):
             id="duplicate-name",
         ),
         pytest.param(
-            dict(
-                pseudos=(0, 0, 1),  # same as "first"
-                reals=(1, 2, 3, 4),  # same as "first"
-                name="r2",
-            ),
+            {
+                "pseudos": (0, 0, 1),  # same as "first"
+                "reals": (1, 2, 3, 4),  # same as "first"
+                "name": "r2",
+            },
             pytest.raises(
                 ReflectionError,
                 match=re.escape("matches one or more existing reflections."),
@@ -1088,13 +1023,12 @@ def test_refine_lattice(rnames, context):
     "parms, context",
     [
         pytest.param(
-            dict(),
+            {},
             pytest.raises(
-                CoreError,
-                match=re.escape("does not support lattice refinement"),
+                CoreError, match=re.escape("does not support lattice refinement")
             ),
             id="th_tth solver raises CoreError for unsupported refinement",
-        ),
+        )
     ],
 )
 def test_refine_lattice_unsupported_solver(parms, context):
@@ -1104,6 +1038,6 @@ def test_refine_lattice_unsupported_solver(parms, context):
         # Add 3 reflections to pass the minimum-count guard.
         for i, tth in enumerate([30, 60, 90]):
             sim.add_reflection(
-                (tth / 2,), reals=dict(th=tth / 2, tth=tth), name=f"r{i}"
+                (tth / 2,), reals={"th": tth / 2, "tth": tth}, name=f"r{i}"
             )
         sim.core.refine_lattice()

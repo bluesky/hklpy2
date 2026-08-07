@@ -18,31 +18,25 @@ import logging
 import pathlib
 import sys
 import warnings
-from collections.abc import Callable
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from typing import Any
-from typing import Mapping
-from typing import Sequence
 
 import pandas as pd
 import tqdm
-from deprecated.sphinx import versionadded
-from deprecated.sphinx import versionchanged
+from deprecated.sphinx import versionadded, versionchanged
 from ophyd import Device
 
-from .utils import DEFAULT_START_KEY
-from .utils import MISSING_HEADER_KEY_MSG
-from .utils import load_yaml_file
 from .typing import KeyValueMap
+from .utils import DEFAULT_START_KEY, MISSING_HEADER_KEY_MSG, load_yaml_file
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
     "ConfigurationRunWrapper",
-    "register_aux_reconstructor",
-    "simulator_from_config",
     "get_run_orientation",
     "list_orientation_runs",
+    "register_aux_reconstructor",
+    "simulator_from_config",
 ]
 
 
@@ -88,8 +82,7 @@ _AUX_RECONSTRUCTORS: dict[str, Callable[[Mapping[str, Any]], Any]] = {}
     reason="Public hook for restoring custom auxiliary sub-devices.  See :issue:`388`.",
 )
 def register_aux_reconstructor(
-    category: str,
-    builder: Callable[[Mapping[str, Any]], Any],
+    category: str, builder: Callable[[Mapping[str, Any]], Any]
 ) -> None:
     """
     Register a builder for a given aux-record ``category``.
@@ -293,9 +286,7 @@ class ConfigurationRunWrapper:
 )
 @versionchanged(version="0.4.0", reason="Exported from top-level ``hklpy2`` namespace.")
 def get_run_orientation(
-    run: Any,
-    name=None,
-    start_key: str = DEFAULT_START_KEY,
+    run: Any, name=None, start_key: str = DEFAULT_START_KEY
 ) -> KeyValueMap:
     """
     Return the orientation information dictionary from a run.
@@ -382,10 +373,7 @@ def get_run_orientation(
 )
 @versionchanged(version="0.4.0", reason="Exported from top-level ``hklpy2`` namespace.")
 def list_orientation_runs(
-    catalog: Any,
-    limit: int = 10,
-    start_key: str = DEFAULT_START_KEY,
-    **kwargs: Mapping,
+    catalog: Any, limit: int = 10, start_key: str = DEFAULT_START_KEY, **kwargs: Mapping
 ) -> pd.DataFrame:
     """
     List the runs with orientation information.
@@ -422,12 +410,12 @@ def list_orientation_runs(
     """
     buffer = []
     _count = 0
-    columns = dict(
-        sample="sample_name",
-        diffractometer="name",
-        geometry="solver.geometry",
-        solver="solver.name",
-    )
+    columns = {
+        "sample": "sample_name",
+        "diffractometer": "name",
+        "geometry": "solver.geometry",
+        "solver": "solver.name",
+    }
     columns.update(**kwargs)
     try:
         container = catalog.v2  # data broker catalog
@@ -450,10 +438,7 @@ def list_orientation_runs(
 
                 for device in sorted(info):
                     orientation = info[device]
-                    row = dict(
-                        scan_id=start_md.get("scan_id", 0),
-                        uid=full_uid[:7],
-                    )
+                    row = {"scan_id": start_md.get("scan_id", 0), "uid": full_uid[:7]}
                     for f, addr in columns.items():
                         value = get_subdict_value(orientation, addr)
                         if value is not None:
@@ -471,8 +456,7 @@ def list_orientation_runs(
     reason="Create a simulated diffractometer from a saved configuration.",
 )
 @versionchanged(
-    version="0.6.1",
-    reason="Accept a ``DiffractometerBase`` instance directly.",
+    version="0.6.1", reason="Accept a ``DiffractometerBase`` instance directly."
 )
 @versionchanged(
     version="0.7.0",
@@ -549,8 +533,7 @@ def simulator_from_config(config):
 
         :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
     """
-    from .diffract import DiffractometerBase
-    from .diffract import creator
+    from .diffract import DiffractometerBase, creator
 
     if isinstance(config, DiffractometerBase):
         logger.debug(

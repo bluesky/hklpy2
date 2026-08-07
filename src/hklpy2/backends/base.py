@@ -9,31 +9,22 @@ Abstract base class for all solvers.
 """
 
 import logging
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Union
 
 from deprecated.sphinx import versionadded
-
 from pyRestTable import Table
 
 from ..exceptions import SolverError
-from ..utils import IDENTITY_MATRIX_3X3
-from ..utils import INTERNAL_ANGLE_UNITS
-from ..utils import INTERNAL_LENGTH_UNITS
-from ..utils import istype
-from ..utils import validate_and_canonical_unit
-from ..typing import KeyValueMap
-from ..typing import Matrix3x3
-from ..typing import NamedFloatDict
-from .typing import GeometryDescriptor
-from .typing import ReflectionDict
-from .typing import SampleDict
-from .typing import SolverMetadataDict
+from ..typing import KeyValueMap, Matrix3x3, NamedFloatDict
+from ..utils import (
+    IDENTITY_MATRIX_3X3,
+    INTERNAL_ANGLE_UNITS,
+    INTERNAL_LENGTH_UNITS,
+    istype,
+    validate_and_canonical_unit,
+)
+from .typing import GeometryDescriptor, ReflectionDict, SampleDict, SolverMetadataDict
 
 logger = logging.getLogger(__name__)
 
@@ -146,7 +137,7 @@ class SolverBase(ABC):
     ``INTERNAL_LENGTH_UNITS``.
     """
 
-    _geometry_registry: Dict[str, GeometryDescriptor] = {}
+    _geometry_registry: dict[str, GeometryDescriptor] = {}
     """
     Per-class registry of :class:`~hklpy2.backends.typing.GeometryDescriptor`
     objects, keyed by geometry name.
@@ -283,8 +274,8 @@ class SolverBase(ABC):
                 # leave mode blank as before.
                 mode = ""
         self.mode = mode
-        self._all_extra_axis_names: Optional[List[str]] = None
-        self._sample: Optional[SampleDict] = None
+        self._all_extra_axis_names: list[str] | None = None
+        self._sample: SampleDict | None = None
         self._U: Matrix3x3 = IDENTITY_MATRIX_3X3
         self._UB: Matrix3x3 = IDENTITY_MATRIX_3X3
 
@@ -297,7 +288,7 @@ class SolverBase(ABC):
         # fmt: off
         args = [
             f"{s}={getattr(self, s)!r}"
-            for s in "name version geometry".split()
+            for s in ["name", "version", "geometry"]
         ]
         # fmt: on
         return f"{self.__class__.__name__}({', '.join(args)})"
@@ -342,12 +333,12 @@ class SolverBase(ABC):
         """Add coordinates of a diffraction condition (a reflection)."""
 
     @property
-    def all_extra_axis_names(self) -> List[str]:
+    def all_extra_axis_names(self) -> list[str]:
         """Unique, sorted list of extra axis names in all modes for chosen engine."""
         if self._all_extra_axis_names is None:
             # Only collect this once.
             original = self.mode
-            names: List[str] = []
+            names: list[str] = []
             for mode in self.modes:
                 self.mode = mode
                 names += self.extra_axis_names
@@ -356,11 +347,7 @@ class SolverBase(ABC):
         return self._all_extra_axis_names
 
     @abstractmethod
-    def calculate_UB(
-        self,
-        r1: ReflectionDict,
-        r2: ReflectionDict,
-    ) -> Matrix3x3:
+    def calculate_UB(self, r1: ReflectionDict, r2: ReflectionDict) -> Matrix3x3:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
@@ -394,7 +381,7 @@ class SolverBase(ABC):
 
     @property
     @abstractmethod
-    def extra_axis_names(self) -> List[str]:
+    def extra_axis_names(self) -> list[str]:
         """Ordered list of any extra axis names (such as x, y, z)."""
         # Do NOT sort.
         # return []
@@ -407,7 +394,7 @@ class SolverBase(ABC):
         return {}
 
     @abstractmethod
-    def forward(self, pseudos: NamedFloatDict) -> List[NamedFloatDict]:
+    def forward(self, pseudos: NamedFloatDict) -> list[NamedFloatDict]:
         """
         Compute list of solutions(reals) from pseudos (hkl -> [angles]).
 
@@ -447,7 +434,7 @@ class SolverBase(ABC):
 
     @classmethod
     @abstractmethod
-    def geometries(cls) -> List[str]:
+    def geometries(cls) -> list[str]:
         """
         Ordered list of the geometry names supported by this solver.
 
@@ -526,26 +513,26 @@ class SolverBase(ABC):
 
     @property
     @abstractmethod
-    def modes(self) -> List[str]:
+    def modes(self) -> list[str]:
         """List of the geometry operating modes."""
         # return []
 
     @property
     @abstractmethod
-    def pseudo_axis_names(self) -> List[str]:
+    def pseudo_axis_names(self) -> list[str]:
         """Ordered list of the pseudo axis names (such as h, k, l)."""
         # Do NOT sort.
         # return []
 
     @property
     @abstractmethod
-    def real_axis_names(self) -> List[str]:
+    def real_axis_names(self) -> list[str]:
         """Ordered list of the real axis names (such as th, tth)."""
         # Do NOT sort.
         # return []
 
     @abstractmethod
-    def refineLattice(self, reflections: List[ReflectionDict]) -> NamedFloatDict | None:
+    def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict | None:
         """
         Refine the lattice parameters from a list of reflections.
 
@@ -597,7 +584,7 @@ class SolverBase(ABC):
         """
 
     @property
-    def sample(self) -> Union[SampleDict, None]:
+    def sample(self) -> SampleDict | None:
         """
         Crystalline sample.
         """
@@ -643,7 +630,7 @@ class SolverBase(ABC):
             :func:`hklpy2.user.solver_summary()`
         """
         table = Table()
-        table.labels = "mode pseudo(s) real(s) writable(s) extra(s)".split()
+        table.labels = ["mode", "pseudo(s)", "real(s)", "writable(s)", "extra(s)"]
         sdict = self._summary_dict
         for mode_name, mode in sdict["modes"].items():
             self.mode = mode_name

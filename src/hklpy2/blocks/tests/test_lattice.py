@@ -13,34 +13,38 @@ from ..lattice import Lattice
 @pytest.mark.parametrize(
     "system, a, others, context",
     [
-        pytest.param("cubic", 5, dict(), does_not_raise(), id="cubic"),
+        pytest.param("cubic", 5, {}, does_not_raise(), id="cubic"),
         pytest.param(
-            "hexagonal", 4, dict(c=3, gamma=120), does_not_raise(), id="hexagonal"
+            "hexagonal", 4, {"c": 3, "gamma": 120}, does_not_raise(), id="hexagonal"
         ),
         pytest.param(
-            "rhombohedral", 4, dict(alpha=80.2), does_not_raise(), id="rhombohedral-80"
+            "rhombohedral", 4, {"alpha": 80.2}, does_not_raise(), id="rhombohedral-80"
         ),
         pytest.param(
-            "rhombohedral", 4, dict(alpha=120), does_not_raise(), id="rhombohedral-120"
+            "rhombohedral", 4, {"alpha": 120}, does_not_raise(), id="rhombohedral-120"
         ),
-        pytest.param("tetragonal", 4, dict(c=3), does_not_raise(), id="tetragonal"),
+        pytest.param("tetragonal", 4, {"c": 3}, does_not_raise(), id="tetragonal"),
         pytest.param(
-            "orthorhombic", 4, dict(b=5, c=3), does_not_raise(), id="orthorhombic"
+            "orthorhombic", 4, {"b": 5, "c": 3}, does_not_raise(), id="orthorhombic"
         ),
         pytest.param(
-            "monoclinic", 4, dict(b=5, c=3, beta=75), does_not_raise(), id="monoclinic"
+            "monoclinic",
+            4,
+            {"b": 5, "c": 3, "beta": 75},
+            does_not_raise(),
+            id="monoclinic",
         ),
         pytest.param(
             "triclinic",
             4,
-            dict(b=5, c=3, alpha=75, beta=85, gamma=95),
+            {"b": 5, "c": 3, "alpha": 75, "beta": 85, "gamma": 95},
             does_not_raise(),
             id="triclinic",
         ),
         pytest.param(
             "hexagonal",
             4,
-            dict(gamma=120),  # hexagonal needs a != c
+            {"gamma": 120},  # hexagonal needs a != c
             pytest.raises(
                 LatticeError, match=re.escape("Unrecognized crystal system:")
             ),
@@ -66,14 +70,14 @@ def test_repr(system, a, others, context):
     [
         pytest.param([5], {}, (5, 5, 5, 90, 90, 90), id="cubic"),
         pytest.param(
-            [4], dict(c=3.0, gamma=120), (4, 4, 3, 90, 90, 120), id="hexagonal"
+            [4], {"c": 3.0, "gamma": 120}, (4, 4, 3, 90, 90, 120), id="hexagonal"
         ),
         pytest.param(
-            [4], dict(alpha=80.1), (4, 4, 4, 80.1, 80.1, 80.1), id="rhombohedral"
+            [4], {"alpha": 80.1}, (4, 4, 4, 80.1, 80.1, 80.1), id="rhombohedral"
         ),
-        pytest.param([4], dict(c=3), (4, 4, 3, 90, 90, 90), id="tetragonal"),
+        pytest.param([4], {"c": 3}, (4, 4, 3, 90, 90, 90), id="tetragonal"),
         pytest.param([4, 5, 3], {}, (4, 5, 3, 90, 90, 90), id="orthorhombic"),
-        pytest.param([4, 5, 3], dict(beta=75), (4, 5, 3, 90, 75, 90), id="monoclinic"),
+        pytest.param([4, 5, 3], {"beta": 75}, (4, 5, 3, 90, 75, 90), id="monoclinic"),
         pytest.param([4, 5, 3, 75, 85, 95], {}, (4, 5, 3, 75, 85, 95), id="triclinic"),
     ],
 )
@@ -97,58 +101,51 @@ def test_equal():
     assert l1 == l2
 
     l1.digits = 4
-    assert l1 != dict(a=4, alpha=90)
+    assert l1 != {"a": 4, "alpha": 90}
 
 
 @pytest.mark.parametrize(
     "config, context",
     [
         pytest.param(
-            dict(
-                a=3,
-                b=4,
-                c=5,
-                alpha=75.0,
-                beta=85.0,
-                gamma=95.0,
-            ),
+            {"a": 3, "b": 4, "c": 5, "alpha": 75.0, "beta": 85.0, "gamma": 95.0},
             does_not_raise(),
             id="valid-triclinic",
         ),
         pytest.param(
-            dict(
-                a=3,
-                b=4,
-                c=5,
-                alpha=75.0,
-                beta=85.0,
+            {
+                "a": 3,
+                "b": 4,
+                "c": 5,
+                "alpha": 75.0,
+                "beta": 85.0,
                 # gamma=95.0,
-            ),
+            },
             pytest.raises(KeyError, match=re.escape("gamma")),
             id="missing-gamma",
         ),
         pytest.param(
-            dict(
-                a=3,
-                b=4,
-                c=5,
-                alpha=75.0,
-                beta=85.0,
-                gamma=95.0,
-                delta=1,  # ignored, no error
-            ),
+            {
+                "a": 3,
+                "b": 4,
+                "c": 5,
+                "alpha": 75.0,
+                "beta": 85.0,
+                "gamma": 95.0,
+                "delta": 1,  # ignored, no error
+            },
             does_not_raise(),
             id="extra-key-ignored",
         ),
         pytest.param(
-            dict(
-                able=3,
-                baker=4,
-                charlie=5,
-                echo=75.0,
-                foxtrot=85.0,
+            {
+                "able": 3,
+                "baker": 4,
+                "charlie": 5,
+                "echo": 75.0,
+                "foxtrot": 85.0,
                 # gamma=95.0,
-            ),
+            },
             pytest.raises(KeyError, match=re.escape("'a'")),
             id="wrong-keys",
         ),
@@ -158,10 +155,10 @@ def test_fromdict(config, context):
     with context:
         assert isinstance(config, dict)
         lattice = Lattice(1)
-        for k in "a b c alpha beta gamma".split():
+        for k in ["a", "b", "c", "alpha", "beta", "gamma"]:
             assert getattr(lattice, k) != config[k], f"{k=!r}  {lattice=!r}"
         lattice._fromdict(config)
-        for k in "a b c alpha beta gamma".split():
+        for k in ["a", "b", "c", "alpha", "beta", "gamma"]:
             assert getattr(lattice, k) == config[k], f"{k=!r}  {lattice=!r}"
 
 
@@ -241,11 +238,7 @@ def test_lattice_eq_fallback_raw_comparison(monkeypatch):
             ),
             id="inconsistent-params",
         ),
-        pytest.param(
-            {"a": 3.0},
-            does_not_raise(),
-            id="valid-cubic",
-        ),
+        pytest.param({"a": 3.0}, does_not_raise(), id="valid-cubic"),
     ],
 )
 def test_lattice_defensive_check(params, context):
@@ -266,7 +259,7 @@ def test_lattice_defensive_check(params, context):
             pytest.raises(ValueError),
             "Inconsistent lattice parameters produce imaginary 'c_z'",
             id="imaginary-cz",
-        ),
+        )
     ],
 )
 def test_compute_cartesian_inconsistent_cz_raises(params, context, expected):
@@ -393,12 +386,28 @@ def test_equality_within_context(l1_kwargs, l2_kwargs, context, expect_equal):
     "params, context",
     [
         pytest.param(
-            dict(a=1.0, b=1.0, c=1.0, alpha=90.0, beta=90.0, gamma=90.0, tol=1e-12),
+            {
+                "a": 1.0,
+                "b": 1.0,
+                "c": 1.0,
+                "alpha": 90.0,
+                "beta": 90.0,
+                "gamma": 90.0,
+                "tol": 1e-12,
+            },
             does_not_raise(),
             id="valid-cubic",
         ),
         pytest.param(
-            dict(a=1.0, b=1.0, c=1.0, alpha=160.0, beta=160.0, gamma=1.0, tol=1e-6),
+            {
+                "a": 1.0,
+                "b": 1.0,
+                "c": 1.0,
+                "alpha": 160.0,
+                "beta": 160.0,
+                "gamma": 1.0,
+                "tol": 1e-6,
+            },
             pytest.raises(
                 ValueError, match=re.escape("Inconsistent lattice parameters")
             ),
@@ -521,7 +530,7 @@ def test_invalid_angles_range(params, context):
                 ),
             ),
             id="gamma-near-zero",
-        ),
+        )
     ],
 )
 def test_gamma_too_close(gamma, context):

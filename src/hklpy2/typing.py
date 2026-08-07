@@ -36,18 +36,16 @@ Solver-specific metadata extensions (e.g. ``HklSolverMetadataDict``) live
 in the solver's own module (e.g. :mod:`hklpy2.backends.hkl_soleil`).
 """
 
-from collections.abc import Iterator
-from collections.abc import Sequence
-from typing import Any
-from typing import Mapping
-from typing import TypedDict
-from typing import Union
+from collections.abc import Iterator, Mapping, Sequence
+from typing import Any, TypedDict, Union
 
 import numpy as np
 import numpy.typing as npt
 from bluesky.utils import Msg
 
 __all__ = [
+    "INPUT_VECTOR",
+    "NUMERIC",
     "AnyAxesType",
     "AxesArray",
     "AxesDict",
@@ -55,11 +53,9 @@ __all__ = [
     "AxesTuple",
     "BlueskyPlanType",
     "ConfigHeaderDict",
-    "INPUT_VECTOR",
     "KeyValueMap",
     "Matrix3x3",
     "NamedFloatDict",
-    "NUMERIC",
 ]
 
 # ---------------------------------------------------------------------------
@@ -76,10 +72,7 @@ NUMERIC = Union[float, int]
 """Either integer or real number."""
 
 INPUT_VECTOR = Union[
-    list[NUMERIC],
-    Mapping[str, NUMERIC],
-    npt.NDArray[np.floating],
-    Sequence[NUMERIC],
+    list[NUMERIC], Mapping[str, NUMERIC], npt.NDArray[np.floating], Sequence[NUMERIC]
 ]
 """Acceptable forms of vector input for zones, ..."""
 

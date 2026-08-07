@@ -16,32 +16,34 @@ from pyRestTable import Table
 
 from ..blocks.lattice import SI_LATTICE_PARAMETER
 from ..diffract import creator
+from ..exceptions import (
+    ConfigurationError,
+    CoreError,
+    NoForwardSolutions,
+    ReflectionError,
+)
 from ..incident import WavelengthXray
-from ..exceptions import ConfigurationError
-from ..exceptions import NoForwardSolutions
-from ..exceptions import ReflectionError
+from ..user import (
+    add_sample,
+    cahkl,
+    cahkl_table,
+    calc_UB,
+    get_diffractometer,
+    list_samples,
+    or_swap,
+    pa,
+    remove_reflection,
+    remove_sample,
+    scan_extra,
+    set_diffractometer,
+    set_lattice,
+    set_wavelength,
+    setor,
+    solver_summary,
+    wh,
+)
 from ..utils import roundoff
-from ..exceptions import CoreError
-from ..user import add_sample
-from ..user import cahkl
-from ..user import cahkl_table
-from ..user import calc_UB
-from ..user import get_diffractometer
-from ..user import list_samples
-from ..user import or_swap
-from ..user import pa
-from ..user import remove_reflection
-from ..user import remove_sample
-from ..user import scan_extra
-from ..user import set_diffractometer
-from ..user import set_lattice
-from ..user import set_wavelength
-from ..user import setor
-from ..user import solver_summary
-from ..user import wh
-from .common import PV_ENERGY
-from .common import PV_WAVELENGTH
-from .common import TESTS_DIR
+from .common import PV_ENERGY, PV_WAVELENGTH, TESTS_DIR
 
 
 @pytest.fixture(scope="function")
@@ -120,7 +122,7 @@ def test_cahkl_table(fourc, capsys):
     set_diffractometer(fourc)
 
     # use the default "main" sample and UB matrix
-    PseudoTuple = namedtuple("PseudoTuple", "h k l".split())
+    PseudoTuple = namedtuple("PseudoTuple", ["h", "k", "l"])
     rlist = [PseudoTuple(1, 0, 0), PseudoTuple(0, 1, 0)]
     cahkl_table(*rlist, digits=1)
     out, err = capsys.readouterr()
@@ -198,7 +200,7 @@ def test_list_samples(fourc, capsys):
             TESTS_DIR / "e4cv_orient.yml",
             "vibranium",
             3,
-            "r040 r004".split(),
+            ["r040", "r004"],
             does_not_raise(),
             id="swap-vibranium",
         ),
@@ -430,8 +432,7 @@ def test_set_lattice(fourc):
             None,
             None,
             pytest.raises(
-                TypeError,
-                match=re.escape("'set_wavelength()' not supported"),
+                TypeError, match=re.escape("'set_wavelength()' not supported")
             ),
             id="TypeError: set_wavelength(None), EpicsWavelengthRO",
         ),
@@ -470,16 +471,7 @@ def test_setor(fourc):
     assert len(diffractometer.sample.reflections) == 2
     assert list(diffractometer.sample.reflections) == [r400.name, r040.name]
 
-    r004 = setor(
-        0,
-        0,
-        4,
-        chi=90,
-        omega=-145.451,
-        phi=0,
-        tth=69.0966,
-        name="r004",
-    )
+    r004 = setor(0, 0, 4, chi=90, omega=-145.451, phi=0, tth=69.0966, name="r004")
     assert len(diffractometer.sample.reflections) == 3
     assert list(diffractometer.sample.reflections) == [r400.name, r040.name, r004.name]
 
@@ -563,7 +555,7 @@ def test_solver_summary_accepts_diffractometer_arg(fourc, capsys):
             id="E4CV-beyond-ewald",
         ),
         pytest.param(
-            dict(geometry="APS POLAR"),
+            {"geometry": "APS POLAR"},
             None,
             (1, 0, 0),
             "RealPos(",
@@ -571,7 +563,7 @@ def test_solver_summary_accepts_diffractometer_arg(fourc, capsys):
             id="POLAR-100",
         ),
         pytest.param(
-            dict(geometry="APS POLAR"),
+            {"geometry": "APS POLAR"},
             "psi constant vertical",
             (1, 0, 0),
             "No solutions for",
@@ -594,10 +586,10 @@ def test_cahkl_no_solutions(specs, mode, pseudos, text, context):
     "parms, context",
     [
         pytest.param(
-            dict(pseudos=(1, 0, 0), message="Solver error."),
+            {"pseudos": (1, 0, 0), "message": "Solver error."},
             does_not_raise(),
             id="cahkl catches NoForwardSolutions from core.forward",
-        ),
+        )
     ],
 )
 def test_cahkl_forward_raises(parms, context):
@@ -606,9 +598,7 @@ def test_cahkl_forward_raises(parms, context):
         sim = creator()
         set_diffractometer(sim)
         with patch.object(
-            sim.core,
-            "forward",
-            side_effect=NoForwardSolutions(parms["message"]),
+            sim.core, "forward", side_effect=NoForwardSolutions(parms["message"])
         ):
             result = cahkl(*parms["pseudos"])
         assert parms["message"] in str(result)
@@ -618,28 +608,28 @@ def test_cahkl_forward_raises(parms, context):
     "specs, mode, scan_args, scan_kwargs, context",
     [
         pytest.param(
-            dict(name="e6c", geometry="E6C"),
+            {"name": "e6c", "geometry": "E6C"},
             "psi_constant_vertical",
             ([noisy_det], "psi", 0, 150),
-            dict(
-                num=15,
-                pseudos=dict(h=0, k=0, l=2),
-                extras=dict(h2=1, k2=2, l2=0),
-            ),
+            {
+                "num": 15,
+                "pseudos": {"h": 0, "k": 0, "l": 2},
+                "extras": {"h2": 1, "k2": 2, "l2": 0},
+            },
             does_not_raise(),
             id="psic example",
         ),
         pytest.param(
-            dict(name="sim", geometry="E6C"),
+            {"name": "sim", "geometry": "E6C"},
             "double_diffraction_horizontal",
             [[noisy_det], "h2", 1.9, 2.1, "k2", 1.9, 2.1],
-            dict(
-                num=3,
-                pseudos=None,
-                reals=dict(omega=1, chi=2, phi=3, tth=4),
-                extras=dict(h4=2, k4=2, l4=0),
-                fail_on_exception=True,
-            ),
+            {
+                "num": 3,
+                "pseudos": None,
+                "reals": {"omega": 1, "chi": 2, "phi": 3, "tth": 4},
+                "extras": {"h4": 2, "k4": 2, "l4": 0},
+                "fail_on_exception": True,
+            },
             pytest.raises(
                 ConfigurationError, match=re.escape("Unexpected extra axis name")
             ),

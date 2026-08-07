@@ -12,11 +12,8 @@ import pytest
 from ophyd.sim import noisy_det
 
 from ...diffract import creator
-from ...plans import move_zone
-from ...plans import scan_zone
-from ..zone import OrthonormalZone
-from ..zone import zone_series
-from ..zone import zonespace
+from ...plans import move_zone, scan_zone
+from ..zone import OrthonormalZone, zone_series, zonespace
 
 
 def sim4c2():
@@ -41,76 +38,61 @@ def sim4c2():
             id="ValueError: No kwargs, zone axis is undefined",
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
+            {"axis": (0, 0, 1)},
             None,
             True,
-            pytest.raises(
-                ValueError,
-                match=re.escape(
-                    "Received None with shape ()",
-                ),
-            ),
+            pytest.raises(ValueError, match=re.escape("Received None with shape ()")),
             id="b1 is None",
         ),
         pytest.param(
-            dict(axis=np.array([1, 2, 3])),
+            {"axis": np.array([1, 2, 3])},
             [1, 0, 0],
             False,
             does_not_raise(),
             id="b1 not in zone",
         ),
         pytest.param(
-            dict(b1=(1, 0, 0)),
+            {"b1": (1, 0, 0)},
             (1, 0, 0),
             True,
             pytest.raises(
-                ValueError,
-                match=re.escape(
-                    "Both b1 and b2 must be provided",
-                ),
+                ValueError, match=re.escape("Both b1 and b2 must be provided")
             ),
             id="b1 but not b2",
         ),
         pytest.param(
-            dict(b2=(0, 1, 0)),
+            {"b2": (0, 1, 0)},
             (1, 0, 0),
             True,
             pytest.raises(
-                ValueError,
-                match=re.escape(
-                    "Both b1 and b2 must be provided",
-                ),
+                ValueError, match=re.escape("Both b1 and b2 must be provided")
             ),
             id="b2 but not b1",
         ),
         pytest.param(
-            dict(axis=(0, 0, 1), b1=(1, 0, 0), b2=(0, 1, 0)),
+            {"axis": (0, 0, 1), "b1": (1, 0, 0), "b2": (0, 1, 0)},
             (1, 0, 0),
             True,
             pytest.raises(
                 ValueError,
-                match=re.escape(
-                    "Cannot specify both 'axis' and 'b1/b2' parameters",
-                ),
+                match=re.escape("Cannot specify both 'axis' and 'b1/b2' parameters"),
             ),
             id="axis & b1 & b2 provided",
         ),
         pytest.param(
-            dict(b1=(1, 0, 0), b2=(0, 1, 0)),
+            {"b1": (1, 0, 0), "b2": (0, 1, 0)},
             (1, 0, 0),
             True,
             does_not_raise(),
             id="b1 & b2 provided",
         ),
         pytest.param(
-            dict(b1=(0, 2, 0), b2=(0, 1, 0)),
+            {"b1": (0, 2, 0), "b2": (0, 1, 0)},
             (1, 0, 0),
             True,
             pytest.raises(
                 ValueError,
-                match=re.escape(
-                    "cross product is zero and cannot define a zone axis.",
-                ),
+                match=re.escape("cross product is zero and cannot define a zone axis."),
             ),
             id="b1 x b2 = 0",
         ),
@@ -126,13 +108,13 @@ def test_OrthonormalZone_constructor(parms, vector, in_zone, context):
     "parms, result, context",
     [
         pytest.param(
-            dict(b1=(1, 0, 0), b2=(0, 1, 0)),
+            {"b1": (1, 0, 0), "b2": (0, 1, 0)},
             "OrthonormalZone(axis=array([0., 0., 1.]))",
             does_not_raise(),
             id="with zone axis",
         ),
         pytest.param(
-            dict(),
+            {},
             "OrthonormalZone(axis='undefined')",
             does_not_raise(),
             id="without zone axis",
@@ -149,20 +131,17 @@ def test_OrthonormalZone_repr(parms, result, context):
     "parms, vector, context",
     [
         pytest.param(
-            dict(axis=(0, 0, 1)),
-            (1, 0, 0),
-            does_not_raise(),
-            id="tuple, shape=(3,)",
+            {"axis": (0, 0, 1)}, (1, 0, 0), does_not_raise(), id="tuple, shape=(3,)"
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
+            {"axis": (0, 0, 1)},
             1,
             pytest.raises(ValueError, match=re.escape("vector must be 1-D array-like")),
             id="vector shape !=(3,)",
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
-            dict(),
+            {"axis": (0, 0, 1)},
+            {},
             pytest.raises(
                 ValueError,
                 match=re.escape("Cannot create vector from empty dictionary"),
@@ -170,19 +149,16 @@ def test_OrthonormalZone_repr(parms, result, context):
             id="empty dict",
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
-            [1, 0, 0],
-            does_not_raise(),
-            id="axis is list",
+            {"axis": (0, 0, 1)}, [1, 0, 0], does_not_raise(), id="axis is list"
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
-            dict(h=1, k=0, l=1),
+            {"axis": (0, 0, 1)},
+            {"h": 1, "k": 0, "l": 1},
             does_not_raise(),
             id="axis is dict",
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
+            {"axis": (0, 0, 1)},
             np.array([1, 0, 1]),
             does_not_raise(),
             id="axis is np.array",
@@ -199,18 +175,11 @@ def test_OrthonormalZone_standardize_vector(parms, vector, context):
     "parms, context",
     [
         pytest.param(
-            dict(axis=(0, 0, 0)),
-            pytest.raises(
-                ValueError,
-                match=re.escape("Zero |axis| not allowed."),
-            ),
+            {"axis": (0, 0, 0)},
+            pytest.raises(ValueError, match=re.escape("Zero |axis| not allowed.")),
             id="|axis| = 0",
         ),
-        pytest.param(
-            dict(axis=(0, 0, 1)),
-            does_not_raise(),
-            id="|axis| = 1",
-        ),
+        pytest.param({"axis": (0, 0, 1)}, does_not_raise(), id="|axis| = 1"),
     ],
 )
 def test_OrthonormalZone_set_zone_axis(parms, context):
@@ -222,7 +191,7 @@ def test_OrthonormalZone_set_zone_axis(parms, context):
     "parms, b1, b2, n, context",
     [
         pytest.param(
-            dict(axis=(0, 0, 1)),
+            {"axis": (0, 0, 1)},
             (1, 0, 0),
             (0, 1, 0),
             5,
@@ -230,7 +199,7 @@ def test_OrthonormalZone_set_zone_axis(parms, context):
             id="Ok with axis, n=5",
         ),
         pytest.param(
-            dict(),
+            {},
             (1, 0, 0),
             (0, 1, 0),
             5,
@@ -238,20 +207,18 @@ def test_OrthonormalZone_set_zone_axis(parms, context):
             id="Ok, defined zone with b1/b2",
         ),
         pytest.param(
-            dict(),
+            {},
             (1, 0, 0),
             (0, 1, 0),
             1,
             pytest.raises(
                 ValueError,
-                match=re.escape(
-                    "Cannot check zone membership: zone axis is undefined",
-                ),
+                match=re.escape("Cannot check zone membership: zone axis is undefined"),
             ),
             id="n=1, no zone",
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
+            {"axis": (0, 0, 1)},
             (1, 0, 0),
             (0, 1, 0),
             1,
@@ -259,25 +226,19 @@ def test_OrthonormalZone_set_zone_axis(parms, context):
             id="Ok, n=1, only return b1",
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
+            {"axis": (0, 0, 1)},
             (1, 0, 1),
             (0, 1, 0),
             5,
-            pytest.raises(
-                ValueError,
-                match=re.escape("b1=(1, 0, 1) not in zone"),
-            ),
+            pytest.raises(ValueError, match=re.escape("b1=(1, 0, 1) not in zone")),
             id="b1 not in zone",
         ),
         pytest.param(
-            dict(axis=(0, 0, 1)),
+            {"axis": (0, 0, 1)},
             (1, 0, 0),
             (0, 1, 1),
             5,
-            pytest.raises(
-                ValueError,
-                match=re.escape("b2=(0, 1, 1) not in zone"),
-            ),
+            pytest.raises(ValueError, match=re.escape("b2=(0, 1, 1) not in zone")),
             id="b2 not in zone",
         ),
     ],
@@ -293,13 +254,7 @@ def test_OrthonormalZone_vecspace(parms, b1, b2, n, context):
     "diff, hkl_1, hkl_2, n, log, context",
     [
         pytest.param(
-            creator(),
-            (1, 0, 0),
-            (0, 1, 0),
-            3,
-            None,
-            does_not_raise(),
-            id="Ok",
+            creator(), (1, 0, 0), (0, 1, 0), 3, None, does_not_raise(), id="Ok"
         ),
         pytest.param(
             sim4c2(),
@@ -312,16 +267,7 @@ def test_OrthonormalZone_vecspace(parms, b1, b2, n, context):
         ),
     ],
 )
-def test_zonespace_and_series(
-    diff,
-    hkl_1,
-    hkl_2,
-    n,
-    log,
-    context,
-    capsys,
-    caplog,
-):
+def test_zonespace_and_series(diff, hkl_1, hkl_2, n, log, context, capsys, caplog):
     with context:
         caplog.set_level(logging.DEBUG, logger="hklpy2.blocks.zone")
         count = 0
@@ -343,14 +289,8 @@ def test_zonespace_and_series(
     "dets, diff, v1, v2, n, context",
     [
         pytest.param(
-            [noisy_det],
-            creator(),
-            (1, 0, 0),
-            (0, 1, 0),
-            5,
-            does_not_raise(),
-            id="Ok",
-        ),
+            [noisy_det], creator(), (1, 0, 0), (0, 1, 0), 5, does_not_raise(), id="Ok"
+        )
     ],
 )
 def test_scan_zone(dets, diff, v1, v2, n, context):
@@ -364,16 +304,8 @@ def test_scan_zone(dets, diff, v1, v2, n, context):
 @pytest.mark.parametrize(
     "parms, context",
     [
-        pytest.param(
-            dict(hkl=(1, 0, 0)),
-            does_not_raise(),
-            id="move to (1,0,0) tuple",
-        ),
-        pytest.param(
-            dict(hkl=(0, 1, 0)),
-            does_not_raise(),
-            id="move to (0,1,0) tuple",
-        ),
+        pytest.param({"hkl": (1, 0, 0)}, does_not_raise(), id="move to (1,0,0) tuple"),
+        pytest.param({"hkl": (0, 1, 0)}, does_not_raise(), id="move to (0,1,0) tuple"),
     ],
 )
 def test_move_zone(parms, context):
@@ -390,12 +322,12 @@ def test_move_zone(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(md={"user": "test"}),
+            {"md": {"user": "test"}},
             does_not_raise(),
             id="scan_zone metadata is passed through",
         ),
         pytest.param(
-            dict(md=None),
+            {"md": None},
             does_not_raise(),
             id="scan_zone metadata defaults to plan_name only",
         ),
@@ -421,19 +353,15 @@ def test_scan_zone_metadata(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(name="OrthonormalZone"),
+            {"name": "OrthonormalZone"},
             does_not_raise(),
             id="OrthonormalZone exported from hklpy2",
         ),
         pytest.param(
-            dict(name="move_zone"),
-            does_not_raise(),
-            id="move_zone exported from hklpy2",
+            {"name": "move_zone"}, does_not_raise(), id="move_zone exported from hklpy2"
         ),
         pytest.param(
-            dict(name="scan_zone"),
-            does_not_raise(),
-            id="scan_zone exported from hklpy2",
+            {"name": "scan_zone"}, does_not_raise(), id="scan_zone exported from hklpy2"
         ),
     ],
 )
@@ -448,18 +376,18 @@ def test_zone_package_exports(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                func_name="move_zone",
-                msg="move_zone from hklpy2.blocks.zone is deprecated",
-            ),
+            {
+                "func_name": "move_zone",
+                "msg": "move_zone from hklpy2.blocks.zone is deprecated",
+            },
             does_not_raise(),
             id="move_zone from blocks.zone emits DeprecationWarning",
         ),
         pytest.param(
-            dict(
-                func_name="scan_zone",
-                msg="scan_zone from hklpy2.blocks.zone is deprecated",
-            ),
+            {
+                "func_name": "scan_zone",
+                "msg": "scan_zone from hklpy2.blocks.zone is deprecated",
+            },
             does_not_raise(),
             id="scan_zone from blocks.zone emits DeprecationWarning",
         ),

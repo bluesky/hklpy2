@@ -8,10 +8,8 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ..base import SolverBase
-from ..th_tth_q import TH_TTH_Q_GEOMETRY
-from ..th_tth_q import ThTthSolver
+from ..th_tth_q import TH_TTH_Q_GEOMETRY, ThTthSolver
 from ..typing import GeometryDescriptor
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -38,35 +36,35 @@ def _make_descriptor(name="MY GEO", pseudo=None, real=None, modes=None, **kwargs
     "parms, context",
     [
         pytest.param(
-            dict(
-                name="TH TTH Q",
-                pseudo_axis_names=["q"],
-                real_axis_names=["th", "tth"],
-                modes=["bissector"],
-                default_mode="bissector",
-                description="theta/two-theta",
-            ),
+            {
+                "name": "TH TTH Q",
+                "pseudo_axis_names": ["q"],
+                "real_axis_names": ["th", "tth"],
+                "modes": ["bissector"],
+                "default_mode": "bissector",
+                "description": "theta/two-theta",
+            },
             does_not_raise(),
             id="full specification",
         ),
         pytest.param(
-            dict(
-                name="MINIMAL",
-                pseudo_axis_names=["h"],
-                real_axis_names=["omega"],
-                modes=[],
-            ),
+            {
+                "name": "MINIMAL",
+                "pseudo_axis_names": ["h"],
+                "real_axis_names": ["omega"],
+                "modes": [],
+            },
             does_not_raise(),
             id="minimal - no modes, no description",
         ),
         pytest.param(
-            dict(
-                name="WITH EXTRAS",
-                pseudo_axis_names=["h", "k", "l"],
-                real_axis_names=["omega", "chi", "phi", "tth"],
-                modes=["mode_a", "mode_b"],
-                extra_axis_names={"mode_a": ["psi"], "mode_b": []},
-            ),
+            {
+                "name": "WITH EXTRAS",
+                "pseudo_axis_names": ["h", "k", "l"],
+                "real_axis_names": ["omega", "chi", "phi", "tth"],
+                "modes": ["mode_a", "mode_b"],
+                "extra_axis_names": {"mode_a": ["psi"], "mode_b": []},
+            },
             does_not_raise(),
             id="with per-mode extra axis names",
         ),
@@ -89,10 +87,15 @@ def test_geometry_descriptor_construction(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(name="A", pseudo_axis_names=["q"], real_axis_names=["th"], modes=[]),
+            {
+                "name": "A",
+                "pseudo_axis_names": ["q"],
+                "real_axis_names": ["th"],
+                "modes": [],
+            },
             does_not_raise(),
             id="extra_axis_names defaults to empty dict",
-        ),
+        )
     ],
 )
 def test_geometry_descriptor_defaults(parms, context):
@@ -112,8 +115,8 @@ def test_geometry_descriptor_defaults(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(), does_not_raise(), id="extra_axis_names not shared between instances"
-        ),
+            {}, does_not_raise(), id="extra_axis_names not shared between instances"
+        )
     ],
 )
 def test_geometry_descriptor_field_independence(parms, context):
@@ -137,17 +140,17 @@ def test_geometry_descriptor_field_independence(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(descriptor=_make_descriptor("DYNAMIC GEO")),
+            {"descriptor": _make_descriptor("DYNAMIC GEO")},
             does_not_raise(),
             id="register a valid descriptor",
         ),
         pytest.param(
-            dict(descriptor="not a descriptor"),
+            {"descriptor": "not a descriptor"},
             pytest.raises(TypeError, match=re.escape("Expected GeometryDescriptor")),
             id="non-descriptor raises TypeError",
         ),
         pytest.param(
-            dict(descriptor=42),
+            {"descriptor": 42},
             pytest.raises(TypeError, match=re.escape("Expected GeometryDescriptor")),
             id="integer raises TypeError",
         ),
@@ -168,14 +171,12 @@ def test_register_geometry(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(names=["GEO A", "GEO B", "GEO C"]),
+            {"names": ["GEO A", "GEO B", "GEO C"]},
             does_not_raise(),
             id="geometries() returns sorted list of registered names",
         ),
         pytest.param(
-            dict(names=[]),
-            does_not_raise(),
-            id="empty registry returns empty list",
+            {"names": []}, does_not_raise(), id="empty registry returns empty list"
         ),
     ],
 )
@@ -194,10 +195,10 @@ def test_geometries_sorted(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(name="OVERWRITE"),
+            {"name": "OVERWRITE"},
             does_not_raise(),
             id="registering same name overwrites previous entry",
-        ),
+        )
     ],
 )
 def test_register_geometry_overwrite(parms, context):
@@ -220,9 +221,7 @@ def test_register_geometry_overwrite(parms, context):
 
 @pytest.mark.parametrize(
     "parms, context",
-    [
-        pytest.param(dict(), does_not_raise(), id="base class registry stays empty"),
-    ],
+    [pytest.param({}, does_not_raise(), id="base class registry stays empty")],
 )
 def test_registry_isolation(parms, context):
     with context:
@@ -244,16 +243,16 @@ def test_registry_isolation(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(geometry=TH_TTH_Q_GEOMETRY, expected_extras=[]),
+            {"geometry": TH_TTH_Q_GEOMETRY, "expected_extras": []},
             does_not_raise(),
             id="built-in geometry: correct axes and modes from descriptor",
         ),
         pytest.param(
-            dict(
-                geometry="GEO WITH EXTRAS",
-                extra_axis_names={"mode_a": ["psi", "eta"], "mode_b": ["phi"]},
-                expected_extras=["eta", "phi", "psi"],
-            ),
+            {
+                "geometry": "GEO WITH EXTRAS",
+                "extra_axis_names": {"mode_a": ["psi", "eta"], "mode_b": ["phi"]},
+                "expected_extras": ["eta", "phi", "psi"],
+            },
             does_not_raise(),
             id="geometry with per-mode extra axis names: union returned sorted",
         ),
@@ -290,10 +289,10 @@ def test_th_tth_solver_uses_registry(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(geometry="UNREGISTERED"),
+            {"geometry": "UNREGISTERED"},
             does_not_raise(),
             id="unregistered geometry: empty axes and modes",
-        ),
+        )
     ],
 )
 def test_th_tth_solver_unregistered_geometry(parms, context):
@@ -314,16 +313,16 @@ def test_th_tth_solver_unregistered_geometry(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                name="RUNTIME GEO",
-                pseudo=["h", "k", "l"],
-                real=["mu", "delta", "nu"],
-                modes=["mode_a", "mode_b"],
-                default_mode="mode_a",
-            ),
+            {
+                "name": "RUNTIME GEO",
+                "pseudo": ["h", "k", "l"],
+                "real": ["mu", "delta", "nu"],
+                "modes": ["mode_a", "mode_b"],
+                "default_mode": "mode_a",
+            },
             does_not_raise(),
             id="geometry registered at runtime is immediately usable",
-        ),
+        )
     ],
 )
 def test_dynamic_registration(parms, context):

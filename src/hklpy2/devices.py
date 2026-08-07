@@ -20,22 +20,23 @@ and factory configurations.
 
 import logging
 import time
+from collections.abc import Mapping, Sequence
 from typing import Any
-from typing import Mapping
-from typing import Optional
-from typing import Sequence
-from typing import Union
 
 from deprecated.sphinx import versionadded
-from ophyd import Component
-from ophyd import Device
-from ophyd import EpicsMotor
-from ophyd import PVPositioner
-from ophyd import PseudoPositioner
-from ophyd import SoftPositioner
-from ophyd.pseudopos import PseudoSingle
-from ophyd.pseudopos import pseudo_position_argument
-from ophyd.pseudopos import real_position_argument
+from ophyd import (
+    Component,
+    Device,
+    EpicsMotor,
+    PseudoPositioner,
+    PVPositioner,
+    SoftPositioner,
+)
+from ophyd.pseudopos import (
+    PseudoSingle,
+    pseudo_position_argument,
+    real_position_argument,
+)
 
 from .typing import KeyValueMap
 
@@ -209,8 +210,7 @@ class VirtualPositionerBase(SoftPositioner):
 
 
 def define_real_axis(
-    specs: Union[None, str, KeyValueMap],
-    kwargs: KeyValueMap,
+    specs: None | str | KeyValueMap, kwargs: KeyValueMap
 ) -> tuple[str, Sequence, Mapping]:
     """Return class and kwargs of a real axis from its 'specs'."""
     args = []
@@ -242,7 +242,6 @@ def define_real_axis(
     else:
         raise TypeError(
             f"Incorrect type '{type(specs).__name__}' for {specs=!r}."
-            #
             " Expected 'None', a PV name (str), or a dictionary specifying"
             " a custom configuration."
         )
@@ -331,19 +330,10 @@ def make_component(call_name: Any, *args: Any, **kwargs: Any) -> Component:
             "make_component: call_name must be a dotted import path"
             f" (str) or a callable; got {type(call_name).__name__!r}."
         )
-    return make_dynamic_instance(
-        "ophyd.Component",
-        CallableObject,
-        *args,
-        **kwargs,
-    )
+    return make_dynamic_instance("ophyd.Component", CallableObject, *args, **kwargs)
 
 
-def make_dynamic_instance(
-    call_name: str,
-    *args: Any,
-    **kwargs: Any,
-) -> Any:
+def make_dynamic_instance(call_name: str, *args: Any, **kwargs: Any) -> Any:
     """Return an instance of the Python 'call_name'."""
     DynamicCallable = dynamic_import(call_name)
     if not callable(DynamicCallable):
@@ -353,24 +343,20 @@ def make_dynamic_instance(
 
 def parse_factory_axes(
     *,
-    space: Optional[str] = None,
-    axes: Union[KeyValueMap, None, Sequence[str]] = None,
-    order: Optional[Sequence[str]] = None,
-    canonical: Optional[Sequence[str]] = None,
-    labels: Optional[Sequence[str]] = None,
+    space: str | None = None,
+    axes: KeyValueMap | None | Sequence[str] = None,
+    order: Sequence[str] | None = None,
+    canonical: Sequence[str] | None = None,
+    labels: Sequence[str] | None = None,
     **_ignored: Any,
-) -> Mapping[str, Union[Component, Sequence[str]]]:
+) -> Mapping[str, Component | Sequence[str]]:
     """
     Parse a set of axis specifications, return Device class attributes.
 
     Called from the diffract.diffractometer_class_factory().
     """
     if space not in ("pseudos", "reals"):
-        raise KeyError(
-            f"Unknown {space=!r}."
-            #
-            " Must be either 'pseudos' or 'reals'."
-        )
+        raise KeyError(f"Unknown {space=!r}. Must be either 'pseudos' or 'reals'.")
 
     if order is not None and len(order) < len(canonical):
         raise ValueError(f"{len(order)=} must be >= {len(canonical)=}")
@@ -392,7 +378,7 @@ def parse_factory_axes(
     for i, axis_name in enumerate(_axes):
         axis = _axes[axis_name]
         args = []
-        kwargs = dict(kind="hinted", labels=labels or [])
+        kwargs = {"kind": "hinted", "labels": labels or []}
         class_name = "class_name"
         if space == "pseudos":
             class_name = "hklpy2.diffract.Hklpy2PseudoAxis"
@@ -405,9 +391,7 @@ def parse_factory_axes(
 
     if len(order) > len(canonical):
         raise ValueError(
-            f"Too many axes specified in {order=}."
-            #
-            f" Expected {len(canonical)}."
+            f"Too many axes specified in {order=}. Expected {len(canonical)}."
         )
     for axis_name in order:
         if axis_name not in _axes:
@@ -469,9 +453,7 @@ def describe_aux(diffractometer: object, name: str) -> dict:
     ),
 )
 def make_aux_pseudo_positioner_class(
-    name: str,
-    pseudos: Sequence[str],
-    reals: Sequence[str],
+    name: str, pseudos: Sequence[str], reals: Sequence[str]
 ) -> type:
     """
     Build a synthetic :class:`~ophyd.pseudopos.PseudoPositioner` subclass
@@ -496,21 +478,18 @@ def make_aux_pseudo_positioner_class(
         body[p] = Component(PseudoSingle, kind="hinted")
     for r in reals:
         body[r] = Component(
-            SoftPositioner,
-            kind="hinted",
-            limits=(-1e9, 1e9),
-            init_pos=0,
+            SoftPositioner, kind="hinted", limits=(-1e9, 1e9), init_pos=0
         )
 
     n_pseudos = len(pseudos)
     n_reals = len(reals)
 
     @pseudo_position_argument
-    def forward(self, pp):  # noqa: ARG001
+    def forward(self, pp):
         return self.RealPosition(*([0.0] * n_reals))
 
     @real_position_argument
-    def inverse(self, rp):  # noqa: ARG001
+    def inverse(self, rp):
         return self.PseudoPosition(*([0.0] * n_pseudos))
 
     body["forward"] = forward

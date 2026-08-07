@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 DOCS_DIR = pathlib.Path(__file__).parent / "source"
 GEO_DOC = DOCS_DIR / "diffractometers.rst"
-H1, H2, H3, H4 = "= - ^ ~".split()
+H1, H2, H3, H4 = ["=", "-", "^", "~"]
 PAGE_TITLE = "Diffractometers"
 
 PREFACE = """
@@ -218,13 +218,7 @@ def linter(text: str) -> str:
 
     * trailing-whitespace
     """
-    text = "\n".join(
-        [
-            line.rstrip()
-            #
-            for line in text.strip().splitlines()
-        ]
-    )
+    text = "\n".join([line.rstrip() for line in text.strip().splitlines()])
     return f"{text}\n"  # always end with blank line
 
 

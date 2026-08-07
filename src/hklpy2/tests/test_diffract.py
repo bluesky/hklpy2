@@ -4,92 +4,102 @@
 
 import math
 import re
-from collections import deque
-from collections import namedtuple
+from collections import deque, namedtuple
 from contextlib import nullcontext as does_not_raise
 
 import bluesky
 import numpy as np
 import pytest
 from numpy.testing import assert_almost_equal
-from ophyd import Component
-from ophyd import EpicsMotor
-from ophyd import SoftPositioner
+from ophyd import Component, EpicsMotor, SoftPositioner
 from ophyd.sim import noisy_det
 
 from ..backends.base import SolverBase
 from ..backends.hkl_soleil import LIBHKL_USER_UNITS
 from ..blocks.reflection import ReflectionError
 from ..blocks.sample import Sample
-from ..diffract import DiffractometerBase
-from ..diffract import creator
-from ..diffract import diffractometer_class_factory
-from ..exceptions import ConfigurationError
-from ..exceptions import DiffractometerError
-from ..exceptions import NoForwardSolutions
 from ..devices import VirtualPositionerBase
-from ..ops import DEFAULT_SAMPLE_NAME
-from ..ops import Core
-from ..ops import CoreError
+from ..diffract import DiffractometerBase, creator, diffractometer_class_factory
+from ..exceptions import ConfigurationError, DiffractometerError, NoForwardSolutions
+from ..ops import DEFAULT_SAMPLE_NAME, Core, CoreError
 from .common import HKLPY2_DIR
-from .models import AugmentedFourc
-from .models import Fourc
-from .models import MultiAxis99
-from .models import MultiAxis99NoSolver
-from .models import NoOpTh2Th
-from .models import TwoC
+from .models import (
+    AugmentedFourc,
+    Fourc,
+    MultiAxis99,
+    MultiAxis99NoSolver,
+    NoOpTh2Th,
+    TwoC,
+)
 
 
 @pytest.mark.parametrize(
     "parms, context",
     [
         pytest.param(
-            dict(
-                pseudos=[],
-                reals=dict(omega="IOC:m1", chi="IOC:m2", phi="IOC:m3", tth="IOC:m4"),
-                positioner_class=EpicsMotor,
-            ),
+            {
+                "pseudos": [],
+                "reals": {
+                    "omega": "IOC:m1",
+                    "chi": "IOC:m2",
+                    "phi": "IOC:m3",
+                    "tth": "IOC:m4",
+                },
+                "positioner_class": EpicsMotor,
+            },
             does_not_raise(),
             id="epics reals",
         ),
         pytest.param(
-            dict(
-                pseudos=[],
-                reals=dict(aaa=None, bbb=None, ccc=None),
-                positioner_class=SoftPositioner,
-            ),
+            {
+                "pseudos": [],
+                "reals": {"aaa": None, "bbb": None, "ccc": None},
+                "positioner_class": SoftPositioner,
+            },
             does_not_raise(),
             id="3 soft reals",
         ),
         pytest.param(
-            dict(
-                pseudos=[],
-                reals=dict(aaa=None, bbb=None, ccc=None, ddd=None),
-                positioner_class=SoftPositioner,
-            ),
+            {
+                "pseudos": [],
+                "reals": {"aaa": None, "bbb": None, "ccc": None, "ddd": None},
+                "positioner_class": SoftPositioner,
+            },
             does_not_raise(),
             id="4 soft reals",
         ),
         pytest.param(
-            dict(
-                pseudos=[],
-                reals=dict(aaa=None, bbb=None, ccc=None, ddd=None, eee=None),
-                positioner_class=SoftPositioner,
-            ),
+            {
+                "pseudos": [],
+                "reals": {
+                    "aaa": None,
+                    "bbb": None,
+                    "ccc": None,
+                    "ddd": None,
+                    "eee": None,
+                },
+                "positioner_class": SoftPositioner,
+            },
             does_not_raise(),
             id="5 soft reals",
         ),
         pytest.param(
-            dict(
-                pseudos=[],
-                reals=dict(aaa="IOC:m1", bbb=None, ccc=None, ddd=None, eee=None),
-                positioner_class=(EpicsMotor, SoftPositioner),
-            ),
+            {
+                "pseudos": [],
+                "reals": {
+                    "aaa": "IOC:m1",
+                    "bbb": None,
+                    "ccc": None,
+                    "ddd": None,
+                    "eee": None,
+                },
+                "positioner_class": (EpicsMotor, SoftPositioner),
+            },
             does_not_raise(),
             id="mixed epics and soft reals",
         ),
         pytest.param(
-            dict(pseudos=[], reals={}, positioner_class=SoftPositioner),
+            {"pseudos": [], "reals": {}, "positioner_class": SoftPositioner},
             does_not_raise(),
             id="empty reals dict",
         ),
@@ -112,34 +122,30 @@ def test_creator_reals_construction(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                pseudos=[],
-                reals=dict(aaa=None, bbb=None, ccc=None),
-                config="e4cv_orient.yml",
-            ),
+            {
+                "pseudos": [],
+                "reals": {"aaa": None, "bbb": None, "ccc": None},
+                "config": "e4cv_orient.yml",
+            },
             pytest.raises(KeyError, match=re.escape("tth")),
             id="missing-tth-real",
         ),
         pytest.param(
-            dict(pseudos="h k".split(), reals={}, config="e4cv_orient.yml"),
+            {"pseudos": ["h", "k"], "reals": {}, "config": "e4cv_orient.yml"},
             pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
             id="2-pseudos-h-k",
         ),
         pytest.param(
-            dict(
-                pseudos="h2 k2 l2 psi alpha beta".split(),
-                reals={},
-                config="e4cv_orient.yml",
-            ),
+            {
+                "pseudos": ["h2", "k2", "l2", "psi", "alpha", "beta"],
+                "reals": {},
+                "config": "e4cv_orient.yml",
+            },
             pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
             id="6-pseudos",
         ),
         pytest.param(
-            dict(
-                pseudos="h k".split(),
-                reals={},
-                config="fourc-configuration.yml",
-            ),
+            {"pseudos": ["h", "k"], "reals": {}, "config": "fourc-configuration.yml"},
             pytest.raises(ConfigurationError, match=re.escape("pseudo axis mismatch")),
             id="2-pseudos-fourc-configuration",
         ),
@@ -162,28 +168,28 @@ def test_creator_reals_restore_axis_mismatch(parms, context):
 # covered by ``test_creator_reals_construction``.
 _SIM_RESTORE_PARAMS = [
     pytest.param(
-        dict(
-            reals=dict(aaa=None, bbb=None, ccc=None, ddd=None),
-            config="e4cv_orient.yml",
-        ),
+        {
+            "reals": {"aaa": None, "bbb": None, "ccc": None, "ddd": None},
+            "config": "e4cv_orient.yml",
+        },
         does_not_raise(),
         id="4-soft-reals-e4cv_orient",
     ),
     pytest.param(
-        dict(
-            reals=dict(aaa=None, bbb=None, ccc=None, ddd=None),
-            config="fourc-configuration.yml",
-        ),
+        {
+            "reals": {"aaa": None, "bbb": None, "ccc": None, "ddd": None},
+            "config": "fourc-configuration.yml",
+        },
         does_not_raise(),
         id="4-soft-reals-fourc-configuration",
     ),
     pytest.param(
-        dict(reals={}, config="e4cv_orient.yml"),
+        {"reals": {}, "config": "e4cv_orient.yml"},
         does_not_raise(),
         id="empty-reals-e4cv_orient",
     ),
     pytest.param(
-        dict(reals={}, config="fourc-configuration.yml"),
+        {"reals": {}, "config": "fourc-configuration.yml"},
         does_not_raise(),
         id="empty-reals-fourc-configuration",
     ),
@@ -191,34 +197,56 @@ _SIM_RESTORE_PARAMS = [
 
 _HW_RESTORE_PARAMS = [
     pytest.param(
-        dict(
-            reals=dict(omega="IOC:m1", chi="IOC:m2", phi="IOC:m3", tth="IOC:m4"),
-            config="e4cv_orient.yml",
-        ),
+        {
+            "reals": {
+                "omega": "IOC:m1",
+                "chi": "IOC:m2",
+                "phi": "IOC:m3",
+                "tth": "IOC:m4",
+            },
+            "config": "e4cv_orient.yml",
+        },
         does_not_raise(),
         id="epics-reals-e4cv_orient",
     ),
     pytest.param(
-        dict(
-            reals=dict(omega="IOC:m1", chi="IOC:m2", phi="IOC:m3", tth="IOC:m4"),
-            config="fourc-configuration.yml",
-        ),
+        {
+            "reals": {
+                "omega": "IOC:m1",
+                "chi": "IOC:m2",
+                "phi": "IOC:m3",
+                "tth": "IOC:m4",
+            },
+            "config": "fourc-configuration.yml",
+        },
         does_not_raise(),
         id="epics-reals-fourc-configuration",
     ),
     pytest.param(
-        dict(
-            reals=dict(aaa="IOC:m1", bbb=None, ccc=None, ddd=None, eee=None),
-            config="e4cv_orient.yml",
-        ),
+        {
+            "reals": {
+                "aaa": "IOC:m1",
+                "bbb": None,
+                "ccc": None,
+                "ddd": None,
+                "eee": None,
+            },
+            "config": "e4cv_orient.yml",
+        },
         does_not_raise(),
         id="mixed-reals-e4cv_orient",
     ),
     pytest.param(
-        dict(
-            reals=dict(aaa="IOC:m1", bbb=None, ccc=None, ddd=None, eee=None),
-            config="fourc-configuration.yml",
-        ),
+        {
+            "reals": {
+                "aaa": "IOC:m1",
+                "bbb": None,
+                "ccc": None,
+                "ddd": None,
+                "eee": None,
+            },
+            "config": "fourc-configuration.yml",
+        },
         does_not_raise(),
         id="mixed-reals-fourc-configuration",
     ),
@@ -292,22 +320,22 @@ def test_creator_reals_restore_hardware_explicit_opt_in(parms, context):
     [
         pytest.param({}, does_not_raise(), id="default setup"),
         pytest.param(
-            dict(forward_solution_function=None),
+            {"forward_solution_function": None},
             does_not_raise(),
             id="solution func None",
         ),
         pytest.param(
-            dict(forward_solution_function="hklpy2.utils.pick_closest_solution"),
+            {"forward_solution_function": "hklpy2.utils.pick_closest_solution"},
             does_not_raise(),
             id="pick closest solution",
         ),
         pytest.param(
-            dict(forward_solution_function="hklpy2.utils.pick_first_solution"),
+            {"forward_solution_function": "hklpy2.utils.pick_first_solution"},
             does_not_raise(),
             id="pick first solution",
         ),
         pytest.param(
-            dict(forward_solution_function="cannot.find.this.function"),
+            {"forward_solution_function": "cannot.find.this.function"},
             pytest.raises(
                 ModuleNotFoundError, match=re.escape("No module named 'cannot'")
             ),
@@ -326,7 +354,7 @@ def test_DiffractometerBase():
         DiffractometerBase(name="dbase")
 
 
-@pytest.mark.parametrize("axis", "h k l".split())
+@pytest.mark.parametrize("axis", ["h", "k", "l"])
 @pytest.mark.parametrize(
     "value, context",
     [
@@ -360,22 +388,22 @@ def test_limits(axis, value, context):
     [
         pytest.param(
             Fourc,
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             does_not_raise(),
             id="Fourc",
         ),
         pytest.param(
             AugmentedFourc,
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             does_not_raise(),
             id="AugmentedFourc",
         ),
         pytest.param(
             MultiAxis99NoSolver,
-            "p1 p2".split(),
-            "r1 r2 r3 r4".split(),
+            ["p1", "p2"],
+            ["r1", "r2", "r3", "r4"],
             pytest.raises(
                 AssertionError,
                 match=re.escape("where False = isinstance(None, SolverBase)"),
@@ -384,17 +412,13 @@ def test_limits(axis, value, context):
         ),
         pytest.param(
             MultiAxis99,
-            "p1 p2".split(),
-            "r1 r2 r3 r4".split(),
+            ["p1", "p2"],
+            ["r1", "r2", "r3", "r4"],
             does_not_raise(),
             id="MultiAxis99",
         ),
-        pytest.param(
-            NoOpTh2Th, "q".split(), "th tth".split(), does_not_raise(), id="NoOpTh2Th"
-        ),
-        pytest.param(
-            TwoC, "q".split(), "theta ttheta".split(), does_not_raise(), id="TwoC"
-        ),
+        pytest.param(NoOpTh2Th, ["q"], ["th", "tth"], does_not_raise(), id="NoOpTh2Th"),
+        pytest.param(TwoC, ["q"], ["theta", "ttheta"], does_not_raise(), id="TwoC"),
     ],
 )
 def test_diffractometer_class_models(base, pseudos, reals, context):
@@ -528,7 +552,7 @@ def test_diffractometer_class_models(base, pseudos, reals, context):
             id="full e4cv 2 digits",
         ),
         pytest.param(
-            {"reals": "omega chi phi tth huey dewey louie".split()},
+            {"reals": ["omega", "chi", "phi", "tth", "huey", "dewey", "louie"]},
             False,
             4,
             None,
@@ -545,14 +569,7 @@ def test_diffractometer_class_models(base, pseudos, reals, context):
     ],
 )
 def test_diffractometer_wh(
-    specs,
-    full,
-    digits,
-    mode,
-    config_file,
-    output,
-    context,
-    capsys,
+    specs, full, digits, mode, config_file, output, context, capsys
 ):
     from ..diffract import creator
 
@@ -575,14 +592,14 @@ def test_diffractometer_wh(
     [
         pytest.param(
             "bissector",
-            "h k l omega chi phi tth".split(),
+            ["h", "k", "l", "omega", "chi", "phi", "tth"],
             does_not_raise(),
             "e4cv_orient.yml",
             id="Ok: e4cv_orient.yml",
         ),
         pytest.param(
             "bissector",
-            "h k l omega chi phi tth".split(),
+            ["h", "k", "l", "omega", "chi", "phi", "tth"],
             does_not_raise(),
             "fourc-configuration.yml",
             id="Ok: fourc-configuration.yml",
@@ -608,12 +625,12 @@ def test_full_position(mode, keys, context, config_file):
     "pseudos, extras, mode, context",
     [
         pytest.param(
-            dict(h=1, k=1, l=0),
-            dict(h2=0, k2=1, l2=1, psi=0),
+            {"h": 1, "k": 1, "l": 0},
+            {"h2": 0, "k2": 1, "l2": 1, "psi": 0},
             "psi_constant",
             does_not_raise(),
             id="Ok",
-        ),
+        )
     ],
 )
 def test_move_forward_with_extras(pseudos, extras, mode, context):
@@ -627,15 +644,9 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
     RE = bluesky.RunEngine()
 
     with context:
+        assert np.allclose(np.array(fourc.position), np.array([0, 0, 0]), atol=0.1)
         assert np.allclose(
-            np.array(fourc.position),
-            np.array([0, 0, 0]),
-            atol=0.1,
-        )
-        assert np.allclose(
-            np.array(fourc.real_position),
-            np.array([0, 0, 0, 0]),
-            atol=0.1,
+            np.array(fourc.real_position), np.array([0, 0, 0, 0]), atol=0.1
         )
         solver_geo = fourc.core.solver._hkl_geometry
         assert np.allclose(
@@ -644,9 +655,7 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
             atol=0.1,
         )
         assert np.allclose(
-            np.array(list(fourc.core.extras.values())),
-            np.array([0, 0, 0, 0]),
-            atol=0.1,
+            np.array(list(fourc.core.extras.values())), np.array([0, 0, 0, 0]), atol=0.1
         )
         assert np.allclose(
             np.array(list(fourc.core.solver.extras.values())),
@@ -656,15 +665,9 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
 
         RE(fourc.move_forward_with_extras(pseudos, extras))
 
+        assert np.allclose(np.array(fourc.position), np.array([1, 1, 0]), atol=0.1)
         assert np.allclose(
-            np.array(fourc.position),
-            np.array([1, 1, 0]),
-            atol=0.1,
-        )
-        assert np.allclose(
-            np.array(fourc.real_position),
-            np.array([80, 54.7, 45, -20]),
-            atol=0.1,
+            np.array(fourc.real_position), np.array([80, 54.7, 45, -20]), atol=0.1
         )
         assert np.allclose(
             np.array(list(solver_geo.axis_values_get(LIBHKL_USER_UNITS))),
@@ -672,9 +675,7 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
             atol=0.1,
         )
         assert np.allclose(
-            np.array(list(fourc.core.extras.values())),
-            np.array([0, 1, 1, 0]),
-            atol=0.1,
+            np.array(list(fourc.core.extras.values())), np.array([0, 1, 1, 0]), atol=0.1
         )
         assert np.allclose(
             np.array(list(fourc.core.solver.extras.values())),
@@ -694,7 +695,7 @@ def test_move_forward_with_extras(pseudos, extras, mode, context):
         ),
         pytest.param(
             namedtuple(
-                "RealTuple", "omega chi phi tth".split(), defaults=[1, 2, 3, 4]
+                "RealTuple", ["omega", "chi", "phi", "tth"], defaults=[1, 2, 3, 4]
             )(),
             does_not_raise(),
             id="namedtuple position",
@@ -753,13 +754,13 @@ def test_orientation():
 
     fourc.add_reflection(
         (4, 0, 0),
-        dict(tth=69.0966, omega=-145.451, chi=0, phi=0),
+        {"tth": 69.0966, "omega": -145.451, "chi": 0, "phi": 0},
         wavelength=1.54,
         name="(400)",
     )
     fourc.add_reflection(
         (0, 4, 0),
-        dict(tth=69.0966, omega=-145.451, chi=90, phi=0),
+        {"tth": 69.0966, "omega": -145.451, "chi": 90, "phi": 0},
         wavelength=1.54,
         name="(040)",
     )
@@ -767,7 +768,7 @@ def test_orientation():
     assert math.isclose(fourc.beam.wavelength.get(), 1.0, abs_tol=0.01), (
         f"{fourc.beam.wavelength.get()=!r}"
     )
-    assert fourc.sample.reflections.order == "(400) (040)".split()
+    assert fourc.sample.reflections.order == ["(400)", "(040)"]
 
     result = fourc.core.calc_UB(*fourc.sample.reflections.order)
     assert isinstance(result, list)
@@ -805,9 +806,7 @@ def test_orientation():
     )
 
     assert np.allclose(
-        list(fourc.inverse(-145, 0, 0, 70, wavelength=1)),
-        [6.2302, 0, 0],
-        atol=0.001,
+        list(fourc.inverse(-145, 0, 0, 70, wavelength=1)), [6.2302, 0, 0], atol=0.001
     )
 
 
@@ -913,8 +912,8 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
 
     e4cv = creator()
     e4cv.add_reflection(
-        dict(h=1, k=0, l=0),
-        dict(omega=10, chi=0, phi=0, tth=20),
+        {"h": 1, "k": 0, "l": 0},
+        {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
         wavelength=1.0,
         name="(100)",
     )
@@ -922,11 +921,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
 
     with context:
         e4cv.add_reflection(
-            pseudos,
-            reals,
-            name=name,
-            wavelength=wavelength,
-            replace=replace,
+            pseudos, reals, name=name, wavelength=wavelength, replace=replace
         )
     assert len(e4cv.sample.reflections) == num, f"{e4cv.sample.reflections=!r}"
 
@@ -936,52 +931,52 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
     [
         pytest.param(
             [[noisy_det], "psi", 5, 10],
-            dict(
-                num=3,
-                pseudos=dict(h=1, k=1, l=0),
-                reals=None,
-                extras=dict(h2=1, k2=1, l2=1, psi=0),
-                fail_on_exception=True,
-            ),
+            {
+                "num": 3,
+                "pseudos": {"h": 1, "k": 1, "l": 0},
+                "reals": None,
+                "extras": {"h2": 1, "k2": 1, "l2": 1, "psi": 0},
+                "fail_on_exception": True,
+            },
             "psi_constant",
             does_not_raise(),
             id="scan psi with pseudos",
         ),
         pytest.param(
             [[noisy_det], "psi", 5, 10],
-            dict(
-                num=3,
-                pseudos=dict(h=2, k=-1, l=100),  # l=100 is unreachable
-                reals=None,
-                extras=dict(h2=2, k2=2, l2=0, psi=0),
-                fail_on_exception=True,
-            ),
+            {
+                "num": 3,
+                "pseudos": {"h": 2, "k": -1, "l": 100},  # l=100 is unreachable
+                "reals": None,
+                "extras": {"h2": 2, "k2": 2, "l2": 0, "psi": 0},
+                "fail_on_exception": True,
+            },
             "psi_constant",
             pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
             id="unreachable l raises",
         ),
         pytest.param(
             [[noisy_det], "psi", 5, 10],
-            dict(
-                num=3,
-                pseudos=dict(h=2, k=-1, l=0),
-                reals=None,
-                extras=dict(h2=2, k2=2, l2=0, psi=0),
-                fail_on_exception=False,  # ignore error that failed previous test
-            ),
+            {
+                "num": 3,
+                "pseudos": {"h": 2, "k": -1, "l": 0},
+                "reals": None,
+                "extras": {"h2": 2, "k2": 2, "l2": 0, "psi": 0},
+                "fail_on_exception": False,  # ignore error that failed previous test
+            },
             "psi_constant",
             does_not_raise(),
             id="ignore forward exception",
         ),
         pytest.param(
             [[noisy_det], "psi", 5, 10],
-            dict(
-                num=3,
-                pseudos=None,
-                reals=dict(omega=1, chi=2, phi=3, tth=4),
-                extras=dict(h2=2, k2=2, l2=0, psi=5),
-                fail_on_exception=True,
-            ),
+            {
+                "num": 3,
+                "pseudos": None,
+                "reals": {"omega": 1, "chi": 2, "phi": 3, "tth": 4},
+                "extras": {"h2": 2, "k2": 2, "l2": 0, "psi": 5},
+                "fail_on_exception": True,
+            },
             "psi_constant",
             does_not_raise(),
             id="scan psi with reals",
@@ -1010,7 +1005,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
         ),
         pytest.param(
             [[noisy_det], "psi"],
-            dict(pseudos=None, reals=None),
+            {"pseudos": None, "reals": None},
             "psi_constant",
             pytest.raises(
                 ValueError,
@@ -1022,7 +1017,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
         ),
         pytest.param(
             [[noisy_det], "psi", 0, 1],
-            dict(pseudos=None, reals=None),
+            {"pseudos": None, "reals": None},
             "psi_constant",
             pytest.raises(
                 ValueError, match=re.escape("Must define either pseudos or reals.")
@@ -1031,10 +1026,10 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
         ),
         pytest.param(
             [[noisy_det], "psi", 0, 1],
-            dict(
-                pseudos=dict(h=2, k=-1, l=0),
-                reals=dict(omega=1, chi=2, phi=3, tth=4),
-            ),
+            {
+                "pseudos": {"h": 2, "k": -1, "l": 0},
+                "reals": {"omega": 1, "chi": 2, "phi": 3, "tth": 4},
+            },
             "psi_constant",
             pytest.raises(
                 ValueError, match=re.escape("Cannot define both pseudos and reals.")
@@ -1043,9 +1038,7 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
         ),
         pytest.param(
             [[noisy_det], "psi", 0, 1, "psi", 1, 2],
-            dict(
-                pseudos=dict(h=2, k=-1, l=0),
-            ),
+            {"pseudos": {"h": 2, "k": -1, "l": 0}},
             "psi_constant",
             pytest.raises(
                 KeyError, match=re.escape("Extra axis may only be used once,")
@@ -1054,22 +1047,20 @@ def test_repeated_reflections(name, pseudos, reals, wavelength, replace, num, co
         ),
         pytest.param(
             [[noisy_det], "h2", 1.9, 2.1, "k2", 1.9, 2.1],
-            dict(
-                num=3,
-                pseudos=None,
-                reals=dict(omega=1, chi=2, phi=3, tth=4),
-                extras=dict(h2=2, k2=2, l2=0, psi=5),
-                fail_on_exception=True,
-            ),
+            {
+                "num": 3,
+                "pseudos": None,
+                "reals": {"omega": 1, "chi": 2, "phi": 3, "tth": 4},
+                "extras": {"h2": 2, "k2": 2, "l2": 0, "psi": 5},
+                "fail_on_exception": True,
+            },
             "psi_constant",
             does_not_raise(),
             id="scan two extras with reals",
         ),
         pytest.param(
             [[noisy_det], "NO_SUCH_SCAN_AXIS", 1.9, 2.1],
-            dict(
-                pseudos=dict(h2=2, k2=-1, l2=0),
-            ),
+            {"pseudos": {"h2": 2, "k2": -1, "l2": 0}},
             "psi_constant",
             pytest.raises(KeyError, match=re.escape("'NO_SUCH_SCAN_AXIS' not in ")),
             id="KeyError in diffract..scan_extra()",
@@ -1094,17 +1085,17 @@ def test_scan_extra(scan_args, scan_kwargs, mode, context):
     [
         pytest.param(
             [[noisy_det], "psi", -5, 555],  # expect to fail at psi=0
-            dict(
-                num=2,
-                pseudos=dict(h=2, k=-1, l=0),
-                reals=None,
-                extras=dict(h2=2, k2=2, l2=0, psi=0),
-                fail_on_exception=False,  # prepare to print FAIL
-            ),
+            {
+                "num": 2,
+                "pseudos": {"h": 2, "k": -1, "l": 0},
+                "reals": None,
+                "extras": {"h2": 2, "k2": 2, "l2": 0, "psi": 0},
+                "fail_on_exception": False,  # prepare to print FAIL
+            },
             "psi_constant",
             does_not_raise(),
             id="print fail on unreachable psi",
-        ),
+        )
     ],
 )
 def test_scan_extra_print_fail(scan_args, scan_kwargs, mode, context, capsys):
@@ -1149,7 +1140,7 @@ def test_set_UB():
     fourc.sample.UB = UBe
     assert np.allclose(fourc.sample.UB, UBe, atol=0.000_01)
 
-    reals = dict(omega=130, chi=0, phi=90, tth=-100)
+    reals = {"omega": 130, "chi": 0, "phi": 90, "tth": -100}
     result = fourc.inverse(reals, wavelength=1.54)
     assert np.allclose(result, (1, 0, 0), atol=0.001)
     assert np.allclose(fourc.sample.UB, UBe, atol=0.001)
@@ -1161,7 +1152,7 @@ def test_e4cv_constant_phi():
     e4cv = creator()
 
     # Approximate the code presented as the example problem.
-    refl = dict(h=1, k=1, l=1)
+    refl = {"h": 1, "k": 1, "l": 1}
 
     e4cv.core.mode = "constant_phi"
     phi = 23.4567
@@ -1189,7 +1180,7 @@ def test_e4cv_constant_phi():
     "miller, context",
     [
         pytest.param((1, 2, 3), does_not_raise(), id="tuple"),
-        pytest.param(dict(h=1, k=2, l=3), does_not_raise(), id="dict"),
+        pytest.param({"h": 1, "k": 2, "l": 3}, does_not_raise(), id="dict"),
         pytest.param([1.0, 2.0, 3.0], does_not_raise(), id="float list"),
         pytest.param(
             None,
@@ -1201,13 +1192,13 @@ def test_e4cv_constant_phi():
         pytest.param(
             # Tests that h, k, l was omitted, only a position was supplied.
             # This is one of the problems reported.
-            namedtuple("PseudoTuple", "a b c d".split())(1, 2, 3, 4),
+            namedtuple("PseudoTuple", ["a", "b", "c", "d"])(1, 2, 3, 4),
             pytest.raises(ValueError, match=re.escape("Expected 3 pseudos, received ")),
             id="wrong count namedtuple",
         ),
         pytest.param(
             # Tests that wrong name(s) were supplied.
-            namedtuple("PseudoTuple", "three wrong names".split())(1, 2, 4),
+            namedtuple("PseudoTuple", ["three", "wrong", "names"])(1, 2, 4),
             pytest.raises(ValueError, match=re.escape("Wrong axis names")),
             id="wrong axis names",
         ),
@@ -1260,36 +1251,31 @@ def test_miller_args(miller, context):
     "input, ref, context",
     [
         pytest.param(
-            dict(restore_wavelength=False),
-            dict(energy=12.3984, wavelength=1.0),
+            {"restore_wavelength": False},
+            {"energy": 12.3984, "wavelength": 1.0},
             does_not_raise(),
             id="keep current wavelength",
         ),
         pytest.param(
-            dict(restore_wavelength=True),
-            dict(energy=8.0509, wavelength=1.54),
+            {"restore_wavelength": True},
+            {"energy": 8.0509, "wavelength": 1.54},
             does_not_raise(),
             id="restore saved wavelength",
         ),
     ],
 )
 def test_restore(input, ref, context):
-    from ..incident import A_KEV
-    from ..incident import DEFAULT_WAVELENGTH
+    from ..incident import A_KEV, DEFAULT_WAVELENGTH
     from ..utils import load_yaml_file
 
     with context:
         input["config"] = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
         e4cv = creator()
         assert math.isclose(
-            e4cv.beam.energy.get(),
-            A_KEV / DEFAULT_WAVELENGTH,
-            abs_tol=0.001,
+            e4cv.beam.energy.get(), A_KEV / DEFAULT_WAVELENGTH, abs_tol=0.001
         )
         assert math.isclose(
-            e4cv.beam.wavelength.get(),
-            DEFAULT_WAVELENGTH,
-            abs_tol=0.001,
+            e4cv.beam.wavelength.get(), DEFAULT_WAVELENGTH, abs_tol=0.001
         )
         e4cv.restore(**input)
         assert math.isclose(
@@ -1337,17 +1323,10 @@ def test_failed_restore():
             id="pseudos string raises",
         ),
         pytest.param(
-            {"reals": "omega chi phi tth".split()}, does_not_raise(), id="reals list"
+            {"reals": ["omega", "chi", "phi", "tth"]}, does_not_raise(), id="reals list"
         ),
         pytest.param(
-            {
-                "reals": dict(
-                    omega=None,
-                    chi=None,
-                    phi=None,
-                    tth=None,
-                )
-            },
+            {"reals": {"omega": None, "chi": None, "phi": None, "tth": None}},
             does_not_raise(),
             id="reals dict",
         ),
@@ -1357,12 +1336,10 @@ def test_failed_restore():
             id="reals string raises",
         ),
         pytest.param(
-            dict(_pseudo="h k l".split()),
-            does_not_raise(),
-            id="_pseudo kwarg",
+            {"_pseudo": ["h", "k", "l"]}, does_not_raise(), id="_pseudo kwarg"
         ),
         pytest.param(
-            dict(_real="omega chi phi tth".split()),
+            {"_real": ["omega", "chi", "phi", "tth"]},
             does_not_raise(),
             id="_real kwarg",
         ),
@@ -1383,9 +1360,7 @@ def test_wh_virtual_issue_114():
 
     class Virtual(base):
         theta = Component(
-            VirtualPositionerBase,
-            physical_name="physical",
-            kind="hinted",
+            VirtualPositionerBase, physical_name="physical", kind="hinted"
         )
         physical = Component(EpicsMotor, "NO_IOC:motor", kind="hinted")
 
@@ -1400,15 +1375,15 @@ def test_wh_virtual_issue_114():
     [
         pytest.param({}, does_not_raise(), id="default"),
         pytest.param(
-            {"pseudos": "h k l ralph".split()},
+            {"pseudos": ["h", "k", "l", "ralph"]},
             does_not_raise(),
             id="extra pseudo ralph",
         ),
         pytest.param(
-            dict(
-                pseudos="h k l h2 k2 l2".split(),
-                reals="theta chi phi ttheta psi temperature".split(),
-            ),
+            {
+                "pseudos": ["h", "k", "l", "h2", "k2", "l2"],
+                "reals": ["theta", "chi", "phi", "ttheta", "psi", "temperature"],
+            },
             does_not_raise(),
             id="6 pseudos 6 reals",
         ),
@@ -1461,8 +1436,8 @@ def test_make_wrapped_namedtuple_class_none_and_marked():
 
     # Create a namedtuple class and mark it as already wrapped with digits=4
     Orig = namedtuple("OrigX", "a b")
-    setattr(Orig, "_hklpy2_wrapped", True)
-    setattr(Orig, "_hklpy2_wrapped_digits", 4)
+    Orig._hklpy2_wrapped = True
+    Orig._hklpy2_wrapped_digits = 4
     # When requesting the same digit count, the original class should be returned.
     returned = DiffractometerBase._make_wrapped_namedtuple_class(Orig, 4)
     assert returned is Orig
@@ -1514,12 +1489,12 @@ def test_digits_property(value, context):
     "parms, context",
     [
         pytest.param(
-            dict(restore_wavelength=True),
+            {"restore_wavelength": True},
             does_not_raise(),
             id="setter restores wavelength",
         ),
         pytest.param(
-            dict(restore_wavelength=False),
+            {"restore_wavelength": False},
             does_not_raise(),
             id="setter with default wavelength (no-op for setter)",
         ),
@@ -1556,17 +1531,17 @@ def test_configuration_setter_delegates_to_restore(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(name="get_run_orientation"),
+            {"name": "get_run_orientation"},
             does_not_raise(),
             id="get_run_orientation exported",
         ),
         pytest.param(
-            dict(name="list_orientation_runs"),
+            {"name": "list_orientation_runs"},
             does_not_raise(),
             id="list_orientation_runs exported",
         ),
         pytest.param(
-            dict(name="ConfigurationRunWrapper"),
+            {"name": "ConfigurationRunWrapper"},
             does_not_raise(),
             id="ConfigurationRunWrapper exported",
         ),
@@ -1583,10 +1558,10 @@ def test_namespace_orientation_exports(parms, context):
 
 # ----- issue #385: nested PseudoPositioner auxiliary component ----------------
 
-from ophyd import PseudoPositioner as _OphydPseudoPositioner  # noqa: E402
-from ophyd import PseudoSingle as _OphydPseudoSingle  # noqa: E402
-from ophyd.pseudopos import pseudo_position_argument as _ppa  # noqa: E402
-from ophyd.pseudopos import real_position_argument as _rpa  # noqa: E402
+from ophyd import PseudoPositioner as _OphydPseudoPositioner
+from ophyd import PseudoSingle as _OphydPseudoSingle
+from ophyd.pseudopos import pseudo_position_argument as _ppa
+from ophyd.pseudopos import real_position_argument as _rpa
 
 
 class _MiniAnalyzer(_OphydPseudoPositioner):
@@ -1654,22 +1629,22 @@ def _build_gonio_with_nested_pseudo(include_list_aux: bool = False):
     "parms, context",
     [
         pytest.param(
-            dict(check="auxiliary_axis_names_includes_both"),
+            {"check": "auxiliary_axis_names_includes_both"},
             does_not_raise(),
             id="auxiliary_axis_names lists nested PseudoPositioner",
         ),
         pytest.param(
-            dict(check="wh_full_does_not_raise"),
+            {"check": "wh_full_does_not_raise"},
             does_not_raise(),
             id="wh(full=True) renders nested PseudoPositioner inline",
         ),
         pytest.param(
-            dict(check="wh_default_does_not_raise"),
+            {"check": "wh_default_does_not_raise"},
             does_not_raise(),
             id="wh() renders nested PseudoPositioner inline",
         ),
         pytest.param(
-            dict(check="wh_full_with_list_aux"),
+            {"check": "wh_full_with_list_aux"},
             does_not_raise(),
             id="wh(full=True) renders list-shaped auxiliary inline",
         ),

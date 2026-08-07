@@ -32,28 +32,27 @@ import pytest
 from .. import creator
 from ..utils import _SolverDirty
 
-
 # Two distinct cubic samples with one obvious orientation difference
 # each, so a sample switch produces a clearly different inverse() result
 # at the same real-space position.
-SAMPLE_A = dict(
-    name="cubic_a",
-    lattice=dict(a=5.0),
-    reflections=[
-        dict(name="A100", pseudos=(1, 0, 0), reals=(-145, 0, 0, 70)),
-        dict(name="A010", pseudos=(0, 1, 0), reals=(-145, 0, 90, 70)),
+SAMPLE_A = {
+    "name": "cubic_a",
+    "lattice": {"a": 5.0},
+    "reflections": [
+        {"name": "A100", "pseudos": (1, 0, 0), "reals": (-145, 0, 0, 70)},
+        {"name": "A010", "pseudos": (0, 1, 0), "reals": (-145, 0, 90, 70)},
     ],
-)
-SAMPLE_B = dict(
-    name="cubic_b",
-    lattice=dict(a=4.0),
-    reflections=[
-        dict(name="B100", pseudos=(1, 0, 0), reals=(-145, 0, 0, 70)),
-        dict(name="B010", pseudos=(0, 1, 0), reals=(-145, 0, 90, 70)),
+}
+SAMPLE_B = {
+    "name": "cubic_b",
+    "lattice": {"a": 4.0},
+    "reflections": [
+        {"name": "B100", "pseudos": (1, 0, 0), "reals": (-145, 0, 0, 70)},
+        {"name": "B010", "pseudos": (0, 1, 0), "reals": (-145, 0, 90, 70)},
     ],
-)
+}
 TOL = 1e-3
-PROBE_REALS = dict(omega=-145, chi=0, phi=0, tth=70)
+PROBE_REALS = {"omega": -145, "chi": 0, "phi": 0, "tth": 70}
 
 
 def _build_two_samples():
@@ -65,9 +64,7 @@ def _build_two_samples():
         sim.add_sample(sample_def["name"], sample_def["lattice"]["a"], replace=True)
         for refl in sample_def["reflections"]:
             sim.add_reflection(
-                pseudos=refl["pseudos"],
-                reals=refl["reals"],
-                name=refl["name"],
+                pseudos=refl["pseudos"], reals=refl["reals"], name=refl["name"]
             )
         sim.core.calc_UB(*[r["name"] for r in sample_def["reflections"]])
 
@@ -86,17 +83,17 @@ def _pseudos_at_probe(sim):
         # #386 -- sample switch must re-sync the solver's lattice + UB.
         # ------------------------------------------------------------------
         pytest.param(
-            dict(action="switch", target="cubic_a"),
+            {"action": "switch", "target": "cubic_a"},
             does_not_raise(),
             id="switch-to-A-uses-A-lattice",
         ),
         pytest.param(
-            dict(action="switch", target="cubic_b"),
+            {"action": "switch", "target": "cubic_b"},
             does_not_raise(),
             id="switch-to-B-uses-B-lattice",
         ),
         pytest.param(
-            dict(action="round_trip", target="cubic_a"),
+            {"action": "round_trip", "target": "cubic_a"},
             does_not_raise(),
             id="round-trip-back-to-A-uses-A-lattice",
         ),
@@ -104,12 +101,12 @@ def _pseudos_at_probe(sim):
         # #384 -- inverse() / wh() right after calc_UB must not be stale.
         # ------------------------------------------------------------------
         pytest.param(
-            dict(action="calc_UB_then_inverse", target="cubic_a"),
+            {"action": "calc_UB_then_inverse", "target": "cubic_a"},
             does_not_raise(),
             id="calc_UB-then-inverse-on-A",
         ),
         pytest.param(
-            dict(action="switch_then_calc_UB", target="cubic_b"),
+            {"action": "switch_then_calc_UB", "target": "cubic_b"},
             does_not_raise(),
             id="switch-then-calc_UB-then-inverse-on-B",
         ),
@@ -117,7 +114,7 @@ def _pseudos_at_probe(sim):
         # #386 -- unknown sample name must not silently corrupt state.
         # ------------------------------------------------------------------
         pytest.param(
-            dict(action="switch", target="does_not_exist"),
+            {"action": "switch", "target": "does_not_exist"},
             pytest.raises(
                 KeyError,
                 match=re.escape(
@@ -168,9 +165,7 @@ def test_solver_resyncs_after_state_change(parms, context):
         ref.add_sample(target, sample_def["lattice"]["a"], replace=True)
         for refl in sample_def["reflections"]:
             ref.add_reflection(
-                pseudos=refl["pseudos"],
-                reals=refl["reals"],
-                name=refl["name"],
+                pseudos=refl["pseudos"], reals=refl["reals"], name=refl["name"]
             )
         ref.core.calc_UB(*[r["name"] for r in sample_def["reflections"]])
         expected = _pseudos_at_probe(ref)
@@ -188,52 +183,44 @@ def test_solver_resyncs_after_state_change(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(action="set_lattice_param"),
+            {"action": "set_lattice_param"},
             does_not_raise(),
             id="lattice-edit-flags-SAMPLE-and-UB",
         ),
         pytest.param(
-            dict(action="set_lattice_object"),
+            {"action": "set_lattice_object"},
             does_not_raise(),
             id="lattice-replace-flags-SAMPLE-and-UB",
         ),
+        pytest.param({"action": "set_U"}, does_not_raise(), id="U-edit-flags-UB-only"),
         pytest.param(
-            dict(action="set_U"),
-            does_not_raise(),
-            id="U-edit-flags-UB-only",
+            {"action": "set_UB"}, does_not_raise(), id="UB-edit-flags-UB-only"
         ),
         pytest.param(
-            dict(action="set_UB"),
-            does_not_raise(),
-            id="UB-edit-flags-UB-only",
-        ),
-        pytest.param(
-            dict(action="switch_sample"),
+            {"action": "switch_sample"},
             does_not_raise(),
             id="sample-switch-flags-SAMPLE-and-UB",
         ),
         pytest.param(
-            dict(action="set_mode"),
+            {"action": "set_mode"},
             does_not_raise(),
             id="mode-change-flags-MODE-and-EXTRAS",
         ),
         pytest.param(
-            dict(action="bool_True"),
-            does_not_raise(),
-            id="back-compat-True-flags-ALL",
+            {"action": "bool_True"}, does_not_raise(), id="back-compat-True-flags-ALL"
         ),
         pytest.param(
-            dict(action="bool_False"),
+            {"action": "bool_False"},
             does_not_raise(),
             id="back-compat-False-clears-all",
         ),
         pytest.param(
-            dict(action="needs_update_setter_True"),
+            {"action": "needs_update_setter_True"},
             does_not_raise(),
             id="back-compat-_solver_needs_update-setter-True",
         ),
         pytest.param(
-            dict(action="needs_update_setter_False"),
+            {"action": "needs_update_setter_False"},
             does_not_raise(),
             id="back-compat-_solver_needs_update-setter-False",
         ),
@@ -255,7 +242,7 @@ def test_solver_dirty_flag_granularity(parms, context):
             sim.sample.lattice.a = 5.5
             assert sim.core._solver_dirty == _SolverDirty.SAMPLE | _SolverDirty.UB
         elif action == "set_lattice_object":
-            sim.sample.lattice = dict(a=5.5)
+            sim.sample.lattice = {"a": 5.5}
             assert sim.core._solver_dirty == _SolverDirty.SAMPLE | _SolverDirty.UB
         elif action == "set_U":
             sim.sample.U = sim.sample.U
@@ -295,17 +282,11 @@ def test_solver_dirty_flag_granularity(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(domains=_SolverDirty.SAMPLE),
-            does_not_raise(),
-            id="additive-SAMPLE",
+            {"domains": _SolverDirty.SAMPLE}, does_not_raise(), id="additive-SAMPLE"
         ),
+        pytest.param({"domains": _SolverDirty.UB}, does_not_raise(), id="additive-UB"),
         pytest.param(
-            dict(domains=_SolverDirty.UB),
-            does_not_raise(),
-            id="additive-UB",
-        ),
-        pytest.param(
-            dict(domains=_SolverDirty.MODE | _SolverDirty.EXTRAS),
+            {"domains": _SolverDirty.MODE | _SolverDirty.EXTRAS},
             does_not_raise(),
             id="additive-MODE-and-EXTRAS",
         ),

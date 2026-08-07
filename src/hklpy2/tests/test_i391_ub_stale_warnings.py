@@ -41,22 +41,22 @@ def _make_stale(e4cv):
     "parms, context",
     [
         pytest.param(
-            dict(method="forward", make_stale=True, expect_warning=True),
+            {"method": "forward", "make_stale": True, "expect_warning": True},
             does_not_raise(),
             id="forward-stale-warns",
         ),
         pytest.param(
-            dict(method="forward", make_stale=False, expect_warning=False),
+            {"method": "forward", "make_stale": False, "expect_warning": False},
             does_not_raise(),
             id="forward-fresh-no-warning",
         ),
         pytest.param(
-            dict(method="inverse", make_stale=True, expect_warning=True),
+            {"method": "inverse", "make_stale": True, "expect_warning": True},
             does_not_raise(),
             id="inverse-stale-warns",
         ),
         pytest.param(
-            dict(method="inverse", make_stale=False, expect_warning=False),
+            {"method": "inverse", "make_stale": False, "expect_warning": False},
             does_not_raise(),
             id="inverse-fresh-no-warning",
         ),
@@ -73,9 +73,11 @@ def test_stale_ub_warning(parms, context):
         with warnings.catch_warnings(record=True) as caught:
             warnings.simplefilter("always")
             if parms["method"] == "forward":
-                e4cv.core.forward(dict(h=1, k=0, l=0))
+                e4cv.core.forward({"h": 1, "k": 0, "l": 0})
             else:
-                e4cv.core.inverse(dict(omega=-145.451, chi=0, phi=0, tth=69.066))
+                e4cv.core.inverse(
+                    {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.066}
+                )
 
         stale_warnings = [
             w
@@ -93,12 +95,12 @@ def test_stale_ub_warning(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(make_stale=True, expect_annotation=True),
+            {"make_stale": True, "expect_annotation": True},
             does_not_raise(),
             id="pa-shows-stale-annotation",
         ),
         pytest.param(
-            dict(make_stale=False, expect_annotation=False),
+            {"make_stale": False, "expect_annotation": False},
             does_not_raise(),
             id="pa-no-annotation-when-fresh",
         ),
@@ -127,13 +129,7 @@ def test_pa_surface_stale_annotation(parms, context, capsys):
 
 @pytest.mark.parametrize(
     "parms, context",
-    [
-        pytest.param(
-            dict(),
-            does_not_raise(),
-            id="recalc_UB-clears-warning",
-        ),
-    ],
+    [pytest.param({}, does_not_raise(), id="recalc_UB-clears-warning")],
 )
 def test_recalc_clears_warning(parms, context):
     """After re-running ``calc_UB`` the warning must stop firing."""
@@ -147,7 +143,7 @@ def test_recalc_clears_warning(parms, context):
 
         with warnings.catch_warnings(record=True) as caught:
             warnings.simplefilter("always")
-            e4cv.core.forward(dict(h=1, k=0, l=0))
+            e4cv.core.forward({"h": 1, "k": 0, "l": 0})
 
         stale = [
             w

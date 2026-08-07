@@ -12,13 +12,9 @@ import pytest
 from ophyd.sim import noisy_det
 
 from ..diffract import creator
+from ..plans import _find_psi_axis, _find_psi_mode, move_zone, scan_psi, scan_zone
 from ..run_utils import simulator_from_config
 from ..utils import validate_not_parallel
-from ..plans import _find_psi_axis
-from ..plans import _find_psi_mode
-from ..plans import move_zone
-from ..plans import scan_psi
-from ..plans import scan_zone
 
 HKLPY2_DIR = Path(__file__).parent.parent
 
@@ -37,27 +33,27 @@ def sim4c():
     "parms, context",
     [
         pytest.param(
-            dict(hkl=(1, 0, 0), hkl2=(0, 1, 0)),
+            {"hkl": (1, 0, 0), "hkl2": (0, 1, 0)},
             does_not_raise(),
             id="orthogonal vectors ok",
         ),
         pytest.param(
-            dict(hkl=(1, 1, 0), hkl2=(1, -1, 0)),
+            {"hkl": (1, 1, 0), "hkl2": (1, -1, 0)},
             does_not_raise(),
             id="non-parallel vectors ok",
         ),
         pytest.param(
-            dict(hkl=(2, 2, 0), hkl2=(1, 1, 0)),
+            {"hkl": (2, 2, 0), "hkl2": (1, 1, 0)},
             pytest.raises(ValueError, match=re.escape("are parallel")),
             id="parallel vectors raise",
         ),
         pytest.param(
-            dict(hkl=(1, 0, 0), hkl2=(-1, 0, 0)),
+            {"hkl": (1, 0, 0), "hkl2": (-1, 0, 0)},
             pytest.raises(ValueError, match=re.escape("are parallel")),
             id="anti-parallel vectors raise",
         ),
         pytest.param(
-            dict(hkl=(0, 0, 1), hkl2=(0, 0, 5)),
+            {"hkl": (0, 0, 1), "hkl2": (0, 0, 5)},
             pytest.raises(ValueError, match=re.escape("are parallel")),
             id="scaled parallel vectors raise",
         ),
@@ -77,22 +73,22 @@ def test_validate_not_parallel(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(mode_override=None),
+            {"mode_override": None},
             does_not_raise(),
             id="auto-detect psi_constant on E4CV",
         ),
         pytest.param(
-            dict(mode_override="psi_constant"),
+            {"mode_override": "psi_constant"},
             does_not_raise(),
             id="explicit valid mode",
         ),
         pytest.param(
-            dict(mode_override="bissector"),
+            {"mode_override": "bissector"},
             does_not_raise(),
             id="explicit non-psi mode is accepted",
         ),
         pytest.param(
-            dict(mode_override="no_such_mode"),
+            {"mode_override": "no_such_mode"},
             pytest.raises(ValueError, match=re.escape("not in available modes")),
             id="explicit unknown mode raises",
         ),
@@ -112,10 +108,10 @@ def test_find_psi_mode(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(mode_override=None),
+            {"mode_override": None},
             pytest.raises(NotImplementedError, match=re.escape("No psi-capable mode")),
             id="no psi mode on th_tth raises NotImplementedError",
-        ),
+        )
     ],
 )
 def test_find_psi_mode_no_psi_geometry(parms, context):
@@ -129,10 +125,10 @@ def test_find_psi_mode_no_psi_geometry(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(mode_override=None),
+            {"mode_override": None},
             pytest.raises(ValueError, match=re.escape("Multiple psi-capable modes")),
             id="multiple psi modes on E6C raises ValueError",
-        ),
+        )
     ],
 )
 def test_find_psi_mode_multiple_psi_modes(parms, context):
@@ -151,17 +147,15 @@ def test_find_psi_mode_multiple_psi_modes(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(psi_axis_override=None),
+            {"psi_axis_override": None},
             does_not_raise(),
             id="auto-detect psi axis in psi_constant mode",
         ),
         pytest.param(
-            dict(psi_axis_override="psi"),
-            does_not_raise(),
-            id="explicit valid psi axis",
+            {"psi_axis_override": "psi"}, does_not_raise(), id="explicit valid psi axis"
         ),
         pytest.param(
-            dict(psi_axis_override="no_such_axis"),
+            {"psi_axis_override": "no_such_axis"},
             pytest.raises(ValueError, match=re.escape("not in extra axes")),
             id="explicit unknown axis raises",
         ),
@@ -212,7 +206,7 @@ def test_find_psi_axis_edge_cases(fake_extras, context):
             ["psi"],  # only psi, no ref axes — ref_axes count will be 0
             pytest.raises(ValueError, match=re.escape("Expected exactly 3 reference")),
             id="wrong ref axis count raises in scan_psi",
-        ),
+        )
     ],
 )
 def test_scan_psi_wrong_ref_axis_count(fake_extras, context):
@@ -250,98 +244,98 @@ def test_scan_psi_wrong_ref_axis_count(fake_extras, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(1, -1, 0),
-                psi_start=0,
-                psi_stop=90,
-                num=4,
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (1, -1, 0),
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 4,
+            },
             does_not_raise(),
             id="basic psi scan succeeds",
         ),
         pytest.param(
-            dict(
-                h=1,
-                k=1,
-                l=0,
-                hkl2=(1, -1, 0),
-                psi_start=0,
-                psi_stop=180,
-                num=7,
-                fail_on_exception=False,
-            ),
+            {
+                "h": 1,
+                "k": 1,
+                "l": 0,
+                "hkl2": (1, -1, 0),
+                "psi_start": 0,
+                "psi_stop": 180,
+                "num": 7,
+                "fail_on_exception": False,
+            },
             does_not_raise(),
             id="psi scan with fail_on_exception=False",
         ),
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(1, -1, 0),
-                psi_start=0,
-                psi_stop=90,
-                num=4,
-                mode="psi_constant",
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (1, -1, 0),
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 4,
+                "mode": "psi_constant",
+            },
             does_not_raise(),
             id="explicit mode override",
         ),
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(1, -1, 0),
-                psi_start=0,
-                psi_stop=90,
-                num=4,
-                psi_axis="psi",
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (1, -1, 0),
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 4,
+                "psi_axis": "psi",
+            },
             does_not_raise(),
             id="explicit psi_axis override",
         ),
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(2, 2, 0),  # parallel to hkl
-                psi_start=0,
-                psi_stop=90,
-                num=4,
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (2, 2, 0),  # parallel to hkl
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 4,
+            },
             pytest.raises(ValueError, match=re.escape("are parallel")),
             id="parallel hkl and hkl2 raises",
         ),
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(1, -1, 0),
-                psi_start=0,
-                psi_stop=90,
-                num=4,
-                mode="no_such_mode",
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (1, -1, 0),
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 4,
+                "mode": "no_such_mode",
+            },
             pytest.raises(ValueError, match=re.escape("not in available modes")),
             id="invalid explicit mode raises",
         ),
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(1, -1, 0),
-                psi_start=0,
-                psi_stop=90,
-                num=4,
-                psi_axis="no_such_axis",
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (1, -1, 0),
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 4,
+                "psi_axis": "no_such_axis",
+            },
             pytest.raises(ValueError, match=re.escape("not in extra axes")),
             id="invalid explicit psi_axis raises",
         ),
@@ -358,18 +352,18 @@ def test_scan_psi(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(1, -1, 0),
-                psi_start=0,
-                psi_stop=90,
-                num=4,
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (1, -1, 0),
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 4,
+            },
             does_not_raise(),
             id="mode restored after successful scan",
-        ),
+        )
     ],
 )
 def test_scan_psi_restores_mode(parms, context):
@@ -389,18 +383,18 @@ def test_scan_psi_restores_mode(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(2, 2, 0),  # parallel — will raise before scan
-                psi_start=0,
-                psi_stop=90,
-                num=4,
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (2, 2, 0),  # parallel — will raise before scan
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 4,
+            },
             pytest.raises(ValueError, match=re.escape("are parallel")),
             id="mode restored after failed scan",
-        ),
+        )
     ],
 )
 def test_scan_psi_restores_mode_on_error(parms, context):
@@ -420,19 +414,19 @@ def test_scan_psi_restores_mode_on_error(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(1, -1, 0),
-                psi_start=0,
-                psi_stop=90,
-                num=3,
-                md={"user": "test", "sample": "silicon"},
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (1, -1, 0),
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 3,
+                "md": {"user": "test", "sample": "silicon"},
+            },
             does_not_raise(),
             id="metadata passed through to run document",
-        ),
+        )
     ],
 )
 def test_scan_psi_metadata(parms, context):
@@ -459,14 +453,10 @@ def test_scan_psi_metadata(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(hkl=(1, 0, 0)),
-            does_not_raise(),
-            id="move_zone to (1,0,0) tuple",
+            {"hkl": (1, 0, 0)}, does_not_raise(), id="move_zone to (1,0,0) tuple"
         ),
         pytest.param(
-            dict(hkl=(0, 1, 0)),
-            does_not_raise(),
-            id="move_zone to (0,1,0) tuple",
+            {"hkl": (0, 1, 0)}, does_not_raise(), id="move_zone to (0,1,0) tuple"
         ),
     ],
 )
@@ -488,17 +478,17 @@ def test_move_zone(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(start=(1, 0, 0), finish=(0, 1, 0), num=5, md=None),
+            {"start": (1, 0, 0), "finish": (0, 1, 0), "num": 5, "md": None},
             does_not_raise(),
             id="scan_zone basic",
         ),
         pytest.param(
-            dict(start=(1, 0, 0), finish=(0, 1, 0), num=3, md={"user": "test"}),
+            {"start": (1, 0, 0), "finish": (0, 1, 0), "num": 3, "md": {"user": "test"}},
             does_not_raise(),
             id="scan_zone with metadata",
         ),
         pytest.param(
-            dict(start=(1, 0, 0), finish=(0, 1, 0), num=3, md=None),
+            {"start": (1, 0, 0), "finish": (0, 1, 0), "num": 3, "md": None},
             does_not_raise(),
             id="scan_zone metadata defaults to plan_name only",
         ),
@@ -539,19 +529,13 @@ def test_scan_zone(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(name="move_zone"),
-            does_not_raise(),
-            id="move_zone exported from hklpy2",
+            {"name": "move_zone"}, does_not_raise(), id="move_zone exported from hklpy2"
         ),
         pytest.param(
-            dict(name="scan_psi"),
-            does_not_raise(),
-            id="scan_psi exported from hklpy2",
+            {"name": "scan_psi"}, does_not_raise(), id="scan_psi exported from hklpy2"
         ),
         pytest.param(
-            dict(name="scan_zone"),
-            does_not_raise(),
-            id="scan_zone exported from hklpy2",
+            {"name": "scan_zone"}, does_not_raise(), id="scan_zone exported from hklpy2"
         ),
     ],
 )
@@ -571,28 +555,28 @@ def test_plans_package_exports(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(1, -1, 0),
-                psi_start=0,
-                psi_stop=90,
-                num=3,
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (1, -1, 0),
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 3,
+            },
             does_not_raise(),
             id="user.scan_psi succeeds with selected diffractometer",
         ),
         pytest.param(
-            dict(
-                h=2,
-                k=2,
-                l=0,
-                hkl2=(2, 2, 0),  # parallel
-                psi_start=0,
-                psi_stop=90,
-                num=3,
-            ),
+            {
+                "h": 2,
+                "k": 2,
+                "l": 0,
+                "hkl2": (2, 2, 0),  # parallel
+                "psi_start": 0,
+                "psi_stop": 90,
+                "num": 3,
+            },
             pytest.raises(ValueError, match=re.escape("are parallel")),
             id="user.scan_psi parallel hkl2 raises",
         ),

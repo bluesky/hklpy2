@@ -12,16 +12,13 @@ in their ``__init__``.
 
 import logging
 from contextlib import nullcontext as does_not_raise
-from typing import List
 
 import pytest
 
-from hklpy2 import creator
-from hklpy2 import solver_utils
+from hklpy2 import creator, solver_utils
 from hklpy2.backends.no_op import NoOpSolver
 from hklpy2.backends.typing import GeometryDescriptor
-from hklpy2.run_utils import _RESERVED_SOLVER_KEYS
-from hklpy2.run_utils import simulator_from_config
+from hklpy2.run_utils import _RESERVED_SOLVER_KEYS, simulator_from_config
 
 # Module-level mutable cell so the stand-in solver's ``__init__`` can
 # report what kwargs it received to the active test function.
@@ -42,12 +39,7 @@ class _StandInSolver(NoOpSolver):
     _geometry_registry: dict = {}
 
     def __init__(
-        self,
-        geometry: str,
-        *,
-        marker: str = "",
-        another: object = None,
-        **kwargs,
+        self, geometry: str, *, marker: str = "", another: object = None, **kwargs
     ) -> None:
         super().__init__(geometry, **kwargs)
         self._marker = marker
@@ -64,15 +56,15 @@ class _StandInSolver(NoOpSolver):
         return meta
 
     @property
-    def real_axis_names(self) -> List[str]:
+    def real_axis_names(self) -> list[str]:
         return ["omega"]
 
     @property
-    def pseudo_axis_names(self) -> List[str]:
+    def pseudo_axis_names(self) -> list[str]:
         return ["h"]
 
     @property
-    def modes(self) -> List[str]:
+    def modes(self) -> list[str]:
         return ["default"]
 
 
@@ -116,17 +108,15 @@ def _patched_solvers(monkeypatch):
     "parms, context",
     [
         pytest.param(
-            dict(marker="hello-405"),
+            {"marker": "hello-405"},
             does_not_raise(),
             id="non-reserved marker key survives round-trip",
         ),
         pytest.param(
-            dict(marker=""),
-            does_not_raise(),
-            id="empty marker still forwarded",
+            {"marker": ""}, does_not_raise(), id="empty marker still forwarded"
         ),
         pytest.param(
-            dict(marker={"nested": [1, 2, 3]}),
+            {"marker": {"nested": [1, 2, 3]}},
             does_not_raise(),
             id="structured marker value survives round-trip",
         ),
@@ -171,10 +161,10 @@ def test_solver_kwargs_roundtrip(parms, context, _patched_solvers, caplog):
     "parms, context",
     [
         pytest.param(
-            dict(extra_keys={"marker": "m", "another": 42}),
+            {"extra_keys": {"marker": "m", "another": 42}},
             does_not_raise(),
             id="multiple non-reserved keys all forwarded",
-        ),
+        )
     ],
 )
 def test_multiple_non_reserved_keys_forwarded(parms, context, _patched_solvers):
@@ -205,8 +195,8 @@ def test_multiple_non_reserved_keys_forwarded(parms, context, _patched_solvers):
     "parms, context",
     [
         pytest.param(
-            dict(
-                reserved={
+            {
+                "reserved": {
                     "name",
                     "description",
                     "geometry",
@@ -214,10 +204,10 @@ def test_multiple_non_reserved_keys_forwarded(parms, context, _patched_solvers):
                     "version",
                     "mode",
                 }
-            ),
+            },
             does_not_raise(),
             id="reserved key set matches the documented contract",
-        ),
+        )
     ],
 )
 def test_reserved_solver_keys_contract(parms, context):
@@ -230,10 +220,8 @@ def test_reserved_solver_keys_contract(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(),
-            does_not_raise(),
-            id="HklSolver engine field still survives round-trip",
-        ),
+            {}, does_not_raise(), id="HklSolver engine field still survives round-trip"
+        )
     ],
 )
 def test_hkl_soleil_engine_still_forwarded(parms, context):
@@ -243,11 +231,7 @@ def test_hkl_soleil_engine_still_forwarded(parms, context):
     """
     pytest.importorskip("hkl")
     with context:
-        original = creator(
-            name="sixc",
-            geometry="E6C",
-            solver_kwargs={"engine": "psi"},
-        )
+        original = creator(name="sixc", geometry="E6C", solver_kwargs={"engine": "psi"})
         config = original.configuration
         assert config["solver"]["engine"] == "psi"
 

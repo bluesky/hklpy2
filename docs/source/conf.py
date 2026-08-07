@@ -66,11 +66,7 @@ extensions = [
 ]
 extensions.append("sphinx_tabs.tabs")  # this must be last
 
-exclude_patterns = [
-    "**.ipynb_checkpoints",
-    "dev_*.ipynb",
-    "dev_*.py",
-]
+exclude_patterns = ["**.ipynb_checkpoints", "dev_*.ipynb", "dev_*.py"]
 myst_enable_extensions = ["colon_fence"]
 source_suffix = ".rst .md".split()
 templates_path = ["_templates"]
@@ -91,11 +87,7 @@ autoapi_ignore = [
     "**/_version.py",
 ]
 autoapi_add_toctree_entry = False  # added manually to index.rst
-autoapi_options = [
-    "members",
-    "undoc-members",
-    "show-inheritance",
-]
+autoapi_options = ["members", "undoc-members", "show-inheritance"]
 autoapi_member_order = "alphabetical"
 autoapi_template_dir = "_templates/autoapi"
 
@@ -132,9 +124,7 @@ def _tilde_type_str(s: str) -> str:
     import re
 
     return re.sub(
-        r"(?<![.\w~])([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)+)",
-        lambda m: "~" + m.group(0),
-        s,
+        r"(?<![.\w~])([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)+)", lambda m: "~" + m.group(0), s
     )
 
 

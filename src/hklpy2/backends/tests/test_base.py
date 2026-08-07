@@ -16,9 +16,7 @@ from ...exceptions import SolverError
 from ...utils import IDENTITY_MATRIX_3X3
 from ..base import SolverBase
 from ..no_op import NoOpSolver
-from ..th_tth_q import BISECTOR_MODE
-from ..th_tth_q import TH_TTH_Q_GEOMETRY
-from ..th_tth_q import ThTthSolver
+from ..th_tth_q import BISECTOR_MODE, TH_TTH_Q_GEOMETRY, ThTthSolver
 from ..typing import GeometryDescriptor
 
 
@@ -28,11 +26,7 @@ class TrivialSolver(SolverBase):
     def addReflection(self, reflection: Reflection):
         """."""
 
-    def calculate_UB(
-        self,
-        r1: Reflection,
-        r2: Reflection,
-    ) -> list[list[float]]:
+    def calculate_UB(self, r1: Reflection, r2: Reflection) -> list[list[float]]:
         """."""
         return IDENTITY_MATRIX_3X3
 
@@ -91,9 +85,13 @@ def test_SolverBase():
     assert solver.extra_axis_names == [], f"{solver.extra_axis_names=}"
     assert solver.extras == {}, f"{solver.extras=}"
     assert solver.forward({}) == [{}]
-    assert (
-        list(solver._metadata) == "name description geometry real_axes version".split()
-    )
+    assert list(solver._metadata) == [
+        "name",
+        "description",
+        "geometry",
+        "real_axes",
+        "version",
+    ]
     assert solver.mode == ""
     assert solver.inverse({}) == {}
     assert solver.inverse({}) == {}
@@ -129,8 +127,15 @@ def test_SolverBase():
 
     with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.lattice = 1.0
-    solver.lattice = dict(a=1, b=2, c=3, alpha=90, beta=90, gamma=90)
-    assert solver.lattice == dict(a=1, b=2, c=3, alpha=90, beta=90, gamma=90)
+    solver.lattice = {"a": 1, "b": 2, "c": 3, "alpha": 90, "beta": 90, "gamma": 90}
+    assert solver.lattice == {
+        "a": 1,
+        "b": 2,
+        "c": 3,
+        "alpha": 90,
+        "beta": 90,
+        "gamma": 90,
+    }
 
     with pytest.raises(TypeError, match=re.escape("Must supply")):
         solver.sample = 1.0
@@ -166,12 +171,12 @@ def test_SolverBase_abstractmethods():
     "parms, context",
     [
         pytest.param(
-            dict(reals={}),
+            {"reals": {}},
             does_not_raise(),
             id="set_reals() on TrivialSolver is a no-op (empty dict)",
         ),
         pytest.param(
-            dict(reals={"th": 10.0, "tth": 20.0}),
+            {"reals": {"th": 10.0, "tth": 20.0}},
             does_not_raise(),
             id="set_reals() on TrivialSolver is a no-op (with values)",
         ),
@@ -189,10 +194,10 @@ def test_SolverBase_set_reals_noop(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(reals={"th": 5.0, "tth": 10.0}),
+            {"reals": {"th": 5.0, "tth": 10.0}},
             does_not_raise(),
             id="set_reals() on ThTthSolver (non-hkl_soleil) succeeds via inherited no-op",
-        ),
+        )
     ],
 )
 def test_SolverBase_set_reals_inherited(parms, context):
@@ -204,33 +209,29 @@ def test_SolverBase_set_reals_inherited(parms, context):
 
 
 # A non-identity 3x3 matrix for testing U/UB round-trips.
-_SAMPLE_MATRIX = [
-    [0.0, 1.0, 0.0],
-    [0.0, 0.0, 1.0],
-    [1.0, 0.0, 0.0],
-]
+_SAMPLE_MATRIX = [[0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0]]
 
 
 @pytest.mark.parametrize(
     "parms, context",
     [
         pytest.param(
-            dict(attr="U", value=IDENTITY_MATRIX_3X3),
+            {"attr": "U", "value": IDENTITY_MATRIX_3X3},
             does_not_raise(),
             id="U getter returns identity by default",
         ),
         pytest.param(
-            dict(attr="UB", value=IDENTITY_MATRIX_3X3),
+            {"attr": "UB", "value": IDENTITY_MATRIX_3X3},
             does_not_raise(),
             id="UB getter returns identity by default",
         ),
         pytest.param(
-            dict(attr="U", value=_SAMPLE_MATRIX),
+            {"attr": "U", "value": _SAMPLE_MATRIX},
             does_not_raise(),
             id="U setter stores value; getter returns it",
         ),
         pytest.param(
-            dict(attr="UB", value=_SAMPLE_MATRIX),
+            {"attr": "UB", "value": _SAMPLE_MATRIX},
             does_not_raise(),
             id="UB setter stores value; getter returns it",
         ),
@@ -253,10 +254,10 @@ def test_SolverBase_U_UB(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(reals={"th": 5.0, "tth": 10.0}),
+            {"reals": {"th": 5.0, "tth": 10.0}},
             does_not_raise(),
             id="ThTthSolver U/UB inherit base store-and-return behaviour",
-        ),
+        )
     ],
 )
 def test_SolverBase_U_UB_inherited(parms, context):
@@ -282,15 +283,14 @@ def test_SolverBase_U_UB_inherited(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(cls=ThTthSolver, expected=TH_TTH_Q_GEOMETRY),
+            {"cls": ThTthSolver, "expected": TH_TTH_Q_GEOMETRY},
             does_not_raise(),
             id="ThTthSolver: first registered geometry",
         ),
         pytest.param(
-            dict(cls=NoOpSolver, expected=None),
+            {"cls": NoOpSolver, "expected": None},
             pytest.raises(
-                SolverError,
-                match=re.escape("NoOpSolver has no registered geometries"),
+                SolverError, match=re.escape("NoOpSolver has no registered geometries")
             ),
             id="NoOpSolver: no geometries -> SolverError",
         ),
@@ -307,12 +307,16 @@ def test_default_geometry(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(cls=ThTthSolver, geometry=TH_TTH_Q_GEOMETRY, expected=BISECTOR_MODE),
+            {
+                "cls": ThTthSolver,
+                "geometry": TH_TTH_Q_GEOMETRY,
+                "expected": BISECTOR_MODE,
+            },
             does_not_raise(),
             id="ThTthSolver: descriptor.default_mode wins",
         ),
         pytest.param(
-            dict(cls=ThTthSolver, geometry="UNKNOWN", expected=None),
+            {"cls": ThTthSolver, "geometry": "UNKNOWN", "expected": None},
             pytest.raises(
                 SolverError,
                 match=re.escape("ThTthSolver has no registered geometry 'UNKNOWN'"),
@@ -320,7 +324,7 @@ def test_default_geometry(parms, context):
             id="ThTthSolver: unregistered geometry -> SolverError",
         ),
         pytest.param(
-            dict(cls=NoOpSolver, geometry="anything", expected=None),
+            {"cls": NoOpSolver, "geometry": "anything", "expected": None},
             pytest.raises(
                 SolverError,
                 match=re.escape("NoOpSolver has no registered geometry 'anything'"),
@@ -340,12 +344,16 @@ def test_default_mode(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(cls=ThTthSolver, geometry=TH_TTH_Q_GEOMETRY, expected=BISECTOR_MODE),
+            {
+                "cls": ThTthSolver,
+                "geometry": TH_TTH_Q_GEOMETRY,
+                "expected": BISECTOR_MODE,
+            },
             does_not_raise(),
             id="ThTthSolver: __init__ applies default_mode",
         ),
         pytest.param(
-            dict(cls=NoOpSolver, geometry="anything", expected=""),
+            {"cls": NoOpSolver, "geometry": "anything", "expected": ""},
             does_not_raise(),
             id="NoOpSolver: __init__ leaves mode blank when no default exists",
         ),
@@ -362,17 +370,17 @@ def test_init_applies_default_mode(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(modes=["a", "b", "c"], default_mode="b", expected="b"),
+            {"modes": ["a", "b", "c"], "default_mode": "b", "expected": "b"},
             does_not_raise(),
             id="explicit default_mode wins over modes[0]",
         ),
         pytest.param(
-            dict(modes=["a", "b", "c"], default_mode="", expected="a"),
+            {"modes": ["a", "b", "c"], "default_mode": "", "expected": "a"},
             does_not_raise(),
             id="blank default_mode falls back to modes[0]",
         ),
         pytest.param(
-            dict(modes=[], default_mode="", expected=None),
+            {"modes": [], "default_mode": "", "expected": None},
             pytest.raises(SolverError, match=re.escape("defines no modes")),
             id="empty modes -> SolverError",
         ),

@@ -19,12 +19,10 @@ self-consistent.  Covered here:
 """
 
 from contextlib import nullcontext as does_not_raise
-from typing import List
 
 import pytest
 
-from hklpy2 import creator
-from hklpy2 import solver_utils
+from hklpy2 import creator, solver_utils
 from hklpy2.backends.no_op import NoOpSolver
 from hklpy2.backends.typing import GeometryDescriptor
 
@@ -48,15 +46,15 @@ class _StandInSolver407(NoOpSolver):
         return meta
 
     @property
-    def real_axis_names(self) -> List[str]:
+    def real_axis_names(self) -> list[str]:
         return ["omega"]
 
     @property
-    def pseudo_axis_names(self) -> List[str]:
+    def pseudo_axis_names(self) -> list[str]:
         return ["h"]
 
     @property
-    def modes(self) -> List[str]:
+    def modes(self) -> list[str]:
         return ["alpha", "beta", "gamma"]
 
 
@@ -98,17 +96,17 @@ def _patched_solvers(monkeypatch):
     "parms, context",
     [
         pytest.param(
-            dict(new_mode="constant_omega"),
+            {"new_mode": "constant_omega"},
             does_not_raise(),
             id="hkl_soleil E4CV constant_omega flushed on export",
         ),
         pytest.param(
-            dict(new_mode="constant_chi"),
+            {"new_mode": "constant_chi"},
             does_not_raise(),
             id="hkl_soleil E4CV constant_chi flushed on export",
         ),
         pytest.param(
-            dict(new_mode="constant_phi"),
+            {"new_mode": "constant_phi"},
             does_not_raise(),
             id="hkl_soleil E4CV constant_phi flushed on export",
         ),
@@ -136,12 +134,12 @@ def test_hkl_soleil_mode_flushed_on_export(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(new_mode="beta"),
+            {"new_mode": "beta"},
             does_not_raise(),
             id="standin solver mode beta flushed on export",
         ),
         pytest.param(
-            dict(new_mode="gamma"),
+            {"new_mode": "gamma"},
             does_not_raise(),
             id="standin solver mode gamma flushed on export",
         ),
@@ -151,9 +149,7 @@ def test_standin_solver_mode_flushed_on_export(parms, context, _patched_solvers)
     """Solver-agnostic check: any ``_metadata`` that reads ``self.mode``."""
     with context:
         sim = creator(
-            name="standin407",
-            solver=_StandInSolver407.name,
-            geometry="STANDIN407",
+            name="standin407", solver=_StandInSolver407.name, geometry="STANDIN407"
         )
         assert sim.core.mode != parms["new_mode"]
 
@@ -168,10 +164,10 @@ def test_standin_solver_mode_flushed_on_export(parms, context, _patched_solvers)
     "parms, context",
     [
         pytest.param(
-            dict(),
+            {},
             does_not_raise(),
             id="clean bitfield: snapshot does not re-push to solver",
-        ),
+        )
     ],
 )
 def test_clean_bitfield_skips_flush(parms, context, _patched_solvers, monkeypatch):
