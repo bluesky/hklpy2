@@ -36,6 +36,7 @@ describe future plans.
     Maintenance
     -----------
 
+    * Add periodic CI execution to detect upstream package version issues. (:issue:`421`)
     * DOC: Feature checklist (from project planning phase) is now complete.
     * Unify copyright automation across hklpy2 family. (:issue:`411`)
 
