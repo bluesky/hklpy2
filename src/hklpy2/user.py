@@ -102,11 +102,13 @@ class _SelectedDiffractometer:
     @diffractometer.setter
     def diffractometer(self, diffractometer: DiffractometerBase) -> None:
         """Name the diffractometer to be used."""
-        if not isinstance(diffractometer, DiffractometerBase):
-            if diffractometer is not None:
-                raise TypeError(
-                    f"{diffractometer} must be an hklpy2 'DiffractometerBase' subclass."
-                )
+        if (
+            not isinstance(diffractometer, DiffractometerBase)
+            and diffractometer is not None
+        ):
+            raise TypeError(
+                f"{diffractometer} must be an hklpy2 'DiffractometerBase' subclass."
+            )
         self._selection = diffractometer
 
 
@@ -254,9 +256,7 @@ def cahkl_table(*reflections: list[AxesTuple], digits=4) -> Table:
     for r in reflections:
         pseudos = core.standardize_pseudos(r)
         rstr = "(" + " ".join([str(v) for v in brief(pseudos)]) + ")"
-        i = 0
-        for solution in core.forward(r):
-            i += 1
+        for i, solution in enumerate(core.forward(r), start=1):
             s = core.standardize_reals(solution)
             table.addRow([rstr, i] + brief(s))
     print(table)

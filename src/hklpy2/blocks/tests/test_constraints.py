@@ -75,7 +75,7 @@ def test_LimitsConstraint(lo, hi, value, result):
     assert "[cut=" in text
 
     assert c.low_limit == lo or -180, f"{c!r}"
-    assert c.high_limit == hi or 180, f"{c!r}"
+    assert c.high_limit == hi or 180, f"{c!r}"  # noqa: SIM222
     assert c.valid(axis=value) == result, f"{c!r}"
 
 

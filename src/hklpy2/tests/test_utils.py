@@ -9,7 +9,6 @@ import re
 import types
 from collections import namedtuple
 from contextlib import nullcontext as does_not_raise
-from typing import Union
 
 import numpy as np
 import pint
@@ -598,9 +597,7 @@ def test_list_orientation_runs(devices, cat, RE):
             does_not_raise(),
             id="ndarray-AnyAxesType",
         ),
-        pytest.param(
-            None, Union[AnyAxesType, None], does_not_raise(), id="None-Optional"
-        ),
+        pytest.param(None, AnyAxesType | None, does_not_raise(), id="None-Optional"),
         pytest.param(
             None,
             AnyAxesType,
@@ -986,7 +983,7 @@ def test_istype_with_numpy_scalar_and_none():
     assert istype(np.array([1, 2, 3]), AxesArray)
 
     # None against Optional/Union types: already covered elsewhere, but sanity-check
-    assert istype(None, Union[AxesArray, None])
+    assert istype(None, AxesArray | None)
 
 
 @pytest.mark.parametrize(

@@ -41,9 +41,7 @@ class _allows_no_solutions:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type is NoForwardSolutions:
-            return True  # suppress the exception
-        return False  # re-raise anything else
+        return exc_type is NoForwardSolutions
 
 
 def _make_e4cv(constraints=None):

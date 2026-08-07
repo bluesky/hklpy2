@@ -37,7 +37,7 @@ in the solver's own module (e.g. :mod:`hklpy2.backends.hkl_soleil`).
 """
 
 from collections.abc import Iterator, Mapping, Sequence
-from typing import Any, TypedDict, Union
+from typing import Any, TypedDict
 
 import numpy as np
 import numpy.typing as npt
@@ -68,12 +68,12 @@ BlueskyPlanType = Iterator[Sequence[Msg]]
 KeyValueMap = Mapping[str, Any]
 """Dictionary for configuration and other."""
 
-NUMERIC = Union[float, int]
+NUMERIC = float | int
 """Either integer or real number."""
 
-INPUT_VECTOR = Union[
-    list[NUMERIC], Mapping[str, NUMERIC], npt.NDArray[np.floating], Sequence[NUMERIC]
-]
+INPUT_VECTOR = (
+    list[NUMERIC] | Mapping[str, NUMERIC] | npt.NDArray[np.floating] | Sequence[NUMERIC]
+)
 """Acceptable forms of vector input for zones, ..."""
 
 AxesArray = npt.NDArray[np.floating]
@@ -88,7 +88,7 @@ AxesList = list[NUMERIC]
 AxesTuple = tuple[NUMERIC, ...]
 """Tuple of axes values."""
 
-AnyAxesType = Union[AxesArray, AxesDict, AxesList, AxesTuple]
+AnyAxesType = AxesArray | AxesDict | AxesList | AxesTuple
 """
 Any of these types are used to describe both pseudo and real axes.
 

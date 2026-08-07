@@ -52,7 +52,7 @@ import uuid
 import warnings
 from collections.abc import Iterable, Mapping, Sequence
 from enum import IntFlag
-from typing import TYPE_CHECKING, Any, NamedTuple, Union
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 import numpy as np
 import pint
@@ -235,7 +235,7 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
                 )
             axes[name] = value
 
-    elif istype(input, Union[AxesList, AxesTuple]):  # convert to ordered dict
+    elif istype(input, AxesList | AxesTuple):  # convert to ordered dict
         for name, value in zip(names, input):
             axes[name] = value
 

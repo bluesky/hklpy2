@@ -1475,13 +1475,14 @@ def test_digits_property(value, context):
             if hasattr(d, "RealPosition"):
                 assert getattr(d.RealPosition, "_hklpy2_wrapped_digits", None) == other
     finally:
+        MyException = Exception
         try:
             d.core = None
             # Ensure the except: block is executed at least once so coverage marks it.
             # Force an exception after successful assignment to exercise the except branch
             # without changing test behavior.
-            raise Exception("force except for coverage")
-        except Exception:
+            raise MyException("force except for coverage")
+        except MyException:
             pass
 
 
