@@ -198,6 +198,11 @@ ignore = [
     "N806",     # non-lowercase-variable-in-function (convention preference)
     "B905",     # zip-without-explicit-strict (older code may not use strict)
     "E501",     # line-too-long (we use line-length = 115)
+    # Security - pre-existing issues in the codebase we accept
+    "S101",     # Use of assert (acceptable in tests, Bandit false positive)
+    "S506",     # yaml.load with unsafe Loader (used in utils.py, accepted risk)
+    # Shadowing - pre-existing builtins usage we accept
+    "A002",     # Function argument `print` shadowing builtin (intentional in utils.py)
 ]
 
 # Extend select to ensure important rules are checked

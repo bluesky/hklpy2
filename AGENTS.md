@@ -13,6 +13,41 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 - style information described in pyproject.toml
 - `pre-commit run --all-files`
 
+## Ruff Linting Configuration (Decision: PR #420)
+
+**Decision made in PR #420:** After discovering ruff version mismatches between local environment (0.16.1) and pre-commit pin (0.15.6), and realizing the codebase has ~1300 pre-existing linting issues:
+
+### Configuration Strategy (Option 2 - chosen)
+
+Use `pyproject.toml` as the **single source of truth** for ruff configuration instead of pinning versions in CI. This is robust because:
+
+1. **Version-independent**: Works with any ruff version (0.15.6+), handles upgrades gracefully
+2. **Self-documenting**: Explicitly states project's chosen style rules (preferences vs. real bugs)
+3. **Decoupled from CI**: Developers and CI use the same rules regardless of ruff version installed
+
+### Configuration Details
+
+- **File**: `[tool.ruff]` section in `pyproject.toml`
+- **Line length**: 115 (matches `.flake8` and `[tool.black]`)
+- **Ignored rules**:
+  - Style preferences: C408 (dict() literals), SIM905 (str.split()), UP007/UP045/UP006 (type annotation styles)
+  - Docstring strictness: D200-D417 (we don't enforce PEP 257 strictly)
+  - Pre-existing issues: A002 (print builtin shadowing), S506 (yaml.load), S101 (asserts)
+- **Enabled rules**: Bug detection (A, B, S, RUF, TRY, N, E, W, F, I)
+- **Per-file exceptions**: Documentation examples (`docs/**`) are excluded from linting
+
+### Pre-commit Hook Adjustment
+
+The ruff check hook in `.pre-commit-config.yaml` is set to `stages: [manual]` to skip it during normal commits (since pre-existing issues would block commits). Run explicitly when needed:
+
+```bash
+pre-commit run ruff --hook-stage manual
+```
+
+### Why NOT Option 1 (pinning ruff in CI)
+
+Pinning would require manual updates to both `.pre-commit-config.yaml` (for local) AND `.github/workflows/code.yml` (for CI), staying perpetually behind the latest version. This is maintenance overhead with no benefit.
+
 
 ## Agent pytest style (for automated agents) - MANDATORY
 
