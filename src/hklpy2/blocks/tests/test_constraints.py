@@ -17,6 +17,8 @@ from ..constraints import RealAxisConstraints
 
 
 class PlainConstraint(ConstraintBase):
+    """Test constraint class."""
+
     def valid(self, **values):
         return True
 
@@ -64,8 +66,8 @@ def test_LimitsConstraint(lo, hi, value, result):
     assert " <= " in text
     assert "[cut=" in text
 
-    assert c.low_limit == lo or -180, f"{c!r}"
-    assert c.high_limit == hi or 180, f"{c!r}"
+    assert c.low_limit == lo, f"{c!r}"
+    assert c.high_limit == hi, f"{c!r}"
     assert c.valid(axis=value) == result, f"{c!r}"
 
 

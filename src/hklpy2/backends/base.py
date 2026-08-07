@@ -12,6 +12,7 @@ import logging
 from abc import ABC
 from abc import abstractmethod
 from typing import Any
+from typing import ClassVar
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -146,7 +147,7 @@ class SolverBase(ABC):
     ``INTERNAL_LENGTH_UNITS``.
     """
 
-    _geometry_registry: Dict[str, GeometryDescriptor] = {}
+    _geometry_registry: ClassVar[Dict[str, GeometryDescriptor]] = {}
     """
     Per-class registry of :class:`~hklpy2.backends.typing.GeometryDescriptor`
     objects, keyed by geometry name.
@@ -344,7 +345,7 @@ class SolverBase(ABC):
                 self.mode = mode
                 names += self.extra_axis_names
             self.mode = original  # put it back
-            self._all_extra_axis_names = sorted(list(set(names)))
+            self._all_extra_axis_names = sorted(set(names))
         return self._all_extra_axis_names
 
     @abstractmethod
@@ -503,10 +504,10 @@ class SolverBase(ABC):
         :meth:`forward` computation.
         """
         try:
-            self._mode
+            return self._mode
         except AttributeError:
             self._mode = ""
-        return self._mode
+            return self._mode
 
     @mode.setter
     def mode(self, value: str) -> None:
@@ -564,7 +565,7 @@ class SolverBase(ABC):
     def removeAllReflections(self) -> None:
         """Remove all reflections."""
 
-    def set_reals(self, reals: NamedFloatDict) -> None:
+    def set_reals(self, reals: NamedFloatDict) -> None:  # noqa: B027
         """
         Set current real-axis values in the solver's internal geometry object.
 
@@ -586,6 +587,7 @@ class SolverBase(ABC):
             Dictionary mapping solver real-axis names to their current values
             (in the solver's internal angle units).
         """
+        pass
 
     @property
     def sample(self) -> Union[SampleDict, None]:

@@ -341,7 +341,7 @@ class HklSolver(SolverBase):
         Returns
         -------
         Matrix3x3 or None
-            The 3×3 UB orientation matrix on success, or ``None`` if no
+            The 3x3 UB orientation matrix on success, or ``None`` if no
             sample has been set (i.e. ``_sample`` is ``None``).
 
         Raises
@@ -481,10 +481,10 @@ class HklSolver(SolverBase):
                     )
                 )
                 solutions.append(sol)
-            return solutions
-
         except GLib.GError as exc:
             raise NoForwardSolutions("No solutions.") from exc
+        else:
+            return solutions
 
     @classmethod
     def geometries(cls) -> list[str]:

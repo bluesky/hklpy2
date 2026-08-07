@@ -23,6 +23,7 @@ import math
 from abc import ABC
 from abc import abstractmethod
 from typing import Any
+from typing import ClassVar
 from typing import Dict
 from typing import List
 from typing import Optional
@@ -59,7 +60,7 @@ class ConstraintBase(ABC):
         ~valid
     """
 
-    _fields: List[str] = []
+    _fields: ClassVar[List[str]] = []
     label: str = UNDEFINED_LABEL
 
     def __repr__(self) -> str:

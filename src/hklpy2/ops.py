@@ -517,11 +517,7 @@ class Core:
             pseudos = pseudos._asdict()
         if isinstance(pseudos, (list, set, tuple)):
             # Expect values are provided in canonical order.
-            pseudos = {
-                axis: value
-                # rewrite as dictionary
-                for axis, value in zip(expected_names, pseudos)
-            }
+            pseudos = dict(zip(expected_names, pseudos))
         for axis in expected_names:
             if axis not in pseudos:
                 raise ValueError(f"Wrong axis names: received {original}")
@@ -1177,9 +1173,7 @@ class Core:
         rnames = [r.name for r in reflections]
         if len(reflections) < 3:
             raise CoreError(
-                # fmt: off
                 f"Must have at least 3 reflections to refine lattice. Known reflections: {rnames}"
-                # fmt: on
             )
 
         logger.debug("Refining lattice using reflections %r", rnames)
@@ -1215,10 +1209,7 @@ class Core:
         wl_units_solver = self.solver.LENGTH_UNITS
         reflections = []
         for refl in refl_list:
-            if isinstance(refl, str):
-                refl_obj = self.sample.reflections[refl]
-            else:
-                refl_obj = refl
+            refl_obj = self.sample.reflections[refl] if isinstance(refl, str) else refl
             refl_dict = refl_obj._asdict()
 
             angle_units_uc = self.diffractometer.reals_units
@@ -1248,7 +1239,7 @@ class Core:
             raise CoreError("Cannot remove last sample.")
 
         self._samples.pop(name)
-        self._sample_name = list(self.samples)[0]
+        self._sample_name = next(iter(self.samples))
 
     @versionchanged(
         version="0.6.2",
@@ -1439,11 +1430,7 @@ class Core:
             kwargs,
         )
         self._solver = solver_factory(name, geometry, **kwargs)
-        self._extras = {
-            k: DEFAULT_EXTRA_VALUE
-            #
-            for k in self.solver.all_extra_axis_names
-        }
+        self._extras = dict.fromkeys(self.solver.all_extra_axis_names, DEFAULT_EXTRA_VALUE)
         self.update_solver()
         return self._solver
 
@@ -1577,14 +1564,13 @@ class Core:
         if dirty & _SolverDirty.MODE:
             self.solver.mode = self.mode
         if dirty & _SolverDirty.EXTRAS:
-            try:
+            from contextlib import suppress
+            with suppress(AttributeError):
                 self.solver.extras = {
                     axis: self._extras[axis]
                     # multiline
                     for axis in self.solver.extra_axis_names
-                }
-            except AttributeError:
-                pass  # Some solvers have no setter for extras
+                }  # Some solvers have no setter for extras
         if dirty & _SolverDirty.UB:
             self.solver.U = self.sample.U
             self.solver.UB = self.sample.UB

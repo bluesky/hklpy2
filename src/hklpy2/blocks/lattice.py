@@ -66,7 +66,7 @@ class Lattice:
     Crystal lattice parameters.
 
     If only the parameter ``a`` is given, the cell is treated as cubic: ``b``
-    and ``c`` are set equal to ``a``, and α, β, γ are 90°. Supplying the
+    and ``c`` are set equal to ``a``, and a, b, g are 90°. Supplying the
     nonredundant parameters for another crystal system (for example, the
     hexagonal case below) defines that lattice.
 
@@ -167,7 +167,7 @@ class Lattice:
             alpha_val = float(self.alpha)
             beta_val = float(self.beta)
             gamma_val = float(self.gamma)
-        except Exception:
+        except Exception:  # noqa: S110
             pass
 
         if (
@@ -343,7 +343,7 @@ class Lattice:
 
     def system_parameter_names(self, system: str) -> LatticeDictType:
         """Return list of lattice parameter names for this crystal system."""
-        all = "a b c alpha beta gamma".split()
+        all_params = "a b c alpha beta gamma".split()
         return {
             "cubic": ["a"],
             "hexagonal": "a c gamma".split(),
@@ -351,8 +351,8 @@ class Lattice:
             "tetragonal": "a c".split(),
             "orthorhombic": "a b c".split(),
             "monoclinic": "a b c beta".split(),
-            "triclinic": all,
-        }.get(system, all)
+            "triclinic": all_params,
+        }.get(system, all_params)
 
     # ---- get/set properties
 

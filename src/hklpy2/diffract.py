@@ -871,7 +871,7 @@ class DiffractometerBase(PseudoPositioner):
           removed but at least one decimal retained (e.g. 4 -> 4.0).
         - Other types: fall back to built-in repr.
         """
-        if isinstance(x, float) or isinstance(x, np.floating):
+        if isinstance(x, (float, np.floating)):
             s = f"{x:.{digits}f}"
             if "." in s:
                 s = s.rstrip("0").rstrip(".")
@@ -907,14 +907,14 @@ class DiffractometerBase(PseudoPositioner):
 
         orig_name = orig_cls.__name__
 
-        def __repr__(self):
+        def __repr__(self):  # noqa: N807
             pairs: list[str] = []
             for name in getattr(self, "_fields", ()):  # namedtuple fields
                 val = getattr(self, name)
                 pairs.append(f"{name}={cls._format_value_for_repr(val, digits)}")
             return f"{orig_name}({', '.join(pairs)})"
 
-        def __str__(self):
+        def __str__(self):  # noqa: N807
             return self.__repr__()
 
         new_cls = type(
@@ -1021,7 +1021,7 @@ class DiffractometerBase(PseudoPositioner):
         return self.core.samples
 
     @property
-    def sample(self) -> Union[None, Sample]:
+    def sample(self) -> Union[Sample, None]:
         """Current sample object."""
         if self.core is None:
             return None
@@ -1121,7 +1121,7 @@ def creator(
     name: str = "",
     solver: str = "hkl_soleil",
     geometry: str = "E4CV",
-    beam_kwargs: dict[str, object] = None,
+    beam_kwargs: dict[str, object] | None = None,
     solver_kwargs: dict[str, object] = {},  # noqa: B006
     _pseudo: Optional[Sequence[str]] = None,
     pseudos: list = [],  # noqa: B006
@@ -1267,7 +1267,7 @@ def diffractometer_class_factory(
     *,
     solver: str = "hkl_soleil",
     geometry: str = "E4CV",
-    beam_kwargs: dict[str, object] = None,
+    beam_kwargs: dict[str, object] | None = None,
     solver_kwargs: dict[str, object] = {"engine": "hkl"},  # noqa: B006
     _pseudo: Optional[Sequence[str]] = None,
     pseudos: list = [],  # noqa: B006

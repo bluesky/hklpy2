@@ -150,7 +150,7 @@ def test_geometry_descriptor_field_independence(parms, context):
 def test_register_geometry(parms, context):
     # Use a fresh isolated subclass so tests don't pollute ThTthSolver's registry.
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: dict = {}  # noqa: RUF012
 
     with context:
         _IsolatedSolver.register_geometry(parms["descriptor"])
@@ -175,7 +175,7 @@ def test_register_geometry(parms, context):
 )
 def test_geometries_sorted(parms, context):
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: dict = {}  # noqa: RUF012
 
     with context:
         for name in parms["names"]:
@@ -196,7 +196,7 @@ def test_geometries_sorted(parms, context):
 )
 def test_register_geometry_overwrite(parms, context):
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: dict = {}  # noqa: RUF012
 
     with context:
         desc_v1 = _make_descriptor(parms["name"], real=["a"])
@@ -255,7 +255,7 @@ def test_registry_isolation(parms, context):
 )
 def test_th_tth_solver_uses_registry(parms, context):
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: dict = {}  # noqa: RUF012
 
     # Pre-populate with the built-in geometry so the TH_TTH_Q case works.
     _IsolatedSolver.register_geometry(ThTthSolver._geometry_registry[TH_TTH_Q_GEOMETRY])
@@ -322,7 +322,7 @@ def test_th_tth_solver_unregistered_geometry(parms, context):
 )
 def test_dynamic_registration(parms, context):
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: dict = {}  # noqa: RUF012
 
     with context:
         desc = GeometryDescriptor(

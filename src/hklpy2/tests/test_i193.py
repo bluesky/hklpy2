@@ -29,7 +29,7 @@ from ..diffract import creator
 from ..exceptions import NoForwardSolutions
 
 
-class _allows_no_solutions:
+class AllowsNoSolutions:
     """Context manager that accepts either no exception or NoForwardSolutions.
 
     Used for test cases where cut-point wrapping may reveal or hide a
@@ -41,9 +41,11 @@ class _allows_no_solutions:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type is NoForwardSolutions:
-            return True  # suppress the exception
-        return False  # re-raise anything else
+        return exc_type is NoForwardSolutions
+
+
+# Backwards compatibility alias
+_allows_no_solutions = AllowsNoSolutions
 
 
 def _make_e4cv(constraints=None):

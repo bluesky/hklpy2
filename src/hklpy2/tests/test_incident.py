@@ -138,9 +138,9 @@ def check_keys(wl, ref, tol=0.001):
         ),
     ],
 )
-def test_constructors(Klass, parms, ref, context):
+def test_constructors(klass, parms, ref, context):  # noqa: N803
     with context:
-        wl = Klass(**parms, name="wl")
+        wl = klass(**parms, name="wl")
         wl.wait_for_connection()
         check_keys(wl, ref)
 
@@ -204,9 +204,9 @@ def test_constructors(Klass, parms, ref, context):
         ),
     ],
 )
-def test__fromdict(Klass, input, context):
+def test__fromdict(klass, input, context):  # noqa: N803
     with context:
-        wl = Klass(name="wl")
+        wl = klass(name="wl")
         wl.wait_for_connection()
         wl._fromdict(input)
         check_keys(wl, input)
@@ -245,9 +245,9 @@ def test__fromdict(Klass, input, context):
         ),
     ],
 )
-def test_EpicsClasses(Klass, input, ref, context):
+def test_EpicsClasses(klass, input, ref, context):  # noqa: N803
     with context:
-        wl = Klass(name="wl", **input)
+        wl = klass(name="wl", **input)
         try:
             wl.wait_for_connection(timeout=2)
         except TimeoutError as exinfo:

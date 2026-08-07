@@ -1243,7 +1243,7 @@ def test_extras_dict_delitem_raises(parms, context):
         sim.core.mode = parms["mode"]
 
         if len(sim.core.extras) > 0:
-            key = list(sim.core.extras.keys())[0]
+            key = next(iter(sim.core.extras.keys()))
             del sim.core.extras[key]
 
 

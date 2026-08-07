@@ -59,7 +59,7 @@ class LatticeError(Hklpy2Error):
     """Custom exceptions from :mod:`hklpy2.blocks.lattice`."""
 
 
-class NoForwardSolutions(Hklpy2Error):
+class NoForwardSolutions(Hklpy2Error):  # noqa: N818
     """A solver did not find any ``forward()`` solutions."""
 
 

@@ -54,7 +54,7 @@ from typing import Union
 from ophyd import Component
 from ophyd import Device
 from ophyd import EpicsSignalRO
-from ophyd import FormattedComponent as FC
+from ophyd import FormattedComponent as FC  # noqa: N817
 from ophyd import Signal
 from ophyd import SignalRO
 from ophyd.signal import AttributeSignal
@@ -86,7 +86,7 @@ WavelengthDictType = Mapping[str, Union[float, str]]
 
 
 class _WavelengthBase(Device):
-    """
+    r"""
     (internal) Base for any monochromatic wavelength (:math:`\\lambda`) classes.
 
     In this class, wavelength is a constant.
@@ -199,7 +199,7 @@ class _WavelengthBase(Device):
 
 
 class Wavelength(_WavelengthBase):
-    """
+    r"""
     Adjustable monochromatic wavelength (:math:`\\lambda`).
 
     PARAMETERS
@@ -324,7 +324,7 @@ class WavelengthXray(Wavelength):
 
 
 class EpicsWavelengthRO(_WavelengthBase):
-    """Monochromatic wavelength (:math:`\\lambda`) from an EPICS PV."""
+    r"""Monochromatic wavelength (:math:`\\lambda`) from an EPICS PV."""
 
     wavelength = FC(EpicsSignalRO, "{prefix}{_pv_wavelength}", kind="hinted")
     wavelength_units = Component(SignalRO, value=INTERNAL_LENGTH_UNITS, kind="config")
@@ -350,7 +350,7 @@ class EpicsWavelengthRO(_WavelengthBase):
 
 
 class EpicsMonochromatorRO(EpicsWavelengthRO):
-    """
+    r"""
     Monochromatic X-ray wavelength (:math:`\\lambda`) & energy from EPICS PVs.
 
     The EPICS controls are responsible for conversions between wavelength &

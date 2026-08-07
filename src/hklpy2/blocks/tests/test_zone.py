@@ -325,7 +325,7 @@ def test_zonespace_and_series(
     with context:
         caplog.set_level(logging.DEBUG, logger="hklpy2.blocks.zone")
         count = 0
-        for pseudos, reals in zonespace(diff, hkl_1, hkl_2, n):
+        for _pseudos, _reals in zonespace(diff, hkl_1, hkl_2, n):
             count += 1
         if log is None:
             assert count == n
@@ -479,6 +479,7 @@ def test_zone_deprecated_shims(parms, context):
         from unittest.mock import patch
 
         target = f"hklpy2.plans.{parms['func_name']}"
-        with patch(target, return_value=None):
-            with pytest.warns(DeprecationWarning, match=re.escape(parms["msg"])):
-                func()
+        with patch(target, return_value=None), pytest.warns(
+            DeprecationWarning, match=re.escape(parms["msg"])
+        ):
+            func()

@@ -30,7 +30,7 @@ def _get_version(version_module=None):
     # 2) try importlib.metadata
     try:
         return importlib.metadata.version(__package_name__)
-    except Exception:
+    except Exception:  # noqa: S110
         pass
 
     # 3) fallback

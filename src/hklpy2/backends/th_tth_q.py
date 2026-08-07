@@ -1,6 +1,6 @@
 # Copyright (c) 2023-2026 UChicago Argonne, LLC
 # SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
-"""
+r"""
 "th_tth" example solver in Python.
 
 Transformations between :math:`\\theta,2\\theta` and :math:`Q`.
@@ -18,6 +18,7 @@ Example::
 
 import logging
 import math
+from typing import ClassVar
 from typing import List
 
 from .. import __version__
@@ -45,7 +46,7 @@ _TH_TTH_Q_DESCRIPTOR = GeometryDescriptor(
 
 
 class ThTthSolver(SolverBase):
-    """
+    r"""
     ``"th_tth"`` (any OS) :math:`\\theta,2\\theta` and :math:`Q`.
 
     ============== =================
@@ -96,7 +97,7 @@ class ThTthSolver(SolverBase):
 
     # Each ThTthSolver subclass (or the class itself) has its own registry,
     # independent of SolverBase._geometry_registry.
-    _geometry_registry = {}
+    _geometry_registry: ClassVar[dict] = {}
 
     def __init__(self, geometry: str, **kwargs) -> None:
         super().__init__(geometry, **kwargs)

@@ -1468,8 +1468,8 @@ def test_digits_property(value, context):
             # Ensure the except: block is executed at least once so coverage marks it.
             # Force an exception after successful assignment to exercise the except branch
             # without changing test behavior.
-            raise Exception("force except for coverage")
-        except Exception:
+            raise ValueError("force except for coverage")
+        except ValueError:
             pass
 
 
@@ -1500,7 +1500,7 @@ def test_configuration_setter_delegates_to_restore(parms, context):
         config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
         e4cv = creator()
         assert math.isclose(e4cv.beam.wavelength.get(), DEFAULT_WAVELENGTH, abs_tol=0.001)
-        # Use the property setter – should behave identically to restore()
+        # Use the property setter - should behave identically to restore()
         e4cv.configuration = config
         # Wavelength in e4cv_orient.yml is 1.54
         assert math.isclose(e4cv.beam.wavelength.get(), 1.54, abs_tol=0.001)
@@ -1508,7 +1508,7 @@ def test_configuration_setter_delegates_to_restore(parms, context):
         dict(config)  # mis-matched config raises ConfigurationError
         bad_config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
         bad_config["solver"]["geometry"] = "NONEXISTENT_GEOMETRY"
-    with pytest.raises(Exception):
+    with pytest.raises(ConfigurationError):
         e4cv2 = creator()
         e4cv2.configuration = bad_config
 

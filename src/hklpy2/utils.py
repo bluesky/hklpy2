@@ -225,7 +225,8 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
                 f" Extra inputs will be ignored. Expected {len(names)}."
                 #
                 f" Received {input=!r}, {names=!r}"
-            )
+            ),
+            stacklevel=2
         )
 
     axes = {}
@@ -254,7 +255,7 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
     else:
         raise TypeError(f"Unexpected type: {input!r}.  Expected 'AnyAxesType'.")
 
-    for name, value in axes.items():
+    for _, value in axes.items():
         # Accept Python ints/floats and numpy numeric scalar types (e.g. np.int64,
         # np.float64) by checking against numbers.Real.
         if not isinstance(value, numbers.Real):
@@ -285,10 +286,7 @@ def compare_float_dicts(a1, a2, tol=1e-4) -> bool:
     tests = [True]
     for k, v in a1.items():
         if isinstance(v, float):
-            if tol < 1:
-                test = math.isclose(a1[k], a2[k], abs_tol=tol)
-            else:
-                test = round(a1[k], tol) == round(a2[k], tol)
+            test = math.isclose(a1[k], a2[k], abs_tol=tol) if tol < 1 else round(a1[k], tol) == round(a2[k], tol)
         else:
             test = a1[k] == a2[k]
         if not test:
@@ -310,11 +308,11 @@ def distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple) -> float:
     if len(pos1) == 0:
         rms = 0
     else:
-        sum = 0
+        sum_squared = 0
         for axis in pos1._fields:
             delta = getattr(pos1, axis) - getattr(pos2, axis)
-            sum += delta * delta
-        rms = math.sqrt(sum / len(pos1._fields))
+            sum_squared += delta * delta
+        rms = math.sqrt(sum_squared / len(pos1._fields))
     return rms
 
 
@@ -348,9 +346,10 @@ def istype(value: Any, annotation: Type) -> bool:
 
     try:
         check_type(value, annotation)
-        return True
     except TypeCheckError:
         return False
+    else:
+        return True
 
 
 def load_yaml(text: str) -> Mapping:

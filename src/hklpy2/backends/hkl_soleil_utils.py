@@ -23,14 +23,14 @@ def setup_libhkl(system: str, library: str, version: str) -> object:
 
     try:
         import gi
-    except (ImportError, ModuleNotFoundError):
-        raise SolverError("Cannot import 'gi' (gobject-introspection) library.")
+    except (ImportError, ModuleNotFoundError) as e:
+        raise SolverError("Cannot import 'gi' (gobject-introspection) library.") from e
 
     try:
         gi.require_version(library, version)
     except Exception as exinfo:
         raise SolverError(f"Cannot load 'gi' library: {library}, {version}") from exinfo
 
-    from gi.repository import Hkl as libhkl
+    from gi.repository import Hkl as Hkl  # noqa: N813
 
-    return libhkl
+    return Hkl

@@ -286,7 +286,7 @@ def test_ReflectionsDict(parms, representation, context, expected):
             assert len(db._asdict()) == i
             assert len(db.order) == i
 
-            r1 = list(db.values())[0]
+            r1 = next(iter(db.values()))
             # Strict orientation-health check (#399) refuses to leave
             # ``order`` shorter than two while ``len(db) >= 2``; only
             # exercise the single-element ``setor`` / ``order`` paths
@@ -716,7 +716,7 @@ def test_reflectionsdict_fromdict_defaults(config, explicit_digits, context):
         rd._fromdict(config)
 
     # get the single reflection by name
-    name = list(config.keys())[0]
+    name = next(iter(config.keys()))
     r = rd[name]
     if explicit_digits is None:
         assert r.digits == DEFAULT_REFLECTION_DIGITS
@@ -863,7 +863,7 @@ def test_eq_converts_wavelength_units(wl1, u1, wl2, u2, context, expect_eq):
     if expect_eq:
         assert r1 == r2
     else:
-        assert not (r1 == r2)
+        assert r1 != r2
 
 
 @pytest.mark.parametrize(
@@ -1391,8 +1391,11 @@ def test_reflection_eq_fallback_raw_comparison(monkeypatch):
     )
     import hklpy2.blocks.reflection as reflection_mod
 
+    class ConversionError(Exception):
+        """Test exception for conversion failure."""
+
     def bad_convert_units(value, from_u, to_u):
-        raise Exception("conversion failed")
+        raise ConversionError("conversion failed")
 
     monkeypatch.setattr(reflection_mod, "convert_units", bad_convert_units)
     # Should fall back to raw comparison, which will succeed here
@@ -1409,7 +1412,7 @@ def test_reflection_eq_fallback_raw_comparison(monkeypatch):
         ["x"],
         wavelength_units="angstrom",
     )
-    assert not (r1 == r2b)
+    assert r1 != r2b
 
 
 def test_reflection_repr_paren():

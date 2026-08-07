@@ -193,6 +193,7 @@ ignore = [
     "D417",     # Missing argument description in docstring
     # Exception handling - we allow vanilla exception raising
     "TRY003",   # Avoid specifying long messages outside the exception class
+    "TRY301",   # Raise within try block is acceptable in tests for coverage
     # Other - legacy code patterns we allow
     "N802",     # function-name-should-be-lowercase (some functions use different naming)
     "N806",     # non-lowercase-variable-in-function (convention preference)
@@ -228,6 +229,7 @@ select = [
 "**/tests/*" = [
     "D100",     # Missing module docstring
     "D103",     # Missing function docstring
+    "N803",     # Argument name like `RE` (fixture parameter, must be uppercase)
 ]
 # Documentation examples are not part of the main codebase
 "docs/**/*.py" = ["ALL"]

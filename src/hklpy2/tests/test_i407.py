@@ -39,7 +39,7 @@ class _StandInSolver407(NoOpSolver):
     """
 
     name = "stand_in_407"
-    _geometry_registry: dict = {}
+    _geometry_registry: dict = {}  # noqa: RUF012
 
     @property
     def _metadata(self):

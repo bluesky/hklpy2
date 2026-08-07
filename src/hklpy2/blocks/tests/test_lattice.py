@@ -191,8 +191,11 @@ def test_lattice_eq_fallback_raw_comparison(monkeypatch):
     """Force convert_units to raise and ensure equality falls back to raw values."""
     import hklpy2.blocks.lattice as lattice_mod
 
+    class ConversionError(Exception):
+        """Test exception for conversion failure."""
+
     def bad_convert_units(value, from_u, to_u):
-        raise Exception("conversion failed")
+        raise ConversionError("conversion failed")
 
     monkeypatch.setattr(lattice_mod, "convert_units", bad_convert_units)
 
@@ -204,7 +207,7 @@ def test_lattice_eq_fallback_raw_comparison(monkeypatch):
 
     # Now make a different lattice; fallback comparison should detect inequality
     l2b = Lattice(5.0, length_units="angstrom", angle_units="degrees")
-    assert not (l1 == l2b)
+    assert l1 != l2b
 
 
 @pytest.mark.parametrize(

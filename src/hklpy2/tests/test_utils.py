@@ -64,6 +64,8 @@ signal = Signal(name="signal", value=1.234)
 
 
 class MyPVPositioner(PVPositioner):
+    """Test PV positioner for testing."""
+
     done = Component(Signal, value=1)
     limits = (-100, 100)
     readback = Component(Signal, value=0)
@@ -946,9 +948,9 @@ def test_virtual_axis_finish_setup_trigger():
     multi = SpecialCase("", name="multi")
     assert multi.connected
     assert not multi.virtual._setup_finished
-    multi.physical.position
+    _ = multi.physical.position
     assert not multi.virtual._setup_finished
-    multi.virtual.position
+    _ = multi.virtual.position
     assert multi.virtual._setup_finished
 
 

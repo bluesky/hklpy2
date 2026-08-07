@@ -547,14 +547,13 @@ class ReflectionsDict(dict):
                 if isinstance(core, Core):
                     # Remap the names of all the real axes to the current solver.
                     # Real axes MUST be specified in the order specified by the solver.
-                    refl_config["reals"] = {
-                        axis: value
-                        for axis, value in zip(
+                    refl_config["reals"] = dict(
+                        zip(
                             # core.solver.real_axis_names,
                             core.diffractometer.real_axis_names,
                             refl_config["reals"].values(),
                         )
-                    }
+                    )
 
                 reflection = Reflection(
                     refl_config["name"],
@@ -734,10 +733,7 @@ class ReflectionsDict(dict):
         # symmetry but will not fire in normal use.
         if args:
             other = args[0]
-            if hasattr(other, "keys"):
-                incoming = set(other.keys())
-            else:
-                incoming = {k for k, _ in other}
+            incoming = set(other.keys()) if hasattr(other, "keys") else {k for k, _ in other}
         else:
             incoming = set()
         incoming.update(kwargs)

@@ -39,7 +39,7 @@ class _StandInSolver(NoOpSolver):
     """
 
     name = "stand_in_405"
-    _geometry_registry: dict = {}
+    _geometry_registry: dict = {}  # noqa: RUF012
 
     def __init__(
         self,

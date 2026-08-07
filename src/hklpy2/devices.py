@@ -206,7 +206,7 @@ class VirtualPositionerBase(SoftPositioner):
 
 
 def define_real_axis(
-    specs: Union[None, str, KeyValueMap],
+    specs: Union[str, KeyValueMap, None],
     kwargs: KeyValueMap,
 ) -> tuple[str, Sequence, Mapping]:
     """Return class and kwargs of a real axis from its 'specs'."""
@@ -351,7 +351,7 @@ def make_dynamic_instance(
 def parse_factory_axes(
     *,
     space: Optional[str] = None,
-    axes: Union[KeyValueMap, None, Sequence[str]] = None,
+    axes: Union[KeyValueMap, Sequence[str], None] = None,
     order: Optional[Sequence[str]] = None,
     canonical: Optional[Sequence[str]] = None,
     labels: Optional[Sequence[str]] = None,

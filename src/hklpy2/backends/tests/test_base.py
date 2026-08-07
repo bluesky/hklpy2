@@ -380,7 +380,7 @@ def test_descriptor_default_mode_resolution(parms, context):
     """Verify descriptor's default_mode field takes precedence over modes[0]."""
 
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: dict = {}  # noqa: RUF012
 
     with context:
         desc = GeometryDescriptor(
