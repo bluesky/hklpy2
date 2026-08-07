@@ -15,38 +15,29 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 
 ## Ruff Linting Configuration (Decision: PR #420)
 
-**Decision made in PR #420:** After discovering ruff version mismatches between local environment (0.16.1) and pre-commit pin (0.15.6), and realizing the codebase has ~1300 pre-existing linting issues:
+**Decision made in PR #420:** After discovering ruff version mismatches between local environment (0.16.1) and pre-commit pin (0.15.6):
 
-### Configuration Strategy (Option 2 - chosen)
+### Configuration Strategy (Option A - chosen)
 
-Use `pyproject.toml` as the **single source of truth** for ruff configuration instead of pinning versions in CI. This is robust because:
+Pin ruff version in CI to match pre-commit's pinned version. This is simple and robust:
 
-1. **Version-independent**: Works with any ruff version (0.15.6+), handles upgrades gracefully
-2. **Self-documenting**: Explicitly states project's chosen style rules (preferences vs. real bugs)
-3. **Decoupled from CI**: Developers and CI use the same rules regardless of ruff version installed
+1. **Consistency**: Local (`pre-commit v0.15.6`) and CI (`pip install ruff==0.15.6`) use same version
+2. **Predictable**: No surprise rule changes when ruff upgrades
+3. **Maintainable**: Single version number to update when upgrading (in both `.pre-commit-config.yaml` and `.github/workflows/code.yml`)
 
 ### Configuration Details
 
-- **File**: `[tool.ruff]` section in `pyproject.toml`
-- **Line length**: 115 (matches `.flake8` and `[tool.black]`)
-- **Ignored rules**:
-  - Style preferences: C408 (dict() literals), SIM905 (str.split()), UP007/UP045/UP006 (type annotation styles)
-  - Docstring strictness: D200-D417 (we don't enforce PEP 257 strictly)
-  - Pre-existing issues: A002 (print builtin shadowing), S506 (yaml.load), S101 (asserts)
-- **Enabled rules**: Bug detection (A, B, S, RUF, TRY, N, E, W, F, I)
-- **Per-file exceptions**: Documentation examples (`docs/**`) are excluded from linting
+- **Pre-commit**: `.pre-commit-config.yaml` pins `rev: v0.15.6`
+- **CI**: `.github/workflows/code.yml` installs `ruff==0.15.6`
+- **pyproject.toml**: Suppresses pre-existing style issues (dict() literals, str.split(), type annotation preferences)
 
-### Pre-commit Hook Adjustment
+### Why NOT Option B (pyproject.toml as single source of truth)
 
-The ruff check hook in `.pre-commit-config.yaml` is set to `stages: [manual]` to skip it during normal commits (since pre-existing issues would block commits). Run explicitly when needed:
-
-```bash
-pre-commit run ruff --hook-stage manual
-```
-
-### Why NOT Option 1 (pinning ruff in CI)
-
-Pinning would require manual updates to both `.pre-commit-config.yaml` (for local) AND `.github/workflows/code.yml` (for CI), staying perpetually behind the latest version. This is maintenance overhead with no benefit.
+While version-independence sounds appealing, it creates a false sense of robustness:
+- Ruff releases frequently introduce new rules that would still conflict with pre-existing code
+- The pre-commit cache would need updating anyway
+- `pyproject.toml` config alone doesn't solve version skew between developer and CI environments
+- Pinning is simpler: update both pins together when ready to upgrade ruff
 
 
 ## Agent pytest style (for automated agents) - MANDATORY
