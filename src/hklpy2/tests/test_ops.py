@@ -888,6 +888,30 @@ def test_extras_dict_pop(parms, context):
 
 
 @pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"geometry": "K6C", "mode": "constant_incidence", "key": "x", "value": 0.5},
+            does_not_raise(),
+            id="setdefault-after-pop-restores-key",
+        )
+    ],
+)
+def test_extras_dict_setdefault_after_pop(parms, context):
+    with context:
+        sim = creator(name="sim", solver="hkl_soleil", geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+        extras = sim.core.extras
+        extras.pop(parms["key"])
+
+        result = extras.setdefault(parms["key"], parms["value"])
+
+        assert result == parms["value"]
+        assert extras[parms["key"]] == parms["value"]
+        assert sim.core.extras[parms["key"]] == parms["value"]
+
+
+@pytest.mark.parametrize(
     "setup, config, context",
     [
         pytest.param(
