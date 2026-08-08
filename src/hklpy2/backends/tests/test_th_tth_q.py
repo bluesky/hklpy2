@@ -7,10 +7,13 @@ import numpy as np
 import pytest
 
 from ...exceptions import SolverError
-from ...solver_utils import get_solver, solver_factory
+from ...solver_utils import get_solver
+from ...solver_utils import solver_factory
 from ...utils import IDENTITY_MATRIX_3X3
 from ..base import SolverBase
-from ..th_tth_q import BISECTOR_MODE, TH_TTH_Q_GEOMETRY, ThTthSolver
+from ..th_tth_q import BISECTOR_MODE
+from ..th_tth_q import TH_TTH_Q_GEOMETRY
+from ..th_tth_q import ThTthSolver
 
 
 def test_solver():

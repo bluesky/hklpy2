@@ -20,13 +20,17 @@ together with a choice of operating *mode*, can:
 """
 
 import math
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 from typing import Any
+from typing import ClassVar
 
 from deprecated.sphinx import versionadded
 
-from ..exceptions import ConfigurationError, ConstraintsError
-from ..typing import NUMERIC, KeyValueMap
+from ..exceptions import ConfigurationError
+from ..exceptions import ConstraintsError
+from ..typing import NUMERIC
+from ..typing import KeyValueMap
 
 ENDPOINT_TOLERANCE: float = 1e-4  # for comparisons, less than motion step size
 UNDEFINED_LABEL: str = "undefined"
@@ -53,7 +57,7 @@ class ConstraintBase(ABC):
         ~valid
     """
 
-    _fields: list[str] = []
+    _fields: ClassVar[list[str]] = []
     label: str = UNDEFINED_LABEL
 
     def __repr__(self) -> str:

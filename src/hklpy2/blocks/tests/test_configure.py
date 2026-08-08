@@ -8,15 +8,16 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ... import __version__
-from ...diffract import DiffractometerBase, creator
+from ...diffract import DiffractometerBase
+from ...diffract import creator
 from ...exceptions import ConfigurationError
-from ...tests.models import (
-    E4CV_CONFIG_FILE,
-    add_oriented_vibranium_to_e4cv,
-    e4cv_config,
-)
+from ...tests.models import E4CV_CONFIG_FILE
+from ...tests.models import add_oriented_vibranium_to_e4cv
+from ...tests.models import e4cv_config
 from ...utils import load_yaml_file
-from ..configure import CONFIG_SCHEMA_VERSION, Configuration, _check_schema_version
+from ..configure import CONFIG_SCHEMA_VERSION
+from ..configure import Configuration
+from ..configure import _check_schema_version
 
 e4cv = creator(name="e4cv")
 add_oriented_vibranium_to_e4cv(e4cv)
@@ -518,9 +519,9 @@ def test_restore_extras_kwarg_honored(parms, context, tmp_path):
 
         fresh.restore(cfg_file, **parms)
 
-        for axis in saved:
+        for axis, value in saved.items():
             if parms["restore_extras"]:
-                assert fresh.core.extras[axis] == pytest.approx(saved[axis])
+                assert fresh.core.extras[axis] == pytest.approx(value)
             else:
                 assert fresh.core.extras[axis] == pytest.approx(sentinel[axis])
 

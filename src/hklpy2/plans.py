@@ -42,7 +42,8 @@ hatches for future solvers whose naming conventions differ from the current
 """
 
 import logging
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
+from collections.abc import Sequence
 from typing import Any
 
 from bluesky import plan_stubs as bps
@@ -53,7 +54,8 @@ from deprecated.sphinx import versionadded
 
 from .blocks.zone import zonespace
 from .diffract import DiffractometerBase
-from .typing import INPUT_VECTOR, BlueskyPlanType
+from .typing import INPUT_VECTOR
+from .typing import BlueskyPlanType
 from .utils import validate_not_parallel
 
 logger = logging.getLogger(__name__)

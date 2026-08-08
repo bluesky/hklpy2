@@ -50,25 +50,28 @@ import pathlib
 import time
 import uuid
 import warnings
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Iterable
+from collections.abc import Mapping
+from collections.abc import Sequence
 from enum import IntFlag
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import TYPE_CHECKING
+from typing import Any
+from typing import NamedTuple
 
 import numpy as np
 import pint
 import yaml
-from deprecated.sphinx import versionadded, versionchanged
+from deprecated.sphinx import versionadded
+from deprecated.sphinx import versionchanged
 
 from .exceptions import NoForwardSolutions
-from .typing import (
-    AnyAxesType,
-    AxesArray,
-    AxesDict,
-    AxesList,
-    AxesTuple,
-    BlueskyPlanType,
-    Matrix3x3,
-)
+from .typing import AnyAxesType
+from .typing import AxesArray
+from .typing import AxesDict
+from .typing import AxesList
+from .typing import AxesTuple
+from .typing import BlueskyPlanType
+from .typing import Matrix3x3
 
 if TYPE_CHECKING:
     from .backends.base import SolverBase  # noqa: F401
@@ -334,7 +337,8 @@ def istype(value: Any, annotation: type) -> bool:
         True
     """
     # https://stackoverflow.com/a/57813576/1046449
-    from typeguard import TypeCheckError, check_type
+    from typeguard import TypeCheckError
+    from typeguard import check_type
 
     try:
         check_type(value, annotation)

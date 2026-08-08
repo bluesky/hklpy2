@@ -13,42 +13,49 @@ Base class for all diffractometers
 
 import logging
 import pathlib
-from collections.abc import Callable, Iterable, Sequence
-from typing import Any, NamedTuple, TypeVar, cast
+from collections.abc import Callable
+from collections.abc import Iterable
+from collections.abc import Sequence
+from typing import Any
+from typing import NamedTuple
+from typing import TypeVar
+from typing import cast
 
 import numpy as np
 import yaml
-from bluesky.protocols import Movable, Readable
+from bluesky.protocols import Movable
+from bluesky.protocols import Readable
 from bluesky.utils import plan
 from cytoolz import partition
-from deprecated.sphinx import versionadded, versionchanged
+from deprecated.sphinx import versionadded
+from deprecated.sphinx import versionchanged
 from ophyd import Component as Cpt
-from ophyd import (
-    Kind,
-    PositionerBase,
-    PseudoPositioner,
-    PseudoSingle,
-    Signal,
-    SoftPositioner,
-)
+from ophyd import Kind
+from ophyd import PositionerBase
+from ophyd import PseudoPositioner
+from ophyd import PseudoSingle
+from ophyd import Signal
+from ophyd import SoftPositioner
 from ophyd.device import required_for_connection
-from ophyd.pseudopos import pseudo_position_argument, real_position_argument
+from ophyd.pseudopos import pseudo_position_argument
+from ophyd.pseudopos import real_position_argument
 
 from .blocks.configure import _check_schema_version
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .exceptions import DiffractometerError
 from .incident import WavelengthXray
-from .typing import AnyAxesType, AxesDict, BlueskyPlanType, KeyValueMap
-from .utils import (
-    DEFAULT_DIGITS,
-    INTERNAL_ANGLE_UNITS,
-    MISSING_HEADER_KEY_MSG,
-    load_yaml_file,
-    pick_first_solution,
-    roundoff,
-    validate_and_canonical_unit,
-)
+from .typing import AnyAxesType
+from .typing import AxesDict
+from .typing import BlueskyPlanType
+from .typing import KeyValueMap
+from .utils import DEFAULT_DIGITS
+from .utils import INTERNAL_ANGLE_UNITS
+from .utils import MISSING_HEADER_KEY_MSG
+from .utils import load_yaml_file
+from .utils import pick_first_solution
+from .utils import roundoff
+from .utils import validate_and_canonical_unit
 
 __all__ = ["DiffractometerBase", "creator", "diffractometer_class_factory"]
 logger = logging.getLogger(__name__)
@@ -76,9 +83,8 @@ class Hklpy2PseudoAxis(PseudoSingle):
     @required_for_connection(description="{device.name} readback subscription")
     def _sub_proxy_readback(self, obj=None, value=None, **kwargs) -> Any:
         """Override allows (and ignores) auxiliary pseudos."""
-        if hasattr(value, "__getitem__"):
-            if self._idx is not None:  # auxiliary pseudos are ignored here.
-                value = value[self._idx]
+        if hasattr(value, "__getitem__") and self._idx is not None:
+            value = value[self._idx]  # auxiliary pseudos are ignored here.
 
         return self._run_subs(obj=self, value=value, **kwargs)
 
@@ -208,10 +214,9 @@ class DiffractometerBase(PseudoPositioner):
 
         for attr in self.auxiliary_axis_names:  # auxiliary
             component = getattr(self, attr)
-            if isinstance(component, Hklpy2PseudoAxis):
-                if component.position is None:
-                    # Set position of all uninitialized auxiliary pseudo axes.
-                    component._position = 0.0
+            if isinstance(component, Hklpy2PseudoAxis) and component.position is None:
+                # Set position of all uninitialized auxiliary pseudo axes.
+                component._position = 0.0
 
         # Classify this diffractometer as simulator or hardware-backed.
         # A diffractometer is a "simulator" when every real positioner is a
@@ -1328,7 +1333,9 @@ def diffractometer_class_factory(
 
         Will be assigned to :attr:`hklpy2.diffract.DiffractometerBase._forward_solution`.
     """
-    from .devices import dynamic_import, make_component, parse_factory_axes
+    from .devices import dynamic_import
+    from .devices import make_component
+    from .devices import parse_factory_axes
     from .solver_utils import solver_factory
     from .utils import DEFAULT_MOTOR_LABELS
 

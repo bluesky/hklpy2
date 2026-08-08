@@ -4,14 +4,17 @@
 
 import math
 import re
-from collections import deque, namedtuple
+from collections import deque
+from collections import namedtuple
 from contextlib import nullcontext as does_not_raise
 
 import bluesky
 import numpy as np
 import pytest
 from numpy.testing import assert_almost_equal
-from ophyd import Component, EpicsMotor, SoftPositioner
+from ophyd import Component
+from ophyd import EpicsMotor
+from ophyd import SoftPositioner
 from ophyd.sim import noisy_det
 
 from ..backends.base import SolverBase
@@ -19,18 +22,22 @@ from ..backends.hkl_soleil import LIBHKL_USER_UNITS
 from ..blocks.reflection import ReflectionError
 from ..blocks.sample import Sample
 from ..devices import VirtualPositionerBase
-from ..diffract import DiffractometerBase, creator, diffractometer_class_factory
-from ..exceptions import ConfigurationError, DiffractometerError, NoForwardSolutions
-from ..ops import DEFAULT_SAMPLE_NAME, Core, CoreError
+from ..diffract import DiffractometerBase
+from ..diffract import creator
+from ..diffract import diffractometer_class_factory
+from ..exceptions import ConfigurationError
+from ..exceptions import DiffractometerError
+from ..exceptions import NoForwardSolutions
+from ..ops import DEFAULT_SAMPLE_NAME
+from ..ops import Core
+from ..ops import CoreError
 from .common import HKLPY2_DIR
-from .models import (
-    AugmentedFourc,
-    Fourc,
-    MultiAxis99,
-    MultiAxis99NoSolver,
-    NoOpTh2Th,
-    TwoC,
-)
+from .models import AugmentedFourc
+from .models import Fourc
+from .models import MultiAxis99
+from .models import MultiAxis99NoSolver
+from .models import NoOpTh2Th
+from .models import TwoC
 
 
 @pytest.mark.parametrize(
@@ -1265,7 +1272,8 @@ def test_miller_args(miller, context):
     ],
 )
 def test_restore(input, ref, context):
-    from ..incident import A_KEV, DEFAULT_WAVELENGTH
+    from ..incident import A_KEV
+    from ..incident import DEFAULT_WAVELENGTH
     from ..utils import load_yaml_file
 
     with context:
@@ -1523,7 +1531,7 @@ def test_configuration_setter_delegates_to_restore(parms, context):
         dict(config)  # mis-matched config raises ConfigurationError
         bad_config = load_yaml_file(HKLPY2_DIR / "tests" / "e4cv_orient.yml")
         bad_config["solver"]["geometry"] = "NONEXISTENT_GEOMETRY"
-    with pytest.raises(Exception):
+    with pytest.raises(ConfigurationError):
         e4cv2 = creator()
         e4cv2.configuration = bad_config
 

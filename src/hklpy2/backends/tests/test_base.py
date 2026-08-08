@@ -6,6 +6,7 @@
 
 import re
 from contextlib import nullcontext as does_not_raise
+from typing import ClassVar
 
 import pyRestTable
 import pytest
@@ -16,7 +17,9 @@ from ...exceptions import SolverError
 from ...utils import IDENTITY_MATRIX_3X3
 from ..base import SolverBase
 from ..no_op import NoOpSolver
-from ..th_tth_q import BISECTOR_MODE, TH_TTH_Q_GEOMETRY, ThTthSolver
+from ..th_tth_q import BISECTOR_MODE
+from ..th_tth_q import TH_TTH_Q_GEOMETRY
+from ..th_tth_q import ThTthSolver
 from ..typing import GeometryDescriptor
 
 
@@ -113,13 +116,11 @@ def test_SolverBase():
     }
     assert md == expected
 
-    expected = "\n".join(  # fmt: skip
-        [
-            "==== ========= ======= =========== ========",
-            "mode pseudo(s) real(s) writable(s) extra(s)",
-            "==== ========= ======= =========== ========",
-            "==== ========= ======= =========== ========",
-        ]
+    expected = (
+        "==== ========= ======= =========== ========\n"
+        "mode pseudo(s) real(s) writable(s) extra(s)\n"
+        "==== ========= ======= =========== ========\n"
+        "==== ========= ======= =========== ========"
     )
     summary = solver.summary
     assert isinstance(summary, pyRestTable.Table)
@@ -147,14 +148,12 @@ def test_SolverBase_abstractmethods():
     # Need to test certain abstract methods of base class code
     # that require values not in the base class.
     solver = ThTthSolver(TH_TTH_Q_GEOMETRY)
-    expected = "\n".join(  # fmt: skip
-        [
-            "========= ========= ======= =========== ========",
-            "mode      pseudo(s) real(s) writable(s) extra(s)",
-            "========= ========= ======= =========== ========",
-            "bissector q         th, tth th, tth             ",
-            "========= ========= ======= =========== ========",
-        ]
+    expected = (
+        "========= ========= ======= =========== ========\n"
+        "mode      pseudo(s) real(s) writable(s) extra(s)\n"
+        "========= ========= ======= =========== ========\n"
+        "bissector q         th, tth th, tth             \n"
+        "========= ========= ======= =========== ========"
     )
     summary = solver.summary
     assert isinstance(summary, pyRestTable.Table)
@@ -390,7 +389,7 @@ def test_descriptor_default_mode_resolution(parms, context):
     """Verify descriptor's default_mode field takes precedence over modes[0]."""
 
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     with context:
         desc = GeometryDescriptor(

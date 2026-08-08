@@ -9,22 +9,27 @@ Abstract base class for all solvers.
 """
 
 import logging
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 from typing import Any
+from typing import ClassVar
 
 from deprecated.sphinx import versionadded
 from pyRestTable import Table
 
 from ..exceptions import SolverError
-from ..typing import KeyValueMap, Matrix3x3, NamedFloatDict
-from ..utils import (
-    IDENTITY_MATRIX_3X3,
-    INTERNAL_ANGLE_UNITS,
-    INTERNAL_LENGTH_UNITS,
-    istype,
-    validate_and_canonical_unit,
-)
-from .typing import GeometryDescriptor, ReflectionDict, SampleDict, SolverMetadataDict
+from ..typing import KeyValueMap
+from ..typing import Matrix3x3
+from ..typing import NamedFloatDict
+from ..utils import IDENTITY_MATRIX_3X3
+from ..utils import INTERNAL_ANGLE_UNITS
+from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import istype
+from ..utils import validate_and_canonical_unit
+from .typing import GeometryDescriptor
+from .typing import ReflectionDict
+from .typing import SampleDict
+from .typing import SolverMetadataDict
 
 logger = logging.getLogger(__name__)
 
@@ -137,7 +142,7 @@ class SolverBase(ABC):
     ``INTERNAL_LENGTH_UNITS``.
     """
 
-    _geometry_registry: dict[str, GeometryDescriptor] = {}
+    _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
     """
     Per-class registry of :class:`~hklpy2.backends.typing.GeometryDescriptor`
     objects, keyed by geometry name.

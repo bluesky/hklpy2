@@ -30,11 +30,8 @@ def _get_version(version_module=None):
     # 2) try importlib.metadata
     try:
         return importlib.metadata.version(__package_name__)
-    except Exception:
-        pass
-
-    # 3) fallback
-    return "0+unknown"
+    except importlib.metadata.PackageNotFoundError:
+        return "0+unknown"
 
 
 __version__ = _get_version()  # Must define before these imports.
@@ -50,27 +47,19 @@ from .backends import SolverBase  # noqa: F401
 from .blocks.configure import Configuration  # noqa: F401
 from .blocks.lattice import SI_LATTICE_PARAMETER  # noqa: F401
 from .blocks.zone import OrthonormalZone  # noqa: F401
-from .diffract import (
-    creator,  # noqa: F401
-    diffractometer_class_factory,  # noqa: F401
-)
+from .diffract import creator  # noqa: F401
+from .diffract import diffractometer_class_factory  # noqa: F401
 from .exceptions import SolverError  # noqa: F401
 from .incident import A_KEV  # noqa: F401
-from .plans import (
-    move_zone,  # noqa: F401
-    scan_psi,  # noqa: F401
-    scan_zone,  # noqa: F401
-)
-from .run_utils import (
-    ConfigurationRunWrapper,  # noqa: F401
-    get_run_orientation,  # noqa: F401
-    list_orientation_runs,  # noqa: F401
-    register_aux_reconstructor,  # noqa: F401
-    simulator_from_config,  # noqa: F401
-)
-from .solver_utils import (
-    SOLVER_ENTRYPOINT_GROUP,  # noqa: F401
-    get_solver,  # noqa: F401
-    solver_factory,  # noqa: F401
-    solvers,  # noqa: F401
-)
+from .plans import move_zone  # noqa: F401
+from .plans import scan_psi  # noqa: F401
+from .plans import scan_zone  # noqa: F401
+from .run_utils import ConfigurationRunWrapper  # noqa: F401
+from .run_utils import get_run_orientation  # noqa: F401
+from .run_utils import list_orientation_runs  # noqa: F401
+from .run_utils import register_aux_reconstructor  # noqa: F401
+from .run_utils import simulator_from_config  # noqa: F401
+from .solver_utils import SOLVER_ENTRYPOINT_GROUP  # noqa: F401
+from .solver_utils import get_solver  # noqa: F401
+from .solver_utils import solver_factory  # noqa: F401
+from .solver_utils import solvers  # noqa: F401

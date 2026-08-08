@@ -32,7 +32,8 @@ import uuid
 from collections.abc import Iterable
 from typing import Any
 
-from bluesky.protocols import Movable, Readable
+from bluesky.protocols import Movable
+from bluesky.protocols import Readable
 from deprecated.sphinx import versionchanged
 from pyRestTable import Table
 
@@ -40,15 +41,14 @@ from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
 from .diffract import DiffractometerBase
-from .exceptions import CoreError, NoForwardSolutions
-from .typing import (
-    NUMERIC,
-    AxesDict,
-    AxesTuple,
-    BlueskyPlanType,
-    Matrix3x3,
-    NamedFloatDict,
-)
+from .exceptions import CoreError
+from .exceptions import NoForwardSolutions
+from .typing import NUMERIC
+from .typing import AxesDict
+from .typing import AxesTuple
+from .typing import BlueskyPlanType
+from .typing import Matrix3x3
+from .typing import NamedFloatDict
 
 __all__ = [
     "add_reflection",

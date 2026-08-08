@@ -20,23 +20,20 @@ and factory configurations.
 
 import logging
 import time
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
+from collections.abc import Sequence
 from typing import Any
 
 from deprecated.sphinx import versionadded
-from ophyd import (
-    Component,
-    Device,
-    EpicsMotor,
-    PseudoPositioner,
-    PVPositioner,
-    SoftPositioner,
-)
-from ophyd.pseudopos import (
-    PseudoSingle,
-    pseudo_position_argument,
-    real_position_argument,
-)
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import PseudoPositioner
+from ophyd import PVPositioner
+from ophyd import SoftPositioner
+from ophyd.pseudopos import PseudoSingle
+from ophyd.pseudopos import pseudo_position_argument
+from ophyd.pseudopos import real_position_argument
 
 from .typing import KeyValueMap
 
@@ -196,14 +193,13 @@ class VirtualPositionerBase(SoftPositioner):
         the correct conditions.
         """
 
-        if name == "position":  # Caution here to avoid recursion.
-            if not self._setup_finished and self.connected:
-                try:
-                    if self.parent.connected:
-                        # Run the final setup.
-                        self._finish_setup()
-                except (AttributeError, RecursionError):
-                    pass  # Ignore, still not ready.
+        if name == "position" and not self._setup_finished and self.connected:
+            try:
+                if self.parent.connected:
+                    # Run the final setup.
+                    self._finish_setup()
+            except (AttributeError, RecursionError):
+                pass  # Ignore, still not ready.
 
         # Return the actual attribute
         return object.__getattribute__(self, name)

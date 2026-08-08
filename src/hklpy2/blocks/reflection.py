@@ -15,22 +15,23 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 """
 
 import logging
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable
+from collections.abc import Mapping
 from contextlib import contextmanager
 from typing import Any
 
 from deprecated.sphinx import versionchanged
 
-from ..exceptions import ConfigurationError, ReflectionError
+from ..exceptions import ConfigurationError
+from ..exceptions import ReflectionError
 from ..typing import NamedFloatDict
-from ..utils import (
-    INTERNAL_LENGTH_UNITS,
-    _SolverDirty,
-    check_value_in_list,
-    compare_float_dicts,
-    convert_units,
-    validate_and_canonical_unit,
-)
+from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import PINT_ERRORS
+from ..utils import _SolverDirty
+from ..utils import check_value_in_list
+from ..utils import compare_float_dicts
+from ..utils import convert_units
+from ..utils import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
@@ -166,7 +167,7 @@ class Reflection:
             r2_wl_in_self_units = convert_units(
                 r2.wavelength, r2.wavelength_units, self.wavelength_units
             )
-        except Exception:
+        except PINT_ERRORS:
             # If conversion fails, fall back to raw comparison (will likely fail)
             r2_wl_in_self_units = r2.wavelength
         wavelength_ok = round(self.wavelength, digits) == round(
@@ -756,10 +757,9 @@ class ReflectionsDict(dict):
 
         # matching content
         matching = [v.name for v in self.values() if v == reflection]
-        if reflection.name in self:
+        if reflection.name in self and reflection.name not in matching:
             # matching name
-            if reflection.name not in matching:
-                matching.append(reflection.name)
+            matching.append(reflection.name)
 
         if replace:
             # remove ALL matches (name or content matches)

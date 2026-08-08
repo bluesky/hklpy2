@@ -18,13 +18,16 @@ Example::
 
 import logging
 import math
+from typing import ClassVar
 
 from .. import __version__
 from ..exceptions import SolverError
-from ..typing import Matrix3x3, NamedFloatDict
+from ..typing import Matrix3x3
+from ..typing import NamedFloatDict
 from ..utils import IDENTITY_MATRIX_3X3
 from .base import SolverBase
-from .typing import GeometryDescriptor, ReflectionDict
+from .typing import GeometryDescriptor
+from .typing import ReflectionDict
 
 logger = logging.getLogger(__name__)
 TH_TTH_Q_GEOMETRY = "TH TTH Q"
@@ -93,7 +96,7 @@ class ThTthSolver(SolverBase):
 
     # Each ThTthSolver subclass (or the class itself) has its own registry,
     # independent of SolverBase._geometry_registry.
-    _geometry_registry = {}
+    _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     def __init__(self, geometry: str, **kwargs) -> None:
         super().__init__(geometry, **kwargs)

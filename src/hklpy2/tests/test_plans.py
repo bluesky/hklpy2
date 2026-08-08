@@ -12,7 +12,11 @@ import pytest
 from ophyd.sim import noisy_det
 
 from ..diffract import creator
-from ..plans import _find_psi_axis, _find_psi_mode, move_zone, scan_psi, scan_zone
+from ..plans import _find_psi_axis
+from ..plans import _find_psi_mode
+from ..plans import move_zone
+from ..plans import scan_psi
+from ..plans import scan_zone
 from ..run_utils import simulator_from_config
 from ..utils import validate_not_parallel
 

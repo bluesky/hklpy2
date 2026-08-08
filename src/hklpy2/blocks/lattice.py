@@ -20,13 +20,12 @@ import numpy as np
 from numpy import typing as npt
 
 from ..exceptions import LatticeError
-from ..utils import (
-    INTERNAL_ANGLE_UNITS,
-    INTERNAL_LENGTH_UNITS,
-    compare_float_dicts,
-    convert_units,
-    validate_and_canonical_unit,
-)
+from ..utils import INTERNAL_ANGLE_UNITS
+from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import PINT_ERRORS
+from ..utils import compare_float_dicts
+from ..utils import convert_units
+from ..utils import validate_and_canonical_unit
 
 logger = logging.getLogger(__name__)
 
@@ -170,8 +169,10 @@ class Lattice:
             alpha_val = float(self.alpha)
             beta_val = float(self.beta)
             gamma_val = float(self.gamma)
-        except Exception:
-            pass
+        except (TypeError, ValueError):
+            alpha_val = None
+            beta_val = None
+            gamma_val = None
 
         if (
             alpha_val is not None
@@ -239,7 +240,7 @@ class Lattice:
                 vals_other[k] = convert_units(
                     vals_other[k], latt.angle_units, INTERNAL_ANGLE_UNITS
                 )
-        except Exception:
+        except PINT_ERRORS:
             # Fallback: use raw attribute values (no unit conversion)
             vals_self = {k: getattr(self, k) for k in keys}
             vals_other = {k: getattr(latt, k) for k in keys}

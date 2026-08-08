@@ -13,13 +13,17 @@ import math
 from collections.abc import Mapping
 
 import numpy as np
-from deprecated.sphinx import versionadded, versionchanged
+from deprecated.sphinx import versionadded
+from deprecated.sphinx import versionchanged
 from numpy.linalg import norm
 
 from ..typing import Matrix3x3
-from ..utils import _SolverDirty, unique_name
-from .lattice import Lattice, LatticeDictType
-from .reflection import Reflection, ReflectionsDict
+from ..utils import _SolverDirty
+from ..utils import unique_name
+from .lattice import Lattice
+from .lattice import LatticeDictType
+from .reflection import Reflection
+from .reflection import ReflectionsDict
 
 # Reflection fields that, when changed for an orienting reflection,
 # invalidate the previously computed UB.  ``digits`` is intentionally

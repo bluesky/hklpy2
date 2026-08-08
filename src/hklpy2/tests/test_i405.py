@@ -12,13 +12,16 @@ in their ``__init__``.
 
 import logging
 from contextlib import nullcontext as does_not_raise
+from typing import ClassVar
 
 import pytest
 
-from hklpy2 import creator, solver_utils
+from hklpy2 import creator
+from hklpy2 import solver_utils
 from hklpy2.backends.no_op import NoOpSolver
 from hklpy2.backends.typing import GeometryDescriptor
-from hklpy2.run_utils import _RESERVED_SOLVER_KEYS, simulator_from_config
+from hklpy2.run_utils import _RESERVED_SOLVER_KEYS
+from hklpy2.run_utils import simulator_from_config
 
 # Module-level mutable cell so the stand-in solver's ``__init__`` can
 # report what kwargs it received to the active test function.
@@ -36,7 +39,7 @@ class _StandInSolver(NoOpSolver):
     """
 
     name = "stand_in_405"
-    _geometry_registry: dict = {}
+    _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     def __init__(
         self, geometry: str, *, marker: str = "", another: object = None, **kwargs

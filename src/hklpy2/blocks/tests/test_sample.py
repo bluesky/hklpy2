@@ -8,7 +8,9 @@ import pytest
 from ...diffract import creator
 from ...exceptions import ReflectionError
 from ...tests.models import add_oriented_vibranium_to_e4cv
-from ...utils import IDENTITY_MATRIX_3X3, load_yaml, unique_name
+from ...utils import IDENTITY_MATRIX_3X3
+from ...utils import load_yaml
+from ...utils import unique_name
 from ..lattice import Lattice
 from ..reflection import ReflectionsDict
 from ..sample import Sample

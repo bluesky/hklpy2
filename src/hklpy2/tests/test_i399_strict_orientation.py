@@ -23,7 +23,8 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from .. import creator
-from ..blocks.reflection import Reflection, ReflectionsDict
+from ..blocks.reflection import Reflection
+from ..blocks.reflection import ReflectionsDict
 from ..exceptions import ReflectionError
 
 SAMPLE_DEF = {

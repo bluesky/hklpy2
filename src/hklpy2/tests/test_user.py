@@ -16,34 +16,32 @@ from pyRestTable import Table
 
 from ..blocks.lattice import SI_LATTICE_PARAMETER
 from ..diffract import creator
-from ..exceptions import (
-    ConfigurationError,
-    CoreError,
-    NoForwardSolutions,
-    ReflectionError,
-)
+from ..exceptions import ConfigurationError
+from ..exceptions import CoreError
+from ..exceptions import NoForwardSolutions
+from ..exceptions import ReflectionError
 from ..incident import WavelengthXray
-from ..user import (
-    add_sample,
-    cahkl,
-    cahkl_table,
-    calc_UB,
-    get_diffractometer,
-    list_samples,
-    or_swap,
-    pa,
-    remove_reflection,
-    remove_sample,
-    scan_extra,
-    set_diffractometer,
-    set_lattice,
-    set_wavelength,
-    setor,
-    solver_summary,
-    wh,
-)
+from ..user import add_sample
+from ..user import cahkl
+from ..user import cahkl_table
+from ..user import calc_UB
+from ..user import get_diffractometer
+from ..user import list_samples
+from ..user import or_swap
+from ..user import pa
+from ..user import remove_reflection
+from ..user import remove_sample
+from ..user import scan_extra
+from ..user import set_diffractometer
+from ..user import set_lattice
+from ..user import set_wavelength
+from ..user import setor
+from ..user import solver_summary
+from ..user import wh
 from ..utils import roundoff
-from .common import PV_ENERGY, PV_WAVELENGTH, TESTS_DIR
+from .common import PV_ENERGY
+from .common import PV_WAVELENGTH
+from .common import TESTS_DIR
 
 
 @pytest.fixture(scope="function")

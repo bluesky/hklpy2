@@ -11,12 +11,20 @@ from contextlib import nullcontext as does_not_raise
 import pyRestTable
 import pytest
 
-from ..diffract import DiffractometerBase, creator
-from ..exceptions import ConfigurationError, CoreError, ReflectionError
-from ..ops import DEFAULT_SAMPLE_NAME, Core
+from ..diffract import DiffractometerBase
+from ..diffract import creator
+from ..exceptions import ConfigurationError
+from ..exceptions import CoreError
+from ..exceptions import ReflectionError
+from ..ops import DEFAULT_SAMPLE_NAME
+from ..ops import Core
 from ..tests.models import add_oriented_vibranium_to_e4cv
-from ..user import set_diffractometer, setor
-from .models import AugmentedFourc, MultiAxis99, MultiAxis99NoSolver, TwoC
+from ..user import set_diffractometer
+from ..user import setor
+from .models import AugmentedFourc
+from .models import MultiAxis99
+from .models import MultiAxis99NoSolver
+from .models import TwoC
 
 SKIP_EXACT_VALUE_TEST = str(uuid.uuid4())
 

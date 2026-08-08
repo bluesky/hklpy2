@@ -26,17 +26,17 @@ Procedure
 import math
 import uuid
 from contextlib import nullcontext as does_not_raise
+from typing import ClassVar
 
 import numpy as np
 import pytest
+from gi.repository import GLib
 
-from hklpy2.backends.hkl_soleil import (
-    LIBHKL_DETECTOR_TYPE,
-    LIBHKL_USER_UNITS,
-    HklSolver,
-    NoForwardSolutions,
-    libhkl,
-)
+from hklpy2.backends.hkl_soleil import LIBHKL_DETECTOR_TYPE
+from hklpy2.backends.hkl_soleil import LIBHKL_USER_UNITS
+from hklpy2.backends.hkl_soleil import HklSolver
+from hklpy2.backends.hkl_soleil import NoForwardSolutions
+from hklpy2.backends.hkl_soleil import libhkl
 
 GEOMETRY = "E6C"
 SOLVER = "hkl_soleil"
@@ -148,7 +148,7 @@ def test_libhkl():
             raw = list(
                 engine.pseudo_axis_values_set(libhkl_pseudos, LIBHKL_USER_UNITS).items()
             )
-        except Exception:
+        except GLib.GError:
             raw = []
         assert len(raw) == len(reals)
 
@@ -328,14 +328,16 @@ def test_hklpy2(parms, context):
 
 
 def test_ISN_Diffractometer():
-    from ophyd import Component, SoftPositioner
+    from ophyd import Component
+    from ophyd import SoftPositioner
 
-    from hklpy2.diffract import DiffractometerBase, Hklpy2PseudoAxis
+    from hklpy2.diffract import DiffractometerBase
+    from hklpy2.diffract import Hklpy2PseudoAxis
 
     class Diffractometer(DiffractometerBase):
         """Example custom diffractometer"""
 
-        _real = ["mu", "eta", "chi", "phi", "yaw", "pitch"]
+        _real: ClassVar[list[str]] = ["mu", "eta", "chi", "phi", "yaw", "pitch"]
 
         h = Component(Hklpy2PseudoAxis, "", kind="hinted")
         k = Component(Hklpy2PseudoAxis, "", kind="hinted")

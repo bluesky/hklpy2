@@ -6,15 +6,15 @@ diffractometers
 
 import math
 import pathlib
+from typing import ClassVar
 
 from ophyd import Component as Cpt
-from ophyd import Kind, SoftPositioner
+from ophyd import Kind
+from ophyd import SoftPositioner
 
-from ..diffract import (
-    DiffractometerBase,
-    Hklpy2PseudoAxis,
-    diffractometer_class_factory,
-)
+from ..diffract import DiffractometerBase
+from ..diffract import Hklpy2PseudoAxis
+from ..diffract import diffractometer_class_factory
 from ..utils import load_yaml_file
 
 E4CV_CONFIG_FILE = pathlib.Path(__file__).parent / "e4cv_orient.yml"
@@ -65,8 +65,8 @@ class AugmentedFourc(Fourc):
 class MultiAxis99NoSolver(DiffractometerBase):
     """Test case.  9 pseudo axes and 9 real axes."""
 
-    _pseudo = ["p1", "p2"]
-    _real = ["r1", "r2", "r3", "r4"]
+    _pseudo: ClassVar[list[str]] = ["p1", "p2"]
+    _real: ClassVar[list[str]] = ["r1", "r2", "r3", "r4"]
 
     p1 = Cpt(Hklpy2PseudoAxis, "", kind=HN)
     p2 = Cpt(Hklpy2PseudoAxis, "", kind=HN)
@@ -123,8 +123,8 @@ class NoOpTh2Th(DiffractometerBase):
 class TwoC(DiffractometerBase):
     """Test case with custom names and additional axes."""
 
-    _pseudo = ["q"]
-    _real = ["theta", "ttheta"]
+    _pseudo: ClassVar[list[str]] = ["q"]
+    _real: ClassVar[list[str]] = ["theta", "ttheta"]
 
     # sorted alphabetically
     another = Cpt(Hklpy2PseudoAxis, "", kind=HN)

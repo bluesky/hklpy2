@@ -14,7 +14,8 @@ library.
 import datetime
 import logging
 import warnings
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable
+from collections.abc import Mapping
 from typing import TYPE_CHECKING
 
 from deprecated.sphinx import versionchanged
@@ -25,17 +26,20 @@ from .blocks.constraints import RealAxisConstraints
 from .blocks.lattice import Lattice
 from .blocks.reflection import Reflection
 from .blocks.sample import Sample
-from .exceptions import ConfigurationError, CoreError, NoForwardSolutions
+from .exceptions import ConfigurationError
+from .exceptions import CoreError
+from .exceptions import NoForwardSolutions
 from .solver_utils import solver_factory
-from .typing import (
-    AnyAxesType,
-    AxesDict,
-    ConfigHeaderDict,
-    KeyValueMap,
-    Matrix3x3,
-    NamedFloatDict,
-)
-from .utils import _SolverDirty, axes_to_dict, convert_units, unique_name
+from .typing import AnyAxesType
+from .typing import AxesDict
+from .typing import ConfigHeaderDict
+from .typing import KeyValueMap
+from .typing import Matrix3x3
+from .typing import NamedFloatDict
+from .utils import _SolverDirty
+from .utils import axes_to_dict
+from .utils import convert_units
+from .utils import unique_name
 
 __all__ = ["Core"]
 
@@ -168,7 +172,7 @@ class Core:
         from .devices import describe_aux
 
         header: ConfigHeaderDict = {
-            "datetime": str(datetime.datetime.now()),
+            "datetime": str(datetime.datetime.now(datetime.timezone.utc)),
             "hklpy2_version": __version__,
             "python_class": self.diffractometer.__class__.__name__,
             "config_schema_version": CONFIG_SCHEMA_VERSION,

@@ -36,8 +36,11 @@ Solver-specific metadata extensions (e.g. ``HklSolverMetadataDict``) live
 in the solver's own module (e.g. :mod:`hklpy2.backends.hkl_soleil`).
 """
 
-from collections.abc import Iterator, Mapping, Sequence
-from typing import Any, TypedDict
+from collections.abc import Iterator
+from collections.abc import Mapping
+from collections.abc import Sequence
+from typing import Any
+from typing import TypedDict
 
 import numpy as np
 import numpy.typing as npt

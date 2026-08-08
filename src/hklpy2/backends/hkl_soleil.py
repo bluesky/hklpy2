@@ -47,18 +47,20 @@ from gi._error import GError
 from numpy import typing as npt
 from pyRestTable import Table
 
-from ..exceptions import NoForwardSolutions, SolverError
-from ..typing import Matrix3x3, NamedFloatDict
-from ..utils import (
-    IDENTITY_MATRIX_3X3,
-    check_value_in_list,
-    istype,
-    roundoff,
-    unique_name,
-)
+from ..exceptions import NoForwardSolutions
+from ..exceptions import SolverError
+from ..typing import Matrix3x3
+from ..typing import NamedFloatDict
+from ..utils import IDENTITY_MATRIX_3X3
+from ..utils import check_value_in_list
+from ..utils import istype
+from ..utils import roundoff
+from ..utils import unique_name
 from .base import SolverBase
 from .hkl_soleil_utils import setup_libhkl
-from .typing import ReflectionDict, SampleDict, SolverMetadataDict
+from .typing import ReflectionDict
+from .typing import SampleDict
+from .typing import SolverMetadataDict
 
 logger = logging.getLogger(__name__)
 

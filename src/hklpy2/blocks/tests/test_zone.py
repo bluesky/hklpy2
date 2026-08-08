@@ -12,8 +12,11 @@ import pytest
 from ophyd.sim import noisy_det
 
 from ...diffract import creator
-from ...plans import move_zone, scan_zone
-from ..zone import OrthonormalZone, zone_series, zonespace
+from ...plans import move_zone
+from ...plans import scan_zone
+from ..zone import OrthonormalZone
+from ..zone import zone_series
+from ..zone import zonespace
 
 
 def sim4c2():
@@ -407,6 +410,8 @@ def test_zone_deprecated_shims(parms, context):
         from unittest.mock import patch
 
         target = f"hklpy2.plans.{parms['func_name']}"
-        with patch(target, return_value=None):
-            with pytest.warns(DeprecationWarning, match=re.escape(parms["msg"])):
-                func()
+        with (
+            patch(target, return_value=None),
+            pytest.warns(DeprecationWarning, match=re.escape(parms["msg"])),
+        ):
+            func()

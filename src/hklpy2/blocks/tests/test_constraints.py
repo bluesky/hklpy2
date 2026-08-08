@@ -8,14 +8,12 @@ import pytest
 
 from ...diffract import creator
 from ...exceptions import ConfigurationError
-from ..constraints import (
-    DEFAULT_CUT_POINT,
-    ENDPOINT_TOLERANCE,
-    ConstraintBase,
-    ConstraintsError,
-    LimitsConstraint,
-    RealAxisConstraints,
-)
+from ..constraints import DEFAULT_CUT_POINT
+from ..constraints import ENDPOINT_TOLERANCE
+from ..constraints import ConstraintBase
+from ..constraints import ConstraintsError
+from ..constraints import LimitsConstraint
+from ..constraints import RealAxisConstraints
 
 
 class PlainConstraint(ConstraintBase):

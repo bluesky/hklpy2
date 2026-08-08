@@ -15,7 +15,8 @@ import warnings
 from collections.abc import Mapping
 from typing import Any
 
-from deprecated.sphinx import versionadded, versionchanged
+from deprecated.sphinx import versionadded
+from deprecated.sphinx import versionchanged
 
 from ..exceptions import ConfigurationError
 from ..typing import KeyValueMap

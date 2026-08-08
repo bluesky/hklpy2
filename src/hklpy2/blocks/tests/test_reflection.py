@@ -10,12 +10,10 @@ from ...diffract import creator
 from ...exceptions import ConfigurationError
 from ...tests.models import add_oriented_vibranium_to_e4cv
 from ...utils import INTERNAL_LENGTH_UNITS
-from ..reflection import (
-    DEFAULT_REFLECTION_DIGITS,
-    Reflection,
-    ReflectionError,
-    ReflectionsDict,
-)
+from ..reflection import DEFAULT_REFLECTION_DIGITS
+from ..reflection import Reflection
+from ..reflection import ReflectionError
+from ..reflection import ReflectionsDict
 
 e4cv_r400_config_yaml = """
     name: r400
@@ -930,7 +928,8 @@ def test_reflections_to_solver_converts_per_reflection_units():
     """Ensure _reflections_to_solver converts each reflection's wavelength
     from its own units into the solver internal units."""
     from ...diffract import creator
-    from ...utils import INTERNAL_LENGTH_UNITS, convert_units
+    from ...utils import INTERNAL_LENGTH_UNITS
+    from ...utils import convert_units
 
     # create a minimal diffractometer/core to use the conversion helper
     dif = creator(name="testdif")
@@ -1412,7 +1411,7 @@ def test_reflection_eq_fallback_raw_comparison(monkeypatch):
     import hklpy2.blocks.reflection as reflection_mod
 
     def bad_convert_units(value, from_u, to_u):
-        raise Exception("conversion failed")
+        raise pint.DimensionalityError(from_u, to_u)
 
     monkeypatch.setattr(reflection_mod, "convert_units", bad_convert_units)
     # Should fall back to raw comparison, which will succeed here

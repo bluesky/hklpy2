@@ -12,18 +12,17 @@ import pytest
 from ophyd.utils import ReadOnlyError
 
 from ..diffract import creator
-from ..incident import (
-    A_KEV,
-    DEFAULT_SOURCE_TYPE,
-    DEFAULT_WAVELENGTH,
-    DEFAULT_WAVELENGTH_DEADBAND,
-    EpicsMonochromatorRO,
-    EpicsWavelengthRO,
-    Wavelength,
-    WavelengthXray,
-    _WavelengthBase,
-)
-from ..utils import INTERNAL_LENGTH_UNITS, INTERNAL_XRAY_ENERGY_UNITS
+from ..incident import A_KEV
+from ..incident import DEFAULT_SOURCE_TYPE
+from ..incident import DEFAULT_WAVELENGTH
+from ..incident import DEFAULT_WAVELENGTH_DEADBAND
+from ..incident import EpicsMonochromatorRO
+from ..incident import EpicsWavelengthRO
+from ..incident import Wavelength
+from ..incident import WavelengthXray
+from ..incident import _WavelengthBase
+from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import INTERNAL_XRAY_ENERGY_UNITS
 from .common import IOC_PREFIX
 
 logger = logging.getLogger(__name__)

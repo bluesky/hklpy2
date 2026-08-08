@@ -7,7 +7,9 @@ from contextlib import nullcontext as does_not_raise
 
 import pytest
 
-from ..typing import ReflectionDict, SampleDict, SolverMetadataDict
+from ..typing import ReflectionDict
+from ..typing import SampleDict
+from ..typing import SolverMetadataDict
 
 # ---------------------------------------------------------------------------
 # ReflectionDict

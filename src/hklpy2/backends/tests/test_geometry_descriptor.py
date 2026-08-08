@@ -4,11 +4,13 @@
 
 import re
 from contextlib import nullcontext as does_not_raise
+from typing import ClassVar
 
 import pytest
 
 from ..base import SolverBase
-from ..th_tth_q import TH_TTH_Q_GEOMETRY, ThTthSolver
+from ..th_tth_q import TH_TTH_Q_GEOMETRY
+from ..th_tth_q import ThTthSolver
 from ..typing import GeometryDescriptor
 
 # ---------------------------------------------------------------------------
@@ -159,7 +161,7 @@ def test_geometry_descriptor_field_independence(parms, context):
 def test_register_geometry(parms, context):
     # Use a fresh isolated subclass so tests don't pollute ThTthSolver's registry.
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     with context:
         _IsolatedSolver.register_geometry(parms["descriptor"])
@@ -182,7 +184,7 @@ def test_register_geometry(parms, context):
 )
 def test_geometries_sorted(parms, context):
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     with context:
         for name in parms["names"]:
@@ -203,7 +205,7 @@ def test_geometries_sorted(parms, context):
 )
 def test_register_geometry_overwrite(parms, context):
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     with context:
         desc_v1 = _make_descriptor(parms["name"], real=["a"])
@@ -260,7 +262,7 @@ def test_registry_isolation(parms, context):
 )
 def test_th_tth_solver_uses_registry(parms, context):
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     # Pre-populate with the built-in geometry so the TH_TTH_Q case works.
     _IsolatedSolver.register_geometry(ThTthSolver._geometry_registry[TH_TTH_Q_GEOMETRY])
@@ -327,7 +329,7 @@ def test_th_tth_solver_unregistered_geometry(parms, context):
 )
 def test_dynamic_registration(parms, context):
     class _IsolatedSolver(ThTthSolver):
-        _geometry_registry = {}
+        _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     with context:
         desc = GeometryDescriptor(

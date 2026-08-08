@@ -173,7 +173,8 @@ def test_geometries():
 
 def test_affine():
     """Test the lattice parameter refinement."""
-    from ... import SI_LATTICE_PARAMETER, creator
+    from ... import SI_LATTICE_PARAMETER
+    from ... import creator
     from ...blocks.lattice import SI_LATTICE_PARAMETER_UNCERTAINTY
 
     e4cv = creator(name="e4cv")
@@ -434,7 +435,8 @@ def test__details(geometry):
 
 
 def test_reflections():
-    from ... import SI_LATTICE_PARAMETER, creator
+    from ... import SI_LATTICE_PARAMETER
+    from ... import creator
 
     sim = creator()
     sim.add_sample("silicon", SI_LATTICE_PARAMETER)
@@ -461,7 +463,8 @@ def test_reflections():
 
 
 def test_sample_property():
-    from ... import SI_LATTICE_PARAMETER, creator
+    from ... import SI_LATTICE_PARAMETER
+    from ... import creator
 
     sim = creator()
     sim.add_sample("silicon", SI_LATTICE_PARAMETER)
@@ -599,7 +602,8 @@ def test_sample_property():
 )
 def test_calculate_UB_degenerate(parms, context):
     """calculate_UB raises ValueError for degenerate or colinear reflections."""
-    from ... import SI_LATTICE_PARAMETER, creator
+    from ... import SI_LATTICE_PARAMETER
+    from ... import creator
 
     geometry = "E6C" if "gamma" in parms["r1"]["reals"] else "E4CV"
     sample_lattice = 5.0 if geometry == "E6C" else SI_LATTICE_PARAMETER

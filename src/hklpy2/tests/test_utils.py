@@ -15,41 +15,47 @@ import pint
 import pytest
 from bluesky import RunEngine
 from bluesky import plans as bp
-from ophyd import Component, Device, EpicsMotor, PVPositioner, Signal, SoftPositioner
+from ophyd import Component
+from ophyd import Device
+from ophyd import EpicsMotor
+from ophyd import PVPositioner
+from ophyd import Signal
+from ophyd import SoftPositioner
 from yaml.parser import ParserError
 
-from ..devices import (
-    VirtualPositionerBase,
-    dict_device_factory,
-    dynamic_import,
-    make_dynamic_instance,
-    parse_factory_axes,
-)
-from ..diffract import creator, diffractometer_class_factory
-from ..exceptions import NoForwardSolutions, SolverError
-from ..run_utils import (
-    ConfigurationRunWrapper,
-    get_run_orientation,
-    list_orientation_runs,
-    simulator_from_config,
-)
+from ..devices import VirtualPositionerBase
+from ..devices import dict_device_factory
+from ..devices import dynamic_import
+from ..devices import make_dynamic_instance
+from ..devices import parse_factory_axes
+from ..diffract import creator
+from ..diffract import diffractometer_class_factory
+from ..exceptions import NoForwardSolutions
+from ..exceptions import SolverError
+from ..run_utils import ConfigurationRunWrapper
+from ..run_utils import get_run_orientation
+from ..run_utils import list_orientation_runs
+from ..run_utils import simulator_from_config
 from ..solver_utils import get_solver
-from ..tests.common import HKLPY2_DIR, TESTS_DIR
-from ..typing import AnyAxesType, AxesArray, AxesDict, AxesList, AxesTuple
-from ..utils import (
-    axes_to_dict,
-    benchmark,
-    compare_float_dicts,
-    convert_units,
-    distance_between_pos_tuples,
-    flatten_lists,
-    istype,
-    load_yaml_file,
-    pick_closest_solution,
-    pick_first_solution,
-    roundoff,
-    solver_summary,
-)
+from ..tests.common import HKLPY2_DIR
+from ..tests.common import TESTS_DIR
+from ..typing import AnyAxesType
+from ..typing import AxesArray
+from ..typing import AxesDict
+from ..typing import AxesList
+from ..typing import AxesTuple
+from ..utils import axes_to_dict
+from ..utils import benchmark
+from ..utils import compare_float_dicts
+from ..utils import convert_units
+from ..utils import distance_between_pos_tuples
+from ..utils import flatten_lists
+from ..utils import istype
+from ..utils import load_yaml_file
+from ..utils import pick_closest_solution
+from ..utils import pick_first_solution
+from ..utils import roundoff
+from ..utils import solver_summary
 
 sim4c = creator(name="sim4c")
 sim6c = creator(name="sim6c", geometry="E6C")

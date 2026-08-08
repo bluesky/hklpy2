@@ -19,10 +19,12 @@ self-consistent.  Covered here:
 """
 
 from contextlib import nullcontext as does_not_raise
+from typing import ClassVar
 
 import pytest
 
-from hklpy2 import creator, solver_utils
+from hklpy2 import creator
+from hklpy2 import solver_utils
 from hklpy2.backends.no_op import NoOpSolver
 from hklpy2.backends.typing import GeometryDescriptor
 
@@ -37,7 +39,7 @@ class _StandInSolver407(NoOpSolver):
     """
 
     name = "stand_in_407"
-    _geometry_registry: dict = {}
+    _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     @property
     def _metadata(self):

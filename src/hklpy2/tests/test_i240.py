@@ -161,11 +161,9 @@ def test_i240_hkl_soleil():
 
 def test_i240_libhkl():
     """Test the libhkl code without the solver API."""
-    from hklpy2.backends.hkl_soleil import (
-        LIBHKL_DETECTOR_TYPE,
-        LIBHKL_USER_UNITS,
-        libhkl,
-    )
+    from hklpy2.backends.hkl_soleil import LIBHKL_DETECTOR_TYPE
+    from hklpy2.backends.hkl_soleil import LIBHKL_USER_UNITS
+    from hklpy2.backends.hkl_soleil import libhkl
 
     SAMPLE_NAME = I250_CONFIG["sample_name"]
     SAMPLE = I250_CONFIG["samples"][SAMPLE_NAME]

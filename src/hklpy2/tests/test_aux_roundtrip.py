@@ -12,14 +12,13 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 
 from ..blocks.configure import CONFIG_SCHEMA_VERSION
-from ..devices import describe_aux, make_aux_pseudo_positioner_class
+from ..devices import describe_aux
+from ..devices import make_aux_pseudo_positioner_class
 from ..exceptions import ConfigurationError
-from ..run_utils import (
-    _AUX_RECONSTRUCTORS,
-    _normalize_aux_record,
-    register_aux_reconstructor,
-    simulator_from_config,
-)
+from ..run_utils import _AUX_RECONSTRUCTORS
+from ..run_utils import _normalize_aux_record
+from ..run_utils import register_aux_reconstructor
+from ..run_utils import simulator_from_config
 from .test_diffract import _build_gonio_with_nested_pseudo
 
 # ---------------------------------------------------------------------------

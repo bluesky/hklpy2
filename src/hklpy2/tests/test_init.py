@@ -3,6 +3,7 @@
 """Test the package constructor."""
 
 import importlib
+import importlib.metadata
 import runpy
 import sys
 
@@ -33,12 +34,10 @@ def test_get_version_with_version_module(mocker, version_module, expected_versio
 
 @pytest.mark.parametrize(
     "side_effect, expected_version",
-    [
-        (Exception("Not found"), "0+unknown")  # Test fallback scenario
-    ],
+    [(importlib.metadata.PackageNotFoundError("Not found"), "0+unknown")],
 )
 def test_get_version_fallback(mocker, side_effect, expected_version):
-    # Mock importlib.metadata.version to raise an exception
+    # Mock importlib.metadata.version to raise when package metadata is absent.
     mocker.patch("importlib.metadata.version", side_effect=side_effect)
 
     version = _get_version()

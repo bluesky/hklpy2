@@ -31,7 +31,8 @@ SPEC equivalents
 
 import logging
 import warnings
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterator
+from collections.abc import Sequence
 
 import numpy as np
 from deprecated.sphinx import versionadded

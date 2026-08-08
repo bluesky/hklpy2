@@ -16,7 +16,9 @@ import pytest
 import yaml
 
 from ..diffract import creator
-from ..user import cahkl, pa, set_diffractometer
+from ..user import cahkl
+from ..user import pa
+from ..user import set_diffractometer
 
 THIS_DIR = pathlib.Path(__file__).parent
 

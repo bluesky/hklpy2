@@ -19,7 +19,8 @@ Example::
 import logging
 
 from .. import __version__
-from ..typing import Matrix3x3, NamedFloatDict
+from ..typing import Matrix3x3
+from ..typing import NamedFloatDict
 from ..utils import IDENTITY_MATRIX_3X3
 from .base import SolverBase
 from .typing import ReflectionDict

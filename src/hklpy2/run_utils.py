@@ -18,16 +18,22 @@ import logging
 import pathlib
 import sys
 import warnings
-from collections.abc import Callable, Iterator, Mapping, Sequence
+from collections.abc import Callable
+from collections.abc import Iterator
+from collections.abc import Mapping
+from collections.abc import Sequence
 from typing import Any
 
 import pandas as pd
 import tqdm
-from deprecated.sphinx import versionadded, versionchanged
+from deprecated.sphinx import versionadded
+from deprecated.sphinx import versionchanged
 from ophyd import Device
 
 from .typing import KeyValueMap
-from .utils import DEFAULT_START_KEY, MISSING_HEADER_KEY_MSG, load_yaml_file
+from .utils import DEFAULT_START_KEY
+from .utils import MISSING_HEADER_KEY_MSG
+from .utils import load_yaml_file
 
 logger = logging.getLogger(__name__)
 
@@ -533,7 +539,8 @@ def simulator_from_config(config):
 
         :func:`~hklpy2.diffract.creator` — create a diffractometer from scratch.
     """
-    from .diffract import DiffractometerBase, creator
+    from .diffract import DiffractometerBase
+    from .diffract import creator
 
     if isinstance(config, DiffractometerBase):
         logger.debug(

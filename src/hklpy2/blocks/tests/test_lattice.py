@@ -4,6 +4,7 @@ import re
 from contextlib import nullcontext as does_not_raise
 
 import numpy as np
+import pint
 import pytest
 
 from ...exceptions import LatticeError
@@ -205,7 +206,7 @@ def test_lattice_eq_fallback_raw_comparison(monkeypatch):
     import hklpy2.blocks.lattice as lattice_mod
 
     def bad_convert_units(value, from_u, to_u):
-        raise Exception("conversion failed")
+        raise pint.DimensionalityError(from_u, to_u)
 
     monkeypatch.setattr(lattice_mod, "convert_units", bad_convert_units)
 
@@ -550,7 +551,7 @@ def test_init_handles_float_conversion_exception(monkeypatch):
     import hklpy2.blocks.lattice as lattice_mod
 
     def _bad_float(x):
-        raise RuntimeError("forced float failure")
+        raise ValueError("forced float failure")
 
     # Replace the module-level float name so the try: float(...) raises.
     monkeypatch.setattr(lattice_mod, "float", _bad_float, raising=False)
