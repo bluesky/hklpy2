@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../../_static/documentation_options.js?v=9435257b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -461,9 +461,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">weakref</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
@@ -513,7 +512,7 @@
 
 <div class="viewcode-block" id="WavelengthDictType">
 <a class="viewcode-back" href="../../autoapi/hklpy2/incident/index.html#hklpy2.incident.WavelengthDictType">[docs]</a>
-<span class="n">WavelengthDictType</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span></div>
+<span class="n">WavelengthDictType</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]</span></div>
 
 
 
@@ -548,7 +547,7 @@
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Allowed variation in wavelength before signaling change to diffractometer.&quot;&quot;&quot;</span>
 
-    <span class="n">_keyset</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;source_type wavelength wavelength_units&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">_keyset</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;source_type&quot;</span><span class="p">,</span> <span class="s2">&quot;wavelength&quot;</span><span class="p">,</span> <span class="s2">&quot;wavelength_units&quot;</span><span class="p">]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;List of Component names for &#39;_asdict()&#39; and &#39;_fromdict()&#39;.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WavelengthDictType</span><span class="p">:</span>
@@ -579,11 +578,11 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">source_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">wavelength_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">wavelength</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">wavelength_units</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">wavelength_deadband</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_WAVELENGTH_DEADBAND</span><span class="p">,</span>
-        <span class="n">connection_timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">connection_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
@@ -703,19 +702,21 @@
 <span class="sd">    unit string is not recognized.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">_keyset</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">        source_type</span>
-<span class="s2">        energy wavelength</span>
-<span class="s2">        energy_units wavelength_units</span>
-<span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">_keyset</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;source_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wavelength&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;energy_units&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wavelength_units&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;List of Component names for &#39;_asdict()&#39; and &#39;_fromdict()&#39;.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">energy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">energy_units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">energy</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">energy_units</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;.&quot;&quot;&quot;</span>
@@ -745,14 +746,10 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
 
         <span class="n">energy</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">energy_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-            <span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">,</span>
+            <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">INTERNAL_XRAY_ENERGY_UNITS</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">convert_units</span><span class="p">(</span>
-            <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">energy</span><span class="p">,</span>
-            <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">energy</span><span class="p">,</span> <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_to_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -760,14 +757,10 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_units</span>
 
         <span class="n">wavelength</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
-            <span class="n">value</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-            <span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">,</span>
+            <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">INTERNAL_LENGTH_UNITS</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">convert_units</span><span class="p">(</span>
-            <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">wavelength</span><span class="p">,</span>
-            <span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">energy_units</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+            <span class="n">A_KEV</span> <span class="o">/</span> <span class="n">wavelength</span><span class="p">,</span> <span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">energy_units</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_wavelength_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -831,9 +824,13 @@
     <span class="n">energy_units</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SignalRO</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;config&quot;</span><span class="p">)</span></div>
 
 
-    <span class="n">_keyset</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;source_type energy wavelength energy_units wavelength_units&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="p">)</span>
+    <span class="n">_keyset</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;source_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;energy&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wavelength&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;energy_units&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;wavelength_units&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;List of Component names for &#39;_asdict()&#39; and &#39;_fromdict()&#39;.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>

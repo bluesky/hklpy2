@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../../_static/documentation_options.js?v=9435257b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -429,23 +429,18 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">entry_points</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverError</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>  <span class="c1"># noqa: F401</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;SOLVER_ENTRYPOINT_GROUP&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;get_solver&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;solver_factory&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;solvers&quot;</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SOLVER_ENTRYPOINT_GROUP&quot;</span><span class="p">,</span> <span class="s2">&quot;get_solver&quot;</span><span class="p">,</span> <span class="s2">&quot;solver_factory&quot;</span><span class="p">,</span> <span class="s2">&quot;solvers&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="SOLVER_ENTRYPOINT_GROUP">
 <a class="viewcode-back" href="../../autoapi/hklpy2/solver_utils/index.html#hklpy2.solver_utils.SOLVER_ENTRYPOINT_GROUP">[docs]</a>
@@ -476,11 +471,7 @@
 
 <div class="viewcode-block" id="solver_factory">
 <a class="viewcode-back" href="../../autoapi/hklpy2/solver_utils/index.html#hklpy2.solver_utils.solver_factory">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">solver_factory</span><span class="p">(</span>
-    <span class="n">solver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SolverBase&quot;</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">solver_factory</span><span class="p">(</span><span class="n">solver_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SolverBase&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a |solver| object with geometry and axes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../_static/documentation_options.js?v=9435257b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -519,13 +519,16 @@ Add many additional axes, both in real (rotation angle) space and in reciprocal
 (pseudo) space.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hklpy2PseudoAxis</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.incident</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpicsMonochromatorRO</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span> <span class="k">as</span> <span class="n">Cpt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpicsMotor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Kind</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoftPositioner</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hklpy2PseudoAxis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.incident</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpicsMonochromatorRO</span>
 
 <span class="n">NORMAL_HINTED</span> <span class="o">=</span> <span class="n">Kind</span><span class="o">.</span><span class="n">hinted</span> <span class="o">|</span> <span class="n">Kind</span><span class="o">.</span><span class="n">normal</span>
 
@@ -546,9 +549,9 @@ Add many additional axes, both in real (rotation angle) space and in reciprocal
     <span class="p">)</span>
 
     <span class="c1"># Pseudo-space axes, in order expected by hkl_soleil E4CV, engine=&quot;hkl&quot;</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>  <span class="c1"># noqa: E741</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>  <span class="c1"># noqa: E741</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>  <span class="c1"># noqa: E741</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
 
     <span class="c1"># Real-space axes, in our own order..</span>
     <span class="c1"># Use different names than the solver for some axes</span>
@@ -558,9 +561,9 @@ Add many additional axes, both in real (rotation angle) space and in reciprocal
     <span class="n">phi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;m32&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
 
     <span class="c1"># Pseudo-space extra axes used in a couple modes.</span>
-    <span class="n">h2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>  <span class="c1"># noqa: E741</span>
-    <span class="n">k2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>  <span class="c1"># noqa: E741</span>
-    <span class="n">l2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>  <span class="c1"># noqa: E741</span>
+    <span class="n">h2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">k2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
 
     <span class="c1"># real-space extra axis used in a couple modes</span>
     <span class="n">psi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">170</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
@@ -569,8 +572,8 @@ Add many additional axes, both in real (rotation angle) space and in reciprocal
     <span class="n">temperature</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">75</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
 
     <span class="c1"># Just the axes in expected order by hkl_soleil E4CV.</span>
-    <span class="n">_pseudo</span> <span class="o">=</span> <span class="s2">&quot;h k l&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-    <span class="n">_real</span> <span class="o">=</span> <span class="s2">&quot;theta chi phi ttheta&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">_pseudo</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">]</span>
+    <span class="n">_real</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="s2">&quot;ttheta&quot;</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># kwargs[&quot;prefix&quot;] = prefix</span>
@@ -578,7 +581,7 @@ Add many additional axes, both in real (rotation angle) space and in reciprocal
             <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span>
             <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
             <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
-            <span class="n">solver_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="s2">&quot;hkl&quot;</span><span class="p">),</span>
+            <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;hkl&quot;</span><span class="p">},</span>
             <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">],</span>
             <span class="n">reals</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="s2">&quot;ttheta&quot;</span><span class="p">],</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -657,7 +660,7 @@ auxiliaries: h2=0, k2=0, l2=0, psi=0, temperature=25
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>  <span class="c1"># Shows ALL the possibilities.</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>  <span class="c1"># Shows ALL the possibilities.</span>
 </pre></div>
 </div>
 </div>
@@ -674,7 +677,7 @@ auxiliaries: h2=0, k2=0, l2=0, psi=0, temperature=25
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">ttheta</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">90</span><span class="p">))</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">inverse</span><span class="p">({</span><span class="s2">&quot;ttheta&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;theta&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">})</span>
 </pre></div>
 </div>
 </div>

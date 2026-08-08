@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../_static/documentation_options.js?v=9435257b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -652,16 +652,10 @@ The <code class="xref py py-func docutils literal notranslate"><span class="pre"
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
 <span class="n">e6c_hkl</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;e6c_hkl&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E6C&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-    <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;hkl&quot;</span><span class="p">},</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;e6c_hkl&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E6C&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span> <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;hkl&quot;</span><span class="p">}</span>
 <span class="p">)</span>
 <span class="n">e6c_psi</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;e6c_psi&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E6C&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-    <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;psi&quot;</span><span class="p">},</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;e6c_psi&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E6C&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span> <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;psi&quot;</span><span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -833,7 +827,7 @@ would cause a discontinuous jump in $\varphi$.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">extras</span></code> are described as a Python dictionary with values for each of the parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -934,7 +928,7 @@ e6c_hkl.sample.U=[[0.034882054037, 0.999391435978, 0.0], [0.0, 0.0, 1.0], [0.999
 <p>Set ${hkl}_2=(1, 1, 0)$.  As above, describe these parameters in a Python dictionary.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e6c_psi</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e6c_psi</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e6c_psi</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -997,12 +991,13 @@ extras: h2=1 k2=1 l2=0
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunEngine</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky_tiled_plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">TiledWriter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.callbacks.best_effort</span><span class="w"> </span><span class="kn">import</span> <span class="n">BestEffortCallback</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationRunWrapper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky_tiled_plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">TiledWriter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">noisy_det</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tiled.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_uri</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tiled.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleTiledServer</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationRunWrapper</span>
 
 <span class="c1"># Setup tiled to capture the Bluesky run data</span>
 <span class="n">server</span> <span class="o">=</span> <span class="n">SimpleTiledServer</span><span class="p">()</span>
@@ -1053,17 +1048,19 @@ full $\psi$ range before committing to the scan.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;psi&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;omega&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;chi&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;phi&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;delta&#39;</span><span class="si">:</span><span class="s2">&gt;8</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">48</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">psi</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">15</span><span class="p">):</span>
-    <span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="n">psi</span><span class="p">)</span>
+    <span class="n">e6c_hkl</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">:</span> <span class="n">psi</span><span class="p">}</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">sol</span> <span class="o">=</span> <span class="n">e6c_hkl</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">psi</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">omega</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">chi</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">phi</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">delta</span><span class="si">:</span><span class="s2">8.3f</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">NoForwardSolutions</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">psi</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">  *** no solution: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1107,8 +1104,8 @@ full $\psi$ range before committing to the scan.</p>
         <span class="mi">10</span><span class="p">,</span>
         <span class="mi">150</span><span class="p">,</span>  <span class="c1"># psi range: phi decreases smoothly on the chi&lt;0 branch</span>
         <span class="n">num</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
-        <span class="n">pseudos</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-        <span class="n">extras</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+        <span class="n">pseudos</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+        <span class="n">extras</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;h2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
     <span class="p">),</span>
     <span class="n">_collect</span><span class="p">,</span>
 <span class="p">)</span>

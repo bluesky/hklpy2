@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../_static/documentation_options.js?v=9435257b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -583,29 +583,27 @@ are <em>eV</em>, wavelength units are <em>angstrom</em>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">add_sample</span><span class="p">,</span>
-    <span class="n">calc_UB</span><span class="p">,</span>
-    <span class="n">cahkl</span><span class="p">,</span>
-    <span class="n">cahkl_table</span><span class="p">,</span>
-    <span class="n">pa</span><span class="p">,</span>
-    <span class="n">set_diffractometer</span><span class="p">,</span>
-    <span class="n">setor</span><span class="p">,</span>
-    <span class="n">wh</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">cahkl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">cahkl_table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_UB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">pa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_diffractometer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">setor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">wh</span>
 
 <span class="n">tardis</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;tardis&quot;</span><span class="p">,</span>
     <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E6C&quot;</span><span class="p">,</span>
     <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>  <span class="c1"># Use TARDIS names, in order expected by E6C</span>
-        <span class="n">theta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Replace &#39;None&#39; with an EPICS motor PV (e.g., &quot;ioc:m1&quot;).</span>
-        <span class="n">mu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">phi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">delta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">),</span>
+    <span class="n">reals</span><span class="o">=</span><span class="p">{</span>  <span class="c1"># Use TARDIS names, in order expected by E6C</span>
+        <span class="s2">&quot;theta&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Replace &#39;None&#39; with an EPICS motor PV (e.g., &quot;ioc:m1&quot;).</span>
+        <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">},</span>
     <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tardis&quot;</span><span class="p">],</span>
 <span class="p">)</span>
 </pre></div>
@@ -674,28 +672,10 @@ any order we choose.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">r1</span> <span class="o">=</span> <span class="n">setor</span><span class="p">(</span>
-    <span class="mi">3</span><span class="p">,</span>
-    <span class="mi">3</span><span class="p">,</span>
-    <span class="mi">0</span><span class="p">,</span>
-    <span class="n">delta</span><span class="o">=</span><span class="mf">64.449</span><span class="p">,</span>
-    <span class="n">gamma</span><span class="o">=-</span><span class="mf">0.871</span><span class="p">,</span>
-    <span class="n">theta</span><span class="o">=</span><span class="mf">25.285</span><span class="p">,</span>
-    <span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;r1&quot;</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">64.449</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=-</span><span class="mf">0.871</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mf">25.285</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;r1&quot;</span>
 <span class="p">)</span>
 <span class="n">r2</span> <span class="o">=</span> <span class="n">setor</span><span class="p">(</span>
-    <span class="mi">5</span><span class="p">,</span>
-    <span class="mi">2</span><span class="p">,</span>
-    <span class="mi">0</span><span class="p">,</span>
-    <span class="n">delta</span><span class="o">=</span><span class="mf">79.712</span><span class="p">,</span>
-    <span class="n">gamma</span><span class="o">=-</span><span class="mf">1.374</span><span class="p">,</span>
-    <span class="n">theta</span><span class="o">=</span><span class="mf">46.816</span><span class="p">,</span>
-    <span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;r2&quot;</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">79.712</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=-</span><span class="mf">1.374</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mf">46.816</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;r2&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>

@@ -62,7 +62,7 @@ Module Contents
 
 
 .. py:data:: DEFAULT_MOTOR_LABELS
-   :type:  Sequence[str]
+   :type:  ~collections.abc.Sequence[str]
    :value: ['motors']
 
 
@@ -231,7 +231,7 @@ Module Contents
    Return the RMS distance between 'pos1' and 'pos2'.
 
 
-.. py:function:: flatten_lists(xs: Sequence[Union[bytes, ~collections.abc.Iterable, str]]) -> ~hklpy2.typing.BlueskyPlanType
+.. py:function:: flatten_lists(xs: ~collections.abc.Sequence[bytes | ~collections.abc.Iterable | str]) -> ~hklpy2.typing.BlueskyPlanType
 
    .. container:: import-path
 
@@ -243,7 +243,7 @@ Module Contents
    https://stackoverflow.com/questions/2158395
 
 
-.. py:function:: istype(value: Any, annotation: Type) -> bool
+.. py:function:: istype(value: Any, annotation: type) -> bool
 
    .. container:: import-path
 
@@ -258,7 +258,7 @@ Module Contents
        True
 
 
-.. py:function:: load_yaml(text: str) -> Mapping
+.. py:function:: load_yaml(text: str) -> ~collections.abc.Mapping
 
    .. container:: import-path
 
@@ -268,7 +268,7 @@ Module Contents
    Load YAML from text.
 
 
-.. py:function:: load_yaml_file(file: Union[~pathlib.Path, str]) -> Mapping
+.. py:function:: load_yaml_file(file: ~pathlib.Path | str) -> ~collections.abc.Mapping
 
    .. container:: import-path
 
@@ -414,7 +414,7 @@ Module Contents
    Raises ValueError on failure.
 
 
-.. py:function:: validate_not_parallel(hkl: Sequence[float], hkl2: Sequence[float], tol: float = 1e-06) -> None
+.. py:function:: validate_not_parallel(hkl: ~collections.abc.Sequence[float], hkl2: ~collections.abc.Sequence[float], tol: float = 1e-06) -> None
 
    .. container:: import-path
 

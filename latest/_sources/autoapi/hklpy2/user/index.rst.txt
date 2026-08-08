@@ -43,7 +43,7 @@ Module Contents
 
 .. py:data:: add_reflection
 
-.. py:function:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> ~hklpy2.blocks.sample.Sample
+.. py:function:: add_sample(name: str, a: float, b: float | None = None, c: float | None = None, alpha: float = 90, beta: float | None = None, gamma: float | None = None, digits: int = 4, replace: bool = False) -> ~hklpy2.blocks.sample.Sample
 
    .. container:: import-path
 
@@ -62,7 +62,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.list_samples` :func:`~hklpy2.user.remove_sample`
 
 
-.. py:function:: cahkl(h: float, k: float, l: float) -> Union[list, str]
+.. py:function:: cahkl(h: float, k: float, l: float) -> list | str
 
    .. container:: import-path
 
@@ -129,7 +129,7 @@ Module Contents
    :type digits: int
 
 
-.. py:function:: calc_UB(r1: Union[~hklpy2.blocks.reflection.Reflection, str], r2: Union[~hklpy2.blocks.reflection.Reflection, str], wavelength: Optional[float] = None) -> ~hklpy2.typing.Matrix3x3
+.. py:function:: calc_UB(r1: ~hklpy2.blocks.reflection.Reflection | str, r2: ~hklpy2.blocks.reflection.Reflection | str, wavelength: float | None = None) -> ~hklpy2.typing.Matrix3x3
 
    .. container:: import-path
 
@@ -152,7 +152,7 @@ Module Contents
 
 
 
-.. py:function:: get_diffractometer() -> Union[~hklpy2.diffract.DiffractometerBase, None]
+.. py:function:: get_diffractometer() -> ~hklpy2.diffract.DiffractometerBase | None
 
    .. container:: import-path
 
@@ -327,73 +327,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.add_sample` :func:`~hklpy2.user.list_samples`
 
 
-.. py:function:: scan_extra(detectors: ~collections.abc.Iterable[~bluesky.protocols.Readable], *args: Union[~bluesky.protocols.Movable, Any], num: Optional[int] = 2, pseudos: Optional[dict] = None, reals: Optional[dict] = None, extras: Optional[dict] = None, fail_on_exception: Optional[bool] = False, md: Optional[dict] = None) -> ~hklpy2.typing.BlueskyPlanType
-
-   .. container:: import-path
-
-      Import: ``hklpy2.user.scan_extra``
-
-
-   Scan diffractometer parameter(s) at constant pseudos or reals.
-
-   Uses selected diffractometer.
-
-   Example
-
-   .. code-block:: python
-       :linenos:
-
-       >>> import hklpy2
-       >>> from hklpy2.user import *
-       >>> e6c = hklpy2.creator(name="e6c", geometry="E6C")
-       >>> set_diffractometer(e6c)
-       >>> e6c.core.mode = "psi_constant_vertical"
-       >>> RE(
-           scan_extra(
-               [noisy_det, e6c],
-               "psi", 0, 150,
-               num=15,
-               pseudos=dict(h=0, k=0, l=2),
-               extras=dict(h2=1, k2=2, l2=0)
-           )
-       )
-
-   Parameters
-
-   detectors: Iterable[Readable]
-       List of readable objects.
-   args: Any
-       Specification of scan axes.  The specification is a repeating
-       pattern of axis (str), start (float), stop (float).
-
-       In general:
-
-       .. code-block:: python
-
-           axis1, start1, stop1,
-           axis2, start2, stop2,
-           ...,
-           axisN, startN, stopN
-
-       Axis is any extra axis name supported by the current diffractometer
-       geometry and mode.
-   num: int
-       Number of points.
-   pseudos: dict
-       Dictionary of pseudo axes positions to be held constant during the scan.
-   reals: dict
-       Dictionary of real axes positions to be held constant during the scan.
-   extras: dict
-       Dictionary of extra axes positions to be held constant during the scan.
-   fail_on_exception: bool
-       When True (default: False), scan will raise any exceptions.
-       When False, all exceptions during the scan will be printed to console.
-   md: dict
-       Dictionary of user-supplied metadata.
-
-
-
-.. py:function:: scan_psi(detectors, *, h: float, k: float, l: float, hkl2, psi_start: float, psi_stop: float, num: int, mode: Optional[str] = None, psi_axis: Optional[str] = None, fail_on_exception: bool = False, md: Optional[dict] = None)
+.. py:function:: scan_psi(detectors, *, h: float, k: float, l: float, hkl2, psi_start: float, psi_stop: float, num: int, mode: str | None = None, psi_axis: str | None = None, fail_on_exception: bool = False, md: dict | None = None)
 
    .. container:: import-path
 
@@ -452,7 +386,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.plans.scan_psi`
 
 
-.. py:function:: set_diffractometer(diffractometer: Optional[~hklpy2.diffract.DiffractometerBase] = None) -> None
+.. py:function:: set_diffractometer(diffractometer: ~hklpy2.diffract.DiffractometerBase | None = None) -> None
 
    .. container:: import-path
 
@@ -470,7 +404,7 @@ Module Contents
    .. seealso:: :func:`~hklpy2.user.get_diffractometer`
 
 
-.. py:function:: set_lattice(a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4) -> None
+.. py:function:: set_lattice(a: float, b: float | None = None, c: float | None = None, alpha: float = 90, beta: float | None = None, gamma: float | None = None, digits: int = 4) -> None
 
    .. container:: import-path
 
@@ -567,7 +501,7 @@ Module Contents
      See the examples above.
 
 
-.. py:function:: solver_summary(diffractometer: Optional[~hklpy2.diffract.DiffractometerBase] = None, write: bool = True) -> ~pyRestTable.Table | None
+.. py:function:: solver_summary(diffractometer: ~hklpy2.diffract.DiffractometerBase | None = None, write: bool = True) -> ~pyRestTable.Table | None
 
    .. container:: import-path
 

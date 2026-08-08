@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../../../_static/documentation_options.js?v=9435257b"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -424,19 +424,16 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionchanged</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_SolverDirty</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_name</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lattice</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.lattice</span><span class="w"> </span><span class="kn">import</span> <span class="n">LatticeDictType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.reflection</span><span class="w"> </span><span class="kn">import</span> <span class="n">Reflection</span>
@@ -445,7 +442,7 @@
 <span class="c1"># Reflection fields that, when changed for an orienting reflection,</span>
 <span class="c1"># invalidate the previously computed UB.  ``digits`` is intentionally</span>
 <span class="c1"># omitted (presentation only); ``name`` is implicit in ``order[:2]``.</span>
-<span class="n">_UB_REFLECTION_FIELDS</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+<span class="n">_UB_REFLECTION_FIELDS</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;geometry&quot;</span><span class="p">,</span>
     <span class="s2">&quot;pseudos&quot;</span><span class="p">,</span>
     <span class="s2">&quot;reals&quot;</span><span class="p">,</span>
@@ -460,14 +457,13 @@
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/sample/index.html#hklpy2.blocks.sample.SampleDictType">[docs]</a>
 <span class="n">SampleDictType</span> <span class="o">=</span> <span class="n">Mapping</span><span class="p">[</span>
     <span class="nb">str</span><span class="p">,</span>
-    <span class="n">Union</span><span class="p">[</span>
-        <span class="nb">int</span><span class="p">,</span>
-        <span class="nb">list</span><span class="p">[</span><span class="n">Reflection</span><span class="p">],</span>
-        <span class="n">Matrix3x3</span><span class="p">,</span>
-        <span class="n">ReflectionsDict</span><span class="p">,</span>
-        <span class="nb">str</span><span class="p">,</span>
-        <span class="n">Union</span><span class="p">[</span><span class="n">Lattice</span><span class="p">,</span> <span class="n">LatticeDictType</span><span class="p">],</span>
-    <span class="p">],</span>
+    <span class="nb">int</span>
+    <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reflection</span><span class="p">]</span>
+    <span class="o">|</span> <span class="n">Matrix3x3</span>
+    <span class="o">|</span> <span class="n">ReflectionsDict</span>
+    <span class="o">|</span> <span class="nb">str</span>
+    <span class="o">|</span> <span class="n">Lattice</span>
+    <span class="o">|</span> <span class="n">LatticeDictType</span><span class="p">,</span>
 <span class="p">]</span></div>
 
 
@@ -504,14 +500,9 @@
 <span class="sd">        ~UB_is_stale</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">core</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">lattice</span><span class="p">:</span> <span class="n">Lattice</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">core</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lattice</span><span class="p">:</span> <span class="n">Lattice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">Core</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">IDENTITY_MATRIX_3X3</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">Core</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected type </span><span class="si">{</span><span class="n">core</span><span class="si">=!r}</span><span class="s2">, expected Core&quot;</span><span class="p">)</span>
@@ -525,7 +516,7 @@
         <span class="c1"># stored&quot;, which is the case until ``calc_UB`` runs and any time</span>
         <span class="c1"># the user takes ownership of U / UB by direct assignment.  See</span>
         <span class="c1"># :issue:`391`.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ub_snapshot</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ub_snapshot</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">lattice</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="n">IDENTITY_MATRIX_3X3</span>
         <span class="c1"># Consider: UB = self.U @ self.lattice.B</span>
@@ -628,7 +619,7 @@
 
 
     <span class="nd">@lattice</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">LatticeDictType</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">LatticeDictType</span> <span class="o">|</span> <span class="n">Lattice</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="o">**</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Lattice</span><span class="p">):</span>
@@ -748,7 +739,7 @@
         <span class="c1"># until the next ``calc_UB`` (:issue:`391`).</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ub_snapshot</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_ub_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_ub_snapshot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a comparable snapshot of the current orientation-reflection state.</span>
 

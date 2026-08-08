@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../_static/documentation_options.js?v=9435257b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -567,15 +567,15 @@ axes.  See the <a class="reference internal" href="diffract.html"><span class="s
 
 <span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">,</span>
-    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
-        <span class="n">omega</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># simulated motor</span>
-        <span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">phi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">tth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">pth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># polarizer theta</span>
-        <span class="n">ptth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># polarizer 2-theta</span>
-        <span class="n">peta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># rotation about the beam</span>
-    <span class="p">),</span>
+    <span class="n">reals</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># simulated motor</span>
+        <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;tth&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;pth&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># polarizer theta</span>
+        <span class="s2">&quot;ptth&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># polarizer 2-theta</span>
+        <span class="s2">&quot;peta&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># rotation about the beam</span>
+    <span class="p">},</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -621,12 +621,10 @@ The polarizer axes play no role in orientation.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span><span class="s2">&quot;vibranium&quot;</span><span class="p">,</span> <span class="mf">4.04</span><span class="p">)</span>
 
 <span class="n">r1</span> <span class="o">=</span> <span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span>
-    <span class="nb">dict</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-    <span class="nb">dict</span><span class="p">(</span><span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.066</span><span class="p">),</span>
+    <span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">:</span> <span class="mf">69.066</span><span class="p">}</span>
 <span class="p">)</span>
 <span class="n">r2</span> <span class="o">=</span> <span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span>
-    <span class="nb">dict</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
-    <span class="nb">dict</span><span class="p">(</span><span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.066</span><span class="p">),</span>
+    <span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">:</span> <span class="mf">69.066</span><span class="p">}</span>
 <span class="p">)</span>
 <span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">calc_UB</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;UB matrix computed.&quot;</span><span class="p">)</span>
@@ -843,7 +841,7 @@ diffractometer orientation; it can be set at any time without affecting
 restored diffractometers.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hkl</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">hkl</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;original: forward</span><span class="si">{</span><span class="n">hkl</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">e4cv</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="o">**</span><span class="n">hkl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;restored: forward</span><span class="si">{</span><span class="n">hkl</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">e4cv2</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="o">**</span><span class="n">hkl</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>

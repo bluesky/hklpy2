@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../_static/documentation_options.js?v=9435257b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -576,16 +576,14 @@ a more complete description of the available diffractometers.</p>
 <h2>Add a sample with a crystal structure<a class="headerlink" href="#add-a-sample-with-a-crystal-structure" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">add_sample</span><span class="p">,</span>
-    <span class="n">calc_UB</span><span class="p">,</span>
-    <span class="n">cahkl</span><span class="p">,</span>
-    <span class="n">cahkl_table</span><span class="p">,</span>
-    <span class="n">pa</span><span class="p">,</span>
-    <span class="n">set_diffractometer</span><span class="p">,</span>
-    <span class="n">setor</span><span class="p">,</span>
-    <span class="n">wh</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">cahkl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">cahkl_table</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_UB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">pa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_diffractometer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">setor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">wh</span>
 
 <span class="n">set_diffractometer</span><span class="p">(</span><span class="n">k4cv</span><span class="p">)</span>
 <span class="n">add_sample</span><span class="p">(</span><span class="s2">&quot;silicon&quot;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">SI_LATTICE_PARAMETER</span><span class="p">)</span>
@@ -877,8 +875,8 @@ second orientation reflection.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bluesky.plans</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">bp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunEngine</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">SupplementalData</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky_tiled_plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">TiledWriter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.callbacks.best_effort</span><span class="w"> </span><span class="kn">import</span> <span class="n">BestEffortCallback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky_tiled_plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">TiledWriter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tiled.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_uri</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tiled.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleTiledServer</span>
 

@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../_static/documentation_options.js?v=9435257b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -583,22 +583,19 @@ laboratory diffractometer with Cu Kα radiation (λ = 1.54 Å):</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">bluesky</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bluesky</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">databroker</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.callbacks.best_effort</span><span class="w"> </span><span class="kn">import</span> <span class="n">BestEffortCallback</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">noisy_det</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">add_sample</span><span class="p">,</span>
-    <span class="n">calc_UB</span><span class="p">,</span>
-    <span class="n">set_diffractometer</span><span class="p">,</span>
-    <span class="n">setor</span><span class="p">,</span>
-    <span class="n">wh</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_UB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_diffractometer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">setor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">wh</span>
 
 <span class="n">RE</span> <span class="o">=</span> <span class="n">bluesky</span><span class="o">.</span><span class="n">RunEngine</span><span class="p">()</span>
 <span class="n">cat</span> <span class="o">=</span> <span class="n">databroker</span><span class="o">.</span><span class="n">temp</span><span class="p">()</span><span class="o">.</span><span class="n">v2</span>
@@ -707,7 +704,7 @@ Extra parameters: [&#39;h2&#39;, &#39;k2&#39;, &#39;l2&#39;, &#39;psi&#39;]
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Scan the (2, 2, 0) reflection.</span>
 <span class="c1"># Reference reflection hkl2 = (1, -1, 0) gives monotonic phi across the full psi range.</span>
-<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Extras:&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -731,17 +728,19 @@ from 0° to -180° without discontinuity, confirming that the chosen
 reference reflection and phi cut point are correct.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;psi&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;omega&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;chi&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;phi&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;tth&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">NoForwardSolutions</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;psi&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;omega&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;chi&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;phi&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;tth&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">55</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">psi</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
-    <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">psi</span><span class="o">=</span><span class="n">psi</span><span class="p">)</span>
+    <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">:</span> <span class="n">psi</span><span class="p">}</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">sol</span> <span class="o">=</span> <span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">psi</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">omega</span><span class="si">:</span><span class="s2">10.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">chi</span><span class="si">:</span><span class="s2">10.4f</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">phi</span><span class="si">:</span><span class="s2">10.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">tth</span><span class="si">:</span><span class="s2">10.4f</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">NoForwardSolutions</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">psi</span><span class="si">:</span><span class="s2">6.1f</span><span class="si">}</span><span class="s2">  *** no solution: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -781,8 +780,8 @@ The <code class="docutils literal notranslate"><span class="pre">extras</span></
         <span class="mi">0</span><span class="p">,</span>
         <span class="mi">180</span><span class="p">,</span>  <span class="c1"># scan psi from 0° to 180°</span>
         <span class="n">num</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
-        <span class="n">pseudos</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>  <span class="c1"># hold (2, 2, 0) fixed</span>
-        <span class="n">extras</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">h2</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k2</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">l2</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>  <span class="c1"># reference reflection (1, -1, 0)</span>
+        <span class="n">pseudos</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>  <span class="c1"># hold (2, 2, 0) fixed</span>
+        <span class="n">extras</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;h2&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>  <span class="c1"># reference reflection (1, -1, 0)</span>
     <span class="p">)</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Run uid:&quot;</span><span class="p">,</span> <span class="n">uid</span><span class="p">)</span>

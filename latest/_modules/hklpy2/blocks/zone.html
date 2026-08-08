@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../../../_static/documentation_options.js?v=9435257b"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
@@ -445,9 +445,8 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
@@ -460,13 +459,7 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    OrthonormalZone</span>
-<span class="s2">    move_zone</span>
-<span class="s2">    scan_zone</span>
-<span class="s2">    zonespace</span>
-<span class="s2">    zone_series</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;OrthonormalZone&quot;</span><span class="p">,</span> <span class="s2">&quot;move_zone&quot;</span><span class="p">,</span> <span class="s2">&quot;scan_zone&quot;</span><span class="p">,</span> <span class="s2">&quot;zone_series&quot;</span><span class="p">,</span> <span class="s2">&quot;zonespace&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.3.0&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Crystallographic zone axis operations.&quot;</span><span class="p">)</span>
@@ -500,9 +493,9 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">INPUT_VECTOR</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">b1</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">INPUT_VECTOR</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">b2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">INPUT_VECTOR</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="kc">None</span>
@@ -556,7 +549,6 @@
         <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;vector must be 1-D array-like vector of length 3.&quot;</span>
-                <span class="c1">#</span>
                 <span class="sa">f</span><span class="s2">&quot;  Received </span><span class="si">{</span><span class="n">vector</span><span class="si">}</span><span class="s2"> with shape </span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
@@ -614,10 +606,7 @@
 <div class="viewcode-block" id="OrthonormalZone.define_axis">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.define_axis">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">define_axis</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-        <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-        <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Define the zone axis from two vectors using cross product.</span>
 
@@ -647,7 +636,6 @@
         <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Vectors </span><span class="si">{</span><span class="n">b1</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="n">b2</span><span class="si">=}</span><span class="s2"> are parallel or one is zero; &quot;</span>
-                <span class="c1">#</span>
                 <span class="s2">&quot;cross product is zero and cannot define a zone axis.&quot;</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span> <span class="o">/</span> <span class="n">norm</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">axis</span>
@@ -738,8 +726,7 @@
                 <span class="p">)</span>
 
             <span class="n">unit_vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">rodrigues_rotation</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span>
-                <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="p">[</span><span class="n">rodrigues_rotation</span><span class="p">(</span><span class="n">u1</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">angles</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
             <span class="p">)</span>
             <span class="n">magnitudes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">n</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">vector</span><span class="p">,</span> <span class="n">scale</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">unit_vectors</span><span class="p">,</span> <span class="n">magnitudes</span><span class="p">):</span>
@@ -751,10 +738,7 @@
 <div class="viewcode-block" id="zonespace">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.zonespace">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">zonespace</span><span class="p">(</span>
-    <span class="n">diff</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span>
-    <span class="n">hkl_1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-    <span class="n">hkl_2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">diff</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">hkl_1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">hkl_2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate pseudos and reals along a crystallographic zone.</span>
@@ -812,10 +796,7 @@
 <div class="viewcode-block" id="zone_series">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.zone_series">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">zone_series</span><span class="p">(</span>
-    <span class="n">diff</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span>
-    <span class="n">hkl_1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-    <span class="n">hkl_2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">diff</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">hkl_1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">hkl_2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Example: a series of diffractometer positions along a zone.</span>

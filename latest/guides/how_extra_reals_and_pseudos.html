@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../_static/documentation_options.js?v=9435257b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -540,7 +540,9 @@ simulated motors for the example (no EPICS required).</p>
 <p>Create the diffractometer object.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
 <span class="n">th2th</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;th2th&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">)</span>
 </pre></div>
@@ -574,7 +576,7 @@ th2th.component_names=(&#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;)
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;th2th&quot;</span><span class="p">,</span>
     <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span>
     <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">,</span>
-    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">th</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;th&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;spinner&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
 <span class="p">)</span>
 <span class="n">th2th</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">th2th</span><span class="o">.</span><span class="n">component_names</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -619,8 +621,8 @@ to the pseudo positioners?</p>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;th2th&quot;</span><span class="p">,</span>
     <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span>
     <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">,</span>
-    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">],</span>  <span class="c1">#</span>
-    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spinner</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">],</span>
+    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;detector&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;spinner&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
     <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">],</span>
     <span class="n">_real</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">,</span> <span class="s2">&quot;detector&quot;</span><span class="p">],</span>
 <span class="p">)</span>
@@ -647,9 +649,13 @@ Let’s skip the factory function and show how to build a structure directly.</p
 <p>Demonstrate a variety of additional components.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hklpy2PseudoAxis</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Device</span><span class="p">,</span> <span class="n">Signal</span><span class="p">,</span> <span class="n">SoftPositioner</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Signal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoftPositioner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">SignalRO</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hklpy2PseudoAxis</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">XYStage</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
@@ -659,7 +665,7 @@ Let’s skip the factory function and show how to build a structure directly.</p
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyTwoCircle</span><span class="p">(</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">DiffractometerBase</span><span class="p">):</span>
-    <span class="n">_real</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;th&quot;</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">]</span>
+    <span class="n">_real</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;th&quot;</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">]</span>
 
     <span class="n">q</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
     <span class="n">th</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span>
