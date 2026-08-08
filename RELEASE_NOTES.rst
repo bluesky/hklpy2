@@ -33,6 +33,11 @@ describe future plans.
     SEMVER
     ######
 
+    Enhancements
+    ------------
+
+    * Allow individual extras to be set by key assignment: ``core.extras["key"] = value``. (:issue:`414`)
+
     Maintenance
     -----------
 

@@ -9,6 +9,7 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 ## Code Style
 
 - Concise type annotations
+- Single-line imports are the project standard choice.
 - code location described in pyproject.toml
 - style information described in pyproject.toml
 - `pre-commit run --all-files`
@@ -46,12 +47,12 @@ import pytest
     "parms, context",
     [
         pytest.param(
-            dict(some_param=value1),
+            {"some_param": value1},
             does_not_raise(),
             id="description of test case 1",
         ),
         pytest.param(
-            dict(some_param=invalid_value),
+            {"some_param": invalid_value},
             pytest.raises(SomeError, match=re.escape("expected message")),
             id="description of test case 2",
         ),
@@ -100,8 +101,8 @@ def test_function_name(parms, context):
   @pytest.mark.parametrize(
       "parms, context",
       [
-          pytest.param(dict(value=valid), does_not_raise(), id="valid case"),
-          pytest.param(dict(value=invalid), pytest.raises(Error), id="error case"),
+          pytest.param({"value": valid}, does_not_raise(), id="valid case"),
+          pytest.param({"value": invalid}, pytest.raises(Error), id="error case"),
       ],
   )
   def test_something(parms, context):
@@ -139,12 +140,13 @@ PRs opened or modified by automated agents must follow the "Agent pytest style" 
     - do not separate success and errors tests into different test functions
     - do not separate success and errors tests using try..except
 - When a parameter set contains axis positions (real or pseudo), prefer a
-  `dict` with named axes over a bare tuple, so the intent is self-documenting:
+  dict literal with named axes over a bare tuple, so the intent is
+  self-documenting and compatible with ruff's `C408` rule:
   ```py
   # preferred
-  dict(reals=dict(omega=-145, chi=0, phi=0, tth=69), ...)
+  {"reals": {"omega": -145, "chi": 0, "phi": 0, "tth": 69}, ...}
   # avoid
-  dict(reals=(-145, 0, 0, 69), ...)
+  {"reals": (-145, 0, 0, 69), ...}
   ```
   Use `sim.inverse(**parms["reals"])` (or `sim.forward(**parms["pseudos"])`)
   to unpack the dict in the test body.  A bare tuple is acceptable only when
@@ -230,7 +232,7 @@ dynamic expression would hide drift between them.
 - Setup: create virtualenv, `pip install -e .[all]`
 - Common commands:
   - Format & Lint: `make style` or `pre-commit run --all-files`
-  - Test: `pytest ./hklpy2`
+  - Test: `pytest src/hklpy2`
 
 ### pre-commit on NFS home directories
 
