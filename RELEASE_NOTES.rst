@@ -33,6 +33,8 @@ describe future plans.
 0.7.3
 ######
 
+Released 2026-08-08.
+
 Enhancements
 ------------
 
