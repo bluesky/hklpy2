@@ -15,24 +15,23 @@ Associates diffractometer angles (real-space) with crystalline reciprocal-space
 """
 
 import logging
+from collections.abc import Iterable
+from collections.abc import Mapping
 from contextlib import contextmanager
 from typing import Any
-from typing import Iterable
-from typing import Mapping
-from typing import Optional
-from typing import Union
 
 from deprecated.sphinx import versionchanged
 
 from ..exceptions import ConfigurationError
 from ..exceptions import ReflectionError
+from ..typing import NamedFloatDict
 from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import PINT_ERRORS
 from ..utils import _SolverDirty
 from ..utils import check_value_in_list
 from ..utils import compare_float_dicts
 from ..utils import convert_units
 from ..utils import validate_and_canonical_unit
-from ..typing import NamedFloatDict
 
 logger = logging.getLogger(__name__)
 
@@ -92,10 +91,10 @@ class Reflection:
         pseudo_axis_names: list[str],
         real_axis_names: list[str],
         *,
-        core: Optional[Any] = None,
-        digits: Optional[int] = None,
-        reals_units: Optional[str] = None,
-        wavelength_units: Optional[str] = None,
+        core: Any | None = None,
+        digits: int | None = None,
+        reals_units: str | None = None,
+        wavelength_units: str | None = None,
     ) -> None:
         from ..ops import Core
 
@@ -133,16 +132,13 @@ class Reflection:
         if not isinstance(other, Reflection):
             raise TypeError(
                 "Unsupported operand type(s) for +: 'Reflection'"
-                #
                 f" and '{type(other).__name__}'"
             )
 
         # Create a new Reflection with combined pseudo and real values.
         new_name = f"{self.name}_plus_{other.name}"
         new_pseudos = {
-            key: self.pseudos[key] + other.pseudos[key]
-            #
-            for key in self.pseudos
+            key: self.pseudos[key] + other.pseudos[key] for key in self.pseudos
         }
         new_reals = {key: self.reals[key] + other.reals[key] for key in self.reals}
         return Reflection(
@@ -171,7 +167,7 @@ class Reflection:
             r2_wl_in_self_units = convert_units(
                 r2.wavelength, r2.wavelength_units, self.wavelength_units
             )
-        except Exception:
+        except PINT_ERRORS:
             # If conversion fails, fall back to raw comparison (will likely fail)
             r2_wl_in_self_units = r2.wavelength
         wavelength_ok = round(self.wavelength, digits) == round(
@@ -185,7 +181,6 @@ class Reflection:
         """
         pseudos = [
             f"{k}={round(v, self.digits)}"  # roundoff
-            #
             for k, v in self.pseudos.items()
         ]
         guts = [f"name={self.name!r}"] + pseudos
@@ -203,9 +198,7 @@ class Reflection:
         # Create a new Reflection with subtracted pseudo and real values.
         new_name = f"{self.name}_minus_{other.name}"
         new_pseudos = {
-            key: self.pseudos[key] - other.pseudos[key]
-            #
-            for key in self.pseudos
+            key: self.pseudos[key] - other.pseudos[key] for key in self.pseudos
         }
         new_reals = {key: self.reals[key] - other.reals[key] for key in self.reals}
         return Reflection(
@@ -218,7 +211,7 @@ class Reflection:
             real_axis_names=self.real_axis_names,
         )
 
-    def _asdict(self) -> Mapping[str, Union[float, int, str]]:
+    def _asdict(self) -> Mapping[str, float | int | str]:
         """Describe this reflection as a dictionary."""
         return {
             "name": self.name,
@@ -231,12 +224,11 @@ class Reflection:
             "digits": self.digits,
         }
 
-    def _fromdict(self, config: Mapping[str, Union[float, int, str]]):
+    def _fromdict(self, config: Mapping[str, float | int | str]):
         """Redefine this reflection from a (configuration) dictionary."""
         if config.get("name") != self.name:
             raise ConfigurationError(
                 f"Mismatched name for reflection {self.name!r}."
-                #
                 f" Received configuration: {config!r}"
             )
         if config.get("geometry") != self.geometry:
@@ -428,7 +420,7 @@ class ReflectionsDict(dict):
         # mutating operations can flag the solver-dirty bitfield.  May be
         # ``None`` when the dict is used standalone (e.g. in low-level
         # tests); in that case ``_request_solver_update`` is a no-op.
-        self._core: Optional[Any] = None
+        self._core: Any | None = None
 
         # Re-entrancy counter for the strict orientation-health check
         # (issue #399).  Incremented while inside multi-step internal
@@ -437,8 +429,7 @@ class ReflectionsDict(dict):
         self._strict_check_suspended: int = 0
 
     def _request_solver_update(
-        self,
-        flags: _SolverDirty = _SolverDirty.SAMPLE | _SolverDirty.UB,
+        self, flags: _SolverDirty = _SolverDirty.SAMPLE | _SolverDirty.UB
     ) -> None:
         """
         Flag the owning :class:`~hklpy2.ops.Core` as solver-dirty.
@@ -464,9 +455,7 @@ class ReflectionsDict(dict):
             self._strict_check_suspended -= 1
 
     def _check_strict_order_health(
-        self,
-        prospective_order: Iterable[str],
-        prospective_keys: Iterable[str],
+        self, prospective_order: Iterable[str], prospective_keys: Iterable[str]
     ) -> None:
         """
         Refuse mutations that would leave the sample half-defined.
@@ -522,7 +511,7 @@ class ReflectionsDict(dict):
             and self.geometry == other.geometry
         )
 
-    def _asdict(self) -> Mapping[str, Union[float, int, str]]:
+    def _asdict(self) -> Mapping[str, float | int | str]:
         """
         Describe the reflections list as an ordered dictionary.
 
@@ -542,11 +531,7 @@ class ReflectionsDict(dict):
             "canonical names differ.  See :issue:`398`."
         ),
     )
-    def _fromdict(
-        self,
-        config: Mapping[str, Union[float, int, str]],
-        core=None,
-    ) -> None:
+    def _fromdict(self, config: Mapping[str, float | int | str], core=None) -> None:
         """Add or redefine reflections from a (configuration) dictionary."""
         from ..ops import Core
 
@@ -599,10 +584,7 @@ class ReflectionsDict(dict):
             "``ReflectionError``.  See :issue:`399`."
         ),
     )
-    def set_orientation_reflections(
-        self,
-        reflections: list[Reflection],
-    ) -> None:
+    def set_orientation_reflections(self, reflections: list[Reflection]) -> None:
         """
         Designate the order of the reflections to be used.
 
@@ -770,16 +752,14 @@ class ReflectionsDict(dict):
         """Validate the new reflection (raise exception if invalid)."""
         if not isinstance(reflection, Reflection):
             raise TypeError(
-                #
                 f"Unexpected {reflection=!r}.  Must be a 'Reflection' type."
             )
 
         # matching content
         matching = [v.name for v in self.values() if v == reflection]
-        if reflection.name in self:
+        if reflection.name in self and reflection.name not in matching:
             # matching name
-            if reflection.name not in matching:
-                matching.append(reflection.name)
+            matching.append(reflection.name)
 
         if replace:
             # remove ALL matches (name or content matches)
@@ -791,7 +771,6 @@ class ReflectionsDict(dict):
             if reflection.name in matching:
                 raise ReflectionError(
                     f"Reflection name {reflection.name!r} is known."
-                    #
                     "  Use 'replace=True' to overwrite."
                 )
             else:

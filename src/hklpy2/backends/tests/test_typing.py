@@ -20,31 +20,31 @@ from ..typing import SolverMetadataDict
     "parms, context",
     [
         pytest.param(
-            dict(
-                value=dict(
-                    name="r1",
-                    pseudos={"h": 1.0, "k": 0.0, "l": 0.0},
-                    reals={"omega": 10.0, "chi": 0.0, "phi": 0.0, "tth": 20.0},
-                    wavelength=1.54,
-                )
-            ),
+            {
+                "value": {
+                    "name": "r1",
+                    "pseudos": {"h": 1.0, "k": 0.0, "l": 0.0},
+                    "reals": {"omega": 10.0, "chi": 0.0, "phi": 0.0, "tth": 20.0},
+                    "wavelength": 1.54,
+                }
+            },
             does_not_raise(),
             id="valid ReflectionDict",
         ),
         pytest.param(
-            dict(
-                value=dict(
-                    name="r2",
-                    pseudos={"h": 0.0, "k": 1.0, "l": 0.0},
-                    reals={"omega": 15.0, "chi": 0.0, "phi": 0.0, "tth": 30.0},
-                    wavelength=1.0,
-                )
-            ),
+            {
+                "value": {
+                    "name": "r2",
+                    "pseudos": {"h": 0.0, "k": 1.0, "l": 0.0},
+                    "reals": {"omega": 15.0, "chi": 0.0, "phi": 0.0, "tth": 30.0},
+                    "wavelength": 1.0,
+                }
+            },
             does_not_raise(),
             id="valid ReflectionDict different values",
         ),
         pytest.param(
-            dict(value="not a dict"),
+            {"value": "not a dict"},
             pytest.raises(TypeError, match=re.escape("is not a")),
             id="ReflectionDict rejects non-dict",
         ),
@@ -70,26 +70,26 @@ def test_reflection_dict_is_dict(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                refl=ReflectionDict(
+            {
+                "refl": ReflectionDict(
                     name="r1",
                     pseudos={"h": 1.0, "k": 0.0, "l": 0.0},
                     reals={"omega": 10.0, "chi": 0.0},
                     wavelength=1.54,
                 )
-            ),
+            },
             does_not_raise(),
             id="construct ReflectionDict",
         ),
         pytest.param(
-            dict(
-                refl=ReflectionDict(
+            {
+                "refl": ReflectionDict(
                     name="origin",
                     pseudos={"h": 0.0, "k": 0.0, "l": 0.0},
                     reals={},
                     wavelength=2.0,
                 )
-            ),
+            },
             does_not_raise(),
             id="construct ReflectionDict empty reals",
         ),
@@ -115,8 +115,8 @@ def test_reflection_dict_construct(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                sample=SampleDict(
+            {
+                "sample": SampleDict(
                     name="silicon",
                     lattice={
                         "a": 5.431,
@@ -129,13 +129,13 @@ def test_reflection_dict_construct(parms, context):
                     reflections={},
                     order=[],
                 )
-            ),
+            },
             does_not_raise(),
             id="valid SampleDict no reflections",
         ),
         pytest.param(
-            dict(
-                sample=SampleDict(
+            {
+                "sample": SampleDict(
                     name="copper",
                     lattice={
                         "a": 3.615,
@@ -155,7 +155,7 @@ def test_reflection_dict_construct(parms, context):
                     },
                     order=["r1"],
                 )
-            ),
+            },
             does_not_raise(),
             id="valid SampleDict with one reflection",
         ),
@@ -185,28 +185,28 @@ def test_sample_dict_construct(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                meta=SolverMetadataDict(
+            {
+                "meta": SolverMetadataDict(
                     name="no_op",
                     description="NoOpSolver(...)",
                     geometry="test",
                     real_axes=[],
                     version="0.1.0",
                 )
-            ),
+            },
             does_not_raise(),
             id="SolverMetadataDict no_op solver",
         ),
         pytest.param(
-            dict(
-                meta=SolverMetadataDict(
+            {
+                "meta": SolverMetadataDict(
                     name="th_tth",
                     description="ThTthSolver(...)",
                     geometry="TH TTH Q",
                     real_axes=["th", "tth"],
                     version="1.0.0",
                 )
-            ),
+            },
             does_not_raise(),
             id="SolverMetadataDict th_tth solver",
         ),
@@ -234,17 +234,17 @@ def test_solver_metadata_dict_construct(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(name="ReflectionDict"),
+            {"name": "ReflectionDict"},
             does_not_raise(),
             id="ReflectionDict importable from hklpy2.backends.typing",
         ),
         pytest.param(
-            dict(name="SampleDict"),
+            {"name": "SampleDict"},
             does_not_raise(),
             id="SampleDict importable from hklpy2.backends.typing",
         ),
         pytest.param(
-            dict(name="SolverMetadataDict"),
+            {"name": "SolverMetadataDict"},
             does_not_raise(),
             id="SolverMetadataDict importable from hklpy2.backends.typing",
         ),

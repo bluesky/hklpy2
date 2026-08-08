@@ -7,9 +7,9 @@ import pint
 import pytest
 
 from ...diffract import creator
-from ...utils import INTERNAL_LENGTH_UNITS
 from ...exceptions import ConfigurationError
 from ...tests.models import add_oriented_vibranium_to_e4cv
+from ...utils import INTERNAL_LENGTH_UNITS
 from ..reflection import DEFAULT_REFLECTION_DIGITS
 from ..reflection import Reflection
 from ..reflection import ReflectionError
@@ -32,29 +32,29 @@ e4cv_r400_config_yaml = """
 """
 r100_parms = [
     "(100)",
-    dict(h=1, k=0, l=0),
-    dict(omega=10, chi=0, phi=0, tth=20),
+    {"h": 1, "k": 0, "l": 0},
+    {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
     1.0,
     "E4CV",
-    "h k l".split(),
-    "omega chi phi tth".split(),
+    ["h", "k", "l"],
+    ["omega", "chi", "phi", "tth"],
 ]
 r010_parms = [
     "(010)",
-    dict(h=0, k=1, l=0),
-    dict(omega=10, chi=-90, phi=0, tth=20),
+    {"h": 0, "k": 1, "l": 0},
+    {"omega": 10, "chi": -90, "phi": 0, "tth": 20},
     1.0,
     "E4CV",
-    "h k l".split(),
-    "omega chi phi tth".split(),
+    ["h", "k", "l"],
+    ["omega", "chi", "phi", "tth"],
 ]
 # These are the same reflection (in content)
-r_1 = ["r1", {"a": 1, "b": 2}, dict(c=1, d=2), 1, "abcd", ["a", "b"], ["c", "d"]]
-r_2 = ["r2", {"a": 1, "b": 2}, dict(c=1, d=2), 1, "abcd", ["a", "b"], ["c", "d"]]
-r_3 = ["r3", {"a": 1, "b": 2}, dict(c=1, d=2), 1, "abcd", ["a", "b"], ["c", "d"]]
+r_1 = ["r1", {"a": 1, "b": 2}, {"c": 1, "d": 2}, 1, "abcd", ["a", "b"], ["c", "d"]]
+r_2 = ["r2", {"a": 1, "b": 2}, {"c": 1, "d": 2}, 1, "abcd", ["a", "b"], ["c", "d"]]
+r_3 = ["r3", {"a": 1, "b": 2}, {"c": 1, "d": 2}, 1, "abcd", ["a", "b"], ["c", "d"]]
 # different ones
-r_4 = ["r4", {"a": 1, "b": 3}, dict(c=1, d=2), 1, "abcd", ["a", "b"], ["c", "d"]]
-r_5 = ["r5", {"a": 1, "b": 4}, dict(c=1, d=2), 1, "abcd", ["a", "b"], ["c", "d"]]
+r_4 = ["r4", {"a": 1, "b": 3}, {"c": 1, "d": 2}, 1, "abcd", ["a", "b"], ["c", "d"]]
+r_5 = ["r5", {"a": 1, "b": 4}, {"c": 1, "d": 2}, 1, "abcd", ["a", "b"], ["c", "d"]]
 
 
 @pytest.mark.parametrize(
@@ -64,166 +64,166 @@ r_5 = ["r5", {"a": 1, "b": 4}, dict(c=1, d=2), 1, "abcd", ["a", "b"], ["c", "d"]
         r010_parms + [does_not_raise()],  # good case
         pytest.param(
             1,  # wrong type
-            dict(h=1, k=0, l=0),
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 1, "k": 0, "l": 0},
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             1.0,
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(TypeError, match=re.escape("Must supply str")),
             id="name-int-type-error",
         ),
         pytest.param(
             None,  # wrong type
-            dict(h=1, k=0, l=0),
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 1, "k": 0, "l": 0},
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             1.0,
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(TypeError, match=re.escape("Must supply str")),
             id="name-none-type-error",
         ),
         pytest.param(
             "one",
             [1, 0, 0],  # wrong type
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             1.0,
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(TypeError, match=re.escape("Must supply dict")),
             id="pseudos-list-type-error",
         ),
         pytest.param(
             "one",
-            dict(hh=1, kk=0, ll=0),  # wrong keys
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"hh": 1, "kk": 0, "ll": 0},  # wrong keys
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             1.0,
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(ValueError, match=re.escape("pseudo axis 'hh' unknown")),
             id="pseudos-wrong-keys",
         ),
         pytest.param(
             "one",
-            dict(h=1, k=0, l=0, m=0),  # extra key
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 1, "k": 0, "l": 0, "m": 0},  # extra key
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             1.0,
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(ValueError, match=re.escape("pseudo axis 'm' unknown")),
             id="pseudos-extra-key",
         ),
         pytest.param(
             "one",
-            dict(h=1, k=0, l=0),
+            {"h": 1, "k": 0, "l": 0},
             [10, 0, 0, 20],  # wrong type
             1.0,
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(TypeError, match=re.escape("Must supply dict,")),
             id="reals-list-type-error",
         ),
         pytest.param(
             "one",
-            dict(h=1, k=0, l=0),
-            dict(theta=10, chi=0, phi=0, tth=20),  # wrong key
+            {"h": 1, "k": 0, "l": 0},
+            {"theta": 10, "chi": 0, "phi": 0, "tth": 20},  # wrong key
             1.0,
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(ValueError, match=re.escape("real axis 'theta' unknown")),
             id="reals-wrong-key",
         ),
         pytest.param(
             "one",
-            dict(h=1, k=0, l=0),
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 1, "k": 0, "l": 0},
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             "1.0",  # wrong type
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(TypeError, match=re.escape("Must supply number,")),
             id="wavelength-str-type-error",
         ),
         pytest.param(
             "one",
-            dict(h=1, k=0, l=0),
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 1, "k": 0, "l": 0},
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             None,  # wrong type
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(TypeError, match=re.escape("Must supply number,")),
             id="wavelength-none-type-error",
         ),
         pytest.param(
             "one",
-            dict(h=1, k=0, l=0),
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 1, "k": 0, "l": 0},
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             -1,  # not allowed
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(ValueError, match=re.escape("Must be >=0,")),
             id="wavelength-negative",
         ),
         pytest.param(
             "one",
-            dict(h=1, k=0, l=0),
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 1, "k": 0, "l": 0},
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             0,  # not allowed: will cause DivideByZero later
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(ValueError, match=re.escape("Must be >=0,")),
             id="wavelength-zero",
         ),
         pytest.param(
             "one",
-            dict(h=1, k=0, l=0),
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 1, "k": 0, "l": 0},
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             1,
             None,  # allowed
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             does_not_raise(),
             id="geometry-none-allowed",
         ),
         pytest.param(
             "one",
-            dict(a=1, b=2),
-            dict(c=10, d=0, e=20),
+            {"a": 1, "b": 2},
+            {"c": 10, "d": 0, "e": 20},
             1,
             "test",  # allowed
-            "a b".split(),
-            "c d e".split(),
+            ["a", "b"],
+            ["c", "d", "e"],
             does_not_raise(),
             id="custom-geometry-allowed",
         ),
         pytest.param(
             "one",
-            dict(h=1, l=0),  # missing pseudo
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 1, "l": 0},  # missing pseudo
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             1.0,
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(ReflectionError, match=re.escape("Missing pseudo axis")),
             id="missing-pseudo-axis",
         ),
         pytest.param(
             "one",
-            dict(h=1, k=0, l=0),
-            dict(omega=10, chi=0, tth=20),  # missing real
+            {"h": 1, "k": 0, "l": 0},
+            {"omega": 10, "chi": 0, "tth": 20},  # missing real
             1.0,
             "E4CV",
-            "h k l".split(),
-            "omega chi phi tth".split(),
+            ["h", "k", "l"],
+            ["omega", "chi", "phi", "tth"],
             pytest.raises(ReflectionError, match=re.escape("Missing real axis")),
             id="missing-real-axis",
         ),
@@ -250,13 +250,13 @@ def test_Reflection(
             real_axis_names,
         )
         refl_dict = refl._asdict()
-        for k in "name pseudos reals wavelength geometry".split():
+        for k in ["name", "pseudos", "reals", "wavelength", "geometry"]:
             assert k in refl_dict, f"{k=}"
 
         text = repr(refl)
         assert text.startswith("Reflection(")
         assert f"{name=!r}" in text, f"{text}"
-        for key in refl.pseudos.keys():
+        for key in refl.pseudos:
             assert f"{key}=" in text, f"{text}"
         assert text.endswith(")")
 
@@ -288,7 +288,7 @@ def test_ReflectionsDict(parms, representation, context, expected):
             assert len(db._asdict()) == i
             assert len(db.order) == i
 
-            r1 = list(db.values())[0]
+            r1 = next(iter(db.values()))
             # Strict orientation-health check (#399) refuses to leave
             # ``order`` shorter than two while ``len(db) >= 2``; only
             # exercise the single-element ``setor`` / ``order`` paths
@@ -313,12 +313,12 @@ def test_ReflectionsDict(parms, representation, context, expected):
     "parms, context",
     [
         pytest.param(
-            dict(other=ReflectionsDict()),
+            {"other": ReflectionsDict()},
             does_not_raise(),
             id="equal to another empty ReflectionsDict",
         ),
         pytest.param(
-            dict(other={}),
+            {"other": {}},
             does_not_raise(),
             id="not equal to plain dict returns NotImplemented",
         ),
@@ -545,8 +545,8 @@ def test_wrong_real_names():
             pseudos={"h": 4, "k": 0, "l": 0},
             reals={"aaaa_omega": -145.451, "chi": 0, "phi": 0, "tth": 69.066},
             wavelength=1.54,
-            pseudo_axis_names="h k l".split(),
-            real_axis_names="aaaa_omega chi phi tth".split(),
+            pseudo_axis_names=["h", "k", "l"],
+            real_axis_names=["aaaa_omega", "chi", "phi", "tth"],
             core=e4cv.core,
         )
 
@@ -728,7 +728,7 @@ def test_reflectionsdict_fromdict_defaults(config, explicit_digits, context):
         rd._fromdict(config)
 
     # get the single reflection by name
-    name = list(config.keys())[0]
+    name = next(iter(config.keys()))
     r = rd[name]
     if explicit_digits is None:
         assert r.digits == DEFAULT_REFLECTION_DIGITS
@@ -883,7 +883,7 @@ def test_eq_converts_wavelength_units(wl1, u1, wl2, u2, context, expect_eq):
     if expect_eq:
         assert r1 == r2
     else:
-        assert not (r1 == r2)
+        assert r1 != r2
 
 
 @pytest.mark.parametrize(
@@ -935,8 +935,8 @@ def test_reflections_to_solver_converts_per_reflection_units():
     dif = creator(name="testdif")
     core = dif.core
 
-    pseudos = dict(h=1, k=0, l=0)
-    reals = dict(omega=0, chi=0, phi=0, tth=0)
+    pseudos = {"h": 1, "k": 0, "l": 0}
+    reals = {"omega": 0, "chi": 0, "phi": 0, "tth": 0}
 
     # Reflection with 1.0 angstrom
     rA = Reflection(
@@ -1001,168 +1001,168 @@ def test_add_reflection_wavelength_units_preference(
     [
         # Same pseudos, reals, wavelength, units, digits
         pytest.param(
-            dict(
-                name="r1",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
-            dict(
-                name="r2",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
+            {
+                "name": "r1",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
+            {
+                "name": "r2",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
             True,
             None,
             id="same-content-equal",
         ),
         # Same values, different units (convertible)
         pytest.param(
-            dict(
-                name="r1",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
-            dict(
-                name="r2",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=0.1,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="nanometer",
-            ),
+            {
+                "name": "r1",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
+            {
+                "name": "r2",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 0.1,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "nanometer",
+            },
             True,
             None,
             id="convertible-units-equal",
         ),
         # Different pseudos
         pytest.param(
-            dict(
-                name="r1",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
-            dict(
-                name="r2",
-                pseudos={"a": 2.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
+            {
+                "name": "r1",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
+            {
+                "name": "r2",
+                "pseudos": {"a": 2.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
             False,
             None,
             id="different-pseudos-not-equal",
         ),
         # Different reals
         pytest.param(
-            dict(
-                name="r1",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
-            dict(
-                name="r2",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 1.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
+            {
+                "name": "r1",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
+            {
+                "name": "r2",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 1.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
             False,
             None,
             id="different-reals-not-equal",
         ),
         # Different wavelength (not convertible)
         pytest.param(
-            dict(
-                name="r1",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
-            dict(
-                name="r2",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=2.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
+            {
+                "name": "r1",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
+            {
+                "name": "r2",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 2.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
             False,
             None,
             id="different-wavelength-not-equal",
         ),
         # Exception: wavelength_units not convertible
         pytest.param(
-            dict(
-                name="r1",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="angstrom",
-            ),
-            dict(
-                name="r2",
-                pseudos={"a": 1.0, "b": 2.0},
-                reals={"x": 0.0, "y": 0.0},
-                wavelength=1.0,
-                geometry="geo",
-                pseudo_axis_names=["a", "b"],
-                real_axis_names=["x", "y"],
-                digits=4,
-                wavelength_units="not_a_unit",
-            ),
+            {
+                "name": "r1",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "angstrom",
+            },
+            {
+                "name": "r2",
+                "pseudos": {"a": 1.0, "b": 2.0},
+                "reals": {"x": 0.0, "y": 0.0},
+                "wavelength": 1.0,
+                "geometry": "geo",
+                "pseudo_axis_names": ["a", "b"],
+                "real_axis_names": ["x", "y"],
+                "digits": 4,
+                "wavelength_units": "not_a_unit",
+            },
             False,
             pytest.raises(Exception),
             id="unconvertible-units-exception",
@@ -1372,15 +1372,12 @@ def test_reflection_eq_deeper_test(left, right, expected, context):
     def make_reflection(params):
         args = params[:7]
         kwargs = {}
-        if len(params) > 7:
-            if params[7] is not None:
-                kwargs["core"] = params[7]
-        if len(params) > 8:
-            if params[8] is not None:
-                kwargs["digits"] = params[8]
-        if len(params) > 9:
-            if params[9] is not None:
-                kwargs["wavelength_units"] = params[9]
+        if len(params) > 7 and params[7] is not None:
+            kwargs["core"] = params[7]
+        if len(params) > 8 and params[8] is not None:
+            kwargs["digits"] = params[8]
+        if len(params) > 9 and params[9] is not None:
+            kwargs["wavelength_units"] = params[9]
         return Reflection(*args, **kwargs)
 
     with context:
@@ -1414,7 +1411,7 @@ def test_reflection_eq_fallback_raw_comparison(monkeypatch):
     import hklpy2.blocks.reflection as reflection_mod
 
     def bad_convert_units(value, from_u, to_u):
-        raise Exception("conversion failed")
+        raise pint.DimensionalityError(from_u, to_u)
 
     monkeypatch.setattr(reflection_mod, "convert_units", bad_convert_units)
     # Should fall back to raw comparison, which will succeed here
@@ -1431,19 +1428,11 @@ def test_reflection_eq_fallback_raw_comparison(monkeypatch):
         ["x"],
         wavelength_units="angstrom",
     )
-    assert not (r1 == r2b)
+    assert r1 != r2b
 
 
 def test_reflection_repr_paren():
     """Simple sanity check: repr(Reflection) ends with a closing parenthesis."""
-    r = Reflection(
-        "r_repr",
-        {"h": 1.0},
-        {"x": 0.0},
-        1.0,
-        "geo",
-        ["h"],
-        ["x"],
-    )
+    r = Reflection("r_repr", {"h": 1.0}, {"x": 0.0}, 1.0, "geo", ["h"], ["x"])
     text = repr(r)
     assert text.endswith(")")

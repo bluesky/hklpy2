@@ -18,13 +18,13 @@ Example::
 
 import logging
 import math
-from typing import List
+from typing import ClassVar
 
 from .. import __version__
-from ..utils import IDENTITY_MATRIX_3X3
 from ..exceptions import SolverError
 from ..typing import Matrix3x3
 from ..typing import NamedFloatDict
+from ..utils import IDENTITY_MATRIX_3X3
 from .base import SolverBase
 from .typing import GeometryDescriptor
 from .typing import ReflectionDict
@@ -96,7 +96,7 @@ class ThTthSolver(SolverBase):
 
     # Each ThTthSolver subclass (or the class itself) has its own registry,
     # independent of SolverBase._geometry_registry.
-    _geometry_registry = {}
+    _geometry_registry: ClassVar[dict[str, GeometryDescriptor]] = {}
 
     def __init__(self, geometry: str, **kwargs) -> None:
         super().__init__(geometry, **kwargs)
@@ -126,17 +126,17 @@ class ThTthSolver(SolverBase):
         return IDENTITY_MATRIX_3X3
 
     @property
-    def extra_axis_names(self) -> List[str]:
+    def extra_axis_names(self) -> list[str]:
         desc = self._descriptor()
         if desc is None:
             return []
         # extra_axis_names is a per-mode dict; return all unique names
-        all_extras: List[str] = []
+        all_extras: list[str] = []
         for names in desc.extra_axis_names.values():
             all_extras += names
         return sorted(set(all_extras))
 
-    def forward(self, pseudos: NamedFloatDict) -> List[NamedFloatDict]:
+    def forward(self, pseudos: NamedFloatDict) -> list[NamedFloatDict]:
         """Transform pseudos to list of reals."""
         if not isinstance(pseudos, dict):
             raise TypeError(f"Must supply dict, received {pseudos!r}")
@@ -156,7 +156,7 @@ class ThTthSolver(SolverBase):
         return solutions
 
     @classmethod
-    def geometries(cls) -> List[str]:
+    def geometries(cls) -> list[str]:
         """Sorted list of registered geometry names."""
         return sorted(cls._geometry_registry.keys())
 
@@ -180,21 +180,21 @@ class ThTthSolver(SolverBase):
         return pseudos
 
     @property
-    def modes(self) -> List[str]:
+    def modes(self) -> list[str]:
         desc = self._descriptor()
         if desc is None:
             return []
         return list(desc.modes)
 
     @property
-    def pseudo_axis_names(self) -> List[str]:
+    def pseudo_axis_names(self) -> list[str]:
         desc = self._descriptor()
         if desc is None:
             return []
         return list(desc.pseudo_axis_names)
 
     @property
-    def real_axis_names(self) -> List[str]:
+    def real_axis_names(self) -> list[str]:
         desc = self._descriptor()
         if desc is None:
             return []

@@ -13,32 +13,32 @@ from ..ops import DEFAULT_SAMPLE_NAME
 @pytest.fixture
 def fourc():
     sim = hklpy2.creator(
-        _pseudo="h k l".split(),
-        _real="theta chi phi ttheta".split(),
-        pseudos="h k l h2 k2 l2".split(),
-        reals=dict(
-            theta=None,
-            chi=None,
-            phi=None,
-            ttheta={
+        _pseudo=["h", "k", "l"],
+        _real=["theta", "chi", "phi", "ttheta"],
+        pseudos=["h", "k", "l", "h2", "k2", "l2"],
+        reals={
+            "theta": None,
+            "chi": None,
+            "phi": None,
+            "ttheta": {
                 "class": "ophyd.SoftPositioner",
                 "limits": (-170, 170),
                 "init_pos": 0,
                 "kind": "hinted",
             },
-            psi={
+            "psi": {
                 "class": "ophyd.SoftPositioner",
                 "limits": (-170, 170),
                 "init_pos": 0,
                 "kind": "hinted",
             },
-            energy={
+            "energy": {
                 "class": "ophyd.SoftPositioner",
                 "limits": (5, 35),
                 "init_pos": 12.4,
                 "kind": "hinted",
             },
-        ),
+        },
         solver="hkl_soleil",
         geometry="E4CV",
         solver_kwargs={"engine": "hkl"},
@@ -65,7 +65,7 @@ def test_as_in_demo_notebook(fourc):
     assert fourc.pseudo_axis_names == ["h", "k", "l"]
     assert fourc.real_axis_names == ["theta", "chi", "phi", "ttheta"]
     assert fourc.core.solver_pseudo_axis_names == ["h", "k", "l"]
-    assert fourc.core.solver_real_axis_names == "omega chi phi tth".split()
+    assert fourc.core.solver_real_axis_names == ["omega", "chi", "phi", "tth"]
     assert fourc.core.solver_extra_axis_names == []
 
     expected = "{'position': Hklpy2DiffractometerPseudoPos(h=0, k=0, l=0)}"
@@ -95,10 +95,10 @@ def test_as_in_demo_notebook(fourc):
     fourc.add_reflection((1, 0, 0), (10, 0, 0, 20), name="r1")
     fourc.add_reflection((0, 1, 0), (10, -90, 0, 20), name="r2")
     assert len(fourc.sample.reflections.order) == 2
-    assert fourc.sample.reflections.order == "r1 r2".split()
+    assert fourc.sample.reflections.order == ["r1", "r2"]
 
     fourc.sample.reflections.swap()
-    assert fourc.sample.reflections.order == "r2 r1".split()
+    assert fourc.sample.reflections.order == ["r2", "r1"]
 
 
 def test_add_reflections_simple():
@@ -106,7 +106,7 @@ def test_add_reflections_simple():
     fourc.add_reflection((1, 0, 0), (10, 0, 0, 20), name="r1")
     fourc.add_reflection((0, 1, 0), (10, -90, 0, 20), name="r2")
     assert len(fourc.sample.reflections.order) == 2
-    assert fourc.sample.reflections.order == "r1 r2".split()
+    assert fourc.sample.reflections.order == ["r1", "r2"]
 
     fourc.sample.reflections.swap()
-    assert fourc.sample.reflections.order == "r2 r1".split()
+    assert fourc.sample.reflections.order == ["r2", "r1"]

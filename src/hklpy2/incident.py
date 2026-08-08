@@ -47,9 +47,8 @@ the engineering units.
 import atexit
 import logging
 import weakref
-from typing import Mapping
-from typing import Optional
-from typing import Union
+from collections.abc import Mapping
+from typing import ClassVar
 
 from ophyd import Component
 from ophyd import Device
@@ -82,7 +81,7 @@ A_KEV: float = 1e7 / XRAY_ENERGY_EQUIVALENT_  # 1 Angstrom ~= 12.39842 keV
 X-ray voltage wavelength product (:math:`h \\nu`), per NIST standard.
 """
 
-WavelengthDictType = Mapping[str, Union[float, str]]
+WavelengthDictType = Mapping[str, float | str]
 
 
 class _WavelengthBase(Device):
@@ -116,7 +115,7 @@ class _WavelengthBase(Device):
     )
     """Allowed variation in wavelength before signaling change to diffractometer."""
 
-    _keyset: list[str] = "source_type wavelength wavelength_units".split()
+    _keyset: ClassVar[list[str]] = ["source_type", "wavelength", "wavelength_units"]
     """List of Component names for '_asdict()' and '_fromdict()'."""
 
     def _asdict(self) -> WavelengthDictType:
@@ -147,11 +146,11 @@ class _WavelengthBase(Device):
         self,
         prefix: str = "",
         *,
-        source_type: Optional[str] = None,
-        wavelength: Optional[float] = None,
-        wavelength_units: Optional[str] = None,
+        source_type: str | None = None,
+        wavelength: float | None = None,
+        wavelength_units: str | None = None,
         wavelength_deadband: float = DEFAULT_WAVELENGTH_DEADBAND,
-        connection_timeout: Optional[float] = None,
+        connection_timeout: float | None = None,
         **kwargs,
     ) -> None:
         """."""
@@ -254,19 +253,21 @@ class WavelengthXray(Wavelength):
     unit string is not recognized.
     """
 
-    _keyset: list[str] = """
-        source_type
-        energy wavelength
-        energy_units wavelength_units
-        """.split()
+    _keyset: ClassVar[list[str]] = [
+        "source_type",
+        "energy",
+        "wavelength",
+        "energy_units",
+        "wavelength_units",
+    ]
     """List of Component names for '_asdict()' and '_fromdict()'."""
 
     def __init__(
         self,
         prefix: str = "",
         *,
-        energy: Optional[float] = None,
-        energy_units: Optional[str] = None,
+        energy: float | None = None,
+        energy_units: str | None = None,
         **kwargs,
     ) -> None:
         """."""
@@ -296,14 +297,10 @@ class WavelengthXray(Wavelength):
         from .utils import convert_units
 
         energy = convert_units(
-            value,
-            self.energy_units.get(),
-            INTERNAL_XRAY_ENERGY_UNITS,
+            value, self.energy_units.get(), INTERNAL_XRAY_ENERGY_UNITS
         )
         return convert_units(
-            A_KEV / energy,
-            INTERNAL_LENGTH_UNITS,
-            self.wavelength_units.get(),
+            A_KEV / energy, INTERNAL_LENGTH_UNITS, self.wavelength_units.get()
         )
 
     def _to_energy(self, value: float) -> float:
@@ -311,14 +308,10 @@ class WavelengthXray(Wavelength):
         from .utils import convert_units
 
         wavelength = convert_units(
-            value,
-            self.wavelength_units.get(),
-            INTERNAL_LENGTH_UNITS,
+            value, self.wavelength_units.get(), INTERNAL_LENGTH_UNITS
         )
         return convert_units(
-            A_KEV / wavelength,
-            INTERNAL_XRAY_ENERGY_UNITS,
-            self.energy_units.get(),
+            A_KEV / wavelength, INTERNAL_XRAY_ENERGY_UNITS, self.energy_units.get()
         )
 
     def _wavelength_changed(self, value: float, **kwargs) -> None:
@@ -364,9 +357,13 @@ class EpicsMonochromatorRO(EpicsWavelengthRO):
     energy = FC(EpicsSignalRO, "{prefix}{_pv_energy}", kind="hinted")
     energy_units = Component(SignalRO, value=INTERNAL_XRAY_ENERGY_UNITS, kind="config")
 
-    _keyset: list[str] = (
-        "source_type energy wavelength energy_units wavelength_units".split()
-    )
+    _keyset: ClassVar[list[str]] = [
+        "source_type",
+        "energy",
+        "wavelength",
+        "energy_units",
+        "wavelength_units",
+    ]
     """List of Component names for '_asdict()' and '_fromdict()'."""
 
     def __init__(

@@ -30,11 +30,8 @@ def _get_version(version_module=None):
     # 2) try importlib.metadata
     try:
         return importlib.metadata.version(__package_name__)
-    except Exception:
-        pass
-
-    # 3) fallback
-    return "0+unknown"
+    except importlib.metadata.PackageNotFoundError:
+        return "0+unknown"
 
 
 __version__ = _get_version()  # Must define before these imports.
@@ -46,23 +43,23 @@ if __name__ == "__main__":
     print(f"Package version: {__version__}")
     sys.exit()
 
-from .backends import SolverBase  # noqa: E402, F401
-from .blocks.configure import Configuration  # noqa: E402, F401
-from .blocks.lattice import SI_LATTICE_PARAMETER  # noqa: E402, F401
-from .blocks.zone import OrthonormalZone  # noqa: E402, F401, F403
-from .plans import move_zone  # noqa: E402, F401, F403
-from .plans import scan_psi  # noqa: E402, F401, F403
-from .plans import scan_zone  # noqa: E402, F401, F403
-from .diffract import creator  # noqa: E402, F401, F403
-from .diffract import diffractometer_class_factory  # noqa: E402, F401, F403
-from .incident import A_KEV  # noqa: E402, F401
-from .exceptions import SolverError  # noqa: E402, F401
-from .run_utils import ConfigurationRunWrapper  # noqa: E402, F401
-from .run_utils import register_aux_reconstructor  # noqa: E402, F401
-from .run_utils import simulator_from_config  # noqa: E402, F401
-from .run_utils import get_run_orientation  # noqa: E402, F401
-from .run_utils import list_orientation_runs  # noqa: E402, F401
-from .solver_utils import SOLVER_ENTRYPOINT_GROUP  # noqa: E402, F401
-from .solver_utils import get_solver  # noqa: E402, F401
-from .solver_utils import solver_factory  # noqa: E402, F401
-from .solver_utils import solvers  # noqa: E402, F401
+from .backends import SolverBase  # noqa: F401
+from .blocks.configure import Configuration  # noqa: F401
+from .blocks.lattice import SI_LATTICE_PARAMETER  # noqa: F401
+from .blocks.zone import OrthonormalZone  # noqa: F401
+from .diffract import creator  # noqa: F401
+from .diffract import diffractometer_class_factory  # noqa: F401
+from .exceptions import SolverError  # noqa: F401
+from .incident import A_KEV  # noqa: F401
+from .plans import move_zone  # noqa: F401
+from .plans import scan_psi  # noqa: F401
+from .plans import scan_zone  # noqa: F401
+from .run_utils import ConfigurationRunWrapper  # noqa: F401
+from .run_utils import get_run_orientation  # noqa: F401
+from .run_utils import list_orientation_runs  # noqa: F401
+from .run_utils import register_aux_reconstructor  # noqa: F401
+from .run_utils import simulator_from_config  # noqa: F401
+from .solver_utils import SOLVER_ENTRYPOINT_GROUP  # noqa: F401
+from .solver_utils import get_solver  # noqa: F401
+from .solver_utils import solver_factory  # noqa: F401
+from .solver_utils import solvers  # noqa: F401

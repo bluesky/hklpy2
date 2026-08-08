@@ -44,17 +44,17 @@ def check_keys(wl, ref, tol=0.001):
         pytest.param(
             _WavelengthBase,
             {},
-            dict(
-                wavelength=DEFAULT_WAVELENGTH,
-                wavelength_units=INTERNAL_LENGTH_UNITS,
-                source_type=DEFAULT_SOURCE_TYPE,
-            ),
+            {
+                "wavelength": DEFAULT_WAVELENGTH,
+                "wavelength_units": INTERNAL_LENGTH_UNITS,
+                "source_type": DEFAULT_SOURCE_TYPE,
+            },
             does_not_raise(),
             id="WavelengthBase-defaults",
         ),
         pytest.param(
             _WavelengthBase,
-            dict(wavelength=0.5),
+            {"wavelength": 0.5},
             {},
             pytest.raises(
                 ReadOnlyError, match=re.escape("The signal wl_wavelength is readonly.")
@@ -64,77 +64,77 @@ def check_keys(wl, ref, tol=0.001):
         pytest.param(
             Wavelength,
             {},
-            dict(
-                wavelength=DEFAULT_WAVELENGTH,
-                wavelength_units=INTERNAL_LENGTH_UNITS,
-                source_type=DEFAULT_SOURCE_TYPE,
-            ),
+            {
+                "wavelength": DEFAULT_WAVELENGTH,
+                "wavelength_units": INTERNAL_LENGTH_UNITS,
+                "source_type": DEFAULT_SOURCE_TYPE,
+            },
             does_not_raise(),
             id="Wavelength-defaults",
         ),
         pytest.param(
             Wavelength,
-            dict(wavelength=2),
-            dict(
-                wavelength=2,
-                wavelength_units=INTERNAL_LENGTH_UNITS,
-                source_type=DEFAULT_SOURCE_TYPE,
-            ),
+            {"wavelength": 2},
+            {
+                "wavelength": 2,
+                "wavelength_units": INTERNAL_LENGTH_UNITS,
+                "source_type": DEFAULT_SOURCE_TYPE,
+            },
             does_not_raise(),
             id="Wavelength-set-wavelength-2",
         ),
         pytest.param(
             Wavelength,
-            dict(wavelength_units="Mfurlongs"),
-            dict(wavelength_units="Mfurlongs"),
+            {"wavelength_units": "Mfurlongs"},
+            {"wavelength_units": "Mfurlongs"},
             does_not_raise(),
             id="Wavelength-units-Mfurlongs",
         ),
         pytest.param(
             Wavelength,
-            dict(wavelength_units="banana"),
+            {"wavelength_units": "banana"},
             {},
             pytest.raises(pint.UndefinedUnitError, match=re.escape("banana")),
             id="Wavelength-units-banana-error",
         ),
         pytest.param(
             Wavelength,
-            dict(source_type="unit testing"),
-            dict(source_type="unit testing"),
+            {"source_type": "unit testing"},
+            {"source_type": "unit testing"},
             does_not_raise(),
             id="Wavelength-source-type-custom",
         ),
         pytest.param(
             WavelengthXray,
             {},
-            dict(
-                energy=12.3984,
-                energy_units=INTERNAL_XRAY_ENERGY_UNITS,
-                wavelength=DEFAULT_WAVELENGTH,
-                wavelength_units=INTERNAL_LENGTH_UNITS,
-                source_type=DEFAULT_SOURCE_TYPE,
-            ),
+            {
+                "energy": 12.3984,
+                "energy_units": INTERNAL_XRAY_ENERGY_UNITS,
+                "wavelength": DEFAULT_WAVELENGTH,
+                "wavelength_units": INTERNAL_LENGTH_UNITS,
+                "source_type": DEFAULT_SOURCE_TYPE,
+            },
             does_not_raise(),
             id="WavelengthXray-defaults",
         ),
         pytest.param(
             WavelengthXray,
-            dict(energy_units="banana"),
+            {"energy_units": "banana"},
             {},
             pytest.raises(pint.UndefinedUnitError, match=re.escape("banana")),
             id="WavelengthXray-energy-units-banana-error",
         ),
         pytest.param(
             WavelengthXray,
-            dict(energy_units="eV"),
-            dict(energy_units="eV"),
+            {"energy_units": "eV"},
+            {"energy_units": "eV"},
             does_not_raise(),
             id="WavelengthXray-energy-units-eV",
         ),
         pytest.param(
             WavelengthXray,
-            dict(energy=10),
-            dict(energy=10),
+            {"energy": 10},
+            {"energy": 10},
             does_not_raise(),
             id="WavelengthXray-energy-10",
         ),
@@ -150,12 +150,7 @@ def test_constructors(Klass, parms, ref, context):
 @pytest.mark.parametrize(
     "Klass, input, context",
     [
-        pytest.param(
-            Wavelength,
-            {},
-            does_not_raise(),
-            id="Wavelength-empty-dict",
-        ),
+        pytest.param(Wavelength, {}, does_not_raise(), id="Wavelength-empty-dict"),
         pytest.param(
             Wavelength,
             {"wavelength": 2},  # missing "class='Wavelength'" key.
@@ -225,28 +220,32 @@ def test__fromdict(Klass, input, context):
     [
         pytest.param(
             EpicsWavelengthRO,
-            dict(prefix=IOC_PREFIX, pv_wavelength="wavelength"),
+            {"prefix": IOC_PREFIX, "pv_wavelength": "wavelength"},
             {"class": "EpicsWavelengthRO", "wavelength": 1.0},
             does_not_raise(),
             id="EpicsWavelengthRO-valid",
         ),
         pytest.param(
             EpicsMonochromatorRO,
-            dict(prefix=IOC_PREFIX, pv_energy="energy", pv_wavelength="wavelength"),
+            {
+                "prefix": IOC_PREFIX,
+                "pv_energy": "energy",
+                "pv_wavelength": "wavelength",
+            },
             {"class": "EpicsMonochromatorRO", "energy": 12.3984, "wavelength": 1.0},
             does_not_raise(),
             id="EpicsMonochromatorRO-valid",
         ),
         pytest.param(
             EpicsWavelengthRO,
-            dict(prefix=IOC_PREFIX, pv_wavelength="wrong_pv"),
+            {"prefix": IOC_PREFIX, "pv_wavelength": "wrong_pv"},
             {},
             pytest.raises(TimeoutError, match=re.escape(f"{IOC_PREFIX}wrong_pv")),
             id="EpicsWavelengthRO-wrong-pv-error",
         ),
         pytest.param(
             EpicsWavelengthRO,
-            dict(prefix=IOC_PREFIX, pv_wavelength="force:pytest.skip"),
+            {"prefix": IOC_PREFIX, "pv_wavelength": "force:pytest.skip"},
             {},
             does_not_raise(),
             id="EpicsWavelengthRO-force-skip",
@@ -273,11 +272,7 @@ def test_EpicsClasses(Klass, input, ref, context):
                 "class": WavelengthXray,
                 "wavelength_deadband": DEFAULT_WAVELENGTH_DEADBAND,
             },
-            [
-                (1.1, True),
-                (1.10001, False),
-                (1.100111, True),
-            ],
+            [(1.1, True), (1.10001, False), (1.100111, True)],
             does_not_raise(),
             id="WavelengthXray-default-deadband",
         ),
@@ -316,14 +311,10 @@ def test_wavelength_update(parms, moves, context):
                 "class": WavelengthXray,
                 "wavelength_deadband": DEFAULT_WAVELENGTH_DEADBAND,
             },
-            [
-                (1.1, True),
-                (1.10001, False),
-                (1.100111, True),
-            ],
+            [(1.1, True), (1.10001, False), (1.100111, True)],
             does_not_raise(),
             id="WavelengthXray-cleanup-subscriptions",
-        ),
+        )
     ],
 )
 def test_cleanup(parms, moves, context):
@@ -342,14 +333,14 @@ def test_cleanup(parms, moves, context):
     "parms, target, tol, context",
     [
         pytest.param(
-            dict(geometry="TH TTH Q", solver="th_tth"),
+            {"geometry": "TH TTH Q", "solver": "th_tth"},
             10,
             0.001,
             does_not_raise(),
             id="10 keV",
         ),
         pytest.param(
-            dict(geometry="TH TTH Q", solver="th_tth"),
+            {"geometry": "TH TTH Q", "solver": "th_tth"},
             24,
             0.001,
             does_not_raise(),

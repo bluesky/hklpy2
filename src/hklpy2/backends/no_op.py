@@ -17,12 +17,11 @@ Example::
 """
 
 import logging
-from typing import List
 
 from .. import __version__
-from ..utils import IDENTITY_MATRIX_3X3
 from ..typing import Matrix3x3
 from ..typing import NamedFloatDict
+from ..utils import IDENTITY_MATRIX_3X3
 from .base import SolverBase
 from .typing import ReflectionDict
 
@@ -74,35 +73,34 @@ class NoOpSolver(SolverBase):
         return IDENTITY_MATRIX_3X3
 
     @property
-    def extra_axis_names(self) -> List[str]:
+    def extra_axis_names(self) -> list[str]:
         return []
 
-    def forward(self, pseudos: NamedFloatDict) -> List[NamedFloatDict]:
+    def forward(self, pseudos: NamedFloatDict) -> list[NamedFloatDict]:
         return [{}]
 
     @classmethod
-    def geometries(cls) -> List[str]:
+    def geometries(cls) -> list[str]:
         return []
 
     def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
         return {}
 
     @property
-    def modes(self) -> List[str]:
+    def modes(self) -> list[str]:
         return []
 
     @property
-    def pseudo_axis_names(self) -> List[str]:
+    def pseudo_axis_names(self) -> list[str]:
         return []  # no axes
 
     @property
-    def real_axis_names(self) -> List[str]:
+    def real_axis_names(self) -> list[str]:
         return []  # no axes
 
-    def refineLattice(self, reflections: List[ReflectionDict]) -> NamedFloatDict | None:
+    def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict | None:
         """No refinement."""
         return None
 
     def removeAllReflections(self) -> None:
         """Remove all reflections."""
-        pass

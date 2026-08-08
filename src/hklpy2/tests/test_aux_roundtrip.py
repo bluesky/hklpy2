@@ -21,7 +21,6 @@ from ..run_utils import register_aux_reconstructor
 from ..run_utils import simulator_from_config
 from .test_diffract import _build_gonio_with_nested_pseudo
 
-
 # ---------------------------------------------------------------------------
 # Schema-v2 export: describe_aux() and Core._asdict()
 # ---------------------------------------------------------------------------
@@ -31,24 +30,24 @@ from .test_diffract import _build_gonio_with_nested_pseudo
     "parms, context",
     [
         pytest.param(
-            dict(
-                aux_name="tablex",
-                expected=dict(name="tablex", category="scalar"),
-            ),
+            {
+                "aux_name": "tablex",
+                "expected": {"name": "tablex", "category": "scalar"},
+            },
             does_not_raise(),
             id="scalar-aux-record",
         ),
         pytest.param(
-            dict(
-                aux_name="ana",
-                expected=dict(
-                    name="ana",
-                    category="pseudo_positioner",
-                    pseudos=["energy"],
-                    reals=["theta"],
-                    class_name="_MiniAnalyzer",
-                ),
-            ),
+            {
+                "aux_name": "ana",
+                "expected": {
+                    "name": "ana",
+                    "category": "pseudo_positioner",
+                    "pseudos": ["energy"],
+                    "reals": ["theta"],
+                    "class_name": "_MiniAnalyzer",
+                },
+            },
             does_not_raise(),
             id="pseudo-positioner-aux-record",
         ),
@@ -71,12 +70,12 @@ def test_describe_aux(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(check="schema-version-bumped"),
+            {"check": "schema-version-bumped"},
             does_not_raise(),
             id="schema-version-is-2",
         ),
         pytest.param(
-            dict(check="aux-axes-is-list-of-records"),
+            {"check": "aux-axes-is-list-of-records"},
             does_not_raise(),
             id="aux-axes-record-form",
         ),
@@ -111,47 +110,42 @@ def test_export_schema_v2(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                entry="tablex",
-                expected=dict(name="tablex", category="scalar"),
-            ),
+            {"entry": "tablex", "expected": {"name": "tablex", "category": "scalar"}},
             does_not_raise(),
             id="legacy-string-form",
         ),
         pytest.param(
-            dict(
-                entry={"name": "tablex"},
-                expected=dict(name="tablex", category="scalar"),
-            ),
+            {
+                "entry": {"name": "tablex"},
+                "expected": {"name": "tablex", "category": "scalar"},
+            },
             does_not_raise(),
             id="record-without-category-defaults-scalar",
         ),
         pytest.param(
-            dict(
-                entry={
+            {
+                "entry": {
                     "name": "ana",
                     "category": "pseudo_positioner",
                     "pseudos": ["energy"],
                     "reals": ["theta"],
                 },
-                expected=dict(name="ana", category="pseudo_positioner"),
-            ),
+                "expected": {"name": "ana", "category": "pseudo_positioner"},
+            },
             does_not_raise(),
             id="full-pseudo-positioner-record",
         ),
         pytest.param(
-            dict(entry={"category": "scalar"}),
+            {"entry": {"category": "scalar"}},
             pytest.raises(
-                ConfigurationError,
-                match=re.escape("missing a non-empty 'name'"),
+                ConfigurationError, match=re.escape("missing a non-empty 'name'")
             ),
             id="missing-name-raises",
         ),
         pytest.param(
-            dict(entry=42),
+            {"entry": 42},
             pytest.raises(
-                ConfigurationError,
-                match=re.escape("must be a str (legacy) or dict"),
+                ConfigurationError, match=re.escape("must be a str (legacy) or dict")
             ),
             id="bogus-type-raises",
         ),
@@ -191,24 +185,21 @@ def test_normalize_aux_record_unknown_category_warns_and_degrades():
     "parms, context",
     [
         pytest.param(
-            dict(
-                check="aux-names-preserved",
-                expected_names={"tablex", "ana"},
-            ),
+            {"check": "aux-names-preserved", "expected_names": {"tablex", "ana"}},
             does_not_raise(),
             id="round-trip-aux-names",
         ),
         pytest.param(
-            dict(
-                check="ana-substructure-preserved",
-                expected_pseudos=["energy"],
-                expected_reals=["theta"],
-            ),
+            {
+                "check": "ana-substructure-preserved",
+                "expected_pseudos": ["energy"],
+                "expected_reals": ["theta"],
+            },
             does_not_raise(),
             id="round-trip-pseudo-positioner-substructure",
         ),
         pytest.param(
-            dict(check="wh-full-does-not-raise"),
+            {"check": "wh-full-does-not-raise"},
             does_not_raise(),
             id="round-trip-wh-full",
         ),
@@ -243,10 +234,8 @@ def test_simulator_from_config_aux_roundtrip(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(legacy_form=["tablex"]),
-            does_not_raise(),
-            id="v1-flat-list-of-strings",
-        ),
+            {"legacy_form": ["tablex"]}, does_not_raise(), id="v1-flat-list-of-strings"
+        )
     ],
 )
 def test_simulator_from_config_accepts_v1_aux_form(parms, context):
@@ -275,17 +264,17 @@ def test_simulator_from_config_accepts_v1_aux_form(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(category="my_cat", builder=lambda rec: None),
+            {"category": "my_cat", "builder": lambda rec: None},
             does_not_raise(),
             id="register-and-use",
         ),
         pytest.param(
-            dict(category="", builder=lambda rec: None),
+            {"category": "", "builder": lambda rec: None},
             pytest.raises(ValueError, match=re.escape("non-empty str")),
             id="empty-category-rejected",
         ),
         pytest.param(
-            dict(category="x", builder="not-callable"),
+            {"category": "x", "builder": "not-callable"},
             pytest.raises(TypeError, match=re.escape("builder must be callable")),
             id="non-callable-builder-rejected",
         ),
@@ -315,22 +304,22 @@ def test_register_aux_reconstructor(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(name="aux1", pseudos=["e"], reals=["t"]),
+            {"name": "aux1", "pseudos": ["e"], "reals": ["t"]},
             does_not_raise(),
             id="single-pseudo-single-real",
         ),
         pytest.param(
-            dict(name="aux2", pseudos=["a", "b"], reals=["x", "y", "z"]),
+            {"name": "aux2", "pseudos": ["a", "b"], "reals": ["x", "y", "z"]},
             does_not_raise(),
             id="multi-pseudo-multi-real",
         ),
         pytest.param(
-            dict(name="bad", pseudos=[], reals=["t"]),
+            {"name": "bad", "pseudos": [], "reals": ["t"]},
             pytest.raises(ValueError, match=re.escape("at least one pseudo")),
             id="empty-pseudos-raises",
         ),
         pytest.param(
-            dict(name="bad", pseudos=["e"], reals=[]),
+            {"name": "bad", "pseudos": ["e"], "reals": []},
             pytest.raises(ValueError, match=re.escape("at least one real")),
             id="empty-reals-raises",
         ),
@@ -340,9 +329,7 @@ def test_make_aux_pseudo_positioner_class(parms, context):
     """Synthetic class is well-formed and forward/inverse return zeros."""
     with context:
         cls = make_aux_pseudo_positioner_class(
-            name=parms["name"],
-            pseudos=parms["pseudos"],
-            reals=parms["reals"],
+            name=parms["name"], pseudos=parms["pseudos"], reals=parms["reals"]
         )
         instance = cls(name=parms["name"])
         assert [p.attr_name for p in instance.pseudo_positioners] == parms["pseudos"]
@@ -363,7 +350,7 @@ def test_make_aux_pseudo_positioner_class(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(spec={"class": 42}),
+            {"spec": {"class": 42}},
             pytest.raises(
                 TypeError,
                 match=re.escape("must be a dotted import path (str) or a callable"),
@@ -371,7 +358,7 @@ def test_make_aux_pseudo_positioner_class(parms, context):
             id="define-real-axis-bogus-class",
         ),
         pytest.param(
-            dict(spec={"class": "ophyd.SoftPositioner"}),
+            {"spec": {"class": "ophyd.SoftPositioner"}},
             does_not_raise(),
             id="define-real-axis-string-class",
         ),
@@ -382,22 +369,19 @@ def test_define_real_axis_class_kind(parms, context):
     from ..devices import define_real_axis
 
     with context:
-        define_real_axis(parms["spec"], dict(labels=[]))
+        define_real_axis(parms["spec"], {"labels": []})
 
 
 @pytest.mark.parametrize(
     "parms, context",
     [
         pytest.param(
-            dict(call_name=42),
-            pytest.raises(
-                TypeError,
-                match=re.escape("must be a dotted import path"),
-            ),
+            {"call_name": 42},
+            pytest.raises(TypeError, match=re.escape("must be a dotted import path")),
             id="make-component-bogus-call-name",
         ),
         pytest.param(
-            dict(call_name="ophyd.SoftPositioner"),
+            {"call_name": "ophyd.SoftPositioner"},
             does_not_raise(),
             id="make-component-string-call-name",
         ),
@@ -420,10 +404,10 @@ def test_make_component_call_name_kind(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(overlap_name="omega"),
+            {"overlap_name": "omega"},
             does_not_raise(),
             id="aux-name-collides-with-real-axis",
-        ),
+        )
     ],
 )
 def test_simulator_from_config_aux_overlapping_real(parms, context):

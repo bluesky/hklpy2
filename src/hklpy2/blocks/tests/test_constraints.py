@@ -73,7 +73,7 @@ def test_LimitsConstraint(lo, hi, value, result):
     assert "[cut=" in text
 
     assert c.low_limit == lo or -180, f"{c!r}"
-    assert c.high_limit == hi or 180, f"{c!r}"
+    assert c.high_limit == hi or 180, f"{c!r}"  # noqa: SIM222
     assert c.valid(axis=value) == result, f"{c!r}"
 
 
@@ -95,11 +95,11 @@ def test_RealAxisConstraints(reals, result):
     "supplied, kwargs, context",
     [
         pytest.param(
-            "you me".split(), dict(you=0, me=0), does_not_raise(), id="matching-keys"
+            ["you", "me"], {"you": 0, "me": 0}, does_not_raise(), id="matching-keys"
         ),
         pytest.param(
-            "tinker evers chance".split(),
-            dict(you=0, me=0),
+            ["tinker", "evers", "chance"],
+            {"you": 0, "me": 0},
             pytest.raises(
                 ConstraintsError, match=re.escape("did not include this constraint")
             ),
@@ -144,7 +144,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     "label": "omega",
                     "low_limit": 30.0,
                     "cut_point": -180.0,
-                },
+                }
             },
             pytest.raises(KeyError, match=re.escape("omega")),
             id="unknown-axis-omega",
@@ -157,7 +157,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     "label": "tth",
                     "low_limit": 30.0,
                     "cut_point": -180.0,
-                },
+                }
             },
             pytest.raises(
                 ConfigurationError, match=re.escape("Missing key for LimitsConstraint")
@@ -172,7 +172,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     "label": "tth",
                     # "low_limit": 30.0,
                     "cut_point": -180.0,
-                },
+                }
             },
             pytest.raises(
                 ConfigurationError, match=re.escape("Missing key for LimitsConstraint")
@@ -187,7 +187,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     # "label": "tth",
                     "low_limit": 30.0,
                     "cut_point": -180.0,
-                },
+                }
             },
             pytest.raises(
                 ConfigurationError, match=re.escape(" Expected key: 'label'.")
@@ -202,7 +202,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     "label": "tth",
                     "low_limit": 30.0,
                     "cut_point": -180.0,
-                },
+                }
             },
             pytest.raises(KeyError, match=re.escape("class")),
             id="missing-class",
@@ -215,7 +215,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     "label": "tth",
                     "low_limit": 30.0,
                     "cut_point": -180.0,
-                },
+                }
             },
             pytest.raises(ConfigurationError, match=re.escape("class")),
             id="wrong-class",
@@ -228,7 +228,7 @@ def test_RealAxisConstraintsKeys(supplied, kwargs, context):
                     "label": "wrong label",
                     "low_limit": 30.0,
                     "cut_point": -180.0,
-                },
+                }
             },
             does_not_raise(),
             id="wrong-label-no-error",
@@ -261,8 +261,7 @@ def test_fromdict_KeyError():
         KeyError, match=re.escape(" not found in diffractometer reals: ")
     ):
         e4cv = creator(
-            name="e4cv",
-            reals=dict(aaa=None, bbb=None, ccc=None, ddd=None),
+            name="e4cv", reals={"aaa": None, "bbb": None, "ccc": None, "ddd": None}
         )
         constraint = e4cv.core.constraints["aaa"]
         constraint._fromdict(config, core=e4cv.core)
@@ -280,37 +279,27 @@ def test_repr():
 @pytest.mark.parametrize(
     "parms, context",
     [
+        pytest.param({"cut_point": 0.0}, does_not_raise(), id="zero is valid"),
+        pytest.param({"cut_point": -180.0}, does_not_raise(), id="default is valid"),
         pytest.param(
-            dict(cut_point=0.0),
-            does_not_raise(),
-            id="zero is valid",
+            {"cut_point": 720.0}, does_not_raise(), id="large finite value is valid"
         ),
         pytest.param(
-            dict(cut_point=-180.0),
-            does_not_raise(),
-            id="default is valid",
-        ),
-        pytest.param(
-            dict(cut_point=720.0),
-            does_not_raise(),
-            id="large finite value is valid",
-        ),
-        pytest.param(
-            dict(cut_point=float("inf")),
+            {"cut_point": float("inf")},
             pytest.raises(
                 ConstraintsError, match=re.escape("cut_point must be a finite number")
             ),
             id="inf rejected",
         ),
         pytest.param(
-            dict(cut_point=float("-inf")),
+            {"cut_point": float("-inf")},
             pytest.raises(
                 ConstraintsError, match=re.escape("cut_point must be a finite number")
             ),
             id="-inf rejected",
         ),
         pytest.param(
-            dict(cut_point=float("nan")),
+            {"cut_point": float("nan")},
             pytest.raises(
                 ConstraintsError, match=re.escape("cut_point must be a finite number")
             ),
@@ -328,31 +317,31 @@ def test_cut_point_validation(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(attr="cut_point", value=0.0),
+            {"attr": "cut_point", "value": 0.0},
             does_not_raise(),
             id="cut_point finite accepted",
         ),
         pytest.param(
-            dict(attr="cut_point", value=float("nan")),
+            {"attr": "cut_point", "value": float("nan")},
             pytest.raises(
                 ConstraintsError, match=re.escape("cut_point must be a finite number")
             ),
             id="cut_point nan rejected post-construction",
         ),
         pytest.param(
-            dict(attr="cut_point", value=float("inf")),
+            {"attr": "cut_point", "value": float("inf")},
             pytest.raises(
                 ConstraintsError, match=re.escape("cut_point must be a finite number")
             ),
             id="cut_point inf rejected post-construction",
         ),
         pytest.param(
-            dict(attr="low_limit", value=50.0),
+            {"attr": "low_limit", "value": 50.0},
             does_not_raise(),
             id="low_limit set via property sorted with high",
         ),
         pytest.param(
-            dict(attr="high_limit", value=-50.0),
+            {"attr": "high_limit", "value": -50.0},
             does_not_raise(),
             id="high_limit below low_limit is sorted",
         ),
@@ -398,62 +387,62 @@ def test_ConstraintsBase():
     "parms, context",
     [
         pytest.param(
-            dict(cut=-180.0, value=45.0, expected=45.0),
+            {"cut": -180.0, "value": 45.0, "expected": 45.0},
             does_not_raise(),
             id="default-cut-in-window",
         ),
         pytest.param(
-            dict(cut=-180.0, value=200.0, expected=-160.0),
+            {"cut": -180.0, "value": 200.0, "expected": -160.0},
             does_not_raise(),
             id="default-cut-above-window",
         ),
         pytest.param(
-            dict(cut=-180.0, value=-200.0, expected=160.0),
+            {"cut": -180.0, "value": -200.0, "expected": 160.0},
             does_not_raise(),
             id="default-cut-below-window",
         ),
         pytest.param(
-            dict(cut=-180.0, value=-180.0, expected=-180.0),
+            {"cut": -180.0, "value": -180.0, "expected": -180.0},
             does_not_raise(),
             id="default-cut-at-cut-exactly",
         ),
         pytest.param(
-            dict(cut=-180.0, value=180.0, expected=-180.0),
+            {"cut": -180.0, "value": 180.0, "expected": -180.0},
             does_not_raise(),
             id="default-cut-at-open-end-wraps-to-cut",
         ),
         pytest.param(
-            dict(cut=0.0, value=90.0, expected=90.0),
+            {"cut": 0.0, "value": 90.0, "expected": 90.0},
             does_not_raise(),
             id="cut-zero-in-window",
         ),
         pytest.param(
-            dict(cut=0.0, value=-90.0, expected=270.0),
+            {"cut": 0.0, "value": -90.0, "expected": 270.0},
             does_not_raise(),
             id="cut-zero-below-window",
         ),
         pytest.param(
-            dict(cut=0.0, value=370.0, expected=10.0),
+            {"cut": 0.0, "value": 370.0, "expected": 10.0},
             does_not_raise(),
             id="cut-zero-above-window",
         ),
         pytest.param(
-            dict(cut=0.0, value=360.0, expected=0.0),
+            {"cut": 0.0, "value": 360.0, "expected": 0.0},
             does_not_raise(),
             id="cut-zero-at-open-end-wraps-to-cut",
         ),
         pytest.param(
-            dict(cut=0.0, value=0.0, expected=0.0),
+            {"cut": 0.0, "value": 0.0, "expected": 0.0},
             does_not_raise(),
             id="cut-zero-at-cut-exactly",
         ),
         pytest.param(
-            dict(cut=90.0, value=90.0, expected=90.0),
+            {"cut": 90.0, "value": 90.0, "expected": 90.0},
             does_not_raise(),
             id="cut-90-at-cut-exactly",
         ),
         pytest.param(
-            dict(cut=90.0, value=89.9, expected=449.9),
+            {"cut": 90.0, "value": 89.9, "expected": 449.9},
             does_not_raise(),
             id="cut-90-just-below-wraps-up",
         ),
@@ -473,20 +462,10 @@ def test_apply_cut(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(cut_point=-180.0),
-            does_not_raise(),
-            id="default-cut-round-trips",
+            {"cut_point": -180.0}, does_not_raise(), id="default-cut-round-trips"
         ),
-        pytest.param(
-            dict(cut_point=0.0),
-            does_not_raise(),
-            id="cut-zero-round-trips",
-        ),
-        pytest.param(
-            dict(cut_point=90.0),
-            does_not_raise(),
-            id="cut-90-round-trips",
-        ),
+        pytest.param({"cut_point": 0.0}, does_not_raise(), id="cut-zero-round-trips"),
+        pytest.param({"cut_point": 90.0}, does_not_raise(), id="cut-90-round-trips"),
     ],
 )
 def test_cut_point_round_trip(parms, context):
@@ -521,32 +500,32 @@ def test_cut_point_fromdict_backward_compat():
     "parms, context",
     [
         pytest.param(
-            dict(
-                cut_point=0.0,
-                limits=(0.0, 360.0),
-                raw_angle=-90.0,  # wraps to 270 with cut=0
-                expect_valid=True,
-            ),
+            {
+                "cut_point": 0.0,
+                "limits": (0.0, 360.0),
+                "raw_angle": -90.0,  # wraps to 270 with cut=0
+                "expect_valid": True,
+            },
             does_not_raise(),
             id="cut-0-wraps-neg90-to-270-within-limits",
         ),
         pytest.param(
-            dict(
-                cut_point=-180.0,
-                limits=(-180.0, 180.0),
-                raw_angle=-90.0,  # already in window with default cut
-                expect_valid=True,
-            ),
+            {
+                "cut_point": -180.0,
+                "limits": (-180.0, 180.0),
+                "raw_angle": -90.0,  # already in window with default cut
+                "expect_valid": True,
+            },
             does_not_raise(),
             id="default-cut-neg90-in-window",
         ),
         pytest.param(
-            dict(
-                cut_point=0.0,
-                limits=(0.0, 180.0),
-                raw_angle=-90.0,  # wraps to 270, outside (0, 180)
-                expect_valid=False,
-            ),
+            {
+                "cut_point": 0.0,
+                "limits": (0.0, 180.0),
+                "raw_angle": -90.0,  # wraps to 270, outside (0, 180)
+                "expect_valid": False,
+            },
             does_not_raise(),
             id="cut-0-wraps-neg90-to-270-outside-limits",
         ),
@@ -573,15 +552,9 @@ def test_cut_point_and_valid(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(cut_point=-180.0),
-            does_not_raise(),
-            id="default-cut-point-attribute",
+            {"cut_point": -180.0}, does_not_raise(), id="default-cut-point-attribute"
         ),
-        pytest.param(
-            dict(cut_point=0.0),
-            does_not_raise(),
-            id="set-cut-point-zero",
-        ),
+        pytest.param({"cut_point": 0.0}, does_not_raise(), id="set-cut-point-zero"),
     ],
 )
 def test_cut_point_attribute(parms, context):

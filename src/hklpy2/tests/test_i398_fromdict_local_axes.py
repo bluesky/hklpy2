@@ -24,22 +24,16 @@ import pytest
 from .. import creator
 from ..run_utils import simulator_from_config
 
-
-SI_LATTICE = dict(a=5.431)
+SI_LATTICE = {"a": 5.431}
 WAVELENGTH = 1.0
-RENAMED_REAL_AXES = "theta chi phi two_theta".split()
-CANONICAL_REAL_AXES = "omega chi phi tth".split()
+RENAMED_REAL_AXES = ["theta", "chi", "phi", "two_theta"]
+CANONICAL_REAL_AXES = ["omega", "chi", "phi", "tth"]
 PROBE = (1, 0, 0)
 
 
 def _build_oriented(reals_names):
     """Create an ``E4CV`` diffractometer with ``reals_names`` and a UB."""
-    d = creator(
-        name="d",
-        solver="hkl_soleil",
-        geometry="E4CV",
-        reals=reals_names,
-    )
+    d = creator(name="d", solver="hkl_soleil", geometry="E4CV", reals=reals_names)
     d.beam.wavelength.put(WAVELENGTH)
     d.add_sample("si", **SI_LATTICE)
     r1_reals = dict(zip(reals_names, (10.0, 0.0, 0.0, 20.0)))
@@ -54,12 +48,12 @@ def _build_oriented(reals_names):
     "parms, context",
     [
         pytest.param(
-            dict(reals=RENAMED_REAL_AXES),
+            {"reals": RENAMED_REAL_AXES},
             does_not_raise(),
             id="renamed-real-axes round-trip via simulator_from_config",
         ),
         pytest.param(
-            dict(reals=CANONICAL_REAL_AXES),
+            {"reals": CANONICAL_REAL_AXES},
             does_not_raise(),
             id="canonical-real-axes round-trip via simulator_from_config",
         ),
@@ -99,12 +93,12 @@ def test_simulator_from_config_preserves_reflection_reals_keys(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(reals=RENAMED_REAL_AXES),
+            {"reals": RENAMED_REAL_AXES},
             does_not_raise(),
             id="renamed-real-axes round-trip via export/restore",
         ),
         pytest.param(
-            dict(reals=CANONICAL_REAL_AXES),
+            {"reals": CANONICAL_REAL_AXES},
             does_not_raise(),
             id="canonical-real-axes round-trip via export/restore",
         ),
@@ -127,15 +121,10 @@ def test_export_restore_preserves_reflection_reals_keys(parms, context, tmp_path
         # Build a fresh diffractometer with the same axis names and
         # restore from file.
         restored = creator(
-            name="d",
-            solver="hkl_soleil",
-            geometry="E4CV",
-            reals=parms["reals"],
+            name="d", solver="hkl_soleil", geometry="E4CV", reals=parms["reals"]
         )
         restored.restore(
-            str(config_file),
-            restore_samples=True,
-            restore_wavelength=True,
+            str(config_file), restore_samples=True, restore_wavelength=True
         )
 
         for name in ("r1", "r2"):
@@ -156,10 +145,10 @@ def test_export_restore_preserves_reflection_reals_keys(parms, context, tmp_path
     "parms, context",
     [
         pytest.param(
-            dict(),
+            {},
             does_not_raise(),
             id="snapshot benchmark does not raise on renamed real axes",
-        ),
+        )
     ],
 )
 def test_benchmark_snapshot_does_not_raise_on_renamed_axes(parms, context):
@@ -188,12 +177,12 @@ def test_benchmark_snapshot_does_not_raise_on_renamed_axes(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(reals=RENAMED_REAL_AXES),
+            {"reals": RENAMED_REAL_AXES},
             does_not_raise(),
             id="round-trip preserves UB matrix for renamed axes",
         ),
         pytest.param(
-            dict(reals=CANONICAL_REAL_AXES),
+            {"reals": CANONICAL_REAL_AXES},
             does_not_raise(),
             id="round-trip preserves UB matrix for canonical axes",
         ),

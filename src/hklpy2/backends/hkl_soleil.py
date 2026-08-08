@@ -41,8 +41,6 @@ Example::
 import logging
 import math
 import platform
-from typing import Dict
-from typing import List
 
 import numpy as np
 from gi._error import GError
@@ -51,13 +49,13 @@ from pyRestTable import Table
 
 from ..exceptions import NoForwardSolutions
 from ..exceptions import SolverError
+from ..typing import Matrix3x3
+from ..typing import NamedFloatDict
 from ..utils import IDENTITY_MATRIX_3X3
 from ..utils import check_value_in_list
 from ..utils import istype
 from ..utils import roundoff
 from ..utils import unique_name
-from ..typing import Matrix3x3
-from ..typing import NamedFloatDict
 from .base import SolverBase
 from .hkl_soleil_utils import setup_libhkl
 from .typing import ReflectionDict
@@ -95,23 +93,18 @@ libhkl = setup_libhkl(platform.system(), "Hkl", "5.0")
 AXES_READ = 0
 AXES_WRITTEN = 1
 LIBHKL_DETECTOR_TYPE = 0
-LIBHKL_UNITS = {
-    "default": libhkl.UnitEnum.DEFAULT,
-    "user": libhkl.UnitEnum.USER,
-}
+LIBHKL_UNITS = {"default": libhkl.UnitEnum.DEFAULT, "user": libhkl.UnitEnum.USER}
 LIBHKL_USER_UNITS = LIBHKL_UNITS["user"]
 ROUNDOFF_DIGITS = 12
 
 
-def roundoff_list(values: List[float], digits=ROUNDOFF_DIGITS) -> List[float]:
+def roundoff_list(values: list[float], digits=ROUNDOFF_DIGITS) -> list[float]:
     """Prevent underflows and '-0' for all numbers in a list."""
     return [roundoff(v, digits) for v in values]
 
 
 def hkl_euler_matrix(
-    euler_x: List[float],
-    euler_y: List[float],
-    euler_z: List[float],
+    euler_x: list[float], euler_y: list[float], euler_z: list[float]
 ) -> libhkl.Matrix:  # type: ignore
     """Convert into matrix form."""
     return libhkl.Matrix.new_euler(euler_x, euler_y, euler_z)
@@ -254,7 +247,7 @@ class HklSolver(SolverBase):
         # Note: must keep the '_hkl_engine_list' object as class attribute or
         # random core dumps, usually when accessing 'engine.name_get()'.
         self._hkl_detector = libhkl.Detector.factory_new(
-            libhkl.DetectorType(LIBHKL_DETECTOR_TYPE),
+            libhkl.DetectorType(LIBHKL_DETECTOR_TYPE)
         )
         self._hkl_factory = libhkl.factories()[geometry]
         self._hkl_engine_list = self._hkl_factory.create_new_engine_list()  # note!
@@ -272,7 +265,7 @@ class HklSolver(SolverBase):
         args = [
             f"{s}={getattr(self, s)!r}"
             # .
-            for s in "name version geometry engine_name mode".split()
+            for s in ["name", "version", "geometry", "engine_name", "mode"]
         ]
         return f"{self.__class__.__name__}({', '.join(args)})"
 
@@ -293,9 +286,7 @@ class HklSolver(SolverBase):
     def addReflection(self, reflection: ReflectionDict) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
         if not isinstance(reflection, dict):
-            raise TypeError(
-                f"Must supply a reflection dict, received {reflection!r}",
-            )
+            raise TypeError(f"Must supply a reflection dict, received {reflection!r}")
 
         logger.debug("reflection: %r", reflection)
         pseudos = [reflection["pseudos"][k] for k in self.pseudo_axis_names]
@@ -329,11 +320,7 @@ class HklSolver(SolverBase):
         """
         return self.engine.axis_names_get(AXES_WRITTEN)  # Do NOT sort.
 
-    def calculate_UB(
-        self,
-        r1: ReflectionDict,
-        r2: ReflectionDict,
-    ) -> Matrix3x3 | None:
+    def calculate_UB(self, r1: ReflectionDict, r2: ReflectionDict) -> Matrix3x3 | None:
         """
         Calculate the UB (orientation) matrix with two reflections.
 
@@ -443,7 +430,7 @@ class HklSolver(SolverBase):
     @extras.setter
     def extras(self, values: NamedFloatDict) -> None:
         known_names = self.extra_axis_names
-        for k in values.keys():
+        for k in values:
             if k not in known_names:
                 raise KeyError(
                     f"Unexpected dictionary key received: {k!r}"
@@ -456,9 +443,9 @@ class HklSolver(SolverBase):
             p.value_set(v, LIBHKL_USER_UNITS)
             self.engine.parameter_set(k, p)
 
-    def forward(self, pseudos: NamedFloatDict) -> List[NamedFloatDict]:
+    def forward(self, pseudos: NamedFloatDict) -> list[NamedFloatDict]:
         """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
-        from gi.repository import GLib  # noqa: E402, F401  # W0611
+        from gi.repository import GLib  # W0611
 
         logger.debug("(%r) forward(%r)", __name__, pseudos)
 
@@ -467,8 +454,7 @@ class HklSolver(SolverBase):
             # Still, it has a .items() method.
             raw = list(
                 self.engine.pseudo_axis_values_set(
-                    [pseudos[k] for k in self.pseudo_axis_names],
-                    LIBHKL_USER_UNITS,
+                    [pseudos[k] for k in self.pseudo_axis_names], LIBHKL_USER_UNITS
                 ).items()
             )
 
@@ -503,14 +489,7 @@ class HklSolver(SolverBase):
             engines = [engine.name_get() for engine in engine_list.engines_get()]
             return len(engines)
 
-        return sorted(
-            [
-                geometry
-                #
-                for geometry in factories
-                if num_engines(geometry) > 0
-            ]
-        )
+        return sorted([geometry for geometry in factories if num_engines(geometry) > 0])
 
     @classmethod
     def default_mode(cls, geometry: str, *, engine: str = "hkl") -> str:
@@ -586,9 +565,7 @@ class HklSolver(SolverBase):
         return dict(
             zip(
                 self.engine.pseudo_axis_names_get(),
-                roundoff_list(
-                    self.engine.pseudo_axis_values_get(LIBHKL_USER_UNITS),
-                ),
+                roundoff_list(self.engine.pseudo_axis_values_get(LIBHKL_USER_UNITS)),
             )
         )
 
@@ -598,7 +575,7 @@ class HklSolver(SolverBase):
         Dictionary of crystal lattice parameters.
         """
         values = self._sample.lattice_get().get(LIBHKL_USER_UNITS)
-        keys = "a b c alpha beta gamma".split()
+        keys = ["a", "b", "c", "alpha", "beta", "gamma"]
         return {k: getattr(values, k) for k in keys}
 
     @lattice.setter
@@ -618,8 +595,7 @@ class HklSolver(SolverBase):
             )
         )
         logger.debug(
-            "sample lattice: %r",
-            self._sample.lattice_get().get(LIBHKL_USER_UNITS),
+            "sample lattice: %r", self._sample.lattice_get().get(LIBHKL_USER_UNITS)
         )
 
     @property
@@ -653,23 +629,23 @@ class HklSolver(SolverBase):
         return self._hkl_geometry.axis_names_get()  # Do NOT sort.
 
     @property
-    def reflections(self) -> Dict[str, ReflectionDict]:
+    def reflections(self) -> dict[str, ReflectionDict]:
         """List of defined reflections (no store reflection names in libhkl)."""
         rlist = {}
         for refl in self._sample.reflections_get():
             values = refl.hkl_get()
             name = f"x{id(refl):x}"  # make up a name from object's id
-            rlist[name] = dict(
-                name=name,
-                pseudos={k: getattr(values, k) for k in self.pseudo_axis_names},
-                reals=dict(
+            rlist[name] = {
+                "name": name,
+                "pseudos": {k: getattr(values, k) for k in self.pseudo_axis_names},
+                "reals": dict(
                     zip(
                         refl.geometry_get().axis_names_get(),
                         refl.geometry_get().axis_values_get(1),
                     )
                 ),
-                wavelength=refl.geometry_get().wavelength_get(LIBHKL_USER_UNITS),
-            )
+                "wavelength": refl.geometry_get().wavelength_get(LIBHKL_USER_UNITS),
+            }
         return rlist
 
     def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict:
@@ -699,12 +675,12 @@ class HklSolver(SolverBase):
         """
         Crystalline sample.  libhkl's sample object.
         """
-        sample: SampleDict = dict(
-            name=self._sample.name_get(),
-            lattice=self.lattice,
-            reflections=self.reflections,
-            order=list(self.reflections.keys()),
-        )
+        sample: SampleDict = {
+            "name": self._sample.name_get(),
+            "lattice": self.lattice,
+            "reflections": self.reflections,
+            "order": list(self.reflections.keys()),
+        }
         return sample
 
     @sample.setter
@@ -719,11 +695,7 @@ class HklSolver(SolverBase):
         sample = libhkl.Sample.new(unique_name())  # new sample each time
         self._sample = sample
         self._hkl_engine_list.init(self._hkl_geometry, self._hkl_detector, sample)
-        logger.debug(
-            "sample name=%r, libhkl name=%r",
-            value["name"],
-            sample.name_get(),
-        )
+        logger.debug("sample name=%r, libhkl name=%r", value["name"], sample.name_get())
 
         self.lattice = value["lattice"]
 
@@ -746,9 +718,7 @@ class HklSolver(SolverBase):
         _r = [reals[k] for k in self.real_axis_names]
 
         if False in [isinstance(v, (float, int)) for v in _r]:
-            raise TypeError(
-                f"All values must be numbers.  Received: {reals!r}",
-            )
+            raise TypeError(f"All values must be numbers.  Received: {reals!r}")
 
         self._hkl_geometry.axis_values_set(_r, LIBHKL_USER_UNITS)
 
@@ -780,7 +750,7 @@ class HklSolver(SolverBase):
                     "reals": engine.axis_names_get(AXES_WRITTEN),
                 }
                 extras += eng_desc["modes"][mode_name]["extras"]
-            eng_desc["extras"] = list(sorted(set(extras)))
+            eng_desc["extras"] = sorted(set(extras))
         return description
 
     @property
@@ -808,7 +778,14 @@ class HklSolver(SolverBase):
             ========= ================== ================== ==================== ==================== ===============
         """
         table = Table()
-        table.labels = "engine mode pseudo(s) real(s) writable(s) extra(s)".split()
+        table.labels = [
+            "engine",
+            "mode",
+            "pseudo(s)",
+            "real(s)",
+            "writable(s)",
+            "extra(s)",
+        ]
         for engine_name, engine in self._summary_dict["engines"].items():
             for mode_name, mode in engine["modes"].items():
                 row = [
@@ -872,15 +849,15 @@ class HklSolver(SolverBase):
     @property
     def _details(self) -> dict:
         """(internal use) Current settings for diagnostic review."""
-        return dict(
-            name=self.name,
-            geometry=self.geometry,
-            engine=self.engine_name,
-            sample=self._sample.name_get(),
-            lattice=self.lattice,
-            U=self.U,
-            UB=self.UB,
-            wavelength=self.wavelength,
-            mode=self.mode,
-            extras=self.extras,
-        )
+        return {
+            "name": self.name,
+            "geometry": self.geometry,
+            "engine": self.engine_name,
+            "sample": self._sample.name_get(),
+            "lattice": self.lattice,
+            "U": self.U,
+            "UB": self.UB,
+            "wavelength": self.wavelength,
+            "mode": self.mode,
+            "extras": self.extras,
+        }

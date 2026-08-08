@@ -31,9 +31,8 @@ SPEC equivalents
 
 import logging
 import warnings
-from typing import Iterator
-from typing import Optional
-from typing import Sequence
+from collections.abc import Iterator
+from collections.abc import Sequence
 
 import numpy as np
 from deprecated.sphinx import versionadded
@@ -46,13 +45,7 @@ from ..typing import INPUT_VECTOR
 
 logger = logging.getLogger(__name__)
 
-__all__ = """
-    OrthonormalZone
-    move_zone
-    scan_zone
-    zonespace
-    zone_series
-""".split()
+__all__ = ["OrthonormalZone", "move_zone", "scan_zone", "zone_series", "zonespace"]
 
 
 @versionadded(version="0.3.0", reason="Crystallographic zone axis operations.")
@@ -84,9 +77,9 @@ class OrthonormalZone:
     def __init__(
         self,
         *,
-        axis: Optional[INPUT_VECTOR] = None,
-        b1: Optional[INPUT_VECTOR] = None,
-        b2: Optional[INPUT_VECTOR] = None,
+        axis: INPUT_VECTOR | None = None,
+        b1: INPUT_VECTOR | None = None,
+        b2: INPUT_VECTOR | None = None,
     ) -> None:
         """Constructor"""
         self._axis = None
@@ -140,7 +133,6 @@ class OrthonormalZone:
         if arr.shape != (3,):
             raise ValueError(
                 "vector must be 1-D array-like vector of length 3."
-                #
                 f"  Received {vector} with shape {arr.shape}."
             )
 
@@ -190,10 +182,7 @@ class OrthonormalZone:
         return self._axis is not None
 
     def define_axis(
-        self,
-        b1: INPUT_VECTOR,
-        b2: INPUT_VECTOR,
-        normalize: bool = False,
+        self, b1: INPUT_VECTOR, b2: INPUT_VECTOR, normalize: bool = False
     ) -> NDArray[np.floating]:
         """Define the zone axis from two vectors using cross product.
 
@@ -223,7 +212,6 @@ class OrthonormalZone:
         if norm == 0:
             raise ValueError(
                 f"Vectors {b1=} and {b2=} are parallel or one is zero; "
-                #
                 "cross product is zero and cannot define a zone axis."
             )
         self.axis = axis / norm if normalize else axis
@@ -308,8 +296,7 @@ class OrthonormalZone:
                 )
 
             unit_vectors = np.stack(
-                [rodrigues_rotation(u1, axis, t) for t in angles],
-                axis=0,
+                [rodrigues_rotation(u1, axis, t) for t in angles], axis=0
             )
             magnitudes = np.linspace(n1, n2, n)[:, None]
             for vector, scale in zip(unit_vectors, magnitudes):
@@ -317,10 +304,7 @@ class OrthonormalZone:
 
 
 def zonespace(
-    diff: DiffractometerBase,
-    hkl_1: INPUT_VECTOR,
-    hkl_2: INPUT_VECTOR,
-    n: int,
+    diff: DiffractometerBase, hkl_1: INPUT_VECTOR, hkl_2: INPUT_VECTOR, n: int
 ) -> Iterator[tuple[Sequence[float], Sequence[float]]]:
     """
     Generate pseudos and reals along a crystallographic zone.
@@ -375,10 +359,7 @@ def zonespace(
 
 
 def zone_series(
-    diff: DiffractometerBase,
-    hkl_1: INPUT_VECTOR,
-    hkl_2: INPUT_VECTOR,
-    n: int,
+    diff: DiffractometerBase, hkl_1: INPUT_VECTOR, hkl_2: INPUT_VECTOR, n: int
 ) -> None:
     """
     Example: a series of diffractometer positions along a zone.

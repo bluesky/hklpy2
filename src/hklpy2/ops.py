@@ -15,10 +15,8 @@ import datetime
 import logging
 import warnings
 from collections.abc import Iterable
+from collections.abc import Mapping
 from typing import TYPE_CHECKING
-from typing import Mapping
-from typing import Optional
-from typing import Union
 
 from deprecated.sphinx import versionchanged
 
@@ -32,21 +30,21 @@ from .exceptions import ConfigurationError
 from .exceptions import CoreError
 from .exceptions import NoForwardSolutions
 from .solver_utils import solver_factory
-from .utils import _SolverDirty
-from .utils import axes_to_dict
-from .utils import convert_units
-from .utils import unique_name
 from .typing import AnyAxesType
 from .typing import AxesDict
 from .typing import ConfigHeaderDict
 from .typing import KeyValueMap
 from .typing import Matrix3x3
 from .typing import NamedFloatDict
+from .utils import _SolverDirty
+from .utils import axes_to_dict
+from .utils import convert_units
+from .utils import unique_name
 
 __all__ = ["Core"]
 
 if TYPE_CHECKING:
-    from .diffract import DiffractometerBase  # noqa: F401
+    from .diffract import DiffractometerBase
 
 logger = logging.getLogger(__name__)
 DEFAULT_EXTRA_VALUE: float = 0
@@ -114,9 +112,7 @@ class Core:
     from .blocks.sample import Sample
 
     def __init__(
-        self,
-        diffractometer: "DiffractometerBase",
-        default_sample: bool = True,
+        self, diffractometer: "DiffractometerBase", default_sample: bool = True
     ) -> None:
         self.axes_xref = {}  # cross-reference:  diffractometer name : solver name
         self._axes_xref_reversed = None  # cache; invalidated when axes_xref changes
@@ -176,7 +172,7 @@ class Core:
         from .devices import describe_aux
 
         header: ConfigHeaderDict = {
-            "datetime": str(datetime.datetime.now()),
+            "datetime": str(datetime.datetime.now(datetime.timezone.utc)),
             "hklpy2_version": __version__,
             "python_class": self.diffractometer.__class__.__name__,
             "config_schema_version": CONFIG_SCHEMA_VERSION,
@@ -299,9 +295,7 @@ class Core:
         ),
     )
     def _validate_extras(
-        self,
-        values: NamedFloatDict,
-        expected: NamedFloatDict,
+        self, values: NamedFloatDict, expected: NamedFloatDict
     ) -> NamedFloatDict:
         """Validate that the supplied extras are acceptable."""
         extras, unexpected = {}, []
@@ -318,7 +312,7 @@ class Core:
             )
         return extras
 
-    def _validate_pseudos(self, pseudos: Union[Iterable, NamedFloatDict]) -> bool:
+    def _validate_pseudos(self, pseudos: Iterable | NamedFloatDict) -> bool:
         """Validate that the supplied pseudos are acceptable."""
         if not isinstance(pseudos, Iterable):
             raise TypeError(
@@ -358,10 +352,10 @@ class Core:
     def add_reflection(
         self,
         pseudos: AnyAxesType,
-        reals: Union[AnyAxesType, None] = None,
-        wavelength: Optional[float] = None,
-        wavelength_units: Optional[str] = None,
-        name: Optional[str] = None,
+        reals: AnyAxesType | None = None,
+        wavelength: float | None = None,
+        wavelength_units: str | None = None,
+        name: str | None = None,
         replace: bool = False,
     ) -> Reflection:
         """
@@ -399,10 +393,7 @@ class Core:
         wavelength = wavelength or self.diffractometer.beam.wavelength.get()
 
         logger.debug(
-            "name=%r, geometry=%r, wavelength=%r",
-            name,
-            self.geometry,
-            wavelength,
+            "name=%r, geometry=%r, wavelength=%r", name, self.geometry, wavelength
         )
 
         pnames = self.local_pseudo_axes
@@ -410,11 +401,7 @@ class Core:
         pdict = self.standardize_pseudos(pseudos)
         rdict = self.standardize_reals(reals)
         logger.debug(
-            "pdict=%r, rdict=%r, pnames=%r, rnames=%r",
-            pdict,
-            rdict,
-            pnames,
-            rnames,
+            "pdict=%r, rdict=%r, pnames=%r, rnames=%r", pdict, rdict, pnames, rnames
         )
         # Thread the current beam wavelength units into the new Reflection
         # prefer an explicit wavelength_units argument; otherwise use beam units
@@ -440,18 +427,17 @@ class Core:
         self,
         name: str,
         a: float,
-        b: Optional[float] = None,
-        c: Optional[float] = None,
+        b: float | None = None,
+        c: float | None = None,
         alpha: float = 90.0,  # degrees
-        beta: Optional[float] = None,  # degrees
-        gamma: Optional[float] = None,  # degrees
+        beta: float | None = None,  # degrees
+        gamma: float | None = None,  # degrees
         digits: int = 4,
         replace: bool = False,
     ) -> Sample:
         """Add a new sample."""
-        if name in self.samples:
-            if not replace:
-                raise CoreError(f"Sample {name=!r} already defined.")
+        if name in self.samples and not replace:
+            raise CoreError(f"Sample {name=!r} already defined.")
         lattice = Lattice(a, b, c, alpha, beta, gamma, digits=digits)
         self._samples[name] = Sample(self, name, lattice)
         self.sample = name
@@ -532,16 +518,14 @@ class Core:
             "the freshly computed UB.  Fixes :issue:`384`."
         ),
     )
-    def calc_UB(
-        self, r1: Union[Reflection, str], r2: Union[Reflection, str]
-    ) -> Matrix3x3:
+    def calc_UB(self, r1: Reflection | str, r2: Reflection | str) -> Matrix3x3:
         """
         Calculate and return the UB (orientation) matrix with two reflections.
 
         The method of Busing & Levy, Acta Cryst 22 (1967) 457.
         """
 
-        def _get(r: Union[Reflection, str]) -> Reflection:
+        def _get(r: Reflection | str) -> Reflection:
             """Given a reference, get the Reflection object."""
             if isinstance(r, Reflection):
                 return r
@@ -617,7 +601,7 @@ class Core:
             self._extras.update(incoming)
             self.request_solver_update(_SolverDirty.EXTRAS)
 
-    def forward(self, pseudos: AnyAxesType, wavelength: Optional[float] = None) -> list:
+    def forward(self, pseudos: AnyAxesType, wavelength: float | None = None) -> list:
         """
         Compute [{names:reals}] from {names: pseudos} (hkl -> angles).
 
@@ -627,11 +611,7 @@ class Core:
         :attr:`constraints`; only solutions that satisfy all constraints
         are included in the returned list.
         """
-        logger.debug(
-            "(%s) forward(): pseudos=%r",
-            self.__class__.__name__,
-            pseudos,
-        )
+        logger.debug("(%s) forward(): pseudos=%r", self.__class__.__name__, pseudos)
         self._warn_if_ub_stale()
 
         pdict = self.standardize_pseudos(pseudos)
@@ -667,15 +647,11 @@ class Core:
                         )
                     else:
                         solver_reals[axis] = convert_units(
-                            base_reals[local_axis],
-                            angle_units_core,
-                            angle_units_solver,
+                            base_reals[local_axis], angle_units_core, angle_units_solver
                         )
                 else:
                     solver_reals[axis] = convert_units(
-                        base_reals[local_axis],
-                        angle_units_core,
-                        angle_units_solver,
+                        base_reals[local_axis], angle_units_core, angle_units_solver
                     )
 
             self.solver.set_reals(solver_reals)
@@ -685,9 +661,7 @@ class Core:
                 for axis, value in new_reals.items():
                     # Update with converted new value.
                     reals[axis] = convert_units(
-                        value,
-                        angle_units_solver,
-                        angle_units_core,
+                        value, angle_units_solver, angle_units_core
                     )
                 # Apply cut-point wrapping before constraint checking.
                 # Each axis angle is mapped into [cut_point, cut_point+360)
@@ -716,9 +690,7 @@ class Core:
                             )
         except NoForwardSolutions as exc:
             logger.info(
-                "No forward solutions from solver for pseudos=%r: %s",
-                pdict,
-                exc,
+                "No forward solutions from solver for pseudos=%r: %s", pdict, exc
             )
 
         return solutions
@@ -734,16 +706,10 @@ class Core:
         return self.solver.geometry
 
     def inverse(
-        self,
-        reals: Union[AnyAxesType, None],
-        wavelength: Optional[float] = None,
+        self, reals: AnyAxesType | None, wavelength: float | None = None
     ) -> AxesDict:
         """Compute (pseudos) from {names: reals} (angles -> hkl)."""
-        logger.debug(
-            "(%s) inverse(): reals=%r",
-            self.__class__.__name__,
-            reals,
-        )
+        logger.debug("(%s) inverse(): reals=%r", self.__class__.__name__, reals)
         pseudos: AxesDict = {
             axis[0]: 0
             # Original values.
@@ -781,11 +747,7 @@ class Core:
         """
         if self.solver is None:
             return []
-        return [
-            self.axes_xref_reversed[k]
-            #
-            for k in self.solver.pseudo_axis_names
-        ]
+        return [self.axes_xref_reversed[k] for k in self.solver.pseudo_axis_names]
 
     @property
     def local_real_axes(self) -> list[str]:
@@ -797,11 +759,7 @@ class Core:
         """
         if self.solver is None:
             return []
-        return [
-            self.axes_xref_reversed[k]
-            #
-            for k in self.solver.real_axis_names
-        ]
+        return [self.axes_xref_reversed[k] for k in self.solver.real_axis_names]
 
     @property
     def mode(self) -> str:
@@ -976,10 +934,8 @@ class Core:
         rnames = [r.name for r in reflections]
         if len(reflections) < 3:
             raise CoreError(
-                # fmt: off
                 "Must have at least 3 reflections to refine lattice."
                 f" Known reflections: {rnames}"
-                # fmt: on
             )
 
         logger.debug("Refining lattice using reflections %r", rnames)
@@ -995,16 +951,12 @@ class Core:
         length_units_solver = self.solver.LENGTH_UNITS
         length_units_uc = self.sample.lattice.length_units
         for parm, value in lattice.items():
-            if parm in "a b c".split():
+            if parm in ["a", "b", "c"]:
                 lattice[parm] = convert_units(
                     value, length_units_solver, length_units_uc
                 )
-            elif parm in "alpha beta gamma".split():
-                lattice[parm] = convert_units(
-                    value,
-                    angle_units_solver,
-                    angle_units_uc,
-                )
+            elif parm in ["alpha", "beta", "gamma"]:
+                lattice[parm] = convert_units(value, angle_units_solver, angle_units_uc)
 
         return Lattice(**lattice)
 
@@ -1055,7 +1007,7 @@ class Core:
             raise CoreError("Cannot remove last sample.")
 
         self._samples.pop(name)
-        self._sample_name = list(self.samples)[0]
+        self._sample_name = next(iter(self.samples))
 
     @versionchanged(
         version="0.6.2",
@@ -1065,7 +1017,7 @@ class Core:
             "(``True`` -> ``_SolverDirty.ALL``, ``False`` -> clear all)."
         ),
     )
-    def request_solver_update(self, flag: Union[bool, _SolverDirty] = True) -> None:
+    def request_solver_update(self, flag: bool | _SolverDirty = True) -> None:
         """
         Mark solver state as dirty (or clean).
 
@@ -1220,12 +1172,7 @@ class Core:
         """Return table of solver's geometry (modes, axes).."""
         return self.solver.summary
 
-    def set_solver(
-        self,
-        name: str,
-        geometry: str,
-        **kwargs: dict,
-    ) -> SolverBase:
+    def set_solver(self, name: str, geometry: str, **kwargs: dict) -> SolverBase:
         """
         Create an instance of the backend |solver| library and geometry.
 
@@ -1247,9 +1194,7 @@ class Core:
         )
         self._solver = solver_factory(name, geometry, **kwargs)
         self._extras = {
-            k: DEFAULT_EXTRA_VALUE
-            #
-            for k in self.solver.all_extra_axis_names
+            k: DEFAULT_EXTRA_VALUE for k in self.solver.all_extra_axis_names
         }
         self.update_solver()
         return self._solver
@@ -1280,7 +1225,7 @@ class Core:
         """
         return axes_to_dict(pseudos, self.local_pseudo_axes)
 
-    def standardize_reals(self, reals: Union[AnyAxesType, None]) -> AxesDict:
+    def standardize_reals(self, reals: AnyAxesType | None) -> AxesDict:
         """
         Convert user-supplied reals into dictionary in solver's order.
 
@@ -1316,7 +1261,7 @@ class Core:
 
         return axes_to_dict(reals, self.local_real_axes)
 
-    def to_solver_units(self, wavelength: Optional[float] = None) -> dict:
+    def to_solver_units(self, wavelength: float | None = None) -> dict:
         """Convert quantities from diffractometer units to solver units."""
         lattice = self.sample.lattice._asdict()
 
@@ -1324,8 +1269,8 @@ class Core:
         angle_units_solver = self.solver.ANGLE_UNITS
         length_units_uc = lattice["length_units"]
         length_units_solver = self.solver.LENGTH_UNITS
-        for k in "a b c  alpha beta gamma".split():
-            if k in "a b c".split():
+        for k in ["a", "b", "c", "alpha", "beta", "gamma"]:
+            if k in ["a", "b", "c"]:
                 lattice[k] = convert_units(
                     lattice[k], length_units_uc, length_units_solver
                 )
@@ -1339,17 +1284,17 @@ class Core:
 
         wl_units = self.diffractometer.beam.wavelength_units.get()
         wl_units_solver = self.solver.LENGTH_UNITS
-        return dict(
-            sample=dict(
-                name=self.sample.name,
-                lattice=lattice,
-                order=self.sample.reflections.order,
-                reflections=reflections,
-            ),
-            wavelength=convert_units(wavelength, wl_units, wl_units_solver),
-        )
+        return {
+            "sample": {
+                "name": self.sample.name,
+                "lattice": lattice,
+                "order": self.sample.reflections.order,
+                "reflections": reflections,
+            },
+            "wavelength": convert_units(wavelength, wl_units, wl_units_solver),
+        }
 
-    def update_solver(self, wavelength: Optional[float] = None) -> None:
+    def update_solver(self, wavelength: float | None = None) -> None:
         """
         Push any dirty solver-state domains to the underlying solver.
 

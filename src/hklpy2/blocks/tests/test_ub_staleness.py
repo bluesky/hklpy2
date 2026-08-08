@@ -98,52 +98,52 @@ def _setup_initial(action: str):
     "parms, context",
     [
         pytest.param(
-            dict(action="noop", expected=False),
+            {"action": "noop", "expected": False},
             does_not_raise(),
             id="calc_UB-then-check",
         ),
         pytest.param(
-            dict(action="swap_order", expected=True),
+            {"action": "swap_order", "expected": True},
             does_not_raise(),
             id="swap-order[:2]",
         ),
         pytest.param(
-            dict(action="add_non_orienting", expected=False),
+            {"action": "add_non_orienting", "expected": False},
             does_not_raise(),
             id="add-3rd-reflection-not-in-order",
         ),
         pytest.param(
-            dict(action="add_and_prepend", expected=True),
+            {"action": "add_and_prepend", "expected": True},
             does_not_raise(),
             id="add-reflection-AND-prepend-to-order",
         ),
         pytest.param(
-            dict(action="remove_non_orienting", expected=False),
+            {"action": "remove_non_orienting", "expected": False},
             does_not_raise(),
             id="remove-non-order-reflection",
         ),
         pytest.param(
-            dict(action="remove_order_zero", expected=True),
+            {"action": "remove_order_zero", "expected": True},
             does_not_raise(),
             id="remove-order[0]",
         ),
         pytest.param(
-            dict(action="mutate_orienting_pseudos", expected=True),
+            {"action": "mutate_orienting_pseudos", "expected": True},
             does_not_raise(),
             id="modify-pseudos-of-order[0]",
         ),
         pytest.param(
-            dict(action="mutate_non_orienting_pseudos", expected=False),
+            {"action": "mutate_non_orienting_pseudos", "expected": False},
             does_not_raise(),
             id="modify-pseudos-of-non-order-reflection",
         ),
         pytest.param(
-            dict(action="assign_UB", expected=False),
+            {"action": "assign_UB", "expected": False},
             does_not_raise(),
             id="direct-UB-assignment-clears-snapshot",
         ),
         pytest.param(
-            dict(action="assign_U", expected=False),
+            {"action": "assign_U", "expected": False},
             does_not_raise(),
             id="direct-U-assignment-clears-snapshot",
         ),
@@ -157,13 +157,7 @@ def test_ub_is_stale_matrix(parms, context):
 
 @pytest.mark.parametrize(
     "parms, context",
-    [
-        pytest.param(
-            dict(),
-            does_not_raise(),
-            id="single-reflection-no-calc_UB",
-        ),
-    ],
+    [pytest.param({}, does_not_raise(), id="single-reflection-no-calc_UB")],
 )
 def test_ub_is_stale_with_fewer_than_two_reflections(parms, context):
     """A sample with <2 reflections cannot have a calc_UB snapshot."""
@@ -173,7 +167,7 @@ def test_ub_is_stale_with_fewer_than_two_reflections(parms, context):
         e4cv.beam.wavelength.put(1.54)
         e4cv.add_reflection(
             (4, 0, 0),
-            dict(omega=-145.451, chi=0, phi=0, tth=69.066),
+            {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.066},
             name="r400",
         )
         # No calc_UB possible.
@@ -185,14 +179,7 @@ def test_ub_is_stale_with_fewer_than_two_reflections(parms, context):
 
 
 @pytest.mark.parametrize(
-    "parms, context",
-    [
-        pytest.param(
-            dict(),
-            does_not_raise(),
-            id="snapshot-set-by-calc_UB",
-        ),
-    ],
+    "parms, context", [pytest.param({}, does_not_raise(), id="snapshot-set-by-calc_UB")]
 )
 def test_snapshot_set_by_calc_UB(parms, context):
     with context:
@@ -223,15 +210,9 @@ def test_snapshot_set_by_calc_UB(parms, context):
 @pytest.mark.parametrize(
     "parms, context",
     [
+        pytest.param({"setter": "U"}, does_not_raise(), id="U-setter-clears-snapshot"),
         pytest.param(
-            dict(setter="U"),
-            does_not_raise(),
-            id="U-setter-clears-snapshot",
-        ),
-        pytest.param(
-            dict(setter="UB"),
-            does_not_raise(),
-            id="UB-setter-clears-snapshot",
+            {"setter": "UB"}, does_not_raise(), id="UB-setter-clears-snapshot"
         ),
     ],
 )
@@ -251,13 +232,7 @@ def test_direct_assignment_clears_snapshot(parms, context):
 
 @pytest.mark.parametrize(
     "parms, context",
-    [
-        pytest.param(
-            dict(),
-            does_not_raise(),
-            id="recalc-refreshes-snapshot",
-        ),
-    ],
+    [pytest.param({}, does_not_raise(), id="recalc-refreshes-snapshot")],
 )
 def test_recalc_UB_refreshes_snapshot(parms, context):
     with context:
@@ -276,13 +251,7 @@ def test_recalc_UB_refreshes_snapshot(parms, context):
 
 @pytest.mark.parametrize(
     "parms, context",
-    [
-        pytest.param(
-            dict(),
-            does_not_raise(),
-            id="digits-change-does-not-cause-staleness",
-        ),
-    ],
+    [pytest.param({}, does_not_raise(), id="digits-change-does-not-cause-staleness")],
 )
 def test_digits_change_does_not_cause_staleness(parms, context):
     """``digits`` is a presentation field; changing it must not flag UB stale."""
@@ -295,13 +264,7 @@ def test_digits_change_does_not_cause_staleness(parms, context):
 
 @pytest.mark.parametrize(
     "parms, context",
-    [
-        pytest.param(
-            dict(),
-            does_not_raise(),
-            id="order-references-missing-name",
-        ),
-    ],
+    [pytest.param({}, does_not_raise(), id="order-references-missing-name")],
 )
 def test_compute_snapshot_with_missing_order_name(parms, context):
     """``_compute_ub_snapshot`` must return ``None`` when ``order`` references

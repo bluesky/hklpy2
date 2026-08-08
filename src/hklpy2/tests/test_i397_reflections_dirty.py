@@ -32,28 +32,27 @@ from ..blocks.reflection import Reflection
 from ..blocks.reflection import ReflectionsDict
 from ..utils import _SolverDirty
 
-
-SAMPLE_DEF = dict(
-    name="sapphire",
-    lattice=dict(a=4.785, c=12.991, gamma=120),
-    reflections=[
-        dict(
-            name="r006",
-            pseudos=(0, 0, 6),
-            reals=dict(omega=20.97, chi=90, phi=0, tth=41.9419),
-        ),
-        dict(
-            name="r100",
-            pseudos=(1, 0, 0),
-            reals=dict(omega=30, chi=0, phi=0, tth=60),
-        ),
-        dict(
-            name="r006b",
-            pseudos=(0, 0, 6),
-            reals=dict(omega=20.3654, chi=89.32, phi=0, tth=41.9394),
-        ),
+SAMPLE_DEF = {
+    "name": "sapphire",
+    "lattice": {"a": 4.785, "c": 12.991, "gamma": 120},
+    "reflections": [
+        {
+            "name": "r006",
+            "pseudos": (0, 0, 6),
+            "reals": {"omega": 20.97, "chi": 90, "phi": 0, "tth": 41.9419},
+        },
+        {
+            "name": "r100",
+            "pseudos": (1, 0, 0),
+            "reals": {"omega": 30, "chi": 0, "phi": 0, "tth": 60},
+        },
+        {
+            "name": "r006b",
+            "pseudos": (0, 0, 6),
+            "reals": {"omega": 20.3654, "chi": 89.32, "phi": 0, "tth": 41.9394},
+        },
     ],
-)
+}
 
 
 def _build_sim_with_reflections(n_reflections: int = 2):
@@ -68,9 +67,7 @@ def _build_sim_with_reflections(n_reflections: int = 2):
     )
     for refl in SAMPLE_DEF["reflections"][:n_reflections]:
         sim.add_reflection(
-            pseudos=refl["pseudos"],
-            reals=refl["reals"],
-            name=refl["name"],
+            pseudos=refl["pseudos"], reals=refl["reals"], name=refl["name"]
         )
     return sim
 
@@ -105,32 +102,26 @@ def _clean(sim) -> None:
     "parms, context",
     [
         pytest.param(
-            dict(action="add_reflection"),
+            {"action": "add_reflection"},
             does_not_raise(),
             id="Core.add_reflection adds to order and flags",
         ),
         pytest.param(
-            dict(action="set_orientation_reflections"),
+            {"action": "set_orientation_reflections"},
             does_not_raise(),
             id="set_orientation_reflections rewrites order and flags",
         ),
         pytest.param(
-            dict(action="setor_alias"),
+            {"action": "setor_alias"},
             does_not_raise(),
             id="setor (alias) rewrites order and flags",
         ),
         pytest.param(
-            dict(action="set_order"),
-            does_not_raise(),
-            id="order setter flags",
+            {"action": "set_order"}, does_not_raise(), id="order setter flags"
         ),
+        pytest.param({"action": "swap"}, does_not_raise(), id="swap flags"),
         pytest.param(
-            dict(action="swap"),
-            does_not_raise(),
-            id="swap flags",
-        ),
-        pytest.param(
-            dict(action="add_via_dict_then_promote"),
+            {"action": "add_via_dict_then_promote"},
             does_not_raise(),
             id="add via add() always flags (order is updated)",
         ),
@@ -234,9 +225,7 @@ def _setup_for_action(action):
     sim = _build_sim_with_reflections(n_reflections=2)
     third = SAMPLE_DEF["reflections"][2]
     sim.add_reflection(
-        pseudos=third["pseudos"],
-        reals=third["reals"],
-        name=third["name"],
+        pseudos=third["pseudos"], reals=third["reals"], name=third["name"]
     )
     sim.sample.reflections.order = ["r006", "r100"]
     assert "r006b" in sim.sample.reflections
@@ -249,103 +238,103 @@ def _setup_for_action(action):
     [
         # Order-affecting variants: should flag.
         pytest.param(
-            dict(action="setitem_replace_in_order", flags=True),
+            {"action": "setitem_replace_in_order", "flags": True},
             does_not_raise(),
             id="__setitem__ replacing an orienting reflection flags",
         ),
         pytest.param(
-            dict(action="del_in_order", flags=True),
+            {"action": "del_in_order", "flags": True},
             does_not_raise(),
             id="__delitem__ removing an orienting reflection flags",
         ),
         pytest.param(
-            dict(action="pop_in_order", flags=True),
+            {"action": "pop_in_order", "flags": True},
             does_not_raise(),
             id="pop removing an orienting reflection flags",
         ),
         pytest.param(
-            dict(action="popitem_in_order", flags=True),
+            {"action": "popitem_in_order", "flags": True},
             does_not_raise(),
             id="popitem removing the only orienting reflection flags",
         ),
         pytest.param(
-            dict(action="clear_with_order", flags=True),
+            {"action": "clear_with_order", "flags": True},
             does_not_raise(),
             id="clear with non-empty order flags",
         ),
         pytest.param(
-            dict(action="update_overwrites_in_order", flags=True),
+            {"action": "update_overwrites_in_order", "flags": True},
             does_not_raise(),
             id="update overwriting an orienting reflection flags",
         ),
         pytest.param(
-            dict(action="remove_reflection_in_order", flags=True),
+            {"action": "remove_reflection_in_order", "flags": True},
             does_not_raise(),
             id="Sample.remove_reflection on orienting reflection flags",
         ),
         # Non-order-affecting variants: must NOT flag.
         pytest.param(
-            dict(action="setitem_new_key", flags=False),
+            {"action": "setitem_new_key", "flags": False},
             does_not_raise(),
             id="__setitem__ adding a new (un-ordered) key does not flag",
         ),
         pytest.param(
-            dict(action="setitem_replace_not_in_order", flags=False),
+            {"action": "setitem_replace_not_in_order", "flags": False},
             does_not_raise(),
             id="__setitem__ replacing a non-orienting key does not flag",
         ),
         pytest.param(
-            dict(action="del_not_in_order", flags=False),
+            {"action": "del_not_in_order", "flags": False},
             does_not_raise(),
             id="__delitem__ removing a non-orienting key does not flag",
         ),
         pytest.param(
-            dict(action="pop_not_in_order", flags=False),
+            {"action": "pop_not_in_order", "flags": False},
             does_not_raise(),
             id="pop removing a non-orienting key does not flag",
         ),
         pytest.param(
-            dict(action="pop_missing_with_default", flags=False),
+            {"action": "pop_missing_with_default", "flags": False},
             does_not_raise(),
             id="pop on missing key with default does not flag",
         ),
         pytest.param(
-            dict(action="clear_empty_order", flags=False),
+            {"action": "clear_empty_order", "flags": False},
             does_not_raise(),
             id="clear with empty order does not flag",
         ),
         pytest.param(
-            dict(action="update_new_keys_only", flags=False),
+            {"action": "update_new_keys_only", "flags": False},
             does_not_raise(),
             id="update introducing only new (un-ordered) keys does not flag",
         ),
         pytest.param(
-            dict(action="update_empty", flags=False),
+            {"action": "update_empty", "flags": False},
             does_not_raise(),
             id="update with no incoming keys does not flag",
         ),
         pytest.param(
-            dict(action="update_iterable_of_pairs", flags=False),
+            {"action": "update_iterable_of_pairs", "flags": False},
             does_not_raise(),
             id="update from iterable of (key, value) pairs does not flag",
         ),
         pytest.param(
-            dict(action="update_kwargs_only", flags=False),
+            {"action": "update_kwargs_only", "flags": False},
             does_not_raise(),
             id="update with kwargs only (no positional arg) does not flag",
         ),
         pytest.param(
-            dict(action="setdefault_new", flags=False),
+            {"action": "setdefault_new", "flags": False},
             does_not_raise(),
             id="setdefault inserting a new key does not flag",
         ),
         pytest.param(
-            dict(action="setdefault_existing", flags=False),
+            {"action": "setdefault_existing", "flags": False},
             does_not_raise(),
             id="setdefault on existing key does not flag",
         ),
         pytest.param(
-            dict(action="remove_reflection_not_in_order", flags=False),
+            {"action": "remove_reflection_not_in_order", "flags": False},
             does_not_raise(),
             id="Sample.remove_reflection on non-orienting reflection does not flag",
         ),
@@ -408,10 +397,7 @@ def test_dict_api_mutations_flag_only_when_order_affected(parms, context):
         elif action == "update_kwargs_only":
             refls.update(brand_new=_new_like(refls["r006"], "brand_new"))
         elif action == "setdefault_new":
-            refls.setdefault(
-                "default_new",
-                _new_like(refls["r006"], "default_new"),
-            )
+            refls.setdefault("default_new", _new_like(refls["r006"], "default_new"))
         elif action == "setdefault_existing":
             refls.setdefault("r006", refls["r006"])
         elif action == "remove_reflection_not_in_order":
@@ -435,12 +421,12 @@ def test_dict_api_mutations_flag_only_when_order_affected(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(action="add_reflection"),
+            {"action": "add_reflection"},
             does_not_raise(),
             id="solver receives reflection added via Core.add_reflection",
         ),
         pytest.param(
-            dict(action="set_orientation_reflections"),
+            {"action": "set_orientation_reflections"},
             does_not_raise(),
             id="solver receives reordered reflections",
         ),
@@ -488,10 +474,8 @@ def test_solver_receives_pushed_reflections(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(),
-            does_not_raise(),
-            id="standalone ReflectionsDict has no _core (no-op)",
-        ),
+            {}, does_not_raise(), id="standalone ReflectionsDict has no _core (no-op)"
+        )
     ],
 )
 def test_standalone_reflectionsdict_no_core(parms, context):
@@ -511,15 +495,14 @@ def test_standalone_reflectionsdict_no_core(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(method="set_orientation_reflections"),
+            {"method": "set_orientation_reflections"},
             pytest.raises(KeyError, match=re.escape("'unknown'")),
             id="set_orientation_reflections raises on unknown name",
         ),
         pytest.param(
-            dict(method="remove_reflection"),
+            {"method": "remove_reflection"},
             pytest.raises(
-                KeyError,
-                match=re.escape("Reflection 'unknown' is not found."),
+                KeyError, match=re.escape("Reflection 'unknown' is not found.")
             ),
             id="remove_reflection raises on unknown name",
         ),

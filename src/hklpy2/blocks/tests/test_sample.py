@@ -7,10 +7,10 @@ import pytest
 
 from ...diffract import creator
 from ...exceptions import ReflectionError
+from ...tests.models import add_oriented_vibranium_to_e4cv
 from ...utils import IDENTITY_MATRIX_3X3
 from ...utils import load_yaml
 from ...utils import unique_name
-from ...tests.models import add_oriented_vibranium_to_e4cv
 from ..lattice import Lattice
 from ..reflection import ReflectionsDict
 from ..sample import Sample
@@ -21,7 +21,7 @@ from ..sample import Sample
     [
         pytest.param(
             pytest.raises(TypeError, match=re.escape("expected Core")), id="no-core"
-        ),
+        )
     ],
 )
 def test_sample_constructor_no_core(context):
@@ -58,7 +58,14 @@ def test_sample_constructor_no_core(context):
             id="tuple-not-lattice",
         ),
         pytest.param(
-            dict(a=1, b=2, c=3, alpha=4, beta=5, gamma=6),  # <-- dict is acceptable
+            {
+                "a": 1,
+                "b": 2,
+                "c": 3,
+                "alpha": 4,
+                "beta": 5,
+                "gamma": 6,
+            },  # <-- dict is acceptable
             None,
             does_not_raise(),
             None,
@@ -119,7 +126,7 @@ def test_repr():
         pytest.param(
             pytest.raises(TypeError, match=re.escape("Must supply ReflectionsDict")),
             id="wrong-type",
-        ),
+        )
     ],
 )
 def test_reflections_fail(context):

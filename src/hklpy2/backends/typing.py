@@ -25,18 +25,11 @@ Structures that belong above the backends layer live in
 
 from dataclasses import dataclass
 from dataclasses import field
-from typing import Dict
-from typing import List
 from typing import TypedDict
 
 from deprecated.sphinx import versionadded
 
-__all__ = [
-    "GeometryDescriptor",
-    "ReflectionDict",
-    "SampleDict",
-    "SolverMetadataDict",
-]
+__all__ = ["GeometryDescriptor", "ReflectionDict", "SampleDict", "SolverMetadataDict"]
 
 
 @versionadded(version="0.5.0", reason="Dynamic geometry registration support.")
@@ -97,12 +90,12 @@ class GeometryDescriptor:
     """
 
     name: str
-    pseudo_axis_names: List[str]
-    real_axis_names: List[str]
-    modes: List[str]
+    pseudo_axis_names: list[str]
+    real_axis_names: list[str]
+    modes: list[str]
     default_mode: str = ""
     description: str = ""
-    extra_axis_names: Dict[str, List[str]] = field(default_factory=dict)
+    extra_axis_names: dict[str, list[str]] = field(default_factory=dict)
     """Per-mode extra parameter names: ``{mode_name: [param_names, ...]}``.
 
     Used by solvers that expose additional named parameters (e.g. azimuthal
@@ -130,8 +123,8 @@ class ReflectionDict(TypedDict):
     """
 
     name: str
-    pseudos: Dict[str, float]
-    reals: Dict[str, float]
+    pseudos: dict[str, float]
+    reals: dict[str, float]
     wavelength: float
 
 
@@ -154,9 +147,9 @@ class SampleDict(TypedDict):
     """
 
     name: str
-    lattice: Dict[str, float]
-    reflections: Dict[str, "ReflectionDict"]
-    order: List[str]
+    lattice: dict[str, float]
+    reflections: dict[str, "ReflectionDict"]
+    order: list[str]
 
 
 @versionadded(version="0.4.0", reason="Typed solver metadata dictionary.")
@@ -192,5 +185,5 @@ class SolverMetadataDict(TypedDict):
     name: str
     description: str
     geometry: str
-    real_axes: List[str]
+    real_axes: list[str]
     version: str

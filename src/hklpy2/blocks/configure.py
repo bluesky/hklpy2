@@ -12,8 +12,8 @@ Export and restore sample UB matrix and other diffractometer configuration.
 
 import logging
 import warnings
+from collections.abc import Mapping
 from typing import Any
-from typing import Mapping
 
 from deprecated.sphinx import versionadded
 from deprecated.sphinx import versionchanged

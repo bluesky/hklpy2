@@ -7,7 +7,7 @@ import numpy
 import pyRestTable
 
 gi.require_version("Hkl", "5.0")
-from gi.repository import Hkl  # noqa: E402
+from gi.repository import Hkl
 
 DEFAULT_DIGITS = 9
 UNITS = Hkl.UnitEnum.USER
@@ -74,10 +74,7 @@ class Diffractometer:
         return [round(value, ndigits=digits) or 0.0 for value in array]
 
     def forward(self, *pseudos: list) -> list:
-        self._solutions = self.engine.pseudo_axis_values_set(
-            pseudos,
-            UNITS,
-        )
+        self._solutions = self.engine.pseudo_axis_values_set(pseudos, UNITS)
         return self._solutions
 
     def inverse(self, *reals: list) -> dict:
@@ -110,23 +107,25 @@ class Diffractometer:
 
     @property
     def info(self) -> dict:
-        result = dict(
-            Hkl=Hkl.VERSION,
+        result = {
+            "Hkl": Hkl.VERSION,
             # numpy=numpy.__version__,
-            geometry=self.geometry.name_get(),
-            engine=self.engine.name_get(),
-            mode=self.mode,
-            wavelength=self.wavelength,
-            sample=self.sample_name,
-            lattice=self.lattice,
-        )
+            "geometry": self.geometry.name_get(),
+            "engine": self.engine.name_get(),
+            "mode": self.mode,
+            "wavelength": self.wavelength,
+            "sample": self.sample_name,
+            "lattice": self.lattice,
+        }
         return result
 
     @property
     def lattice(self) -> dict:
         lattice = self.sample.lattice_get()
         lattice = lattice.get(UNITS)
-        lattice = {k: getattr(lattice, k) for k in "a b c alpha beta gamma".split()}
+        lattice = {
+            k: getattr(lattice, k) for k in ["a", "b", "c", "alpha", "beta", "gamma"]
+        }
         return lattice
 
     @lattice.setter
@@ -155,10 +154,7 @@ class Diffractometer:
 
     @pseudos.setter
     def pseudos(self, values: list) -> None:
-        self.engine.pseudo_axis_values_set(
-            values,
-            UNITS,
-        )
+        self.engine.pseudo_axis_values_set(values, UNITS)
 
     @property
     def sample_name(self) -> str:
@@ -199,7 +195,7 @@ class Diffractometer:
             keys, values = [], []
             for k, v in axes.items():
                 keys.append(f"{k:8s}")
-                values.append(f"{str(round(v, ndigits=3) or 0.0):8s}")
+                values.append(f"{round(v, ndigits=3) or 0.0!s:8s}")
             print(" ".join(keys))
             print(" ".join(values))
             print()
@@ -218,18 +214,18 @@ def psi_scan(start, finish, np):
     e4cv.mode = "psi_constant"
 
     e4cv.angles = (30, 0, 0, 60)
-    e4cv.extras = dict(h2=1, k2=0, l2=0, psi=0)
+    e4cv.extras = {"h2": 1, "k2": 0, "l2": 0, "psi": 0}
     e4cv.pseudos = (1, 0, 1)
 
     print(e4cv.info)
     print(f"{e4cv.UB=!r}")
-    e4cv.wh
+    e4cv.wh()
 
     print()
     print(f"Scan psi from {start} to {finish} with {np} points. {e4cv.mode=!r}")
     table = Table()
     for psi in numpy.linspace(start, finish, num=np):
-        e4cv.extras = dict(psi=round(psi, ndigits=1))  # only update psi
+        e4cv.extras = {"psi": round(psi, ndigits=1)}  # only update psi
         e4cv.forward(1, 0, 1)
         if len(e4cv.solutions) > 0:
             results = e4cv.pseudos

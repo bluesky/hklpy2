@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 DOCS_DIR = pathlib.Path(__file__).parent / "source"
 GEO_DOC = DOCS_DIR / "diffractometers.rst"
-H1, H2, H3, H4 = "= - ^ ~".split()
+H1, H2, H3, H4 = ["=", "-", "^", "~"]
 PAGE_TITLE = "Diffractometers"
 
 PREFACE = """
@@ -56,7 +56,7 @@ def solver_versions() -> dict[str, str]:
         Solver = hklpy2.get_solver(sname)
         if not Solver.geometries():
             continue
-        gname = sorted(Solver.geometries())[0]
+        gname = min(Solver.geometries())
         versions[sname] = Solver(gname).version
     return versions
 
@@ -218,13 +218,7 @@ def linter(text: str) -> str:
 
     * trailing-whitespace
     """
-    text = "\n".join(
-        [
-            line.rstrip()
-            #
-            for line in text.strip().splitlines()
-        ]
-    )
+    text = "\n".join([line.rstrip() for line in text.strip().splitlines()])
     return f"{text}\n"  # always end with blank line
 
 

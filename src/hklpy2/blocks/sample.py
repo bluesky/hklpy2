@@ -10,19 +10,16 @@ A Crystalline Sample.
 
 import logging
 import math
-from typing import Mapping
-from typing import Optional
-from typing import Tuple
-from typing import Union
+from collections.abc import Mapping
 
 import numpy as np
 from deprecated.sphinx import versionadded
 from deprecated.sphinx import versionchanged
 from numpy.linalg import norm
 
+from ..typing import Matrix3x3
 from ..utils import _SolverDirty
 from ..utils import unique_name
-from ..typing import Matrix3x3
 from .lattice import Lattice
 from .lattice import LatticeDictType
 from .reflection import Reflection
@@ -31,7 +28,7 @@ from .reflection import ReflectionsDict
 # Reflection fields that, when changed for an orienting reflection,
 # invalidate the previously computed UB.  ``digits`` is intentionally
 # omitted (presentation only); ``name`` is implicit in ``order[:2]``.
-_UB_REFLECTION_FIELDS: Tuple[str, ...] = (
+_UB_REFLECTION_FIELDS: tuple[str, ...] = (
     "geometry",
     "pseudos",
     "reals",
@@ -44,14 +41,13 @@ logger = logging.getLogger(__name__)
 
 SampleDictType = Mapping[
     str,
-    Union[
-        int,
-        list[Reflection],
-        Matrix3x3,
-        ReflectionsDict,
-        str,
-        Union[Lattice, LatticeDictType],
-    ],
+    int
+    | list[Reflection]
+    | Matrix3x3
+    | ReflectionsDict
+    | str
+    | Lattice
+    | LatticeDictType,
 ]
 
 
@@ -85,14 +81,9 @@ class Sample:
         ~UB_is_stale
     """
 
-    def __init__(
-        self,
-        core: object,
-        name: str,
-        lattice: Lattice,
-    ) -> None:
-        from ..utils import IDENTITY_MATRIX_3X3
+    def __init__(self, core: object, name: str, lattice: Lattice) -> None:
         from ..ops import Core
+        from ..utils import IDENTITY_MATRIX_3X3
 
         if not isinstance(core, Core):
             raise TypeError(f"Unexpected type {core=!r}, expected Core")
@@ -103,7 +94,7 @@ class Sample:
         # stored", which is the case until ``calc_UB`` runs and any time
         # the user takes ownership of U / UB by direct assignment.  See
         # :issue:`391`.
-        self._ub_snapshot: Optional[tuple] = None
+        self._ub_snapshot: tuple | None = None
         self.lattice = lattice
         self.U = IDENTITY_MATRIX_3X3
         # Consider: UB = self.U @ self.lattice.B
@@ -194,7 +185,7 @@ class Sample:
         return self._lattice
 
     @lattice.setter
-    def lattice(self, value: Union[LatticeDictType, Lattice]):
+    def lattice(self, value: LatticeDictType | Lattice):
         if isinstance(value, dict):
             value = Lattice(**value)
         if not isinstance(value, Lattice):
@@ -302,7 +293,7 @@ class Sample:
         # until the next ``calc_UB`` (:issue:`391`).
         self._ub_snapshot = None
 
-    def _compute_ub_snapshot(self) -> Optional[tuple]:
+    def _compute_ub_snapshot(self) -> tuple | None:
         """
         Return a comparable snapshot of the current orientation-reflection state.
 

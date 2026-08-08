@@ -41,7 +41,7 @@ def test_i240_as_user():
         name=I250_CONFIG["name"],
         geometry=I250_CONFIG["solver"]["geometry"],
         solver=I250_CONFIG["solver"]["name"],
-        solver_kwargs=dict(engine=I250_CONFIG["solver"]["engine"]),
+        solver_kwargs={"engine": I250_CONFIG["solver"]["engine"]},
     )
     polar.beam.wavelength.put(I250_CONFIG["beam"]["wavelength"])
     polar.add_sample(SAMPLE_NAME, SAMPLE_LATTICE_ORIGINAL)
@@ -65,17 +65,15 @@ def test_i240_as_user():
     # There are multiple ways to change the lattice parameter:
     # - set a new lattice (as used in issue 240)
     # - set the parameter directly
-    polar.sample.lattice = dict(a=SAMPLE_LATTICE_NEW)  # new lattice
+    polar.sample.lattice = {"a": SAMPLE_LATTICE_NEW}  # new lattice
     assert np.isclose(polar.sample.lattice.a, SAMPLE_LATTICE_NEW, atol=TOL)
     assert polar.sample.lattice.crystal_system == "cubic"
 
     # compute UB with this new lattice
     ub_new = polar.core.calc_UB(*list(polar.sample.reflections)[:2])
-    assert np.isclose(
-        polar.sample.lattice.a,
-        SAMPLE_LATTICE_NEW,
-        atol=TOL,
-    ), "lattice was changed when calculating UB!"
+    assert np.isclose(polar.sample.lattice.a, SAMPLE_LATTICE_NEW, atol=TOL), (
+        "lattice was changed when calculating UB!"
+    )
     assert np.isclose(
         np.linalg.norm(ub_new),  # ||UB||
         2 * np.pi * np.sqrt(3) / SAMPLE_LATTICE_NEW,  # scales with lattice parameter
@@ -105,32 +103,32 @@ def test_i240_hkl_soleil():
     solver.wavelength = WAVELENGTH
 
     # Create sample with lattice
-    solver.sample = dict(
-        name=SAMPLE_NAME,
-        lattice=dict(
-            a=SAMPLE_LATTICE_ORIGINAL,
-            b=SAMPLE_LATTICE_ORIGINAL,
-            c=SAMPLE_LATTICE_ORIGINAL,
-            alpha=90,
-            beta=90,
-            gamma=90,
-        ),
-        order=[],
-    )
+    solver.sample = {
+        "name": SAMPLE_NAME,
+        "lattice": {
+            "a": SAMPLE_LATTICE_ORIGINAL,
+            "b": SAMPLE_LATTICE_ORIGINAL,
+            "c": SAMPLE_LATTICE_ORIGINAL,
+            "alpha": 90,
+            "beta": 90,
+            "gamma": 90,
+        },
+        "order": [],
+    }
 
     # Define reflections
-    r1 = dict(
-        name=_r1,
-        pseudos=SAMPLE["reflections"][_r1]["pseudos"],
-        reals=SAMPLE["reflections"][_r1]["reals"],
-        wavelength=WAVELENGTH,
-    )
-    r2 = dict(
-        name=_r2,
-        pseudos=SAMPLE["reflections"][_r2]["pseudos"],
-        reals=SAMPLE["reflections"][_r2]["reals"],
-        wavelength=WAVELENGTH,
-    )
+    r1 = {
+        "name": _r1,
+        "pseudos": SAMPLE["reflections"][_r1]["pseudos"],
+        "reals": SAMPLE["reflections"][_r1]["reals"],
+        "wavelength": WAVELENGTH,
+    }
+    r2 = {
+        "name": _r2,
+        "pseudos": SAMPLE["reflections"][_r2]["pseudos"],
+        "reals": SAMPLE["reflections"][_r2]["reals"],
+        "wavelength": WAVELENGTH,
+    }
 
     # Add reflections to solver
     solver.addReflection(r1)
@@ -145,21 +143,19 @@ def test_i240_hkl_soleil():
     )
 
     # Update lattice parameter
-    solver.lattice = dict(
-        a=SAMPLE_LATTICE_NEW,
-        b=SAMPLE_LATTICE_NEW,
-        c=SAMPLE_LATTICE_NEW,
-        alpha=90,
-        beta=90,
-        gamma=90,
-    )
+    solver.lattice = {
+        "a": SAMPLE_LATTICE_NEW,
+        "b": SAMPLE_LATTICE_NEW,
+        "c": SAMPLE_LATTICE_NEW,
+        "alpha": 90,
+        "beta": 90,
+        "gamma": 90,
+    }
 
     # Calculate UB matrix with new lattice
     ub_new = solver.calculate_UB(r1, r2)
     assert np.isclose(
-        np.linalg.norm(ub_new),
-        2 * np.pi * np.sqrt(3) / SAMPLE_LATTICE_NEW,
-        atol=0.01,
+        np.linalg.norm(ub_new), 2 * np.pi * np.sqrt(3) / SAMPLE_LATTICE_NEW, atol=0.01
     )
 
 
@@ -204,17 +200,11 @@ def test_i240_libhkl():
     assert engine.name_get() == ENGINE
 
     geometry.wavelength_set(WAVELENGTH, LIBHKL_USER_UNITS)
-    assert np.isclose(
-        geometry.wavelength_get(LIBHKL_USER_UNITS),
-        WAVELENGTH,
-        atol=TOL,
-    )
+    assert np.isclose(geometry.wavelength_get(LIBHKL_USER_UNITS), WAVELENGTH, atol=TOL)
 
     geometry.axis_values_set(REALS_REFERENCE, LIBHKL_USER_UNITS)
     assert np.allclose(
-        geometry.axis_values_get(LIBHKL_USER_UNITS),
-        REALS_REFERENCE,
-        atol=0.001,
+        geometry.axis_values_get(LIBHKL_USER_UNITS), REALS_REFERENCE, atol=0.001
     )
 
     sample_name = f"{SAMPLE_NAME}:{str(uuid.uuid4())[:7]}"
@@ -225,28 +215,18 @@ def test_i240_libhkl():
     a, alpha = SAMPLE_LATTICE_ORIGINAL, np.radians(90)
     sample.lattice_set(libhkl.Lattice.new(a, a, a, alpha, alpha, alpha))
     assert np.allclose(
-        sample.lattice_get().get(LIBHKL_USER_UNITS),
-        [a, a, a, 90, 90, 90],
-        atol=TOL,
+        sample.lattice_get().get(LIBHKL_USER_UNITS), [a, a, a, 90, 90, 90], atol=TOL
     )
     assert len(sample.reflections_get()) == 0
 
     # . add reflections
     geometry.axis_values_set(R1[1], LIBHKL_USER_UNITS)
-    r1 = sample.add_reflection(
-        geometry,
-        detector,
-        *list(R1[0]),
-    )
+    r1 = sample.add_reflection(geometry, detector, *list(R1[0]))
     assert r1 is not None
     assert len(sample.reflections_get()) == 1
 
     geometry.axis_values_set(R2[1], LIBHKL_USER_UNITS)
-    r2 = sample.add_reflection(
-        geometry,
-        detector,
-        *list(R2[0]),
-    )
+    r2 = sample.add_reflection(geometry, detector, *list(R2[0]))
     assert r2 is not None
     assert len(sample.reflections_get()) == 2
 
@@ -254,8 +234,7 @@ def test_i240_libhkl():
     sample.compute_UB_busing_levy(r1, r2)
     matrix = sample.UB_get()
     UB_reference = np.array(
-        [[matrix.get(i, j) for j in range(3)] for i in range(3)],
-        dtype=float,
+        [[matrix.get(i, j) for j in range(3)] for i in range(3)], dtype=float
     )
     # Testing against supplied UB is not part of issue 240
     # assert np.allclose(np.linalg.norm(UB_reference), UB_R1_R2_NORM, atol=TOL)
@@ -268,9 +247,7 @@ def test_i240_libhkl():
 
     # Check the lattice again.  Should not change.
     assert np.allclose(
-        sample.lattice_get().get(LIBHKL_USER_UNITS),
-        [a, a, a, 90, 90, 90],
-        atol=TOL,
+        sample.lattice_get().get(LIBHKL_USER_UNITS), [a, a, a, 90, 90, 90], atol=TOL
     )
 
     # Issue 240 reported problems computing UB with stale lattice.
@@ -301,8 +278,7 @@ def test_i240_libhkl():
     )
 
     UB_new = np.array(
-        [[matrix.get(i, j) for j in range(3)] for i in range(3)],
-        dtype=float,
+        [[matrix.get(i, j) for j in range(3)] for i in range(3)], dtype=float
     )
     assert np.isclose(
         np.linalg.norm(UB_new),  # ||UB||
@@ -325,14 +301,10 @@ def test_i240_from_config():
     # Compute UB from the first two reflections
     ub0 = polar.core.calc_UB(*list(polar.sample.reflections)[:2])
     norm0 = np.linalg.norm(ub0)
-    assert np.isclose(
-        norm0,
-        2 * np.pi * np.sqrt(3) / polar.sample.lattice.a,
-        atol=TOL,
-    )
+    assert np.isclose(norm0, 2 * np.pi * np.sqrt(3) / polar.sample.lattice.a, atol=TOL)
 
     # change the lattice constant
-    polar.sample.lattice = dict(a=5)
+    polar.sample.lattice = {"a": 5}
     assert np.isclose(polar.sample.lattice.a, 5, atol=TOL)
     assert polar.sample.name == "test"  # unchanged
     assert polar.sample.lattice.crystal_system == "cubic"  # unchanged
@@ -340,11 +312,7 @@ def test_i240_from_config():
     # Again, Compute UB from the first two reflections
     ub1 = polar.core.calc_UB(*list(polar.sample.reflections)[:2])
     norm1 = np.linalg.norm(ub1)
-    assert np.isclose(
-        norm1,
-        2 * np.pi * np.sqrt(3) / polar.sample.lattice.a,
-        atol=TOL,
-    )
+    assert np.isclose(norm1, 2 * np.pi * np.sqrt(3) / polar.sample.lattice.a, atol=TOL)
 
     # Are they different?
     assert not np.isclose(ub0, ub1, atol=TOL).all()

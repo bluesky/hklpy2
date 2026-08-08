@@ -32,38 +32,38 @@ MIN_OPS_PER_SEC = TARGET_OPS_PER_SEC * 0.9
     "parms, context",
     [
         pytest.param(
-            dict(
-                config="e4cv_orient.yml",
-                pseudos=dict(h=1, k=0, l=0),
-                mode="bissector",
-            ),
+            {
+                "config": "e4cv_orient.yml",
+                "pseudos": {"h": 1, "k": 0, "l": 0},
+                "mode": "bissector",
+            },
             does_not_raise(),
             id="E4CV vibranium forward (1,0,0) bissector meets 2000 ops/sec target",
         ),
         pytest.param(
-            dict(
-                config="e4cv_orient.yml",
-                pseudos=dict(h=1, k=0, l=0),
-                mode="constant_phi",
-            ),
+            {
+                "config": "e4cv_orient.yml",
+                "pseudos": {"h": 1, "k": 0, "l": 0},
+                "mode": "constant_phi",
+            },
             does_not_raise(),
             id="E4CV vibranium forward (1,0,0) constant_phi meets 2000 ops/sec target",
         ),
         pytest.param(
-            dict(
-                config="e4cv-silicon-example.yml",
-                pseudos=dict(h=1, k=0, l=0),
-                mode="bissector",
-            ),
+            {
+                "config": "e4cv-silicon-example.yml",
+                "pseudos": {"h": 1, "k": 0, "l": 0},
+                "mode": "bissector",
+            },
             does_not_raise(),
             id="E4CV silicon forward (1,0,0) bissector meets 2000 ops/sec target",
         ),
         pytest.param(
-            dict(
-                config="configuration_i240.yml",
-                pseudos=dict(h=1, k=0, l=0),
-                mode="4-circles constant phi horizontal",
-            ),
+            {
+                "config": "configuration_i240.yml",
+                "pseudos": {"h": 1, "k": 0, "l": 0},
+                "mode": "4-circles constant phi horizontal",
+            },
             does_not_raise(),
             id="APS POLAR forward (1,0,0) 4-circles const-phi meets 2000 ops/sec target",
         ),
@@ -99,38 +99,45 @@ def test_forward_throughput(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                config="e4cv_orient.yml",
-                reals=dict(omega=-145, chi=0, phi=0, tth=69),
-                mode="bissector",
-            ),
+            {
+                "config": "e4cv_orient.yml",
+                "reals": {"omega": -145, "chi": 0, "phi": 0, "tth": 69},
+                "mode": "bissector",
+            },
             does_not_raise(),
             id="E4CV vibranium inverse (-145,0,0,69) bissector meets 2000 ops/sec target",
         ),
         pytest.param(
-            dict(
-                config="e4cv_orient.yml",
-                reals=dict(omega=-145, chi=0, phi=0, tth=69),
-                mode="constant_phi",
-            ),
+            {
+                "config": "e4cv_orient.yml",
+                "reals": {"omega": -145, "chi": 0, "phi": 0, "tth": 69},
+                "mode": "constant_phi",
+            },
             does_not_raise(),
             id="E4CV vibranium inverse (-145,0,0,69) constant_phi meets 2000 ops/sec target",
         ),
         pytest.param(
-            dict(
-                config="e4cv-silicon-example.yml",
-                reals=dict(omega=-8, chi=0, phi=0, tth=16),
-                mode="bissector",
-            ),
+            {
+                "config": "e4cv-silicon-example.yml",
+                "reals": {"omega": -8, "chi": 0, "phi": 0, "tth": 16},
+                "mode": "bissector",
+            },
             does_not_raise(),
             id="E4CV silicon inverse (-8,0,0,16) bissector meets 2000 ops/sec target",
         ),
         pytest.param(
-            dict(
-                config="configuration_i240.yml",
-                reals=dict(tau=0, mu=-114, chi=0, phi=0, gamma=-28, delta=0),
-                mode="4-circles constant phi horizontal",
-            ),
+            {
+                "config": "configuration_i240.yml",
+                "reals": {
+                    "tau": 0,
+                    "mu": -114,
+                    "chi": 0,
+                    "phi": 0,
+                    "gamma": -28,
+                    "delta": 0,
+                },
+                "mode": "4-circles constant phi horizontal",
+            },
             does_not_raise(),
             id="APS POLAR inverse (0,-114,0,0,-28,0) 4-circles const-phi meets 2000 ops/sec target",
         ),

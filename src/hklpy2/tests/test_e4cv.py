@@ -20,21 +20,18 @@ sim4c = creator(name="sim4c")
 @pytest.mark.parametrize(
     "start",
     [
-        pytest.param(dict(h=1.2, k=1.2, l=0.001), id="hkl-1.2-1.2-0.001"),
-        pytest.param(dict(h=1, k=0, l=0), id="hkl-1-0-0"),
-        pytest.param(dict(h=1, k=1, l=1), id="hkl-1-1-1"),
+        pytest.param({"h": 1.2, "k": 1.2, "l": 0.001}, id="hkl-1.2-1.2-0.001"),
+        pytest.param({"h": 1, "k": 0, "l": 0}, id="hkl-1-0-0"),
+        pytest.param({"h": 1, "k": 1, "l": 1}, id="hkl-1-1-1"),
     ],
 )
 @pytest.mark.parametrize("h", np.arange(0.9, 1.1, 0.1))
 @pytest.mark.parametrize("k", np.arange(0.0, 1.2, 0.6))
 @pytest.mark.parametrize("l", np.arange(0, 1, 0.5))
 @pytest.mark.parametrize(
-    "digits, context",
-    [
-        pytest.param(3, does_not_raise(), id="3-digits"),
-    ],
+    "digits, context", [pytest.param(3, does_not_raise(), id="3-digits")]
 )
-def test_pseudos_move(start, h, k, l, digits, context):  # noqa: E741
+def test_pseudos_move(start, h, k, l, digits, context):
     with context:
         assert len(start) == 3
 
@@ -43,29 +40,22 @@ def test_pseudos_move(start, h, k, l, digits, context):  # noqa: E741
         ppos = e4cv.position._asdict()
         assert isinstance(ppos, dict)
 
-        for axis in "h k l".split():
-            (
-                assert_almost_equal(
-                    ppos[axis],
-                    start[axis],
-                    decimal=digits,
-                ),
-                f"{ppos=}",
-            )
+        for axis in ["h", "k", "l"]:
+            (assert_almost_equal(ppos[axis], start[axis], decimal=digits), f"{ppos=}")
 
 
 @pytest.mark.parametrize(
     "ppos, rpos, context",
     [
         pytest.param(
-            dict(h=0, k=0, l=0.3473),
-            dict(omega=10, chi=0, phi=0, tth=20),
+            {"h": 0, "k": 0, "l": 0.3473},
+            {"omega": 10, "chi": 0, "phi": 0, "tth": 20},
             does_not_raise(),
             id="hkl-0-0-0.3473",
         ),
         pytest.param(
-            dict(h=-0.6260, k=0.3808, l=1.5694),
-            dict(omega=10, chi=20, phi=30, tth=120),
+            {"h": -0.6260, "k": 0.3808, "l": 1.5694},
+            {"omega": 10, "chi": 20, "phi": 30, "tth": 120},
             does_not_raise(),
             id="hkl-neg0.626-0.381-1.569",
         ),
@@ -76,11 +66,7 @@ def test_inverse(ppos, rpos, context):
         e4cv = creator(name="e4cv")
         pseudos = e4cv.inverse(rpos)._asdict()
         assert isinstance(pseudos, dict)
-        assert np.allclose(
-            list(pseudos.values()),
-            list(ppos.values()),
-            atol=0.001,
-        )
+        assert np.allclose(list(pseudos.values()), list(ppos.values()), atol=0.001)
         for axis, value in ppos.items():
             assert_almost_equal(pseudos[axis], value, decimal=3), f"{axis=}"
         # assert pseudos == ppos

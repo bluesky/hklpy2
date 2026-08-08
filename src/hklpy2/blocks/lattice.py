@@ -14,9 +14,7 @@ Lattice parameters for a single crystal.
 import enum
 import logging
 import math
-from typing import Mapping
-from typing import Optional
-from typing import Union
+from collections.abc import Mapping
 
 import numpy as np
 from numpy import typing as npt
@@ -24,6 +22,7 @@ from numpy import typing as npt
 from ..exceptions import LatticeError
 from ..utils import INTERNAL_ANGLE_UNITS
 from ..utils import INTERNAL_LENGTH_UNITS
+from ..utils import PINT_ERRORS
 from ..utils import compare_float_dicts
 from ..utils import convert_units
 from ..utils import validate_and_canonical_unit
@@ -45,19 +44,19 @@ SI_LATTICE_PARAMETER_UNCERTAINTY: float = 0.000000089
 2018 CODATA reported uncertainty of :data:`SI_LATTICE_PARAMETER`.
 """
 
-LatticeDictType = Mapping[str, Union[float, int, str]]
+LatticeDictType = Mapping[str, float | int | str]
 
 CrystalSystem = enum.Enum(  # in order from lowest symmetry
     "CrystalSystem",
-    """
-        triclinic
-        monoclinic
-        orthorhombic
-        tetragonal
-        rhombohedral
-        hexagonal
-        cubic
-    """.split(),
+    [
+        "triclinic",
+        "monoclinic",
+        "orthorhombic",
+        "tetragonal",
+        "rhombohedral",
+        "hexagonal",
+        "cubic",
+    ],
 )
 
 
@@ -102,16 +101,16 @@ class Lattice:
     def __init__(
         self,
         a: float,
-        b: Optional[float] = None,
-        c: Optional[float] = None,
+        b: float | None = None,
+        c: float | None = None,
         alpha: float = 90.0,  # degrees
-        beta: Optional[float] = None,  # degrees
-        gamma: Optional[float] = None,  # degrees
+        beta: float | None = None,  # degrees
+        gamma: float | None = None,  # degrees
         *,
-        angle_units: Optional[str] = None,
-        digits: Optional[int] = None,
-        length_units: Optional[str] = None,
-        tol: Optional[float] = 1e-12,
+        angle_units: str | None = None,
+        digits: int | None = None,
+        length_units: str | None = None,
+        tol: float | None = 1e-12,
     ) -> None:
         """Initialize lattice parameters.
 
@@ -170,8 +169,10 @@ class Lattice:
             alpha_val = float(self.alpha)
             beta_val = float(self.beta)
             gamma_val = float(self.gamma)
-        except Exception:
-            pass
+        except (TypeError, ValueError):
+            alpha_val = None
+            beta_val = None
+            gamma_val = None
 
         if (
             alpha_val is not None
@@ -217,7 +218,7 @@ class Lattice:
             return False
         digits = min(self.digits, latt.digits)
 
-        keys = "a b c alpha beta gamma".split()
+        keys = ["a", "b", "c", "alpha", "beta", "gamma"]
         # Prepare dicts of values for conversion
         vals_self = {k: getattr(self, k) for k in keys}
         vals_other = {k: getattr(latt, k) for k in keys}
@@ -239,7 +240,7 @@ class Lattice:
                 vals_other[k] = convert_units(
                     vals_other[k], latt.angle_units, INTERNAL_ANGLE_UNITS
                 )
-        except Exception:
+        except PINT_ERRORS:
             # Fallback: use raw attribute values (no unit conversion)
             vals_self = {k: getattr(self, k) for k in keys}
             vals_other = {k: getattr(latt, k) for k in keys}
@@ -279,7 +280,7 @@ class Lattice:
         """Redefine lattice from a (configuration) dictionary."""
         # Use object.__setattr__ to avoid repeated recomputation of B
         # during bulk update; recompute once at the end.
-        for k in "a b c alpha beta gamma".split():
+        for k in ["a", "b", "c", "alpha", "beta", "gamma"]:
             object.__setattr__(self, k, config[k])
 
         # Restore optional properties if present
@@ -360,14 +361,14 @@ class Lattice:
 
     def system_parameter_names(self, system: str) -> LatticeDictType:
         """Return list of lattice parameter names for this crystal system."""
-        all = "a b c alpha beta gamma".split()
+        all = ["a", "b", "c", "alpha", "beta", "gamma"]
         return {
             "cubic": ["a"],
-            "hexagonal": "a c gamma".split(),
-            "rhombohedral": "a alpha".split(),
-            "tetragonal": "a c".split(),
-            "orthorhombic": "a b c".split(),
-            "monoclinic": "a b c beta".split(),
+            "hexagonal": ["a", "c", "gamma"],
+            "rhombohedral": ["a", "alpha"],
+            "tetragonal": ["a", "c"],
+            "orthorhombic": ["a", "b", "c"],
+            "monoclinic": ["a", "b", "c", "beta"],
             "triclinic": all,
         }.get(system, all)
 

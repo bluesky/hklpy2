@@ -42,10 +42,9 @@ hatches for future solvers whose naming conventions differ from the current
 """
 
 import logging
+from collections.abc import Mapping
+from collections.abc import Sequence
 from typing import Any
-from typing import Mapping
-from typing import Optional
-from typing import Sequence
 
 from bluesky import plan_stubs as bps
 from bluesky import preprocessors as bpp
@@ -55,17 +54,13 @@ from deprecated.sphinx import versionadded
 
 from .blocks.zone import zonespace
 from .diffract import DiffractometerBase
-from .utils import validate_not_parallel
 from .typing import INPUT_VECTOR
 from .typing import BlueskyPlanType
+from .utils import validate_not_parallel
 
 logger = logging.getLogger(__name__)
 
-__all__ = [
-    "move_zone",
-    "scan_psi",
-    "scan_zone",
-]
+__all__ = ["move_zone", "scan_psi", "scan_zone"]
 
 
 # ---------------------------------------------------------------------------
@@ -74,7 +69,7 @@ __all__ = [
 
 
 def _find_psi_mode(
-    diffractometer: DiffractometerBase, mode_override: Optional[str]
+    diffractometer: DiffractometerBase, mode_override: str | None
 ) -> str:
     """Return the name of the psi-capable mode, or raise.
 
@@ -119,7 +114,7 @@ def _find_psi_mode(
 
 
 def _find_psi_axis(
-    diffractometer: DiffractometerBase, psi_axis_override: Optional[str]
+    diffractometer: DiffractometerBase, psi_axis_override: str | None
 ) -> str:
     """Return the name of the psi extra axis in the current mode, or raise.
 
@@ -174,10 +169,7 @@ def _find_psi_axis(
     reason="Move diffractometer to a zone position (SPEC ``mz`` equivalent).",
 )
 @plan
-def move_zone(
-    diffractometer: DiffractometerBase,
-    hkl: INPUT_VECTOR,
-) -> BlueskyPlanType:
+def move_zone(diffractometer: DiffractometerBase, hkl: INPUT_VECTOR) -> BlueskyPlanType:
     """
     Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).
 
@@ -220,7 +212,7 @@ def scan_zone(
     start: INPUT_VECTOR,
     finish: INPUT_VECTOR,
     num: int,
-    md: Optional[Mapping[str, Any]] = None,
+    md: Mapping[str, Any] | None = None,
 ) -> BlueskyPlanType:
     """
     Perform a zone scan on a diffractometer.
@@ -292,10 +284,7 @@ def scan_zone(
     return (yield from inner())
 
 
-@versionadded(
-    version="0.5.1",
-    reason="Convenience plan for azimuthal (ψ) scans.",
-)
+@versionadded(version="0.5.1", reason="Convenience plan for azimuthal (ψ) scans.")
 @plan
 def scan_psi(
     detectors: Sequence[Readable],
@@ -303,15 +292,15 @@ def scan_psi(
     *,
     h: float,
     k: float,
-    l: float,  # noqa: E741
+    l: float,
     hkl2: Sequence[float],
     psi_start: float,
     psi_stop: float,
     num: int,
-    mode: Optional[str] = None,
-    psi_axis: Optional[str] = None,
+    mode: str | None = None,
+    psi_axis: str | None = None,
     fail_on_exception: bool = False,
-    md: Optional[Mapping[str, Any]] = None,
+    md: Mapping[str, Any] | None = None,
 ) -> BlueskyPlanType:
     """
     Scan the azimuthal angle (ψ) at a fixed *(h, k, l)* position.
@@ -463,7 +452,7 @@ def scan_psi(
                 psi_start,
                 psi_stop,
                 num=num,
-                pseudos=dict(h=h, k=k, l=l),
+                pseudos={"h": h, "k": k, "l": l},
                 extras=ref_extras,
                 fail_on_exception=fail_on_exception,
                 md=md,

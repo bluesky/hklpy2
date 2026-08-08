@@ -51,14 +51,12 @@ import time
 import uuid
 import warnings
 from collections.abc import Iterable
+from collections.abc import Mapping
+from collections.abc import Sequence
 from enum import IntFlag
 from typing import TYPE_CHECKING
 from typing import Any
-from typing import Mapping
 from typing import NamedTuple
-from typing import Sequence
-from typing import Type
-from typing import Union
 
 import numpy as np
 import pint
@@ -77,7 +75,7 @@ from .typing import Matrix3x3
 
 if TYPE_CHECKING:
     from .backends.base import SolverBase  # noqa: F401
-    from .diffract import DiffractometerBase  # noqa: F401
+    from .diffract import DiffractometerBase
 
 logger = logging.getLogger(__name__)
 
@@ -148,8 +146,7 @@ DEFAULT_MOTOR_LABELS: Sequence[str] = ["motors"]
 
 
 @versionadded(
-    version="0.6.2",
-    reason="Fine-grained dirty-domain tracking for the solver state.",
+    version="0.6.2", reason="Fine-grained dirty-domain tracking for the solver state."
 )
 class _SolverDirty(IntFlag):
     """
@@ -223,7 +220,6 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
         warnings.warn(
             UserWarning(
                 f" Extra inputs will be ignored. Expected {len(names)}."
-                #
                 f" Received {input=!r}, {names=!r}"
             )
         )
@@ -242,7 +238,7 @@ def axes_to_dict(input: AnyAxesType, names: list[str]) -> AxesDict:
                 )
             axes[name] = value
 
-    elif istype(input, Union[AxesList, AxesTuple]):  # convert to ordered dict
+    elif istype(input, AxesList | AxesTuple):  # convert to ordered dict
         for name, value in zip(names, input):
             axes[name] = value
 
@@ -286,11 +282,11 @@ def compare_float_dicts(a1, a2, tol=1e-4) -> bool:
     for k, v in a1.items():
         if isinstance(v, float):
             if tol < 1:
-                test = math.isclose(a1[k], a2[k], abs_tol=tol)
+                test = math.isclose(v, a2[k], abs_tol=tol)
             else:
-                test = round(a1[k], tol) == round(a2[k], tol)
+                test = round(v, tol) == round(a2[k], tol)
         else:
-            test = a1[k] == a2[k]
+            test = v == a2[k]
         if not test:
             return False  # no need to go further
     return False not in tests
@@ -318,9 +314,7 @@ def distance_between_pos_tuples(pos1: NamedTuple, pos2: NamedTuple) -> float:
     return rms
 
 
-def flatten_lists(
-    xs: Sequence[Union[bytes, Iterable, str]],
-) -> BlueskyPlanType:
+def flatten_lists(xs: Sequence[bytes | Iterable | str]) -> BlueskyPlanType:
     """
     Convert nested lists into single list.
 
@@ -333,7 +327,7 @@ def flatten_lists(
             yield x
 
 
-def istype(value: Any, annotation: Type) -> bool:
+def istype(value: Any, annotation: type) -> bool:
     """
     Check if 'value' matches the type 'annotation'.
 
@@ -358,7 +352,7 @@ def load_yaml(text: str) -> Mapping:
     return yaml.load(text, yaml.Loader)
 
 
-def load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping:
+def load_yaml_file(file: pathlib.Path | str) -> Mapping:
     """Return contents of a YAML file as a Python object."""
     path = pathlib.Path(file)
     if not path.exists():
@@ -373,8 +367,7 @@ def load_yaml_file(file: Union[pathlib.Path, str]) -> Mapping:
     reason="Alternative forward() solution picker using closest motor positions.",
 )
 def pick_closest_solution(
-    position: NamedTuple,
-    solutions: list[NamedTuple],
+    position: NamedTuple, solutions: list[NamedTuple]
 ) -> NamedTuple:
     """
     Find the solution closest to the current real position.
@@ -408,8 +401,7 @@ def pick_closest_solution(
 
 
 def pick_first_solution(
-    position: NamedTuple,
-    solutions: list[NamedTuple],
+    position: NamedTuple, solutions: list[NamedTuple]
 ) -> NamedTuple:
     """
     Choose first solution from list.
@@ -678,10 +670,10 @@ def benchmark(
         f"\n  calls:      {n}"
         f"\n  snapshot:   {snapshot}"
         f"\n"
-        f"\n  {'operation':<12} {'ops/sec':>10} {'ms/call':>11} {'fwd/inv':>9} {'status':>6}"  # noqa: E501
+        f"\n  {'operation':<12} {'ops/sec':>10} {'ms/call':>11} {'fwd/inv':>9} {'status':>6}"
         f"\n  {'-' * 12} {'-' * 10} {'-' * 11} {'-' * 9} {'-' * 6}"
-        f"\n  {'forward()':<12} {fwd_ops:>10.0f} {fwd_ms:>11.3f} {fwd_inv_ratio:>9.3f} {_status(fwd_ops):>6}"  # noqa: E501
-        f"\n  {'inverse()':<12} {inv_ops:>10.0f} {inv_ms:>11.3f} {'':>9} {_status(inv_ops):>6}"  # noqa: E501
+        f"\n  {'forward()':<12} {fwd_ops:>10.0f} {fwd_ms:>11.3f} {fwd_inv_ratio:>9.3f} {_status(fwd_ops):>6}"
+        f"\n  {'inverse()':<12} {inv_ops:>10.0f} {inv_ms:>11.3f} {'':>9} {_status(inv_ops):>6}"
         f"\n"
         f"\n  target: {TARGET:,} ops/sec (+/-{tolerance:.0%})"
     )
@@ -693,8 +685,7 @@ def benchmark(
     reason="Solver summary helper that accepts any diffractometer instance.",
 )
 def solver_summary(
-    diffractometer: "DiffractometerBase | None" = None,
-    write: bool = True,
+    diffractometer: "DiffractometerBase | None" = None, write: bool = True
 ):
     """
     Table of the diffractometer solver's modes, axes, ...

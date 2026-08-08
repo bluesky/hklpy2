@@ -15,23 +15,18 @@ create solver instances for use by :class:`~hklpy2.ops.Core`.
 """
 
 import logging
+from collections.abc import Mapping
 from importlib.metadata import entry_points
 from typing import TYPE_CHECKING
-from typing import Mapping
 
 from .exceptions import SolverError
 
 if TYPE_CHECKING:
-    from .backends.base import SolverBase  # noqa: F401
+    from .backends.base import SolverBase
 
 logger = logging.getLogger(__name__)
 
-__all__ = [
-    "SOLVER_ENTRYPOINT_GROUP",
-    "get_solver",
-    "solver_factory",
-    "solvers",
-]
+__all__ = ["SOLVER_ENTRYPOINT_GROUP", "get_solver", "solver_factory", "solvers"]
 
 SOLVER_ENTRYPOINT_GROUP: str = "hklpy2.solver"
 """Name by which |hklpy2| |solver| classes are grouped."""
@@ -54,11 +49,7 @@ def get_solver(solver_name: str) -> "SolverBase":
     return entries[solver_name].load()
 
 
-def solver_factory(
-    solver_name: str,
-    geometry: str,
-    **kwargs: Mapping,
-) -> "SolverBase":
+def solver_factory(solver_name: str, geometry: str, **kwargs: Mapping) -> "SolverBase":
     """
     Create a |solver| object with geometry and axes.
     """

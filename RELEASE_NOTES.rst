@@ -37,6 +37,7 @@ describe future plans.
     -----------
 
     * Add periodic CI execution to detect upstream package version issues. (:issue:`421`)
+    * Bump ruff to 0.16.2 (code linting). (:issue:`421`)
     * DOC: Feature checklist (from project planning phase) is now complete.
     * Unify copyright automation across hklpy2 family. (:issue:`411`)
 
