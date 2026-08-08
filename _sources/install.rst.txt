@@ -15,6 +15,10 @@ Install from conda-forge:
 
 ``conda install -c conda-forge hklpy2``
 
+Consider adding the `hkl` package (for the `HklSolver`) to this install if
+supported on your workstation or the `hklpy2_solvers` package, for optional,
+additional solvers.
+
 .. seealso:: https://anaconda.org/conda-forge/hklpy2
 
 Pip - PyPI
@@ -23,6 +27,8 @@ Pip - PyPI
 Install from the Python Package Index (PyPI) repository:
 
 ``pip install hklpy2``
+
+Consider adding the `hklpy2_solvers` package, for optional, additional solvers.
 
 .. seealso:: https://pypi.org/project/hklpy2/
 
@@ -41,7 +47,7 @@ First, clone the repository (into directory ``hklpy2``):
 
 Then, install from the new ``hklpy2`` directory:
 
-``pip install -e hklpy2 --no-deps``
+``pip install -e hklpy2``
 
 .. seealso:: https://github.com/bluesky/hklpy2
 
@@ -55,7 +61,7 @@ and testing:
     :linenos:
 
     export HKLPY2_ENV=hklpy2
-    conda create -y -n "${HKLPY2_ENV}" pyepics hkl tiled bson python pandoc
+    conda create -y -n "${HKLPY2_ENV}" pyepics hkl hklpy2_solvers tiled bson python pandoc
     conda activate "${HKLPY2_ENV}"
     pip install --pre tiled
     pip install --pre -e .[all]
