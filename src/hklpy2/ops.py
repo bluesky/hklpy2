@@ -18,6 +18,7 @@ from collections.abc import Iterable
 from collections.abc import Mapping
 from typing import TYPE_CHECKING
 
+from deprecated.sphinx import versionadded
 from deprecated.sphinx import versionchanged
 
 from .backends.base import SolverBase
@@ -49,6 +50,59 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 DEFAULT_EXTRA_VALUE: float = 0
 DEFAULT_SAMPLE_NAME: str = "sample"
+
+
+@versionadded(
+    version="0.7.3", reason="Allow extras to be mutated by individual key assignment."
+)
+class ExtrasDict(dict):
+    """Mutable extras view that keeps Core state and solver updates in sync."""
+
+    def __init__(self, core: "Core") -> None:
+        super().__init__()
+        self._core = core
+        self._sync_from_core()
+
+    def _sync_from_core(self) -> None:
+        every = self._core.all_extras
+        mode_extras = {axis: every[axis] for axis in self._core.solver_extra_axis_names}
+        dict.clear(self)
+        dict.update(self, mode_extras)
+
+    def _expected(self) -> dict[str, float]:
+        return {
+            axis: self._core.all_extras[axis]
+            for axis in self._core.solver_extra_axis_names
+        }
+
+    def _set_many(self, values: Mapping[str, float]) -> None:
+        incoming = self._core._validate_extras(values, self._expected())
+        if len(incoming) == 0:
+            return
+        self._core._extras.update(incoming)
+        self._core.request_solver_update(_SolverDirty.EXTRAS)
+        dict.update(self, incoming)
+
+    def __setitem__(self, key: str, value: float) -> None:
+        self._set_many({key: value})
+
+    def __delitem__(self, key: str) -> None:
+        raise TypeError("Deletion of extras is not allowed.")
+
+    def update(self, *args, **kwargs) -> None:
+        self._set_many(dict(*args, **kwargs))
+
+    def setdefault(self, key: str, default: float = DEFAULT_EXTRA_VALUE) -> float:
+        if key in self:
+            return self[key]
+        self[key] = default
+        return default
+
+    def pop(self, key: str, *args) -> float:
+        return dict.pop(self, key, *args)
+
+    def clear(self) -> None:
+        self._set_many({key: DEFAULT_EXTRA_VALUE for key in self})
 
 
 class Core:
@@ -588,15 +642,17 @@ class Core:
             )
 
     @property
-    def extras(self) -> list[str]:
+    def extras(self) -> ExtrasDict:
         """Ordered dictionary of |solver| extra parameters in current mode."""
-        every = self.all_extras
-        return {axis: every[axis] for axis in self.solver_extra_axis_names}
+        return ExtrasDict(self)
 
     @extras.setter
     def extras(self, values: NamedFloatDict) -> None:
         """Set |solver| extra parameters for the current mode."""
-        incoming = self._validate_extras(values, self.extras)
+        expected = {
+            axis: self.all_extras[axis] for axis in self.solver_extra_axis_names
+        }
+        incoming = self._validate_extras(values, expected)
         if len(incoming) > 0:
             self._extras.update(incoming)
             self.request_solver_update(_SolverDirty.EXTRAS)

@@ -697,6 +697,197 @@ def test_extras_setter(solver, geometry, solver_kwargs, mode, values, context):
 
 
 @pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {
+                "geometry": "K6C",
+                "mode": "constant_incidence",
+                "action": "setitem",
+                "values": {"x": 0.5},
+            },
+            does_not_raise(),
+            id="set-single-extra",
+        ),
+        pytest.param(
+            {
+                "geometry": "K6C",
+                "mode": "constant_incidence",
+                "action": "update",
+                "values": {"x": 0.5, "y": 0.25},
+            },
+            does_not_raise(),
+            id="update-multiple-extras",
+        ),
+        pytest.param(
+            {
+                "geometry": "K6C",
+                "mode": "constant_incidence",
+                "action": "update-kwargs",
+                "values": {"x": 0.5, "y": 0.25},
+            },
+            does_not_raise(),
+            id="update-kwargs",
+        ),
+        pytest.param(
+            {
+                "geometry": "K6C",
+                "mode": "constant_incidence",
+                "action": "setdefault-existing",
+                "values": {"x": 0.5},
+            },
+            does_not_raise(),
+            id="setdefault-existing-extra",
+        ),
+        pytest.param(
+            {
+                "geometry": "K6C",
+                "mode": "constant_incidence",
+                "action": "clear",
+                "values": {"x": 0.5, "y": 0.25},
+            },
+            does_not_raise(),
+            id="clear-resets-current-mode-extras",
+        ),
+        pytest.param(
+            {"geometry": "E4CV", "mode": "bissector", "action": "clear", "values": {}},
+            does_not_raise(),
+            id="clear-empty-extras",
+        ),
+        pytest.param(
+            {
+                "geometry": "K6C",
+                "mode": "constant_incidence",
+                "action": "delete",
+                "values": {"x": 0.5},
+            },
+            pytest.raises(
+                TypeError, match=re.escape("Deletion of extras is not allowed.")
+            ),
+            id="delete-forbidden",
+        ),
+        pytest.param(
+            {
+                "geometry": "K6C",
+                "mode": "constant_incidence",
+                "action": "setitem",
+                "values": {"not_an_extra": 0.5},
+            },
+            pytest.raises(
+                ConfigurationError,
+                match=re.escape("Unexpected extra axis name(s) ['not_an_extra']."),
+            ),
+            id="invalid-extra-name-rejected",
+        ),
+    ],
+)
+def test_extras_dict_mutations(parms, context):
+    with context:
+        sim = creator(name="sim", solver="hkl_soleil", geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+        extras = sim.core.extras
+
+        if parms["action"] == "setitem":
+            key, value = next(iter(parms["values"].items()))
+            extras[key] = value
+        elif parms["action"] == "update":
+            extras.update(parms["values"])
+        elif parms["action"] == "update-kwargs":
+            extras.update(**parms["values"])
+        elif parms["action"] == "setdefault-existing":
+            key, value = next(iter(parms["values"].items()))
+            result = extras.setdefault(key, value)
+            assert result == 0
+            assert sim.core.extras[key] == 0
+        elif parms["action"] == "clear":
+            extras.update(parms["values"])
+            extras.clear()
+            assert all(value == 0 for value in sim.core.extras.values())
+        elif parms["action"] == "delete":
+            key, value = next(iter(parms["values"].items()))
+            extras[key] = value
+            del extras[key]
+
+        if parms["action"] in {"setitem", "update", "update-kwargs", "setdefault"}:
+            for key, value in parms["values"].items():
+                assert sim.core.extras[key] == value
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"geometry": "K6C", "mode": "constant_incidence", "key": "x", "value": 0.5},
+            does_not_raise(),
+            id="fresh-extras-view-persists-core-state",
+        )
+    ],
+)
+def test_extras_returns_fresh_mutable_view(parms, context):
+
+    with context:
+        sim = creator(name="sim", solver="hkl_soleil", geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+        extras1 = sim.core.extras
+        extras2 = sim.core.extras
+        assert extras1 is not extras2
+
+        extras1[parms["key"]] = parms["value"]
+
+        assert extras2.get(parms["key"]) != parms["value"]
+        assert sim.core.extras[parms["key"]] == parms["value"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"geometry": "K6C", "mode": "constant_incidence", "key": "x", "value": 0.5},
+            does_not_raise(),
+            id="pop-removes-only-local-view",
+        ),
+        pytest.param(
+            {
+                "geometry": "K6C",
+                "mode": "constant_incidence",
+                "key": "not_present",
+                "value": -1,
+            },
+            does_not_raise(),
+            id="pop-missing-key-default",
+        ),
+        pytest.param(
+            {
+                "geometry": "K6C",
+                "mode": "constant_incidence",
+                "key": "not_present",
+                "value": None,
+            },
+            pytest.raises(KeyError, match=re.escape("'not_present'")),
+            id="pop-missing-key-no-default",
+        ),
+    ],
+)
+def test_extras_dict_pop(parms, context):
+    with context:
+        sim = creator(name="sim", solver="hkl_soleil", geometry=parms["geometry"])
+        sim.core.mode = parms["mode"]
+        extras = sim.core.extras
+
+        if parms["key"] in extras:
+            extras[parms["key"]] = parms["value"]
+            result = extras.pop(parms["key"])
+            assert result == parms["value"]
+            assert parms["key"] not in extras
+            assert sim.core.extras[parms["key"]] == parms["value"]
+        elif parms["value"] is None:
+            extras.pop(parms["key"])
+        else:
+            result = extras.pop(parms["key"], parms["value"])
+            assert result == parms["value"]
+
+
+@pytest.mark.parametrize(
     "setup, config, context",
     [
         pytest.param(
