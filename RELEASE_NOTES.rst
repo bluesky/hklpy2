@@ -30,21 +30,21 @@ describe future plans.
 
     Release expected 2026-Q3.
 
-    SEMVER
-    ######
+0.7.3
+######
 
-    Enhancements
-    ------------
+Enhancements
+------------
 
-    * Allow individual extras to be set by key assignment: ``core.extras["key"] = value``. (:issue:`414`)
+* Allow individual extras to be set by key assignment: ``core.extras["key"] = value``. (:issue:`414`)
 
-    Maintenance
-    -----------
+Maintenance
+-----------
 
-    * Add periodic CI execution to detect upstream package version issues. (:issue:`421`)
-    * Bump ruff to 0.16.2 (code linting). (:issue:`421`)
-    * DOC: Feature checklist (from project planning phase) is now complete.
-    * Unify copyright automation across hklpy2 family. (:issue:`411`)
+* Add periodic CI execution to detect upstream package version issues. (:issue:`421`)
+* Bump ruff to 0.16.2 (code linting). (:issue:`421`)
+* DOC: Feature checklist (from project planning phase) is now complete.
+* Unify copyright automation across hklpy2 family. (:issue:`411`)
 
 0.7.2
 #####
