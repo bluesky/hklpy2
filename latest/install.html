@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=a1acfd84"></script>
+    <script src="_static/documentation_options.js?v=6343dc25"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -512,6 +512,9 @@
 <h2>Conda - conda-forge<a class="headerlink" href="#conda-conda-forge" title="Link to this heading">#</a></h2>
 <p>Install from conda-forge:</p>
 <p><code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">hklpy2</span></code></p>
+<p>Consider adding the <cite>hkl</cite> package (for the <cite>HklSolver</cite>) to this install if
+supported on your workstation or the <cite>hklpy2_solvers</cite> package, for optional,
+additional solvers.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://anaconda.org/conda-forge/hklpy2">https://anaconda.org/conda-forge/hklpy2</a></p>
@@ -521,6 +524,7 @@
 <h2>Pip - PyPI<a class="headerlink" href="#pip-pypi" title="Link to this heading">#</a></h2>
 <p>Install from the Python Package Index (PyPI) repository:</p>
 <p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">hklpy2</span></code></p>
+<p>Consider adding the <cite>hklpy2_solvers</cite> package, for optional, additional solvers.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://pypi.org/project/hklpy2/">https://pypi.org/project/hklpy2/</a></p>
@@ -534,7 +538,7 @@
 <p>First, clone the repository (into directory <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code>):</p>
 <p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/bluesky/hklpy2</span></code></p>
 <p>Then, install from the new <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code> directory:</p>
-<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">hklpy2</span> <span class="pre">--no-deps</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">hklpy2</span></code></p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="github reference external" href="https://github.com/bluesky/hklpy2">bluesky/hklpy2</a></p>
@@ -545,7 +549,7 @@
 <p>Follow these steps (in bash shell) to setup a conda environment for development
 and testing:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nb">export</span><span class="w"> </span><span class="nv">HKLPY2_ENV</span><span class="o">=</span>hklpy2
-<span class="linenos">2</span>conda<span class="w"> </span>create<span class="w"> </span>-y<span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HKLPY2_ENV</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>pyepics<span class="w"> </span>hkl<span class="w"> </span>tiled<span class="w"> </span>bson<span class="w"> </span>python<span class="w"> </span>pandoc
+<span class="linenos">2</span>conda<span class="w"> </span>create<span class="w"> </span>-y<span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HKLPY2_ENV</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>pyepics<span class="w"> </span>hkl<span class="w"> </span>hklpy2_solvers<span class="w"> </span>tiled<span class="w"> </span>bson<span class="w"> </span>python<span class="w"> </span>pandoc
 <span class="linenos">3</span>conda<span class="w"> </span>activate<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">HKLPY2_ENV</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="linenos">4</span>pip<span class="w"> </span>install<span class="w"> </span>--pre<span class="w"> </span>tiled
 <span class="linenos">5</span>pip<span class="w"> </span>install<span class="w"> </span>--pre<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>all<span class="o">]</span>
