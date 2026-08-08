@@ -67,6 +67,8 @@ Computation
        inspect, refine, and reset it.
    * - :ref:`how_constraints`
      - Set axis limits and cut points; write a custom constraint subclass.
+   * - :ref:`how_extras`
+     - Read and set optional extra parameters provided by the solver backend.
    * - :ref:`how_presets`
      - Hold a real axis at a fixed value during ``forward()`` without moving
        any motor (SPEC ``freeze``/``unfreeze`` equivalent).
