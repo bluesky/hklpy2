@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../../_static/documentation_options.js?v=9435257b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -451,17 +451,18 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedDict</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Msg</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;INPUT_VECTOR&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NUMERIC&quot;</span><span class="p">,</span>
     <span class="s2">&quot;AnyAxesType&quot;</span><span class="p">,</span>
     <span class="s2">&quot;AxesArray&quot;</span><span class="p">,</span>
     <span class="s2">&quot;AxesDict&quot;</span><span class="p">,</span>
@@ -469,11 +470,9 @@
     <span class="s2">&quot;AxesTuple&quot;</span><span class="p">,</span>
     <span class="s2">&quot;BlueskyPlanType&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ConfigHeaderDict&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;INPUT_VECTOR&quot;</span><span class="p">,</span>
     <span class="s2">&quot;KeyValueMap&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Matrix3x3&quot;</span><span class="p">,</span>
     <span class="s2">&quot;NamedFloatDict&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;NUMERIC&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
@@ -494,18 +493,15 @@
 
 <div class="viewcode-block" id="NUMERIC">
 <a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.NUMERIC">[docs]</a>
-<span class="n">NUMERIC</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span></div>
+<span class="n">NUMERIC</span> <span class="o">=</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">int</span></div>
 
 <span class="sd">&quot;&quot;&quot;Either integer or real number.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="INPUT_VECTOR">
 <a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.INPUT_VECTOR">[docs]</a>
-<span class="n">INPUT_VECTOR</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span>
-    <span class="nb">list</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">],</span>
-    <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">],</span>
-    <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">],</span>
-    <span class="n">Sequence</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">],</span>
-<span class="p">]</span></div>
+<span class="n">INPUT_VECTOR</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="nb">list</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">]</span> <span class="o">|</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NUMERIC</span><span class="p">]</span> <span class="o">|</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">NUMERIC</span><span class="p">]</span>
+<span class="p">)</span></div>
 
 <span class="sd">&quot;&quot;&quot;Acceptable forms of vector input for zones, ...&quot;&quot;&quot;</span>
 
@@ -535,7 +531,7 @@
 
 <div class="viewcode-block" id="AnyAxesType">
 <a class="viewcode-back" href="../../autoapi/hklpy2/typing/index.html#hklpy2.typing.AnyAxesType">[docs]</a>
-<span class="n">AnyAxesType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">AxesArray</span><span class="p">,</span> <span class="n">AxesDict</span><span class="p">,</span> <span class="n">AxesList</span><span class="p">,</span> <span class="n">AxesTuple</span><span class="p">]</span></div>
+<span class="n">AnyAxesType</span> <span class="o">=</span> <span class="n">AxesArray</span> <span class="o">|</span> <span class="n">AxesDict</span> <span class="o">|</span> <span class="n">AxesList</span> <span class="o">|</span> <span class="n">AxesTuple</span></div>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Any of these types are used to describe both pseudo and real axes.</span>

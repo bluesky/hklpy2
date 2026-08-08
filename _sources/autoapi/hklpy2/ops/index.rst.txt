@@ -85,7 +85,7 @@ Module Contents
        ~solver_summary
 
 
-   .. py:method:: add_reflection(pseudos: ~hklpy2.typing.AnyAxesType, reals: Union[~hklpy2.typing.AnyAxesType, None] = None, wavelength: Optional[float] = None, wavelength_units: Optional[str] = None, name: Optional[str] = None, replace: bool = False) -> ~hklpy2.blocks.reflection.Reflection
+   .. py:method:: add_reflection(pseudos: ~hklpy2.typing.AnyAxesType, reals: ~hklpy2.typing.AnyAxesType | None = None, wavelength: float | None = None, wavelength_units: str | None = None, name: str | None = None, replace: bool = False) -> ~hklpy2.blocks.reflection.Reflection
 
       Add a new reflection.
 
@@ -117,7 +117,7 @@ Module Contents
 
 
 
-   .. py:method:: add_sample(name: str, a: float, b: Optional[float] = None, c: Optional[float] = None, alpha: float = 90.0, beta: Optional[float] = None, gamma: Optional[float] = None, digits: int = 4, replace: bool = False) -> ~hklpy2.blocks.sample.Sample
+   .. py:method:: add_sample(name: str, a: float, b: float | None = None, c: float | None = None, alpha: float = 90.0, beta: float | None = None, gamma: float | None = None, digits: int = 4, replace: bool = False) -> ~hklpy2.blocks.sample.Sample
 
       Add a new sample.
 
@@ -142,13 +142,13 @@ Module Contents
 
 
    .. py:property:: axes_xref_reversed
-      :type: Mapping[str, str]
+      :type: ~collections.abc.Mapping[str, str]
 
 
       Map axis names from solver to diffractometer.
 
 
-   .. py:method:: calc_UB(r1: Union[~hklpy2.blocks.reflection.Reflection, str], r2: Union[~hklpy2.blocks.reflection.Reflection, str]) -> ~hklpy2.typing.Matrix3x3
+   .. py:method:: calc_UB(r1: ~hklpy2.blocks.reflection.Reflection | str, r2: ~hklpy2.blocks.reflection.Reflection | str) -> ~hklpy2.typing.Matrix3x3
 
       Calculate and return the UB (orientation) matrix with two reflections.
 
@@ -197,7 +197,7 @@ Module Contents
       Ordered dictionary of |solver| extra parameters in current mode.
 
 
-   .. py:method:: forward(pseudos: ~hklpy2.typing.AnyAxesType, wavelength: Optional[float] = None) -> list
+   .. py:method:: forward(pseudos: ~hklpy2.typing.AnyAxesType, wavelength: float | None = None) -> list
 
       Compute [{names:reals}] from {names: pseudos} (hkl -> angles).
 
@@ -222,7 +222,7 @@ Module Contents
       Return the |solver| geometry.
 
 
-   .. py:method:: inverse(reals: Union[~hklpy2.typing.AnyAxesType, None], wavelength: Optional[float] = None) -> ~hklpy2.typing.AxesDict
+   .. py:method:: inverse(reals: ~hklpy2.typing.AnyAxesType | None, wavelength: float | None = None) -> ~hklpy2.typing.AxesDict
 
       Compute (pseudos) from {names: reals} (angles -> hkl).
 
@@ -324,7 +324,7 @@ Module Contents
 
 
 
-   .. py:method:: request_solver_update(flag: Union[bool, ~hklpy2.utils._SolverDirty] = True) -> None
+   .. py:method:: request_solver_update(flag: bool | ~hklpy2.utils._SolverDirty = True) -> None
 
       Mark solver state as dirty (or clean).
 
@@ -361,7 +361,7 @@ Module Contents
 
 
    .. py:property:: samples
-      :type: Mapping[str, ~hklpy2.blocks.sample.Sample]
+      :type: ~collections.abc.Mapping[str, ~hklpy2.blocks.sample.Sample]
 
 
       Sample dictionary.
@@ -480,7 +480,7 @@ Module Contents
 
 
 
-   .. py:method:: standardize_reals(reals: Union[~hklpy2.typing.AnyAxesType, None]) -> ~hklpy2.typing.AxesDict
+   .. py:method:: standardize_reals(reals: ~hklpy2.typing.AnyAxesType | None) -> ~hklpy2.typing.AxesDict
 
       Convert user-supplied reals into dictionary in solver's order.
 
@@ -508,13 +508,13 @@ Module Contents
 
 
 
-   .. py:method:: to_solver_units(wavelength: Optional[float] = None) -> dict
+   .. py:method:: to_solver_units(wavelength: float | None = None) -> dict
 
       Convert quantities from diffractometer units to solver units.
 
 
 
-   .. py:method:: update_solver(wavelength: Optional[float] = None) -> None
+   .. py:method:: update_solver(wavelength: float | None = None) -> None
 
       Push any dirty solver-state domains to the underlying solver.
 

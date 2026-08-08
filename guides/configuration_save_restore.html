@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../_static/documentation_options.js?v=9435257b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -1059,7 +1059,8 @@ from the ophyd simulated detectors.  To restore a diffractometer configuration
 from a previous run, we’ll need a tiled <code class="docutils literal notranslate"><span class="pre">client</span></code> with the bluesky runs.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunEngine</span><span class="p">,</span> <span class="n">plans</span> <span class="k">as</span> <span class="n">bp</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunEngine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">plans</span> <span class="k">as</span> <span class="n">bp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky_tiled_plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">TiledWriter</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">noisy_det</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">tiled.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_uri</span>
@@ -1475,7 +1476,7 @@ form applies the saved sections.</p>
 <span class="c1"># real positioners are EpicsMotor instances, so is_simulator is False.</span>
 <span class="n">hw</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;hw_e4cv&quot;</span><span class="p">,</span>
-    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">omega</span><span class="o">=</span><span class="s2">&quot;DEMO:m1&quot;</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="s2">&quot;DEMO:m2&quot;</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="s2">&quot;DEMO:m3&quot;</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="s2">&quot;DEMO:m4&quot;</span><span class="p">),</span>
+    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="s2">&quot;DEMO:m1&quot;</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="s2">&quot;DEMO:m2&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="s2">&quot;DEMO:m3&quot;</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">:</span> <span class="s2">&quot;DEMO:m4&quot;</span><span class="p">},</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;is_simulator:&quot;</span><span class="p">,</span> <span class="n">hw</span><span class="o">.</span><span class="n">is_simulator</span><span class="p">)</span>
 

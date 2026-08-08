@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../../_static/documentation_options.js?v=9435257b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -456,10 +456,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">plan_stubs</span> <span class="k">as</span> <span class="n">bps</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky</span><span class="w"> </span><span class="kn">import</span> <span class="n">preprocessors</span> <span class="k">as</span> <span class="n">bpp</span>
@@ -469,17 +468,13 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.blocks.zone</span><span class="w"> </span><span class="kn">import</span> <span class="n">zonespace</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerBase</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_not_parallel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">INPUT_VECTOR</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">BlueskyPlanType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_not_parallel</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;move_zone&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;scan_psi&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;scan_zone&quot;</span><span class="p">,</span>
-<span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;move_zone&quot;</span><span class="p">,</span> <span class="s2">&quot;scan_psi&quot;</span><span class="p">,</span> <span class="s2">&quot;scan_zone&quot;</span><span class="p">]</span>
 
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
@@ -488,7 +483,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_psi_mode</span><span class="p">(</span>
-    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">mode_override</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">mode_override</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the name of the psi-capable mode, or raise.</span>
 
@@ -533,7 +528,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_psi_axis</span><span class="p">(</span>
-    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">psi_axis_override</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">psi_axis_override</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the name of the psi extra axis in the current mode, or raise.</span>
 
@@ -590,10 +585,7 @@
 <span class="nd">@plan</span>
 <div class="viewcode-block" id="move_zone">
 <a class="viewcode-back" href="../../autoapi/hklpy2/plans/index.html#hklpy2.plans.move_zone">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">move_zone</span><span class="p">(</span>
-    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span>
-    <span class="n">hkl</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">move_zone</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">hkl</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).</span>
 
@@ -639,7 +631,7 @@
     <span class="n">start</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
     <span class="n">finish</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span>
     <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">md</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">md</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform a zone scan on a diffractometer.</span>
@@ -712,10 +704,7 @@
 
 
 
-<span class="nd">@versionadded</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.5.1&quot;</span><span class="p">,</span>
-    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Convenience plan for azimuthal (ψ) scans.&quot;</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.5.1&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Convenience plan for azimuthal (ψ) scans.&quot;</span><span class="p">)</span>
 <span class="nd">@plan</span>
 <div class="viewcode-block" id="scan_psi">
 <a class="viewcode-back" href="../../autoapi/hklpy2/plans/index.html#hklpy2.plans.scan_psi">[docs]</a>
@@ -725,15 +714,15 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">h</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">l</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>  <span class="c1"># noqa: E741</span>
+    <span class="n">l</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">hkl2</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
     <span class="n">psi_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">psi_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">psi_axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">psi_axis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">fail_on_exception</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">md</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">md</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Scan the azimuthal angle (ψ) at a fixed *(h, k, l)* position.</span>
@@ -885,7 +874,7 @@
                 <span class="n">psi_start</span><span class="p">,</span>
                 <span class="n">psi_stop</span><span class="p">,</span>
                 <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span>
-                <span class="n">pseudos</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">l</span><span class="p">),</span>
+                <span class="n">pseudos</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="n">l</span><span class="p">},</span>
                 <span class="n">extras</span><span class="o">=</span><span class="n">ref_extras</span><span class="p">,</span>
                 <span class="n">fail_on_exception</span><span class="o">=</span><span class="n">fail_on_exception</span><span class="p">,</span>
                 <span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span>

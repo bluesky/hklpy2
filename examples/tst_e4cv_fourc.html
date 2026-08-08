@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../_static/documentation_options.js?v=9435257b"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -575,7 +575,7 @@ structures, including deducing the diffractometer geometry in many cases.</p>
     <span class="s2">&quot;[UB]&quot;</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="s2">&quot;term value&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;term&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">terms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span>
@@ -643,7 +643,7 @@ reflection 2 Reflections3D(h=1.0, k=1.0, l=3.0, wavelength=1.239424258, angles=O
     <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
     <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
     <span class="c1"># use SPEC names for the axes and simulated motors (not EPICS)</span>
-    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">th</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="kc">None</span><span class="p">),</span>
+    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;th&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -652,7 +652,10 @@ reflection 2 Reflections3D(h=1.0, k=1.0, l=3.0, wavelength=1.239424258, angles=O
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># add the sample to the calculation engine</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sample</span><span class="p">,</span> <span class="n">calc_UB</span><span class="p">,</span> <span class="n">set_diffractometer</span><span class="p">,</span> <span class="n">setor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_sample</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">calc_UB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_diffractometer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">setor</span>
 
 <span class="n">set_diffractometer</span><span class="p">(</span><span class="n">fourc</span><span class="p">)</span>
 <span class="n">add_sample</span><span class="p">(</span>
@@ -750,7 +753,7 @@ E4CV and SPEC.  We’ll only pick positions where <span class="math notranslate 
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare these angles with those from SPEC</span>
 
 <span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="s2">&quot;(hkl) motor E4CV SPEC difference&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;(hkl)&quot;</span><span class="p">,</span> <span class="s2">&quot;motor&quot;</span><span class="p">,</span> <span class="s2">&quot;E4CV&quot;</span><span class="p">,</span> <span class="s2">&quot;SPEC&quot;</span><span class="p">,</span> <span class="s2">&quot;difference&quot;</span><span class="p">]</span>
 <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">reflections</span>
 
 <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector&quot;</span>
@@ -811,7 +814,7 @@ then compute the UB matrix.  Follow in the section below.</p>
 <span class="n">UB</span> <span class="o">=</span> <span class="n">calc_UB</span><span class="p">(</span><span class="o">*</span><span class="n">refs</span><span class="p">)</span>
 
 <span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="s2">&quot;term value&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;term&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">]</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;SPEC [UB]&quot;</span><span class="p">,</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span><span class="p">))</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;E4CV [UB]&quot;</span><span class="p">,</span> <span class="n">UB</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span>
@@ -847,7 +850,7 @@ E4CV [UB] [[-0.095549863427, -1.654278751664, 0.002428444976], [0.000263111155, 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="s2">&quot;term value&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;term&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">]</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;energy, keV&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">energy</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;wavelength, angstrom&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
 <span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">position</span><span class="p">))</span>
@@ -882,7 +885,7 @@ crystal system       triclinic
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare these angles with those from SPEC</span>
 <span class="c1"># fourc.calc[&quot;phi&quot;].limits = (-1, 100)</span>
 <span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="s2">&quot;(hkl) motor E4CV SPEC difference&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;(hkl)&quot;</span><span class="p">,</span> <span class="s2">&quot;motor&quot;</span><span class="p">,</span> <span class="s2">&quot;E4CV&quot;</span><span class="p">,</span> <span class="s2">&quot;SPEC&quot;</span><span class="p">,</span> <span class="s2">&quot;difference&quot;</span><span class="p">]</span>
 <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">reflections</span>
 <span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;tth&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
 

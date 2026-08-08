@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../../_static/documentation_options.js?v=9435257b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -445,9 +445,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Movable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bluesky.protocols</span><span class="w"> </span><span class="kn">import</span> <span class="n">Readable</span>
@@ -467,26 +464,26 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">    add_reflection</span>
-<span class="s2">    add_sample</span>
-<span class="s2">    cahkl</span>
-<span class="s2">    cahkl_table</span>
-<span class="s2">    calc_UB</span>
-<span class="s2">    get_diffractometer</span>
-<span class="s2">    list_samples</span>
-<span class="s2">    or_swap</span>
-<span class="s2">    pa</span>
-<span class="s2">    remove_reflection</span>
-<span class="s2">    remove_sample</span>
-<span class="s2">    scan_psi</span>
-<span class="s2">    set_diffractometer</span>
-<span class="s2">    set_lattice</span>
-<span class="s2">    set_wavelength</span>
-<span class="s2">    setor</span>
-<span class="s2">    solver_summary</span>
-<span class="s2">    wh</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;add_reflection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;add_sample&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cahkl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cahkl_table&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calc_UB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;get_diffractometer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;list_samples&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;or_swap&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;remove_reflection&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;remove_sample&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;scan_psi&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;set_diffractometer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;set_lattice&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;set_wavelength&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;setor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;solver_summary&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;wh&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
@@ -519,11 +516,13 @@
     <span class="nd">@diffractometer</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">diffractometer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Name the diffractometer to be used.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">DiffractometerBase</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">diffractometer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">diffractometer</span><span class="si">}</span><span class="s2"> must be an hklpy2 &#39;DiffractometerBase&#39; subclass.&quot;</span>
-                <span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">DiffractometerBase</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">diffractometer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">diffractometer</span><span class="si">}</span><span class="s2"> must be an hklpy2 &#39;DiffractometerBase&#39; subclass.&quot;</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_selection</span> <span class="o">=</span> <span class="n">diffractometer</span>
 
 
@@ -535,11 +534,11 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">add_sample</span><span class="p">(</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">b</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">c</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">c</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">90</span><span class="p">,</span>
-    <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">gamma</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sample</span><span class="p">:</span>
@@ -558,11 +557,9 @@
     <span class="n">diffractometer</span> <span class="o">=</span> <span class="n">_choice</span><span class="o">.</span><span class="n">diffractometer</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Sample </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is already defined.&quot;</span>
-                <span class="s2">&quot;  Add &#39;replace=True&#39; to redefine this sample name.&quot;</span>
-                <span class="s2">&quot;  Call &#39;set_lattice(a, ...)&#39; to define a new lattice.&quot;</span>
-            <span class="p">),</span>
+            <span class="sa">f</span><span class="s2">&quot;Sample </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is already defined.&quot;</span>
+            <span class="s2">&quot;  Add &#39;replace=True&#39; to redefine this sample name.&quot;</span>
+            <span class="s2">&quot;  Call &#39;set_lattice(a, ...)&#39; to define a new lattice.&quot;</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">diffractometer</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span>
@@ -582,7 +579,7 @@
 
 <div class="viewcode-block" id="cahkl">
 <a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.cahkl">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">cahkl</span><span class="p">(</span><span class="n">h</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>  <span class="c1"># noqa: E741</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cahkl</span><span class="p">(</span><span class="n">h</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate motor positions for specified &#39;h, k l&#39; - DOES NOT MOVE motors.</span>
 
@@ -610,10 +607,7 @@
                 <span class="s2">&quot; by constraints.&quot;</span>
                 <span class="s2">&quot; Check constraint limits.&quot;</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">_forward_solution</span><span class="p">(</span>
-            <span class="n">diffractometer</span><span class="o">.</span><span class="n">real_position</span><span class="p">,</span>
-            <span class="n">solutions</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">_forward_solution</span><span class="p">(</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_position</span><span class="p">,</span> <span class="n">solutions</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoForwardSolutions</span> <span class="k">as</span> <span class="n">exinfo</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">exinfo</span><span class="p">)</span></div>
 
@@ -662,7 +656,7 @@
 <span class="sd">        value.  Default is 5.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">brief</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">brief</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">fmt</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="n">NUMERIC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                 <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
@@ -684,9 +678,7 @@
     <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reflections</span><span class="p">:</span>
         <span class="n">pseudos</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">standardize_pseudos</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
         <span class="n">rstr</span> <span class="o">=</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">brief</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)])</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="n">core</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">solution</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">core</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">standardize_reals</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
             <span class="n">table</span><span class="o">.</span><span class="n">addRow</span><span class="p">([</span><span class="n">rstr</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">brief</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
@@ -696,9 +688,7 @@
 <div class="viewcode-block" id="calc_UB">
 <a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.calc_UB">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">calc_UB</span><span class="p">(</span>
-    <span class="n">r1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Reflection</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-    <span class="n">r2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Reflection</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
-    <span class="n">wavelength</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">r1</span><span class="p">:</span> <span class="n">Reflection</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="n">Reflection</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the UB matrix with two reflections.</span>
@@ -730,8 +720,7 @@
 <div class="viewcode-block" id="solver_summary">
 <a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.solver_summary">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">solver_summary</span><span class="p">(</span>
-    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DiffractometerBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Table</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Table of diffractometer solver&#39;s modes, axes, ...</span>
@@ -790,7 +779,7 @@
 
 <div class="viewcode-block" id="get_diffractometer">
 <a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.get_diffractometer">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_diffractometer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">DiffractometerBase</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_diffractometer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">DiffractometerBase</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the currently-selected diffractometer (or ``None``).</span>
 
@@ -949,9 +938,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">get_diffractometer</span><span class="p">()</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">remove_reflection</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exinfo</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">exinfo</span></div>
+            <span class="k">raise</span></div>
 
 
 
@@ -987,23 +976,21 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">get_diffractometer</span><span class="p">()</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">remove_sample</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">CoreError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exinfo</span><span class="p">:</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="n">CoreError</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">exinfo</span></div>
+            <span class="k">raise</span></div>
 
 
 
-<div class="viewcode-block" id="scan_extra">
-<a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.scan_extra">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">scan_extra</span><span class="p">(</span>
     <span class="n">detectors</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Readable</span><span class="p">],</span>
-    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Movable</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>  <span class="c1"># axis, start, finish, [...]</span>
-    <span class="n">num</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="n">pseudos</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># h, k, l</span>
-    <span class="n">reals</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># angles</span>
-    <span class="n">extras</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">fail_on_exception</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">md</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Movable</span> <span class="o">|</span> <span class="n">Any</span><span class="p">,</span>  <span class="c1"># axis, start, finish, [...]</span>
+    <span class="n">num</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># h, k, l</span>
+    <span class="n">reals</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># angles</span>
+    <span class="n">extras</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">fail_on_exception</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">md</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Scan diffractometer parameter(s) at constant pseudos or reals.</span>
@@ -1073,8 +1060,7 @@
         <span class="n">extras</span><span class="o">=</span><span class="n">extras</span><span class="p">,</span>
         <span class="n">fail_on_exception</span><span class="o">=</span><span class="n">fail_on_exception</span><span class="p">,</span>
         <span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="scan_psi">
@@ -1084,15 +1070,15 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">h</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">l</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>  <span class="c1"># noqa: E741</span>
+    <span class="n">l</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">hkl2</span><span class="p">,</span>
     <span class="n">psi_start</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">psi_stop</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
     <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">psi_axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">psi_axis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">fail_on_exception</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">md</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">md</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Scan the azimuthal angle (ψ) at a fixed *(h, k, l)* using the selected diffractometer.</span>
@@ -1168,7 +1154,7 @@
 
 <div class="viewcode-block" id="set_diffractometer">
 <a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.set_diffractometer">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">set_diffractometer</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DiffractometerBase</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_diffractometer</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Declare the diffractometer to be used.</span>
 
@@ -1212,11 +1198,11 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.set_lattice">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">set_lattice</span><span class="p">(</span>
     <span class="n">a</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="n">b</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">c</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">b</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">c</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">90</span><span class="p">,</span>
-    <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">gamma</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">digits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1229,13 +1215,7 @@
 <span class="sd">        &gt;&gt;&gt; set_lattice(3, c=4, gamma=120)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_choice</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span>
-        <span class="n">a</span><span class="p">,</span>
-        <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span>
-        <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
-        <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
-        <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span>
-        <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span>
-        <span class="n">digits</span><span class="o">=</span><span class="n">digits</span><span class="p">,</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="n">digits</span>
     <span class="p">)</span></div>
 
 
@@ -1243,14 +1223,8 @@
 <div class="viewcode-block" id="setor">
 <a class="viewcode-back" href="../../autoapi/hklpy2/user/index.html#hklpy2.user.setor">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">setor</span><span class="p">(</span>
-    <span class="n">h</span><span class="p">,</span>
-    <span class="n">k</span><span class="p">,</span>
-    <span class="n">l</span><span class="p">,</span>  <span class="c1"># noqa: E741</span>
-    <span class="o">*</span><span class="n">reals</span><span class="p">:</span> <span class="n">NUMERIC</span><span class="p">,</span>
-    <span class="n">wavelength</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwreals</span><span class="p">:</span> <span class="n">AxesDict</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Reflection</span><span class="p">:</span>  <span class="c1"># noqa: E741</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="o">*</span><span class="n">reals</span><span class="p">:</span> <span class="n">NUMERIC</span><span class="p">,</span> <span class="n">wavelength</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwreals</span><span class="p">:</span> <span class="n">AxesDict</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Reflection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Define an ORienting reflection.</span>
 

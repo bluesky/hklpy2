@@ -56,7 +56,7 @@ Module Contents
 
 
 
-   .. py:method:: valid(**values: Dict[str, ~hklpy2.typing.NUMERIC]) -> bool
+   .. py:method:: valid(**values: dict[str, ~hklpy2.typing.NUMERIC]) -> bool
       :abstractmethod:
 
 
@@ -87,7 +87,7 @@ Module Contents
    :value: 0.0001
 
 
-.. py:class:: LimitsConstraint(low_limit: Optional[float] = -180, high_limit: Optional[float] = 180, label: Optional[str] = None, cut_point: float = DEFAULT_CUT_POINT)
+.. py:class:: LimitsConstraint(low_limit: float | None = -180, high_limit: float | None = 180, label: str | None = None, cut_point: float = DEFAULT_CUT_POINT)
 
    .. container:: import-path
 
@@ -194,7 +194,7 @@ Module Contents
       Lower limit of the acceptable range.
 
 
-   .. py:method:: valid(**values: Dict[str, ~hklpy2.typing.NUMERIC]) -> bool
+   .. py:method:: valid(**values: dict[str, ~hklpy2.typing.NUMERIC]) -> bool
 
       True if low <= value <= high.
 
@@ -208,7 +208,7 @@ Module Contents
 
 
 
-.. py:class:: RealAxisConstraints(reals: List[str])
+.. py:class:: RealAxisConstraints(reals: list[str])
 
    .. container:: import-path
 
@@ -227,7 +227,7 @@ Module Contents
        ~valid
 
 
-   .. py:method:: valid(**reals: Dict[str, ~hklpy2.typing.NUMERIC]) -> bool
+   .. py:method:: valid(**reals: dict[str, ~hklpy2.typing.NUMERIC]) -> bool
 
       Are all constraints satisfied?
 

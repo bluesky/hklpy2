@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../../_static/documentation_options.js?v=9435257b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -434,18 +434,16 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">Device</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">EpicsMotor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PVPositioner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PseudoPositioner</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">PVPositioner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoftPositioner</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.pseudopos</span><span class="w"> </span><span class="kn">import</span> <span class="n">PseudoSingle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ophyd.pseudopos</span><span class="w"> </span><span class="kn">import</span> <span class="n">pseudo_position_argument</span>
@@ -620,14 +618,13 @@
 <span class="sd">        the correct conditions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;position&quot;</span><span class="p">:</span>  <span class="c1"># Caution here to avoid recursion.</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
-                        <span class="c1"># Run the final setup.</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_finish_setup</span><span class="p">()</span>
-                <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">RecursionError</span><span class="p">):</span>
-                    <span class="k">pass</span>  <span class="c1"># Ignore, still not ready.</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;position&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_setup_finished</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">connected</span><span class="p">:</span>
+                    <span class="c1"># Run the final setup.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_finish_setup</span><span class="p">()</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">RecursionError</span><span class="p">):</span>
+                <span class="k">pass</span>  <span class="c1"># Ignore, still not ready.</span>
 
         <span class="c1"># Return the actual attribute</span>
         <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
@@ -637,8 +634,7 @@
 <div class="viewcode-block" id="define_real_axis">
 <a class="viewcode-back" href="../../autoapi/hklpy2/devices/index.html#hklpy2.devices.define_real_axis">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">define_real_axis</span><span class="p">(</span>
-    <span class="n">specs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">KeyValueMap</span><span class="p">],</span>
-    <span class="n">kwargs</span><span class="p">:</span> <span class="n">KeyValueMap</span><span class="p">,</span>
+    <span class="n">specs</span><span class="p">:</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">KeyValueMap</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">KeyValueMap</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return class and kwargs of a real axis from its &#39;specs&#39;.&quot;&quot;&quot;</span>
     <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
@@ -670,7 +666,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Incorrect type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">specs</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; for </span><span class="si">{</span><span class="n">specs</span><span class="si">=!r}</span><span class="s2">.&quot;</span>
-            <span class="c1">#</span>
             <span class="s2">&quot; Expected &#39;None&#39;, a PV name (str), or a dictionary specifying&quot;</span>
             <span class="s2">&quot; a custom configuration.&quot;</span>
         <span class="p">)</span>
@@ -768,22 +763,13 @@
             <span class="s2">&quot;make_component: call_name must be a dotted import path&quot;</span>
             <span class="sa">f</span><span class="s2">&quot; (str) or a callable; got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">call_name</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2">.&quot;</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">make_dynamic_instance</span><span class="p">(</span>
-        <span class="s2">&quot;ophyd.Component&quot;</span><span class="p">,</span>
-        <span class="n">CallableObject</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">make_dynamic_instance</span><span class="p">(</span><span class="s2">&quot;ophyd.Component&quot;</span><span class="p">,</span> <span class="n">CallableObject</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="make_dynamic_instance">
 <a class="viewcode-back" href="../../autoapi/hklpy2/devices/index.html#hklpy2.devices.make_dynamic_instance">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">make_dynamic_instance</span><span class="p">(</span>
-    <span class="n">call_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_dynamic_instance</span><span class="p">(</span><span class="n">call_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an instance of the Python &#39;call_name&#39;.&quot;&quot;&quot;</span>
     <span class="n">DynamicCallable</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span><span class="n">call_name</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">DynamicCallable</span><span class="p">):</span>
@@ -796,24 +782,20 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/devices/index.html#hklpy2.devices.parse_factory_axes">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_factory_axes</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">space</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">KeyValueMap</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">canonical</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">labels</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">space</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">axes</span><span class="p">:</span> <span class="n">KeyValueMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">canonical</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">_ignored</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">Component</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Component</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse a set of axis specifications, return Device class attributes.</span>
 
 <span class="sd">    Called from the diffract.diffractometer_class_factory().</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">space</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;pseudos&quot;</span><span class="p">,</span> <span class="s2">&quot;reals&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Unknown </span><span class="si">{</span><span class="n">space</span><span class="si">=!r}</span><span class="s2">.&quot;</span>
-            <span class="c1">#</span>
-            <span class="s2">&quot; Must be either &#39;pseudos&#39; or &#39;reals&#39;.&quot;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown </span><span class="si">{</span><span class="n">space</span><span class="si">=!r}</span><span class="s2">. Must be either &#39;pseudos&#39; or &#39;reals&#39;.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">canonical</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span><span class="si">=}</span><span class="s2"> must be &gt;= </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">canonical</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -835,7 +817,7 @@
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">axis_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_axes</span><span class="p">):</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="n">_axes</span><span class="p">[</span><span class="n">axis_name</span><span class="p">]</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span> <span class="ow">or</span> <span class="p">[])</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="n">labels</span> <span class="ow">or</span> <span class="p">[]}</span>
         <span class="n">class_name</span> <span class="o">=</span> <span class="s2">&quot;class_name&quot;</span>
         <span class="k">if</span> <span class="n">space</span> <span class="o">==</span> <span class="s2">&quot;pseudos&quot;</span><span class="p">:</span>
             <span class="n">class_name</span> <span class="o">=</span> <span class="s2">&quot;hklpy2.diffract.Hklpy2PseudoAxis&quot;</span>
@@ -848,9 +830,7 @@
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">canonical</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Too many axes specified in </span><span class="si">{</span><span class="n">order</span><span class="si">=}</span><span class="s2">.&quot;</span>
-            <span class="c1">#</span>
-            <span class="sa">f</span><span class="s2">&quot; Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">canonical</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Too many axes specified in </span><span class="si">{</span><span class="n">order</span><span class="si">=}</span><span class="s2">. Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">canonical</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
         <span class="p">)</span>
     <span class="k">for</span> <span class="n">axis_name</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">axis_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_axes</span><span class="p">:</span>
@@ -918,9 +898,7 @@
 <div class="viewcode-block" id="make_aux_pseudo_positioner_class">
 <a class="viewcode-back" href="../../autoapi/hklpy2/devices/index.html#hklpy2.devices.make_aux_pseudo_positioner_class">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_aux_pseudo_positioner_class</span><span class="p">(</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">pseudos</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="n">reals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">reals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build a synthetic :class:`~ophyd.pseudopos.PseudoPositioner` subclass</span>
@@ -945,21 +923,18 @@
         <span class="n">body</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">PseudoSingle</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reals</span><span class="p">:</span>
         <span class="n">body</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span>
-            <span class="n">SoftPositioner</span><span class="p">,</span>
-            <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span>
-            <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1e9</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">),</span>
-            <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1e9</span><span class="p">,</span> <span class="mf">1e9</span><span class="p">),</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span>
         <span class="p">)</span>
 
     <span class="n">n_pseudos</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span>
     <span class="n">n_reals</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>
 
     <span class="nd">@pseudo_position_argument</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pp</span><span class="p">):</span>  <span class="c1"># noqa: ARG001</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pp</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">RealPosition</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_reals</span><span class="p">))</span>
 
     <span class="nd">@real_position_argument</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rp</span><span class="p">):</span>  <span class="c1"># noqa: ARG001</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rp</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">PseudoPosition</span><span class="p">(</span><span class="o">*</span><span class="p">([</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_pseudos</span><span class="p">))</span>
 
     <span class="n">body</span><span class="p">[</span><span class="s2">&quot;forward&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">forward</span>

@@ -41,7 +41,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="../../_static/documentation_options.js?v=7b85324f"></script>
+    <script src="../../_static/documentation_options.js?v=9435257b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -465,14 +465,12 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntFlag</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedTuple</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pint</span>
@@ -491,7 +489,7 @@
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>  <span class="c1"># noqa: F401</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerBase</span>  <span class="c1"># noqa: F401</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.diffract</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffractometerBase</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -592,8 +590,7 @@
 
 
 <span class="nd">@versionadded</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span>
-    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Fine-grained dirty-domain tracking for the solver state.&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Fine-grained dirty-domain tracking for the solver state.&quot;</span>
 <span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">_SolverDirty</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -669,7 +666,6 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="ne">UserWarning</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot; Extra inputs will be ignored. Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
-                <span class="c1">#</span>
                 <span class="sa">f</span><span class="s2">&quot; Received </span><span class="si">{</span><span class="nb">input</span><span class="si">=!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">names</span><span class="si">=!r}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
         <span class="p">)</span>
@@ -688,7 +684,7 @@
                 <span class="p">)</span>
             <span class="n">axes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="k">elif</span> <span class="n">istype</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">AxesList</span><span class="p">,</span> <span class="n">AxesTuple</span><span class="p">]):</span>  <span class="c1"># convert to ordered dict</span>
+    <span class="k">elif</span> <span class="n">istype</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">AxesList</span> <span class="o">|</span> <span class="n">AxesTuple</span><span class="p">):</span>  <span class="c1"># convert to ordered dict</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
             <span class="n">axes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
@@ -738,11 +734,11 @@
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">a1</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">tol</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">test</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">a1</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">a2</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">abs_tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+                <span class="n">test</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">a2</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">abs_tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">test</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">a1</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">tol</span><span class="p">)</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="n">a2</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">tol</span><span class="p">)</span>
+                <span class="n">test</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tol</span><span class="p">)</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="n">a2</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">tol</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">test</span> <span class="o">=</span> <span class="n">a1</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">a2</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">test</span> <span class="o">=</span> <span class="n">v</span> <span class="o">==</span> <span class="n">a2</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">test</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># no need to go further</span>
     <span class="k">return</span> <span class="kc">False</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tests</span></div>
@@ -779,9 +775,7 @@
 
 <div class="viewcode-block" id="flatten_lists">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.flatten_lists">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">flatten_lists</span><span class="p">(</span>
-    <span class="n">xs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">flatten_lists</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bytes</span> <span class="o">|</span> <span class="n">Iterable</span> <span class="o">|</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert nested lists into single list.</span>
 
@@ -797,7 +791,7 @@
 
 <div class="viewcode-block" id="istype">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.istype">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">istype</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">istype</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if &#39;value&#39; matches the type &#39;annotation&#39;.</span>
 
@@ -828,7 +822,7 @@
 
 <div class="viewcode-block" id="load_yaml_file">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.load_yaml_file">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">load_yaml_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_yaml_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return contents of a YAML file as a Python object.&quot;&quot;&quot;</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
@@ -846,8 +840,7 @@
 <div class="viewcode-block" id="pick_closest_solution">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.pick_closest_solution">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pick_closest_solution</span><span class="p">(</span>
-    <span class="n">position</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">,</span>
-    <span class="n">solutions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedTuple</span><span class="p">],</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">solutions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedTuple</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the solution closest to the current real position.</span>
@@ -884,8 +877,7 @@
 <div class="viewcode-block" id="pick_first_solution">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.pick_first_solution">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pick_first_solution</span><span class="p">(</span>
-    <span class="n">position</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">,</span>
-    <span class="n">solutions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedTuple</span><span class="p">],</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">solutions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedTuple</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Choose first solution from list.</span>
@@ -1169,10 +1161,10 @@
         <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  calls:      </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  snapshot:   </span><span class="si">{</span><span class="n">snapshot</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;operation&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;ops/sec&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;ms/call&#39;</span><span class="si">:</span><span class="s2">&gt;11</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;fwd/inv&#39;</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;status&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># noqa: E501</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;operation&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;ops/sec&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;ms/call&#39;</span><span class="si">:</span><span class="s2">&gt;11</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;fwd/inv&#39;</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;status&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">11</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">6</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;forward()&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_ops</span><span class="si">:</span><span class="s2">&gt;10.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_ms</span><span class="si">:</span><span class="s2">&gt;11.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_inv_ratio</span><span class="si">:</span><span class="s2">&gt;9.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_status</span><span class="p">(</span><span class="n">fwd_ops</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># noqa: E501</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;inverse()&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">inv_ops</span><span class="si">:</span><span class="s2">&gt;10.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">inv_ms</span><span class="si">:</span><span class="s2">&gt;11.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_status</span><span class="p">(</span><span class="n">inv_ops</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># noqa: E501</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;forward()&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_ops</span><span class="si">:</span><span class="s2">&gt;10.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_ms</span><span class="si">:</span><span class="s2">&gt;11.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_inv_ratio</span><span class="si">:</span><span class="s2">&gt;9.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_status</span><span class="p">(</span><span class="n">fwd_ops</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;inverse()&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">inv_ops</span><span class="si">:</span><span class="s2">&gt;10.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">inv_ms</span><span class="si">:</span><span class="s2">&gt;11.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_status</span><span class="p">(</span><span class="n">inv_ops</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  target: </span><span class="si">{</span><span class="n">TARGET</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> ops/sec (+/-</span><span class="si">{</span><span class="n">tolerance</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">)&quot;</span>
     <span class="p">)</span>
@@ -1187,8 +1179,7 @@
 <div class="viewcode-block" id="solver_summary">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.solver_summary">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">solver_summary</span><span class="p">(</span>
-    <span class="n">diffractometer</span><span class="p">:</span> <span class="s2">&quot;DiffractometerBase | None&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="s2">&quot;DiffractometerBase | None&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Table of the diffractometer solver&#39;s modes, axes, ...</span>

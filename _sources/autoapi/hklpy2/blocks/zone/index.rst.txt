@@ -42,7 +42,7 @@ zone
 Module Contents
 ---------------
 
-.. py:class:: OrthonormalZone(*, axis: Optional[~hklpy2.typing.INPUT_VECTOR] = None, b1: Optional[~hklpy2.typing.INPUT_VECTOR] = None, b2: Optional[~hklpy2.typing.INPUT_VECTOR] = None)
+.. py:class:: OrthonormalZone(*, axis: ~hklpy2.typing.INPUT_VECTOR | None = None, b1: ~hklpy2.typing.INPUT_VECTOR | None = None, b2: ~hklpy2.typing.INPUT_VECTOR | None = None)
 
    .. container:: import-path
 
@@ -120,7 +120,7 @@ Module Contents
 
 
 
-   .. py:method:: vecspace(b1: ~hklpy2.typing.INPUT_VECTOR, b2: ~hklpy2.typing.INPUT_VECTOR, n: int) -> Iterator[~numpy.typing.NDArray]
+   .. py:method:: vecspace(b1: ~hklpy2.typing.INPUT_VECTOR, b2: ~hklpy2.typing.INPUT_VECTOR, n: int) -> ~collections.abc.Iterator[~numpy.typing.NDArray]
 
       Generate 'n' vectors from 'b1' to 'b2' rotated around b1 x b2.
 
@@ -192,7 +192,7 @@ Module Contents
    >>> zone_series(my_diffractometer, (1,0,0), (0,1,0), 5)
 
 
-.. py:function:: zonespace(diff: ~hklpy2.diffract.DiffractometerBase, hkl_1: ~hklpy2.typing.INPUT_VECTOR, hkl_2: ~hklpy2.typing.INPUT_VECTOR, n: int) -> Iterator[tuple[Sequence[float], Sequence[float]]]
+.. py:function:: zonespace(diff: ~hklpy2.diffract.DiffractometerBase, hkl_1: ~hklpy2.typing.INPUT_VECTOR, hkl_2: ~hklpy2.typing.INPUT_VECTOR, n: int) -> ~collections.abc.Iterator[tuple[~collections.abc.Sequence[float], ~collections.abc.Sequence[float]]]
 
    .. container:: import-path
 

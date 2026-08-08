@@ -39,13 +39,16 @@
     }
    ],
    "source": [
-    "import hklpy2\n",
-    "from hklpy2.diffract import Hklpy2PseudoAxis\n",
-    "from hklpy2.incident import EpicsMonochromatorRO\n",
+    "from typing import ClassVar\n",
+    "\n",
     "from ophyd import Component as Cpt\n",
     "from ophyd import EpicsMotor\n",
     "from ophyd import Kind\n",
     "from ophyd import SoftPositioner\n",
+    "\n",
+    "import hklpy2\n",
+    "from hklpy2.diffract import Hklpy2PseudoAxis\n",
+    "from hklpy2.incident import EpicsMonochromatorRO\n",
     "\n",
     "NORMAL_HINTED = Kind.hinted | Kind.normal\n",
     "\n",
@@ -66,9 +69,9 @@
     "    )\n",
     "\n",
     "    # Pseudo-space axes, in order expected by hkl_soleil E4CV, engine=\"hkl\"\n",
-    "    h = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)  # noqa: E741\n",
-    "    k = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)  # noqa: E741\n",
-    "    l = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)  # noqa: E741\n",
+    "    h = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)\n",
+    "    k = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)\n",
+    "    l = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)\n",
     "\n",
     "    # Real-space axes, in our own order..\n",
     "    # Use different names than the solver for some axes\n",
@@ -78,9 +81,9 @@
     "    phi = Cpt(EpicsMotor, \"m32\", kind=NORMAL_HINTED)\n",
     "\n",
     "    # Pseudo-space extra axes used in a couple modes.\n",
-    "    h2 = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)  # noqa: E741\n",
-    "    k2 = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)  # noqa: E741\n",
-    "    l2 = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)  # noqa: E741\n",
+    "    h2 = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)\n",
+    "    k2 = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)\n",
+    "    l2 = Cpt(Hklpy2PseudoAxis, \"\", kind=NORMAL_HINTED)\n",
     "\n",
     "    # real-space extra axis used in a couple modes\n",
     "    psi = Cpt(SoftPositioner, limits=(-170, 170), init_pos=0, kind=NORMAL_HINTED)\n",
@@ -89,8 +92,8 @@
     "    temperature = Cpt(SoftPositioner, limits=(-75, 45), init_pos=25, kind=NORMAL_HINTED)\n",
     "\n",
     "    # Just the axes in expected order by hkl_soleil E4CV.\n",
-    "    _pseudo = \"h k l\".split()\n",
-    "    _real = \"theta chi phi ttheta\".split()\n",
+    "    _pseudo: ClassVar[list[str]] = [\"h\", \"k\", \"l\"]\n",
+    "    _real: ClassVar[list[str]] = [\"theta\", \"chi\", \"phi\", \"ttheta\"]\n",
     "\n",
     "    def __init__(self, prefix, **kwargs):\n",
     "        # kwargs[\"prefix\"] = prefix\n",
@@ -98,7 +101,7 @@
     "            prefix=prefix,\n",
     "            solver=\"hkl_soleil\",\n",
     "            geometry=\"E4CV\",\n",
-    "            solver_kwargs=dict(engine=\"hkl\"),\n",
+    "            solver_kwargs={\"engine\": \"hkl\"},\n",
     "            pseudos=[\"h\", \"k\", \"l\"],\n",
     "            reals=[\"theta\", \"chi\", \"phi\", \"ttheta\"],\n",
     "            **kwargs,\n",
@@ -219,7 +222,7 @@
     }
    ],
    "source": [
-    "fourc.core.forward(dict(h=1, k=0, l=0))  # Shows ALL the possibilities."
+    "fourc.core.forward({\"h\": 1, \"k\": 0, \"l\": 0})  # Shows ALL the possibilities."
    ]
   },
   {
@@ -240,7 +243,7 @@
     }
    ],
    "source": [
-    "fourc.core.inverse(dict(ttheta=60, theta=30, chi=0, phi=90))"
+    "fourc.core.inverse({\"ttheta\": 60, \"theta\": 30, \"chi\": 0, \"phi\": 90})"
    ]
   }
  ],
