@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -36,19 +36,19 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/plans';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -414,7 +414,7 @@
   <h1>Source code for hklpy2.plans</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) 2023-2026 UChicago Argonne, LLC</span>
 <span class="c1"># SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Bluesky plans provided by |hklpy2|.</span>
 
 <span class="sd">This module is the single, canonical location for all standalone |hklpy2|</span>
@@ -439,21 +439,21 @@
 <span class="sd">.. rubric:: Solver compatibility for scan_psi</span>
 
 <span class="sd">:func:`scan_psi` discovers the psi mode and psi axis name from the</span>
-<span class="sd">diffractometer&#39;s solver at runtime using only the solver-agnostic API:</span>
+<span class="sd">diffractometer's solver at runtime using only the solver-agnostic API:</span>
 
 <span class="sd">* ``diffractometer.core.modes`` — list of available mode names</span>
 <span class="sd">* ``diffractometer.core.solver_extra_axis_names`` — extra axis names for</span>
 <span class="sd">  the current mode</span>
 
-<span class="sd">Auto-detection searches ``core.modes`` for a name that contains ``&quot;psi&quot;``.</span>
-<span class="sd">If the solver exposes more than one such mode (e.g. ``&quot;psi_constant&quot;``</span>
-<span class="sd">**and** ``&quot;psi_constant_vertical&quot;`` on an E6C geometry), auto-detection is</span>
+<span class="sd">Auto-detection searches ``core.modes`` for a name that contains ``"psi"``.</span>
+<span class="sd">If the solver exposes more than one such mode (e.g. ``"psi_constant"``</span>
+<span class="sd">**and** ``"psi_constant_vertical"`` on an E6C geometry), auto-detection is</span>
 <span class="sd">ambiguous and the caller must pass ``mode=`` explicitly.</span>
 
 <span class="sd">Override parameters ``mode=`` and ``psi_axis=`` are provided as escape</span>
 <span class="sd">hatches for future solvers whose naming conventions differ from the current</span>
 <span class="sd">``hkl_soleil`` convention.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
@@ -474,7 +474,7 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;move_zone&quot;</span><span class="p">,</span> <span class="s2">&quot;scan_psi&quot;</span><span class="p">,</span> <span class="s2">&quot;scan_zone&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"move_zone"</span><span class="p">,</span> <span class="s2">"scan_psi"</span><span class="p">,</span> <span class="s2">"scan_zone"</span><span class="p">]</span>
 
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
@@ -485,7 +485,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_psi_mode</span><span class="p">(</span>
     <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">mode_override</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the name of the psi-capable mode, or raise.</span>
+<span class="w">    </span><span class="sd">"""Return the name of the psi-capable mode, or raise.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -502,35 +502,35 @@
 <span class="sd">        finds zero or more than one psi-capable mode.</span>
 <span class="sd">    NotImplementedError</span>
 <span class="sd">        If no psi-capable mode exists in ``core.modes``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">available</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">modes</span>
     <span class="k">if</span> <span class="n">mode_override</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">mode_override</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;mode=</span><span class="si">{</span><span class="n">mode_override</span><span class="si">!r}</span><span class="s2"> not in available modes: </span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"mode=</span><span class="si">{</span><span class="n">mode_override</span><span class="si">!r}</span><span class="s2"> not in available modes: </span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">mode_override</span>
 
-    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">available</span> <span class="k">if</span> <span class="s2">&quot;psi&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">available</span> <span class="k">if</span> <span class="s2">"psi"</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;No psi-capable mode found in available modes: &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">. &quot;</span>
-            <span class="s2">&quot;Pass mode= to specify the mode name explicitly.&quot;</span>
+            <span class="s2">"No psi-capable mode found in available modes: "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">available</span><span class="si">}</span><span class="s2">. "</span>
+            <span class="s2">"Pass mode= to specify the mode name explicitly."</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Multiple psi-capable modes found: </span><span class="si">{</span><span class="n">candidates</span><span class="si">}</span><span class="s2">. &quot;</span>
-            <span class="s2">&quot;Pass mode= to select one explicitly.&quot;</span>
+            <span class="sa">f</span><span class="s2">"Multiple psi-capable modes found: </span><span class="si">{</span><span class="n">candidates</span><span class="si">}</span><span class="s2">. "</span>
+            <span class="s2">"Pass mode= to select one explicitly."</span>
         <span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;scan_psi: auto-detected psi mode </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"scan_psi: auto-detected psi mode </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_find_psi_axis</span><span class="p">(</span>
     <span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">psi_axis_override</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the name of the psi extra axis in the current mode, or raise.</span>
+<span class="w">    </span><span class="sd">"""Return the name of the psi extra axis in the current mode, or raise.</span>
 
 <span class="sd">    Must be called *after* the desired psi mode has been set on the</span>
 <span class="sd">    diffractometer, so that ``core.solver_extra_axis_names`` reflects that</span>
@@ -548,28 +548,28 @@
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If the axis is not found, or auto-detection is ambiguous.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">extra_axes</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_extra_axis_names</span>
     <span class="k">if</span> <span class="n">psi_axis_override</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">psi_axis_override</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">extra_axes</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;psi_axis=</span><span class="si">{</span><span class="n">psi_axis_override</span><span class="si">!r}</span><span class="s2"> not in extra axes for &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;current mode: </span><span class="si">{</span><span class="n">extra_axes</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"psi_axis=</span><span class="si">{</span><span class="n">psi_axis_override</span><span class="si">!r}</span><span class="s2"> not in extra axes for "</span>
+                <span class="sa">f</span><span class="s2">"current mode: </span><span class="si">{</span><span class="n">extra_axes</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">psi_axis_override</span>
 
-    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">extra_axes</span> <span class="k">if</span> <span class="s2">&quot;psi&quot;</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">extra_axes</span> <span class="k">if</span> <span class="s2">"psi"</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;No psi extra axis found in </span><span class="si">{</span><span class="n">extra_axes</span><span class="si">}</span><span class="s2">. &quot;</span>
-            <span class="s2">&quot;Pass psi_axis= to specify the axis name explicitly.&quot;</span>
+            <span class="sa">f</span><span class="s2">"No psi extra axis found in </span><span class="si">{</span><span class="n">extra_axes</span><span class="si">}</span><span class="s2">. "</span>
+            <span class="s2">"Pass psi_axis= to specify the axis name explicitly."</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Multiple psi-like extra axes found: </span><span class="si">{</span><span class="n">candidates</span><span class="si">}</span><span class="s2">. &quot;</span>
-            <span class="s2">&quot;Pass psi_axis= to select one explicitly.&quot;</span>
+            <span class="sa">f</span><span class="s2">"Multiple psi-like extra axes found: </span><span class="si">{</span><span class="n">candidates</span><span class="si">}</span><span class="s2">. "</span>
+            <span class="s2">"Pass psi_axis= to select one explicitly."</span>
         <span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;scan_psi: auto-detected psi axis </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"scan_psi: auto-detected psi axis </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
@@ -579,18 +579,18 @@
 
 
 <span class="nd">@versionadded</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.4.2&quot;</span><span class="p">,</span>
-    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Move diffractometer to a zone position (SPEC ``mz`` equivalent).&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">"0.4.2"</span><span class="p">,</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">"Move diffractometer to a zone position (SPEC ``mz`` equivalent)."</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@plan</span>
 <div class="viewcode-block" id="move_zone">
 <a class="viewcode-back" href="../../autoapi/hklpy2/plans/index.html#hklpy2.plans.move_zone">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">move_zone</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">hkl</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Move diffractometer to a position in the zone (SPEC ``mz`` equivalent).</span>
 
 <span class="sd">    Computes the real-axis positions corresponding to the given pseudo</span>
-<span class="sd">    position *hkl* via the diffractometer&#39;s forward calculation and moves</span>
+<span class="sd">    position *hkl* via the diffractometer's forward calculation and moves</span>
 <span class="sd">    all real axes there.</span>
 
 <span class="sd">    .. rubric:: Example</span>
@@ -607,7 +607,7 @@
 <span class="sd">        hklpy2 diffractometer object.</span>
 <span class="sd">    hkl : INPUT_VECTOR</span>
 <span class="sd">        Target pseudo position (*h, k, l*).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">pseudos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">hkl</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hkl</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="n">hkl</span>
     <span class="n">reals</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span>
     <span class="n">parms</span> <span class="o">=</span> <span class="p">[]</span>
@@ -619,8 +619,8 @@
 
 
 <span class="nd">@versionadded</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.3.0&quot;</span><span class="p">,</span>
-    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Scan a diffractometer through a zone (SPEC ``scanzone`` equivalent).&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">"0.3.0"</span><span class="p">,</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">"Scan a diffractometer through a zone (SPEC ``scanzone`` equivalent)."</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@plan</span>
 <div class="viewcode-block" id="scan_zone">
@@ -633,7 +633,7 @@
     <span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">md</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Perform a zone scan on a diffractometer.</span>
 
 <span class="sd">    .. rubric:: Behavior</span>
@@ -672,8 +672,8 @@
 <span class="sd">        of endpoints).</span>
 <span class="sd">    md : dict</span>
 <span class="sd">        (Optional) User-supplied metadata.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_md</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;plan_name&quot;</span><span class="p">:</span> <span class="s2">&quot;scan_zone&quot;</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">md</span> <span class="ow">or</span> <span class="p">{})}</span>
+<span class="sd">    """</span>
+    <span class="n">_md</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"plan_name"</span><span class="p">:</span> <span class="s2">"scan_zone"</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">md</span> <span class="ow">or</span> <span class="p">{})}</span>
 
     <span class="nd">@bpp</span><span class="o">.</span><span class="n">stage_decorator</span><span class="p">(</span><span class="n">detectors</span><span class="p">)</span>
     <span class="nd">@bpp</span><span class="o">.</span><span class="n">run_decorator</span><span class="p">(</span><span class="n">md</span><span class="o">=</span><span class="n">_md</span><span class="p">)</span>
@@ -681,7 +681,7 @@
         <span class="c1"># Compute sequence of pseudos &amp; reals in the zone</span>
         <span class="k">for</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span> <span class="ow">in</span> <span class="n">zonespace</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">finish</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
             <span class="c1"># move axes</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;zone hkl=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"zone hkl=</span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span>
             <span class="n">parms</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">,</span> <span class="n">reals</span><span class="p">):</span>
                 <span class="n">parms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span>
@@ -689,13 +689,13 @@
             <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="o">*</span><span class="n">parms</span><span class="p">)</span>
 
             <span class="c1"># trigger</span>
-            <span class="n">group</span> <span class="o">=</span> <span class="s2">&quot;trigger_objects&quot;</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="s2">"trigger_objects"</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">detectors</span><span class="p">:</span>
                 <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">trigger</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
             <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">)</span>
 
             <span class="c1"># read</span>
-            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">&quot;primary&quot;</span><span class="p">)</span>
+            <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s2">"primary"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">detectors</span> <span class="o">+</span> <span class="p">[</span><span class="n">diffractometer</span><span class="p">]:</span>
                 <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
             <span class="k">yield from</span> <span class="n">bps</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
@@ -704,7 +704,7 @@
 
 
 
-<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.5.1&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Convenience plan for azimuthal (ψ) scans.&quot;</span><span class="p">)</span>
+<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"0.5.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Convenience plan for azimuthal (ψ) scans."</span><span class="p">)</span>
 <span class="nd">@plan</span>
 <div class="viewcode-block" id="scan_psi">
 <a class="viewcode-back" href="../../autoapi/hklpy2/plans/index.html#hklpy2.plans.scan_psi">[docs]</a>
@@ -724,7 +724,7 @@
     <span class="n">fail_on_exception</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">md</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Scan the azimuthal angle (ψ) at a fixed *(h, k, l)* position.</span>
 
 <span class="sd">    Rotates the sample about the scattering vector **Q** by sweeping the</span>
@@ -738,12 +738,12 @@
 <span class="sd">    .. rubric:: Behavior</span>
 
 <span class="sd">    1. Discovers the psi-capable mode from ``diffractometer.core.modes``</span>
-<span class="sd">       (any mode whose name contains ``&quot;psi&quot;``).  If the solver exposes more</span>
+<span class="sd">       (any mode whose name contains ``"psi"``).  If the solver exposes more</span>
 <span class="sd">       than one such mode the caller must pass ``mode=`` explicitly.</span>
 <span class="sd">    2. Saves the current mode and restores it on exit (even after an error).</span>
 <span class="sd">    3. Sets the discovered mode and discovers the psi extra axis name from</span>
 <span class="sd">       ``core.solver_extra_axis_names`` (any axis whose name contains</span>
-<span class="sd">       ``&quot;psi&quot;``).</span>
+<span class="sd">       ``"psi"``).</span>
 <span class="sd">    4. Validates that *hkl* and *hkl2* are not parallel.</span>
 <span class="sd">    5. Calls :meth:`~hklpy2.diffract.DiffractometerBase.scan_extra` with</span>
 <span class="sd">       the appropriate arguments.</span>
@@ -790,12 +790,12 @@
 <span class="sd">    mode : str, optional</span>
 <span class="sd">        Psi-capable mode name to use.  When *None* (default), the mode is</span>
 <span class="sd">        discovered automatically by searching ``core.modes`` for a name</span>
-<span class="sd">        containing ``&quot;psi&quot;``.  Pass explicitly when the solver exposes</span>
-<span class="sd">        multiple psi modes (e.g. ``&quot;psi_constant_vertical&quot;`` on E6C).</span>
+<span class="sd">        containing ``"psi"``.  Pass explicitly when the solver exposes</span>
+<span class="sd">        multiple psi modes (e.g. ``"psi_constant_vertical"`` on E6C).</span>
 <span class="sd">    psi_axis : str, optional</span>
 <span class="sd">        Name of the azimuthal extra axis to scan.  When *None* (default),</span>
 <span class="sd">        the axis is discovered automatically by searching</span>
-<span class="sd">        ``core.solver_extra_axis_names`` for a name containing ``&quot;psi&quot;``.</span>
+<span class="sd">        ``core.solver_extra_axis_names`` for a name containing ``"psi"``.</span>
 <span class="sd">        Pass explicitly if the solver uses a different naming convention.</span>
 <span class="sd">    fail_on_exception : bool, optional</span>
 <span class="sd">        When *True*, any failed forward-calculation at a scan point raises</span>
@@ -821,7 +821,7 @@
 <span class="sd">      Exactly three such axes are expected; any other count raises</span>
 <span class="sd">      ``ValueError``.</span>
 <span class="sd">    * Currently only solvers that expose a psi-capable mode (mode name</span>
-<span class="sd">      containing ``&quot;psi&quot;``) in their extra-axis API are supported.  This</span>
+<span class="sd">      containing ``"psi"``) in their extra-axis API are supported.  This</span>
 <span class="sd">      includes ``hkl_soleil`` geometries such as E4CV, E4CH, K4CV, E6C,</span>
 <span class="sd">      K6C, APS POLAR, SOLEIL MARS, and PETRA3 P23.  Future solvers can</span>
 <span class="sd">      support :func:`scan_psi` by exposing a similarly named mode and extra</span>
@@ -832,7 +832,7 @@
 
 <span class="sd">        :meth:`~hklpy2.diffract.DiffractometerBase.scan_extra` — the</span>
 <span class="sd">        lower-level plan this function wraps.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># --- Resolve pure-Python parameters before touching the diffractometer. ---</span>
     <span class="c1"># 1. Discover (or validate) the psi mode.</span>
     <span class="n">psi_mode</span> <span class="o">=</span> <span class="n">_find_psi_mode</span><span class="p">(</span><span class="n">diffractometer</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
@@ -859,9 +859,9 @@
             <span class="n">ref_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">all_extras</span> <span class="k">if</span> <span class="n">ax</span> <span class="o">!=</span> <span class="n">psi_ax</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ref_axes</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Expected exactly 3 reference extra axes (for h2, k2, l2 or &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;equivalent), found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ref_axes</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ref_axes</span><span class="si">}</span><span class="s2">. &quot;</span>
-                    <span class="s2">&quot;Check the solver mode or pass psi_axis= to disambiguate.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Expected exactly 3 reference extra axes (for h2, k2, l2 or "</span>
+                    <span class="sa">f</span><span class="s2">"equivalent), found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ref_axes</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">ref_axes</span><span class="si">}</span><span class="s2">. "</span>
+                    <span class="s2">"Check the solver mode or pass psi_axis= to disambiguate."</span>
                 <span class="p">)</span>
 
             <span class="c1"># Build the extras dict for the reference reflection.</span>
@@ -874,7 +874,7 @@
                 <span class="n">psi_start</span><span class="p">,</span>
                 <span class="n">psi_stop</span><span class="p">,</span>
                 <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span>
-                <span class="n">pseudos</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="n">l</span><span class="p">},</span>
+                <span class="n">pseudos</span><span class="o">=</span><span class="p">{</span><span class="s2">"h"</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="s2">"k"</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="n">l</span><span class="p">},</span>
                 <span class="n">extras</span><span class="o">=</span><span class="n">ref_extras</span><span class="p">,</span>
                 <span class="n">fail_on_exception</span><span class="o">=</span><span class="n">fail_on_exception</span><span class="p">,</span>
                 <span class="n">md</span><span class="o">=</span><span class="n">md</span><span class="p">,</span>
@@ -915,8 +915,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -950,7 +950,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -37,19 +37,19 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'guides/how_extra_reals_and_pseudos';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -545,7 +545,7 @@ simulated motors for the example (no EPICS required).</p>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
-<span class="n">th2th</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;th2th&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">)</span>
+<span class="n">th2th</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"th2th"</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">"TH TTH Q"</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">"th_tth"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -554,7 +554,7 @@ simulated motors for the example (no EPICS required).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">th2th</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">th2th</span><span class="o">.</span><span class="n">component_names</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">th2th</span><span class="o">.</span><span class="n">component_names</span><span class="si">=}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -562,7 +562,7 @@ simulated motors for the example (no EPICS required).</p>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wavelength=1.0
 pseudos: q=0
 reals: th=0, tth=0
-th2th.component_names=(&#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;)
+th2th.component_names=('beam', 'q', 'th', 'tth')
 </pre></div>
 </div>
 </div>
@@ -574,13 +574,13 @@ th2th.component_names=(&#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;)
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">th2th</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;th2th&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">,</span>
-    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;th&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;spinner&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"th2th"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"TH TTH Q"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"th_tth"</span><span class="p">,</span>
+    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">"th"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"tth"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"spinner"</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
 <span class="p">)</span>
 <span class="n">th2th</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">th2th</span><span class="o">.</span><span class="n">component_names</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">th2th</span><span class="o">.</span><span class="n">component_names</span><span class="si">=}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -589,7 +589,7 @@ th2th.component_names=(&#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;)
 pseudos: q=0
 reals: th=0, tth=0
 auxiliaries: spinner=0
-th2th.component_names=(&#39;beam&#39;, &#39;q&#39;, &#39;th&#39;, &#39;tth&#39;, &#39;spinner&#39;)
+th2th.component_names=('beam', 'q', 'th', 'tth', 'spinner')
 </pre></div>
 </div>
 </div>
@@ -619,13 +619,13 @@ to the pseudo positioners?</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">th2th</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;th2th&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">,</span>
-    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">],</span>
-    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;detector&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;spinner&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
-    <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Q&quot;</span><span class="p">],</span>
-    <span class="n">_real</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">,</span> <span class="s2">&quot;detector&quot;</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"th2th"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"TH TTH Q"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"th_tth"</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">"Q"</span><span class="p">,</span> <span class="s2">"d"</span><span class="p">],</span>
+    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">"sample"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"detector"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"spinner"</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+    <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">"Q"</span><span class="p">],</span>
+    <span class="n">_real</span><span class="o">=</span><span class="p">[</span><span class="s2">"sample"</span><span class="p">,</span> <span class="s2">"detector"</span><span class="p">],</span>
 <span class="p">)</span>
 <span class="n">th2th</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
 </pre></div>
@@ -660,44 +660,44 @@ Let’s skip the factory function and show how to build a structure directly.</p
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">XYStage</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">solenoid_lock</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Signal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"hinted"</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"hinted"</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">105</span><span class="p">),</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">solenoid_lock</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Signal</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"normal"</span><span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyTwoCircle</span><span class="p">(</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">DiffractometerBase</span><span class="p">):</span>
-    <span class="n">_real</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;th&quot;</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">]</span>
+    <span class="n">_real</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"th"</span><span class="p">,</span> <span class="s2">"tth"</span><span class="p">]</span>
 
-    <span class="n">q</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"hinted"</span><span class="p">)</span>
     <span class="n">th</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span>
-        <span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s2">&quot;degrees&quot;</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"hinted"</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s2">"degrees"</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span>
     <span class="p">)</span>
     <span class="n">tth</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span>
-        <span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s2">&quot;degrees&quot;</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"hinted"</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s2">"degrees"</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span>
     <span class="p">)</span>
     <span class="n">spinner</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span>
         <span class="n">SoftPositioner</span><span class="p">,</span>
-        <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span>
+        <span class="n">kind</span><span class="o">=</span><span class="s2">"hinted"</span><span class="p">,</span>
         <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">),</span>
-        <span class="n">egu</span><span class="o">=</span><span class="s2">&quot;rotations&quot;</span><span class="p">,</span>
+        <span class="n">egu</span><span class="o">=</span><span class="s2">"rotations"</span><span class="p">,</span>
         <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">atth</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span>
-        <span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s2">&quot;degrees&quot;</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"hinted"</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mi">180</span><span class="p">),</span> <span class="n">egu</span><span class="o">=</span><span class="s2">"degrees"</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span>
     <span class="p">)</span>
-    <span class="n">temperature</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SignalRO</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
-    <span class="n">xy</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">XYStage</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
+    <span class="n">temperature</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SignalRO</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"normal"</span><span class="p">)</span>
+    <span class="n">xy</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">XYStage</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"normal"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-            <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">,</span>  <span class="c1"># solver name</span>
-            <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span>  <span class="c1"># solver geometry</span>
+            <span class="n">solver</span><span class="o">=</span><span class="s2">"th_tth"</span><span class="p">,</span>  <span class="c1"># solver name</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="s2">"TH TTH Q"</span><span class="p">,</span>  <span class="c1"># solver geometry</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
 
-<span class="n">th2tth</span> <span class="o">=</span> <span class="n">MyTwoCircle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;th2tth&quot;</span><span class="p">)</span>
+<span class="n">th2tth</span> <span class="o">=</span> <span class="n">MyTwoCircle</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"th2tth"</span><span class="p">)</span>
 <span class="n">th2tth</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>  <span class="c1"># brief report of diffractometer position</span>
 <span class="c1"># th2th.summary()  # show the full ophyd structure summary</span>
 <span class="n">th2tth</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -711,23 +711,23 @@ reals: th=0, tth=0
 auxiliaries: spinner=0, atth=0
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OrderedDict([(&#39;th2tth_beam_wavelength&#39;,
-              {&#39;value&#39;: 1.0, &#39;timestamp&#39;: 1753128590.120337}),
-             (&#39;th2tth_beam_energy&#39;,
-              {&#39;value&#39;: 12.398419843856837, &#39;timestamp&#39;: 1753128590.1203966}),
-             (&#39;th2tth_q&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1204944}),
-             (&#39;th2tth_q_setpoint&#39;,
-              {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1205065}),
-             (&#39;th2tth_th&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492393}),
-             (&#39;th2tth_tth&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492438}),
-             (&#39;th2tth_spinner&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492467}),
-             (&#39;th2tth_atth&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492488}),
-             (&#39;th2tth_temperature&#39;,
-              {&#39;value&#39;: 25, &#39;timestamp&#39;: 1753128590.1208959}),
-             (&#39;th2tth_xy_x&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492596}),
-             (&#39;th2tth_xy_y&#39;, {&#39;value&#39;: 0, &#39;timestamp&#39;: 1753128590.1492617}),
-             (&#39;th2tth_xy_solenoid_lock&#39;,
-              {&#39;value&#39;: True, &#39;timestamp&#39;: 1753128590.1210973})])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OrderedDict([('th2tth_beam_wavelength',
+              {'value': 1.0, 'timestamp': 1753128590.120337}),
+             ('th2tth_beam_energy',
+              {'value': 12.398419843856837, 'timestamp': 1753128590.1203966}),
+             ('th2tth_q', {'value': 0, 'timestamp': 1753128590.1204944}),
+             ('th2tth_q_setpoint',
+              {'value': 0, 'timestamp': 1753128590.1205065}),
+             ('th2tth_th', {'value': 0, 'timestamp': 1753128590.1492393}),
+             ('th2tth_tth', {'value': 0, 'timestamp': 1753128590.1492438}),
+             ('th2tth_spinner', {'value': 0, 'timestamp': 1753128590.1492467}),
+             ('th2tth_atth', {'value': 0, 'timestamp': 1753128590.1492488}),
+             ('th2tth_temperature',
+              {'value': 25, 'timestamp': 1753128590.1208959}),
+             ('th2tth_xy_x', {'value': 0, 'timestamp': 1753128590.1492596}),
+             ('th2tth_xy_y', {'value': 0, 'timestamp': 1753128590.1492617}),
+             ('th2tth_xy_solenoid_lock',
+              {'value': True, 'timestamp': 1753128590.1210973})])
 </pre></div>
 </div>
 </div>
@@ -827,8 +827,8 @@ auxiliaries: spinner=0, atth=0
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -862,7 +862,7 @@ auxiliaries: spinner=0, atth=0
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

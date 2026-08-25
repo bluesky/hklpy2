@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -38,12 +38,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -53,7 +53,7 @@
     <script src="../_static/tabs.js?v=3030b3cb"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'guides/diffract';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -665,7 +665,7 @@ examples below).  Consult <code class="xref py py-mod docutils literal notransla
 scan plans.</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.run_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigurationRunWrapper</span>
 <span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">)</span>
+<span class="linenos"> 3</span><span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"fourc"</span><span class="p">)</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="c1"># Save configuration with every run</span>
 <span class="linenos"> 6</span><span class="n">crw</span> <span class="o">=</span> <span class="n">ConfigurationRunWrapper</span><span class="p">(</span><span class="n">fourc</span><span class="p">)</span>
@@ -764,14 +764,14 @@ the names used by the <strong>Solver</strong>.  Let’s show this cross-referenc
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">twoc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-<span class="go">    name=&quot;twoc&quot;,</span>
-<span class="go">    geometry=&quot;TH TTH Q&quot;,</span>
-<span class="go">    solver=&quot;th_tth&quot;,</span>
-<span class="go">    reals={&quot;sample&quot;: None, &quot;detector&quot;: None},</span>
+<span class="go">    name="twoc",</span>
+<span class="go">    geometry="TH TTH Q",</span>
+<span class="go">    solver="th_tth",</span>
+<span class="go">    reals={"sample": None, "detector": None},</span>
 <span class="go">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">twoc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
-<span class="go">{&#39;q&#39;: &#39;q&#39;, &#39;sample&#39;: &#39;th&#39;, &#39;detector&#39;: &#39;tth&#39;}</span>
+<span class="go">{'q': 'q', 'sample': 'th', 'detector': 'tth'}</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">twoc</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
 <span class="go">q=0</span>
@@ -804,34 +804,34 @@ as long as:</p>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="k">class</span><span class="w"> </span><span class="nc">S1D1</span><span class="p">(</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">DiffractometerBase</span><span class="p">):</span>
 <span class="linenos"> 6</span>
-<span class="linenos"> 7</span>    <span class="n">q</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">H_OR_N</span><span class="p">)</span>
+<span class="linenos"> 7</span>    <span class="n">q</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">H_OR_N</span><span class="p">)</span>
 <span class="linenos"> 8</span>
 <span class="linenos"> 9</span>    <span class="n">sample</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="linenos">10</span>    <span class="n">detector</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="linenos">11</span>
-<span class="linenos">12</span>    <span class="c1"># Alias &#39;sample&#39; to &#39;th&#39;, &#39;detector&#39; to &#39;tth&#39;</span>
-<span class="linenos">13</span>    <span class="n">_real</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">,</span> <span class="s2">&quot;detector&quot;</span><span class="p">]</span>
+<span class="linenos">12</span>    <span class="c1"># Alias 'sample' to 'th', 'detector' to 'tth'</span>
+<span class="linenos">13</span>    <span class="n">_real</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"sample"</span><span class="p">,</span> <span class="s2">"detector"</span><span class="p">]</span>
 <span class="linenos">14</span>
 <span class="linenos">15</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="linenos">16</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 <span class="linenos">17</span>            <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-<span class="linenos">18</span>            <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">,</span>                <span class="c1"># solver name</span>
-<span class="linenos">19</span>            <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span>            <span class="c1"># solver geometry</span>
+<span class="linenos">18</span>            <span class="n">solver</span><span class="o">=</span><span class="s2">"th_tth"</span><span class="p">,</span>                <span class="c1"># solver name</span>
+<span class="linenos">19</span>            <span class="n">geometry</span><span class="o">=</span><span class="s2">"TH TTH Q"</span><span class="p">,</span>            <span class="c1"># solver geometry</span>
 <span class="linenos">20</span>            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="linenos">21</span>        <span class="p">)</span>
 </pre></div>
 </div>
 <p>Create a Python object that uses this class:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">twoc</span> <span class="o">=</span> <span class="n">S1D1</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;twoc&quot;</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">twoc</span> <span class="o">=</span> <span class="n">S1D1</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"twoc"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Use the <a class="reference internal" href="../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator" title="hklpy2.diffract.creator"><code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.diffract.creator()</span></code></a> instead:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">twoc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;twoc&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"twoc"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"TH TTH Q"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"th_tth"</span><span class="p">,</span>
     <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">detector</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -839,7 +839,7 @@ as long as:</p>
 </div>
 <p>Show the mapping between user-defined axes and axis names used by the <strong>Solver</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">twoc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span><span class="p">)</span>
-<span class="go">{&#39;q&#39;: &#39;q&#39;, &#39;sample&#39;: &#39;th&#39;, &#39;detector&#39;: &#39;tth&#39;}</span>
+<span class="go">{'q': 'q', 'sample': 'th', 'detector': 'tth'}</span>
 </pre></div>
 </div>
 </section>
@@ -867,39 +867,39 @@ order expected by the solver). Look for the <code class="docutils literal notran
 <span class="linenos">12</span>    <span class="n">ttheta</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="linenos">13</span>    <span class="n">vertical</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="linenos">14</span>
-<span class="linenos">15</span>    <span class="n">_pseudo</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;q&quot;</span><span class="p">]</span>
-<span class="linenos">16</span>    <span class="n">_real</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="s2">&quot;ttheta&quot;</span><span class="p">]</span>
+<span class="linenos">15</span>    <span class="n">_pseudo</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"q"</span><span class="p">]</span>
+<span class="linenos">16</span>    <span class="n">_real</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"theta"</span><span class="p">,</span> <span class="s2">"ttheta"</span><span class="p">]</span>
 <span class="linenos">17</span>
 <span class="linenos">18</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="linenos">19</span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 <span class="linenos">20</span>          <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-<span class="linenos">21</span>          <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;th_tth&quot;</span><span class="p">,</span>
-<span class="linenos">22</span>          <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;TH TTH Q&quot;</span><span class="p">,</span>
+<span class="linenos">21</span>          <span class="n">solver</span><span class="o">=</span><span class="s2">"th_tth"</span><span class="p">,</span>
+<span class="linenos">22</span>          <span class="n">geometry</span><span class="o">=</span><span class="s2">"TH TTH Q"</span><span class="p">,</span>
 <span class="linenos">23</span>          <span class="o">**</span><span class="n">kwargs</span>
 <span class="linenos">24</span>          <span class="p">)</span>
 </pre></div>
 </div>
 <p>Create the diffractometer:</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">twoc</span> <span class="o">=</span> <span class="n">MyTwoC</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;twoc&quot;</span><span class="p">)</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">twoc</span> <span class="o">=</span> <span class="n">MyTwoC</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"twoc"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>What are the axes names used by this diffractometer?</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">twoc</span><span class="o">.</span><span class="n">pseudo_axis_names</span>
-<span class="p">[</span><span class="s1">&#39;another&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">'another'</span><span class="p">,</span> <span class="s1">'q'</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">twoc</span><span class="o">.</span><span class="n">real_axis_names</span>
-<span class="p">[</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">,</span> <span class="s1">&#39;ttheta&#39;</span><span class="p">,</span> <span class="s1">&#39;vertical&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">'horizontal'</span><span class="p">,</span> <span class="s1">'theta'</span><span class="p">,</span> <span class="s1">'ttheta'</span><span class="p">,</span> <span class="s1">'vertical'</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Show the <code class="docutils literal notranslate"><span class="pre">twoc</span></code> diffractometer’s <strong>Solver</strong>:</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">twoc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span>
-<span class="n">ThTthSolver</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;th_tth&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.14&#39;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">&#39;TH TTH Q&#39;</span><span class="p">)</span>
+<span class="n">ThTthSolver</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'th_tth'</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">'0.0.14'</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s1">'TH TTH Q'</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>What are the axes expected by this <strong>Solver</strong>?</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">twoc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_pseudo_axis_names</span>
-<span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">'q'</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">twoc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_real_axis_names</span>
-<span class="p">[</span><span class="s1">&#39;th&#39;</span><span class="p">,</span> <span class="s1">&#39;tth&#39;</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">'th'</span><span class="p">,</span> <span class="s1">'tth'</span><span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">twoc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_extra_axis_names</span>
 <span class="p">[]</span>
 </pre></div>
@@ -907,7 +907,7 @@ order expected by the solver). Look for the <code class="docutils literal notran
 <p>Show the cross-reference mapping from diffractometer
 to <strong>Solver</strong> axis names (as defined in our MyTwoC class above):</p>
 <div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">twoc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
-<span class="p">{</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;theta&#39;</span><span class="p">:</span> <span class="s1">&#39;th&#39;</span><span class="p">,</span> <span class="s1">&#39;ttheta&#39;</span><span class="p">:</span> <span class="s1">&#39;tth&#39;</span><span class="p">}</span>
+<span class="p">{</span><span class="s1">'q'</span><span class="p">:</span> <span class="s1">'q'</span><span class="p">,</span> <span class="s1">'theta'</span><span class="p">:</span> <span class="s1">'th'</span><span class="p">,</span> <span class="s1">'ttheta'</span><span class="p">:</span> <span class="s1">'tth'</span><span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -940,26 +940,26 @@ than the solver’s <code class="docutils literal notranslate"><span class="pre"
 maps to solver <code class="docutils literal notranslate"><span class="pre">h</span></code> (1st) and <code class="docutils literal notranslate"><span class="pre">hh</span></code> (3rd) maps to solver <code class="docutils literal notranslate"><span class="pre">l</span></code>
 (3rd) — silently swapped:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
-    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ll&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;hh&quot;</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"sim"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"E4CV"</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">"ll"</span><span class="p">,</span> <span class="s2">"kk"</span><span class="p">,</span> <span class="s2">"hh"</span><span class="p">],</span>
 <span class="p">)</span>
 <span class="n">sim</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
-<span class="c1"># {&#39;ll&#39;: &#39;h&#39;, &#39;kk&#39;: &#39;k&#39;, &#39;hh&#39;: &#39;l&#39;, ...}   ← swapped</span>
+<span class="c1"># {'ll': 'h', 'kk': 'k', 'hh': 'l', ...}   ← swapped</span>
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><p>Supply <code class="docutils literal notranslate"><span class="pre">_pseudo</span></code> to declare which local name maps to each solver
 pseudo axis slot, independent of the <code class="docutils literal notranslate"><span class="pre">pseudos</span></code> list order:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
-    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ll&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;hh&quot;</span><span class="p">],</span>
-    <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hh&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;ll&quot;</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"sim"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"E4CV"</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">"ll"</span><span class="p">,</span> <span class="s2">"kk"</span><span class="p">,</span> <span class="s2">"hh"</span><span class="p">],</span>
+    <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">"hh"</span><span class="p">,</span> <span class="s2">"kk"</span><span class="p">,</span> <span class="s2">"ll"</span><span class="p">],</span>
 <span class="p">)</span>
 <span class="n">sim</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
-<span class="c1"># {&#39;hh&#39;: &#39;h&#39;, &#39;kk&#39;: &#39;k&#39;, &#39;ll&#39;: &#39;l&#39;, ...}   ← correct</span>
+<span class="c1"># {'hh': 'h', 'kk': 'k', 'll': 'l', ...}   ← correct</span>
 </pre></div>
 </div>
 </div></div>
@@ -969,16 +969,16 @@ selects exactly which names map to the <strong>Solver</strong>.  The remaining p
 available as diffractometer attributes but are not included in the solver
 mapping:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sim</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
-    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hh&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;ll&quot;</span><span class="p">,</span> <span class="s2">&quot;extra&quot;</span><span class="p">],</span>
-    <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;hh&quot;</span><span class="p">,</span> <span class="s2">&quot;kk&quot;</span><span class="p">,</span> <span class="s2">&quot;ll&quot;</span><span class="p">],</span>   <span class="c1"># select these 3 for solver mapping</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"sim"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"E4CV"</span><span class="p">,</span>
+    <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">"hh"</span><span class="p">,</span> <span class="s2">"kk"</span><span class="p">,</span> <span class="s2">"ll"</span><span class="p">,</span> <span class="s2">"extra"</span><span class="p">],</span>
+    <span class="n">_pseudo</span><span class="o">=</span><span class="p">[</span><span class="s2">"hh"</span><span class="p">,</span> <span class="s2">"kk"</span><span class="p">,</span> <span class="s2">"ll"</span><span class="p">],</span>   <span class="c1"># select these 3 for solver mapping</span>
 <span class="p">)</span>
 <span class="n">sim</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
-<span class="c1"># {&#39;hh&#39;: &#39;h&#39;, &#39;kk&#39;: &#39;k&#39;, &#39;ll&#39;: &#39;l&#39;, ...}  ← &#39;extra&#39; not mapped</span>
+<span class="c1"># {'hh': 'h', 'kk': 'k', 'll': 'l', ...}  ← 'extra' not mapped</span>
 <span class="n">sim</span><span class="o">.</span><span class="n">pseudo_axis_names</span>
-<span class="c1"># [&#39;hh&#39;, &#39;kk&#39;, &#39;ll&#39;]                        ← &#39;extra&#39; excluded</span>
+<span class="c1"># ['hh', 'kk', 'll']                        ← 'extra' excluded</span>
 </pre></div>
 </div>
 </section>
@@ -1001,28 +1001,28 @@ solver axes. <code class="docutils literal notranslate"><span class="pre">gamma<
 and <code class="docutils literal notranslate"><span class="pre">chi</span></code> (5th key) maps to solver <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (5th slot) — silently
 swapped:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cradle</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cradle&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;APS POLAR&quot;</span><span class="p">,</span>
-    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="s2">&quot;m73&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="s2">&quot;m4&quot;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="s2">&quot;m19&quot;</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="s2">&quot;m20&quot;</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="s2">&quot;m37&quot;</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="s2">&quot;m38&quot;</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"cradle"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"APS POLAR"</span><span class="p">,</span>
+    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="s2">"m73"</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="s2">"m4"</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="s2">"m19"</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="s2">"m20"</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="s2">"m37"</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="s2">"m38"</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="n">cradle</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
-<span class="c1"># {&#39;tau&#39;: &#39;tau&#39;, &#39;mu&#39;: &#39;mu&#39;, &#39;gamma&#39;: &#39;chi&#39;, &#39;delta&#39;: &#39;phi&#39;,</span>
-<span class="c1">#  &#39;chi&#39;: &#39;gamma&#39;, &#39;phi&#39;: &#39;delta&#39;}   ← swapped</span>
+<span class="c1"># {'tau': 'tau', 'mu': 'mu', 'gamma': 'chi', 'delta': 'phi',</span>
+<span class="c1">#  'chi': 'gamma', 'phi': 'delta'}   ← swapped</span>
 </pre></div>
 </div>
 </div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><p>Supply <code class="docutils literal notranslate"><span class="pre">_real</span></code> to declare which local name maps to each solver axis
 slot, independent of the <code class="docutils literal notranslate"><span class="pre">reals</span></code> dict key order:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cradle</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cradle&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;APS POLAR&quot;</span><span class="p">,</span>
-    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="s2">&quot;m73&quot;</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="s2">&quot;m4&quot;</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="s2">&quot;m19&quot;</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="s2">&quot;m20&quot;</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="s2">&quot;m37&quot;</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="s2">&quot;m38&quot;</span><span class="p">),</span>
-    <span class="n">_real</span><span class="o">=</span><span class="s2">&quot;tau mu chi phi gamma delta&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"cradle"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"APS POLAR"</span><span class="p">,</span>
+    <span class="n">reals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">tau</span><span class="o">=</span><span class="s2">"m73"</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="s2">"m4"</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="s2">"m19"</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="s2">"m20"</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="s2">"m37"</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="s2">"m38"</span><span class="p">),</span>
+    <span class="n">_real</span><span class="o">=</span><span class="s2">"tau mu chi phi gamma delta"</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
 <span class="p">)</span>
 <span class="n">cradle</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">axes_xref</span>
-<span class="c1"># {&#39;tau&#39;: &#39;tau&#39;, &#39;mu&#39;: &#39;mu&#39;, &#39;chi&#39;: &#39;chi&#39;, &#39;phi&#39;: &#39;phi&#39;,</span>
-<span class="c1">#  &#39;gamma&#39;: &#39;gamma&#39;, &#39;delta&#39;: &#39;delta&#39;}  ← correct</span>
+<span class="c1"># {'tau': 'tau', 'mu': 'mu', 'chi': 'chi', 'phi': 'phi',</span>
+<span class="c1">#  'gamma': 'gamma', 'delta': 'delta'}  ← correct</span>
 </pre></div>
 </div>
 </div></div>
@@ -1135,8 +1135,8 @@ slot, independent of the <code class="docutils literal notranslate"><span class=
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1170,7 +1170,7 @@ slot, independent of the <code class="docutils literal notranslate"><span class=
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

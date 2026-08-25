@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -37,19 +37,19 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'guides/how_constraints';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -527,15 +527,15 @@ work internally.</p>
 <h2>Setup<a class="headerlink" href="#setup" title="Link to this heading">#</a></h2>
 <p>All examples use a simulated 4-circle diffractometer:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"e4cv"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Inspect the default constraints:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span>
-<span class="go">{&#39;omega&#39;: LimitsConstraint(label=&#39;omega&#39;, low=-180.0, high=180.0, cut=-180.0),</span>
-<span class="go"> &#39;chi&#39;:   LimitsConstraint(label=&#39;chi&#39;,   low=-180.0, high=180.0, cut=-180.0),</span>
-<span class="go"> &#39;phi&#39;:   LimitsConstraint(label=&#39;phi&#39;,   low=-180.0, high=180.0, cut=-180.0),</span>
-<span class="go"> &#39;tth&#39;:   LimitsConstraint(label=&#39;tth&#39;,   low=-180.0, high=180.0, cut=-180.0)}</span>
+<span class="go">{'omega': LimitsConstraint(label='omega', low=-180.0, high=180.0, cut=-180.0),</span>
+<span class="go"> 'chi':   LimitsConstraint(label='chi',   low=-180.0, high=180.0, cut=-180.0),</span>
+<span class="go"> 'phi':   LimitsConstraint(label='phi',   low=-180.0, high=180.0, cut=-180.0),</span>
+<span class="go"> 'tth':   LimitsConstraint(label='tth',   low=-180.0, high=180.0, cut=-180.0)}</span>
 </pre></div>
 </div>
 </section>
@@ -543,8 +543,8 @@ work internally.</p>
 <h2>How do I set a limit on one axis?<a class="headerlink" href="#how-do-i-set-a-limit-on-one-axis" title="Link to this heading">#</a></h2>
 <p>Set <a class="reference internal" href="../autoapi/hklpy2/blocks/constraints/index.html#hklpy2.blocks.constraints.LimitsConstraint.limits" title="hklpy2.blocks.constraints.LimitsConstraint.limits"><code class="xref py py-attr docutils literal notranslate"><span class="pre">limits</span></code></a> to a
 <code class="docutils literal notranslate"><span class="pre">(low,</span> <span class="pre">high)</span></code> tuple:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
 <span class="go">(0.0, 100.0)</span>
 </pre></div>
 </div>
@@ -563,11 +563,11 @@ angle — it does not accept or reject solutions, only changes the
 representation.  The default cut point is <code class="docutils literal notranslate"><span class="pre">-180</span></code>, giving angles in
 <code class="docutils literal notranslate"><span class="pre">[-180,</span> <span class="pre">+180)</span></code>.</p>
 <p>To express angles in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">360)</span></code> instead:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>To express angles in <code class="docutils literal notranslate"><span class="pre">[-90,</span> <span class="pre">+270)</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="o">-</span><span class="mi">90</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"omega"</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="o">-</span><span class="mi">90</span>
 </pre></div>
 </div>
 </section>
@@ -577,8 +577,8 @@ representation.  The default cut point is <code class="docutils literal notransl
 want angles expressed in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">360)</span></code> so the values are easy to compare
 against hardware limits.</p>
 <p>Set the cut point first (representation), then the limits (filtering):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">290</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">290</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>After wrapping, every <code class="docutils literal notranslate"><span class="pre">chi</span></code> solution is in <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">360)</span></code>.  Then the
@@ -596,9 +596,9 @@ diagram.</p>
 <p><a class="reference internal" href="../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.reset_constraints" title="hklpy2.ops.Core.reset_constraints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset_constraints()</span></code></a> restores all axes to <code class="docutils literal notranslate"><span class="pre">±180</span></code>
 limits and a cut point of <code class="docutils literal notranslate"><span class="pre">-180</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">reset_constraints</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
 <span class="go">(-180.0, 180.0)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">cut_point</span>
 <span class="go">-180.0</span>
 </pre></div>
 </div>
@@ -614,14 +614,14 @@ only):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.blocks.constraints</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConstraintBase</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">PositiveTthConstraint</span><span class="p">(</span><span class="n">ConstraintBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Accept only solutions where tth &gt; 0.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Accept only solutions where tth &gt; 0."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">values</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tth&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tth"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
 </pre></div>
 </div>
 <p>Install it on the diffractometer by replacing the default constraint:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;tth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PositiveTthConstraint</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;tth&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"tth"</span><span class="p">]</span> <span class="o">=</span> <span class="n">PositiveTthConstraint</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"tth"</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition important">
@@ -635,7 +635,7 @@ as the key.  A mismatch raises
 <p>A more involved example: reject solutions where two axes simultaneously
 reach their limits (useful for avoiding mechanical conflicts):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">NoSimultaneousLimitConstraint</span><span class="p">(</span><span class="n">ConstraintBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reject solutions where both omega and chi are at their maximum.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Reject solutions where both omega and chi are at their maximum."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">omega_max</span><span class="p">,</span> <span class="n">chi_max</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -643,12 +643,12 @@ reach their limits (useful for avoiding mechanical conflicts):</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">chi_max</span> <span class="o">=</span> <span class="n">chi_max</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">values</span><span class="p">):</span>
-        <span class="n">at_omega_limit</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;omega&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega_max</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-3</span>
-        <span class="n">at_chi_limit</span>   <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;chi&quot;</span><span class="p">,</span>   <span class="mf">0.0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">chi_max</span><span class="p">)</span>   <span class="o">&lt;</span> <span class="mf">1e-3</span>
+        <span class="n">at_omega_limit</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"omega"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">omega_max</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-3</span>
+        <span class="n">at_chi_limit</span>   <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"chi"</span><span class="p">,</span>   <span class="mf">0.0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">chi_max</span><span class="p">)</span>   <span class="o">&lt;</span> <span class="mf">1e-3</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="n">at_omega_limit</span> <span class="ow">and</span> <span class="n">at_chi_limit</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoSimultaneousLimitConstraint</span><span class="p">(</span>
-<span class="o">...</span>     <span class="n">omega_max</span><span class="o">=</span><span class="mf">180.0</span><span class="p">,</span> <span class="n">chi_max</span><span class="o">=</span><span class="mf">180.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;omega&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">e4cv</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"omega"</span><span class="p">]</span> <span class="o">=</span> <span class="n">NoSimultaneousLimitConstraint</span><span class="p">(</span>
+<span class="o">...</span>     <span class="n">omega_max</span><span class="o">=</span><span class="mf">180.0</span><span class="p">,</span> <span class="n">chi_max</span><span class="o">=</span><span class="mf">180.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"omega"</span>
 <span class="o">...</span> <span class="p">)</span>
 </pre></div>
 </div>
@@ -749,8 +749,8 @@ reach their limits (useful for avoiding mechanical conflicts):</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -784,7 +784,7 @@ reach their limits (useful for avoiding mechanical conflicts):</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

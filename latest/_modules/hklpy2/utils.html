@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -36,19 +36,19 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/utils';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -414,7 +414,7 @@
   <h1>Source code for hklpy2.utils</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) 2023-2026 UChicago Argonne, LLC</span>
 <span class="c1"># SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">General-purpose utilities for |hklpy2|.</span>
 
 <span class="sd">.. rubric:: Classes</span>
@@ -455,7 +455,7 @@
 <span class="sd">    ~MISSING_HEADER_KEY_MSG</span>
 <span class="sd">    ~PINT_ERRORS</span>
 <span class="sd">    ~UREG</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
@@ -495,36 +495,36 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># Constants</span>
-    <span class="s2">&quot;DEFAULT_DIGITS&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DEFAULT_MOTOR_LABELS&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DEFAULT_START_KEY&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;IDENTITY_MATRIX_3X3&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;INTERNAL_ANGLE_UNITS&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;INTERNAL_LENGTH_UNITS&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;INTERNAL_XRAY_ENERGY_UNITS&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;MISSING_HEADER_KEY_MSG&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;PINT_ERRORS&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;UREG&quot;</span><span class="p">,</span>
+    <span class="s2">"DEFAULT_DIGITS"</span><span class="p">,</span>
+    <span class="s2">"DEFAULT_MOTOR_LABELS"</span><span class="p">,</span>
+    <span class="s2">"DEFAULT_START_KEY"</span><span class="p">,</span>
+    <span class="s2">"IDENTITY_MATRIX_3X3"</span><span class="p">,</span>
+    <span class="s2">"INTERNAL_ANGLE_UNITS"</span><span class="p">,</span>
+    <span class="s2">"INTERNAL_LENGTH_UNITS"</span><span class="p">,</span>
+    <span class="s2">"INTERNAL_XRAY_ENERGY_UNITS"</span><span class="p">,</span>
+    <span class="s2">"MISSING_HEADER_KEY_MSG"</span><span class="p">,</span>
+    <span class="s2">"PINT_ERRORS"</span><span class="p">,</span>
+    <span class="s2">"UREG"</span><span class="p">,</span>
     <span class="c1"># Classes</span>
-    <span class="s2">&quot;_SolverDirty&quot;</span><span class="p">,</span>
+    <span class="s2">"_SolverDirty"</span><span class="p">,</span>
     <span class="c1"># Functions</span>
-    <span class="s2">&quot;axes_to_dict&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;benchmark&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;check_value_in_list&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;compare_float_dicts&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;convert_units&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;distance_between_pos_tuples&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;flatten_lists&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;istype&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;load_yaml&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;load_yaml_file&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pick_closest_solution&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pick_first_solution&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;roundoff&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;solver_summary&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;unique_name&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;validate_and_canonical_unit&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;validate_not_parallel&quot;</span><span class="p">,</span>
+    <span class="s2">"axes_to_dict"</span><span class="p">,</span>
+    <span class="s2">"benchmark"</span><span class="p">,</span>
+    <span class="s2">"check_value_in_list"</span><span class="p">,</span>
+    <span class="s2">"compare_float_dicts"</span><span class="p">,</span>
+    <span class="s2">"convert_units"</span><span class="p">,</span>
+    <span class="s2">"distance_between_pos_tuples"</span><span class="p">,</span>
+    <span class="s2">"flatten_lists"</span><span class="p">,</span>
+    <span class="s2">"istype"</span><span class="p">,</span>
+    <span class="s2">"load_yaml"</span><span class="p">,</span>
+    <span class="s2">"load_yaml_file"</span><span class="p">,</span>
+    <span class="s2">"pick_closest_solution"</span><span class="p">,</span>
+    <span class="s2">"pick_first_solution"</span><span class="p">,</span>
+    <span class="s2">"roundoff"</span><span class="p">,</span>
+    <span class="s2">"solver_summary"</span><span class="p">,</span>
+    <span class="s2">"unique_name"</span><span class="p">,</span>
+    <span class="s2">"validate_and_canonical_unit"</span><span class="p">,</span>
+    <span class="s2">"validate_not_parallel"</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
@@ -535,13 +535,13 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.IDENTITY_MATRIX_3X3">[docs]</a>
 <span class="n">IDENTITY_MATRIX_3X3</span><span class="p">:</span> <span class="n">Matrix3x3</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span></div>
 
-<span class="sd">&quot;&quot;&quot;Identity matrix, 2-D, 3 rows, 3 columns.&quot;&quot;&quot;</span>
+<span class="sd">"""Identity matrix, 2-D, 3 rows, 3 columns."""</span>
 
 <div class="viewcode-block" id="MISSING_HEADER_KEY_MSG">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.MISSING_HEADER_KEY_MSG">[docs]</a>
-<span class="n">MISSING_HEADER_KEY_MSG</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Configuration is missing &#39;_header&#39; key.&quot;</span></div>
+<span class="n">MISSING_HEADER_KEY_MSG</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Configuration is missing '_header' key."</span></div>
 
-<span class="sd">&quot;&quot;&quot;Error message for missing _header key in configuration dicts.&quot;&quot;&quot;</span>
+<span class="sd">"""Error message for missing _header key in configuration dicts."""</span>
 
 <div class="viewcode-block" id="DEFAULT_DIGITS">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.DEFAULT_DIGITS">[docs]</a>
@@ -549,20 +549,20 @@
 
 <div class="viewcode-block" id="DEFAULT_START_KEY">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.DEFAULT_START_KEY">[docs]</a>
-<span class="n">DEFAULT_START_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;diffractometers&quot;</span></div>
+<span class="n">DEFAULT_START_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"diffractometers"</span></div>
 
 
 <div class="viewcode-block" id="INTERNAL_ANGLE_UNITS">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.INTERNAL_ANGLE_UNITS">[docs]</a>
-<span class="n">INTERNAL_ANGLE_UNITS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;degrees&quot;</span></div>
+<span class="n">INTERNAL_ANGLE_UNITS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"degrees"</span></div>
 
 <div class="viewcode-block" id="INTERNAL_LENGTH_UNITS">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.INTERNAL_LENGTH_UNITS">[docs]</a>
-<span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;angstrom&quot;</span></div>
+<span class="n">INTERNAL_LENGTH_UNITS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"angstrom"</span></div>
 
 <div class="viewcode-block" id="INTERNAL_XRAY_ENERGY_UNITS">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.INTERNAL_XRAY_ENERGY_UNITS">[docs]</a>
-<span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;keV&quot;</span></div>
+<span class="n">INTERNAL_XRAY_ENERGY_UNITS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"keV"</span></div>
 
 
 <span class="c1"># Shared pint UnitRegistry to avoid recreating it repeatedly.</span>
@@ -576,13 +576,13 @@
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.PINT_ERRORS">[docs]</a>
 <span class="n">PINT_ERRORS</span> <span class="o">=</span> <span class="p">(</span><span class="n">pint</span><span class="o">.</span><span class="n">DimensionalityError</span><span class="p">,</span> <span class="n">pint</span><span class="o">.</span><span class="n">UndefinedUnitError</span><span class="p">)</span></div>
 
-<span class="sd">&quot;&quot;&quot;Exception from pint that we are trapping here.&quot;&quot;&quot;</span>
+<span class="sd">"""Exception from pint that we are trapping here."""</span>
 
 <div class="viewcode-block" id="DEFAULT_MOTOR_LABELS">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.DEFAULT_MOTOR_LABELS">[docs]</a>
-<span class="n">DEFAULT_MOTOR_LABELS</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;motors&quot;</span><span class="p">]</span></div>
+<span class="n">DEFAULT_MOTOR_LABELS</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"motors"</span><span class="p">]</span></div>
 
-<span class="sd">&quot;&quot;&quot;Default labels applied to real-axis positioners.&quot;&quot;&quot;</span>
+<span class="sd">"""Default labels applied to real-axis positioners."""</span>
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># Classes</span>
@@ -590,33 +590,33 @@
 
 
 <span class="nd">@versionadded</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Fine-grained dirty-domain tracking for the solver state.&quot;</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">"0.6.2"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Fine-grained dirty-domain tracking for the solver state."</span>
 <span class="p">)</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">_SolverDirty</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Bitfield identifying which solver state domains need to be re-pushed.</span>
 
 <span class="sd">    Used by :class:`~hklpy2.ops.Core` to track, at fine granularity, which</span>
-<span class="sd">    parts of the underlying solver&#39;s state have diverged from the canonical</span>
+<span class="sd">    parts of the underlying solver's state have diverged from the canonical</span>
 <span class="sd">    Python-side state and therefore must be re-pushed before the next</span>
 <span class="sd">    ``forward()`` / ``inverse()`` call.</span>
 
 <span class="sd">    Members:</span>
 
-<span class="sd">    * ``SAMPLE`` -- the solver&#39;s sample state (lattice + reflections)</span>
+<span class="sd">    * ``SAMPLE`` -- the solver's sample state (lattice + reflections)</span>
 <span class="sd">      needs a full re-push.  A SAMPLE re-push may also invalidate the</span>
-<span class="sd">      solver&#39;s MODE / EXTRAS / U / UB state in some backends, so those</span>
+<span class="sd">      solver's MODE / EXTRAS / U / UB state in some backends, so those</span>
 <span class="sd">      domains are re-pushed implicitly whenever SAMPLE is re-pushed.</span>
 <span class="sd">    * ``UB`` -- only the U and UB matrices need re-pushing.</span>
 <span class="sd">    * ``MODE`` -- the solver mode needs to be re-set.  A MODE change may</span>
-<span class="sd">      reset the solver&#39;s extra-axis values, so EXTRAS must be flagged</span>
+<span class="sd">      reset the solver's extra-axis values, so EXTRAS must be flagged</span>
 <span class="sd">      whenever MODE is flagged.</span>
-<span class="sd">    * ``EXTRAS`` -- the solver&#39;s extra-axis values need to be re-pushed.</span>
+<span class="sd">    * ``EXTRAS`` -- the solver's extra-axis values need to be re-pushed.</span>
 <span class="sd">    * ``WAVELENGTH`` -- the wavelength needs to be re-pushed.</span>
 <span class="sd">    * ``ALL`` -- every domain (used for full re-sync).</span>
 
 <span class="sd">    .. seealso:: :issue:`384`, :issue:`386`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">SAMPLE</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">UB</span> <span class="o">=</span> <span class="mi">2</span>
@@ -634,12 +634,12 @@
 <div class="viewcode-block" id="axes_to_dict">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.axes_to_dict">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">axes_to_dict</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">AxesDict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Convert any acceptable axes input to standard form (dict).</span>
 
 <span class="sd">    User could provide input in several forms:</span>
 
-<span class="sd">    * dict: ``{&quot;h&quot;: 0, &quot;k&quot;: 1, &quot;l&quot;: -1}``</span>
+<span class="sd">    * dict: ``{"h": 0, "k": 1, "l": -1}``</span>
 <span class="sd">    * namedtuple: ``(h=0.0, k=1.0, l=-1.0)``</span>
 <span class="sd">    * ordered list: ``[0, 1, -1]  (for h, k, l)``</span>
 <span class="sd">    * ordered tuple: ``(0, 1, -1)  (for h, k, l)``</span>
@@ -650,23 +650,23 @@
 <span class="sd">        Positions, specified as dict, list, or tuple.</span>
 <span class="sd">    names : [str]</span>
 <span class="sd">        Expected names of the axes, in order expected by the solver.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected a list of names, received </span><span class="si">{</span><span class="n">names</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected a list of names, received </span><span class="si">{</span><span class="n">names</span><span class="si">=!r}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Each name should be text, received </span><span class="si">{</span><span class="n">name</span><span class="si">=!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Each name should be text, received </span><span class="si">{</span><span class="n">name</span><span class="si">=!r}</span><span class="s2">"</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Expected at least </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2"> axes,&quot;</span>
+            <span class="sa">f</span><span class="s2">"Expected at least </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2"> axes,"</span>
             <span class="c1"># Always show received</span>
-            <span class="sa">f</span><span class="s2">&quot; received </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="sa">f</span><span class="s2">" received </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="ne">UserWarning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot; Extra inputs will be ignored. Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; Received </span><span class="si">{</span><span class="nb">input</span><span class="si">=!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">names</span><span class="si">=!r}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">" Extra inputs will be ignored. Expected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span>
+                <span class="sa">f</span><span class="s2">" Received </span><span class="si">{</span><span class="nb">input</span><span class="si">=!r}</span><span class="s2">, </span><span class="si">{</span><span class="n">names</span><span class="si">=!r}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
@@ -676,11 +676,11 @@
             <span class="n">value</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Missing axis </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+                    <span class="sa">f</span><span class="s2">"Missing axis </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">."</span>
                     <span class="c1"># Always show received</span>
-                    <span class="sa">f</span><span class="s2">&quot; Received: </span><span class="si">{</span><span class="nb">input</span><span class="si">=!r}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">" Received: </span><span class="si">{</span><span class="nb">input</span><span class="si">=!r}</span><span class="s2">"</span>
                     <span class="c1"># then</span>
-                    <span class="sa">f</span><span class="s2">&quot; Expected: </span><span class="si">{</span><span class="n">names</span><span class="si">=!r}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">" Expected: </span><span class="si">{</span><span class="n">names</span><span class="si">=!r}</span><span class="s2">"</span>
                 <span class="p">)</span>
             <span class="n">axes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
@@ -694,13 +694,13 @@
             <span class="n">axes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected type: </span><span class="si">{</span><span class="nb">input</span><span class="si">!r}</span><span class="s2">.  Expected &#39;AnyAxesType&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unexpected type: </span><span class="si">{</span><span class="nb">input</span><span class="si">!r}</span><span class="s2">.  Expected 'AnyAxesType'."</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">axes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="c1"># Accept Python ints/floats and numpy numeric scalar types (e.g. np.int64,</span>
         <span class="c1"># np.float64) by checking against numbers.Real.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Real</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected a number. Received: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected a number. Received: </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">."</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">axes</span></div>
 
@@ -709,11 +709,11 @@
 <div class="viewcode-block" id="check_value_in_list">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.check_value_in_list">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_value_in_list</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">examples</span><span class="p">,</span> <span class="n">blank_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise ValueError exception if value is not in the list of examples.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raise ValueError exception if value is not in the list of examples."""</span>
     <span class="k">if</span> <span class="n">blank_ok</span><span class="p">:</span>
-        <span class="n">examples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">examples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> unknown. Pick one of: </span><span class="si">{</span><span class="n">examples</span><span class="si">!r}</span><span class="s2">&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> unknown. Pick one of: </span><span class="si">{</span><span class="n">examples</span><span class="si">!r}</span><span class="s2">"</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span></div>
 
 
@@ -721,11 +721,11 @@
 <div class="viewcode-block" id="compare_float_dicts">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.compare_float_dicts">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compare_float_dicts</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Compare two dictionaries.  Values are all floats.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">tol</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received </span><span class="si">{</span><span class="n">tol</span><span class="si">=}</span><span class="s2">, should be tol &gt;0.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Received </span><span class="si">{</span><span class="n">tol</span><span class="si">=}</span><span class="s2">, should be tol &gt;0."</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">a1</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">a2</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -748,7 +748,7 @@
 <div class="viewcode-block" id="convert_units">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.convert_units">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">convert_units</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">old_units</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_units</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert &#39;value&#39; from old units to new.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Convert 'value' from old units to new."""</span>
     <span class="k">if</span> <span class="n">old_units</span> <span class="o">==</span> <span class="n">new_units</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">value</span>
     <span class="k">return</span> <span class="n">UREG</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">old_units</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">new_units</span><span class="p">)</span><span class="o">.</span><span class="n">magnitude</span></div>
@@ -758,9 +758,9 @@
 <div class="viewcode-block" id="distance_between_pos_tuples">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.distance_between_pos_tuples">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">distance_between_pos_tuples</span><span class="p">(</span><span class="n">pos1</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">pos2</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the RMS distance between &#39;pos1&#39; and &#39;pos2&#39;.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return the RMS distance between 'pos1' and 'pos2'."""</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos2</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pos1</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="n">pos2</span><span class="si">=}</span><span class="s2"> are not the same length.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">pos1</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="n">pos2</span><span class="si">=}</span><span class="s2"> are not the same length."</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pos1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">rms</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">else</span><span class="p">:</span>
@@ -776,11 +776,11 @@
 <div class="viewcode-block" id="flatten_lists">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.flatten_lists">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">flatten_lists</span><span class="p">(</span><span class="n">xs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bytes</span> <span class="o">|</span> <span class="n">Iterable</span> <span class="o">|</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BlueskyPlanType</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Convert nested lists into single list.</span>
 
 <span class="sd">    https://stackoverflow.com/questions/2158395</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
             <span class="k">yield from</span> <span class="n">flatten_lists</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -792,14 +792,14 @@
 <div class="viewcode-block" id="istype">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.istype">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">istype</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">annotation</span><span class="p">:</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check if &#39;value&#39; matches the type &#39;annotation&#39;.</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Check if 'value' matches the type 'annotation'.</span>
 
 <span class="sd">    EXAMPLE::</span>
 
-<span class="sd">        &gt;&gt;&gt; istype({&quot;a&quot;:1}, AxesDict)</span>
+<span class="sd">        &gt;&gt;&gt; istype({"a":1}, AxesDict)</span>
 <span class="sd">        True</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># https://stackoverflow.com/a/57813576/1046449</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">typeguard</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeCheckError</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">typeguard</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_type</span>
@@ -815,7 +815,7 @@
 <div class="viewcode-block" id="load_yaml">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.load_yaml">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">load_yaml</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load YAML from text.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Load YAML from text."""</span>
     <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">Loader</span><span class="p">)</span></div>
 
 
@@ -823,30 +823,30 @@
 <div class="viewcode-block" id="load_yaml_file">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.load_yaml_file">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">load_yaml_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return contents of a YAML file as a Python object.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return contents of a YAML file as a Python object."""</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;YAML file &#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&#39; does not exist.&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loading YAML file </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"YAML file '</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">' does not exist."</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Loading YAML file </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">load_yaml</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span></div>
 
 
 
 <span class="nd">@versionadded</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.1.4&quot;</span><span class="p">,</span>
-    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Alternative forward() solution picker using closest motor positions.&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">"0.1.4"</span><span class="p">,</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">"Alternative forward() solution picker using closest motor positions."</span><span class="p">,</span>
 <span class="p">)</span>
 <div class="viewcode-block" id="pick_closest_solution">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.pick_closest_solution">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pick_closest_solution</span><span class="p">(</span>
     <span class="n">position</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">solutions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedTuple</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Find the solution closest to the current real position.</span>
 
 <span class="sd">    Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward()` method to pick</span>
-<span class="sd">    a solution from a list of possible solutions.  Assign to diffractometer&#39;s</span>
+<span class="sd">    a solution from a list of possible solutions.  Assign to diffractometer's</span>
 <span class="sd">    :attr:`~hklpy2.diffract.DiffractometerBase._forward_solution` method.</span>
 
 <span class="sd">    PARAMETERS</span>
@@ -859,9 +859,9 @@
 <span class="sd">    .. seealso::</span>
 <span class="sd">        :attr:`~hklpy2.diffract.DiffractometerBase._forward_solution`,</span>
 <span class="sd">        :func:`~hklpy2.utils.pick_first_solution`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">solutions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">NoForwardSolutions</span><span class="p">(</span><span class="s2">&quot;No solutions.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">NoForwardSolutions</span><span class="p">(</span><span class="s2">"No solutions."</span><span class="p">)</span>
 
     <span class="n">nearest</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">separation</span> <span class="o">=</span> <span class="kc">None</span>
@@ -879,11 +879,11 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">pick_first_solution</span><span class="p">(</span>
     <span class="n">position</span><span class="p">:</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">solutions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedTuple</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedTuple</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Choose first solution from list.</span>
 
 <span class="sd">    Used by :meth:`~hklpy2.diffract.DiffractometerBase.forward()` method to pick</span>
-<span class="sd">    a solution from a list of possible solutions.  Assign to diffractometer&#39;s</span>
+<span class="sd">    a solution from a list of possible solutions.  Assign to diffractometer's</span>
 <span class="sd">    :attr:`~hklpy2.diffract.DiffractometerBase._forward_solution` method.</span>
 
 <span class="sd">    PARAMETERS</span>
@@ -896,25 +896,25 @@
 <span class="sd">    .. seealso::</span>
 <span class="sd">        :attr:`~hklpy2.diffract.DiffractometerBase._forward_solution`,</span>
 <span class="sd">        :func:`~hklpy2.utils.pick_closest_solution`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">solutions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">NoForwardSolutions</span><span class="p">(</span><span class="s2">&quot;No solutions.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">NoForwardSolutions</span><span class="p">(</span><span class="s2">"No solutions."</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 
 
 <span class="nd">@versionchanged</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.2&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">"0.6.2"</span><span class="p">,</span>
     <span class="n">reason</span><span class="o">=</span><span class="p">(</span>
-        <span class="s2">&quot;Accept structured inputs (namedtuple/Mapping/Sequence) and&quot;</span>
-        <span class="s2">&quot; recursively round their numeric leaves; opaque inputs fall&quot;</span>
-        <span class="s2">&quot; through to ``repr(value)``.  Scalar behavior is unchanged.&quot;</span>
+        <span class="s2">"Accept structured inputs (namedtuple/Mapping/Sequence) and"</span>
+        <span class="s2">" recursively round their numeric leaves; opaque inputs fall"</span>
+        <span class="s2">" through to ``repr(value)``.  Scalar behavior is unchanged."</span>
     <span class="p">),</span>
 <span class="p">)</span>
 <div class="viewcode-block" id="roundoff">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.roundoff">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">digits</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Round ``value`` to ``digits`` precision (fail-safe).</span>
+<span class="w">    </span><span class="sd">"""Round ``value`` to ``digits`` precision (fail-safe).</span>
 
 <span class="sd">    The historical scalar contract is preserved: a scalar input</span>
 <span class="sd">    returns a ``float`` (with ``-0`` collapsed to ``0``).</span>
@@ -934,11 +934,11 @@
 <span class="sd">    safe when an auxiliary component reports a structured position</span>
 <span class="sd">    (e.g. a nested ``ophyd.PseudoPositioner`` whose ``.position`` is a</span>
 <span class="sd">    namedtuple).  See issue :issue:`385`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># namedtuple: detect via duck-typing (_fields + _asdict) and</span>
     <span class="c1"># check before the generic Mapping/Sequence branches because a</span>
     <span class="c1"># namedtuple is also a Sequence.</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;_fields&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;_asdict&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"_fields"</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">"_asdict"</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">roundoff</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">roundoff</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
@@ -947,7 +947,7 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">roundoff</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="n">digits</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>  <span class="c1"># &quot;-0&quot; becomes &quot;0&quot;</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="o">=</span><span class="n">digits</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span>  <span class="c1"># "-0" becomes "0"</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
@@ -955,10 +955,10 @@
 
 <div class="viewcode-block" id="unique_name">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.unique_name">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">unique_name</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">unique_name</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Short, unique name, first 7 (at most) characters of a unique, random uuid.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())[:</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="mi">7</span><span class="p">))]</span></div>
 
 
@@ -968,7 +968,7 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_not_parallel</span><span class="p">(</span>
     <span class="n">hkl</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">hkl2</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raise ValueError if two vectors are parallel or anti-parallel.</span>
+<span class="w">    </span><span class="sd">"""Raise ValueError if two vectors are parallel or anti-parallel.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -984,15 +984,15 @@
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If the cross product of *hkl* and *hkl2* has magnitude less than *tol*.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">v1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">hkl</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="n">v2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">hkl2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="n">cross</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">cross</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;hkl=</span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">hkl</span><span class="p">)</span><span class="si">}</span><span class="s2"> and hkl2=</span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">hkl2</span><span class="p">)</span><span class="si">}</span><span class="s2"> are parallel &quot;</span>
-            <span class="s2">&quot;(or anti-parallel); psi is undefined. &quot;</span>
-            <span class="s2">&quot;Choose a reference reflection that is not parallel to the scan reflection.&quot;</span>
+            <span class="sa">f</span><span class="s2">"hkl=</span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">hkl</span><span class="p">)</span><span class="si">}</span><span class="s2"> and hkl2=</span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">hkl2</span><span class="p">)</span><span class="si">}</span><span class="s2"> are parallel "</span>
+            <span class="s2">"(or anti-parallel); psi is undefined. "</span>
+            <span class="s2">"Choose a reference reflection that is not parallel to the scan reflection."</span>
         <span class="p">)</span></div>
 
 
@@ -1000,11 +1000,11 @@
 <div class="viewcode-block" id="validate_and_canonical_unit">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.validate_and_canonical_unit">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_and_canonical_unit</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">target_units</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate that *value* is a unit convertible to *target_units*.</span>
+<span class="w">    </span><span class="sd">"""Validate that *value* is a unit convertible to *target_units*.</span>
 
 <span class="sd">    Returns a canonical string representation of the unit (via UREG).</span>
 <span class="sd">    Raises ValueError on failure.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Constructing the Unit will raise pint.UndefinedUnitError if unknown.</span>
     <span class="n">unit</span> <span class="o">=</span> <span class="n">UREG</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
     <span class="c1"># Attempt a dimensional conversion; will raise pint.DimensionalityError if incompatible.</span>
@@ -1018,18 +1018,18 @@
 <div class="viewcode-block" id="benchmark">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.benchmark">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">benchmark</span><span class="p">(</span>
-    <span class="n">diffractometer</span><span class="p">:</span> <span class="s2">&quot;DiffractometerBase&quot;</span><span class="p">,</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="s2">"DiffractometerBase"</span><span class="p">,</span>
     <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
     <span class="nb">print</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">snapshot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Assess ``forward()`` and ``inverse()`` throughput for a diffractometer.</span>
 
 <span class="sd">    This function is **purely computational** — it does not move any motors or</span>
 <span class="sd">    communicate with hardware.  It is safe to call on a live diffractometer.</span>
 
-<span class="sd">    Uses the diffractometer&#39;s current real and pseudo-axis positions, and the</span>
+<span class="sd">    Uses the diffractometer's current real and pseudo-axis positions, and the</span>
 <span class="sd">    current mode, as the benchmark inputs.</span>
 
 <span class="sd">    Parameters</span>
@@ -1055,17 +1055,17 @@
 <span class="sd">        ``None`` when *print* is ``True``; a ``dict`` when *print* is</span>
 <span class="sd">        ``False``.  The dict contains:</span>
 
-<span class="sd">        - ``&quot;solver&quot;`` — solver name</span>
-<span class="sd">        - ``&quot;geometry&quot;`` — geometry name</span>
-<span class="sd">        - ``&quot;mode&quot;`` — current solver mode</span>
-<span class="sd">        - ``&quot;wavelength&quot;`` — current wavelength</span>
-<span class="sd">        - ``&quot;n&quot;`` — number of calls measured</span>
-<span class="sd">        - ``&quot;forward_ops_per_sec&quot;`` — ``forward()`` throughput</span>
-<span class="sd">        - ``&quot;forward_ms_per_call&quot;`` — ``forward()`` latency in ms</span>
-<span class="sd">        - ``&quot;inverse_ops_per_sec&quot;`` — ``inverse()`` throughput</span>
-<span class="sd">        - ``&quot;inverse_ms_per_call&quot;`` — ``inverse()`` latency in ms</span>
-<span class="sd">        - ``&quot;fwd_inv_ratio&quot;`` — ratio of forward to inverse ops/sec</span>
-<span class="sd">        - ``&quot;target_ops_per_sec&quot;`` — minimum target (2,000)</span>
+<span class="sd">        - ``"solver"`` — solver name</span>
+<span class="sd">        - ``"geometry"`` — geometry name</span>
+<span class="sd">        - ``"mode"`` — current solver mode</span>
+<span class="sd">        - ``"wavelength"`` — current wavelength</span>
+<span class="sd">        - ``"n"`` — number of calls measured</span>
+<span class="sd">        - ``"forward_ops_per_sec"`` — ``forward()`` throughput</span>
+<span class="sd">        - ``"forward_ms_per_call"`` — ``forward()`` latency in ms</span>
+<span class="sd">        - ``"inverse_ops_per_sec"`` — ``inverse()`` throughput</span>
+<span class="sd">        - ``"inverse_ms_per_call"`` — ``inverse()`` latency in ms</span>
+<span class="sd">        - ``"fwd_inv_ratio"`` — ratio of forward to inverse ops/sec</span>
+<span class="sd">        - ``"target_ops_per_sec"`` — minimum target (2,000)</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -1078,8 +1078,8 @@
 
 <span class="sd">        from hklpy2.utils import benchmark</span>
 <span class="sd">        results = benchmark(my_diffractometer, print=False)</span>
-<span class="sd">        print(results[&quot;forward_ops_per_sec&quot;])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        print(results["forward_ops_per_sec"])</span>
+<span class="sd">    """</span>
     <span class="n">TARGET</span> <span class="o">=</span> <span class="mi">2_000</span>
 
     <span class="c1"># Per #369: by default, snapshot the diffractometer configuration and</span>
@@ -1094,7 +1094,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">diffractometer</span>
 
-    <span class="c1"># Use the first reflection&#39;s positions if available, as the origin (0,0,0)</span>
+    <span class="c1"># Use the first reflection's positions if available, as the origin (0,0,0)</span>
     <span class="c1"># has no forward() solution. Fall back to current position otherwise.</span>
     <span class="n">reflections</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">reflections</span><span class="p">:</span>
@@ -1125,20 +1125,20 @@
     <span class="n">inv_ops</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="n">inv_elapsed</span>
     <span class="n">inv_ms</span> <span class="o">=</span> <span class="n">inv_elapsed</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">/</span> <span class="n">n</span>
 
-    <span class="n">fwd_inv_ratio</span> <span class="o">=</span> <span class="n">fwd_ops</span> <span class="o">/</span> <span class="n">inv_ops</span> <span class="k">if</span> <span class="n">inv_ops</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+    <span class="n">fwd_inv_ratio</span> <span class="o">=</span> <span class="n">fwd_ops</span> <span class="o">/</span> <span class="n">inv_ops</span> <span class="k">if</span> <span class="n">inv_ops</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">"inf"</span><span class="p">)</span>
 
     <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="n">solver_name</span><span class="p">,</span>
-        <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="n">geometry</span><span class="p">,</span>
-        <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
-        <span class="s2">&quot;wavelength&quot;</span><span class="p">:</span> <span class="n">wavelength</span><span class="p">,</span>
-        <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span>
-        <span class="s2">&quot;forward_ops_per_sec&quot;</span><span class="p">:</span> <span class="n">fwd_ops</span><span class="p">,</span>
-        <span class="s2">&quot;forward_ms_per_call&quot;</span><span class="p">:</span> <span class="n">fwd_ms</span><span class="p">,</span>
-        <span class="s2">&quot;inverse_ops_per_sec&quot;</span><span class="p">:</span> <span class="n">inv_ops</span><span class="p">,</span>
-        <span class="s2">&quot;inverse_ms_per_call&quot;</span><span class="p">:</span> <span class="n">inv_ms</span><span class="p">,</span>
-        <span class="s2">&quot;fwd_inv_ratio&quot;</span><span class="p">:</span> <span class="n">fwd_inv_ratio</span><span class="p">,</span>
-        <span class="s2">&quot;target_ops_per_sec&quot;</span><span class="p">:</span> <span class="n">TARGET</span><span class="p">,</span>
+        <span class="s2">"solver"</span><span class="p">:</span> <span class="n">solver_name</span><span class="p">,</span>
+        <span class="s2">"geometry"</span><span class="p">:</span> <span class="n">geometry</span><span class="p">,</span>
+        <span class="s2">"mode"</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
+        <span class="s2">"wavelength"</span><span class="p">:</span> <span class="n">wavelength</span><span class="p">,</span>
+        <span class="s2">"n"</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span>
+        <span class="s2">"forward_ops_per_sec"</span><span class="p">:</span> <span class="n">fwd_ops</span><span class="p">,</span>
+        <span class="s2">"forward_ms_per_call"</span><span class="p">:</span> <span class="n">fwd_ms</span><span class="p">,</span>
+        <span class="s2">"inverse_ops_per_sec"</span><span class="p">:</span> <span class="n">inv_ops</span><span class="p">,</span>
+        <span class="s2">"inverse_ms_per_call"</span><span class="p">:</span> <span class="n">inv_ms</span><span class="p">,</span>
+        <span class="s2">"fwd_inv_ratio"</span><span class="p">:</span> <span class="n">fwd_inv_ratio</span><span class="p">,</span>
+        <span class="s2">"target_ops_per_sec"</span><span class="p">:</span> <span class="n">TARGET</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">print</span><span class="p">:</span>
@@ -1150,39 +1150,39 @@
     <span class="n">threshold</span> <span class="o">=</span> <span class="n">TARGET</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">tolerance</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_status</span><span class="p">(</span><span class="n">ops</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;PASS&quot;</span> <span class="k">if</span> <span class="n">ops</span> <span class="o">&gt;=</span> <span class="n">threshold</span> <span class="k">else</span> <span class="s2">&quot;FAIL&quot;</span>
+        <span class="k">return</span> <span class="s2">"PASS"</span> <span class="k">if</span> <span class="n">ops</span> <span class="o">&gt;=</span> <span class="n">threshold</span> <span class="k">else</span> <span class="s2">"FAIL"</span>
 
     <span class="n">builtins</span><span class="o">.</span><span class="n">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Diffractometer benchmark&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  solver:     </span><span class="si">{</span><span class="n">solver_name</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  geometry:   </span><span class="si">{</span><span class="n">geometry</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  mode:       </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  wavelength: </span><span class="si">{</span><span class="n">wavelength</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  calls:      </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  snapshot:   </span><span class="si">{</span><span class="n">snapshot</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;operation&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;ops/sec&#39;</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;ms/call&#39;</span><span class="si">:</span><span class="s2">&gt;11</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;fwd/inv&#39;</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;status&#39;</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">11</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">6</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;forward()&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_ops</span><span class="si">:</span><span class="s2">&gt;10.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_ms</span><span class="si">:</span><span class="s2">&gt;11.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_inv_ratio</span><span class="si">:</span><span class="s2">&gt;9.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_status</span><span class="p">(</span><span class="n">fwd_ops</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">&#39;inverse()&#39;</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">inv_ops</span><span class="si">:</span><span class="s2">&gt;10.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">inv_ms</span><span class="si">:</span><span class="s2">&gt;11.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;&#39;</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_status</span><span class="p">(</span><span class="n">inv_ops</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  target: </span><span class="si">{</span><span class="n">TARGET</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> ops/sec (+/-</span><span class="si">{</span><span class="n">tolerance</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="sa">f</span><span class="s2">"Diffractometer benchmark"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  solver:     </span><span class="si">{</span><span class="n">solver_name</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  geometry:   </span><span class="si">{</span><span class="n">geometry</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  mode:       </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  wavelength: </span><span class="si">{</span><span class="n">wavelength</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  calls:      </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  snapshot:   </span><span class="si">{</span><span class="n">snapshot</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">'operation'</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'ops/sec'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'ms/call'</span><span class="si">:</span><span class="s2">&gt;11</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'fwd/inv'</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'status'</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">'-'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'-'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">10</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'-'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">11</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'-'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'-'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">6</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">'forward()'</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_ops</span><span class="si">:</span><span class="s2">&gt;10.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_ms</span><span class="si">:</span><span class="s2">&gt;11.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">fwd_inv_ratio</span><span class="si">:</span><span class="s2">&gt;9.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_status</span><span class="p">(</span><span class="n">fwd_ops</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="s1">'inverse()'</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">inv_ops</span><span class="si">:</span><span class="s2">&gt;10.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">inv_ms</span><span class="si">:</span><span class="s2">&gt;11.3f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">''</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">_status</span><span class="p">(</span><span class="n">inv_ops</span><span class="p">)</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">  target: </span><span class="si">{</span><span class="n">TARGET</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> ops/sec (+/-</span><span class="si">{</span><span class="n">tolerance</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2">)"</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
 
 <span class="nd">@versionadded</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.6.1&quot;</span><span class="p">,</span>
-    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Solver summary helper that accepts any diffractometer instance.&quot;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">"0.6.1"</span><span class="p">,</span>
+    <span class="n">reason</span><span class="o">=</span><span class="s2">"Solver summary helper that accepts any diffractometer instance."</span><span class="p">,</span>
 <span class="p">)</span>
 <div class="viewcode-block" id="solver_summary">
 <a class="viewcode-back" href="../../autoapi/hklpy2/utils/index.html#hklpy2.utils.solver_summary">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">solver_summary</span><span class="p">(</span>
-    <span class="n">diffractometer</span><span class="p">:</span> <span class="s2">&quot;DiffractometerBase | None&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">diffractometer</span><span class="p">:</span> <span class="s2">"DiffractometerBase | None"</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">write</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Table of the diffractometer solver&#39;s modes, axes, ...</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Table of the diffractometer solver's modes, axes, ...</span>
 
 <span class="sd">    PARAMETERS</span>
 
@@ -1201,13 +1201,13 @@
 <span class="sd">    EXAMPLE::</span>
 
 <span class="sd">        &gt;&gt;&gt; import hklpy2</span>
-<span class="sd">        &gt;&gt;&gt; diffract = hklpy2.creator(name=&quot;e4cv&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; diffract = hklpy2.creator(name="e4cv")</span>
 <span class="sd">        &gt;&gt;&gt; hklpy2.utils.solver_summary(diffract)</span>
 
 <span class="sd">    SEE ALSO</span>
 
 <span class="sd">        :func:`hklpy2.user.solver_summary`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">diffractometer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Lazy import to avoid circularity (user imports from utils).</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_diffractometer</span>
@@ -1215,9 +1215,9 @@
         <span class="n">diffractometer</span> <span class="o">=</span> <span class="n">get_diffractometer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">diffractometer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;No diffractometer selected and none provided.&quot;</span>
-                <span class="s2">&quot; Pass a diffractometer instance, or call&quot;</span>
-                <span class="s2">&quot; &#39;set_diffractometer(diffr)&#39; first.&quot;</span>
+                <span class="s2">"No diffractometer selected and none provided."</span>
+                <span class="s2">" Pass a diffractometer instance, or call"</span>
+                <span class="s2">" 'set_diffractometer(diffr)' first."</span>
             <span class="p">)</span>
 
     <span class="n">table</span> <span class="o">=</span> <span class="n">diffractometer</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_summary</span>
@@ -1255,8 +1255,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1290,7 +1290,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

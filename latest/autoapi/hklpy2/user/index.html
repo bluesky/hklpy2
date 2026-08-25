@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -37,19 +37,19 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../../../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/hklpy2/user/index';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -549,9 +549,9 @@
 </div>
 <p>Add (and select) a new crystal sample.</p>
 <p>EXAMPLE:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">add_sample</span><span class="p">(</span><span class="s2">&quot;example&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="go">Sample(name=&#39;example&#39;,</span>
-<span class="go">    lattice=Lattice(a=2, b=4, c=5, system=&#39;orthorhombic&#39;))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">add_sample</span><span class="p">(</span><span class="s2">"example"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">Sample(name='example',</span>
+<span class="go">    lattice=Lattice(a=2, b=4, c=5, system='orthorhombic'))</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -630,8 +630,8 @@ value.  Default is 5.</p></li>
 </div>
 <p>Compute the UB matrix with two reflections.</p>
 <p>EXAMPLE:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">r400</span> <span class="o">=</span> <span class="n">setor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;r400&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.066</span><span class="p">)</span>
-<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">r004</span> <span class="o">=</span> <span class="n">setor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;r004&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.066</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">r400</span> <span class="o">=</span> <span class="n">setor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'r400'</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.066</span><span class="p">)</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">r004</span> <span class="o">=</span> <span class="n">setor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'r004'</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.066</span><span class="p">)</span>
 <span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">calc_UB</span><span class="p">(</span><span class="n">r400</span><span class="p">,</span> <span class="n">r004</span><span class="p">)</span>
 <span class="linenos">4</span><span class="go">[[-0.000279252712, 0.999999913446, -0.000279252646],</span>
 <span class="linenos">5</span><span class="go">[0.0, -0.000279400627, -1.000000132342],</span>
@@ -650,14 +650,14 @@ value.  Default is 5.</p></li>
 <p>EXAMPLE:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">get_diffractometer</span><span class="p">()</span>
 <span class="linenos"> 2</span><span class="go">Hklpy2Diffractometer(</span>
-<span class="linenos"> 3</span><span class="go">    prefix=&#39;&#39;,</span>
-<span class="linenos"> 4</span><span class="go">    name=&#39;e4cv&#39;,</span>
+<span class="linenos"> 3</span><span class="go">    prefix='',</span>
+<span class="linenos"> 4</span><span class="go">    name='e4cv',</span>
 <span class="linenos"> 5</span><span class="go">    settle_time=0.0,</span>
-<span class="linenos"> 6</span><span class="go">    timeout=None, egu=&#39;&#39;,</span>
+<span class="linenos"> 6</span><span class="go">    timeout=None, egu='',</span>
 <span class="linenos"> 7</span><span class="go">    limits=(0, 0),</span>
-<span class="linenos"> 8</span><span class="go">    source=&#39;computed&#39;,</span>
-<span class="linenos"> 9</span><span class="go">    read_attrs=[&#39;h&#39;, &#39;h.readback&#39;, &#39;h.setpoint&#39;, &#39;k&#39;, &#39;k.readback&#39;, &#39;k.setpoint&#39;, &#39;l&#39;, &#39;l.readback&#39;, &#39;l.setpoint&#39;, &#39;omega&#39;, &#39;chi&#39;, &#39;phi&#39;, &#39;tth&#39;],</span>
-<span class="linenos">10</span><span class="go">    configuration_attrs=[&#39;geometry&#39;, &#39;solver&#39;, &#39;wavelength&#39;, &#39;h&#39;, &#39;k&#39;, &#39;l&#39;],</span>
+<span class="linenos"> 8</span><span class="go">    source='computed',</span>
+<span class="linenos"> 9</span><span class="go">    read_attrs=['h', 'h.readback', 'h.setpoint', 'k', 'k.readback', 'k.setpoint', 'l', 'l.readback', 'l.setpoint', 'omega', 'chi', 'phi', 'tth'],</span>
+<span class="linenos">10</span><span class="go">    configuration_attrs=['geometry', 'solver', 'wavelength', 'h', 'k', 'l'],</span>
 <span class="linenos">11</span><span class="go">    concurrent=True)</span>
 </pre></div>
 </div>
@@ -673,8 +673,8 @@ value.  Default is 5.</p></li>
 <p>Current sample appears first (with prefix <code class="docutils literal notranslate"><span class="pre">&quot;&gt;</span> <span class="pre">&quot;</span></code>).</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">list_samples</span><span class="p">()</span>
-<span class="linenos">2</span><span class="go">&gt; Sample(name=&#39;vibranium&#39;, lattice=Lattice(a=6.2832, system=&#39;cubic&#39;))</span>
-<span class="linenos">3</span><span class="go">Sample(name=&#39;sample&#39;, lattice=Lattice(a=1, system=&#39;cubic&#39;))</span>
+<span class="linenos">2</span><span class="go">&gt; Sample(name='vibranium', lattice=Lattice(a=6.2832, system='cubic'))</span>
+<span class="linenos">3</span><span class="go">Sample(name='sample', lattice=Lattice(a=1, system='cubic'))</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -720,15 +720,15 @@ value.  Default is 5.</p></li>
 <p>Report (all) the diffractometer settings.</p>
 <p>EXAMPLE:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">pa</span><span class="p">()</span>
-<span class="linenos"> 2</span><span class="go">diffractometer=&#39;e4cv&#39;</span>
-<span class="linenos"> 3</span><span class="go">HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)</span>
-<span class="linenos"> 4</span><span class="go">Sample(name=&#39;vibranium&#39;, lattice=Lattice(a=6.2832, system=&#39;cubic&#39;))</span>
+<span class="linenos"> 2</span><span class="go">diffractometer='e4cv'</span>
+<span class="linenos"> 3</span><span class="go">HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')</span>
+<span class="linenos"> 4</span><span class="go">Sample(name='vibranium', lattice=Lattice(a=6.2832, system='cubic'))</span>
 <span class="linenos"> 5</span><span class="go">U=[[0.000278604397, -0.99999996119, -3.9081e-08], [1.6307e-08, 3.9086e-08, -1.0], [0.99999996119, 0.000278604397, 1.6317e-08]]</span>
 <span class="linenos"> 6</span><span class="go">UB=[[0.000278604432, -0.999999952659, -1.87102e-07], [1.6307e-08, 3.9086e-08, -1.000000171333], [1.000000087947, 0.000279360313, -1.88574e-07]]</span>
-<span class="linenos"> 7</span><span class="go">Reflection(name=&#39;r400&#39;, geometry=&#39;E4CV&#39;, pseudos={&#39;h&#39;: 4, &#39;k&#39;: 0, &#39;l&#39;: 0}, reals={&#39;omega&#39;: -145.451, &#39;chi&#39;: 0, &#39;phi&#39;: 0, &#39;tth&#39;: 69.066}, wavelength=1.54, digits=4)</span>
-<span class="linenos"> 8</span><span class="go">Reflection(name=&#39;r040&#39;, geometry=&#39;E4CV&#39;, pseudos={&#39;h&#39;: 0, &#39;k&#39;: 4, &#39;l&#39;: 0}, reals={&#39;omega&#39;: -145.451, &#39;chi&#39;: 0, &#39;phi&#39;: 90, &#39;tth&#39;: 69.066}, wavelength=1.54, digits=4)</span>
-<span class="linenos"> 9</span><span class="go">Reflection(name=&#39;r004&#39;, geometry=&#39;E4CV&#39;, pseudos={&#39;h&#39;: 0, &#39;k&#39;: 0, &#39;l&#39;: 4}, reals={&#39;omega&#39;: -145.451, &#39;chi&#39;: 90, &#39;phi&#39;: 0, &#39;tth&#39;: 69.066}, wavelength=1.54, digits=4)</span>
-<span class="linenos">10</span><span class="go">Orienting reflections: [&#39;r040&#39;, &#39;r004&#39;]</span>
+<span class="linenos"> 7</span><span class="go">Reflection(name='r400', geometry='E4CV', pseudos={'h': 4, 'k': 0, 'l': 0}, reals={'omega': -145.451, 'chi': 0, 'phi': 0, 'tth': 69.066}, wavelength=1.54, digits=4)</span>
+<span class="linenos"> 8</span><span class="go">Reflection(name='r040', geometry='E4CV', pseudos={'h': 0, 'k': 4, 'l': 0}, reals={'omega': -145.451, 'chi': 0, 'phi': 90, 'tth': 69.066}, wavelength=1.54, digits=4)</span>
+<span class="linenos"> 9</span><span class="go">Reflection(name='r004', geometry='E4CV', pseudos={'h': 0, 'k': 0, 'l': 4}, reals={'omega': -145.451, 'chi': 90, 'phi': 0, 'tth': 69.066}, wavelength=1.54, digits=4)</span>
+<span class="linenos">10</span><span class="go">Orienting reflections: ['r040', 'r004']</span>
 <span class="linenos">11</span><span class="go">constraint: -180.2 &lt;= omega &lt;= 180.2</span>
 <span class="linenos">12</span><span class="go">constraint: -180.2 &lt;= chi &lt;= 180.2</span>
 <span class="linenos">13</span><span class="go">constraint: -180.2 &lt;= phi &lt;= 180.2</span>
@@ -752,7 +752,7 @@ value.  Default is 5.</p></li>
 </div>
 <p>Pop the named reflection and remove it from list of orienting reflections.</p>
 <p>EXAMPLE:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">remove_reflection</span><span class="p">(</span><span class="s2">&quot;r100&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">remove_reflection</span><span class="p">(</span><span class="s2">"r100"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>PARAMETERS</p>
@@ -779,7 +779,7 @@ if <code class="docutils literal notranslate"><span class="pre">name</span></cod
 </div>
 <p>Pop the named sample, set “selected” sample name to a valid one.</p>
 <p>EXAMPLE:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">remove_sample</span><span class="p">(</span><span class="s2">&quot;sample&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">remove_sample</span><span class="p">(</span><span class="s2">"sample"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>PARAMETERS</p>
@@ -824,7 +824,7 @@ the diffractometer from <a class="reference internal" href="#hklpy2.user.get_dif
 <p>Example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 <span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
-<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">)</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"fourc"</span><span class="p">)</span>
 <span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">set_diffractometer</span><span class="p">(</span><span class="n">fourc</span><span class="p">)</span>
 <span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... set up sample and UB matrix ...</span>
 <span class="linenos"> 6</span><span class="gp">&gt;&gt;&gt; </span><span class="n">RE</span><span class="p">(</span>
@@ -906,7 +906,7 @@ Must not be parallel to <em>(h, k, l)</em>.</p>
 </div>
 <p>Set the wavelength; if Signal has write access, changes control system.</p>
 <p>EXAMPLE:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">set_wavelength</span><span class="p">(</span><span class="mf">123.45</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">&quot;pm&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">set_wavelength</span><span class="p">(</span><span class="mf">123.45</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s2">"pm"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -928,16 +928,16 @@ is named.</p>
 </div>
 <p>EXAMPLES:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">setor</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="go">Reflection(name=&#39;r_4ad1&#39;, geometry=&#39;E4CV&#39;, pseudos={&#39;h&#39;: 4, &#39;k&#39;: 0, &#39;l&#39;: 0},</span>
-<span class="go">    reals={&#39;omega&#39;: -145.451, &#39;chi&#39;: 0, &#39;phi&#39;: 0, &#39;tth&#39;: 69.0966}, wavelength=1.54, digits=4)</span>
+<span class="go">Reflection(name='r_4ad1', geometry='E4CV', pseudos={'h': 4, 'k': 0, 'l': 0},</span>
+<span class="go">    reals={'omega': -145.451, 'chi': 0, 'phi': 0, 'tth': 69.0966}, wavelength=1.54, digits=4)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">setor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mf">69.0966</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;r040&quot;</span><span class="p">)</span>
-<span class="go">Reflection(name=&#39;r040&#39;, geometry=&#39;E4CV&#39;, pseudos={&#39;h&#39;: 0, &#39;k&#39;: 4, &#39;l&#39;: 0},</span>
-<span class="go">    reals={&#39;omega&#39;: -145.451, &#39;chi&#39;: 0, &#39;phi&#39;: 90, &#39;tth&#39;: 69.0966}, wavelength=1.54, digits=4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">setor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">145.451</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mf">69.0966</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"r040"</span><span class="p">)</span>
+<span class="go">Reflection(name='r040', geometry='E4CV', pseudos={'h': 0, 'k': 4, 'l': 0},</span>
+<span class="go">    reals={'omega': -145.451, 'chi': 0, 'phi': 90, 'tth': 69.0966}, wavelength=1.54, digits=4)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">setor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.0966</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;r004&quot;</span><span class="p">)</span>
-<span class="go">Reflection(name=&#39;r004&#39;, geometry=&#39;E4CV&#39;, pseudos={&#39;h&#39;: 0, &#39;k&#39;: 0, &#39;l&#39;: 4},</span>
-<span class="go">    reals={&#39;omega&#39;: -145.451, &#39;chi&#39;: 90, &#39;phi&#39;: 0, &#39;tth&#39;: 69.0966}, wavelength=1.54, digits=4)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">setor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">omega</span><span class="o">=-</span><span class="mf">145.451</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tth</span><span class="o">=</span><span class="mf">69.0966</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"r004"</span><span class="p">)</span>
+<span class="go">Reflection(name='r004', geometry='E4CV', pseudos={'h': 0, 'k': 0, 'l': 4},</span>
+<span class="go">    reals={'omega': -145.451, 'chi': 90, 'phi': 0, 'tth': 69.0966}, wavelength=1.54, digits=4)</span>
 </pre></div>
 </div>
 <p>PARAMETERS</p>
@@ -997,7 +997,7 @@ When <code class="docutils literal notranslate"><span class="pre">False</span></
 <p>EXAMPLE:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 <span class="linenos"> 2</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.user</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
-<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">)</span>
+<span class="linenos"> 3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"e4cv"</span><span class="p">)</span>
 <span class="linenos"> 4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">set_diffractometer</span><span class="p">(</span><span class="n">e4cv</span><span class="p">)</span>
 <span class="linenos"> 5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">solver_summary</span><span class="p">()</span>
 <span class="linenos"> 6</span><span class="go">========= ================== ================== ==================== ==================== ===============</span>
@@ -1017,7 +1017,7 @@ When <code class="docutils literal notranslate"><span class="pre">False</span></
 </pre></div>
 </div>
 <p>Pass any diffractometer directly (no need to call <code class="docutils literal notranslate"><span class="pre">set_diffractometer</span></code>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e4cv&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">e4cv</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"e4cv"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">solver_summary</span><span class="p">(</span><span class="n">e4cv</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1161,8 +1161,8 @@ When <code class="docutils literal notranslate"><span class="pre">False</span></
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1196,7 +1196,7 @@ When <code class="docutils literal notranslate"><span class="pre">False</span></
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

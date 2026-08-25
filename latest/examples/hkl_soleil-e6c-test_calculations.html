@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -37,12 +37,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -51,7 +51,7 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/hkl_soleil-e6c-test_calculations';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -523,8 +523,8 @@ as documented and as expected.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
-<span class="n">e6c</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;e6c&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E6C&quot;</span><span class="p">)</span>
-<span class="n">e6c</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_chi_vertical&quot;</span>
+<span class="n">e6c</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"e6c"</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">"E6C"</span><span class="p">)</span>
+<span class="n">e6c</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">"constant_chi_vertical"</span>
 <span class="n">e6c</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># Angstrom</span>
 </pre></div>
 </div>
@@ -536,13 +536,13 @@ as documented and as expected.</p>
 <p>Use the default <code class="docutils literal notranslate"><span class="pre">sample</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">e6c</span><span class="o">.</span><span class="n">sample</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">e6c</span><span class="o">.</span><span class="n">sample</span><span class="si">=}</span><span class="s2">"</span><span class="p">)</span>
 <span class="n">e6c</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>e6c.sample=Sample(name=&#39;sample&#39;, lattice=Lattice(a=1, system=&#39;cubic&#39;))
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>e6c.sample=Sample(name='sample', lattice=Lattice(a=1, system='cubic'))
 wavelength=1.0
 pseudos: h=0, k=0, l=0
 reals: mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0
@@ -556,9 +556,9 @@ reals: mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># checking orientation of delta</span>
-<span class="n">r1p</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
+<span class="n">r1p</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
 <span class="n">r1</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">r1p</span><span class="p">)</span>
-<span class="n">r2p</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">120.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
+<span class="n">r2p</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="mf">120.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
 <span class="n">r2</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">r2p</span><span class="p">)</span>
 <span class="n">e6c</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">calc_UB</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span>
 </pre></div>
@@ -617,9 +617,9 @@ reals: mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
+    <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expecting (0,1,0)=&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"expecting (0,1,0)="</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -633,9 +633,9 @@ reals: mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># alternate settings for same reflection</span>
 <span class="n">pos</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+    <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expecting (0,1,0)=&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"expecting (0,1,0)="</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -651,9 +651,9 @@ reals: mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
+    <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expecting (0,-1,0)=&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"expecting (0,-1,0)="</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -669,9 +669,9 @@ reals: mu=0, omega=0, chi=0, phi=0, gamma=0, delta=0
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">60.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
+    <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="o">-</span><span class="mf">60.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">60.0</span><span class="p">}</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expecting (-1,0,0)=&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"expecting (-1,0,0)="</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -693,19 +693,19 @@ the inverse calculations from the library give.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">50.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">70.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">60.0</span><span class="p">}</span>
+    <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="o">-</span><span class="mf">50.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="o">-</span><span class="mf">70.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="o">-</span><span class="mf">60.0</span><span class="p">}</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expecting (1,0,0)=&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"expecting (1,0,0)="</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 
 <span class="n">pos</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">100.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">20.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">60.0</span><span class="p">}</span>
+    <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="o">-</span><span class="mf">100.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="o">-</span><span class="mf">20.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="o">-</span><span class="mf">60.0</span><span class="p">}</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expecting (1,0,0)=&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"expecting (1,0,0)="</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 
 <span class="n">pos</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">100.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">220.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">60.0</span><span class="p">}</span>
+    <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="mf">100.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="o">-</span><span class="mf">220.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="o">-</span><span class="mf">60.0</span><span class="p">}</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expecting (1,0,0)=&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"expecting (1,0,0)="</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -723,9 +723,9 @@ expecting (1,0,0)= Hklpy2DiffractometerPseudoPos(h=1.000000229316, k=0, l=-4.239
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pos</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span>
-    <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">}</span>
+    <span class="p">{</span><span class="s2">"mu"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"omega"</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mf">45.0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">"gamma"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"delta"</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">}</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expecting (0,1,1)=&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"expecting (0,1,1)="</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -742,7 +742,7 @@ expecting (1,0,0)= Hklpy2DiffractometerPseudoPos(h=1.000000229316, k=0, l=-4.239
 <p>Calculate all allowed combinations of motor positions, given $hkl$.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;expecting either omega+phi = 120 or -120 (approximately)&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"expecting either omega+phi = 120 or -120 (approximately)"</span><span class="p">)</span>
 <span class="n">solutions</span> <span class="o">=</span> <span class="n">e6c</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">forward</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sol</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">sol</span><span class="p">)</span>
@@ -867,8 +867,8 @@ expecting (1,0,0)= Hklpy2DiffractometerPseudoPos(h=1.000000229316, k=0, l=-4.239
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -902,7 +902,7 @@ expecting (1,0,0)= Hklpy2DiffractometerPseudoPos(h=1.000000229316, k=0, l=-4.239
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

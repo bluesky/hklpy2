@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -36,19 +36,19 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../../../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/backends/typing';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -414,7 +414,7 @@
   <h1>Source code for hklpy2.backends.typing</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) 2023-2026 UChicago Argonne, LLC</span>
 <span class="c1"># SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Typed dictionary structures shared across all solver backends.</span>
 
 <span class="sd">Replaces the broad ``KeyValueMap = Mapping[str, Any]`` alias at call-sites</span>
@@ -424,7 +424,7 @@
 <span class="sd">Solver-specific metadata extensions (e.g. ``HklSolverMetadataDict``) belong</span>
 <span class="sd">in their respective solver modules, not here.  To add bespoke metadata keys</span>
 <span class="sd">for a new solver, subclass :class:`SolverMetadataDict` with ``total=False``</span>
-<span class="sd">and place the subclass in that solver&#39;s module.</span>
+<span class="sd">and place the subclass in that solver's module.</span>
 
 <span class="sd">Structures that belong above the backends layer live in</span>
 <span class="sd">:mod:`hklpy2.typing` (e.g. ``ConfigHeaderDict``).</span>
@@ -435,7 +435,7 @@
 <span class="sd">    ~ReflectionDict</span>
 <span class="sd">    ~SampleDict</span>
 <span class="sd">    ~SolverMetadataDict</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">field</span>
@@ -443,22 +443,22 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;GeometryDescriptor&quot;</span><span class="p">,</span> <span class="s2">&quot;ReflectionDict&quot;</span><span class="p">,</span> <span class="s2">&quot;SampleDict&quot;</span><span class="p">,</span> <span class="s2">&quot;SolverMetadataDict&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"GeometryDescriptor"</span><span class="p">,</span> <span class="s2">"ReflectionDict"</span><span class="p">,</span> <span class="s2">"SampleDict"</span><span class="p">,</span> <span class="s2">"SolverMetadataDict"</span><span class="p">]</span>
 
 
-<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.5.0&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Dynamic geometry registration support.&quot;</span><span class="p">)</span>
+<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"0.5.0"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Dynamic geometry registration support."</span><span class="p">)</span>
 <span class="nd">@dataclass</span>
 <div class="viewcode-block" id="GeometryDescriptor">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">GeometryDescriptor</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Describes a diffractometer geometry independently of any solver backend.</span>
 
 <span class="sd">    A :class:`GeometryDescriptor` captures the static facts about a geometry —</span>
 <span class="sd">    its axis names, available modes, and optional description — decoupled from</span>
 <span class="sd">    the solver library that implements the mathematics.  It serves two roles:</span>
 
-<span class="sd">    1. **Registry entry** — stored in a solver class&#39;s</span>
+<span class="sd">    1. **Registry entry** — stored in a solver class's</span>
 <span class="sd">       :attr:`~hklpy2.backends.base.SolverBase._geometry_registry` so that</span>
 <span class="sd">       :meth:`~hklpy2.backends.base.SolverBase.geometries` can enumerate</span>
 <span class="sd">       available geometries without creating a solver instance.</span>
@@ -471,20 +471,20 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    name : str</span>
-<span class="sd">        Canonical geometry name, e.g. ``&quot;TH TTH Q&quot;`` or ``&quot;E4CV&quot;``.  Used as</span>
+<span class="sd">        Canonical geometry name, e.g. ``"TH TTH Q"`` or ``"E4CV"``.  Used as</span>
 <span class="sd">        the dictionary key in the registry and must match the string passed to</span>
-<span class="sd">        the solver&#39;s constructor.</span>
+<span class="sd">        the solver's constructor.</span>
 <span class="sd">    pseudo_axis_names : list of str</span>
-<span class="sd">        Ordered pseudo-axis names, e.g. ``[&quot;h&quot;, &quot;k&quot;, &quot;l&quot;]`` or ``[&quot;q&quot;]``.</span>
+<span class="sd">        Ordered pseudo-axis names, e.g. ``["h", "k", "l"]`` or ``["q"]``.</span>
 <span class="sd">        Order is significant — solvers must not sort this list.</span>
 <span class="sd">    real_axis_names : list of str</span>
-<span class="sd">        Ordered real-axis names, e.g. ``[&quot;omega&quot;, &quot;chi&quot;, &quot;phi&quot;, &quot;tth&quot;]`` or</span>
-<span class="sd">        ``[&quot;th&quot;, &quot;tth&quot;]``.  Order is significant — solvers must not sort.</span>
+<span class="sd">        Ordered real-axis names, e.g. ``["omega", "chi", "phi", "tth"]`` or</span>
+<span class="sd">        ``["th", "tth"]``.  Order is significant — solvers must not sort.</span>
 <span class="sd">    modes : list of str</span>
 <span class="sd">        All valid operating mode names for this geometry.</span>
 <span class="sd">    default_mode : str</span>
-<span class="sd">        Mode to use when ``mode=&quot;&quot;`` is requested.  Must be one of</span>
-<span class="sd">        :attr:`modes` or ``&quot;&quot;`` (meaning the solver chooses).</span>
+<span class="sd">        Mode to use when ``mode=""`` is requested.  Must be one of</span>
+<span class="sd">        :attr:`modes` or ``""`` (meaning the solver chooses).</span>
 <span class="sd">    description : str</span>
 <span class="sd">        Optional human-readable description of this geometry.</span>
 
@@ -492,18 +492,18 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from hklpy2.backends.typing import GeometryDescriptor</span>
 <span class="sd">    &gt;&gt;&gt; geo = GeometryDescriptor(</span>
-<span class="sd">    ...     name=&quot;TH TTH Q&quot;,</span>
-<span class="sd">    ...     pseudo_axis_names=[&quot;q&quot;],</span>
-<span class="sd">    ...     real_axis_names=[&quot;th&quot;, &quot;tth&quot;],</span>
-<span class="sd">    ...     modes=[&quot;bissector&quot;],</span>
-<span class="sd">    ...     default_mode=&quot;bissector&quot;,</span>
-<span class="sd">    ...     description=&quot;theta / two-theta powder diffractometer&quot;,</span>
+<span class="sd">    ...     name="TH TTH Q",</span>
+<span class="sd">    ...     pseudo_axis_names=["q"],</span>
+<span class="sd">    ...     real_axis_names=["th", "tth"],</span>
+<span class="sd">    ...     modes=["bissector"],</span>
+<span class="sd">    ...     default_mode="bissector",</span>
+<span class="sd">    ...     description="theta / two-theta powder diffractometer",</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; geo.name</span>
-<span class="sd">    &#39;TH TTH Q&#39;</span>
+<span class="sd">    'TH TTH Q'</span>
 <span class="sd">    &gt;&gt;&gt; geo.real_axis_names</span>
-<span class="sd">    [&#39;th&#39;, &#39;tth&#39;]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    ['th', 'tth']</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="GeometryDescriptor.name">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.name">[docs]</a>
@@ -523,44 +523,44 @@
 
 <div class="viewcode-block" id="GeometryDescriptor.default_mode">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.default_mode">[docs]</a>
-    <span class="n">default_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+    <span class="n">default_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span></div>
 
 <div class="viewcode-block" id="GeometryDescriptor.description">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.description">[docs]</a>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span></div>
 
 <div class="viewcode-block" id="GeometryDescriptor.extra_axis_names">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.GeometryDescriptor.extra_axis_names">[docs]</a>
     <span class="n">extra_axis_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Per-mode extra parameter names: ``{mode_name: [param_names, ...]}``.</span>
+<span class="w">    </span><span class="sd">"""Per-mode extra parameter names: ``{mode_name: [param_names, ...]}``.</span>
 
 <span class="sd">    Used by solvers that expose additional named parameters (e.g. azimuthal</span>
 <span class="sd">    angle) for specific modes.  Defaults to an empty dict (no extras).</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
+<span class="sd">    """</span></div>
 
 
 
-<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.4.0&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Typed reflection dictionary.&quot;</span><span class="p">)</span>
+<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"0.4.0"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Typed reflection dictionary."</span><span class="p">)</span>
 <div class="viewcode-block" id="ReflectionDict">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.ReflectionDict">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ReflectionDict</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Typed structure for a single diffraction reflection.</span>
 
 <span class="sd">    Keys</span>
 <span class="sd">    ----</span>
 <span class="sd">    name : str</span>
-<span class="sd">        Label for this reflection (e.g. ``&quot;r1&quot;``).</span>
+<span class="sd">        Label for this reflection (e.g. ``"r1"``).</span>
 <span class="sd">    pseudos : Dict[str, float]</span>
 <span class="sd">        Pseudo-axis values at this reflection, keyed by pseudo axis name</span>
-<span class="sd">        (e.g. ``{&quot;h&quot;: 1.0, &quot;k&quot;: 0.0, &quot;l&quot;: 0.0}``).</span>
+<span class="sd">        (e.g. ``{"h": 1.0, "k": 0.0, "l": 0.0}``).</span>
 <span class="sd">    reals : Dict[str, float]</span>
 <span class="sd">        Real-axis values at this reflection, keyed by solver axis name</span>
-<span class="sd">        (e.g. ``{&quot;omega&quot;: 10.0, &quot;chi&quot;: 0.0, &quot;phi&quot;: 0.0, &quot;tth&quot;: 20.0}``).</span>
+<span class="sd">        (e.g. ``{"omega": 10.0, "chi": 0.0, "phi": 0.0, "tth": 20.0}``).</span>
 <span class="sd">    wavelength : float</span>
 <span class="sd">        Incident wavelength (Å) used when the reflection was measured.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="ReflectionDict.name">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.ReflectionDict.name">[docs]</a>
@@ -581,11 +581,11 @@
 
 
 
-<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.4.0&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Typed sample dictionary.&quot;</span><span class="p">)</span>
+<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"0.4.0"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Typed sample dictionary."</span><span class="p">)</span>
 <div class="viewcode-block" id="SampleDict">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.SampleDict">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SampleDict</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Typed structure for a crystalline sample.</span>
 
 <span class="sd">    Keys</span>
@@ -593,13 +593,13 @@
 <span class="sd">    name : str</span>
 <span class="sd">        Human-readable label for the sample.</span>
 <span class="sd">    lattice : Dict[str, float]</span>
-<span class="sd">        Unit-cell parameters ``{&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot;}``.</span>
+<span class="sd">        Unit-cell parameters ``{"a", "b", "c", "alpha", "beta", "gamma"}``.</span>
 <span class="sd">    reflections : Dict[str, ReflectionDict]</span>
 <span class="sd">        Mapping of reflection name → :class:`ReflectionDict`.</span>
 <span class="sd">    order : List[str]</span>
 <span class="sd">        Reflection names in the order they should be added to the solver</span>
 <span class="sd">        (controls which two are used for UB calculation).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="SampleDict.name">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.SampleDict.name">[docs]</a>
@@ -611,7 +611,7 @@
 
 <div class="viewcode-block" id="SampleDict.reflections">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.SampleDict.reflections">[docs]</a>
-    <span class="n">reflections</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;ReflectionDict&quot;</span><span class="p">]</span></div>
+    <span class="n">reflections</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"ReflectionDict"</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="SampleDict.order">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.SampleDict.order">[docs]</a>
@@ -620,19 +620,19 @@
 
 
 
-<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.4.0&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Typed solver metadata dictionary.&quot;</span><span class="p">)</span>
+<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"0.4.0"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Typed solver metadata dictionary."</span><span class="p">)</span>
 <div class="viewcode-block" id="SolverMetadataDict">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.SolverMetadataDict">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SolverMetadataDict</span><span class="p">(</span><span class="n">TypedDict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Typed structure for the **common** solver summary metadata.</span>
 
 <span class="sd">    Returned by :attr:`~hklpy2.backends.base.SolverBase._metadata` and</span>
-<span class="sd">    stored under the ``&quot;solver&quot;`` key in the configuration dictionary.</span>
+<span class="sd">    stored under the ``"solver"`` key in the configuration dictionary.</span>
 
 <span class="sd">    This class defines only the keys that every solver is required to</span>
 <span class="sd">    provide.  Solver-specific extra fields should be added by subclassing</span>
-<span class="sd">    with ``total=False`` in the solver&#39;s own module.  Example::</span>
+<span class="sd">    with ``total=False`` in the solver's own module.  Example::</span>
 
 <span class="sd">        # in backends/hkl_soleil.py</span>
 <span class="sd">        class HklSolverMetadataDict(SolverMetadataDict, total=False):</span>
@@ -641,16 +641,16 @@
 <span class="sd">    Keys</span>
 <span class="sd">    ----</span>
 <span class="sd">    name : str</span>
-<span class="sd">        Solver name (e.g. ``&quot;no_op&quot;``, ``&quot;hkl_soleil&quot;``).</span>
+<span class="sd">        Solver name (e.g. ``"no_op"``, ``"hkl_soleil"``).</span>
 <span class="sd">    description : str</span>
 <span class="sd">        Human-readable repr string.</span>
 <span class="sd">    geometry : str</span>
-<span class="sd">        Selected geometry name (e.g. ``&quot;E4CV&quot;``).</span>
+<span class="sd">        Selected geometry name (e.g. ``"E4CV"``).</span>
 <span class="sd">    real_axes : List[str]</span>
 <span class="sd">        Ordered list of real axis names.</span>
 <span class="sd">    version : str</span>
 <span class="sd">        Version string for the solver library.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="SolverMetadataDict.name">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.SolverMetadataDict.name">[docs]</a>
@@ -702,8 +702,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -737,7 +737,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

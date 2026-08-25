@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -37,19 +37,19 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/example-4-circle-custom-class';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -535,36 +535,36 @@ Add many additional axes, both in real (rotation angle) space and in reciprocal
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Fourc</span><span class="p">(</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">DiffractometerBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test case.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Test case."""</span>
 
     <span class="n">beam</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
         <span class="n">EpicsMonochromatorRO</span><span class="p">,</span>
-        <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">source_type</span><span class="o">=</span><span class="s2">&quot;Simulated read-only EPICS Monochromator&quot;</span><span class="p">,</span>
-        <span class="n">pv_energy</span><span class="o">=</span><span class="s2">&quot;BraggERdbkAO&quot;</span><span class="p">,</span>  <span class="c1"># the energy readback PV</span>
-        <span class="n">energy_units</span><span class="o">=</span><span class="s2">&quot;keV&quot;</span><span class="p">,</span>
-        <span class="n">pv_wavelength</span><span class="o">=</span><span class="s2">&quot;BraggLambdaRdbkAO&quot;</span><span class="p">,</span>  <span class="c1"># the wavelength readback PV</span>
-        <span class="n">wavelength_units</span><span class="o">=</span><span class="s2">&quot;angstrom&quot;</span><span class="p">,</span>
+        <span class="s2">""</span><span class="p">,</span>
+        <span class="n">source_type</span><span class="o">=</span><span class="s2">"Simulated read-only EPICS Monochromator"</span><span class="p">,</span>
+        <span class="n">pv_energy</span><span class="o">=</span><span class="s2">"BraggERdbkAO"</span><span class="p">,</span>  <span class="c1"># the energy readback PV</span>
+        <span class="n">energy_units</span><span class="o">=</span><span class="s2">"keV"</span><span class="p">,</span>
+        <span class="n">pv_wavelength</span><span class="o">=</span><span class="s2">"BraggLambdaRdbkAO"</span><span class="p">,</span>  <span class="c1"># the wavelength readback PV</span>
+        <span class="n">wavelength_units</span><span class="o">=</span><span class="s2">"angstrom"</span><span class="p">,</span>
         <span class="n">wavelength_deadband</span><span class="o">=</span><span class="mf">0.000_150</span><span class="p">,</span>
         <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># Pseudo-space axes, in order expected by hkl_soleil E4CV, engine=&quot;hkl&quot;</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
-    <span class="n">k</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="c1"># Pseudo-space axes, in order expected by hkl_soleil E4CV, engine="hkl"</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
 
     <span class="c1"># Real-space axes, in our own order..</span>
     <span class="c1"># Use different names than the solver for some axes</span>
-    <span class="n">ttheta</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;m29&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;m30&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
-    <span class="n">chi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;m31&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
-    <span class="n">phi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">&quot;m32&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">ttheta</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">"m29"</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">"m30"</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">chi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">"m31"</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s2">"m32"</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
 
     <span class="c1"># Pseudo-space extra axes used in a couple modes.</span>
-    <span class="n">h2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
-    <span class="n">k2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
-    <span class="n">l2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">h2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">k2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">Hklpy2PseudoAxis</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
 
     <span class="c1"># real-space extra axis used in a couple modes</span>
     <span class="n">psi</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">170</span><span class="p">,</span> <span class="mi">170</span><span class="p">),</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
@@ -573,43 +573,43 @@ Add many additional axes, both in real (rotation angle) space and in reciprocal
     <span class="n">temperature</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">75</span><span class="p">,</span> <span class="mi">45</span><span class="p">),</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">NORMAL_HINTED</span><span class="p">)</span>
 
     <span class="c1"># Just the axes in expected order by hkl_soleil E4CV.</span>
-    <span class="n">_pseudo</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">]</span>
-    <span class="n">_real</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="s2">&quot;ttheta&quot;</span><span class="p">]</span>
+    <span class="n">_pseudo</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"h"</span><span class="p">,</span> <span class="s2">"k"</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">]</span>
+    <span class="n">_real</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"theta"</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">,</span> <span class="s2">"ttheta"</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># kwargs[&quot;prefix&quot;] = prefix</span>
+        <span class="c1"># kwargs["prefix"] = prefix</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">,</span>
-            <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-            <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
-            <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;hkl&quot;</span><span class="p">},</span>
-            <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;h&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">],</span>
-            <span class="n">reals</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;theta&quot;</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">,</span> <span class="s2">&quot;ttheta&quot;</span><span class="p">],</span>
+            <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span>
+            <span class="n">geometry</span><span class="o">=</span><span class="s2">"E4CV"</span><span class="p">,</span>
+            <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"engine"</span><span class="p">:</span> <span class="s2">"hkl"</span><span class="p">},</span>
+            <span class="n">pseudos</span><span class="o">=</span><span class="p">[</span><span class="s2">"h"</span><span class="p">,</span> <span class="s2">"k"</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">],</span>
+            <span class="n">reals</span><span class="o">=</span><span class="p">[</span><span class="s2">"theta"</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">,</span> <span class="s2">"ttheta"</span><span class="p">],</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
 
-<span class="n">fourc</span> <span class="o">=</span> <span class="n">Fourc</span><span class="p">(</span><span class="s2">&quot;gp:&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">)</span>
+<span class="n">fourc</span> <span class="o">=</span> <span class="n">Fourc</span><span class="p">(</span><span class="s2">"gp:"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"fourc"</span><span class="p">)</span>
 <span class="n">fourc</span><span class="o">.</span><span class="n">wait_for_connection</span><span class="p">()</span>  <span class="c1"># Recommended when connecting to control system.</span>
 <span class="n">fourc</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Fourc(prefix=&#39;gp:&#39;, name=&#39;fourc&#39;, settle_time=0.0, timeout=None, egu=&#39;&#39;, limits=(0, 0), source=&#39;computed&#39;, read_attrs=[&#39;beam&#39;, &#39;beam.wavelength&#39;, &#39;beam.energy&#39;, &#39;h&#39;, &#39;h.readback&#39;, &#39;h.setpoint&#39;, &#39;k&#39;, &#39;k.readback&#39;, &#39;k.setpoint&#39;, &#39;l&#39;, &#39;l.readback&#39;, &#39;l.setpoint&#39;, &#39;ttheta&#39;, &#39;ttheta.user_readback&#39;, &#39;ttheta.user_setpoint&#39;, &#39;theta&#39;, &#39;theta.user_readback&#39;, &#39;theta.user_setpoint&#39;, &#39;chi&#39;, &#39;chi.user_readback&#39;, &#39;chi.user_setpoint&#39;, &#39;phi&#39;, &#39;phi.user_readback&#39;, &#39;phi.user_setpoint&#39;, &#39;h2&#39;, &#39;h2.readback&#39;, &#39;h2.setpoint&#39;, &#39;k2&#39;, &#39;k2.readback&#39;, &#39;k2.setpoint&#39;, &#39;l2&#39;, &#39;l2.readback&#39;, &#39;l2.setpoint&#39;, &#39;psi&#39;, &#39;temperature&#39;], configuration_attrs=[&#39;beam&#39;, &#39;beam.source_type&#39;, &#39;beam.wavelength_units&#39;, &#39;beam.wavelength_deadband&#39;, &#39;beam.energy_units&#39;, &#39;h&#39;, &#39;k&#39;, &#39;l&#39;, &#39;ttheta&#39;, &#39;ttheta.user_offset&#39;, &#39;ttheta.user_offset_dir&#39;, &#39;ttheta.velocity&#39;, &#39;ttheta.acceleration&#39;, &#39;ttheta.motor_egu&#39;, &#39;theta&#39;, &#39;theta.user_offset&#39;, &#39;theta.user_offset_dir&#39;, &#39;theta.velocity&#39;, &#39;theta.acceleration&#39;, &#39;theta.motor_egu&#39;, &#39;chi&#39;, &#39;chi.user_offset&#39;, &#39;chi.user_offset_dir&#39;, &#39;chi.velocity&#39;, &#39;chi.acceleration&#39;, &#39;chi.motor_egu&#39;, &#39;phi&#39;, &#39;phi.user_offset&#39;, &#39;phi.user_offset_dir&#39;, &#39;phi.velocity&#39;, &#39;phi.acceleration&#39;, &#39;phi.motor_egu&#39;, &#39;h2&#39;, &#39;k2&#39;, &#39;l2&#39;], concurrent=True)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Fourc(prefix='gp:', name='fourc', settle_time=0.0, timeout=None, egu='', limits=(0, 0), source='computed', read_attrs=['beam', 'beam.wavelength', 'beam.energy', 'h', 'h.readback', 'h.setpoint', 'k', 'k.readback', 'k.setpoint', 'l', 'l.readback', 'l.setpoint', 'ttheta', 'ttheta.user_readback', 'ttheta.user_setpoint', 'theta', 'theta.user_readback', 'theta.user_setpoint', 'chi', 'chi.user_readback', 'chi.user_setpoint', 'phi', 'phi.user_readback', 'phi.user_setpoint', 'h2', 'h2.readback', 'h2.setpoint', 'k2', 'k2.readback', 'k2.setpoint', 'l2', 'l2.readback', 'l2.setpoint', 'psi', 'temperature'], configuration_attrs=['beam', 'beam.source_type', 'beam.wavelength_units', 'beam.wavelength_deadband', 'beam.energy_units', 'h', 'k', 'l', 'ttheta', 'ttheta.user_offset', 'ttheta.user_offset_dir', 'ttheta.velocity', 'ttheta.acceleration', 'ttheta.motor_egu', 'theta', 'theta.user_offset', 'theta.user_offset_dir', 'theta.velocity', 'theta.acceleration', 'theta.motor_egu', 'chi', 'chi.user_offset', 'chi.user_offset_dir', 'chi.velocity', 'chi.acceleration', 'chi.motor_egu', 'phi', 'phi.user_offset', 'phi.user_offset_dir', 'phi.velocity', 'phi.acceleration', 'phi.motor_egu', 'h2', 'k2', 'l2'], concurrent=True)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Brief &#39;where&#39; report:&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Brief 'where' report:"</span><span class="p">)</span>
 <span class="n">fourc</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Brief &#39;where&#39; report:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Brief 'where' report:
 wavelength=0.5466
 pseudos: h=0, k=0, l=0
 reals: theta=0, chi=0, phi=0, ttheta=0
@@ -620,16 +620,16 @@ auxiliaries: h2=0, k2=0, l2=0, psi=0, temperature=25
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Full &#39;where&#39; report:&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Full 'where' report:"</span><span class="p">)</span>
 <span class="n">fourc</span><span class="o">.</span><span class="n">wh</span><span class="p">(</span><span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full &#39;where&#39; report:
-diffractometer=&#39;fourc&#39;
-HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;hkl&#39;, mode=&#39;bissector&#39;)
-Sample(name=&#39;sample&#39;, lattice=Lattice(a=1, system=&#39;cubic&#39;))
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Full 'where' report:
+diffractometer='fourc'
+HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='hkl', mode='bissector')
+Sample(name='sample', lattice=Lattice(a=1, system='cubic'))
 Orienting reflections: []
 U=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
 UB=[[6.2832, 0.0, 0.0], [0.0, 6.2832, 0.0], [0.0, 0.0, 6.2832]]
@@ -638,7 +638,7 @@ constraint: -180.0 &lt;= chi &lt;= 180.0
 constraint: -180.0 &lt;= phi &lt;= 180.0
 constraint: -180.0 &lt;= ttheta &lt;= 180.0
 Mode: bissector
-beam={&#39;class&#39;: &#39;EpicsMonochromatorRO&#39;, &#39;source_type&#39;: &#39;Simulated read-only EPICS Monochromator&#39;, &#39;energy&#39;: 22.684, &#39;wavelength&#39;: 0.5466, &#39;energy_units&#39;: &#39;keV&#39;, &#39;wavelength_units&#39;: &#39;angstrom&#39;, &#39;wavelength_PV&#39;: &#39;gp:BraggLambdaRdbkAO&#39;, &#39;energy_PV&#39;: &#39;gp:BraggERdbkAO&#39;}
+beam={'class': 'EpicsMonochromatorRO', 'source_type': 'Simulated read-only EPICS Monochromator', 'energy': 22.684, 'wavelength': 0.5466, 'energy_units': 'keV', 'wavelength_units': 'angstrom', 'wavelength_PV': 'gp:BraggLambdaRdbkAO', 'energy_PV': 'gp:BraggERdbkAO'}
 pseudos: h=0, k=0, l=0
 reals: theta=0, chi=0, phi=0, ttheta=0
 auxiliaries: h2=0, k2=0, l2=0, psi=0, temperature=25
@@ -661,7 +661,7 @@ auxiliaries: h2=0, k2=0, l2=0, psi=0, temperature=25
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>  <span class="c1"># Shows ALL the possibilities.</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">"h"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"k"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"l"</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>  <span class="c1"># Shows ALL the possibilities.</span>
 </pre></div>
 </div>
 </div>
@@ -678,12 +678,12 @@ auxiliaries: h2=0, k2=0, l2=0, psi=0, temperature=25
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">inverse</span><span class="p">({</span><span class="s2">&quot;ttheta&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;theta&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">})</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">inverse</span><span class="p">({</span><span class="s2">"ttheta"</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">"theta"</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="mi">90</span><span class="p">})</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;h&#39;: 1.829588727167, &#39;k&#39;: -4.18052e-07, &#39;l&#39;: -8.6387e-08}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{'h': 1.829588727167, 'k': -4.18052e-07, 'l': -8.6387e-08}
 </pre></div>
 </div>
 </div>
@@ -767,8 +767,8 @@ auxiliaries: h2=0, k2=0, l2=0, psi=0, temperature=25
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -802,7 +802,7 @@ auxiliaries: h2=0, k2=0, l2=0, psi=0, temperature=25
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>
