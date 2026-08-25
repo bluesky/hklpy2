@@ -79,7 +79,7 @@ INPUT_VECTOR = (
 )
 """Acceptable forms of vector input for zones, ..."""
 
-AxesArray = npt.NDArray[np.floating]
+AxesArray = np.ndarray[tuple[Any, ...], np.dtype[np.floating | np.integer]]
 """Numpy array of axes values."""
 
 AxesDict = dict[str, NUMERIC]
