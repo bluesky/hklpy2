@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -37,12 +37,12 @@
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="_static/documentation_options.js?v=6343dc25"></script>
+    <script src="_static/documentation_options.js?v=d95ac45d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -51,7 +51,7 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -545,7 +545,7 @@ It handles all the wiring between the Python object, the solver, and
 the simulated motor axes.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
-<span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">)</span>
+<span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"fourc"</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">"E4CV"</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">name</span></code> keyword is a label for this diffractometer object — by
@@ -586,12 +586,12 @@ modelled on common SPEC commands.  We import the ones we need and tell
 <h2>Step 3 — Add a sample<a class="headerlink" href="#step-3-add-a-sample" title="Link to this heading">#</a></h2>
 <p>A <em>sample</em> pairs a name with a crystal lattice.  <strong>hklpy2</strong> includes the
 silicon lattice parameter as a built-in constant:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">add_sample</span><span class="p">(</span><span class="s2">&quot;silicon&quot;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">SI_LATTICE_PARAMETER</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">add_sample</span><span class="p">(</span><span class="s2">"silicon"</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">SI_LATTICE_PARAMETER</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Silicon is cubic so only one lattice parameter <code class="docutils literal notranslate"><span class="pre">a</span></code> is needed.
 Notice that <a class="reference internal" href="autoapi/hklpy2/user/index.html#hklpy2.user.add_sample" title="hklpy2.user.add_sample"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_sample()</span></code></a> prints a confirmation:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Sample(name=&#39;silicon&#39;, lattice=Lattice(a=5.431, system=&#39;cubic&#39;))
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Sample(name='silicon', lattice=Lattice(a=5.431, system='cubic'))
 </pre></div>
 </div>
 <p>For a non-cubic crystal you would supply additional parameters, for
@@ -659,8 +659,8 @@ orientation reflections.</p>
 <p>First, narrow the constraints so that only physically sensible solutions
 are returned — keeping <span class="math notranslate nohighlight">\(2\theta\)</span> positive and <span class="math notranslate nohighlight">\(\omega\)</span>
 negative:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;tth&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.001</span><span class="p">,</span> <span class="mi">180</span>
-<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"tth"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.001</span><span class="p">,</span> <span class="mi">180</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"omega"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">180</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now check <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="hklpy2.diffract.DiffractometerBase.inverse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> — given
@@ -672,7 +672,7 @@ the angles of the first reflection, do we recover <span class="math notranslate 
 <p>And <a class="reference internal" href="autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="hklpy2.diffract.DiffractometerBase.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> — given
 <span class="math notranslate nohighlight">\((4, 0, 0)\)</span>, do we get back angles close to the measured
 reflection?</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector&quot;</span>   <span class="c1"># omega = tth / 2</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">"bissector"</span>   <span class="c1"># omega = tth / 2</span>
 <span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="c1"># → Hklpy2DiffractometerRealPos(omega=-34.5491, chi=0.0, phi=-110.9011, tth=69.0982)</span>
 </pre></div>
@@ -876,8 +876,8 @@ object</p></li>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -911,7 +911,7 @@ object</p></li>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

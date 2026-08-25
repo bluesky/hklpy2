@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -36,19 +36,19 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../../../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/backends/th_tth_q';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -414,21 +414,21 @@
   <h1>Source code for hklpy2.backends.th_tth_q</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) 2023-2026 UChicago Argonne, LLC</span>
 <span class="c1"># SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">&quot;th_tth&quot; example solver in Python.</span>
+<span class="sd">"""</span>
+<span class="sd">"th_tth" example solver in Python.</span>
 
 <span class="sd">Transformations between :math:`\\theta,2\\theta` and :math:`Q`.</span>
 
 <span class="sd">Example::</span>
 
 <span class="sd">    import hklpy2</span>
-<span class="sd">    SolverClass = hklpy2.get_solver(&quot;th_tth&quot;)</span>
+<span class="sd">    SolverClass = hklpy2.get_solver("th_tth")</span>
 <span class="sd">    solver = SolverClass()</span>
 
 <span class="sd">.. autosummary::</span>
 
 <span class="sd">    ~ThTthSolver</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
@@ -446,29 +446,29 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <div class="viewcode-block" id="TH_TTH_Q_GEOMETRY">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.TH_TTH_Q_GEOMETRY">[docs]</a>
-<span class="n">TH_TTH_Q_GEOMETRY</span> <span class="o">=</span> <span class="s2">&quot;TH TTH Q&quot;</span></div>
+<span class="n">TH_TTH_Q_GEOMETRY</span> <span class="o">=</span> <span class="s2">"TH TTH Q"</span></div>
 
 <div class="viewcode-block" id="BISECTOR_MODE">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.BISECTOR_MODE">[docs]</a>
-<span class="n">BISECTOR_MODE</span> <span class="o">=</span> <span class="s2">&quot;bissector&quot;</span>  <span class="c1"># spelled same as in E4CV</span></div>
+<span class="n">BISECTOR_MODE</span> <span class="o">=</span> <span class="s2">"bissector"</span>  <span class="c1"># spelled same as in E4CV</span></div>
 
 
 <span class="c1">#: Built-in geometry descriptor for the theta/two-theta/Q geometry.</span>
 <span class="n">_TH_TTH_Q_DESCRIPTOR</span> <span class="o">=</span> <span class="n">GeometryDescriptor</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="n">TH_TTH_Q_GEOMETRY</span><span class="p">,</span>
-    <span class="n">pseudo_axis_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;q&quot;</span><span class="p">],</span>
-    <span class="n">real_axis_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;th&quot;</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">],</span>
+    <span class="n">pseudo_axis_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"q"</span><span class="p">],</span>
+    <span class="n">real_axis_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"th"</span><span class="p">,</span> <span class="s2">"tth"</span><span class="p">],</span>
     <span class="n">modes</span><span class="o">=</span><span class="p">[</span><span class="n">BISECTOR_MODE</span><span class="p">],</span>
     <span class="n">default_mode</span><span class="o">=</span><span class="n">BISECTOR_MODE</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;theta / two-theta powder diffractometer (Q transform)&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">"theta / two-theta powder diffractometer (Q transform)"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="ThTthSolver">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ThTthSolver</span><span class="p">(</span><span class="n">SolverBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ``&quot;th_tth&quot;`` (any OS) :math:`\\theta,2\\theta` and :math:`Q`.</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    ``"th_tth"`` (any OS) :math:`\\theta,2\\theta` and :math:`Q`.</span>
 
 <span class="sd">    ============== =================</span>
 <span class="sd">    transformation equation</span>
@@ -511,11 +511,11 @@
 <span class="sd">        ~mode</span>
 <span class="sd">        ~modes</span>
 <span class="sd">        ~sample</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="ThTthSolver.name">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver.name">[docs]</a>
-    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;th_tth&quot;</span></div>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">"th_tth"</span></div>
 
 <div class="viewcode-block" id="ThTthSolver.version">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver.version">[docs]</a>
@@ -532,23 +532,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_descriptor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GeometryDescriptor</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the GeometryDescriptor for the current geometry, or None.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return the GeometryDescriptor for the current geometry, or None."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_registry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ThTthSolver.addReflection">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver.addReflection">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">addReflection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">ReflectionDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add coordinates of a diffraction condition (a reflection).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Add coordinates of a diffraction condition (a reflection)."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply SolverReflection (dict), received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Must supply SolverReflection (dict), received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="c1"># validate: all reflections must have same wavelength</span>
-        <span class="n">wavelengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;wavelength&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="p">]</span>
+        <span class="n">wavelengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s2">"wavelength"</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">max</span><span class="p">(</span><span class="n">wavelengths</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;All reflections must have same wavelength. Received: </span><span class="si">{</span><span class="n">wavelengths</span><span class="si">!r}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"All reflections must have same wavelength. Received: </span><span class="si">{</span><span class="n">wavelengths</span><span class="si">!r}</span><span class="s2">"</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">wavelengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
@@ -576,21 +576,21 @@
 <div class="viewcode-block" id="ThTthSolver.forward">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">NamedFloatDict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform pseudos to list of reals.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Transform pseudos to list of reals."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dict, received </span><span class="si">{</span><span class="n">pseudos</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Must supply dict, received </span><span class="si">{</span><span class="n">pseudos</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_descriptor</span><span class="p">()</span>
         <span class="n">solutions</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="n">TH_TTH_Q_GEOMETRY</span><span class="p">:</span>
-            <span class="n">q</span> <span class="o">=</span> <span class="n">pseudos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">pseudos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"q"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;q&#39; not defined. Received </span><span class="si">{</span><span class="n">pseudos</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"'q' not defined. Received </span><span class="si">{</span><span class="n">pseudos</span><span class="si">!r}</span><span class="s2">."</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">&quot;Wavelength is not set. Add a reflection.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">"Wavelength is not set. Add a reflection."</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">BISECTOR_MODE</span><span class="p">:</span>
                 <span class="n">th</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">q</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
-                <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;th&quot;</span><span class="p">:</span> <span class="n">th</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">th</span><span class="p">})</span>
+                <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"th"</span><span class="p">:</span> <span class="n">th</span><span class="p">,</span> <span class="s2">"tth"</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">th</span><span class="p">})</span>
 
         <span class="k">return</span> <span class="n">solutions</span></div>
 
@@ -599,29 +599,29 @@
 <div class="viewcode-block" id="ThTthSolver.geometries">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver.geometries">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">geometries</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sorted list of registered geometry names.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Sorted list of registered geometry names."""</span>
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_geometry_registry</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="ThTthSolver.inverse">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver.inverse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform reals to pseudos.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Transform reals to pseudos."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reals</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dict, received </span><span class="si">{</span><span class="n">reals</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Must supply dict, received </span><span class="si">{</span><span class="n">reals</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">desc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_descriptor</span><span class="p">()</span>
         <span class="n">pseudos</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">desc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="o">==</span> <span class="n">TH_TTH_Q_GEOMETRY</span><span class="p">:</span>
-            <span class="n">tth</span> <span class="o">=</span> <span class="n">reals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tth&quot;</span><span class="p">)</span>
+            <span class="n">tth</span> <span class="o">=</span> <span class="n">reals</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"tth"</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">tth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;tth&#39; not defined. Received </span><span class="si">{</span><span class="n">reals</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"'tth' not defined. Received </span><span class="si">{</span><span class="n">reals</span><span class="si">!r}</span><span class="s2">."</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">&quot;Wavelength is not set. Add a reflection.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">"Wavelength is not set. Add a reflection."</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">BISECTOR_MODE</span><span class="p">:</span>
                 <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">wavelength</span>
                 <span class="n">q</span> <span class="o">*=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">tth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
-                <span class="n">pseudos</span><span class="p">[</span><span class="s2">&quot;q&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
+                <span class="n">pseudos</span><span class="p">[</span><span class="s2">"q"</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
         <span class="k">return</span> <span class="n">pseudos</span></div>
 
 
@@ -658,14 +658,14 @@
 <div class="viewcode-block" id="ThTthSolver.refineLattice">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver.refineLattice">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ReflectionDict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;No lattice refinement in this |solver|.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""No lattice refinement in this |solver|."""</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="ThTthSolver.removeAllReflections">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver.removeAllReflections">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">removeAllReflections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all reflections.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Remove all reflections."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="o">=</span> <span class="kc">None</span></div>
 
@@ -674,16 +674,16 @@
 <div class="viewcode-block" id="ThTthSolver.wavelength">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/backends/th_tth_q/index.html#hklpy2.backends.th_tth_q.ThTthSolver.wavelength">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Diffractometer wavelength, for forward() and inverse().&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Diffractometer wavelength, for forward() and inverse()."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span></div>
 
 
     <span class="nd">@wavelength</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply number, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Must supply number, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply positive number, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Must supply positive number, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="o">=</span> <span class="n">value</span></div>
 
 
@@ -719,8 +719,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -754,7 +754,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

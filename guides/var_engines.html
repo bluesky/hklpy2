@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -37,19 +37,19 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'guides/var_engines';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -565,7 +565,7 @@ to demonstrate since it only involves the actions of the <code class="docutils l
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
 <span class="n">fourcq</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourcq&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span> <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;engine&quot;</span><span class="p">:</span> <span class="s2">&quot;q&quot;</span><span class="p">}</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"fourcq"</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">"E4CV"</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span> <span class="n">solver_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">"engine"</span><span class="p">:</span> <span class="s2">"q"</span><span class="p">}</span>
 <span class="p">)</span>
 <span class="n">fourcq</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
 </pre></div>
@@ -582,7 +582,7 @@ reals: omega=0, chi=0, phi=0, tth=0
 <p>Test the <code class="docutils literal notranslate"><span class="pre">q</span></code> engine by calculating the angles associated with $Q=1.00$ 1/angstrom. There is only one pseudo positioner so only one value is provided to the <code class="docutils literal notranslate"><span class="pre">forward()</span></code> calculation.  Notice that only the <code class="docutils literal notranslate"><span class="pre">tth</span></code> position is computed.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;q to angle: </span><span class="si">{</span><span class="n">fourcq</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="si">= }</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"q to angle: </span><span class="si">{</span><span class="n">fourcq</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="si">= }</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -595,7 +595,7 @@ reals: omega=0, chi=0, phi=0, tth=0
 <p>Calculate the $q$ associated with <code class="docutils literal notranslate"><span class="pre">tth=1.0</span></code> degrees.  While four real motors are defined, only <code class="docutils literal notranslate"><span class="pre">tth</span></code> is used for the calculation so only one value is provided to the <code class="docutils literal notranslate"><span class="pre">inverse()</span></code> calculation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;angle to q: </span><span class="si">{</span><span class="n">fourcq</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="si">= }</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"angle to q: </span><span class="si">{</span><span class="n">fourcq</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="si">= }</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -644,9 +644,9 @@ reals: omega=0, chi=0, phi=0, tth=9.1286
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diffractometer=&#39;fourcq&#39;
-HklSolver(name=&#39;hkl_soleil&#39;, version=&#39;5.1.2&#39;, geometry=&#39;E4CV&#39;, engine_name=&#39;q&#39;, mode=&#39;q&#39;)
-Sample(name=&#39;sample&#39;, lattice=Lattice(a=1, system=&#39;cubic&#39;))
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diffractometer='fourcq'
+HklSolver(name='hkl_soleil', version='5.1.2', geometry='E4CV', engine_name='q', mode='q')
+Sample(name='sample', lattice=Lattice(a=1, system='cubic'))
 Orienting reflections: []
 U=[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
 UB=[[6.2832, 0.0, 0.0], [0.0, 6.2832, 0.0], [0.0, 0.0, 6.2832]]
@@ -655,7 +655,7 @@ constraint: -180.0 &lt;= chi &lt;= 180.0
 constraint: -180.0 &lt;= phi &lt;= 180.0
 constraint: -180.0 &lt;= tth &lt;= 180.0
 Mode: q
-beam={&#39;class&#39;: &#39;WavelengthXray&#39;, &#39;source_type&#39;: &#39;Synchrotron X-ray Source&#39;, &#39;energy&#39;: 12.3984, &#39;wavelength&#39;: 1.0, &#39;energy_units&#39;: &#39;keV&#39;, &#39;wavelength_units&#39;: &#39;angstrom&#39;}
+beam={'class': 'WavelengthXray', 'source_type': 'Synchrotron X-ray Source', 'energy': 12.3984, 'wavelength': 1.0, 'energy_units': 'keV', 'wavelength_units': 'angstrom'}
 pseudos: q=1.0
 reals: omega=0, chi=0, phi=0, tth=9.1286
 </pre></div>
@@ -772,8 +772,8 @@ reals: omega=0, chi=0, phi=0, tth=4.5607
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -807,7 +807,7 @@ reals: omega=0, chi=0, phi=0, tth=4.5607
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

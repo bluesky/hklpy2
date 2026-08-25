@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -36,19 +36,19 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../../../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/blocks/zone';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -414,7 +414,7 @@
   <h1>Source code for hklpy2.blocks.zone</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) 2023-2026 UChicago Argonne, LLC</span>
 <span class="c1"># SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Crystallographic zone axis operations.</span>
 
 <span class="sd">A *zone* is set of crystal *lattice* planes, all parallel to one line, called</span>
@@ -441,7 +441,7 @@
 <span class="sd">    :func:`move_zone` and :func:`scan_zone` have moved to :mod:`hklpy2.plans`.</span>
 <span class="sd">    Importing them from :mod:`hklpy2.blocks.zone` emits a</span>
 <span class="sd">    :exc:`DeprecationWarning` and will be removed in a future release.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -459,14 +459,14 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;OrthonormalZone&quot;</span><span class="p">,</span> <span class="s2">&quot;move_zone&quot;</span><span class="p">,</span> <span class="s2">&quot;scan_zone&quot;</span><span class="p">,</span> <span class="s2">&quot;zone_series&quot;</span><span class="p">,</span> <span class="s2">&quot;zonespace&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"OrthonormalZone"</span><span class="p">,</span> <span class="s2">"move_zone"</span><span class="p">,</span> <span class="s2">"scan_zone"</span><span class="p">,</span> <span class="s2">"zone_series"</span><span class="p">,</span> <span class="s2">"zonespace"</span><span class="p">]</span>
 
 
-<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.3.0&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Crystallographic zone axis operations.&quot;</span><span class="p">)</span>
+<span class="nd">@versionadded</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"0.3.0"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Crystallographic zone axis operations."</span><span class="p">)</span>
 <div class="viewcode-block" id="OrthonormalZone">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OrthonormalZone</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    An orthonormal (Cartesian) zone defined by a *zone axis*.</span>
 
 <span class="sd">    The zone axis can be defined directly or computed from two vectors using</span>
@@ -488,7 +488,7 @@
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If both axis and v1/v2 are provided, or if only one of v1/v2 is provided</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -497,11 +497,11 @@
         <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Constructor"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">b1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">b2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot specify both &#39;axis&#39; and &#39;b1/b2&#39; parameters&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot specify both 'axis' and 'b1/b2' parameters"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span>
@@ -509,19 +509,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">define_axis</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">b1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">b2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Both b1 and b2 must be provided to define axis from vectors&quot;</span>
+                <span class="s2">"Both b1 and b2 must be provided to define axis from vectors"</span>
             <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Text representation of a zone object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Text representation of a zone object."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">axis</span> <span class="o">=</span> <span class="s2">&quot;undefined&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">axis</span><span class="si">=}</span><span class="s2">)&quot;</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="s2">"undefined"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">axis</span><span class="si">=}</span><span class="s2">)"</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_standardize_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return a numpy array of 3 floats. Raise exception as needed.</span>
 
 <span class="sd">        Parameters</span>
@@ -538,18 +538,18 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If vector cannot be converted to 3-element array</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">arr</span> <span class="o">=</span> <span class="n">vector</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">arr</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot create vector from empty dictionary&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot create vector from empty dictionary"</span><span class="p">)</span>
             <span class="n">arr</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;vector must be 1-D array-like vector of length 3.&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;  Received </span><span class="si">{</span><span class="n">vector</span><span class="si">}</span><span class="s2"> with shape </span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="s2">"vector must be 1-D array-like vector of length 3."</span>
+                <span class="sa">f</span><span class="s2">"  Received </span><span class="si">{</span><span class="n">vector</span><span class="si">}</span><span class="s2"> with shape </span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">."</span>
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">arr</span>
@@ -558,7 +558,7 @@
 <div class="viewcode-block" id="OrthonormalZone.axis">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.axis">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">axis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the zone axis (unit) vector.</span>
+<span class="w">        </span><span class="sd">"""Get the zone axis (unit) vector.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -569,15 +569,15 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If zone axis is undefined</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_defined</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Zone axis is undefined.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Zone axis is undefined."</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span></div>
 
 
     <span class="nd">@axis</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the zone axis (unit) vector.</span>
+<span class="w">        </span><span class="sd">"""Set the zone axis (unit) vector.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -588,18 +588,18 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If vector cannot be converted to 3-element array</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">vec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Zero |axis| not allowed. Received </span><span class="si">{</span><span class="n">vector</span><span class="si">=}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Zero |axis| not allowed. Received </span><span class="si">{</span><span class="n">vector</span><span class="si">=}</span><span class="s2">."</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">/</span> <span class="n">norm</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="OrthonormalZone.axis_defined">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.axis_defined">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">axis_defined</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Is the zone axis defined?&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Is the zone axis defined?"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 
@@ -608,7 +608,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">define_axis</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define the zone axis from two vectors using cross product.</span>
+<span class="w">        </span><span class="sd">"""Define the zone axis from two vectors using cross product.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -628,15 +628,15 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If vectors are parallel, zero, or invalid</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">arr1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
         <span class="n">arr2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="n">arr2</span><span class="p">)</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">norm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Vectors </span><span class="si">{</span><span class="n">b1</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="n">b2</span><span class="si">=}</span><span class="s2"> are parallel or one is zero; &quot;</span>
-                <span class="s2">&quot;cross product is zero and cannot define a zone axis.&quot;</span>
+                <span class="sa">f</span><span class="s2">"Vectors </span><span class="si">{</span><span class="n">b1</span><span class="si">=}</span><span class="s2"> and </span><span class="si">{</span><span class="n">b2</span><span class="si">=}</span><span class="s2"> are parallel or one is zero; "</span>
+                <span class="s2">"cross product is zero and cannot define a zone axis."</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span> <span class="o">/</span> <span class="n">norm</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">axis</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span></div>
@@ -645,7 +645,7 @@
 <div class="viewcode-block" id="OrthonormalZone.in_zone">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.in_zone">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">in_zone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify if &#39;vector&#39; is in this zone.</span>
+<span class="w">        </span><span class="sd">"""Verify if 'vector' is in this zone.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -663,9 +663,9 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If zone axis is undefined or vector is invalid</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_defined</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot check zone membership: zone axis is undefined&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot check zone membership: zone axis is undefined"</span><span class="p">)</span>
 
         <span class="n">arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
         <span class="n">dot</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">,</span> <span class="n">arr</span><span class="p">))</span>
@@ -675,8 +675,8 @@
 <div class="viewcode-block" id="OrthonormalZone.vecspace">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.OrthonormalZone.vecspace">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">vecspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">b2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">NDArray</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Generate &#39;n&#39; vectors from &#39;b1&#39; to &#39;b2&#39; rotated around b1 x b2.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Generate 'n' vectors from 'b1' to 'b2' rotated around b1 x b2.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -696,16 +696,16 @@
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
 <span class="sd">            If vectors are not in the zone</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>  <span class="c1"># the trivial case</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis_defined</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">define_axis</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_zone</span><span class="p">(</span><span class="n">b1</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">b1</span><span class="si">=}</span><span class="s2"> not in zone </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">b1</span><span class="si">=}</span><span class="s2"> not in zone </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_zone</span><span class="p">(</span><span class="n">b2</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">b2</span><span class="si">=}</span><span class="s2"> not in zone </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">b2</span><span class="si">=}</span><span class="s2"> not in zone </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 
             <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span>
             <span class="n">u1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_standardize_vector</span><span class="p">(</span><span class="n">b1</span><span class="p">)</span>
@@ -740,14 +740,14 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">zonespace</span><span class="p">(</span>
     <span class="n">diff</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">hkl_1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">hkl_2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Generate pseudos and reals along a crystallographic zone.</span>
 
 <span class="sd">    * Transforms crystallographic coordinates (hkl) to Cartesian space</span>
-<span class="sd">      (b) using the sample&#39;s reciprocal lattice.</span>
+<span class="sd">      (b) using the sample's reciprocal lattice.</span>
 <span class="sd">    * Creates a zone from b1 &amp; b2</span>
 <span class="sd">    * Yields corresponding diffractometer pseudo and real positions for</span>
-<span class="sd">      &#39;n&#39; points (including hkl_1 and hkl_2 points) along the</span>
+<span class="sd">      'n' points (including hkl_1 and hkl_2 points) along the</span>
 <span class="sd">      orthonormal zone, distributed evenly by angle.</span>
 
 <span class="sd">    Parameters</span>
@@ -770,9 +770,9 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    * hkl_1 &amp; hkl_2 vectors are transformed from Miller to orthonormal</span>
-<span class="sd">      space using the sample&#39;s reciprocal lattice.</span>
+<span class="sd">      space using the sample's reciprocal lattice.</span>
 <span class="sd">    * Failed forward() solutions are logged at debug level.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">zone</span> <span class="o">=</span> <span class="n">OrthonormalZone</span><span class="p">()</span>
 
     <span class="n">astar</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">cartesian_lattice_matrix</span>
@@ -789,7 +789,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">pseudos</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">pseudos</span><span class="p">))</span>
         <span class="k">except</span> <span class="n">NoForwardSolutions</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;no solution for forward(</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span></div>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"no solution for forward(</span><span class="si">%s</span><span class="s2">)"</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span></div>
 
 
 
@@ -798,10 +798,10 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">zone_series</span><span class="p">(</span>
     <span class="n">diff</span><span class="p">:</span> <span class="n">DiffractometerBase</span><span class="p">,</span> <span class="n">hkl_1</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">hkl_2</span><span class="p">:</span> <span class="n">INPUT_VECTOR</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Example: a series of diffractometer positions along a zone.</span>
 
-<span class="sd">    Print &#39;n&#39; positions along the zone from hkl_1 to hkl_2 inclusive.</span>
+<span class="sd">    Print 'n' positions along the zone from hkl_1 to hkl_2 inclusive.</span>
 <span class="sd">    The series is computed using the orthonormal zone.</span>
 <span class="sd">    Results are displayed in a formatted table showing both reciprocal</span>
 <span class="sd">    space coordinates (pseudos) and real motor positions (reals).</span>
@@ -821,12 +821,12 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; # Generate 5 points from (1,0,0) to (0,1,0)</span>
 <span class="sd">    &gt;&gt;&gt; zone_series(my_diffractometer, (1,0,0), (0,1,0), 5)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
     <span class="n">table</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">pseudo_axis_names</span> <span class="o">+</span> <span class="n">diff</span><span class="o">.</span><span class="n">real_axis_names</span>
     <span class="k">for</span> <span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span> <span class="ow">in</span> <span class="n">zonespace</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">hkl_1</span><span class="p">,</span> <span class="n">hkl_2</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-        <span class="n">table</span><span class="o">.</span><span class="n">addRow</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pseudos</span> <span class="o">+</span> <span class="n">reals</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hkl_1</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">hkl_2</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">n</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">addRow</span><span class="p">([</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pseudos</span> <span class="o">+</span> <span class="n">reals</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">hkl_1</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">hkl_2</span><span class="si">=}</span><span class="s2"> </span><span class="si">{</span><span class="n">n</span><span class="si">=}</span><span class="s2">"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
 
 
@@ -839,16 +839,16 @@
 <div class="viewcode-block" id="move_zone">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.move_zone">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">move_zone</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    .. deprecated::</span>
 <span class="sd">        ``move_zone`` has moved to :mod:`hklpy2.plans`.</span>
 <span class="sd">        Import it from there: ``from hklpy2.plans import move_zone``.</span>
 <span class="sd">        This re-export will be removed in a future release.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="s2">&quot;Importing move_zone from hklpy2.blocks.zone is deprecated. &quot;</span>
-        <span class="s2">&quot;Use &#39;from hklpy2.plans import move_zone&#39; instead. &quot;</span>
-        <span class="s2">&quot;This compatibility shim will be removed in a future release.&quot;</span><span class="p">,</span>
+        <span class="s2">"Importing move_zone from hklpy2.blocks.zone is deprecated. "</span>
+        <span class="s2">"Use 'from hklpy2.plans import move_zone' instead. "</span>
+        <span class="s2">"This compatibility shim will be removed in a future release."</span><span class="p">,</span>
         <span class="ne">DeprecationWarning</span><span class="p">,</span>
         <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="p">)</span>
@@ -861,16 +861,16 @@
 <div class="viewcode-block" id="scan_zone">
 <a class="viewcode-back" href="../../../autoapi/hklpy2/blocks/zone/index.html#hklpy2.blocks.zone.scan_zone">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">scan_zone</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    .. deprecated::</span>
 <span class="sd">        ``scan_zone`` has moved to :mod:`hklpy2.plans`.</span>
 <span class="sd">        Import it from there: ``from hklpy2.plans import scan_zone``.</span>
 <span class="sd">        This re-export will be removed in a future release.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="s2">&quot;Importing scan_zone from hklpy2.blocks.zone is deprecated. &quot;</span>
-        <span class="s2">&quot;Use &#39;from hklpy2.plans import scan_zone&#39; instead. &quot;</span>
-        <span class="s2">&quot;This compatibility shim will be removed in a future release.&quot;</span><span class="p">,</span>
+        <span class="s2">"Importing scan_zone from hklpy2.blocks.zone is deprecated. "</span>
+        <span class="s2">"Use 'from hklpy2.plans import scan_zone' instead. "</span>
+        <span class="s2">"This compatibility shim will be removed in a future release."</span><span class="p">,</span>
         <span class="ne">DeprecationWarning</span><span class="p">,</span>
         <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
     <span class="p">)</span>
@@ -907,8 +907,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -942,7 +942,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

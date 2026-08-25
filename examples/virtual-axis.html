@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -37,12 +37,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -51,7 +51,7 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/virtual-axis';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -556,19 +556,19 @@ custom class for the specifications of <code class="docutils literal notranslate
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">VirtualRotationPositioner</span><span class="p">(</span><span class="n">VirtualPositionerBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute virtual rotation from physical translation axis.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Compute virtual rotation from physical translation axis."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Distance from translation axis zero position to center of rotation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Distance from translation axis zero position to center of rotation."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span>  <span class="c1"># same units as physical</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">translation</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return virtual rotation angle (degrees) from physical translation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return virtual rotation angle (degrees) from physical translation."""</span>
         <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rotation</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return physical translation from virtual rotation angle (degrees).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return physical translation from virtual rotation angle (degrees)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">rotation</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -599,22 +599,22 @@ with a custom class and keyword arguments such as this one.</p>
 <details>
 <summary>Maybe, in the future ...</summary>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gonio</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;gonio&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"gonio"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"E4CV"</span><span class="p">,</span>
     <span class="n">reals</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">omega</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">chi</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">phi</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">tth</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="s2">&quot;VirtualRotationPositioner&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;init_pos&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-            <span class="s2">&quot;physical_name&quot;</span><span class="p">:</span> <span class="s2">&quot;dy&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;distance&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-            <span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;hinted&quot;</span><span class="p">,</span>
+            <span class="s2">"class"</span><span class="p">:</span> <span class="s2">"VirtualRotationPositioner"</span><span class="p">,</span>
+            <span class="s2">"init_pos"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">"physical_name"</span><span class="p">:</span> <span class="s2">"dy"</span><span class="p">,</span>
+            <span class="s2">"distance"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+            <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"hinted"</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="n">dy</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;limits&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
+            <span class="s2">"limits"</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span>
             <span class="c1"># all other kwargs use defaults</span>
         <span class="p">}</span>
     <span class="p">}</span>
@@ -633,22 +633,22 @@ with a custom class and keyword arguments such as this one.</p>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
-<span class="n">MyBase</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">diffractometer_class_factory</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">)</span>
+<span class="n">MyBase</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">diffractometer_class_factory</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">"E4CV"</span><span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyGoniometer</span><span class="p">(</span><span class="n">MyBase</span><span class="p">):</span>
     <span class="c1"># Replace existing axis with virtual 2Theta.</span>
-    <span class="c1"># Point it at the &#39;dy&#39; axis (below).</span>
+    <span class="c1"># Point it at the 'dy' axis (below).</span>
     <span class="n">tth</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span>
         <span class="n">VirtualRotationPositioner</span><span class="p">,</span>
         <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">physical_name</span><span class="o">=</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span>
+        <span class="n">physical_name</span><span class="o">=</span><span class="s2">"dy"</span><span class="p">,</span>
         <span class="n">distance</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-        <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">,</span>
+        <span class="n">kind</span><span class="o">=</span><span class="s2">"hinted"</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># Add the translation axis &#39;dy&#39;.</span>
-    <span class="n">dy</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hinted&quot;</span><span class="p">)</span>
+    <span class="c1"># Add the translation axis 'dy'.</span>
+    <span class="n">dy</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span><span class="n">SoftPositioner</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">kind</span><span class="o">=</span><span class="s2">"hinted"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -667,8 +667,8 @@ with a custom class and keyword arguments such as this one.</p>
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gonio</span> <span class="o">=</span> <span class="n">MyGoniometer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;gonio&quot;</span><span class="p">)</span>
-<span class="n">gonio</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span><span class="s2">&quot;vibranium&quot;</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gonio</span> <span class="o">=</span> <span class="n">MyGoniometer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"gonio"</span><span class="p">)</span>
+<span class="n">gonio</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span><span class="s2">"vibranium"</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
 <span class="n">gonio</span><span class="o">.</span><span class="n">wh</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -718,8 +718,8 @@ auxiliaries: dy=0
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 1     Time: 2025-07-21 15:06:10
-Persistent Unique Scan ID: &#39;288c4df3-b7e6-4439-a653-e051e6d3b2b6&#39;
-New stream: &#39;primary&#39;
+Persistent Unique Scan ID: '288c4df3-b7e6-4439-a653-e051e6d3b2b6'
+New stream: 'primary'
 +-----------+------------+------------+------------+------------+
 |   seq_num |       time |   gonio_dy |    gonio_l |  gonio_tth |
 +-----------+------------+------------+------------+------------+
@@ -735,7 +735,7 @@ New stream: &#39;primary&#39;
 |        10 | 15:06:10.3 |      8.900 |      0.056 |      0.510 |
 |        11 | 15:06:10.3 |     10.000 |      0.063 |      0.573 |
 +-----------+------------+------------+------------+------------+
-generator scan [&#39;288c4df3&#39;] (scan num: 1)
+generator scan ['288c4df3'] (scan num: 1)
 
 
 
@@ -759,8 +759,8 @@ auxiliaries: dy=10.0
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 2     Time: 2025-07-21 15:06:10
-Persistent Unique Scan ID: &#39;defaaece-f675-4fb0-bce6-44845b0d0135&#39;
-New stream: &#39;primary&#39;
+Persistent Unique Scan ID: 'defaaece-f675-4fb0-bce6-44845b0d0135'
+New stream: 'primary'
 +-----------+------------+------------+------------+------------+
 |   seq_num |       time |  gonio_tth |   gonio_dy |    gonio_l |
 +-----------+------------+------------+------------+------------+
@@ -776,7 +776,7 @@ New stream: &#39;primary&#39;
 |        10 | 15:06:10.5 |      0.440 |      7.680 |      0.048 |
 |        11 | 15:06:10.5 |      0.500 |      8.727 |      0.055 |
 +-----------+------------+------------+------------+------------+
-generator scan [&#39;defaaece&#39;] (scan num: 2)
+generator scan ['defaaece'] (scan num: 2)
 
 
 
@@ -800,8 +800,8 @@ auxiliaries: dy=8.7269
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Transient Scan ID: 3     Time: 2025-07-21 15:06:10
-Persistent Unique Scan ID: &#39;029043a7-f32d-4232-97a1-49029e9e3e2d&#39;
-New stream: &#39;primary&#39;
+Persistent Unique Scan ID: '029043a7-f32d-4232-97a1-49029e9e3e2d'
+New stream: 'primary'
 +-----------+------------+------------+------------+------------+
 |   seq_num |       time |    gonio_l |   gonio_dy |  gonio_tth |
 +-----------+------------+------------+------------+------------+
@@ -817,7 +817,7 @@ New stream: &#39;primary&#39;
 |        10 | 15:06:10.7 |      0.046 |      7.321 |      0.419 |
 |        11 | 15:06:10.7 |      0.050 |      7.958 |      0.456 |
 +-----------+------------+------------+------------+------------+
-generator scan [&#39;029043a7&#39;] (scan num: 3)
+generator scan ['029043a7'] (scan num: 3)
 
 
 
@@ -933,8 +933,8 @@ auxiliaries: dy=7.958
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -968,7 +968,7 @@ auxiliaries: dy=7.958
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

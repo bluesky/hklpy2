@@ -26,8 +26,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -36,19 +36,19 @@
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/exceptions';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -414,7 +414,7 @@
   <h1>Source code for hklpy2.exceptions</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright (c) 2023-2026 UChicago Argonne, LLC</span>
 <span class="c1"># SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Custom exception classes for |hklpy2|.</span>
 
 <span class="sd">All package-specific exceptions inherit from :class:`Hklpy2Error`, which</span>
@@ -433,89 +433,89 @@
 <span class="sd">    ~ReflectionError</span>
 <span class="sd">    ~SampleError</span>
 <span class="sd">    ~SolverError</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;ConfigurationError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ConstraintsError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;CoreError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DiffractometerError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Hklpy2Error&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;LatticeError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;NoForwardSolutions&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ReflectionError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SampleError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SolverError&quot;</span><span class="p">,</span>
+    <span class="s2">"ConfigurationError"</span><span class="p">,</span>
+    <span class="s2">"ConstraintsError"</span><span class="p">,</span>
+    <span class="s2">"CoreError"</span><span class="p">,</span>
+    <span class="s2">"DiffractometerError"</span><span class="p">,</span>
+    <span class="s2">"Hklpy2Error"</span><span class="p">,</span>
+    <span class="s2">"LatticeError"</span><span class="p">,</span>
+    <span class="s2">"NoForwardSolutions"</span><span class="p">,</span>
+    <span class="s2">"ReflectionError"</span><span class="p">,</span>
+    <span class="s2">"SampleError"</span><span class="p">,</span>
+    <span class="s2">"SolverError"</span><span class="p">,</span>
 <span class="p">]</span>
 
 
 <div class="viewcode-block" id="Hklpy2Error">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.Hklpy2Error">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Hklpy2Error</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Any exception from the |hklpy2| package.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Any exception from the |hklpy2| package."""</span></div>
 
 
 
 <div class="viewcode-block" id="ConfigurationError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.ConfigurationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfigurationError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :mod:`hklpy2.blocks.configure`.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Custom exceptions from :mod:`hklpy2.blocks.configure`."""</span></div>
 
 
 
 <div class="viewcode-block" id="ConstraintsError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.ConstraintsError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConstraintsError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :mod:`hklpy2.blocks.constraints`.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Custom exceptions from :mod:`hklpy2.blocks.constraints`."""</span></div>
 
 
 
 <div class="viewcode-block" id="CoreError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.CoreError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CoreError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :class:`hklpy2.ops.Core`.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Custom exceptions from :class:`hklpy2.ops.Core`."""</span></div>
 
 
 
 <div class="viewcode-block" id="DiffractometerError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.DiffractometerError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiffractometerError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Custom exceptions from :class:`hklpy2.diffract.DiffractometerBase`."""</span></div>
 
 
 
 <div class="viewcode-block" id="LatticeError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.LatticeError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LatticeError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :mod:`hklpy2.blocks.lattice`.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Custom exceptions from :mod:`hklpy2.blocks.lattice`."""</span></div>
 
 
 
 <div class="viewcode-block" id="NoForwardSolutions">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.NoForwardSolutions">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NoForwardSolutions</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A solver did not find any ``forward()`` solutions.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""A solver did not find any ``forward()`` solutions."""</span></div>
 
 
 
 <div class="viewcode-block" id="ReflectionError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.ReflectionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ReflectionError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :mod:`hklpy2.blocks.reflection`.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Custom exceptions from :mod:`hklpy2.blocks.reflection`."""</span></div>
 
 
 
 <div class="viewcode-block" id="SampleError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.SampleError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SampleError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from :mod:`hklpy2.blocks.sample`.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Custom exceptions from :mod:`hklpy2.blocks.sample`."""</span></div>
 
 
 
 <div class="viewcode-block" id="SolverError">
 <a class="viewcode-back" href="../../autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.SolverError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SolverError</span><span class="p">(</span><span class="n">Hklpy2Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom exceptions from a |solver|.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Custom exceptions from a |solver|."""</span></div>
 
 </pre></div>
 
@@ -546,8 +546,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -581,7 +581,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

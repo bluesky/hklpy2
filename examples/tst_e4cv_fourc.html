@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -37,12 +37,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -51,7 +51,7 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/tst_e4cv_fourc';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -557,26 +557,26 @@ structures, including deducing the diffractometer geometry in many cases.</p>
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyRestTable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">spec2nexus.spec</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpecDataFile</span>
 
-<span class="n">specfile</span> <span class="o">=</span> <span class="n">SpecDataFile</span><span class="p">(</span><span class="s2">&quot;LNO_LAO_s14.dat&quot;</span><span class="p">)</span>
+<span class="n">specfile</span> <span class="o">=</span> <span class="n">SpecDataFile</span><span class="p">(</span><span class="s2">"LNO_LAO_s14.dat"</span><span class="p">)</span>
 <span class="n">specscan</span> <span class="o">=</span> <span class="n">specfile</span><span class="o">.</span><span class="n">getScan</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span>
 
 <span class="n">spec_d</span> <span class="o">=</span> <span class="n">specscan</span><span class="o">.</span><span class="n">diffractometer</span>
-<span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">geometry_parameters</span><span class="p">[</span><span class="s2">&quot;ub_matrix&quot;</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">geometry_parameters</span><span class="p">[</span><span class="s2">"ub_matrix"</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
 
 <span class="n">terms</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;SPEC file&quot;</span><span class="p">:</span> <span class="n">specfile</span><span class="o">.</span><span class="n">specFile</span><span class="p">,</span>
-    <span class="s2">&quot;scan #&quot;</span><span class="p">:</span> <span class="n">specscan</span><span class="o">.</span><span class="n">scanNum</span><span class="p">,</span>
-    <span class="s2">&quot;SPEC scanCmd&quot;</span><span class="p">:</span> <span class="n">specscan</span><span class="o">.</span><span class="n">scanCmd</span><span class="p">,</span>
-    <span class="s2">&quot;geometry&quot;</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">geometry_name</span><span class="p">,</span>
-    <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
-    <span class="s2">&quot;lattice&quot;</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span>
-    <span class="s2">&quot;wavelength&quot;</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span>
-    <span class="s2">&quot;reflection 1&quot;</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">reflections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-    <span class="s2">&quot;reflection 2&quot;</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">reflections</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-    <span class="s2">&quot;[UB]&quot;</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span><span class="p">,</span>
+    <span class="s2">"SPEC file"</span><span class="p">:</span> <span class="n">specfile</span><span class="o">.</span><span class="n">specFile</span><span class="p">,</span>
+    <span class="s2">"scan #"</span><span class="p">:</span> <span class="n">specscan</span><span class="o">.</span><span class="n">scanNum</span><span class="p">,</span>
+    <span class="s2">"SPEC scanCmd"</span><span class="p">:</span> <span class="n">specscan</span><span class="o">.</span><span class="n">scanCmd</span><span class="p">,</span>
+    <span class="s2">"geometry"</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">geometry_name</span><span class="p">,</span>
+    <span class="s2">"mode"</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
+    <span class="s2">"lattice"</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">lattice</span><span class="p">,</span>
+    <span class="s2">"wavelength"</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">wavelength</span><span class="p">,</span>
+    <span class="s2">"reflection 1"</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">reflections</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="s2">"reflection 2"</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">reflections</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="s2">"[UB]"</span><span class="p">:</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;term&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">]</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"term"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">terms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span>
@@ -594,8 +594,8 @@ geometry     fourc
 mode         Omega equals zero                                                                                                                                
 lattice      LatticeParameters3D(a=3.781726143, b=3.791444574, c=3.79890313, alpha=90.2546203, beta=90.01815424, gamma=89.89967858)                           
 wavelength   1.239424258                                                                                                                                      
-reflection 1 Reflections3D(h=0.0, k=0.0, l=2.0, wavelength=1.239424258, angles=OrderedDict({&#39;tth&#39;: 38.09875, &#39;th&#39;: 19.1335, &#39;chi&#39;: 90.0135, &#39;phi&#39;: 0.0}))     
-reflection 2 Reflections3D(h=1.0, k=1.0, l=3.0, wavelength=1.239424258, angles=OrderedDict({&#39;tth&#39;: 65.644, &#39;th&#39;: 32.82125, &#39;chi&#39;: 115.23625, &#39;phi&#39;: 48.1315}))
+reflection 1 Reflections3D(h=0.0, k=0.0, l=2.0, wavelength=1.239424258, angles=OrderedDict({'tth': 38.09875, 'th': 19.1335, 'chi': 90.0135, 'phi': 0.0}))     
+reflection 2 Reflections3D(h=1.0, k=1.0, l=3.0, wavelength=1.239424258, angles=OrderedDict({'tth': 65.644, 'th': 32.82125, 'chi': 115.23625, 'phi': 48.1315}))
 [UB]         [[-1.65871244e+00  9.82002413e-02 -3.89705578e-04]                                                                                               
               [-9.55499031e-02 -1.65427863e+00  2.42844486e-03]                                                                                               
               [ 2.62981891e-04  9.81574682e-03  1.65396181e+00]]                                                                                              
@@ -617,13 +617,13 @@ reflection 2 Reflections3D(h=1.0, k=1.0, l=3.0, wavelength=1.239424258, angles=O
 <span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">wspace</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">&quot;Desired HKL trajectory&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">specscan</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">specscan</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;K&quot;</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">specscan</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;L&quot;</span><span class="p">])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;l&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s2">"Desired HKL trajectory"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">specscan</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"H"</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"h"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">specscan</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"K"</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"k"</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">specscan</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"L"</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"l"</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -640,11 +640,11 @@ reflection 2 Reflections3D(h=1.0, k=1.0, l=3.0, wavelength=1.239424258, angles=O
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
 <span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">,</span>
-    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E4CV&quot;</span><span class="p">,</span>
-    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"fourc"</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">"E4CV"</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">,</span>
     <span class="c1"># use SPEC names for the axes and simulated motors (not EPICS)</span>
-    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;th&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;tth&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+    <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">"th"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"chi"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"tth"</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -672,7 +672,7 @@ reflection 2 Reflections3D(h=1.0, k=1.0, l=3.0, wavelength=1.239424258, angles=O
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample(name=&#39;LNO_LAO&#39;, lattice=Lattice(a=3.7817, b=3.7914, c=3.7989, alpha=90.2546, beta=90.0182, gamma=89.8997, system=&#39;triclinic&#39;))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Sample(name='LNO_LAO', lattice=Lattice(a=3.7817, b=3.7914, c=3.7989, alpha=90.2546, beta=90.0182, gamma=89.8997, system='triclinic'))
 </pre></div>
 </div>
 </div>
@@ -700,17 +700,17 @@ those calculated by <strong>libhkl</strong>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># get the UB matrix from the SPEC data</span>
-<span class="c1"># SPEC&#39;s UB first row moved (via numpy slicing) to last row for hklpy</span>
+<span class="c1"># SPEC's UB first row moved (via numpy slicing) to last row for hklpy</span>
 <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">:]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="si">}</span><span class="s2">=&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span><span class="si">=}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="si">}</span><span class="s2">="</span><span class="p">)</span>
 
 <span class="c1"># calculate angles with hklpy using the SPEC UB matrix</span>
-<span class="n">fourc</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector&quot;</span>
-<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;tth&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(002) : </span><span class="si">{</span><span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(113) : </span><span class="si">{</span><span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">"bissector"</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"phi"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"tth"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"(002) : </span><span class="si">{</span><span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"(113) : </span><span class="si">{</span><span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -732,15 +732,15 @@ those calculated by <strong>libhkl</strong>.</p>
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">add_ref_to_table</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
     <span class="n">sol</span> <span class="o">=</span> <span class="n">fourc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">k</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">l</span><span class="p">)</span>
-    <span class="n">nm</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">h</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">k</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">l</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">nm</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">h</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">k</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">l</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">"</span>
     <span class="c1"># print(nm, sol)</span>
     <span class="k">for</span> <span class="n">sm</span> <span class="ow">in</span> <span class="n">fourc</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">:</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">nm</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">sm</span><span class="p">]</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">nm</span><span class="si">}</span><span class="s2">)"</span><span class="p">,</span> <span class="n">sm</span><span class="p">]</span>
         <span class="n">v_hklpy</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">sm</span><span class="p">)</span>
         <span class="n">v_spec</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="n">sm</span><span class="p">]</span>
-        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v_hklpy</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v_spec</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v_hklpy</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">v_spec</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v_hklpy</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v_spec</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v_hklpy</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">v_spec</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -754,11 +754,11 @@ E4CV and SPEC.  We’ll only pick positions where <span class="math notranslate 
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare these angles with those from SPEC</span>
 
 <span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;(hkl)&quot;</span><span class="p">,</span> <span class="s2">&quot;motor&quot;</span><span class="p">,</span> <span class="s2">&quot;E4CV&quot;</span><span class="p">,</span> <span class="s2">&quot;SPEC&quot;</span><span class="p">,</span> <span class="s2">&quot;difference&quot;</span><span class="p">]</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"(hkl)"</span><span class="p">,</span> <span class="s2">"motor"</span><span class="p">,</span> <span class="s2">"E4CV"</span><span class="p">,</span> <span class="s2">"SPEC"</span><span class="p">,</span> <span class="s2">"difference"</span><span class="p">]</span>
 <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">reflections</span>
 
-<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector&quot;</span>
-<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;tth&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">"bissector"</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"tth"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
 <span class="n">add_ref_to_table</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">r1</span><span class="p">)</span>
 
 <span class="c1"># print(r2)</span>
@@ -804,10 +804,10 @@ then compute the UB matrix.  Follow in the section below.</p>
         <span class="n">r</span><span class="o">.</span><span class="n">h</span><span class="p">,</span>
         <span class="n">r</span><span class="o">.</span><span class="n">k</span><span class="p">,</span>
         <span class="n">r</span><span class="o">.</span><span class="n">l</span><span class="p">,</span>
-        <span class="n">tth</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="s2">&quot;tth&quot;</span><span class="p">],</span>
-        <span class="n">th</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="s2">&quot;th&quot;</span><span class="p">],</span>
-        <span class="n">chi</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">],</span>
-        <span class="n">phi</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="s2">&quot;phi&quot;</span><span class="p">],</span>
+        <span class="n">tth</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="s2">"tth"</span><span class="p">],</span>
+        <span class="n">th</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="s2">"th"</span><span class="p">],</span>
+        <span class="n">chi</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">],</span>
+        <span class="n">phi</span><span class="o">=</span><span class="n">r</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="s2">"phi"</span><span class="p">],</span>
     <span class="p">)</span>
     <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">reflections</span>
 <span class="p">]</span>
@@ -815,9 +815,9 @@ then compute the UB matrix.  Follow in the section below.</p>
 <span class="n">UB</span> <span class="o">=</span> <span class="n">calc_UB</span><span class="p">(</span><span class="o">*</span><span class="n">refs</span><span class="p">)</span>
 
 <span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;term&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">]</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;SPEC [UB]&quot;</span><span class="p">,</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span><span class="p">))</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;E4CV [UB]&quot;</span><span class="p">,</span> <span class="n">UB</span><span class="p">))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"term"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">]</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"SPEC [UB]"</span><span class="p">,</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">UB</span><span class="p">))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"E4CV [UB]"</span><span class="p">,</span> <span class="n">UB</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -843,7 +843,7 @@ E4CV [UB] [[-0.095549863427, -1.654278751664, 0.002428444976], [0.000263111155, 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&#39;triclinic&#39;
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>'triclinic'
 </pre></div>
 </div>
 </div>
@@ -851,15 +851,15 @@ E4CV [UB] [[-0.095549863427, -1.654278751664, 0.002428444976], [0.000263111155, 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;term&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">]</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;energy, keV&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">energy</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;wavelength, angstrom&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">position</span><span class="p">))</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;sample name&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;lattice&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="p">))</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;crystal system&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">crystal_system</span><span class="p">))</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;[U]&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span><span class="p">))</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">&quot;[UB]&quot;</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="p">))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"term"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">]</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"energy, keV"</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">energy</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"wavelength, angstrom"</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"position"</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">position</span><span class="p">))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"sample name"</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"lattice"</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="p">))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"crystal system"</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">crystal_system</span><span class="p">))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"[U]"</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span><span class="p">))</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">addRow</span><span class="p">((</span><span class="s2">"[UB]"</span><span class="p">,</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -872,7 +872,7 @@ energy, keV          10.003370326044433
 wavelength, angstrom 1.239424258                                                                                                                                               
 position             Hklpy2DiffractometerPseudoPos(h=0, k=0, l=0)                                                                                                              
 sample name          LNO_LAO                                                                                                                                                   
-lattice              Lattice(a=3.7817, b=3.7914, c=3.7989, alpha=90.2546, beta=90.0182, gamma=89.8997, system=&#39;triclinic&#39;)                                                     
+lattice              Lattice(a=3.7817, b=3.7914, c=3.7989, alpha=90.2546, beta=90.0182, gamma=89.8997, system='triclinic')                                                     
 crystal system       triclinic                                                                                                                                                 
 [U]                  [[-0.057509496764, -0.998327391025, 0.005922677679], [0.000158361191, 0.005923373917, 0.999982444127], [-0.998344946751, 0.057509425056, -0.000182553939]]
 [UB]                 [[-0.095549863427, -1.654278751664, 0.002428444976], [0.000263111155, 0.009815859008, 1.653961890838], [-1.658712537638, 0.098200262676, -0.000389705597]]
@@ -884,17 +884,17 @@ crystal system       triclinic
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare these angles with those from SPEC</span>
-<span class="c1"># fourc.calc[&quot;phi&quot;].limits = (-1, 100)</span>
+<span class="c1"># fourc.calc["phi"].limits = (-1, 100)</span>
 <span class="n">tbl</span> <span class="o">=</span> <span class="n">pyRestTable</span><span class="o">.</span><span class="n">Table</span><span class="p">()</span>
-<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;(hkl)&quot;</span><span class="p">,</span> <span class="s2">&quot;motor&quot;</span><span class="p">,</span> <span class="s2">&quot;E4CV&quot;</span><span class="p">,</span> <span class="s2">&quot;SPEC&quot;</span><span class="p">,</span> <span class="s2">&quot;difference&quot;</span><span class="p">]</span>
+<span class="n">tbl</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"(hkl)"</span><span class="p">,</span> <span class="s2">"motor"</span><span class="p">,</span> <span class="s2">"E4CV"</span><span class="p">,</span> <span class="s2">"SPEC"</span><span class="p">,</span> <span class="s2">"difference"</span><span class="p">]</span>
 <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">spec_d</span><span class="o">.</span><span class="n">reflections</span>
-<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;tth&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"tth"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
 
-<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;constant_phi&quot;</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">"constant_phi"</span>
 <span class="n">fourc</span><span class="o">.</span><span class="n">phi</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">add_ref_to_table</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">r1</span><span class="p">)</span>
 
-<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector&quot;</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">"bissector"</span>
 <span class="n">add_ref_to_table</span><span class="p">(</span><span class="n">tbl</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">tbl</span><span class="p">)</span>
@@ -1287,8 +1287,8 @@ crystal system       triclinic
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1322,7 +1322,7 @@ crystal system       triclinic
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>

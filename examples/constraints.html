@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -37,12 +37,12 @@
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
-    <script src="../_static/documentation_options.js?v=6343dc25"></script>
+    <script src="../_static/documentation_options.js?v=d95ac45d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
@@ -51,7 +51,7 @@
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/constraints';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://blueskyproject.io/hklpy2/latest/_static/switcher.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -534,32 +534,32 @@ cut-point interval, but the mechanisms differ.</p>
 <a class="reference internal" href="../diffractometers.html#geometries-hkl-soleil-e6c"><span class="std std-ref">E6C</span></a>, as shown in the
 <a class="reference internal" href="../quickstart.html#user-guide-quickstart"><span class="std std-ref">Quickstart</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
-<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;sixc&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;E6C&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;hkl_soleil&quot;</span><span class="p">)</span>
+<span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"sixc"</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">"E6C"</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">"hkl_soleil"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Show the constraints:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span>
-<span class="linenos">2</span><span class="go">[&#39;-180.0 &lt;= mu &lt;= 180.0&#39;, &#39;-180.0 &lt;= omega &lt;= 180.0&#39;, &#39;-180.0 &lt;= chi &lt;= 180.0&#39;, &#39;-180.0 &lt;= phi &lt;= 180.0&#39;, &#39;-180.0 &lt;= gamma &lt;= 180.0&#39;, &#39;-180.0 &lt;= delta &lt;= 180.0&#39;]</span>
+<span class="linenos">2</span><span class="go">['-180.0 &lt;= mu &lt;= 180.0', '-180.0 &lt;= omega &lt;= 180.0', '-180.0 &lt;= chi &lt;= 180.0', '-180.0 &lt;= phi &lt;= 180.0', '-180.0 &lt;= gamma &lt;= 180.0', '-180.0 &lt;= delta &lt;= 180.0']</span>
 </pre></div>
 </div>
 </section>
 <section id="change-a-constraint">
 <h2>Change a constraint<a class="headerlink" href="#change-a-constraint" title="Link to this heading">#</a></h2>
 <p>Only accept <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions where <code class="docutils literal notranslate"><span class="pre">omega</span></code> <span class="math notranslate nohighlight">\(&gt;= 0\)</span>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">low_limit</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"omega"</span><span class="p">]</span><span class="o">.</span><span class="n">low_limit</span>
 <span class="linenos">2</span><span class="go">-180.0</span>
-<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">low_limit</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;omega&quot;</span><span class="p">]</span>
+<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"omega"</span><span class="p">]</span><span class="o">.</span><span class="n">low_limit</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"omega"</span><span class="p">]</span>
 <span class="linenos">5</span><span class="go">0 &lt;= omega &lt;= 180.0</span>
 </pre></div>
 </div>
 <section id="apply-axis-cuts">
 <h3>Apply axis cuts<a class="headerlink" href="#apply-axis-cuts" title="Link to this heading">#</a></h3>
 <p>Only accept <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions where <code class="docutils literal notranslate"><span class="pre">chi</span></code> is between <span class="math notranslate nohighlight">\(\\pm90\)</span>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
 <span class="linenos">2</span><span class="go">(-180.0, 180.0)</span>
-<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span>
-<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;chi&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
+<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span>
+<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"chi"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
 <span class="linenos">5</span><span class="go">(-90.0, 90.0)</span>
 </pre></div>
 </div>
@@ -569,10 +569,10 @@ cut-point interval, but the mechanisms differ.</p>
 <p id="index-1">Only accept <code class="docutils literal notranslate"><span class="pre">forward()</span></code> solutions where <code class="docutils literal notranslate"><span class="pre">mu</span></code> is near zero.  Setting
 both limits to the same value (or very close values) effectively restricts
 that axis to a single position:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"mu"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
 <span class="linenos">2</span><span class="go">(-180.0, 180.0)</span>
-<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span>   <span class="c1"># narrow range</span>
-<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">&quot;mu&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
+<span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"mu"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span>   <span class="c1"># narrow range</span>
+<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="s2">"mu"</span><span class="p">]</span><span class="o">.</span><span class="n">limits</span>
 <span class="linenos">5</span><span class="go">(-0.01, 0.01)</span>
 </pre></div>
 </div>
@@ -593,15 +593,15 @@ position), use <a class="reference internal" href="../guides/how_presets.html#ho
 <p>A <em>preset</em> tells the solver which value to use for a constant axis instead
 of the current motor position.  Presets do not move any motor.</p>
 <p>Choose a mode where the axis is constant, then set a preset:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bissector_vertical&quot;</span>   <span class="c1"># mu and gamma are constant</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">"bissector_vertical"</span>   <span class="c1"># mu and gamma are constant</span>
 <span class="linenos">2</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">constant_axis_names</span>
-<span class="linenos">3</span><span class="go">[&#39;mu&#39;, &#39;gamma&#39;]</span>
-<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>         <span class="c1"># solver uses gamma=0</span>
+<span class="linenos">3</span><span class="go">['mu', 'gamma']</span>
+<span class="linenos">4</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"gamma"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>         <span class="c1"># solver uses gamma=0</span>
 <span class="linenos">5</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>                    <span class="c1"># no motor is moved</span>
 </pre></div>
 </div>
 <p>To release a single preset (<strong>SPEC</strong> <code class="docutils literal notranslate"><span class="pre">unfreeze</span></code>):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">)</span>           <span class="c1"># remove one preset</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"gamma"</span><span class="p">)</span>           <span class="c1"># remove one preset</span>
 <span class="linenos">2</span><span class="go">0</span>
 <span class="linenos">3</span><span class="gp">&gt;&gt;&gt; </span><span class="n">sixc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">presets</span>
 <span class="linenos">4</span><span class="go">{}</span>
@@ -713,8 +713,8 @@ of the current motor position.  Presets do not move any motor.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -748,7 +748,7 @@ of the current motor position.  Presets do not move any motor.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>
