@@ -28,12 +28,17 @@ describe future plans.
     1.0.0
     #####
 
-    Release expected 2026-Q3.
+    Release expected 2026-Q4.
 
-    Enhancements
-    ------------
+1.0.1
+#####
 
-    * Add link to `DOI <https://doi.org/10.5281/zenodo.22820540>`_.
+Release expected 2026-Q3.
+
+Enhancements
+------------
+
+* Add link to `DOI <https://doi.org/10.5281/zenodo.22820540>`_.
 
 1.0.0rc1
 ########
