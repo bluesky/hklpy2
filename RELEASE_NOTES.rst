@@ -30,6 +30,11 @@ describe future plans.
 
     Release expected 2026-Q3.
 
+    Maintenance
+    -----------
+
+    * Test with python 3.11 - 3.14, try 3.15-dev
+
 0.7.3
 ######
 
