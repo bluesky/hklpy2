@@ -56,7 +56,7 @@ home              https://blueskyproject.io/hklpy2/
 source            https://github.com/bluesky/hklpy2
 full version      |release|
 published         |today|
-DOI               :ref:`10.5281/zenodo.22820539 <https://doi.org/10.5281/zenodo.22820539>`
+DOI               `10.5281/zenodo.22820539 <https://doi.org/10.5281/zenodo.22820539>`_
 license           :ref:`license`
 acknowledgement   "This product includes software produced by UChicago Argonne, LLC
                   under Contract No. DE-AC02-06CH11357 with the Department of Energy."
