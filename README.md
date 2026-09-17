@@ -11,6 +11,7 @@
 [![PyPi](https://img.shields.io/pypi/v/hklpy2.svg)](https://pypi.python.org/pypi/hklpy2)
 [![Coverage Status](https://coveralls.io/repos/github/bluesky/hklpy2/badge.svg?branch=main)](https://coveralls.io/github/bluesky/hklpy2?branch=main)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/bluesky/hklpy2)
+[DOI: 10.5281/zenodo.22820539](https://doi.org/10.5281/zenodo.22820539)
 
 <!-- text -->
 2nd generation controls for diffractometers as ophyd
