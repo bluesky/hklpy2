@@ -30,6 +30,10 @@ describe future plans.
 
     Release expected 2026-Q3.
 
+    Enhancements
+    ------------
+
+    * Add link to `DOI <https://doi.org/10.5281/zenodo.22820540>`_.
 
 1.0.0rc1
 ########
