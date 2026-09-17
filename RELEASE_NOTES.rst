@@ -25,15 +25,15 @@ describe future plans.
 
 .. comment
 
-    1.0.0
+    1.0.1
     #####
 
     Release expected 2026-Q4.
 
-1.0.1
+1.0.0
 #####
 
-Release expected 2026-Q3.
+Released 2026-09-17.
 
 Enhancements
 ------------
@@ -42,6 +42,8 @@ Enhancements
 
 1.0.0rc1
 ########
+
+Released 2026-09-17.
 
 Fixes
 -----
