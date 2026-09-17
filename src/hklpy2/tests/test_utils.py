@@ -180,6 +180,27 @@ def test_axes_to_dict(input, names, context):
 
 
 @pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"input": np.array([1, 2, 3]), "names": ["h", "k", "l"]},
+            does_not_raise(),
+            id="numeric-ndarray",
+        ),
+        pytest.param(
+            {"input": np.array(["1", "2", "3"]), "names": ["h", "k", "l"]},
+            pytest.raises(TypeError, match=re.escape("Expected a number.")),
+            id="text-ndarray",
+        ),
+    ],
+)
+def test_axes_to_dict_ndarray_values(parms, context):
+    with context:
+        axes = axes_to_dict(**parms)
+        assert axes == dict(zip(parms["names"], parms["input"]))
+
+
+@pytest.mark.parametrize(
     "a1, a2, tol, equal, context",
     [
         pytest.param({}, {}, 0.1, True, does_not_raise(), id="empty-dicts"),
@@ -980,16 +1001,39 @@ def test_get_run_orientation_basic():
     assert missing == {}
 
 
-def test_istype_with_numpy_scalar_and_none():
-    """Ensure istype handles numpy scalars and None appropriately."""
-    # numpy scalar should not match AxesArray (ndarray) annotation
-    assert not istype(np.int64(1), AxesArray)
-
-    # numpy array should match AxesArray
-    assert istype(np.array([1, 2, 3]), AxesArray)
-
-    # None against Optional/Union types: already covered elsewhere, but sanity-check
-    assert istype(None, AxesArray | None)
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"value": np.int64(1), "annotation": AxesArray, "expected": False},
+            does_not_raise(),
+            id="numpy-scalar-is-not-AxesArray",
+        ),
+        pytest.param(
+            {"value": np.array([1, 2, 3]), "annotation": AxesArray, "expected": True},
+            does_not_raise(),
+            id="integer-ndarray-is-AxesArray",
+        ),
+        pytest.param(
+            {
+                "value": np.array([1.0, 2.0, 3.0]),
+                "annotation": AxesArray,
+                "expected": True,
+            },
+            does_not_raise(),
+            id="floating-ndarray-is-AxesArray",
+        ),
+        pytest.param(
+            {"value": None, "annotation": AxesArray | None, "expected": True},
+            does_not_raise(),
+            id="None-is-optional-AxesArray",
+        ),
+    ],
+)
+def test_istype_with_numpy_scalar_and_none(parms, context):
+    """Ensure istype handles numpy values and None appropriately."""
+    with context:
+        assert istype(parms["value"], parms["annotation"]) is parms["expected"]
 
 
 @pytest.mark.parametrize(

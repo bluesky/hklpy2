@@ -30,6 +30,11 @@ describe future plans.
 
     Release expected 2026-Q3.
 
+    Fixes
+    -----
+
+    * Fix axis input validation with NumPy 2.5. (:pr:`426`)
+
     Maintenance
     -----------
 
