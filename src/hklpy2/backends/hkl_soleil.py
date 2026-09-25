@@ -462,10 +462,7 @@ class HklSolver(SolverBase):
             for glist_item in raw:
                 geo = glist_item.geometry_get()
                 sol = dict(
-                    zip(
-                        geo.axis_names_get(),
-                        roundoff_list(geo.axis_values_get(LIBHKL_USER_UNITS)),
-                    )
+                    zip(geo.axis_names_get(), geo.axis_values_get(LIBHKL_USER_UNITS))
                 )
                 solutions.append(sol)
             return solutions

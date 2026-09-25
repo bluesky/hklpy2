@@ -2,11 +2,13 @@
 # SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """Regression test for issue #427."""
 
+import re
 from contextlib import nullcontext as does_not_raise
 
 import pytest
 
 from ..diffract import creator
+from ..exceptions import NoForwardSolutions
 
 
 @pytest.fixture()
@@ -101,17 +103,37 @@ def test_forward_branch_changes_with_current_chi(aps_polar, parms, context):
             does_not_raise(),
             id="tight chi limits retain negative branch",
         ),
+        pytest.param(
+            {"chi_limits": (113.0, 113.0)},
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="value above high limit is rejected before rounding",
+        ),
+        pytest.param(
+            {"chi_limits": (-66.893, -66.8)},
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="value below low limit is rejected before rounding",
+        ),
+        pytest.param(
+            {"digits": 2, "chi": 30.5462, "expected": (113.11, 9.36)},
+            does_not_raise(),
+            id="accepted result uses configured digits",
+        ),
     ],
 )
 def test_forward_tight_chi_limits_select_expected_branch(aps_polar, parms, context):
     """Tight chi limits retain the corresponding reported solution."""
     with context:
-        aps_polar.core.constraints["chi"].limits = parms["chi_limits"]
+        if "digits" in parms:
+            aps_polar.digits = parms["digits"]
+        aps_polar.core.constraints["chi"].limits = parms.get("chi_limits", (-180, 180))
+        if "chi" in parms:
+            aps_polar.chi.move(parms["chi"])
         solutions = aps_polar.core.forward({"h": 1, "k": 1, "l": 0})
         selected = aps_polar.forward({"h": 1, "k": 1, "l": 0})
 
-        assert len(solutions) == 1
-        assert (selected.chi, selected.gamma) == pytest.approx(
-            parms["expected"], abs=0.001
-        )
-        assert selected == solutions[0]
+        if "expected" in parms:
+            assert len(solutions) == (2 if "digits" in parms else 1)
+            assert (selected.chi, selected.gamma) == pytest.approx(
+                parms["expected"], abs=0.001
+            )
+            assert selected == solutions[0]
