@@ -92,7 +92,7 @@ jobs:
         uses: mamba-org/setup-micromamba@v3
         with:
           cache-environment: ${{ matrix.experimental != true }}
-          cache-environment-key: env-key-${{ matrix.python-version }}
+          cache-environment-key: ${{ matrix.experimental != true && format('env-key-{0}', matrix.python-version) || '' }}
           condarc: |
             channels:
               - conda-forge
