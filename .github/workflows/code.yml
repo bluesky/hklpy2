@@ -91,8 +91,8 @@ jobs:
       - name: Cached Python ${{ matrix.python-version }} environment
         uses: mamba-org/setup-micromamba@v3
         with:
-          cache-environment: true
-          cache-environment-key: env-key-${{ matrix.python-version }}
+          cache-environment: ${{ matrix.experimental != true }}
+          cache-environment-key: ${{ matrix.experimental != true && format('env-key-{0}', matrix.python-version) || '' }}
           condarc: |
             channels:
               - conda-forge

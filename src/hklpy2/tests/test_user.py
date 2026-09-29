@@ -121,7 +121,7 @@ def test_cahkl_table(fourc, capsys):
 
     # use the default "main" sample and UB matrix
     PseudoTuple = namedtuple("PseudoTuple", ["h", "k", "l"])
-    rlist = [PseudoTuple(1, 0, 0), PseudoTuple(0, 1, 0)]
+    rlist = [PseudoTuple(1.0, 0.0, 0.0), PseudoTuple(0.0, 1.0, 0.0)]
     cahkl_table(*rlist, digits=1)
     out, err = capsys.readouterr()
     assert len(err) == 0

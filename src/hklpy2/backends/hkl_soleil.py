@@ -444,7 +444,15 @@ class HklSolver(SolverBase):
             self.engine.parameter_set(k, p)
 
     def forward(self, pseudos: NamedFloatDict) -> list[NamedFloatDict]:
-        """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
+        """
+        Compute list of solutions(reals) from pseudos (hkl -> [angles]).
+
+        The underlying geometry engine returns a bounded set of equivalent
+        solutions, ordered using the current real-axis geometry.  The returned
+        order can therefore change when ``set_reals()`` is given a different
+        starting position.  This method preserves that order making no
+        assumption about the selection of a specific solution from the set.
+        """
         from gi.repository import GLib  # W0611
 
         logger.debug("(%r) forward(%r)", __name__, pseudos)
@@ -462,10 +470,7 @@ class HklSolver(SolverBase):
             for glist_item in raw:
                 geo = glist_item.geometry_get()
                 sol = dict(
-                    zip(
-                        geo.axis_names_get(),
-                        roundoff_list(geo.axis_values_get(LIBHKL_USER_UNITS)),
-                    )
+                    zip(geo.axis_names_get(), geo.axis_values_get(LIBHKL_USER_UNITS))
                 )
                 solutions.append(sol)
             return solutions
