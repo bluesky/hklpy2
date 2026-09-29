@@ -60,6 +60,169 @@ def test_hkl_soleil():
         hkl_soleil.to_hkl([1, 2])
 
 
+APS_POLAR_R110 = {
+    "name": "543d0a3",
+    "pseudos": {"h": 1.0, "k": 1.0, "l": 0.0},
+    "reals": {
+        "tau": 0.0,
+        "mu": 9.89806867221,
+        "chi": 113.105327243248,
+        "phi": 0.00173136532,
+        "gamma": 9.42401385126,
+        "delta": -0.00013200263,
+    },
+    "wavelength": 0.6199478461064903,
+}
+APS_POLAR_R004 = {
+    "name": "88e3c3d",
+    "pseudos": {"h": 0.0, "k": 0.0, "l": 4.0},
+    "reals": {
+        "tau": 0.0,
+        "mu": 10.848157453245,
+        "chi": 30.583556860225,
+        "phi": 0.00038517158,
+        "gamma": 10.38248391045,
+        "delta": -0.00011434739,
+    },
+    "wavelength": 0.6199478461064903,
+}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {
+                "reals": {
+                    "tau": 0.0,
+                    "mu": 9.89806867221,
+                    "chi": 113.105327243248,
+                    "phi": 0.00173136532,
+                    "gamma": 9.42401385126,
+                    "delta": 0.0,
+                },
+                "hkl": {"h": 1.0, "k": 1.0, "l": 0.0},
+                "expected": [
+                    {
+                        "tau": 0.0,
+                        "mu": 9.8670,
+                        "chi": 113.1061,
+                        "phi": 0.0017,
+                        "gamma": 9.3620,
+                        "delta": 0.0,
+                    },
+                    {
+                        "tau": 0.0,
+                        "mu": -9.8670,
+                        "chi": -66.8939,
+                        "phi": 0.0017,
+                        "gamma": -9.3620,
+                        "delta": 0.0,
+                    },
+                ],
+            },
+            does_not_raise(),
+            id="reported-110-position",
+        ),
+        pytest.param(
+            {
+                "reals": {
+                    "tau": 0.0,
+                    "mu": 9.89806867221,
+                    "chi": 31.0,
+                    "phi": 0.00173136532,
+                    "gamma": 9.42401385126,
+                    "delta": 0.0,
+                },
+                "hkl": {"h": 1.0, "k": 1.0, "l": 0.0},
+                "expected": [
+                    {
+                        "tau": 0.0,
+                        "mu": 179.4950,
+                        "chi": -66.8939,
+                        "phi": 0.0017,
+                        "gamma": 9.3620,
+                        "delta": 0.0,
+                    },
+                    {
+                        "tau": 0.0,
+                        "mu": -179.4950,
+                        "chi": 113.1061,
+                        "phi": 0.0017,
+                        "gamma": -9.3620,
+                        "delta": 0.0,
+                    },
+                ],
+            },
+            does_not_raise(),
+            id="reported-110-axes-with-chi-31",
+        ),
+        pytest.param(
+            {
+                "reals": {
+                    "tau": 0.0,
+                    "mu": 9.89806867221,
+                    "chi": 125.0,
+                    "phi": 0.00173136532,
+                    "gamma": 9.42401385126,
+                    "delta": 0.0,
+                },
+                "hkl": {"h": 0.0, "k": 0.0, "l": 6.0},
+                "expected": [
+                    {
+                        "tau": 0.0,
+                        "mu": 177.9117,
+                        "chi": 30.5462,
+                        "phi": 0.0017,
+                        "gamma": -15.4822,
+                        "delta": 0.0,
+                    },
+                    {
+                        "tau": 0.0,
+                        "mu": -177.9117,
+                        "chi": -149.4538,
+                        "phi": 0.0017,
+                        "gamma": 15.4822,
+                        "delta": 0.0,
+                    },
+                ],
+            },
+            does_not_raise(),
+            id="reported-110-axes-with-chi-125-for-006",
+        ),
+    ],
+)
+def test_aps_polar_forward_depends_on_start_position(parms, context):
+    """The backend preserves two branches but changes their representation/order."""
+    with context:
+        solver = hkl_soleil.HklSolver("APS POLAR", engine="hkl")
+        solver.mode = "4-circles constant phi horizontal"
+        solver.wavelength = 0.6199478461064903
+        solver.sample = {
+            "name": "pr4310-exafs-cube1",
+            "lattice": {
+                "a": 5.38,
+                "b": 5.467,
+                "c": 14.066,
+                "alpha": 90.0,
+                "beta": 101.0,
+                "gamma": 90.0,
+            },
+            "order": [],
+            "reflections": [],
+        }
+        solver.calculate_UB(APS_POLAR_R110, APS_POLAR_R004)
+        solver.set_reals(parms["reals"])
+        solutions = solver.forward(parms.get("hkl", {"h": 1.0, "k": 1.0, "l": 0.0}))
+
+        assert len(solutions) == len(parms["expected"])
+        for actual, expected in zip(solutions, parms["expected"]):
+            assert actual.keys() == expected.keys()
+            np.testing.assert_allclose(
+                list(actual.values()), list(expected.values()), atol=0.001
+            )
+
+
 def test_HklSolver():
     solver = hkl_soleil.HklSolver(geometry="E4CV", engine="hkl")
     assert solver.wavelength == 1.54

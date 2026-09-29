@@ -444,7 +444,15 @@ class HklSolver(SolverBase):
             self.engine.parameter_set(k, p)
 
     def forward(self, pseudos: NamedFloatDict) -> list[NamedFloatDict]:
-        """Compute list of solutions(reals) from pseudos (hkl -> [angles])."""
+        """
+        Compute list of solutions(reals) from pseudos (hkl -> [angles]).
+
+        The underlying geometry engine returns a bounded set of solutions and
+        orders equivalent branches using the current real-axis geometry.  The
+        returned order and branch representation can therefore change when
+        ``set_reals()`` is given a different starting position.  This method
+        preserves that order; selecting one solution is the Core layer's job.
+        """
         from gi.repository import GLib  # W0611
 
         logger.debug("(%r) forward(%r)", __name__, pseudos)
