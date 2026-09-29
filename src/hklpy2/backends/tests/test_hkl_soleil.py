@@ -193,7 +193,7 @@ APS_POLAR_R004 = {
     ],
 )
 def test_aps_polar_forward_depends_on_start_position(parms, context):
-    """The backend preserves two branches but changes their representation/order."""
+    """The backend returns two solutions with position-dependent ordering."""
     with context:
         solver = hkl_soleil.HklSolver("APS POLAR", engine="hkl")
         solver.mode = "4-circles constant phi horizontal"

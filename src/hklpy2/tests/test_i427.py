@@ -67,17 +67,17 @@ def aps_polar():
         pytest.param(
             {"chi": 0.0, "expected": (-66.8937, -9.3620)},
             does_not_raise(),
-            id="current chi zero selects negative branch",
+            id="current chi zero selects negative solution",
         ),
         pytest.param(
             {"chi": 30.5462, "expected": (113.1063, 9.3620)},
             does_not_raise(),
-            id="current chi near 004 selects positive branch",
+            id="current chi near 004 selects positive solution",
         ),
     ],
 )
-def test_forward_branch_changes_with_current_chi(aps_polar, parms, context):
-    """The reported APS POLAR setup returns different first branches."""
+def test_forward_solution_changes_with_current_chi(aps_polar, parms, context):
+    """The reported APS POLAR setup returns different first solutions."""
     with context:
         aps_polar.chi.move(parms["chi"])
         solutions = aps_polar.core.forward({"h": 1, "k": 1, "l": 0})
@@ -96,12 +96,12 @@ def test_forward_branch_changes_with_current_chi(aps_polar, parms, context):
         pytest.param(
             {"chi_limits": (112.0, 114.0), "expected": (113.1063, 9.3620)},
             does_not_raise(),
-            id="tight chi limits retain positive branch",
+            id="tight chi limits retain positive solution",
         ),
         pytest.param(
             {"chi_limits": (-68.0, -66.0), "expected": (-66.8937, -9.3620)},
             does_not_raise(),
-            id="tight chi limits retain negative branch",
+            id="tight chi limits retain negative solution",
         ),
         pytest.param(
             {"chi_limits": (113.0, 113.0)},
@@ -120,7 +120,7 @@ def test_forward_branch_changes_with_current_chi(aps_polar, parms, context):
         ),
     ],
 )
-def test_forward_tight_chi_limits_select_expected_branch(aps_polar, parms, context):
+def test_forward_tight_chi_limits_select_expected_solution(aps_polar, parms, context):
     """Tight chi limits retain the corresponding reported solution."""
     with context:
         if "digits" in parms:

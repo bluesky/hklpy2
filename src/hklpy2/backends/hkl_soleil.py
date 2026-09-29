@@ -447,11 +447,11 @@ class HklSolver(SolverBase):
         """
         Compute list of solutions(reals) from pseudos (hkl -> [angles]).
 
-        The underlying geometry engine returns a bounded set of solutions and
-        orders equivalent branches using the current real-axis geometry.  The
-        returned order and branch representation can therefore change when
-        ``set_reals()`` is given a different starting position.  This method
-        preserves that order; selecting one solution is the Core layer's job.
+        The underlying geometry engine returns a bounded set of equivalent
+        solutions, ordered using the current real-axis geometry.  The returned
+        order can therefore change when ``set_reals()`` is given a different
+        starting position.  This method preserves that order making no
+        assumption about the selection of a specific solution from the set.
         """
         from gi.repository import GLib  # W0611
 
