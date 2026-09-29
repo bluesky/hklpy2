@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """Regression test for issue #427."""
 
+import logging
 import re
 from contextlib import nullcontext as does_not_raise
 
@@ -137,3 +138,39 @@ def test_forward_tight_chi_limits_select_expected_solution(aps_polar, parms, con
                 parms["expected"], abs=0.001
             )
             assert selected == solutions[0]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"chi": 125.0, "gamma_limits": (-180.0, 180.0), "expected_count": 2},
+            does_not_raise(),
+            id="all gamma solutions survive",
+        ),
+        pytest.param(
+            {"chi": 125.0, "gamma_limits": (0.0, 180.0), "expected_count": 1},
+            does_not_raise(),
+            id="positive gamma solution survives",
+        ),
+    ],
+)
+def test_forward_006_constraint_diagnostic(aps_polar, parms, context, caplog):
+    """Report raw and Core-filtered solutions for the user's chi=125 case."""
+    with context:
+        aps_polar.chi.move(parms["chi"])
+        aps_polar.core.constraints["gamma"].limits = parms["gamma_limits"]
+        with caplog.at_level(logging.INFO):
+            raw = aps_polar.core.solver.forward({"h": 0.0, "k": 0.0, "l": 6.0})
+            filtered = aps_polar.core.forward({"h": 0.0, "k": 0.0, "l": 6.0})
+
+        assert len(raw) == 2
+        assert len(filtered) == parms["expected_count"]
+        assert any(solution["gamma"] > 0 for solution in raw)
+        if parms["gamma_limits"] == (0.0, 180.0):
+            assert all(solution.gamma >= 0 for solution in filtered)
+        assert (
+            "Solution discarded" in caplog.text
+            if parms["expected_count"] == 1
+            else True
+        )
