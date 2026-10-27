@@ -13,7 +13,7 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: e0cd758375f486267fb1564d57402d862768bca759440cddd573b41b46724738
+    linux-64: f01c3180eccdb1f7b7cbb5b3e2601ece063a1849653eab365adcfa18f862147e
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -23,8 +23,8 @@ metadata:
   - environment-3.14.yml
   inputs_metadata:
     environment-3.14.yml:
-      md5: 993c69403a5e374a7da6c5ba319846af
-      sha256: 87f2dd517ad67c69ed06b3f70dd62229451650563da997b72f17d716925aaf15
+      md5: 94e4dbf6b2bb3c3af5d3ed3ff96a925f
+      sha256: 499e025a01f43fde63c38f52e7179e81655f2f3df676f789d8e471ad6e970f42
 package:
 - name: _openmp_mutex
   version: '4.5'
@@ -1346,6 +1346,59 @@ package:
     sha256: 88ae3211e68a1d0b011504b2ffc1691feafce124b845bd072ab6f9f66f34d4b7
   category: main
   optional: false
+- name: adbc-driver-manager
+  version: 1.13.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    typing-extensions: '*'
+  url: https://files.pythonhosted.org/packages/2b/2c/1759a417eae4d90c390737eccf1098033779f2a8d6d8952d2f208cd236fd/adbc_driver_manager-1.13.0-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+  hash:
+    sha256: 3ce8256a35e68420fab5e19830b6051578828c7774f10500abae7edc61ec0d3a
+  category: main
+  optional: false
+- name: adbc-driver-postgresql
+  version: 1.13.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    adbc-driver-manager: '*'
+  url: https://files.pythonhosted.org/packages/37/6b/dd22c016305e84b8b9959784e77bbd20c454bd82463dc8de5a839abde206/adbc_driver_postgresql-1.13.0-py3-none-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl
+  hash:
+    sha256: a86819ba7c79b1d067c4a5344358b4d346bab58e888d7879ed2b25d97cc59ba1
+  category: main
+  optional: false
+- name: adbc-driver-sqlite
+  version: 1.13.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    adbc-driver-manager: '*'
+  url: https://files.pythonhosted.org/packages/57/57/a4433a1c5e52d52358d390f5c99f5878d3fa1c7a1ff6618a40e13918901f/adbc_driver_sqlite-1.13.0-py3-none-manylinux_2_28_x86_64.whl
+  hash:
+    sha256: fb51f307cb3c45aa5476c84eae83781079939832f35dd54611dbe6095627ca3d
+  category: main
+  optional: false
+- name: aiofiles
+  version: 25.1.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/bc/8a/340a1555ae33d7354dbca4faa54948d76d89a27ceef032c8c3bc661d003e/aiofiles-25.1.0-py3-none-any.whl
+  hash:
+    sha256: abe311e527c862958650f9438e859c1fa7568a141b22abcd015e120e86a85695
+  category: main
+  optional: false
+- name: aiosqlite
+  version: 0.22.1
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/00/b7/e3bf5133d697a08128598c8d0abc5e16377b51465a33756de24fa7dee953/aiosqlite-0.22.1-py3-none-any.whl
+  hash:
+    sha256: 21c002eb13823fad740196c5a2e9d8e62f6243bd9e7e4a1f87fb5e44ecb4fceb
+  category: main
+  optional: false
 - name: alabaster
   version: 1.0.0
   manager: pip
@@ -1354,6 +1407,19 @@ package:
   url: https://files.pythonhosted.org/packages/7e/b3/6b4067be973ae96ba0d615946e314c5ae35f9f993eca561b356540bb0c2b/alabaster-1.0.0-py3-none-any.whl
   hash:
     sha256: fc6786402dc3fcb2de3cabd5fe455a2db534b371124f1f21de8731783dec828b
+  category: main
+  optional: false
+- name: alembic
+  version: 1.20.1
+  manager: pip
+  platform: linux-64
+  dependencies:
+    mako: '*'
+    sqlalchemy: '>=2.0'
+    typing-extensions: '>=4.12'
+  url: https://files.pythonhosted.org/packages/11/3c/8740f5b4e1bd57333e4f84265b9b6363da4f7cf70f5622dd1e2fde7a0bd5/alembic-1.20.1-py3-none-any.whl
+  hash:
+    sha256: 9970712cfb81ea26c8658d378aaa5b8f6ff9146e5bb111d70497c164016cf598
   category: main
   optional: false
 - name: annotated-doc
@@ -1446,6 +1512,39 @@ package:
     sha256: 59e192c900e663cb11cc48527b13c3a214f704362a038c0140ab3d278d588473
   category: main
   optional: false
+- name: argon2-cffi
+  version: 25.1.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    argon2-cffi-bindings: '*'
+  url: https://files.pythonhosted.org/packages/4f/d3/a8b22fa575b297cd6e3e3b0155c7e25db170edf1c74783d6a31a2490b8d9/argon2_cffi-25.1.0-py3-none-any.whl
+  hash:
+    sha256: fdc8b074db390fccb6eb4a3604ae7231f219aa669a2652e0f20e16ba513d5741
+  category: main
+  optional: false
+- name: argon2-cffi-bindings
+  version: 26.1.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    cffi: '>=2'
+  url: https://files.pythonhosted.org/packages/6f/86/5363df11b86d02cf3662208e7406496327649cc90eb365bf6f4e8a54a41f/argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl
+  hash:
+    sha256: 27f1821903e2ceadcb88ec2b45ef190897b7682449c772f4d9b53e42c520cf29
+  category: main
+  optional: false
+- name: asgi-correlation-id
+  version: 5.0.1
+  manager: pip
+  platform: linux-64
+  dependencies:
+    starlette: '>=0.18'
+  url: https://files.pythonhosted.org/packages/ae/fe/3f5a304ddc2b625a6a2fda913b29bc4675c434016557592791cf1aa39a60/asgi_correlation_id-5.0.1-py3-none-any.whl
+  hash:
+    sha256: dfea97c1fc41e8eadc3e518a311427cba6e7e79d9ddb6a6c7ea8879f2408d91d
+  category: main
+  optional: false
 - name: ast-serialize
   version: 0.13.1
   manager: pip
@@ -1474,6 +1573,16 @@ package:
   url: https://files.pythonhosted.org/packages/d4/2b/04b8a15f3a1c77bc79ddf5c73875327f34b4fa75982df2b76e45e402d364/asttokens-3.0.2-py3-none-any.whl
   hash:
     sha256: 9da13157f5b28becde0bd374fc677dcd3c290614264eff096f167c469cd9f933
+  category: main
+  optional: false
+- name: asyncpg
+  version: 0.32.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/68/db/fc91b503b3ec66cf242d83c799388285ea5f0ee238435d53dd9c1a8648a9/asyncpg-0.32.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+  hash:
+    sha256: 63417b8f7369c54f6754c1fbd5a2968fbe632ff55bfbedd56a0177b6a96bd251
   category: main
   optional: false
 - name: attrs
@@ -1647,6 +1756,16 @@ package:
     sha256: 8722e08fc36ae0838a9a0a2ab9935554720de3343a62dad7aae7c595854c8623
   category: main
   optional: false
+- name: canonicaljson
+  version: 2.0.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/e5/54/346f681c24a9c3a08e2e74dcee2555ccd1081705b46f791f7b228e177d06/canonicaljson-2.0.0-py3-none-any.whl
+  hash:
+    sha256: c38a315de3b5a0532f1ec1f9153cd3d716abfc565a558d00a4835428a34fca5b
+  category: main
+  optional: false
 - name: certifi
   version: 2026.10.23
   manager: pip
@@ -1750,6 +1869,28 @@ package:
   url: https://files.pythonhosted.org/packages/60/f1/5a884d2e8e3e7e7d854d3032b777bd22aad1598161cf9aa77ac37d684908/coveralls-4.1.0-py3-none-any.whl
   hash:
     sha256: bfacfda2d443c24fc90d67035027cec15015fff2dbd036427e8bf8f4953dda2e
+  category: main
+  optional: false
+- name: cross-web
+  version: 0.7.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    typing-extensions: '>=4.14.0'
+  url: https://files.pythonhosted.org/packages/7a/4a/78b52ec2edcbd9b123638f4e0421fd8699ebe653ebf63ac5f82abd2665bc/cross_web-0.7.0-py3-none-any.whl
+  hash:
+    sha256: ddea9be3c68b48eaf16561847a5831a559786949c544b3701432e00a4e8d19d9
+  category: main
+  optional: false
+- name: cryptography
+  version: 50.0.2
+  manager: pip
+  platform: linux-64
+  dependencies:
+    cffi: '>=2.0.0'
+  url: https://files.pythonhosted.org/packages/1a/f1/b474e930c4d910328780e3940da76f5aa5cbc48ce1fc14e44d239d9ea9db/cryptography-50.0.2-cp311-abi3-manylinux_2_28_x86_64.whl
+  hash:
+    sha256: 4061c0079120205fb760c58acab6443e217307dcf05e3702cf970e0689972856
   category: main
   optional: false
 - name: cycler
@@ -1915,6 +2056,27 @@ package:
     sha256: 2a3175ce74a06109ff9307d90a230f81215cbac9a751f4d1c6194644b8204f9d
   category: main
   optional: false
+- name: duckdb
+  version: 1.3.2
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/47/24/a2e7fb78fba577641c286fe33185789ab1e1569ccdf4d142e005995991d2/duckdb-1.3.2.tar.gz
+  hash:
+    sha256: c658df8a1bc78704f702ad0d954d82a1edd4518d7a04f00027ec53e40f591ff5
+  category: main
+  optional: false
+- name: ecdsa
+  version: 0.19.2
+  manager: pip
+  platform: linux-64
+  dependencies:
+    six: '>=1.9.0'
+  url: https://files.pythonhosted.org/packages/51/79/119091c98e2bf49e24ed9f3ae69f816d715d2904aefa6a2baa039a2ba0b0/ecdsa-0.19.2-py2.py3-none-any.whl
+  hash:
+    sha256: 840f5dc5e375c68f36c1a7a5b9caad28f95daa65185c9253c0c08dd952bb7399
+  category: main
+  optional: false
 - name: entrypoints
   version: 0.4.2
   manager: pip
@@ -1956,6 +2118,22 @@ package:
   url: https://files.pythonhosted.org/packages/4d/dd/8bc67e7d5ffc1d88aa5af511189dfb76dc4e1e5b808fab186146ef2663e5/executing-2.3.0-py3-none-any.whl
   hash:
     sha256: 736e859c9f8701f11fcf516856f26f562e04776387824b43a35a1dfe21c84122
+  category: main
+  optional: false
+- name: fastapi
+  version: 0.162.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    annotated-doc: '>=0.0.2'
+    opentelemetry-api: '>=1.44.0'
+    pydantic: '>=2.9.0'
+    starlette: '>=0.46.0'
+    typing-extensions: '>=4.8.0'
+    typing-inspection: '>=0.4.2'
+  url: https://files.pythonhosted.org/packages/b4/4f/3f2c25c9b43970b5e9a08beb5e04776247edea684ddc0930f4f02f0bb6cb/fastapi-0.162.0-py3-none-any.whl
+  hash:
+    sha256: 3785963de305dd09912426cb81f2d230fce98ab3521cdfe97265c8d14983128c
   category: main
   optional: false
 - name: fastjsonschema
@@ -2030,6 +2208,26 @@ package:
     sha256: dee799544cae42a42b17a88e38b59cf2c271051dc001da2117a8ff240ffa0548
   category: main
   optional: false
+- name: graphql-core
+  version: 3.3.1
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/57/0e/e51b006267e7fa785abf5d1f86a7d60b84f7f893e3ba4fe23df9be2000cf/graphql_core-3.3.1-py3-none-any.whl
+  hash:
+    sha256: 43ebcd0d9a0662a71b1a2f6562ba863d253057ec11cbc45835b2e2683a0a3770
+  category: main
+  optional: false
+- name: greenlet
+  version: 3.5.6
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/45/ac/28fa7a9e50f2859466214c4ac584d776db52c1604ad4dd158960a5af2a1f/greenlet-3.5.6-cp314-cp314-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl
+  hash:
+    sha256: 9a09d59bef1db94f384b5bcc2d523694d338f3df6b757aeeaf7baca5d0c0be88
+  category: main
+  optional: false
 - name: h11
   version: 0.16.0
   manager: pip
@@ -2052,6 +2250,18 @@ package:
     sha256: 0e25f1462b23c9cb82d9eb02e28bc706dac2a68cb457c6a0d74d63c8a2a5d0e6
   category: main
   optional: false
+- name: h5netcdf
+  version: 1.8.2
+  manager: pip
+  platform: linux-64
+  dependencies:
+    numpy: '*'
+    packaging: '*'
+  url: https://files.pythonhosted.org/packages/89/87/b27650a01459c8b428c30234ba39dcb31b2d50762b67989806fd754ce225/h5netcdf-1.8.2-py3-none-any.whl
+  hash:
+    sha256: a0306ee81addee2abe2d2e18433fd5e9f33952272f4db960679d2e41db4ac079
+  category: main
+  optional: false
 - name: h5py
   version: 3.16.0
   manager: pip
@@ -2061,6 +2271,17 @@ package:
   url: https://files.pythonhosted.org/packages/f1/16/d905e7f53e661ce2c24686c38048d8e2b750ffc4350009d41c4e6c6c9826/h5py-3.16.0-cp314-cp314-manylinux_2_28_x86_64.whl
   hash:
     sha256: e4360f15875a532bc7b98196c7592ed4fc92672a57c0a621355961cafb17a6dd
+  category: main
+  optional: false
+- name: hdf5plugin
+  version: 7.1.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    h5py: '>=3.0.0'
+  url: https://files.pythonhosted.org/packages/26/56/3f788afb8d7fc451d20a66a64ea58bbe189f6f11780b28ba09148974fb33/hdf5plugin-7.1.0-py3-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+  hash:
+    sha256: 9d4cf36434819fae53e4da432f0287ebaeb02386ab97b73d261092efbab12247
   category: main
   optional: false
 - name: historydict
@@ -2093,6 +2314,16 @@ package:
   url: https://files.pythonhosted.org/packages/7e/f5/f66802a942d491edb555dd61e3a9961140fd64c90bce1eafd741609d334d/httpcore-1.0.9-py3-none-any.whl
   hash:
     sha256: 2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55
+  category: main
+  optional: false
+- name: httptools
+  version: 0.9.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/72/04/4ecb7251a6c55bef61b157bb93fd44678943c35702a5966e4d5ebda2d450/httptools-0.9.0-cp314-cp314-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl
+  hash:
+    sha256: 18d800aaa2d6bff7d889df810d1b19a5fde72b1f6c0ca96e8d9f28a692fe5460
   category: main
   optional: false
 - name: httpx
@@ -2274,6 +2505,16 @@ package:
     sha256: 85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67
   category: main
   optional: false
+- name: jmespath
+  version: 1.1.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/14/2f/967ba146e6d58cf6a652da73885f52fc68001525b4197effc174321d70b4/jmespath-1.1.0-py3-none-any.whl
+  hash:
+    sha256: a5663118de4908c91729bea0acadca56526eb2698e83de10cd116ae0f4e97c64
+  category: main
+  optional: false
 - name: json-merge-patch
   version: 0.3.0
   manager: pip
@@ -2446,6 +2687,17 @@ package:
     sha256: 0bba042ec5a61fa77c7e380351a61cb768277801240249841defd2ff0a10742f
   category: main
   optional: false
+- name: mako
+  version: 1.4.3
+  manager: pip
+  platform: linux-64
+  dependencies:
+    markupsafe: '>=2.0'
+  url: https://files.pythonhosted.org/packages/6d/a0/053d6af3e8f871e0073b4a36732d9e65be77a72e5434c31b94f6af78a6bb/mako-1.4.3-py3-none-any.whl
+  hash:
+    sha256: 723296007c870bfd6b3f0c3230dba7198096e5269297ebf5e4eff9e7ffa39d4f
+  category: main
+  optional: false
 - name: markdown-it-py
   version: 4.2.0
   manager: pip
@@ -2516,6 +2768,21 @@ package:
   url: https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl
   hash:
     sha256: 84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8
+  category: main
+  optional: false
+- name: minio
+  version: 7.2.20
+  manager: pip
+  platform: linux-64
+  dependencies:
+    argon2-cffi: '*'
+    certifi: '*'
+    pycryptodome: '*'
+    typing-extensions: '*'
+    urllib3: '*'
+  url: https://files.pythonhosted.org/packages/3e/9a/b697530a882588a84db616580f2ba5d1d515c815e11c30d219145afeec87/minio-7.2.20-py3-none-any.whl
+  hash:
+    sha256: eb33dd2fb80e04c3726a76b13241c6be3c4c46f8d81e1d58e757786f6501897e
   category: main
   optional: false
 - name: mistune
@@ -2788,6 +3055,16 @@ package:
     sha256: bac00898930f962f360c3d763a8e2273fc931f65a1759ff1bf64b3cf13d65aee
   category: main
   optional: false
+- name: obstore
+  version: 0.12.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/70/3f/57e4173cbd61f1354d4f3f289a61a4271d8b3afa3a7f2efe519014697043/obstore-0.12.0-cp311-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  hash:
+    sha256: fa53318c8892c612a58d0ac6c1cf26d9f5b697ca880de4133e9bd4868e90e5be
+  category: main
+  optional: false
 - name: openpyxl
   version: 3.1.5
   manager: pip
@@ -2975,6 +3252,16 @@ package:
     sha256: b3346e0e6f79180833aebaac088ae926340586cf6d7d991b9eb125b65f72313a
   category: main
   optional: false
+- name: prometheus-client
+  version: 0.26.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/eb/a3/b69efbf4143b5b9859b977770bbbabcc2796b702fa69dc40271e45cd5a56/prometheus_client-0.26.0-py3-none-any.whl
+  hash:
+    sha256: fa93d06737aa02bacd05794768508bb97d2fbee28cb3bca04eaae92f0ca953d6
+  category: main
+  optional: false
 - name: prompt-toolkit
   version: 3.0.53
   manager: pip
@@ -3026,6 +3313,16 @@ package:
     sha256: ab6914db225d7f399652ae1f08588dfbc9efe617612715701e3d9d5cfa5ca19f
   category: main
   optional: false
+- name: pyasn1
+  version: 0.6.5
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/19/1f/3eefd5c84c35cae44549ce1c7f7e58f7945b34f5a6bce07a135438522073/pyasn1-0.6.5-py3-none-any.whl
+  hash:
+    sha256: 4017b0fce125096b8573b39c989fdb1a4b19cf761e683398184550fea0e66587
+  category: main
+  optional: false
 - name: pycparser
   version: '3.12'
   manager: pip
@@ -3034,6 +3331,16 @@ package:
   url: https://files.pythonhosted.org/packages/b6/ae/315bbeee126a769cbde43cf4908acb4b40408d8bf8bbf334dd7368d8dadf/pycparser-3.12-py3-none-any.whl
   hash:
     sha256: a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e
+  category: main
+  optional: false
+- name: pycryptodome
+  version: 4.2.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/18/88/33df6b1176b63aed427745696d88ed38f7877104cf0f6004ee9ad600f897/pycryptodome-4.2.0-cp39-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+  hash:
+    sha256: 76777686de3a354c41710727988c2284448d5db9bd82e5ddb9a9b6710d17d9df
   category: main
   optional: false
 - name: pydantic
@@ -3179,6 +3486,30 @@ package:
     sha256: 42269a8a5b3fd54ffa6f3d84b18abed50064717576b4ecf03dc4a55d8aa04fdc
   category: main
   optional: false
+- name: python-jose
+  version: 3.5.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    cryptography: '>=3.4.0'
+    ecdsa: '!=0.15'
+    pyasn1: '>=0.5.0'
+    rsa: '>=4.0,<4.1.1 || >4.1.1,<4.4 || >4.4,<5.0'
+  url: https://files.pythonhosted.org/packages/d9/c3/0bd11992072e6a1c513b16500a5d07f91a24017c5909b02c72c62d7ad024/python_jose-3.5.0-py2.py3-none-any.whl
+  hash:
+    sha256: abd1202f23d34dfad2c3d28cb8617b90acf34132c7afd60abd0b0b7d3cb55771
+  category: main
+  optional: false
+- name: python-multipart
+  version: 0.0.32
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/e1/04/e8135ebd1ad02c56ec633277529b2602ff99ff634be76cdba5744cf554fd/python_multipart-0.0.32-py3-none-any.whl
+  hash:
+    sha256: ff6d3f776f16878c894e52e107296ffc890e913c611b1a4ec6c44e2821fe2e23
+  category: main
+  optional: false
 - name: pytz
   version: '2026.5'
   manager: pip
@@ -3210,6 +3541,16 @@ package:
   url: https://files.pythonhosted.org/packages/ff/eb/e7d23686c85d8cf6f9158f36b3a30bd717448b11ccbca75a5955a06e4459/ragged-0.3.0-py3-none-any.whl
   hash:
     sha256: 55c42eaff6665e18558436cf25c991fe67247dcbe402269594868503a0f6f817
+  category: main
+  optional: false
+- name: redis
+  version: 8.1.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/66/9d/c5731f6e3608663d4d3656fd8d3aecee8b509c3082818f5a13eae925baea/redis-8.1.0-py3-none-any.whl
+  hash:
+    sha256: a4fe1aac3d3b3cc791d4b3d5931c5a956045dc951ee74d1c913ee3ac4d2ee9fb
   category: main
   optional: false
 - name: referencing
@@ -3268,6 +3609,17 @@ package:
   url: https://files.pythonhosted.org/packages/22/9d/d08a1128ab199b2f0cf25bfeb0639bd05119fff4b7c47bec24ef9a8ec23f/rpds_py-2026.9.1-cp314-cp314-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
   hash:
     sha256: eac2f5dbafd585dfe31f86a23ebf0d3ba480a9d49ebc87947267b5608d4ea0cd
+  category: main
+  optional: false
+- name: rsa
+  version: 4.9.1
+  manager: pip
+  platform: linux-64
+  dependencies:
+    pyasn1: '>=0.1.3'
+  url: https://files.pythonhosted.org/packages/64/8d/0133e4eb4beed9e425d9a98ed6e081a55d195481b7632472be1af08d2f6b/rsa-4.9.1-py3-none-any.whl
+  hash:
+    sha256: 68635866661c6836b8d39430f97a996acbd61bfa49406748ea243539fe239762
   category: main
   optional: false
 - name: ruff
@@ -3496,6 +3848,7 @@ package:
   manager: pip
   platform: linux-64
   dependencies:
+    greenlet: '>=1'
     typing-extensions: '>=4.6.0'
   url: https://files.pythonhosted.org/packages/2c/40/42ccf6f7f6adea241f51f236868b8f27076f072b22e194b197f1bafedd75/sqlalchemy-2.1.6-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
   hash:
@@ -3524,6 +3877,34 @@ package:
   url: https://files.pythonhosted.org/packages/1d/f0/1ff90a1d1dd02de23feafdf9dffaecef3958348be5c192df56670ccb4f86/stamina-26.1.0-py3-none-any.whl
   hash:
     sha256: 62e06829bec87c06d4cafde520b32a6097d1017c378a9eb63253c5bf5ebbbb88
+  category: main
+  optional: false
+- name: starlette
+  version: 1.10.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    anyio: '>=4.0.0,<5'
+  url: https://files.pythonhosted.org/packages/88/2e/947cfe02def9371c07cd5bf5b6b61c829e9aecb9904db02a66cfafbc1eec/starlette-1.10.0-py3-none-any.whl
+  hash:
+    sha256: 478c0ab3b4ced6e82719849c118fa406f0278a3499c1a898cd15cd31bdc38ce4
+  category: main
+  optional: false
+- name: strawberry-graphql
+  version: 0.338.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    cross-web: '>=0.6.0'
+    fastapi: '>=0.65.2'
+    graphql-core: '>=3.3.0,<3.4.0'
+    packaging: '>=23'
+    python-dateutil: '>=2.7'
+    python-multipart: '>=0.0.7'
+    typing-extensions: '>=4.14.0'
+  url: https://files.pythonhosted.org/packages/8c/4e/16b7c2a3018cb31092a3fd90da6cda84503e10fe3cf63870c3b0e1c17ca3/strawberry_graphql-0.338.0-py3-none-any.whl
+  hash:
+    sha256: 2be983dcaed17daa0501799cf524dafd53aab44ac178530aa3b6eb6d99b6943f
   category: main
   optional: false
 - name: suitcase-mongo
@@ -3608,34 +3989,69 @@ package:
   manager: pip
   platform: linux-64
   dependencies:
+    adbc-driver-manager: '*'
+    adbc-driver-postgresql: '*'
+    adbc-driver-sqlite: '*'
+    aiofiles: '*'
+    aiosqlite: '*'
+    alembic: '*'
+    anyio: '*'
+    asgi-correlation-id: '*'
+    asyncpg: '>=0.28'
     awkward: '>=2.4.3'
     blosc2: '*'
+    cachetools: '*'
+    canonicaljson: '*'
     dask: '*'
+    duckdb: <1.4.0
     entrypoints: '*'
+    fastapi: '>=0.132.0'
+    h5netcdf: '*'
+    h5py: '*'
+    hdf5plugin: '*'
     httpx: '>=0.20.0,<0.23.1 || >0.23.1'
+    jinja2: '*'
+    jmespath: '*'
     json-merge-patch: '*'
     jsonpatch: '*'
     jsonschema: '*'
     lz4: '*'
+    minio: '*'
     msgpack: '>=1.0.0'
     ndindex: '*'
     numba: '>=0.59.0'
+    numcodecs: '*'
     numpy: '*'
+    obstore: '*'
+    openpyxl: '*'
     orjson: '*'
+    packaging: '*'
     pandas: '*'
+    pillow: '*'
     platformdirs: '*'
+    prometheus-client: '*'
     pyarrow: '>=14.0.1'
     pydantic: '>=2,<3'
     pydantic-settings: '>=2,<2.12.0'
+    python-dateutil: '*'
+    python-jose: '*'
+    python-multipart: '*'
     pyyaml: '*'
     ragged: '*'
+    redis: '*'
     rich: '*'
     sparse: '>=0.15.5'
+    sqlalchemy: '>=2'
     stamina: '*'
+    starlette: '>=0.48.0'
+    strawberry-graphql: '>=0.315.3'
+    tifffile: '*'
     typer: '*'
+    uvicorn: '*'
     watchfiles: '*'
     websockets: '*'
     xarray: '*'
+    zarr: '*'
     zstandard: '*'
   url: https://files.pythonhosted.org/packages/7d/70/85966182bc5fd7a5edd63290849ee4b7ebba8f61375780b782b1427f0bed/tiled-0.2.18-py3-none-any.whl
   hash:
@@ -3746,6 +4162,34 @@ package:
   url: https://files.pythonhosted.org/packages/92/9d/c4e665119135114480843e7ab388fa94d8480650450e6f8e26b70d323a4c/urllib3-2.8.0-py3-none-any.whl
   hash:
     sha256: 0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3
+  category: main
+  optional: false
+- name: uvicorn
+  version: 0.54.0
+  manager: pip
+  platform: linux-64
+  dependencies:
+    click: '>=7.0'
+    h11: '>=0.8'
+    httptools: '>=0.8.0'
+    python-dotenv: '>=0.13'
+    pyyaml: '>=5.1'
+    uvloop: '>=0.15.1'
+    watchfiles: '>=0.20'
+    websockets: '>=13.0'
+  url: https://files.pythonhosted.org/packages/38/0c/b54a4fdd7f90a3af8b02ebc9ce6712c2c208b7926a2f7bad95c33ebbe943/uvicorn-0.54.0-py3-none-any.whl
+  hash:
+    sha256: 505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf
+  category: main
+  optional: false
+- name: uvloop
+  version: 0.23.0
+  manager: pip
+  platform: linux-64
+  dependencies: {}
+  url: https://files.pythonhosted.org/packages/1e/20/57d63c44d32326878fcad5c63854afc9deb394ed95673c1b1a429178c79d/uvloop-0.23.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+  hash:
+    sha256: 31e0cf90bc8fd88784f6802cdba968a51fb1aec1cc3feec74d862b2d371d1330
   category: main
   optional: false
 - name: virtualenv
