@@ -88,19 +88,30 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Cached Python ${{ matrix.python-version }} environment
+      - name: Set up conda-lock
         if: matrix.experimental != true
         uses: mamba-org/setup-micromamba@v3
         with:
-          environment-file: ci/conda-lock-${{ matrix.python-version }}.yml
-          environment-name: micromamba-test-env-py-${{ matrix.python-version }}
-          cache-environment: true
-          cache-environment-key: env-key-${{ matrix.python-version }}-${{ hashFiles(format('ci/conda-lock-{0}.yml', matrix.python-version)) }}
+          environment-name: lock-tools
+          create-args: conda-lock
+          generate-run-shell: false
           condarc: |
             channels:
               - conda-forge
               - nodefaults
             channel-priority: flexible
+
+      - name: Install locked Python environment
+        if: matrix.experimental != true
+        run: |
+          set -euo pipefail
+          prefix="${RUNNER_TEMP}/hklpy2-env-${{ matrix.python-version }}"
+          micromamba run -n lock-tools conda-lock install \
+            --micromamba \
+            --prefix "${prefix}" \
+            "ci/conda-lock-${{ matrix.python-version }}.yml"
+          echo "${prefix}/bin" >> "${GITHUB_PATH}"
+          echo "CONDA_PREFIX=${prefix}" >> "${GITHUB_ENV}"
 
       - name: Experimental Python ${{ matrix.python-version }} environment
         if: matrix.experimental == true
@@ -143,9 +154,6 @@ jobs:
           echo "Waiting for EPICS IOC to start..."
           sleep 15
           echo "EPICS IOC should be running now."
-
-      - name: Install locked Python dependencies
-        run: python ci/install_locked_pip.py ci/conda-lock-${{ matrix.python-version }}.yml
 
       - name: Install source without dependency resolution
         run: |
