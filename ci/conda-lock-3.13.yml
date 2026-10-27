@@ -7,9 +7,9 @@
 # Install this environment as "YOURENV" with:
 #     conda-lock install -n YOURENV conda-lock-3.13.yml
 # To update a single package to the latest version compatible with the version constraints in the source:
-#     conda-lock lock --md input_sha --lockfile conda-lock-3.13.yml --update PACKAGE
+#     conda-lock lock --md input_md5 --md input_sha --lockfile conda-lock-3.13.yml --update PACKAGE
 # To re-solve the entire environment, e.g. after changing a version constraint in the source file:
-#     conda-lock --md input_sha-f environment-3.13.yml --lockfile conda-lock-3.13.yml
+#     conda-lock --md input_md5 --md input_sha-f environment-3.13.yml --lockfile conda-lock-3.13.yml
 version: 1
 metadata:
   content_hash:
@@ -23,6 +23,7 @@ metadata:
   - environment-3.13.yml
   inputs_metadata:
     environment-3.13.yml:
+      md5: fa70fe89604254790497a479572e5a17
       sha256: fbf3c906fcea53552dbdc008d2ae546f942c0b00fedd759086c8ef22e8cc3f38
 package:
 - name: _openmp_mutex

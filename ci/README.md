@@ -39,7 +39,8 @@ for input in ci/environment-*.yml; do
         --file "$input" \
         --lockfile "ci/conda-lock-${version}.yml" \
         --conda mamba \
-        --md input_sha
+        --md input_sha \
+        --md input_md5
 done
 ```
 
