@@ -89,15 +89,23 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Cached Python ${{ matrix.python-version }} environment
+        if: matrix.experimental != true
         uses: mamba-org/setup-micromamba@v3
         with:
-          cache-environment: ${{ matrix.experimental != true }}
-          cache-environment-key: ${{ matrix.experimental != true && format('env-key-{0}', matrix.python-version) || '' }}
+          environment-file: ci/conda-lock-${{ matrix.python-version }}.yml
+          environment-name: micromamba-test-env-py-${{ matrix.python-version }}
+          cache-environment: true
+          cache-environment-key: env-key-${{ matrix.python-version }}-${{ hashFiles(format('ci/conda-lock-{0}.yml', matrix.python-version)) }}
           condarc: |
             channels:
               - conda-forge
               - nodefaults
             channel-priority: flexible
+
+      - name: Experimental Python ${{ matrix.python-version }} environment
+        if: matrix.experimental == true
+        uses: mamba-org/setup-micromamba@v3
+        with:
           environment-name: micromamba-test-env-py-${{ matrix.python-version }}
           create-args: >-
             bson
@@ -110,6 +118,11 @@ jobs:
             setuptools-scm
             tiled
             yaml
+          condarc: |
+            channels:
+              - conda-forge
+              - nodefaults
+            channel-priority: flexible
 
       - name: Cache pip (per matrix)
         uses: actions/cache@v6
@@ -131,13 +144,10 @@ jobs:
           sleep 15
           echo "EPICS IOC should be running now."
 
-      - name: Install source and requirements (fast, allow pre)
+      - name: Install source without dependency resolution
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          pip install --pre tiled
-          pip install --pre -e .[all]
-
+          pip install --no-deps -e .
       - name: Diagnostic
         run: |
           micromamba info || true
@@ -157,9 +167,6 @@ jobs:
         run: |
           set -vxeuo pipefail
           mkdir -p reports
-
-          # ensure correct coverage
-          python -m pip install --upgrade --force-reinstall coverage
 
           # run tests under coverage; keep exit code handling so we can still gather reports
           python -m coverage \
@@ -190,9 +197,6 @@ jobs:
         if: failure() || always()
         run: |
           python -c "import coverage, sys; print('coverage:', getattr(coverage, '__file__', 'no-file'), getattr(coverage, '__version__', 'no-version'))"
-
-      - name: Install (force reinstall) coveralls
-        run: python -m pip install --upgrade --force-reinstall coveralls
 
       - name: Upload test artifacts (junit, coverage)
         if: always()

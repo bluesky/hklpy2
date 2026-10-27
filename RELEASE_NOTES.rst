@@ -35,6 +35,11 @@ describe future plans.
 
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
 
+    Maintenance
+    -----------
+
+    * Make supported CI environments reproducible. (:issue:`432`)
+
 1.0.0
 #####
 
