@@ -76,13 +76,13 @@ Two pickers are provided:
 
    * - Function
      - Behavior
-   * - :func:`~hklpy2.misc.pick_first_solution` *(default)*
+   * - :func:`~hklpy2.utils.pick_first_solution` *(default)*
      - Returns the first solution in the list as supplied by the solver.
-   * - :func:`~hklpy2.misc.pick_closest_solution`
+   * - :func:`~hklpy2.utils.pick_closest_solution`
      - Returns the solution whose real-axis values are closest (RMS distance)
        to the current motor positions.
 
-The default is :func:`~hklpy2.misc.pick_first_solution`.
+The default is :func:`~hklpy2.utils.pick_first_solution`.
 
 Check the current picker
 -------------------------
@@ -97,7 +97,7 @@ Switch to pick_closest_solution at runtime
 
 Assign directly to :attr:`~hklpy2.diffract.DiffractometerBase._forward_solution`::
 
-    >>> from hklpy2.misc import pick_closest_solution
+    >>> from hklpy2.utils import pick_closest_solution
     >>> e4cv._forward_solution = pick_closest_solution
 
 Switch back::
@@ -114,13 +114,13 @@ Pass ``forward_solution_function`` as a dotted name string to
     >>> import hklpy2
     >>> e4cv = hklpy2.creator(
     ...     name="e4cv",
-    ...     forward_solution_function="hklpy2.misc.pick_closest_solution",
+    ...     forward_solution_function="hklpy2.utils.pick_closest_solution",
     ... )
 
 Or pass a callable directly to
 :class:`~hklpy2.diffract.DiffractometerBase.__init__` when subclassing::
 
-    >>> from hklpy2.misc import pick_closest_solution
+    >>> from hklpy2.utils import pick_closest_solution
     >>> e4cv = MyDiffractometerClass(
     ...     "",
     ...     name="e4cv",
@@ -171,8 +171,8 @@ All pickers must follow this interface:
 
 .. seealso::
 
-    :func:`~hklpy2.misc.pick_first_solution`,
-    :func:`~hklpy2.misc.pick_closest_solution` — built-in pickers.
+    :func:`~hklpy2.utils.pick_first_solution`,
+    :func:`~hklpy2.utils.pick_closest_solution` — built-in pickers.
 
     :attr:`~hklpy2.diffract.DiffractometerBase._forward_solution` — the
     attribute that holds the active picker.

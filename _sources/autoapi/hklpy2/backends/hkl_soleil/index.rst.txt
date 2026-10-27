@@ -265,6 +265,12 @@ Module Contents
 
       Compute list of solutions(reals) from pseudos (hkl -> [angles]).
 
+      The underlying geometry engine returns a bounded set of equivalent
+      solutions, ordered using the current real-axis geometry.  The returned
+      order can therefore change when ``set_reals()`` is given a different
+      starting position.  This method preserves that order making no
+      assumption about the selection of a specific solution from the set.
+
 
 
    .. py:method:: geometries() -> list[str]
