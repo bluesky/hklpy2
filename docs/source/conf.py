@@ -82,6 +82,7 @@ autoapi_ignore = [
     "**/docs/*",
     "**/examples/*",
     "**/scripts/**",
+    "**/ci/**",
     "*tests*",
     "**/conftest.py",
     "**/_version.py",

@@ -144,6 +144,9 @@ jobs:
           sleep 15
           echo "EPICS IOC should be running now."
 
+      - name: Install locked Python dependencies
+        run: python ci/install_locked_pip.py ci/conda-lock-${{ matrix.python-version }}.yml
+
       - name: Install source without dependency resolution
         run: |
           set -euo pipefail

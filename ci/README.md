@@ -52,6 +52,14 @@ conda activate hklpy2-ci
 pip install --no-deps -e .
 ```
 
-The `pip install --no-deps -e .` step is required for local use; it installs
-this checkout without changing the locked dependencies. CI performs the same
-installation automatically after creating the locked environment.
+The lockfile's pip packages must also be installed before the checkout:
+
+```bash
+python ci/install_locked_pip.py ci/conda-lock-3.13.yml
+pip install --no-deps -e .
+```
+
+The lockfile installer uses the exact wheel URLs recorded in the lockfile and
+does not resolve new dependencies. The final `pip install --no-deps -e .` step
+installs this checkout without changing the locked dependencies. CI performs
+both installation steps automatically.
