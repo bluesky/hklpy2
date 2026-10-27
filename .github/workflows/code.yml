@@ -111,9 +111,11 @@ jobs:
             --micromamba \
             --prefix "${prefix}" \
             "ci/conda-lock-${{ matrix.python-version }}.yml"
+          epics_bin="${prefix}/epics/bin/linux-x86_64"
           echo "${prefix}/bin" >> "${GITHUB_PATH}"
+          echo "${epics_bin}" >> "${GITHUB_PATH}"
           echo "CONDA_PREFIX=${prefix}" >> "${GITHUB_ENV}"
-          echo "PATH=${prefix}/bin:${PATH}" >> "${GITHUB_ENV}"
+          echo "PATH=${epics_bin}:${prefix}/bin:${PATH}" >> "${GITHUB_ENV}"
 
       - name: Experimental Python ${{ matrix.python-version }} environment
         if: matrix.experimental == true
