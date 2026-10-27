@@ -95,6 +95,7 @@ jobs:
           environment-name: lock-tools
           create-args: conda-lock
           generate-run-shell: false
+          init-shell: none
           condarc: |
             channels:
               - conda-forge
@@ -112,6 +113,7 @@ jobs:
             "ci/conda-lock-${{ matrix.python-version }}.yml"
           echo "${prefix}/bin" >> "${GITHUB_PATH}"
           echo "CONDA_PREFIX=${prefix}" >> "${GITHUB_ENV}"
+          echo "PATH=${prefix}/bin:${PATH}" >> "${GITHUB_ENV}"
 
       - name: Experimental Python ${{ matrix.python-version }} environment
         if: matrix.experimental == true
