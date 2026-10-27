@@ -40,6 +40,7 @@ from .typing import NamedFloatDict
 from .utils import _SolverDirty
 from .utils import axes_to_dict
 from .utils import convert_units
+from .utils import roundoff
 from .utils import unique_name
 
 __all__ = ["Core"]
@@ -727,7 +728,11 @@ class Core:
                         reals[name] = constraint.apply_cut(reals[name])
 
                 if self.constraints.valid(**reals):
-                    solutions.append(self.diffractometer.RealPosition(**reals))
+                    user_reals = {
+                        axis: roundoff(value, self.diffractometer.digits)
+                        for axis, value in reals.items()
+                    }
+                    solutions.append(self.diffractometer.RealPosition(**user_reals))
                 else:
                     # Log which constraint(s) rejected this solution.
                     for name, constraint in self.constraints.items():

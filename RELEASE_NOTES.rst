@@ -30,6 +30,11 @@ describe future plans.
 
     Release expected 2026-Q4.
 
+    Fixes
+    -----
+
+    * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
+
 1.0.0
 #####
 
