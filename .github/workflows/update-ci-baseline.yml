@@ -1,0 +1,70 @@
+name: Update CI dependency baseline
+
+on:
+  schedule:
+    - cron: "17 04 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Refresh conda lockfiles
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Set up mamba
+        uses: mamba-org/setup-micromamba@v3
+        with:
+          environment-name: lock-tools
+          create-args: conda-lock
+          condarc: |
+            channels:
+              - conda-forge
+              - nodefaults
+            channel-priority: flexible
+
+      - name: Create missing environment inputs
+        run: python ci/update_environment_files.py
+        shell: micromamba-shell {0}
+
+      - name: Regenerate lockfiles
+        env:
+          POETRY_KEYRING_ENABLED: "false"
+          PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
+        run: |
+          set -euo pipefail
+          for input in ci/environment-*.yml; do
+            version=${input#ci/environment-}
+            version=${version%.yml}
+            conda-lock lock \
+              --file "$input" \
+              --lockfile "ci/conda-lock-${version}.yml" \
+              --conda mamba \
+              --md input_sha \
+              --md input_md5
+          done
+        shell: micromamba-shell {0}
+
+      - name: Open update pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "maint #432 update CI dependency baseline"
+          title: "maint #432 update CI dependency baseline"
+          body: |
+            - updates the supported CI dependency lockfiles
+            - runs the supported Python test matrix before merging
+
+            Agent: OpenCode (gpt56luna)
+          branch: automation/update-ci-baseline
+          delete-branch: true
+          labels: dependencies

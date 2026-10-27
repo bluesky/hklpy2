@@ -88,16 +88,41 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Cached Python ${{ matrix.python-version }} environment
+      - name: Set up conda-lock
+        if: matrix.experimental != true
         uses: mamba-org/setup-micromamba@v3
         with:
-          cache-environment: ${{ matrix.experimental != true }}
-          cache-environment-key: ${{ matrix.experimental != true && format('env-key-{0}', matrix.python-version) || '' }}
+          environment-name: lock-tools
+          create-args: conda-lock
+          generate-run-shell: false
+          init-shell: none
           condarc: |
             channels:
               - conda-forge
               - nodefaults
             channel-priority: flexible
+
+      - name: Install locked Python environment
+        if: matrix.experimental != true
+        run: |
+          set -euo pipefail
+          prefix="${RUNNER_TEMP}/hklpy2-env-${{ matrix.python-version }}"
+          micromamba run -n lock-tools conda-lock install \
+            --micromamba \
+            --prefix "${prefix}" \
+            "ci/conda-lock-${{ matrix.python-version }}.yml"
+          epics_bin=$(dirname "$(find "${prefix}" -type f -name caget -print -quit)")
+          test -x "${epics_bin}/caget"
+          test -x "${epics_bin}/softIoc"
+          echo "${prefix}/bin" >> "${GITHUB_PATH}"
+          echo "${epics_bin}" >> "${GITHUB_PATH}"
+          echo "CONDA_PREFIX=${prefix}" >> "${GITHUB_ENV}"
+          echo "PATH=${epics_bin}:${prefix}/bin:${PATH}" >> "${GITHUB_ENV}"
+
+      - name: Experimental Python ${{ matrix.python-version }} environment
+        if: matrix.experimental == true
+        uses: mamba-org/setup-micromamba@v3
+        with:
           environment-name: micromamba-test-env-py-${{ matrix.python-version }}
           create-args: >-
             bson
@@ -110,6 +135,11 @@ jobs:
             setuptools-scm
             tiled
             yaml
+          condarc: |
+            channels:
+              - conda-forge
+              - nodefaults
+            channel-priority: flexible
 
       - name: Cache pip (per matrix)
         uses: actions/cache@v6
@@ -131,13 +161,10 @@ jobs:
           sleep 15
           echo "EPICS IOC should be running now."
 
-      - name: Install source and requirements (fast, allow pre)
+      - name: Install source without dependency resolution
         run: |
           set -euo pipefail
-          python -m pip install --upgrade pip
-          pip install --pre tiled
-          pip install --pre -e .[all]
-
+          pip install --no-deps -e .
       - name: Diagnostic
         run: |
           micromamba info || true
@@ -157,9 +184,6 @@ jobs:
         run: |
           set -vxeuo pipefail
           mkdir -p reports
-
-          # ensure correct coverage
-          python -m pip install --upgrade --force-reinstall coverage
 
           # run tests under coverage; keep exit code handling so we can still gather reports
           python -m coverage \
@@ -190,9 +214,6 @@ jobs:
         if: failure() || always()
         run: |
           python -c "import coverage, sys; print('coverage:', getattr(coverage, '__file__', 'no-file'), getattr(coverage, '__version__', 'no-version'))"
-
-      - name: Install (force reinstall) coveralls
-        run: python -m pip install --upgrade --force-reinstall coveralls
 
       - name: Upload test artifacts (junit, coverage)
         if: always()
