@@ -130,14 +130,6 @@ force-single-line = true
 # Match isort's force_single_line behavior for imports
 skip-magic-trailing-comma = true
 
-[tool.coverage.run]
-# Do not measure coverage of the test files themselves; only measure
-# production code under src/hklpy2 (excluding the tests/ subdirectories).
-omit = [
-    "*/tests/*",
-    "*/tests/**",
-]
-
 [tool.coverage.report]
 fail_under = 100
 # Exclude lines that are genuinely untestable or unreachable in the test
@@ -147,6 +139,56 @@ exclude_also = [
     "^\\s*if TYPE_CHECKING:",
     "^\\s*\\.\\.\\.\\s*$",
 ]
+
+[tool.coverage.run]
+# Do not measure coverage of the test files themselves; only measure
+# production code under src/hklpy2 (excluding the tests/ subdirectories).
+omit = [
+    "*/tests/*",
+    "*/tests/**",
+]
+
+[tool.pixi.dependencies]
+bson = "*"
+epics-base = "*"
+hkl = "*"
+pyepics = "*"
+pytest = "*"
+pyyaml = "*"
+"ruamel.yaml" = "*"
+setuptools-scm = "*"
+tiled = "*"
+yaml = "*"
+
+[tool.pixi.environments]
+py311 = { features = ["py311"], solve-group = "py311" }
+py312 = { features = ["py312"], solve-group = "py312" }
+py313 = { features = ["py313"], solve-group = "py313" }
+py314 = { features = ["py314"], solve-group = "py314" }
+py315-dev = { features = ["py315-dev"], solve-group = "py315-dev" }
+
+[tool.pixi.feature.py311.dependencies]
+python = "3.11.*"
+
+[tool.pixi.feature.py312.dependencies]
+python = "3.12.*"
+
+[tool.pixi.feature.py313.dependencies]
+python = "3.13.*"
+
+[tool.pixi.feature.py314.dependencies]
+python = "3.14.*"
+
+[tool.pixi.feature.py315-dev.dependencies]
+python = "3.15.*"
+
+[tool.pixi.pypi-dependencies]
+hklpy2 = { path = ".", editable = true, extras = ["all"] }
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+requires-pixi = ">=0.55.0"
 
 [tool.pytest.ini_options]
 addopts = ["--import-mode=importlib", "-m", "not benchmark"]
