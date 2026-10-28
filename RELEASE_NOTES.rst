@@ -35,6 +35,12 @@ describe future plans.
 
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
 
+    Maintenance
+    -----------
+
+    * Migrate CI to locked Pixi environments with scheduled dependency updates. (:issue:`432`, :issue:`434`)
+
+
 1.0.0
 #####
 
