@@ -30,7 +30,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "bluesky_tiled_plugins",
+  "bluesky_tiled_plugins>=2.0.12",
   "bluesky",
   "cytoolz",
   "Deprecated",
@@ -151,22 +151,28 @@ omit = [
 [tool.pixi.dependencies]
 bson = "*"
 epics-base = "*"
+greenlet = "*"
 hkl = "*"
 pyepics = "*"
 pytest = "*"
 pyyaml = "*"
 "ruamel.yaml" = "*"
 setuptools-scm = "*"
-tiled = "*"
 yaml = "*"
 
 [tool.pixi.environments]
-default = { features = ["py313"], solve-group = "py313" }
-py311 = { features = ["py311"], solve-group = "py311" }
-py312 = { features = ["py312"], solve-group = "py312" }
-py313 = { features = ["py313"], solve-group = "py313" }
-py314 = { features = ["py314"], solve-group = "py314" }
+default = { features = ["py313", "tiled-conda"], solve-group = "py313" }
+py311 = { features = ["py311", "tiled-conda"], solve-group = "py311" }
+py312 = { features = ["py312", "tiled-conda"], solve-group = "py312" }
+py313 = { features = ["py313", "tiled-conda"], solve-group = "py313" }
+py314 = { features = ["py314", "tiled-pypi"], solve-group = "py314" }
 py315-dev = { features = ["py315-dev"], solve-group = "py315-dev" }
+
+[tool.pixi.feature.tiled-conda.dependencies]
+tiled = "0.2.20"
+
+[tool.pixi.feature.tiled-pypi.pypi-dependencies]
+tiled = { version = "==0.2.20", extras = ["server"] }
 
 [tool.pixi.feature.py311.dependencies]
 python = "3.11.*"
