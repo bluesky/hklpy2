@@ -103,6 +103,15 @@ jobs:
           activate-environment: true
           locked: true
 
+      - name: Diagnostic
+        run: |
+          set -euo pipefail
+          pixi info
+          pixi list -e "${{ matrix.pixi-environment }}"
+          python --version
+          python -c "import coverage, epics, hklpy2; solver = hklpy2.get_solver('hkl_soleil'); print('coverage:', coverage.__version__); print('epics:', epics.__file__); print('hklpy2:', hklpy2.__file__); print('hkl_soleil:', solver)"
+          command -v caget cainfo softIoc caRepeater
+
       - name: Start EPICS softIoc
         run: |
           set -euo pipefail
@@ -117,22 +126,11 @@ jobs:
           sleep 15
           echo "EPICS IOC should be running now."
 
-      - name: Diagnostic
-        run: |
-          set -euo pipefail
-          pixi info
-          pixi list -e "${{ matrix.pixi-environment }}"
-          python --version
-          python -c "import coverage, epics, hklpy2; solver = hklpy2.get_solver('hkl_soleil'); print('coverage:', coverage.__version__); print('epics:', epics.__file__); print('hklpy2:', hklpy2.__file__); print('hkl_soleil:', solver)"
-          command -v caget cainfo softIoc caRepeater
-
       - name: Check on the EPICS IOC
         run: |
           set -euo pipefail
           echo "info hklpy2:wavelength = $(cainfo hklpy2:wavelength)"
-          caget hklpy2:BaseVersion
-          caget hklpy2:energy.{NAME,VAL,EGU,DESC}
-          caget hklpy2:wavelength.{NAME,VAL,EGU,DESC}
+          caget hklpy2:BaseVersion, hklpy2:{energy,wavelength}.{NAME,VAL,EGU,DESC}
 
       - name: Run tests with pytest & coverage
         shell: bash -l {0}
