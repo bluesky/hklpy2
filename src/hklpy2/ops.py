@@ -227,7 +227,7 @@ class Core:
         from .devices import describe_aux
 
         header: ConfigHeaderDict = {
-            "datetime": str(datetime.datetime.now(datetime.timezone.utc)),
+            "datetime": str(datetime.datetime.now(datetime.UTC)),
             "hklpy2_version": __version__,
             "python_class": self.diffractometer.__class__.__name__,
             "config_schema_version": CONFIG_SCHEMA_VERSION,

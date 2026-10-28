@@ -33,8 +33,8 @@ from __future__ import annotations
 import pathlib
 import re
 import sys
+from datetime import UTC
 from datetime import datetime
-from datetime import timezone
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -52,7 +52,7 @@ TARGET_FILES: list[pathlib.Path] = [
 # Matches e.g. "2026-2026" and captures the start year and old end year.
 YEAR_RANGE_PATTERN = re.compile(r"(\d{4})-(\d{4})")
 
-CURRENT_YEAR = str(datetime.now(timezone.utc).year)
+CURRENT_YEAR = str(datetime.now(UTC).year)
 
 # ---------------------------------------------------------------------------
 # Helpers
