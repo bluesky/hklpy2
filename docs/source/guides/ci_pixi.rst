@@ -1,8 +1,8 @@
 .. _guide.ci_pixi:
 
-====================
+=====================
 Maintain CI with Pixi
-====================
+=====================
 
 The unit-test workflow uses Pixi to keep its supported dependency environments
 reproducible. The committed ``pixi.lock`` file is the CI baseline.
