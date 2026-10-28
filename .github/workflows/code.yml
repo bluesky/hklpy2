@@ -118,9 +118,12 @@ jobs:
 
       - name: Diagnostic
         run: |
+          set -euo pipefail
           pixi info
           pixi list -e "${{ matrix.pixi-environment }}"
           python --version
+          python -c "import coverage, epics, hklpy2; solver = hklpy2.get_solver('hkl_soleil'); print('coverage:', coverage.__version__); print('epics:', epics.__file__); print('hklpy2:', hklpy2.__file__); print('hkl_soleil:', solver)"
+          command -v caget cainfo softIoc caRepeater
 
       - name: Check on the EPICS IOC
         run: |
@@ -136,8 +139,8 @@ jobs:
           set -vxeuo pipefail
           mkdir -p reports
 
-          # ensure correct coverage
-          python -m pip install --upgrade --force-reinstall coverage
+          # Run the locked coverage installation from the Pixi environment.
+          python -m coverage --version
 
           # run tests under coverage; keep exit code handling so we can still gather reports
           python -m coverage \
@@ -169,8 +172,6 @@ jobs:
         run: |
           python -c "import coverage, sys; print('coverage:', getattr(coverage, '__file__', 'no-file'), getattr(coverage, '__version__', 'no-version'))"
 
-      - name: Install (force reinstall) coveralls
-        run: python -m pip install --upgrade --force-reinstall coveralls
 
       - name: Upload test artifacts (junit, coverage)
         if: always()
@@ -202,7 +203,7 @@ jobs:
         run: |
           set -euo pipefail
           apt-get -y update && apt-get install -y git
-          python3 -m pip install --no-cache-dir --upgrade pip coveralls
+          python3 -m pip install --no-cache-dir "coveralls==4.1.0"
 
       - name: Finish coveralls
         env:
