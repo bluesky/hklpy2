@@ -34,6 +34,7 @@ describe future plans.
     -----
 
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
+    * Preserve UB across inverse calculations for subsequent forward calculations. (:issue:`435`)
 
     Maintenance
     -----------

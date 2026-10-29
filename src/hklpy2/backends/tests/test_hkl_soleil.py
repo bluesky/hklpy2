@@ -223,6 +223,53 @@ def test_aps_polar_forward_depends_on_start_position(parms, context):
             )
 
 
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {
+                "reals": {
+                    "tau": 0.0,
+                    "mu": 9.89806867221,
+                    "chi": 113.105327243248,
+                    "phi": 0.00173136532,
+                    "gamma": 9.42401385126,
+                    "delta": -0.00013200263,
+                },
+                "hkl": {"h": 1.0, "k": 1.0, "l": 0.0},
+            },
+            does_not_raise(),
+            id="inverse preserves UB for forward",
+        )
+    ],
+)
+def test_inverse_preserves_ub_for_forward(parms, context):
+    """The inverse transform must not invalidate a subsequent forward."""
+    with context:
+        solver = hkl_soleil.HklSolver("APS POLAR", engine="hkl")
+        solver.mode = "4-circles constant phi horizontal"
+        solver.wavelength = 0.6199478461064903
+        solver.sample = {
+            "name": "inverse-forward-ub",
+            "lattice": {
+                "a": 5.38,
+                "b": 5.467,
+                "c": 14.066,
+                "alpha": 90.0,
+                "beta": 101.0,
+                "gamma": 90.0,
+            },
+            "order": [],
+            "reflections": [],
+        }
+        solver.calculate_UB(APS_POLAR_R110, APS_POLAR_R004)
+        ub = solver.UB
+        solver.inverse(parms["reals"])
+        assert np.allclose(solver.UB, ub)
+        solutions = solver.forward(parms["hkl"])
+        assert solutions
+
+
 def test_HklSolver():
     solver = hkl_soleil.HklSolver(geometry="E4CV", engine="hkl")
     assert solver.wavelength == 1.54

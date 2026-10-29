@@ -132,45 +132,6 @@ jobs:
           echo "info hklpy2:wavelength = $(cainfo hklpy2:wavelength)"
           caget hklpy2:BaseVersion hklpy2:{energy,wavelength}.{NAME,VAL,EGU,DESC}
 
-      - name: Solver state diagnostic
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import importlib.metadata
-          import traceback
-          from pathlib import Path
-
-          import numpy as np
-          from hklpy2.diffract import creator
-
-          print("python:", importlib.metadata.version("hklpy2"))
-          print("numpy:", np.__version__)
-          diffractometer = creator()
-          diffractometer.restore(Path("src/hklpy2/tests/e4cv_orient.yml"))
-          diffractometer.core.mode = "psi_constant"
-          pseudos = {"h": 1, "k": 1, "l": 0}
-          extras = {"h2": 0, "k2": 1, "l2": 1, "psi": 0}
-          diffractometer.core.extras = extras
-          diffractometer.core.update_solver()
-          solver = diffractometer.core.solver
-          print("solver:", solver.version)
-          print("mode:", diffractometer.core.mode)
-          print("reals:", diffractometer.real_position)
-          print("extras:", solver.extras)
-          try:
-              raw = solver.forward(pseudos)
-              print("raw solutions:", raw)
-          except Exception:
-              print("raw solver forward failed:")
-              traceback.print_exc()
-          try:
-              filtered = diffractometer.core.forward(pseudos)
-              print("filtered solutions:", filtered)
-          except Exception:
-              print("Core forward failed:")
-              traceback.print_exc()
-          PY
-
       - name: Run tests with pytest & coverage
         shell: bash -l {0}
         run: |
