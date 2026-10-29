@@ -34,6 +34,14 @@ describe future plans.
     -----
 
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
+    * Preserve UB across ``HklSolver.inverse()`` for subsequent forward calculations. (:issue:`435`)
+    * Resolve test intermittently raising `NoForwardSolution`. (:issue:`431`)
+
+    Maintenance
+    -----------
+
+    * Migrate CI to locked Pixi environments with scheduled dependency updates. (:issue:`432`, :issue:`434`)
+
 
 1.0.0
 #####

@@ -554,25 +554,32 @@ class HklSolver(SolverBase):
     def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
         """Compute tuple of pseudos from reals (angles -> hkl)."""
         logger.debug("{__name__=} inverse(reals=%r)", reals)
-        if list(reals) != self.real_axis_names:
-            raise ValueError(
-                f"Wrong dictionary keys received: {list(reals)!r}"
-                # .
-                f" Expected: {self.real_axis_names!r}"
+        ub_before = self.UB
+        try:
+            if list(reals) != self.real_axis_names:
+                raise ValueError(
+                    f"Wrong dictionary keys received: {list(reals)!r}"
+                    # .
+                    f" Expected: {self.real_axis_names!r}"
+                )
+
+            self.set_reals(reals)
+
+            # This is the transform: reals -> pseudos  (Odd name for this call!)
+            self._hkl_engine_list.get()
+
+            # Assemble the dictionary
+            result = dict(
+                zip(
+                    self.engine.pseudo_axis_names_get(),
+                    roundoff_list(
+                        self.engine.pseudo_axis_values_get(LIBHKL_USER_UNITS)
+                    ),
+                )
             )
-
-        self.set_reals(reals)
-
-        # This is the transform: reals -> pseudos  (Odd name for this call!)
-        self._hkl_engine_list.get()
-
-        # Assemble the dictionary
-        return dict(
-            zip(
-                self.engine.pseudo_axis_names_get(),
-                roundoff_list(self.engine.pseudo_axis_values_get(LIBHKL_USER_UNITS)),
-            )
-        )
+            return result
+        finally:
+            self.UB = ub_before
 
     @property
     def lattice(self) -> NamedFloatDict:
