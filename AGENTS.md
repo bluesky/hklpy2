@@ -26,7 +26,6 @@ Keep console output concise and useful because the user's console view is limite
 - Summarize long command output and include only the relevant failure or result.
 - Keep the final response focused on changes made, verification performed, and any remaining issue.
 
-
 ## Agent pytest style (for automated agents) - MANDATORY
 
 ---
