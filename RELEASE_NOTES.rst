@@ -34,6 +34,18 @@ describe future plans.
     -----
 
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
+    * Preserve UB across ``HklSolver.inverse()`` for subsequent forward calculations. (:issue:`435`)
+    * Resolve test intermittently raising `NoForwardSolution`. (:issue:`431`)
+
+    Maintenance
+    -----------
+
+    * Move the project baseline to Python 3.11. (:issue:`435`)
+    * Test Python 3.11-3.15, defer 3.16. (:issue:`432`, :issue:`434`)
+    * Use locked Pixi environments for CI.  (:issue:`432`)
+    * Use scheduled dependency updates. (:issue:`432`)
+    * Use Python 3.13 as the default Pixi environment. (:issue:`435`)
+
 
 1.0.0
 #####
