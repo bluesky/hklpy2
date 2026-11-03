@@ -33,6 +33,7 @@ describe future plans.
     Fixes
     -----
 
+    * Include the forward-solution selector in configuration snapshots. (:issue:`428`)
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
 
 1.0.0

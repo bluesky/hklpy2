@@ -252,6 +252,7 @@ class Core:
             "solver": self.solver._metadata,
             "beam": self.diffractometer.beam._asdict(),
             "presets": self._mode_presets,
+            "forward_solution_function": self.diffractometer.forward_solution_function,
         }
 
     def _axes_names_s2d(self, axis_dict: NamedFloatDict) -> NamedFloatDict:
