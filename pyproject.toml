@@ -168,7 +168,9 @@ py311 = { features = ["py311", "tiled-conda"], solve-group = "py311" }
 py312 = { features = ["py312", "tiled-conda"], solve-group = "py312" }
 py313 = { features = ["py313", "tiled-conda"], solve-group = "py313" }
 py314 = { features = ["py314", "tiled-pypi"], solve-group = "py314" }
-py315-dev = { features = ["py315-dev"], solve-group = "py315-dev" }
+py315 = { features = ["py315", "tiled-pypi"], solve-group = "py315" }
+# Re-enable when conda-forge provides Python 3.16. (expected after 2026-11-10)
+# py316-dev = { features = ["py316-dev"], solve-group = "py316-dev" }
 
 [tool.pixi.feature.tiled-conda.dependencies]
 tiled = "==0.2.20"
@@ -188,9 +190,15 @@ python = "3.13.*"
 [tool.pixi.feature.py314.dependencies]
 python = "3.14.*"
 
-[tool.pixi.feature.py315-dev.dependencies]
+[tool.pixi.feature.py315.dependencies]
 python = "3.15.*"
 h5py = "*"
+
+# Re-enable when conda-forge provides Python 3.16.
+# Expected after 2026-11-10.
+# [tool.pixi.feature.py316-dev.dependencies]
+# python = "3.16.*"
+# h5py = "*"
 
 [tool.pixi.pypi-dependencies]
 hklpy2 = { path = ".", editable = true, extras = ["all"] }

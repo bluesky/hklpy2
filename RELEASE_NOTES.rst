@@ -40,8 +40,10 @@ describe future plans.
     Maintenance
     -----------
 
-    * Migrate CI to locked Pixi environments with scheduled dependency updates. (:issue:`432`, :issue:`434`)
     * Move the project baseline to Python 3.11. (:issue:`435`)
+    * Test Python 3.11-3.15, defer 3.16. (:issue:`432`, :issue:`434`)
+    * Use locked Pixi environments for CI.  (:issue:`432`)
+    * Use scheduled dependency updates. (:issue:`432`)
     * Use Python 3.13 as the default Pixi environment. (:issue:`435`)
 
 
