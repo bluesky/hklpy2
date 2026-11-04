@@ -33,6 +33,7 @@ describe future plans.
     Fixes
     -----
 
+    * ``%wa`` displays diffractometer real-axis positions. (:issue:`415`)
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
     * Preserve UB across ``HklSolver.inverse()`` for subsequent forward calculations. (:issue:`435`)
     * Resolve test intermittently raising `NoForwardSolution`. (:issue:`431`)

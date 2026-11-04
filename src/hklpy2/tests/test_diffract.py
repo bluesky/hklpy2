@@ -1363,6 +1363,27 @@ def test_diffractometer_class_factory(specs, context):
         assert isinstance(gonio, DiffractometerBase)
 
 
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {}, does_not_raise(), id="diffractometer label omitted by default"
+        ),
+        pytest.param(
+            {"labels": ["diffractometer"]},
+            does_not_raise(),
+            id="diffractometer accepts explicit label",
+        ),
+    ],
+)
+def test_creator_diffractometer_labels(parms, context):
+    with context:
+        gonio = creator(name="gonio", **parms)
+        expected = {"diffractometer"} if parms else set()
+        assert gonio._ophyd_labels_ == expected
+        assert gonio.omega._ophyd_labels_ == {"motors"}
+
+
 def test_wh_virtual_issue_114():
     base = diffractometer_class_factory()
 
