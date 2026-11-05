@@ -424,6 +424,10 @@ def test_set_wavelength(beam_kwargs, wavelength, units, context):
             pytest.skip(f"{exinfo}", allow_module_level=True)
 
         beam = get_diffractometer().beam
+        try:
+            beam.wavelength.wait_for_connection(timeout=0.5)
+        except TimeoutError as exinfo:
+            pytest.skip(f"{exinfo}", allow_module_level=True)
         assert beam.wavelength.connected
 
         set_wavelength(wavelength, units=units)

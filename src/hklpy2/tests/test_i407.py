@@ -168,6 +168,35 @@ def test_standin_solver_mode_flushed_on_export(parms, context, _patched_solvers)
         pytest.param(
             {},
             does_not_raise(),
+            id="first configuration export flushes lazy solver state",
+        )
+    ],
+)
+def test_first_configuration_export_flushes_lazy_state(
+    parms, context, _patched_solvers
+):
+    """The first Core configuration operation synchronizes a new solver."""
+    with context:
+        sim = creator(
+            name="standin407_initial",
+            solver=_StandInSolver407.name,
+            geometry="STANDIN407",
+        )
+        assert sim.core._solver_dirty
+        assert sim.core.solver.sample is None
+
+        cfg = sim.configuration
+
+        assert cfg["solver"]["mode"] == sim.core.mode
+        assert sim.core.solver.sample is not None
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {},
+            does_not_raise(),
             id="clean bitfield: snapshot does not re-push to solver",
         )
     ],
