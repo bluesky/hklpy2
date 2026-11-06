@@ -1103,6 +1103,10 @@ class Core:
         else:
             self._solver_dirty |= flag
 
+    def _wavelength_updated(self, _value: bool) -> None:
+        """Mark only the solver wavelength as needing synchronization."""
+        self.request_solver_update(_SolverDirty.WAVELENGTH)
+
     @property
     def _solver_needs_update(self) -> bool:
         """

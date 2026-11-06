@@ -212,7 +212,7 @@ class DiffractometerBase(PseudoPositioner):
         if len(reals) == 0:
             reals = [axis.attr_name for axis in self._real]
         self.core.assign_axes(pseudos, reals)
-        self.beam.wavelength_updated_func = self.core.request_solver_update
+        self.beam.wavelength_updated_func = self.core._wavelength_updated
 
         for attr in self.auxiliary_axis_names:  # auxiliary
             component = getattr(self, attr)

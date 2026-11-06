@@ -33,6 +33,7 @@ describe future plans.
     Fixes
     -----
 
+    * Avoid rebuilding solver samples after wavelength changes. (:issue:`436`)
     * Ensure *lazy* EPICS wavelength reads. (:issue:`430`)
     * Include the forward-solution selector in configuration snapshots. (:issue:`428`)
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
