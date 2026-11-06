@@ -252,6 +252,7 @@ class Core:
             "solver": self.solver._metadata,
             "beam": self.diffractometer.beam._asdict(),
             "presets": self._mode_presets,
+            "forward_solution_function": self.diffractometer.forward_solution_function,
         }
 
     def _axes_names_s2d(self, axis_dict: NamedFloatDict) -> NamedFloatDict:
@@ -1234,6 +1235,10 @@ class Core:
         """Return table of solver's geometry (modes, axes).."""
         return self.solver.summary
 
+    @versionchanged(
+        version="1.0.1",
+        reason="Defer the initial solver synchronization until solver state is needed.",
+    )
     def set_solver(self, name: str, geometry: str, **kwargs: dict) -> SolverBase:
         """
         Create an instance of the backend |solver| library and geometry.
@@ -1258,7 +1263,7 @@ class Core:
         self._extras = {
             k: DEFAULT_EXTRA_VALUE for k in self.solver.all_extra_axis_names
         }
-        self.update_solver()
+        self.request_solver_update(True)
         return self._solver
 
     def standardize_pseudos(self, pseudos: AnyAxesType) -> AxesDict:

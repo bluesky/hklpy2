@@ -624,6 +624,7 @@ def test__details(geometry):
     diffractometer = creator(name="diffractometer", geometry=geometry)
     assert diffractometer is not None
 
+    diffractometer.core.update_solver()
     review = diffractometer.core.solver._details
     assert isinstance(review, dict)
     keys = [

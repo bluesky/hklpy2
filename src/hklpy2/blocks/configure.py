@@ -24,7 +24,7 @@ from ..typing import KeyValueMap
 logger = logging.getLogger(__name__)
 
 
-CONFIG_SCHEMA_VERSION: int = 2
+CONFIG_SCHEMA_VERSION: int = 3
 """
 Integer revision of the configuration file schema written by
 :meth:`~hklpy2.ops.Core._asdict` and validated by
@@ -38,6 +38,9 @@ that older readers might mishandle.
    (``{"name", "category", ...}``) rather than a flat list of names.
    The flat-list form is still accepted on read for backward
    compatibility.  See :issue:`388`.
+
+.. versionchanged:: 1.0.1
+   Version ``3`` adds the configured forward-solution selector.
 """
 
 

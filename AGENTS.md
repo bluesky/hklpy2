@@ -14,6 +14,17 @@ Goal: Short guide for coding agents (auto-formatters, linters, CI bots, test run
 - style information described in pyproject.toml
 - `pre-commit run --all-files`
 
+## Console Output
+
+Keep console output concise and useful because the user's console view is limited.
+
+- Do not narrate routine file reads, searches, tool calls, or obvious next steps.
+- Use brief progress updates only for meaningful discoveries, blockers, edits, or verification results.
+- Avoid repeating information already visible in command output or the final response.
+- Prefer focused commands and quiet/test-summary flags where available.
+- Do not print large diffs, directory listings, logs, or test traces unless needed to diagnose a problem.
+- Summarize long command output and include only the relevant failure or result.
+- Keep the final response focused on changes made, verification performed, and any remaining issue.
 
 ## Agent pytest style (for automated agents) - MANDATORY
 

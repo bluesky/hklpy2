@@ -1367,21 +1367,47 @@ def test_diffractometer_class_factory(specs, context):
     "parms, context",
     [
         pytest.param(
-            {}, does_not_raise(), id="diffractometer label omitted by default"
+            {
+                "calculate": False,
+                "beam_kwargs": {
+                    "class": "hklpy2.incident.EpicsMonochromatorRO",
+                    "prefix": "nonexistent:",
+                    "pv_wavelength": "lambda",
+                    "pv_energy": "energy",
+                    "wavelength_units": "angstrom",
+                    "energy_units": "keV",
+                },
+            },
+            does_not_raise(),
+            id="unavailable beam PV does not block construction",
         ),
         pytest.param(
-            {"labels": ["diffractometer"]},
-            does_not_raise(),
-            id="diffractometer accepts explicit label",
+            {
+                "calculate": True,
+                "beam_kwargs": {
+                    "class": "hklpy2.incident.EpicsMonochromatorRO",
+                    "prefix": "nonexistent:",
+                    "pv_wavelength": "lambda",
+                    "pv_energy": "energy",
+                    "wavelength_units": "angstrom",
+                    "energy_units": "keV",
+                },
+            },
+            pytest.raises(TimeoutError, match=re.escape("nonexistent:lambda")),
+            id="unavailable beam PV fails on first solver calculation",
         ),
     ],
 )
-def test_creator_diffractometer_labels(parms, context):
+def test_unavailable_beam_pv(parms, context):
     with context:
-        gonio = creator(name="gonio", **parms)
-        expected = {"diffractometer"} if parms else set()
-        assert gonio._ophyd_labels_ == expected
-        assert gonio.omega._ophyd_labels_ == {"motors"}
+        gonio = creator(
+            name="gonio", **{k: v for k, v in parms.items() if k != "calculate"}
+        )
+        assert isinstance(gonio, DiffractometerBase)
+        if parms["calculate"]:
+            gonio.forward({"h": 0, "k": 0, "l": 0})
+        else:
+            assert gonio.core._solver_dirty
 
 
 def test_wh_virtual_issue_114():

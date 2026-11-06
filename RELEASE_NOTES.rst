@@ -34,8 +34,10 @@ describe future plans.
     -----
 
     * ``%wa`` displays diffractometer real-axis positions. (:issue:`415`)
+    * Ensure *lazy* EPICS wavelength reads. (:issue:`430`)
+    * Include the forward-solution selector in configuration snapshots. (:issue:`428`)
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
-    * Preserve UB across ``HklSolver.inverse()`` for subsequent forward calculations. (:issue:`435`)
+    * Preserve UB across ``HklSolver.inverse()`` calls. (:issue:`435`)
     * Resolve test intermittently raising `NoForwardSolution`. (:issue:`431`)
 
     Maintenance
