@@ -191,7 +191,9 @@ class DiffractometerBase(PseudoPositioner):
         from .ops import Core
 
         self._backend = None
-        self._forward_solution = forward_solution_function or pick_first_solution
+        self._forward_solution = forward_solution_function or getattr(
+            type(self), "_forward_solution", pick_first_solution
+        )
         self.reals_units = reals_units or INTERNAL_ANGLE_UNITS
 
         self.core = Core(self)
@@ -308,6 +310,23 @@ class DiffractometerBase(PseudoPositioner):
     def configuration(self) -> KeyValueMap:
         """Diffractometer configuration (orientation)."""
         return self.core._asdict()
+
+    @property
+    @versionadded(
+        version="1.0.1",
+        reason="Expose the configured forward-solution selector import path.",
+    )
+    def forward_solution_function(self) -> str:
+        """Import path of the configured forward-solution selector."""
+        selector = self._forward_solution
+        module = getattr(selector, "__module__", None)
+        name = getattr(selector, "__name__", None)
+        if not isinstance(module, str) or not isinstance(name, str):
+            raise TypeError(
+                "The forward-solution selector must be an importable function "
+                "to be included in a configuration."
+            )
+        return f"{module}.{name}"
 
     @configuration.setter
     def configuration(self, config: KeyValueMap) -> None:
@@ -542,6 +561,11 @@ class DiffractometerBase(PseudoPositioner):
             restore_extras=restore_extras,
             restore_presets=restore_presets,
         )
+
+        if "forward_solution_function" in config:
+            from .devices import dynamic_import
+
+            self._forward_solution = dynamic_import(config["forward_solution_function"])
 
         saved_mode = config.get("solver", {}).get("mode")
         if saved_mode is not None:

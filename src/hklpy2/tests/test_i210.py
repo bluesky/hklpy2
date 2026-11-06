@@ -380,7 +380,7 @@ def test_simulator_from_config_auxiliary_axes_roundtrip(tmp_path):
     sim.core.calc_UB(r1, r2)
 
     # Export — auxiliary_axes must appear in the saved config.
-    # Schema v2 (issue #388): record form, not flat list of names.
+    # Schema v3 (issue #428): record form, not flat list of names.
     config_file = tmp_path / "e4cv-analyzer.yml"
     sim.export(str(config_file))
     cfg = yaml.safe_load(config_file.read_text())

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
 Tests for issue #388: round-trip of auxiliary sub-devices (scalar +
-nested ``PseudoPositioner``) through the export / restore schema (v2).
+nested ``PseudoPositioner``) through the export / restore schema (v3).
 """
 
 import re
@@ -22,7 +22,7 @@ from ..run_utils import simulator_from_config
 from .test_diffract import _build_gonio_with_nested_pseudo
 
 # ---------------------------------------------------------------------------
-# Schema-v2 export: describe_aux() and Core._asdict()
+# Schema-v3 export: describe_aux() and Core._asdict()
 # ---------------------------------------------------------------------------
 
 
@@ -72,7 +72,7 @@ def test_describe_aux(parms, context):
         pytest.param(
             {"check": "schema-version-bumped"},
             does_not_raise(),
-            id="schema-version-is-2",
+            id="schema-version-is-3",
         ),
         pytest.param(
             {"check": "aux-axes-is-list-of-records"},
@@ -81,15 +81,15 @@ def test_describe_aux(parms, context):
         ),
     ],
 )
-def test_export_schema_v2(parms, context):
-    """``Core._asdict()`` writes schema v2 with record-form aux axes."""
+def test_export_schema_v3(parms, context):
+    """``Core._asdict()`` writes schema v3 with record-form aux axes."""
     with context:
         gonio = _build_gonio_with_nested_pseudo()
         cfg = gonio.configuration
 
         if parms["check"] == "schema-version-bumped":
             assert cfg["_header"]["config_schema_version"] == CONFIG_SCHEMA_VERSION
-            assert CONFIG_SCHEMA_VERSION == 2
+            assert CONFIG_SCHEMA_VERSION == 3
 
         elif parms["check"] == "aux-axes-is-list-of-records":
             aux = cfg["axes"]["auxiliary_axes"]
@@ -102,7 +102,7 @@ def test_export_schema_v2(parms, context):
 
 
 # ---------------------------------------------------------------------------
-# Schema-v1 / v2 input normalisation
+# Historical schema-v1 / v2 input normalisation
 # ---------------------------------------------------------------------------
 
 

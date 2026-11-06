@@ -33,7 +33,8 @@ describe future plans.
     Fixes
     -----
 
-    * Ensure lazy EPICS wavelength reads. (:issue:`430`)
+    * Ensure *lazy* EPICS wavelength reads. (:issue:`430`)
+    * Include the forward-solution selector in configuration snapshots. (:issue:`428`)
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
     * Preserve UB across ``HklSolver.inverse()`` calls. (:issue:`435`)
     * Resolve test intermittently raising `NoForwardSolution`. (:issue:`431`)
