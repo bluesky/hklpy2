@@ -1128,6 +1128,7 @@ class DiffractometerBase(PseudoPositioner):
     version="0.2.2",
     reason="Replaced ``aliases`` with ``_pseudo`` and ``_real`` parameters.",
 )
+@versionchanged(version="1.0.1", reason="Do not label the diffractometer by default.")
 def creator(
     *,
     prefix: str = "",
@@ -1141,7 +1142,7 @@ def creator(
     _real: Sequence[str] | None = None,
     reals: Sequence[str] | KeyValueMap | None = {},  # noqa: B006
     motor_labels: Sequence[str] | None = ["motors"],
-    labels: list = ["diffractometer"],  # noqa: B006
+    labels: list = [],  # noqa: B006
     class_name: str = "Hklpy2Diffractometer",
     class_bases: list = [DiffractometerBase],  # noqa: B006
     forward_solution_function: str | None = None,
@@ -1235,7 +1236,7 @@ def creator(
     motor_labels : list
         Ophyd object labels for each real positioner. (default: '["motors"]')
     labels : list
-        Ophyd object labels for the diffractometer object. (default: '["diffractometer"]')
+        Ophyd object labels for the diffractometer object. (default: '[]')
     class_name : str
         Name to use for the diffractometer class.
         (default: '"Hklpy2Diffractometer"')
