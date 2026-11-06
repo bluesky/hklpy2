@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=6cfbe939"></script>
+    <script src="../../_static/documentation_options.js?v=638b1ead"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -610,7 +610,9 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">.ops</span><span class="w"> </span><span class="kn">import</span> <span class="n">Core</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_solution</span> <span class="o">=</span> <span class="n">forward_solution_function</span> <span class="ow">or</span> <span class="n">pick_first_solution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_solution</span> <span class="o">=</span> <span class="n">forward_solution_function</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s2">"_forward_solution"</span><span class="p">,</span> <span class="n">pick_first_solution</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reals_units</span> <span class="o">=</span> <span class="n">reals_units</span> <span class="ow">or</span> <span class="n">INTERNAL_ANGLE_UNITS</span>
 
 <div class="viewcode-block" id="DiffractometerBase.core">
@@ -741,6 +743,26 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Diffractometer configuration (orientation)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="nd">@versionadded</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="s2">"Expose the configured forward-solution selector import path."</span><span class="p">,</span>
+    <span class="p">)</span>
+<div class="viewcode-block" id="DiffractometerBase.forward_solution_function">
+<a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward_solution_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward_solution_function</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Import path of the configured forward-solution selector."""</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward_solution</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="s2">"__module__"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="s2">"__name__"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">"The forward-solution selector must be an importable function "</span>
+                <span class="s2">"to be included in a configuration."</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span></div>
 
 
     <span class="nd">@configuration</span><span class="o">.</span><span class="n">setter</span>
@@ -981,6 +1003,11 @@
             <span class="n">restore_extras</span><span class="o">=</span><span class="n">restore_extras</span><span class="p">,</span>
             <span class="n">restore_presets</span><span class="o">=</span><span class="n">restore_presets</span><span class="p">,</span>
         <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">"forward_solution_function"</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">.devices</span><span class="w"> </span><span class="kn">import</span> <span class="n">dynamic_import</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_forward_solution</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">"forward_solution_function"</span><span class="p">])</span>
 
         <span class="n">saved_mode</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"solver"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mode"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">saved_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
