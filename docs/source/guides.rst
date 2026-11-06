@@ -132,6 +132,8 @@ the project — not at beamline users.
 
    * - Guide
      - Description
+   * - :ref:`guide.ci_pixi`
+     - Maintain the locked Pixi CI baseline, scheduled updates, and latest-dependency canary.
    * - :ref:`guide.design`
      - Architecture and design decisions behind |hklpy2|.
    * - :ref:`howto.solvers.write`

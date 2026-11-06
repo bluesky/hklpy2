@@ -227,7 +227,7 @@ class Core:
         from .devices import describe_aux
 
         header: ConfigHeaderDict = {
-            "datetime": str(datetime.datetime.now(datetime.timezone.utc)),
+            "datetime": str(datetime.datetime.now(datetime.UTC)),
             "hklpy2_version": __version__,
             "python_class": self.diffractometer.__class__.__name__,
             "config_schema_version": CONFIG_SCHEMA_VERSION,
@@ -713,7 +713,8 @@ class Core:
                     )
 
             self.solver.set_reals(solver_reals)
-            for solution in self.solver.forward(self._axes_names_d2s(pdict)):
+            raw_solutions = self.solver.forward(self._axes_names_d2s(pdict))
+            for solution in raw_solutions:
                 reals = base_reals.copy()  # Fresh copy per solution.
                 new_reals = self._axes_names_s2d(solution)
                 for axis, value in new_reals.items():
@@ -1234,6 +1235,10 @@ class Core:
         """Return table of solver's geometry (modes, axes).."""
         return self.solver.summary
 
+    @versionchanged(
+        version="1.0.1",
+        reason="Defer the initial solver synchronization until solver state is needed.",
+    )
     def set_solver(self, name: str, geometry: str, **kwargs: dict) -> SolverBase:
         """
         Create an instance of the backend |solver| library and geometry.
@@ -1258,7 +1263,7 @@ class Core:
         self._extras = {
             k: DEFAULT_EXTRA_VALUE for k in self.solver.all_extra_axis_names
         }
-        self.update_solver()
+        self.request_solver_update(True)
         return self._solver
 
     def standardize_pseudos(self, pseudos: AnyAxesType) -> AxesDict:
@@ -1378,14 +1383,17 @@ class Core:
         if wavelength is not None:
             self._solver_dirty |= _SolverDirty.WAVELENGTH
 
-        dirty = self._solver_dirty
-        if not dirty:
+        dirty_before = self._solver_dirty
+        if not dirty_before:
             return
 
         std = self.to_solver_units(wavelength)
+        pushed = []
+        dirty = dirty_before
 
         if dirty & _SolverDirty.WAVELENGTH:
             self.solver.wavelength = std["wavelength"]
+            pushed.append("wavelength")
         if dirty & _SolverDirty.SAMPLE:
             # Full re-push of the solver's sample state (lattice +
             # reflections).  Some backends reset MODE / EXTRAS / U / UB
@@ -1393,8 +1401,10 @@ class Core:
             # domains for re-push too.
             self.solver.sample = std["sample"]
             dirty |= _SolverDirty.MODE | _SolverDirty.EXTRAS | _SolverDirty.UB
+            pushed.append("sample")
         if dirty & _SolverDirty.MODE:
             self.solver.mode = self.mode
+            pushed.append("mode")
         if dirty & _SolverDirty.EXTRAS:
             try:
                 self.solver.extras = {
@@ -1402,10 +1412,12 @@ class Core:
                     # multiline
                     for axis in self.solver.extra_axis_names
                 }
+                pushed.append("extras")
             except AttributeError:
                 pass  # Some solvers have no setter for extras
         if dirty & _SolverDirty.UB:
             self.solver.U = self.sample.U
             self.solver.UB = self.sample.UB
+            pushed.append("UB")
 
         self._solver_dirty = _SolverDirty(0)
