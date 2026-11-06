@@ -23,6 +23,7 @@ from ..incident import WavelengthXray
 from ..incident import _WavelengthBase
 from ..utils import INTERNAL_LENGTH_UNITS
 from ..utils import INTERNAL_XRAY_ENERGY_UNITS
+from ..utils import _SolverDirty
 from .common import IOC_PREFIX
 
 logger = logging.getLogger(__name__)
@@ -265,42 +266,47 @@ def test_EpicsClasses(Klass, input, ref, context):
 
 
 @pytest.mark.parametrize(
-    "parms, moves, context",
+    "parms, context",
     [
         pytest.param(
             {
-                "class": WavelengthXray,
-                "wavelength_deadband": DEFAULT_WAVELENGTH_DEADBAND,
+                "beam_kwargs": {
+                    "class": WavelengthXray,
+                    "wavelength_deadband": DEFAULT_WAVELENGTH_DEADBAND,
+                },
+                "moves": [(1.1, True), (1.10001, False), (1.100111, True)],
             },
-            [(1.1, True), (1.10001, False), (1.100111, True)],
             does_not_raise(),
             id="WavelengthXray-default-deadband",
         ),
         pytest.param(
-            {"class": Wavelength, "wavelength_deadband": 0.01},
-            [
-                (1.1, True),
-                (1.10999, False),
-                (1.111, True),
-                (1.1111, False),
-                (1.1011, False),
-                (1.1001, True),
-                (1.0, True),
-            ],
+            {
+                "beam_kwargs": {"class": Wavelength, "wavelength_deadband": 0.01},
+                "moves": [
+                    (1.1, True),
+                    (1.10999, False),
+                    (1.111, True),
+                    (1.1111, False),
+                    (1.1011, False),
+                    (1.1001, True),
+                    (1.0, True),
+                ],
+            },
             does_not_raise(),
             id="Wavelength-custom-deadband-0.01",
         ),
     ],
 )
-def test_wavelength_update(parms, moves, context):
+def test_wavelength_update(parms, context):
     with context:
-        sim = creator(beam_kwargs=parms)
+        sim = creator(beam_kwargs=parms["beam_kwargs"])
         sim.wait_for_connection()
 
-        for position, updated in moves:
+        for position, updated in parms["moves"]:
             sim.core._solver_needs_update = False
             sim.beam.wavelength.put(position)
-            assert sim.core._solver_needs_update == updated, f"{position=}"
+            expected = _SolverDirty.WAVELENGTH if updated else _SolverDirty(0)
+            assert sim.core._solver_dirty == expected, f"{position=}"
 
 
 @pytest.mark.parametrize(
