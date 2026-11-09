@@ -50,22 +50,17 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v7
+      - name: Set up Pixi environment
+        uses: prefix-dev/setup-pixi@v0.11.2
         with:
-          python-version: "3.13"
+          pixi-version: v0.83.0
+          environments: py313
+          activate-environment: true
+          cache: true
+          locked: true
 
-      - name: Cache pip
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/pip
-          key: pip-cache-${{ runner.os }}-py3.13-${{ hashFiles('**/pyproject.toml','**/requirements*.txt') }}
-
-      - name: Install ruff and run
-        run: |
-          set -euo pipefail
-          python -m pip install --upgrade pip
-          python -m pip install ruff==0.16.2
-          ruff check .
+      - name: Run pre-commit
+        run: pixi run --locked -e py313 lint
 
   tests:
     name: Python ${{ matrix.python-version }}
@@ -136,27 +131,15 @@ jobs:
           caget hklpy2:BaseVersion hklpy2:{energy,wavelength}.{NAME,VAL,EGU,DESC}
 
       - name: Run tests with pytest & coverage
-        shell: bash -l {0}
         run: |
           set -vxeuo pipefail
           mkdir -p reports
 
-          # Run the locked coverage installation from the Pixi environment.
-          python -m coverage --version
-
-          # run tests under coverage; keep exit code handling so we can still gather reports
-          python -m coverage \
-            run \
-            --concurrency=thread \
-            --parallel-mode \
-            -m pytest \
-              -q \
-              --junitxml=reports/junit.xml .
-
-          # combine and report
-          python -m coverage combine || true
-          python -m coverage xml -i -o coverage.xml || true
-          python -m coverage report --precision 3 -m
+          # Run pixi tasks for testing and coverage
+          pixi run --locked -e "${{ matrix.pixi-environment }}" test
+          pixi run --locked -e "${{ matrix.pixi-environment }}" coverage-combine
+          pixi run --locked -e "${{ matrix.pixi-environment }}" coverage-report
+          pixi run --locked -e "${{ matrix.pixi-environment }}" coverage-xml
 
           # check junit for failures
           if [ -f reports/junit.xml ]; then
