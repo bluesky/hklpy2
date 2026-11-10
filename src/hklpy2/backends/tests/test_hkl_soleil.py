@@ -980,3 +980,71 @@ def test_hkl_default_geometry_is_first_alphabetical():
     """HklSolver.default_geometry() returns geometries()[0] (alphabetical)."""
     geometries = hkl_soleil.HklSolver.geometries()
     assert hkl_soleil.HklSolver.default_geometry() == geometries[0]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {
+                "reflection": {
+                    "pseudos": {"h": 4, "k": 0, "l": 0},
+                    "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
+                    "wavelength": 1.54,
+                },
+                "fail_add_reflection": False,
+            },
+            does_not_raise(),
+            id="addReflection succeeds normally",
+        ),
+        pytest.param(
+            {
+                "reflection": {
+                    "pseudos": {"h": 4, "k": 0, "l": 0},
+                    "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
+                    "wavelength": 1.54,
+                },
+                "fail_add_reflection": True,
+            },
+            pytest.raises(RuntimeError, match=re.escape("Simulated failure")),
+            id="addReflection wavelength restored on exception",
+        ),
+    ],
+)
+def test_addReflection_exception_safety(parms, context):
+    """
+    Verify wavelength is restored even if _sample.add_reflection() raises.
+
+    This tests the try/finally wrapper added in #436 to ensure that the
+    solver's wavelength is not left in an inconsistent state if an exception
+    occurs during reflection addition.
+    """
+    from unittest.mock import patch
+
+    from ... import SI_LATTICE_PARAMETER
+    from ... import creator
+
+    sim = creator()
+    sim.add_sample("silicon", SI_LATTICE_PARAMETER)
+
+    # Get the wavelength before adding the reflection
+    solver = sim.core.solver
+    original_wavelength = solver.wavelength
+
+    # Optionally patch add_reflection to simulate a failure
+    if parms["fail_add_reflection"]:
+        with (
+            patch.object(
+                solver._sample,
+                "add_reflection",
+                side_effect=RuntimeError("Simulated failure"),
+            ),
+            context,
+        ):
+            solver.addReflection(parms["reflection"])
+    else:
+        with context:
+            solver.addReflection(parms["reflection"])
+
+    # Verify the wavelength was restored (whether or not the call succeeded)
+    assert solver.wavelength == original_wavelength

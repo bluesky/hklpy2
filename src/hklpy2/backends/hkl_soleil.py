@@ -43,6 +43,7 @@ import math
 import platform
 
 import numpy as np
+from deprecated.sphinx import versionchanged
 from gi._error import GError
 from numpy import typing as npt
 from pyRestTable import Table
@@ -283,6 +284,7 @@ class HklSolver(SolverBase):
         }
         return meta
 
+    @versionchanged(version="1.0.1", reason="Restore wavelength in finally.")
     def addReflection(self, reflection: ReflectionDict) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
         if not isinstance(reflection, dict):
@@ -293,8 +295,12 @@ class HklSolver(SolverBase):
         self.set_reals(reflection["reals"])
         w0 = self.wavelength
         self.wavelength = reflection["wavelength"]
-        self._sample.add_reflection(self._hkl_geometry, self._hkl_detector, *pseudos)
-        self.wavelength = w0
+        try:
+            self._sample.add_reflection(
+                self._hkl_geometry, self._hkl_detector, *pseudos
+            )
+        finally:
+            self.wavelength = w0
 
     @property
     def axes_c(self) -> list[str]:

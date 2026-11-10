@@ -13,6 +13,7 @@ library.
 
 import datetime
 import logging
+import threading
 import warnings
 from collections.abc import Iterable
 from collections.abc import Mapping
@@ -179,6 +180,9 @@ class Core:
         self._samples = {}
         self._solver = None
         self._solver_dirty = _SolverDirty.ALL
+        self._solver_lock = threading.RLock()
+        """Reentrant lock for thread-safe solver operations"""
+
         self.constraints = None
         self.configuration = None
 
@@ -574,6 +578,7 @@ class Core:
             "the freshly computed UB.  Fixes :issue:`384`."
         ),
     )
+    @versionchanged(version="1.0.1", reason="Thread-safe with RLock serialization.")
     def calc_UB(self, r1: Reflection | str, r2: Reflection | str) -> Matrix3x3:
         """
         Calculate and return the UB (orientation) matrix with two reflections.
@@ -594,33 +599,20 @@ class Core:
                 )
             return reflection
 
-        two_reflections = [_get(r1), _get(r2)]
-        self.sample.reflections.set_orientation_reflections(two_reflections)
+        with self._solver_lock:
+            two_reflections = [_get(r1), _get(r2)]
+            self.sample.reflections.set_orientation_reflections(two_reflections)
 
-        # Ensure the solver has the current lattice before computing UB (#240).
-        self.update_solver()
+            # Ensure the solver has the current lattice before computing UB (#240).
+            self.update_solver()
 
-        solver_reflections = self._reflections_to_solver(two_reflections)
-        ub = self.solver.calculate_UB(*solver_reflections)
-        # The solver has now computed U / UB and holds them internally.
-        # Mirror them into the Python Sample (the U / UB setters
-        # legitimately flag _SolverDirty.UB), then immediately re-push to
-        # the solver so the dirty flag is honestly clean.  (The prior
-        # implementation called request_solver_update(False) here, which
-        # would mask any other concurrently-dirty domain such as a
-        # pending sample switch -- the latent contributor to
-        # :issue:`384`.)
-        self.sample.U = self.solver.U
-        self.sample.UB = ub
-        self.update_solver()
-        # Snapshot the orientation-reflection state used to derive UB so
-        # ``Sample.UB_is_stale`` can later detect drift (:issue:`391`).
-        # Note: the U / UB setters above clear ``_ub_snapshot`` (direct
-        # assignment is treated as user ownership); the snapshot must be
-        # set after those writes, as the final step of a successful
-        # calc_UB.
-        self.sample._ub_snapshot = self.sample._compute_ub_snapshot()
-        return ub
+            solver_reflections = self._reflections_to_solver(two_reflections)
+            ub = self.solver.calculate_UB(*solver_reflections)
+            self.sample.U = self.solver.U
+            self.sample.UB = ub
+            self.update_solver()
+            self.sample._ub_snapshot = self.sample._compute_ub_snapshot()
+            return ub
 
     def _warn_if_ub_stale(self) -> None:
         """
@@ -659,6 +651,7 @@ class Core:
             self._extras.update(incoming)
             self.request_solver_update(_SolverDirty.EXTRAS)
 
+    @versionchanged(version="1.0.1", reason="Thread-safe with RLock serialization.")
     def forward(self, pseudos: AnyAxesType, wavelength: float | None = None) -> list:
         """
         Compute [{names:reals}] from {names: pseudos} (hkl -> angles).
@@ -672,91 +665,94 @@ class Core:
         logger.debug("(%s) forward(): pseudos=%r", self.__class__.__name__, pseudos)
         self._warn_if_ub_stale()
 
-        pdict = self.standardize_pseudos(pseudos)
-        base_reals = self.diffractometer.real_position._asdict()  # Original values.
+        with self._solver_lock:
+            pdict = self.standardize_pseudos(pseudos)
+            base_reals = self.diffractometer.real_position._asdict()  # Original values.
 
-        self.update_solver(wavelength=wavelength)
+            self.update_solver(wavelength=wavelength)
 
-        # Filter just the solutions that fit the constraints.
-        solutions = []
-        try:
-            # Unit conversions for presets and new values.
-            angle_units_solver = self.solver.ANGLE_UNITS
-            angle_units_core = self.diffractometer.reals_units
+            # Filter just the solutions that fit the constraints.
+            solutions = []
+            try:
+                # Unit conversions for presets and new values.
+                angle_units_solver = self.solver.ANGLE_UNITS
+                angle_units_core = self.diffractometer.reals_units
 
-            # Get the constant (read-only) axis names for this mode.
-            constant_axes = self._constant_axis_names()
+                # Get the constant (read-only) axis names for this mode.
+                constant_axes = self._constant_axis_names()
 
-            # Get presets for current mode.
-            mode_presets = self.presets
+                # Get presets for current mode.
+                mode_presets = self.presets
 
-            # Build the presets dict:
-            # - For constant axes: use preset value if set, otherwise use current motor position
-            # - For written axes: always use current motor position
-            solver_reals = {}
-            for axis in self.solver.real_axis_names:
-                local_axis = self.axes_xref_reversed[axis]
-                if axis in constant_axes:
-                    if local_axis in mode_presets:
-                        solver_reals[axis] = convert_units(
-                            mode_presets[local_axis],
-                            angle_units_core,
-                            angle_units_solver,
-                        )
+                # Build the presets dict:
+                # - For constant axes: use preset value if set, otherwise use current motor position
+                # - For written axes: always use current motor position
+                solver_reals = {}
+                for axis in self.solver.real_axis_names:
+                    local_axis = self.axes_xref_reversed[axis]
+                    if axis in constant_axes:
+                        if local_axis in mode_presets:
+                            solver_reals[axis] = convert_units(
+                                mode_presets[local_axis],
+                                angle_units_core,
+                                angle_units_solver,
+                            )
+                        else:
+                            solver_reals[axis] = convert_units(
+                                base_reals[local_axis],
+                                angle_units_core,
+                                angle_units_solver,
+                            )
                     else:
                         solver_reals[axis] = convert_units(
                             base_reals[local_axis], angle_units_core, angle_units_solver
                         )
-                else:
-                    solver_reals[axis] = convert_units(
-                        base_reals[local_axis], angle_units_core, angle_units_solver
-                    )
 
-            self.solver.set_reals(solver_reals)
-            raw_solutions = self.solver.forward(self._axes_names_d2s(pdict))
-            for solution in raw_solutions:
-                reals = base_reals.copy()  # Fresh copy per solution.
-                new_reals = self._axes_names_s2d(solution)
-                for axis, value in new_reals.items():
-                    # Update with converted new value.
-                    reals[axis] = convert_units(
-                        value, angle_units_solver, angle_units_core
-                    )
-                # Apply cut-point wrapping before constraint checking.
-                # Each axis angle is mapped into [cut_point, cut_point+360)
-                # so that limit checks operate on the wrapped representation.
-                for name, constraint in self.constraints.items():
-                    if name in reals:
-                        reals[name] = constraint.apply_cut(reals[name])
-
-                if self.constraints.valid(**reals):
-                    user_reals = {
-                        axis: roundoff(value, self.diffractometer.digits)
-                        for axis, value in reals.items()
-                    }
-                    solutions.append(self.diffractometer.RealPosition(**user_reals))
-                else:
-                    # Log which constraint(s) rejected this solution.
+                self.solver.set_reals(solver_reals)
+                raw_solutions = self.solver.forward(self._axes_names_d2s(pdict))
+                for solution in raw_solutions:
+                    reals = base_reals.copy()  # Fresh copy per solution.
+                    new_reals = self._axes_names_s2d(solution)
+                    for axis, value in new_reals.items():
+                        # Update with converted new value.
+                        reals[axis] = convert_units(
+                            value, angle_units_solver, angle_units_core
+                        )
+                    # Apply cut-point wrapping before constraint checking.
+                    # Each axis angle is mapped into [cut_point, cut_point+360)
+                    # so that limit checks operate on the wrapped representation.
                     for name, constraint in self.constraints.items():
-                        if not constraint.valid(**reals):
-                            logger.info(
-                                "Solution discarded: %s=%.4f"
-                                " (after cut_point=%.4f wrapping)"
-                                " outside limits [%.4f, %.4f]."
-                                "  pseudos=%r",
-                                name,
-                                reals[name],
-                                constraint.cut_point,
-                                constraint.low_limit,
-                                constraint.high_limit,
-                                pdict,
-                            )
-        except NoForwardSolutions as exc:
-            logger.info(
-                "No forward solutions from solver for pseudos=%r: %s", pdict, exc
-            )
+                        if name in reals:
+                            reals[name] = constraint.apply_cut(reals[name])
 
-        return solutions
+                    if self.constraints.valid(**reals):
+                        user_reals = {
+                            axis: roundoff(value, self.diffractometer.digits)
+                            for axis, value in reals.items()
+                        }
+                        solutions.append(self.diffractometer.RealPosition(**user_reals))
+                    else:
+                        # Log which constraint(s) rejected this solution.
+                        for name, constraint in self.constraints.items():
+                            if not constraint.valid(**reals):
+                                logger.info(
+                                    "Solution discarded: %s=%.4f"
+                                    " (after cut_point=%.4f wrapping)"
+                                    " outside limits [%.4f, %.4f]."
+                                    "  pseudos=%r",
+                                    name,
+                                    reals[name],
+                                    constraint.cut_point,
+                                    constraint.low_limit,
+                                    constraint.high_limit,
+                                    pdict,
+                                )
+            except NoForwardSolutions as exc:
+                logger.info(
+                    "No forward solutions from solver for pseudos=%r: %s", pdict, exc
+                )
+
+            return solutions
 
     def geometries(self) -> list[str]:
         """Return all available |solver| geometries."""
@@ -768,6 +764,7 @@ class Core:
         """Return the |solver| geometry."""
         return self.solver.geometry
 
+    @versionchanged(version="1.0.1", reason="Thread-safe with RLock serialization.")
     def inverse(
         self, reals: AnyAxesType | None, wavelength: float | None = None
     ) -> AxesDict:
@@ -784,21 +781,22 @@ class Core:
 
         self._warn_if_ub_stale()
 
-        # Just the reals expected by the solver.
-        # Dictionary in order expected by the solver.
-        reals: AxesDict = self.standardize_reals(reals)
-        for axis, value in reals.items():
-            angle_units_uc = self.diffractometer.reals_units
-            angle_units_solver = self.solver.ANGLE_UNITS
-            reals[axis] = convert_units(value, angle_units_uc, angle_units_solver)
+        with self._solver_lock:
+            # Just the reals expected by the solver.
+            # Dictionary in order expected by the solver.
+            reals: AxesDict = self.standardize_reals(reals)
+            for axis, value in reals.items():
+                angle_units_uc = self.diffractometer.reals_units
+                angle_units_solver = self.solver.ANGLE_UNITS
+                reals[axis] = convert_units(value, angle_units_uc, angle_units_solver)
 
-        self.update_solver(wavelength=wavelength)
+            self.update_solver(wavelength=wavelength)
 
-        # transform: reals -> pseudos
-        spdict: AxesDict = self.solver.inverse(self._axes_names_d2s(reals))
+            # transform: reals -> pseudos
+            spdict: AxesDict = self.solver.inverse(self._axes_names_d2s(reals))
 
-        pseudos.update(self._axes_names_s2d(spdict))  # Update with new values.
-        return pseudos
+            pseudos.update(self._axes_names_s2d(spdict))  # Update with new values.
+            return pseudos
 
     @property
     def local_pseudo_axes(self) -> list[str]:
@@ -1365,6 +1363,7 @@ class Core:
             "wavelength": convert_units(wavelength, wl_units, wl_units_solver),
         }
 
+    @versionchanged(version="1.0.1", reason="Thread-safe with RLock serialization.")
     def update_solver(self, wavelength: float | None = None) -> None:
         """
         Push any dirty solver-state domains to the underlying solver.
@@ -1382,46 +1381,47 @@ class Core:
            state after sample switch (:issue:`386`) and after
            ``calc_UB`` (:issue:`384`).
         """
-        if self.solver.mode != self.mode:
-            self._solver_dirty |= _SolverDirty.MODE
-        if wavelength is not None:
-            self._solver_dirty |= _SolverDirty.WAVELENGTH
+        with self._solver_lock:
+            if self.solver.mode != self.mode:
+                self._solver_dirty |= _SolverDirty.MODE
+            if wavelength is not None:
+                self._solver_dirty |= _SolverDirty.WAVELENGTH
 
-        dirty_before = self._solver_dirty
-        if not dirty_before:
-            return
+            dirty_before = self._solver_dirty
+            if not dirty_before:
+                return
 
-        std = self.to_solver_units(wavelength)
-        pushed = []
-        dirty = dirty_before
+            std = self.to_solver_units(wavelength)
+            pushed = []
+            dirty = dirty_before
 
-        if dirty & _SolverDirty.WAVELENGTH:
-            self.solver.wavelength = std["wavelength"]
-            pushed.append("wavelength")
-        if dirty & _SolverDirty.SAMPLE:
-            # Full re-push of the solver's sample state (lattice +
-            # reflections).  Some backends reset MODE / EXTRAS / U / UB
-            # as a side effect of accepting a new sample, so flag those
-            # domains for re-push too.
-            self.solver.sample = std["sample"]
-            dirty |= _SolverDirty.MODE | _SolverDirty.EXTRAS | _SolverDirty.UB
-            pushed.append("sample")
-        if dirty & _SolverDirty.MODE:
-            self.solver.mode = self.mode
-            pushed.append("mode")
-        if dirty & _SolverDirty.EXTRAS:
-            try:
-                self.solver.extras = {
-                    axis: self._extras[axis]
-                    # multiline
-                    for axis in self.solver.extra_axis_names
-                }
-                pushed.append("extras")
-            except AttributeError:
-                pass  # Some solvers have no setter for extras
-        if dirty & _SolverDirty.UB:
-            self.solver.U = self.sample.U
-            self.solver.UB = self.sample.UB
-            pushed.append("UB")
+            if dirty & _SolverDirty.WAVELENGTH:
+                self.solver.wavelength = std["wavelength"]
+                pushed.append("wavelength")
+            if dirty & _SolverDirty.SAMPLE:
+                # Full re-push of the solver's sample state (lattice +
+                # reflections).  Some backends reset MODE / EXTRAS / U / UB
+                # as a side effect of accepting a new sample, so flag those
+                # domains for re-push too.
+                self.solver.sample = std["sample"]
+                dirty |= _SolverDirty.MODE | _SolverDirty.EXTRAS | _SolverDirty.UB
+                pushed.append("sample")
+            if dirty & _SolverDirty.MODE:
+                self.solver.mode = self.mode
+                pushed.append("mode")
+            if dirty & _SolverDirty.EXTRAS:
+                try:
+                    self.solver.extras = {
+                        axis: self._extras[axis]
+                        # multiline
+                        for axis in self.solver.extra_axis_names
+                    }
+                    pushed.append("extras")
+                except AttributeError:
+                    pass  # Some solvers have no setter for extras
+            if dirty & _SolverDirty.UB:
+                self.solver.U = self.sample.U
+                self.solver.UB = self.sample.UB
+                pushed.append("UB")
 
-        self._solver_dirty = _SolverDirty(0)
+            self._solver_dirty = _SolverDirty(0)
