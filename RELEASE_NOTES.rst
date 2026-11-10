@@ -44,6 +44,7 @@ describe future plans.
     -----------
 
     * Move the project baseline to Python 3.11. (:issue:`435`)
+    * Refactor CI workflows to use pixi tasks instead of inline commands. (:issue:`434`)
     * Test Python 3.11-3.15, defer 3.16. (:issue:`432`, :issue:`434`)
     * Use locked Pixi environments for CI.  (:issue:`432`)
     * Use scheduled dependency updates. (:issue:`432`)
