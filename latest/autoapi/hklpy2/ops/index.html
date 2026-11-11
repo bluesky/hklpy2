@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
@@ -41,10 +41,10 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../../_static/documentation_options.js?v=6c5120d8"></script>
+    <script src="../../../_static/documentation_options.js?v=76f91d2b"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../../_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/hklpy2/ops/index';</script>
     <script>
@@ -826,7 +826,9 @@ mode. To remove a single preset key, call
 <dt class="sig sig-object py" id="hklpy2.ops.Core.refine_lattice">
 <span class="sig-name descname"><span class="pre">refine_lattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">reflections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.15)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../blocks/reflection/index.html#hklpy2.blocks.reflection.Reflection" title="hklpy2.blocks.reflection.Reflection"><span class="pre">Reflection</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../blocks/lattice/index.html#hklpy2.blocks.lattice.Lattice" title="hklpy2.blocks.lattice.Lattice"><span class="pre">Lattice</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2/ops.html#Core.refine_lattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2.ops.Core.refine_lattice" title="Link to this definition">#</a></dt>
 <dd><p>Return the sample lattice computed from 3 or more reflections.</p>
-<p>Do not change the sample lattice.  Let the user decide that.</p>
+<p>Do not change the sample lattice.  Let the user decide that.  The
+solver works on its own copy of the sample during refinement, so
+that copy is re-pushed from the (unchanged) sample afterwards.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -850,7 +852,9 @@ mode. To remove a single preset key, call
 </dd>
 </dl>
 <p>Needs to be a method (not a property) so it can be called from a
-wavelength callback (see <code class="docutils literal notranslate"><span class="pre">DiffractometerBase.__init__</span></code>).</p>
+wavelength callback (see <code class="docutils literal notranslate"><span class="pre">DiffractometerBase.__init__</span></code>).  Safe to
+call from any thread: it takes only the short flag lock, never the
+solver lock, so a callback is not held up by a solver update.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1022,6 +1026,10 @@ re-push may invalidate the solver’s MODE / EXTRAS / U / UB
 state (this is permitted by the <code class="docutils literal notranslate"><span class="pre">SolverBase</span></code> contract and
 observed in some backends), so those domains are re-pushed
 implicitly whenever SAMPLE is re-pushed.</p>
+<p>The dirty flags are taken (and reset) when the push starts, so a
+flag raised by another thread while the push runs (such as a
+wavelength callback) is kept for the next call.  If the push
+raises, the taken flags are restored.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.6.2: </span>Switched from a single boolean flag to per-domain dirty flags
 (<code class="xref py py-class docutils literal notranslate"><span class="pre">_SolverDirty</span></code>) to fix stale solver
