@@ -1004,11 +1004,17 @@ class Core:
         constant_solver_names = self.solver_constant_axis_names
         return [self.axes_xref_reversed[k] for k in constant_solver_names]
 
+    @versionchanged(
+        version="1.0.1",
+        reason="Thread-safe; re-syncs the solver with the sample afterwards.",
+    )
     def refine_lattice(self, *reflections: list[Reflection]) -> Lattice:
         """
         Return the sample lattice computed from 3 or more reflections.
 
-        Do not change the sample lattice.  Let the user decide that.
+        Do not change the sample lattice.  Let the user decide that.  The
+        solver works on its own copy of the sample during refinement, so
+        that copy is re-pushed from the (unchanged) sample afterwards.
         """
         if len(reflections) == 0:
             reflections = list(self.sample.reflections.values())
@@ -1020,7 +1026,15 @@ class Core:
             )
 
         logger.debug("Refining lattice using reflections %r", rnames)
-        lattice = self.solver.refineLattice(self._reflections_to_solver(reflections))
+        with self._solver_lock:
+            try:
+                lattice = self.solver.refineLattice(
+                    self._reflections_to_solver(reflections)
+                )
+            finally:
+                # Refinement may replace the solver's reflections, lattice,
+                # and orientation; restore them from the sample on next use.
+                self._flag_solver_dirty(_SolverDirty.SAMPLE | _SolverDirty.UB)
         if lattice is None:
             raise CoreError(
                 f"Solver {self.solver.geometry!r} does not support lattice refinement."

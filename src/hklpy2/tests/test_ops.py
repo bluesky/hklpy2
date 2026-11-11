@@ -1285,6 +1285,15 @@ def _config_with_wavelength(wavelength):
     return other.configuration
 
 
+def _add_consistent_reflections(e4cv, n):
+    """Add ``n`` reflections at their computed positions (names q0, q1, ...)."""
+    hkls = [(4, 0, 0), (0, 4, 0), (0, 0, 4), (2, 2, 0)][:n]
+    return [
+        e4cv.add_reflection(hkl, e4cv.forward(*hkl)._asdict(), name=f"q{i}")
+        for i, hkl in enumerate(hkls)
+    ]
+
+
 def _forward_vs_inverse(e4cv, monkeypatch, parms):
     """A monitor-thread inverse() must not overwrite the reals inside forward()."""
     e4cv.core.mode = "constant_phi"
@@ -1535,11 +1544,23 @@ def test_update_solver_push_failure(parms, context, monkeypatch):
             pytest.raises(CoreError, match=re.escape("already defined")),
             id="add_sample error raised without waiting",
         ),
+        pytest.param(
+            {
+                "prepare": lambda e4cv: _add_consistent_reflections(e4cv, 4),
+                "call": lambda e4cv: e4cv.core.refine_lattice(
+                    *[e4cv.sample.reflections[f"q{i}"] for i in range(4)]
+                ),
+                "blocks": True,
+            },
+            does_not_raise(),
+            id="refine_lattice waits for the lock",
+        ),
     ],
 )
 def test_core_lock_entry_points(parms, context):
     with context:
         e4cv = _oriented_e4cv()
+        parms.get("prepare", lambda e4cv: None)(e4cv)
         e4cv.core.update_solver()  # nothing pending: only the call itself may wait
         observe = parms.get("observe", lambda e4cv: None)
         before = observe(e4cv)
@@ -1552,3 +1573,40 @@ def test_core_lock_entry_points(parms, context):
         il.finish()  # re-raises the intruder's error
         assert blocked == parms["blocks"]
         assert during == before
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"n": 4},
+            does_not_raise(),
+            id="solver re-synced with the unchanged sample after refinement",
+        ),
+        pytest.param(
+            {"n": 2},
+            pytest.raises(
+                CoreError, match=re.escape("Must have at least 3 reflections")
+            ),
+            id="too few reflections",
+        ),
+    ],
+)
+def test_refine_lattice_resyncs_solver(parms, context):
+    with context:
+        e4cv = _oriented_e4cv()
+        reflections = _add_consistent_reflections(e4cv, parms["n"])
+        e4cv.sample.lattice.a = 6.30  # the user's lattice, slightly off
+        e4cv.inverse(**PROBE_REALS)  # solver in sync with the sample
+        ub = [v for row in e4cv.core.solver.UB for v in row]
+
+        lattice = e4cv.core.refine_lattice(*reflections)
+        assert lattice.a == pytest.approx(2 * math.pi, abs=1e-3)
+        assert e4cv.sample.lattice.a == 6.30  # the sample is not changed
+        assert e4cv.core._solver_dirty & _SolverDirty.SAMPLE
+
+        e4cv.inverse(**PROBE_REALS)  # re-pushes the sample to the solver
+        assert e4cv.core.solver.lattice["a"] == pytest.approx(6.30)
+        assert [v for row in e4cv.core.solver.UB for v in row] == pytest.approx(
+            ub, abs=1e-6
+        )
