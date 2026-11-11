@@ -9,7 +9,10 @@ import pytest
 from pyRestTable import Table
 
 from ...ops import Core
+from ...tests.common import Interleave
+from ...tests.models import add_oriented_vibranium_to_e4cv
 from ...utils import IDENTITY_MATRIX_3X3
+from ...utils import _SolverDirty
 from .. import hkl_soleil
 from ..hkl_soleil import HklSolverMetadataDict
 from ..typing import SolverMetadataDict
@@ -980,3 +983,195 @@ def test_hkl_default_geometry_is_first_alphabetical():
     """HklSolver.default_geometry() returns geometries()[0] (alphabetical)."""
     geometries = hkl_soleil.HklSolver.geometries()
     assert hkl_soleil.HklSolver.default_geometry() == geometries[0]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"second_call": None},
+            does_not_raise(),
+            id="wavelength restored after a failure; next call succeeds",
+        ),
+        pytest.param(
+            {"second_call": RuntimeError("Simulated failure")},
+            pytest.raises(RuntimeError, match=re.escape("Simulated failure")),
+            id="wavelength restored after a failure; next call fails too",
+        ),
+    ],
+)
+def test_addReflection_exception_safety(parms, context):
+    """addReflection() restores the solver wavelength even when it raises."""
+    from unittest.mock import patch
+
+    from ... import SI_LATTICE_PARAMETER
+    from ... import creator
+
+    reflection = {
+        "pseudos": {"h": 4, "k": 0, "l": 0},
+        "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
+        "wavelength": 2.0,  # differs from the solver's, so a swap is visible
+    }
+    with context:
+        sim = creator()
+        sim.add_sample("silicon", SI_LATTICE_PARAMETER)
+        solver = sim.core.solver
+        original_wavelength = solver.wavelength
+        assert not math.isclose(original_wavelength, reflection["wavelength"])
+
+        failure = RuntimeError("Simulated failure")
+        with patch.object(
+            solver._sample,
+            "add_reflection",
+            side_effect=[failure, parms["second_call"]],
+        ):
+            with pytest.raises(RuntimeError, match=re.escape("Simulated failure")):
+                solver.addReflection(reflection)
+            assert solver.wavelength == original_wavelength
+
+            solver.addReflection(reflection)
+            assert solver.wavelength == original_wavelength
+
+
+# Core must serialize the solver's internal save/restore windows: the
+# wavelength swap in addReflection() and the UB save/restore in inverse().
+
+REFLECTION_WAVELENGTH = 1.54  # used by add_oriented_vibranium_to_e4cv
+PROBE_REALS = {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.066}
+ROTATED_PAIR = [  # same crystal, remounted +30 deg about phi
+    {
+        "name": "r400b",
+        "pseudos": {"h": 4, "k": 0, "l": 0},
+        "reals": {"omega": -145.451, "chi": 0, "phi": 30, "tth": 69.066},
+    },
+    {
+        "name": "r040b",
+        "pseudos": {"h": 0, "k": 4, "l": 0},
+        "reals": {"omega": -145.451, "chi": 0, "phi": 120, "tth": 69.066},
+    },
+]
+COLINEAR_PAIR = [  # same reals, parallel scattering vectors
+    {
+        "name": "c100",
+        "pseudos": {"h": 1, "k": 0, "l": 0},
+        "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
+    },
+    {
+        "name": "c200",
+        "pseudos": {"h": 2, "k": 0, "l": 0},
+        "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
+    },
+]
+
+
+def _oriented_e4cv(pair=()):
+    from ... import creator
+
+    e4cv = creator(name="e4cv")
+    add_oriented_vibranium_to_e4cv(e4cv)
+    for r in pair:
+        e4cv.add_reflection(r["pseudos"], r["reals"], name=r["name"])
+    return e4cv
+
+
+def _overlapping_sample_repush(e4cv, monkeypatch, parms):
+    """Two sample re-pushes must not overlap their wavelength swaps."""
+    e4cv.beam.wavelength.put(2.0)
+    e4cv.inverse(**PROBE_REALS)
+    assert e4cv.core.solver.wavelength == pytest.approx(2.0)  # precondition
+    e4cv.core.request_solver_update(_SolverDirty.SAMPLE)  # as after add_reflection
+    il, fired = Interleave(), {"main": False, "intruder": False}
+    prop = hkl_soleil.HklSolver.wavelength
+
+    def fset(self, value):
+        prop.fset(self, value)
+        if not math.isclose(value, REFLECTION_WAVELENGTH):
+            return
+        if il.is_intruder():
+            if not fired["intruder"]:
+                fired["intruder"] = True
+                il.intruder_point()  # holds the reflection wavelength as its "w0"
+        elif not fired["main"]:
+            fired["main"] = True
+            il.start_intruder(lambda: e4cv.inverse(**PROBE_REALS))
+            il.wait_for_intruder()
+
+    monkeypatch.setattr(hkl_soleil.HklSolver, "wavelength", property(prop.fget, fset))
+    try:
+        e4cv.inverse(**PROBE_REALS)
+    finally:
+        il.finish()
+
+    assert fired["main"]
+    assert e4cv.core.solver.wavelength == pytest.approx(2.0)
+
+
+def _calc_ub_vs_inverse(e4cv, monkeypatch, parms):
+    """A monitor-thread inverse() must not restore the old UB over calc_UB."""
+    # Nothing pending, so the intruder pauses inside solver.inverse() after
+    # it saved the old UB (not inside a sample re-push).
+    e4cv.core.update_solver()
+    assert not e4cv.core._solver_dirty  # precondition
+    il, fired = Interleave(), []
+    original = e4cv.core.solver.set_reals
+
+    def hooked(reals):
+        original(reals)
+        if il.is_intruder() and not fired:
+            fired.append(True)
+            il.intruder_point()
+
+    monkeypatch.setattr(e4cv.core.solver, "set_reals", hooked)
+    il.start_intruder(lambda: e4cv.inverse(**PROBE_REALS))
+    il.wait_for_intruder()
+    names = [r["name"] for r in parms["pair"]]
+    try:
+        e4cv.core.calc_UB(*names)
+    finally:
+        il.finish()
+
+    reference = _oriented_e4cv(parms["pair"])
+    reference.core.calc_UB(*names)
+    assert fired
+    # Solver and sample UB differ by ~1e-7 from libhkl round-off, even without threads.
+    assert np.allclose(e4cv.core.solver.UB, e4cv.core.sample.UB, atol=1e-6)
+    assert e4cv.inverse(**PROBE_REALS) == pytest.approx(
+        reference.inverse(**PROBE_REALS)
+    )
+
+
+SAVE_RESTORE_SCENARIOS = {
+    "overlapping_sample_repush": _overlapping_sample_repush,
+    "calc_ub_vs_inverse": _calc_ub_vs_inverse,
+}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"scenario": "overlapping_sample_repush", "pair": ()},
+            does_not_raise(),
+            id="overlapping sample re-push keeps the beam wavelength",
+        ),
+        pytest.param(
+            {"scenario": "calc_ub_vs_inverse", "pair": ROTATED_PAIR},
+            does_not_raise(),
+            id="calc_UB vs monitor inverse(): new UB kept",
+        ),
+        pytest.param(
+            {"scenario": "calc_ub_vs_inverse", "pair": COLINEAR_PAIR},
+            pytest.raises(
+                ValueError,
+                match=re.escape(
+                    "UB calculation failed: the two reflections are colinear"
+                ),
+            ),
+            id="calc_UB raises: lock released, intruder not left blocked",
+        ),
+    ],
+)
+def test_solver_save_restore_serialized(parms, context, monkeypatch):
+    with context:
+        e4cv = _oriented_e4cv(parms["pair"])
+        SAVE_RESTORE_SCENARIOS[parms["scenario"]](e4cv, monkeypatch, parms)
