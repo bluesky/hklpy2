@@ -687,9 +687,9 @@ class Core:
         are included in the returned list.
         """
         logger.debug("(%s) forward(): pseudos=%r", self.__class__.__name__, pseudos)
-        self._warn_if_ub_stale()
 
         with self._solver_lock, self._wavelength_for_one_call(wavelength):
+            self._warn_if_ub_stale()  # Under lock: avoid spurious warnings from concurrent calc_UB.
             pdict = self.standardize_pseudos(pseudos)
             base_reals = self.diffractometer.real_position._asdict()  # Original values.
 
@@ -806,9 +806,8 @@ class Core:
             # Called from the constructor before solver is defined.
             return pseudos  # current values of pseudos
 
-        self._warn_if_ub_stale()
-
         with self._solver_lock, self._wavelength_for_one_call(wavelength):
+            self._warn_if_ub_stale()  # Under lock: avoid spurious warnings from concurrent calc_UB.
             # Just the reals expected by the solver.
             # Dictionary in order expected by the solver.
             reals: AxesDict = self.standardize_reals(reals)
@@ -1216,13 +1215,14 @@ class Core:
     def sample(self, value: str) -> None:
         if value not in self._samples:
             raise KeyError(f"{value!r} not in sample list: {list(self._samples)!r}")
-        self._sample_name = value
-        # The new sample's lattice and stored U / UB must be re-pushed to
-        # the solver on the next forward()/inverse().  The prior buggy
-        # behavior pushed only U / UB while leaving the solver's sample
-        # state (lattice + reflections) referring to the previous sample,
-        # so the new UB ended up combined with the old lattice (#386).
-        self.request_solver_update(_SolverDirty.SAMPLE | _SolverDirty.UB)
+        with self._solver_lock:  # Serialize with concurrent forward()/inverse().
+            self._sample_name = value
+            # The new sample's lattice and stored U / UB must be re-pushed to
+            # the solver on the next forward()/inverse().  The prior buggy
+            # behavior pushed only U / UB while leaving the solver's sample
+            # state (lattice + reflections) referring to the previous sample,
+            # so the new UB ended up combined with the old lattice (#386).
+            self.request_solver_update(_SolverDirty.SAMPLE | _SolverDirty.UB)
 
     @property
     def samples(self) -> Mapping[str, Sample]:
