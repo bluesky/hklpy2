@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
@@ -40,10 +40,10 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=6c5120d8"></script>
+    <script src="../../_static/documentation_options.js?v=76f91d2b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/diffract';</script>
     <script>
@@ -634,7 +634,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">reals</span> <span class="o">=</span> <span class="p">[</span><span class="n">axis</span><span class="o">.</span><span class="n">attr_name</span> <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_real</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">assign_axes</span><span class="p">(</span><span class="n">pseudos</span><span class="p">,</span> <span class="n">reals</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength_updated_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">request_solver_update</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength_updated_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_wavelength_updated</span>
 
         <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxiliary_axis_names</span><span class="p">:</span>  <span class="c1"># auxiliary</span>
             <span class="n">component</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
@@ -828,6 +828,7 @@
             <span class="s2">"not match the current schema.  See :issue:`396`."</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe with RLock serialization."</span><span class="p">)</span>
 <div class="viewcode-block" id="DiffractometerBase.restore">
 <a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.restore">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">restore</span><span class="p">(</span>
@@ -993,37 +994,43 @@
             <span class="c1"># Don't restore BOTH energy &amp; wavelength</span>
             <span class="n">bcfg</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"energy"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">bcfg</span><span class="p">[</span><span class="s2">"class"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span><span class="n">bcfg</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span>
-            <span class="n">config</span><span class="p">,</span>
-            <span class="n">clear</span><span class="o">=</span><span class="n">clear</span><span class="p">,</span>
-            <span class="n">restore_constraints</span><span class="o">=</span><span class="n">restore_constraints</span><span class="p">,</span>
-            <span class="n">restore_samples</span><span class="o">=</span><span class="n">restore_samples</span><span class="p">,</span>
-            <span class="n">restore_extras</span><span class="o">=</span><span class="n">restore_extras</span><span class="p">,</span>
-            <span class="n">restore_presets</span><span class="o">=</span><span class="n">restore_presets</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="c1"># Apply as one step: a monitor-thread inverse() must not see (or push</span>
+        <span class="c1"># to the solver) a half-restored configuration.</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span><span class="n">bcfg</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">"forward_solution_function"</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">.devices</span><span class="w"> </span><span class="kn">import</span> <span class="n">dynamic_import</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">_fromdict</span><span class="p">(</span>
+                <span class="n">config</span><span class="p">,</span>
+                <span class="n">clear</span><span class="o">=</span><span class="n">clear</span><span class="p">,</span>
+                <span class="n">restore_constraints</span><span class="o">=</span><span class="n">restore_constraints</span><span class="p">,</span>
+                <span class="n">restore_samples</span><span class="o">=</span><span class="n">restore_samples</span><span class="p">,</span>
+                <span class="n">restore_extras</span><span class="o">=</span><span class="n">restore_extras</span><span class="p">,</span>
+                <span class="n">restore_presets</span><span class="o">=</span><span class="n">restore_presets</span><span class="p">,</span>
+            <span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_forward_solution</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">"forward_solution_function"</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s2">"forward_solution_function"</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">.devices</span><span class="w"> </span><span class="kn">import</span> <span class="n">dynamic_import</span>
 
-        <span class="n">saved_mode</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"solver"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mode"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">saved_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">current_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span>  <span class="c1"># use core.mode (authoritative)</span>
-            <span class="k">if</span> <span class="n">restore_mode</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">saved_mode</span>
-            <span class="k">elif</span> <span class="n">saved_mode</span> <span class="o">!=</span> <span class="n">current_mode</span><span class="p">:</span>
-                <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_forward_solution</span> <span class="o">=</span> <span class="n">dynamic_import</span><span class="p">(</span>
+                    <span class="n">config</span><span class="p">[</span><span class="s2">"forward_solution_function"</span><span class="p">]</span>
+                <span class="p">)</span>
 
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">"Saved mode </span><span class="si">{</span><span class="n">saved_mode</span><span class="si">!r}</span><span class="s2"> differs from current mode"</span>
-                    <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">current_mode</span><span class="si">!r}</span><span class="s2">. To apply the saved mode, use"</span>
-                    <span class="sa">f</span><span class="s2">" restore(restore_mode=True)."</span><span class="p">,</span>
-                    <span class="ne">UserWarning</span><span class="p">,</span>
-                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                <span class="p">)</span></div>
+            <span class="n">saved_mode</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"solver"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mode"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">saved_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">current_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span>  <span class="c1"># use core.mode (authoritative)</span>
+                <span class="k">if</span> <span class="n">restore_mode</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">saved_mode</span>
+                <span class="k">elif</span> <span class="n">saved_mode</span> <span class="o">!=</span> <span class="n">current_mode</span><span class="p">:</span>
+                    <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">"Saved mode </span><span class="si">{</span><span class="n">saved_mode</span><span class="si">!r}</span><span class="s2"> differs from current mode"</span>
+                        <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">current_mode</span><span class="si">!r}</span><span class="s2">. To apply the saved mode, use"</span>
+                        <span class="sa">f</span><span class="s2">" restore(restore_mode=True)."</span><span class="p">,</span>
+                        <span class="ne">UserWarning</span><span class="p">,</span>
+                        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="p">)</span></div>
 
 
     <span class="nd">@pseudo_position_argument</span>
@@ -1620,6 +1627,7 @@
     <span class="n">version</span><span class="o">=</span><span class="s2">"0.2.2"</span><span class="p">,</span>
     <span class="n">reason</span><span class="o">=</span><span class="s2">"Replaced ``aliases`` with ``_pseudo`` and ``_real`` parameters."</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="nd">@versionchanged</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Do not label the diffractometer by default."</span><span class="p">)</span>
 <div class="viewcode-block" id="creator">
 <a class="viewcode-back" href="../../autoapi/hklpy2/diffract/index.html#hklpy2.diffract.creator">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">creator</span><span class="p">(</span>
@@ -1635,7 +1643,7 @@
     <span class="n">_real</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">reals</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">KeyValueMap</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">{},</span>  <span class="c1"># noqa: B006</span>
     <span class="n">motor_labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"motors"</span><span class="p">],</span>
-    <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"diffractometer"</span><span class="p">],</span>  <span class="c1"># noqa: B006</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[],</span>  <span class="c1"># noqa: B006</span>
     <span class="n">class_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Hklpy2Diffractometer"</span><span class="p">,</span>
     <span class="n">class_bases</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">DiffractometerBase</span><span class="p">],</span>  <span class="c1"># noqa: B006</span>
     <span class="n">forward_solution_function</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1729,7 +1737,7 @@
 <span class="sd">    motor_labels : list</span>
 <span class="sd">        Ophyd object labels for each real positioner. (default: '["motors"]')</span>
 <span class="sd">    labels : list</span>
-<span class="sd">        Ophyd object labels for the diffractometer object. (default: '["diffractometer"]')</span>
+<span class="sd">        Ophyd object labels for the diffractometer object. (default: '[]')</span>
 <span class="sd">    class_name : str</span>
 <span class="sd">        Name to use for the diffractometer class.</span>
 <span class="sd">        (default: '"Hklpy2Diffractometer"')</span>

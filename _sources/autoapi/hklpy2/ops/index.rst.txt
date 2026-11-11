@@ -314,7 +314,9 @@ Module Contents
 
       Return the sample lattice computed from 3 or more reflections.
 
-      Do not change the sample lattice.  Let the user decide that.
+      Do not change the sample lattice.  Let the user decide that.  The
+      solver works on its own copy of the sample during refinement, so
+      that copy is re-pushed from the (unchanged) sample afterwards.
 
 
 
@@ -337,7 +339,9 @@ Module Contents
             (additive -- existing dirty flags are preserved).
 
       Needs to be a method (not a property) so it can be called from a
-      wavelength callback (see ``DiffractometerBase.__init__``).
+      wavelength callback (see ``DiffractometerBase.__init__``).  Safe to
+      call from any thread: it takes only the short flag lock, never the
+      solver lock, so a callback is not held up by a solver update.
 
 
 
@@ -524,6 +528,11 @@ Module Contents
       state (this is permitted by the ``SolverBase`` contract and
       observed in some backends), so those domains are re-pushed
       implicitly whenever SAMPLE is re-pushed.
+
+      The dirty flags are taken (and reset) when the push starts, so a
+      flag raised by another thread while the push runs (such as a
+      wavelength callback) is kept for the next call.  If the push
+      raises, the taken flags are restored.
 
       .. versionchanged:: 0.6.2
          Switched from a single boolean flag to per-domain dirty flags

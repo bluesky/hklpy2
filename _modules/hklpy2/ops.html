@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=84a6b490" />
   
   <!-- So that users can add custom icons -->
@@ -40,10 +40,10 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
-    <script src="../../_static/documentation_options.js?v=6c5120d8"></script>
+    <script src="../../_static/documentation_options.js?v=76f91d2b"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2/ops';</script>
     <script>
@@ -427,9 +427,11 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">deprecated.sphinx</span><span class="w"> </span><span class="kn">import</span> <span class="n">versionadded</span>
@@ -601,6 +603,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">ALL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dirty_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+<span class="w">        </span><span class="sd">"""Guards only ``_solver_dirty``; never held across a solver call."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+<span class="w">        </span><span class="sd">"""Reentrant lock for thread-safe solver operations"""</span>
+
 <div class="viewcode-block" id="Core.constraints">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.constraints">[docs]</a>
         <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -833,6 +840,7 @@
 
         <span class="k">return</span> <span class="kc">True</span>
 
+    <span class="nd">@versionchanged</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe with RLock serialization."</span><span class="p">)</span>
 <div class="viewcode-block" id="Core.add_reflection">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.add_reflection">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_reflection</span><span class="p">(</span>
@@ -906,10 +914,12 @@
             <span class="n">rnames</span><span class="p">,</span>
             <span class="n">wavelength_units</span><span class="o">=</span><span class="n">wl_units</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">refl</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">refl</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">replace</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">refl</span></div>
 
 
+    <span class="nd">@versionchanged</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe with RLock serialization."</span><span class="p">)</span>
 <div class="viewcode-block" id="Core.add_sample">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.add_sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_sample</span><span class="p">(</span>
@@ -935,7 +945,8 @@
         <span class="c1"># ``solver.sample = ...`` push below (test_diffract line 410: 2 pi a).</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_solver_units</span><span class="p">()[</span><span class="s2">"sample"</span><span class="p">]</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_solver_units</span><span class="p">()[</span><span class="s2">"sample"</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span></div>
 
 
@@ -1017,6 +1028,7 @@
             <span class="s2">"the freshly computed UB.  Fixes :issue:`384`."</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe with RLock serialization."</span><span class="p">)</span>
 <div class="viewcode-block" id="Core.calc_UB">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.calc_UB">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calc_UB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r1</span><span class="p">:</span> <span class="n">Reflection</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="n">Reflection</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
@@ -1039,33 +1051,34 @@
                 <span class="p">)</span>
             <span class="k">return</span> <span class="n">reflection</span>
 
-        <span class="n">two_reflections</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get</span><span class="p">(</span><span class="n">r1</span><span class="p">),</span> <span class="n">_get</span><span class="p">(</span><span class="n">r2</span><span class="p">)]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">set_orientation_reflections</span><span class="p">(</span><span class="n">two_reflections</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">:</span>
+            <span class="n">two_reflections</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get</span><span class="p">(</span><span class="n">r1</span><span class="p">),</span> <span class="n">_get</span><span class="p">(</span><span class="n">r2</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">set_orientation_reflections</span><span class="p">(</span><span class="n">two_reflections</span><span class="p">)</span>
 
-        <span class="c1"># Ensure the solver has the current lattice before computing UB (#240).</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
+            <span class="c1"># Ensure the solver has the current lattice before computing UB (#240).</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
 
-        <span class="n">solver_reflections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reflections_to_solver</span><span class="p">(</span><span class="n">two_reflections</span><span class="p">)</span>
-        <span class="n">ub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">calculate_UB</span><span class="p">(</span><span class="o">*</span><span class="n">solver_reflections</span><span class="p">)</span>
-        <span class="c1"># The solver has now computed U / UB and holds them internally.</span>
-        <span class="c1"># Mirror them into the Python Sample (the U / UB setters</span>
-        <span class="c1"># legitimately flag _SolverDirty.UB), then immediately re-push to</span>
-        <span class="c1"># the solver so the dirty flag is honestly clean.  (The prior</span>
-        <span class="c1"># implementation called request_solver_update(False) here, which</span>
-        <span class="c1"># would mask any other concurrently-dirty domain such as a</span>
-        <span class="c1"># pending sample switch -- the latent contributor to</span>
-        <span class="c1"># :issue:`384`.)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">U</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="n">ub</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
-        <span class="c1"># Snapshot the orientation-reflection state used to derive UB so</span>
-        <span class="c1"># ``Sample.UB_is_stale`` can later detect drift (:issue:`391`).</span>
-        <span class="c1"># Note: the U / UB setters above clear ``_ub_snapshot`` (direct</span>
-        <span class="c1"># assignment is treated as user ownership); the snapshot must be</span>
-        <span class="c1"># set after those writes, as the final step of a successful</span>
-        <span class="c1"># calc_UB.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">_ub_snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">_compute_ub_snapshot</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">ub</span></div>
+            <span class="n">solver_reflections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reflections_to_solver</span><span class="p">(</span><span class="n">two_reflections</span><span class="p">)</span>
+            <span class="n">ub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">calculate_UB</span><span class="p">(</span><span class="o">*</span><span class="n">solver_reflections</span><span class="p">)</span>
+            <span class="c1"># The solver has now computed U / UB and holds them internally.</span>
+            <span class="c1"># Mirror them into the Python Sample (the U / UB setters</span>
+            <span class="c1"># legitimately flag _SolverDirty.UB), then immediately re-push to</span>
+            <span class="c1"># the solver so the dirty flag is honestly clean.  (The prior</span>
+            <span class="c1"># implementation called request_solver_update(False) here, which</span>
+            <span class="c1"># would mask any other concurrently-dirty domain such as a</span>
+            <span class="c1"># pending sample switch -- the latent contributor to</span>
+            <span class="c1"># :issue:`384`.)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">U</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="n">ub</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">()</span>
+            <span class="c1"># Snapshot the orientation-reflection state used to derive UB so</span>
+            <span class="c1"># ``Sample.UB_is_stale`` can later detect drift (:issue:`391`).</span>
+            <span class="c1"># Note: the U / UB setters above clear ``_ub_snapshot`` (direct</span>
+            <span class="c1"># assignment is treated as user ownership); the snapshot must be</span>
+            <span class="c1"># set after those writes, as the final step of a successful</span>
+            <span class="c1"># calc_UB.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">_ub_snapshot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">_compute_ub_snapshot</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">ub</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_warn_if_ub_stale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1108,6 +1121,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_extras</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">incoming</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">EXTRAS</span><span class="p">)</span>
 
+    <span class="nd">@versionchanged</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe with RLock serialization."</span><span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"An explicit ``wavelength`` applies to this call only."</span>
+    <span class="p">)</span>
 <div class="viewcode-block" id="Core.forward">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">:</span> <span class="n">AnyAxesType</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
@@ -1121,93 +1138,96 @@
 <span class="sd">        are included in the returned list.</span>
 <span class="sd">        """</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"(</span><span class="si">%s</span><span class="s2">) forward(): pseudos=</span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">pseudos</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_warn_if_ub_stale</span><span class="p">()</span>
 
-        <span class="n">pdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standardize_pseudos</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span>
-        <span class="n">base_reals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_position</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>  <span class="c1"># Original values.</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_for_one_call</span><span class="p">(</span><span class="n">wavelength</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_warn_if_ub_stale</span><span class="p">()</span>  <span class="c1"># Under lock: avoid spurious warnings from concurrent calc_UB.</span>
+            <span class="n">pdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standardize_pseudos</span><span class="p">(</span><span class="n">pseudos</span><span class="p">)</span>
+            <span class="n">base_reals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">real_position</span><span class="o">.</span><span class="n">_asdict</span><span class="p">()</span>  <span class="c1"># Original values.</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">(</span><span class="n">wavelength</span><span class="o">=</span><span class="n">wavelength</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">(</span><span class="n">wavelength</span><span class="o">=</span><span class="n">wavelength</span><span class="p">)</span>
 
-        <span class="c1"># Filter just the solutions that fit the constraints.</span>
-        <span class="n">solutions</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Unit conversions for presets and new values.</span>
-            <span class="n">angle_units_solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ANGLE_UNITS</span>
-            <span class="n">angle_units_core</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">reals_units</span>
+            <span class="c1"># Filter just the solutions that fit the constraints.</span>
+            <span class="n">solutions</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Unit conversions for presets and new values.</span>
+                <span class="n">angle_units_solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ANGLE_UNITS</span>
+                <span class="n">angle_units_core</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">reals_units</span>
 
-            <span class="c1"># Get the constant (read-only) axis names for this mode.</span>
-            <span class="n">constant_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constant_axis_names</span><span class="p">()</span>
+                <span class="c1"># Get the constant (read-only) axis names for this mode.</span>
+                <span class="n">constant_axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constant_axis_names</span><span class="p">()</span>
 
-            <span class="c1"># Get presets for current mode.</span>
-            <span class="n">mode_presets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presets</span>
+                <span class="c1"># Get presets for current mode.</span>
+                <span class="n">mode_presets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">presets</span>
 
-            <span class="c1"># Build the presets dict:</span>
-            <span class="c1"># - For constant axes: use preset value if set, otherwise use current motor position</span>
-            <span class="c1"># - For written axes: always use current motor position</span>
-            <span class="n">solver_reals</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">:</span>
-                <span class="n">local_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes_xref_reversed</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">constant_axes</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">local_axis</span> <span class="ow">in</span> <span class="n">mode_presets</span><span class="p">:</span>
-                        <span class="n">solver_reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
-                            <span class="n">mode_presets</span><span class="p">[</span><span class="n">local_axis</span><span class="p">],</span>
-                            <span class="n">angle_units_core</span><span class="p">,</span>
-                            <span class="n">angle_units_solver</span><span class="p">,</span>
-                        <span class="p">)</span>
+                <span class="c1"># Build the presets dict:</span>
+                <span class="c1"># - For constant axes: use preset value if set, otherwise use current motor position</span>
+                <span class="c1"># - For written axes: always use current motor position</span>
+                <span class="n">solver_reals</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">real_axis_names</span><span class="p">:</span>
+                    <span class="n">local_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes_xref_reversed</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">constant_axes</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">local_axis</span> <span class="ow">in</span> <span class="n">mode_presets</span><span class="p">:</span>
+                            <span class="n">solver_reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                                <span class="n">mode_presets</span><span class="p">[</span><span class="n">local_axis</span><span class="p">],</span>
+                                <span class="n">angle_units_core</span><span class="p">,</span>
+                                <span class="n">angle_units_solver</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">solver_reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                                <span class="n">base_reals</span><span class="p">[</span><span class="n">local_axis</span><span class="p">],</span>
+                                <span class="n">angle_units_core</span><span class="p">,</span>
+                                <span class="n">angle_units_solver</span><span class="p">,</span>
+                            <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">solver_reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
                             <span class="n">base_reals</span><span class="p">[</span><span class="n">local_axis</span><span class="p">],</span> <span class="n">angle_units_core</span><span class="p">,</span> <span class="n">angle_units_solver</span>
                         <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">solver_reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
-                        <span class="n">base_reals</span><span class="p">[</span><span class="n">local_axis</span><span class="p">],</span> <span class="n">angle_units_core</span><span class="p">,</span> <span class="n">angle_units_solver</span>
-                    <span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">set_reals</span><span class="p">(</span><span class="n">solver_reals</span><span class="p">)</span>
-            <span class="n">raw_solutions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_d2s</span><span class="p">(</span><span class="n">pdict</span><span class="p">))</span>
-            <span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="n">raw_solutions</span><span class="p">:</span>
-                <span class="n">reals</span> <span class="o">=</span> <span class="n">base_reals</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># Fresh copy per solution.</span>
-                <span class="n">new_reals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_s2d</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">new_reals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="c1"># Update with converted new value.</span>
-                    <span class="n">reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
-                        <span class="n">value</span><span class="p">,</span> <span class="n">angle_units_solver</span><span class="p">,</span> <span class="n">angle_units_core</span>
-                    <span class="p">)</span>
-                <span class="c1"># Apply cut-point wrapping before constraint checking.</span>
-                <span class="c1"># Each axis angle is mapped into [cut_point, cut_point+360)</span>
-                <span class="c1"># so that limit checks operate on the wrapped representation.</span>
-                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">reals</span><span class="p">:</span>
-                        <span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">constraint</span><span class="o">.</span><span class="n">apply_cut</span><span class="p">(</span><span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
-
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="o">**</span><span class="n">reals</span><span class="p">):</span>
-                    <span class="n">user_reals</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="n">axis</span><span class="p">:</span> <span class="n">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
-                        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reals</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                    <span class="p">}</span>
-                    <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">RealPosition</span><span class="p">(</span><span class="o">**</span><span class="n">user_reals</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># Log which constraint(s) rejected this solution.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">set_reals</span><span class="p">(</span><span class="n">solver_reals</span><span class="p">)</span>
+                <span class="n">raw_solutions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_d2s</span><span class="p">(</span><span class="n">pdict</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">solution</span> <span class="ow">in</span> <span class="n">raw_solutions</span><span class="p">:</span>
+                    <span class="n">reals</span> <span class="o">=</span> <span class="n">base_reals</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># Fresh copy per solution.</span>
+                    <span class="n">new_reals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_s2d</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">new_reals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="c1"># Update with converted new value.</span>
+                        <span class="n">reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span>
+                            <span class="n">value</span><span class="p">,</span> <span class="n">angle_units_solver</span><span class="p">,</span> <span class="n">angle_units_core</span>
+                        <span class="p">)</span>
+                    <span class="c1"># Apply cut-point wrapping before constraint checking.</span>
+                    <span class="c1"># Each axis angle is mapped into [cut_point, cut_point+360)</span>
+                    <span class="c1"># so that limit checks operate on the wrapped representation.</span>
                     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="n">constraint</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="o">**</span><span class="n">reals</span><span class="p">):</span>
-                            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                                <span class="s2">"Solution discarded: </span><span class="si">%s</span><span class="s2">=</span><span class="si">%.4f</span><span class="s2">"</span>
-                                <span class="s2">" (after cut_point=</span><span class="si">%.4f</span><span class="s2"> wrapping)"</span>
-                                <span class="s2">" outside limits [</span><span class="si">%.4f</span><span class="s2">, </span><span class="si">%.4f</span><span class="s2">]."</span>
-                                <span class="s2">"  pseudos=</span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span>
-                                <span class="n">name</span><span class="p">,</span>
-                                <span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
-                                <span class="n">constraint</span><span class="o">.</span><span class="n">cut_point</span><span class="p">,</span>
-                                <span class="n">constraint</span><span class="o">.</span><span class="n">low_limit</span><span class="p">,</span>
-                                <span class="n">constraint</span><span class="o">.</span><span class="n">high_limit</span><span class="p">,</span>
-                                <span class="n">pdict</span><span class="p">,</span>
-                            <span class="p">)</span>
-        <span class="k">except</span> <span class="n">NoForwardSolutions</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="s2">"No forward solutions from solver for pseudos=</span><span class="si">%r</span><span class="s2">: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">pdict</span><span class="p">,</span> <span class="n">exc</span>
-            <span class="p">)</span>
+                        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">reals</span><span class="p">:</span>
+                            <span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">constraint</span><span class="o">.</span><span class="n">apply_cut</span><span class="p">(</span><span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">solutions</span></div>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="o">**</span><span class="n">reals</span><span class="p">):</span>
+                        <span class="n">user_reals</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="n">axis</span><span class="p">:</span> <span class="n">roundoff</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reals</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="p">}</span>
+                        <span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">RealPosition</span><span class="p">(</span><span class="o">**</span><span class="n">user_reals</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Log which constraint(s) rejected this solution.</span>
+                        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="n">constraint</span><span class="o">.</span><span class="n">valid</span><span class="p">(</span><span class="o">**</span><span class="n">reals</span><span class="p">):</span>
+                                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                                    <span class="s2">"Solution discarded: </span><span class="si">%s</span><span class="s2">=</span><span class="si">%.4f</span><span class="s2">"</span>
+                                    <span class="s2">" (after cut_point=</span><span class="si">%.4f</span><span class="s2"> wrapping)"</span>
+                                    <span class="s2">" outside limits [</span><span class="si">%.4f</span><span class="s2">, </span><span class="si">%.4f</span><span class="s2">]."</span>
+                                    <span class="s2">"  pseudos=</span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="p">,</span>
+                                    <span class="n">reals</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                                    <span class="n">constraint</span><span class="o">.</span><span class="n">cut_point</span><span class="p">,</span>
+                                    <span class="n">constraint</span><span class="o">.</span><span class="n">low_limit</span><span class="p">,</span>
+                                    <span class="n">constraint</span><span class="o">.</span><span class="n">high_limit</span><span class="p">,</span>
+                                    <span class="n">pdict</span><span class="p">,</span>
+                                <span class="p">)</span>
+            <span class="k">except</span> <span class="n">NoForwardSolutions</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">"No forward solutions from solver for pseudos=</span><span class="si">%r</span><span class="s2">: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">pdict</span><span class="p">,</span> <span class="n">exc</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">solutions</span></div>
 
 
 <div class="viewcode-block" id="Core.geometries">
@@ -1226,6 +1246,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">geometry</span></div>
 
 
+    <span class="nd">@versionchanged</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe with RLock serialization."</span><span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"An explicit ``wavelength`` applies to this call only."</span>
+    <span class="p">)</span>
 <div class="viewcode-block" id="Core.inverse">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.inverse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span>
@@ -1242,23 +1266,23 @@
             <span class="c1"># Called from the constructor before solver is defined.</span>
             <span class="k">return</span> <span class="n">pseudos</span>  <span class="c1"># current values of pseudos</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_warn_if_ub_stale</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength_for_one_call</span><span class="p">(</span><span class="n">wavelength</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_warn_if_ub_stale</span><span class="p">()</span>  <span class="c1"># Under lock: avoid spurious warnings from concurrent calc_UB.</span>
+            <span class="c1"># Just the reals expected by the solver.</span>
+            <span class="c1"># Dictionary in order expected by the solver.</span>
+            <span class="n">reals</span><span class="p">:</span> <span class="n">AxesDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standardize_reals</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">angle_units_uc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">reals_units</span>
+                <span class="n">angle_units_solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ANGLE_UNITS</span>
+                <span class="n">reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">angle_units_uc</span><span class="p">,</span> <span class="n">angle_units_solver</span><span class="p">)</span>
 
-        <span class="c1"># Just the reals expected by the solver.</span>
-        <span class="c1"># Dictionary in order expected by the solver.</span>
-        <span class="n">reals</span><span class="p">:</span> <span class="n">AxesDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standardize_reals</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">reals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">angle_units_uc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffractometer</span><span class="o">.</span><span class="n">reals_units</span>
-            <span class="n">angle_units_solver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">ANGLE_UNITS</span>
-            <span class="n">reals</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_units</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">angle_units_uc</span><span class="p">,</span> <span class="n">angle_units_solver</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">(</span><span class="n">wavelength</span><span class="o">=</span><span class="n">wavelength</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_solver</span><span class="p">(</span><span class="n">wavelength</span><span class="o">=</span><span class="n">wavelength</span><span class="p">)</span>
+            <span class="c1"># transform: reals -&gt; pseudos</span>
+            <span class="n">spdict</span><span class="p">:</span> <span class="n">AxesDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_d2s</span><span class="p">(</span><span class="n">reals</span><span class="p">))</span>
 
-        <span class="c1"># transform: reals -&gt; pseudos</span>
-        <span class="n">spdict</span><span class="p">:</span> <span class="n">AxesDict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_d2s</span><span class="p">(</span><span class="n">reals</span><span class="p">))</span>
-
-        <span class="n">pseudos</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_s2d</span><span class="p">(</span><span class="n">spdict</span><span class="p">))</span>  <span class="c1"># Update with new values.</span>
-        <span class="k">return</span> <span class="n">pseudos</span></div>
+            <span class="n">pseudos</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes_names_s2d</span><span class="p">(</span><span class="n">spdict</span><span class="p">))</span>  <span class="c1"># Update with new values.</span>
+            <span class="k">return</span> <span class="n">pseudos</span></div>
 
 
     <span class="nd">@property</span>
@@ -1465,13 +1489,19 @@
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">axes_xref_reversed</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">constant_solver_names</span><span class="p">]</span></div>
 
 
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe; re-syncs the solver with the sample afterwards."</span><span class="p">,</span>
+    <span class="p">)</span>
 <div class="viewcode-block" id="Core.refine_lattice">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.refine_lattice">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">refine_lattice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reflection</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Lattice</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Return the sample lattice computed from 3 or more reflections.</span>
 
-<span class="sd">        Do not change the sample lattice.  Let the user decide that.</span>
+<span class="sd">        Do not change the sample lattice.  Let the user decide that.  The</span>
+<span class="sd">        solver works on its own copy of the sample during refinement, so</span>
+<span class="sd">        that copy is re-pushed from the (unchanged) sample afterwards.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reflections</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">reflections</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">reflections</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
@@ -1483,7 +1513,15 @@
             <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Refining lattice using reflections </span><span class="si">%r</span><span class="s2">"</span><span class="p">,</span> <span class="n">rnames</span><span class="p">)</span>
-        <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">refineLattice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reflections_to_solver</span><span class="p">(</span><span class="n">reflections</span><span class="p">))</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">refineLattice</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_reflections_to_solver</span><span class="p">(</span><span class="n">reflections</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="c1"># Refinement may replace the solver's reflections, lattice,</span>
+                <span class="c1"># and orientation; restore them from the sample on next use.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flag_solver_dirty</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lattice</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CoreError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"Solver </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2"> does not support lattice refinement."</span>
@@ -1565,6 +1603,10 @@
             <span class="s2">"(``True`` -&gt; ``_SolverDirty.ALL``, ``False`` -&gt; clear all)."</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span>
+        <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe; never waits for a solver update in progress."</span><span class="p">,</span>
+    <span class="p">)</span>
 <div class="viewcode-block" id="Core.request_solver_update">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.request_solver_update">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">request_solver_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="n">_SolverDirty</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1580,16 +1622,40 @@
 <span class="sd">              (additive -- existing dirty flags are preserved).</span>
 
 <span class="sd">        Needs to be a method (not a property) so it can be called from a</span>
-<span class="sd">        wavelength callback (see ``DiffractometerBase.__init__``).</span>
+<span class="sd">        wavelength callback (see ``DiffractometerBase.__init__``).  Safe to</span>
+<span class="sd">        call from any thread: it takes only the short flag lock, never the</span>
+<span class="sd">        solver lock, so a callback is not held up by a solver update.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">ALL</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">=</span> <span class="n">_SolverDirty</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dirty_lock</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">ALL</span> <span class="k">if</span> <span class="n">flag</span> <span class="k">else</span> <span class="n">_SolverDirty</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">|=</span> <span class="n">flag</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flag_solver_dirty</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_flag_solver_dirty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flags</span><span class="p">:</span> <span class="n">_SolverDirty</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark ``flags`` dirty (additive) without taking the solver lock."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dirty_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">|=</span> <span class="n">flags</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_take_solver_dirty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_SolverDirty</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the dirty flags and reset them, atomically."""</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dirty_lock</span><span class="p">:</span>
+            <span class="n">dirty</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span><span class="p">,</span> <span class="n">_SolverDirty</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dirty</span>
+
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wavelength_for_one_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""An explicit ``wavelength`` applies to one call; restore the beam's after."""</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wavelength</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flag_solver_dirty</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">WAVELENGTH</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_wavelength_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Mark only the solver wavelength as needing synchronization."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">WAVELENGTH</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_solver_needs_update</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -1606,7 +1672,7 @@
 
     <span class="nd">@_solver_needs_update</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_solver_needs_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">ALL</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="n">_SolverDirty</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Core.reset_constraints">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.reset_constraints">[docs]</a>
@@ -1646,13 +1712,14 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_samples</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2"> not in sample list: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_samples</span><span class="p">)</span><span class="si">!r}</span><span class="s2">"</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="c1"># The new sample's lattice and stored U / UB must be re-pushed to</span>
-        <span class="c1"># the solver on the next forward()/inverse().  The prior buggy</span>
-        <span class="c1"># behavior pushed only U / UB while leaving the solver's sample</span>
-        <span class="c1"># state (lattice + reflections) referring to the previous sample,</span>
-        <span class="c1"># so the new UB ended up combined with the old lattice (#386).</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">:</span>  <span class="c1"># Serialize with concurrent forward()/inverse().</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="c1"># The new sample's lattice and stored U / UB must be re-pushed to</span>
+            <span class="c1"># the solver on the next forward()/inverse().  The prior buggy</span>
+            <span class="c1"># behavior pushed only U / UB while leaving the solver's sample</span>
+            <span class="c1"># state (lattice + reflections) referring to the previous sample,</span>
+            <span class="c1"># so the new UB ended up combined with the old lattice (#386).</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">)</span>
 
     <span class="nd">@property</span>
 <div class="viewcode-block" id="Core.samples">
@@ -1766,6 +1833,7 @@
         <span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span>
         <span class="n">reason</span><span class="o">=</span><span class="s2">"Defer the initial solver synchronization until solver state is needed."</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="nd">@versionchanged</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe with RLock serialization."</span><span class="p">)</span>
 <div class="viewcode-block" id="Core.set_solver">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.set_solver">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SolverBase</span><span class="p">:</span>
@@ -1788,10 +1856,13 @@
             <span class="n">geometry</span><span class="p">,</span>
             <span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">solver_factory</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_extras</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">k</span><span class="p">:</span> <span class="n">DEFAULT_EXTRA_VALUE</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">all_extra_axis_names</span>
-        <span class="p">}</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">solver_factory</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_extras</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">k</span><span class="p">:</span> <span class="n">DEFAULT_EXTRA_VALUE</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">all_extra_axis_names</span>
+            <span class="p">}</span>
+        <span class="c1"># Outside the lock: an external wrapper around request_solver_update()</span>
+        <span class="c1"># may take its own lock, which must never be taken inside this one.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">request_solver_update</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span></div>
 
@@ -1900,6 +1971,7 @@
         <span class="p">}</span></div>
 
 
+    <span class="nd">@versionchanged</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s2">"1.0.1"</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Thread-safe with RLock serialization."</span><span class="p">)</span>
 <div class="viewcode-block" id="Core.update_solver">
 <a class="viewcode-back" href="../../autoapi/hklpy2/ops/index.html#hklpy2.ops.Core.update_solver">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -1913,55 +1985,62 @@
 <span class="sd">        observed in some backends), so those domains are re-pushed</span>
 <span class="sd">        implicitly whenever SAMPLE is re-pushed.</span>
 
+<span class="sd">        The dirty flags are taken (and reset) when the push starts, so a</span>
+<span class="sd">        flag raised by another thread while the push runs (such as a</span>
+<span class="sd">        wavelength callback) is kept for the next call.  If the push</span>
+<span class="sd">        raises, the taken flags are restored.</span>
+
 <span class="sd">        .. versionchanged:: 0.6.2</span>
 <span class="sd">           Switched from a single boolean flag to per-domain dirty flags</span>
 <span class="sd">           (:class:`~hklpy2.utils._SolverDirty`) to fix stale solver</span>
 <span class="sd">           state after sample switch (:issue:`386`) and after</span>
 <span class="sd">           ``calc_UB`` (:issue:`384`).</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">|=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">MODE</span>
-        <span class="k">if</span> <span class="n">wavelength</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">|=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">WAVELENGTH</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flag_solver_dirty</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">MODE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">wavelength</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flag_solver_dirty</span><span class="p">(</span><span class="n">_SolverDirty</span><span class="o">.</span><span class="n">WAVELENGTH</span><span class="p">)</span>
 
-        <span class="n">dirty_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">dirty_before</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="n">dirty_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_take_solver_dirty</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">dirty_before</span><span class="p">:</span>
+                <span class="k">return</span>
 
-        <span class="n">std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_solver_units</span><span class="p">(</span><span class="n">wavelength</span><span class="p">)</span>
-        <span class="n">pushed</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">dirty</span> <span class="o">=</span> <span class="n">dirty_before</span>
-
-        <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">WAVELENGTH</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">std</span><span class="p">[</span><span class="s2">"wavelength"</span><span class="p">]</span>
-            <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"wavelength"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">:</span>
-            <span class="c1"># Full re-push of the solver's sample state (lattice +</span>
-            <span class="c1"># reflections).  Some backends reset MODE / EXTRAS / U / UB</span>
-            <span class="c1"># as a side effect of accepting a new sample, so flag those</span>
-            <span class="c1"># domains for re-push too.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">std</span><span class="p">[</span><span class="s2">"sample"</span><span class="p">]</span>
-            <span class="n">dirty</span> <span class="o">|=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">MODE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">EXTRAS</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span>
-            <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"sample"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">MODE</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
-            <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"mode"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">EXTRAS</span><span class="p">:</span>
+            <span class="n">pushed</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">dirty</span> <span class="o">=</span> <span class="n">dirty_before</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="n">axis</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extras</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
-                    <span class="c1"># multiline</span>
-                    <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">extra_axis_names</span>
-                <span class="p">}</span>
-                <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"extras"</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">pass</span>  <span class="c1"># Some solvers have no setter for extras</span>
-        <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span>
-            <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"UB"</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_solver_dirty</span> <span class="o">=</span> <span class="n">_SolverDirty</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+                <span class="n">std</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_solver_units</span><span class="p">(</span><span class="n">wavelength</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">WAVELENGTH</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="n">std</span><span class="p">[</span><span class="s2">"wavelength"</span><span class="p">]</span>
+                    <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"wavelength"</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">SAMPLE</span><span class="p">:</span>
+                    <span class="c1"># Full re-push of the solver's sample state (lattice +</span>
+                    <span class="c1"># reflections).  Some backends reset MODE / EXTRAS / U / UB</span>
+                    <span class="c1"># as a side effect of accepting a new sample, so flag those</span>
+                    <span class="c1"># domains for re-push too.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">sample</span> <span class="o">=</span> <span class="n">std</span><span class="p">[</span><span class="s2">"sample"</span><span class="p">]</span>
+                    <span class="n">dirty</span> <span class="o">|=</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">MODE</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">EXTRAS</span> <span class="o">|</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span>
+                    <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"sample"</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">MODE</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
+                    <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"mode"</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">EXTRAS</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="n">axis</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extras</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+                            <span class="c1"># multiline</span>
+                            <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">extra_axis_names</span>
+                        <span class="p">}</span>
+                        <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"extras"</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                        <span class="k">pass</span>  <span class="c1"># Some solvers have no setter for extras</span>
+                <span class="k">if</span> <span class="n">dirty</span> <span class="o">&amp;</span> <span class="n">_SolverDirty</span><span class="o">.</span><span class="n">UB</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">U</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">U</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">UB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span>
+                    <span class="n">pushed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"UB"</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_flag_solver_dirty</span><span class="p">(</span><span class="n">dirty_before</span><span class="p">)</span>  <span class="c1"># retry on the next call</span>
+                <span class="k">raise</span></div>
 </div>
 
 </pre></div>
