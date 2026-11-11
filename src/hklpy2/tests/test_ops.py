@@ -15,12 +15,15 @@ from ..diffract import DiffractometerBase
 from ..diffract import creator
 from ..exceptions import ConfigurationError
 from ..exceptions import CoreError
+from ..exceptions import NoForwardSolutions
 from ..exceptions import ReflectionError
 from ..ops import DEFAULT_SAMPLE_NAME
 from ..ops import Core
 from ..tests.models import add_oriented_vibranium_to_e4cv
 from ..user import set_diffractometer
 from ..user import setor
+from ..utils import _SolverDirty
+from .common import Interleave
 from .models import AugmentedFourc
 from .models import MultiAxis99
 from .models import MultiAxis99NoSolver
@@ -1266,87 +1269,374 @@ def test_refine_lattice_unsupported_solver(parms, context):
         sim.core.refine_lattice()
 
 
+PROBE_REALS = {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.066}
+INTRUDER_REALS = {"omega": -145, "chi": 0, "phi": 50, "tth": 70}
+
+
+def _oriented_e4cv():
+    e4cv = creator(name="e4cv")
+    add_oriented_vibranium_to_e4cv(e4cv)  # reflections at 1.54 angstrom
+    return e4cv
+
+
+def _config_with_wavelength(wavelength):
+    other = _oriented_e4cv()
+    other.beam.wavelength.put(wavelength)
+    return other.configuration
+
+
+def _add_consistent_reflections(e4cv, n):
+    """Add ``n`` reflections at their computed positions (names q0, q1, ...)."""
+    hkls = [(4, 0, 0), (0, 4, 0), (0, 0, 4), (2, 2, 0)][:n]
+    return [
+        e4cv.add_reflection(hkl, e4cv.forward(*hkl)._asdict(), name=f"q{i}")
+        for i, hkl in enumerate(hkls)
+    ]
+
+
+def _forward_vs_inverse(e4cv, monkeypatch, parms):
+    """A monitor-thread inverse() must not overwrite the reals inside forward()."""
+    e4cv.core.mode = "constant_phi"
+    e4cv.phi.move(10)
+    il, fired = Interleave(), []
+    original = e4cv.core.solver.forward
+
+    def hooked(pseudos):
+        if not fired and not il.is_intruder():
+            fired.append(True)
+            il.start_intruder(lambda: e4cv.inverse(**INTRUDER_REALS))
+            il.wait_for_intruder()
+        return original(pseudos)
+
+    monkeypatch.setattr(e4cv.core.solver, "forward", hooked)
+    try:
+        result = e4cv.forward(**parms["hkl"])
+    finally:
+        il.finish()
+
+    reference = _oriented_e4cv()
+    reference.core.mode = "constant_phi"
+    reference.phi.move(10)
+    assert fired
+    assert result == pytest.approx(reference.forward(**parms["hkl"]))
+    assert result.phi == pytest.approx(10)
+
+
+def _change_during_push(e4cv, monkeypatch, parms):
+    """A state change from another thread during a solver push must not be lost."""
+    e4cv.add_sample("other", 5.0)
+    e4cv.core.sample = "vibranium"
+    e4cv.inverse(**PROBE_REALS)  # solver in sync
+    e4cv.beam.wavelength.put(2.0)  # only WAVELENGTH is dirty
+    assert e4cv.core._solver_dirty == _SolverDirty.WAVELENGTH  # precondition
+    il, fired = Interleave(), []
+    cls = type(e4cv.core.solver)
+    prop = cls.wavelength
+
+    def fset(self, value):
+        prop.fset(self, value)
+        if not fired and not il.is_intruder() and math.isclose(value, 2.0):
+            fired.append(True)
+            il.start_intruder(lambda: parms["change"](e4cv))
+            il.wait_for_intruder()
+
+    monkeypatch.setattr(cls, "wavelength", property(prop.fget, fset))
+    try:
+        e4cv.inverse(**PROBE_REALS)  # the push; the change lands inside it
+    finally:
+        il.finish()
+
+    e4cv.inverse(**PROBE_REALS)  # the next call must push the change
+    assert fired
+    assert parms["check"](e4cv)
+
+
+THREAD_SCENARIOS = {
+    "forward_vs_inverse": _forward_vs_inverse,
+    "change_during_push": _change_during_push,
+}
+
+
 @pytest.mark.parametrize(
     "parms, context",
     [
         pytest.param(
-            {"use_lock": True},
+            {"scenario": "forward_vs_inverse", "hkl": {"h": 1, "k": 1, "l": 0}},
             does_not_raise(),
-            id="solver operations are serialized with lock",
+            id="forward() vs monitor inverse(): preset honored",
         ),
         pytest.param(
-            {"use_lock": False},
+            {"scenario": "forward_vs_inverse", "hkl": {"h": 10, "k": 0, "l": 0}},
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="forward() raises: lock released, intruder not left blocked",
+        ),
+        pytest.param(
+            {
+                "scenario": "change_during_push",
+                "change": lambda e4cv: e4cv.beam.wavelength.put(2.5),
+                "check": lambda e4cv: math.isclose(e4cv.core.solver.wavelength, 2.5),
+            },
             does_not_raise(),
-            id="solver_lock attribute exists and is reentrant",
+            id="wavelength callback during push is not lost",
+        ),
+        pytest.param(
+            {
+                "scenario": "change_during_push",
+                "change": lambda e4cv: setattr(e4cv.sample.lattice, "a", 7.0),
+                "check": lambda e4cv: math.isclose(e4cv.core.solver.lattice["a"], 7.0),
+            },
+            does_not_raise(),
+            id="lattice change during push is not lost",
+        ),
+        pytest.param(
+            {
+                "scenario": "change_during_push",
+                "change": lambda e4cv: e4cv.add_reflection(
+                    {"h": 4, "k": 0, "l": 4},
+                    {"omega": -120, "chi": 45, "phi": 0, "tth": 100},
+                    name="r404",
+                    wavelength=1.54,
+                ),
+                "check": lambda e4cv: any(
+                    r["pseudos"] == pytest.approx({"h": 4, "k": 0, "l": 4})
+                    for r in e4cv.core.solver.sample["reflections"].values()
+                ),
+            },
+            does_not_raise(),
+            id="add_reflection during push is not lost",
+        ),
+        pytest.param(
+            {
+                "scenario": "change_during_push",
+                "change": lambda e4cv: setattr(e4cv.core, "sample", "other"),
+                "check": lambda e4cv: math.isclose(e4cv.core.solver.lattice["a"], 5.0),
+            },
+            does_not_raise(),
+            id="sample switch during push is not lost",
+        ),
+        pytest.param(
+            {
+                "scenario": "change_during_push",
+                "change": lambda e4cv: setattr(e4cv.core, "sample", "unknown"),
+                "check": lambda e4cv: True,
+            },
+            pytest.raises(KeyError, match=re.escape("'unknown' not in sample list")),
+            id="intruder error is re-raised after the push",
         ),
     ],
 )
-def test_core_solver_lock_exists(parms, context):
-    """
-    Verify Core has a _solver_lock for thread-safe serialization.
-
-    The lock is a threading.RLock (reentrant) to allow nested calls
-    to update_solver, forward, inverse, and calc_UB without deadlock.
-    This addresses the thread safety concern from #436 where ophyd's
-    monitor thread and the session/RunEngine thread could interleave
-    solver operations, corrupting wavelength and other state.
-    """
-
+def test_core_thread_interleaving(parms, context, monkeypatch):
     with context:
-        e4cv = creator()
-        assert hasattr(e4cv.core, "_solver_lock")
-        # RLock returns an instance of type _RLock
-        assert hasattr(e4cv.core._solver_lock, "acquire")
-        assert hasattr(e4cv.core._solver_lock, "release")
-        assert hasattr(e4cv.core._solver_lock, "__enter__")
-        assert hasattr(e4cv.core._solver_lock, "__exit__")
+        e4cv = _oriented_e4cv()
+        THREAD_SCENARIOS[parms["scenario"]](e4cv, monkeypatch, parms)
 
 
 @pytest.mark.parametrize(
     "parms, context",
     [
         pytest.param(
-            {"operation": "forward"},
+            {"failures": 1},
             does_not_raise(),
-            id="forward acquires and releases lock",
+            id="failed push keeps the flags; the next call pushes",
         ),
         pytest.param(
-            {"operation": "inverse"},
-            does_not_raise(),
-            id="inverse acquires and releases lock",
-        ),
-        pytest.param(
-            {"operation": "calc_UB"},
-            does_not_raise(),
-            id="calc_UB acquires and releases lock",
+            {"failures": 2},
+            pytest.raises(RuntimeError, match=re.escape("simulated push failure")),
+            id="push keeps failing: the next call raises too",
         ),
     ],
 )
-def test_core_solver_lock_serializes_operations(parms, context):
-    """
-    Verify critical solver operations use the lock for thread safety.
-
-    This ensures that forward(), inverse(), calc_UB(), and update_solver()
-    are protected by the lock, preventing the wavelength corruption
-    scenario described in #436 where concurrent thread access could
-    interleave solver operations.
-    """
-
+def test_update_solver_push_failure(parms, context, monkeypatch):
     with context:
-        e4cv = creator()
-        add_oriented_vibranium_to_e4cv(e4cv)
+        e4cv = _oriented_e4cv()
+        e4cv.inverse(**PROBE_REALS)
+        e4cv.beam.wavelength.put(2.0)
+        left = {"failures": parms["failures"]}
+        cls = type(e4cv.core.solver)
+        prop = cls.wavelength
 
-        # Verify that operations execute successfully with the lock in place.
-        # Since the lock is a real RLock, we test by verifying operations
-        # work correctly (which they would not if the lock caused deadlock).
-        if parms["operation"] == "forward":
-            solutions = e4cv.core.forward({"h": 4, "k": 0, "l": 0})
-            assert isinstance(solutions, list)
-        elif parms["operation"] == "inverse":
-            pseudos = e4cv.core.inverse(
-                {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966}
-            )
-            assert isinstance(pseudos, dict)
-        elif parms["operation"] == "calc_UB":
-            ub = e4cv.core.calc_UB("r400", "r040")
-            assert isinstance(ub, (tuple, list))
+        def fset(self, value):
+            if left["failures"]:
+                left["failures"] -= 1
+                raise RuntimeError("simulated push failure")
+            prop.fset(self, value)
+
+        monkeypatch.setattr(cls, "wavelength", property(prop.fget, fset))
+        with pytest.raises(RuntimeError, match=re.escape("simulated push failure")):
+            e4cv.inverse(**PROBE_REALS)
+        assert e4cv.core._solver_dirty & _SolverDirty.WAVELENGTH
+
+        e4cv.inverse(**PROBE_REALS)  # retries the push
+        assert e4cv.core.solver.wavelength == pytest.approx(2.0)
+        assert not e4cv.core._solver_dirty
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"call": lambda e4cv: e4cv.inverse(**PROBE_REALS), "blocks": True},
+            does_not_raise(),
+            id="inverse waits for the lock",
+        ),
+        pytest.param(
+            {"call": lambda e4cv: e4cv.forward(4, 0, 0), "blocks": True},
+            does_not_raise(),
+            id="forward waits for the lock",
+        ),
+        pytest.param(
+            {"call": lambda e4cv: e4cv.core.calc_UB("r400", "r040"), "blocks": True},
+            does_not_raise(),
+            id="calc_UB waits for the lock",
+        ),
+        pytest.param(
+            {
+                "call": lambda e4cv: e4cv.add_reflection(
+                    {"h": 0, "k": 4, "l": 4},
+                    {"omega": -120, "chi": 45, "phi": 90, "tth": 100},
+                    name="r044",
+                    wavelength=1.54,
+                ),
+                "blocks": True,
+            },
+            does_not_raise(),
+            id="add_reflection waits for the lock",
+        ),
+        pytest.param(
+            {"call": lambda e4cv: e4cv.add_sample("other", 5.0), "blocks": True},
+            does_not_raise(),
+            id="add_sample waits for the lock",
+        ),
+        pytest.param(
+            {
+                "call": lambda e4cv: e4cv.core.set_solver("hkl_soleil", "E4CV"),
+                "blocks": True,
+            },
+            does_not_raise(),
+            id="set_solver waits for the lock",
+        ),
+        pytest.param(
+            {
+                "call": lambda e4cv: e4cv.restore(_config_with_wavelength(2.0)),
+                "observe": lambda e4cv: e4cv.beam.wavelength.get(),
+                "blocks": True,
+            },
+            does_not_raise(),
+            id="restore waits for the lock before changing anything",
+        ),
+        pytest.param(
+            {
+                "call": lambda e4cv: e4cv.core.request_solver_update(
+                    _SolverDirty.WAVELENGTH
+                ),
+                "blocks": False,
+            },
+            does_not_raise(),
+            id="request_solver_update does not wait",
+        ),
+        pytest.param(
+            {"call": lambda e4cv: e4cv.beam.wavelength.put(2.5), "blocks": False},
+            does_not_raise(),
+            id="wavelength callback does not wait",
+        ),
+        pytest.param(
+            {"call": lambda e4cv: e4cv.add_sample("vibranium", 5.0), "blocks": False},
+            pytest.raises(CoreError, match=re.escape("already defined")),
+            id="add_sample error raised without waiting",
+        ),
+        pytest.param(
+            {
+                "prepare": lambda e4cv: _add_consistent_reflections(e4cv, 4),
+                "call": lambda e4cv: e4cv.core.refine_lattice(
+                    *[e4cv.sample.reflections[f"q{i}"] for i in range(4)]
+                ),
+                "blocks": True,
+            },
+            does_not_raise(),
+            id="refine_lattice waits for the lock",
+        ),
+    ],
+)
+def test_core_lock_entry_points(parms, context):
+    with context:
+        e4cv = _oriented_e4cv()
+        parms.get("prepare", lambda e4cv: None)(e4cv)
+        e4cv.core.update_solver()  # nothing pending: only the call itself may wait
+        observe = parms.get("observe", lambda e4cv: None)
+        before = observe(e4cv)
+        il = Interleave()
+        with e4cv.core._solver_lock:
+            il.start_intruder(lambda: parms["call"](e4cv))
+            il.wait_for_intruder()
+            blocked = il.thread.is_alive()
+            during = observe(e4cv)
+        il.finish()  # re-raises the intruder's error
+        assert blocked == parms["blocks"]
+        assert during == before
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"n": 4},
+            does_not_raise(),
+            id="solver re-synced with the unchanged sample after refinement",
+        ),
+        pytest.param(
+            {"n": 2},
+            pytest.raises(
+                CoreError, match=re.escape("Must have at least 3 reflections")
+            ),
+            id="too few reflections",
+        ),
+    ],
+)
+def test_refine_lattice_resyncs_solver(parms, context):
+    with context:
+        e4cv = _oriented_e4cv()
+        reflections = _add_consistent_reflections(e4cv, parms["n"])
+        e4cv.sample.lattice.a = 6.30  # the user's lattice, slightly off
+        e4cv.inverse(**PROBE_REALS)  # solver in sync with the sample
+        ub = [v for row in e4cv.core.solver.UB for v in row]
+
+        lattice = e4cv.core.refine_lattice(*reflections)
+        assert lattice.a == pytest.approx(2 * math.pi, abs=1e-3)
+        assert e4cv.sample.lattice.a == 6.30  # the sample is not changed
+        assert e4cv.core._solver_dirty & _SolverDirty.SAMPLE
+
+        e4cv.inverse(**PROBE_REALS)  # re-pushes the sample to the solver
+        assert e4cv.core.solver.lattice["a"] == pytest.approx(6.30)
+        assert [v for row in e4cv.core.solver.UB for v in row] == pytest.approx(
+            ub, abs=1e-6
+        )
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"call": lambda e4cv: e4cv.core.forward({"h": 4, "k": 0, "l": 0}, 1.0)},
+            does_not_raise(),
+            id="forward() at an explicit wavelength",
+        ),
+        pytest.param(
+            {"call": lambda e4cv: e4cv.core.inverse(PROBE_REALS, wavelength=1.0)},
+            does_not_raise(),
+            id="inverse() at an explicit wavelength",
+        ),
+        pytest.param(
+            {"call": lambda e4cv: e4cv.forward(20, 0, 0, wavelength=1.0)},
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="unreachable hkl at an explicit wavelength raises",
+        ),
+    ],
+)
+def test_explicit_wavelength_applies_to_one_call(parms, context):
+    with context:
+        e4cv = _oriented_e4cv()
+        expected = e4cv.inverse(**PROBE_REALS)  # at the beam wavelength, 1.54
+        parms["call"](e4cv)
+        assert e4cv.core.solver.wavelength == pytest.approx(1.0)
+        assert e4cv.inverse(**PROBE_REALS) == pytest.approx(expected, abs=1e-6)
+        assert e4cv.core.solver.wavelength == pytest.approx(1.54)
