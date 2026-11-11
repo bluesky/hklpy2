@@ -37,7 +37,7 @@ class Interleave:
         def run():
             try:
                 fn()
-            except BaseException as exc:  # re-raised by finish()
+            except BaseException as exc:  # noqa: BLE001  re-raised by finish()
                 self.error = exc
 
         self.thread = threading.Thread(target=run, daemon=True)
