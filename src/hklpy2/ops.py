@@ -17,6 +17,7 @@ import threading
 import warnings
 from collections.abc import Iterable
 from collections.abc import Mapping
+from contextlib import contextmanager
 from typing import TYPE_CHECKING
 
 from deprecated.sphinx import versionadded
@@ -672,6 +673,9 @@ class Core:
             self.request_solver_update(_SolverDirty.EXTRAS)
 
     @versionchanged(version="1.0.1", reason="Thread-safe with RLock serialization.")
+    @versionchanged(
+        version="1.0.1", reason="An explicit ``wavelength`` applies to this call only."
+    )
     def forward(self, pseudos: AnyAxesType, wavelength: float | None = None) -> list:
         """
         Compute [{names:reals}] from {names: pseudos} (hkl -> angles).
@@ -685,7 +689,7 @@ class Core:
         logger.debug("(%s) forward(): pseudos=%r", self.__class__.__name__, pseudos)
         self._warn_if_ub_stale()
 
-        with self._solver_lock:
+        with self._solver_lock, self._wavelength_for_one_call(wavelength):
             pdict = self.standardize_pseudos(pseudos)
             base_reals = self.diffractometer.real_position._asdict()  # Original values.
 
@@ -785,6 +789,9 @@ class Core:
         return self.solver.geometry
 
     @versionchanged(version="1.0.1", reason="Thread-safe with RLock serialization.")
+    @versionchanged(
+        version="1.0.1", reason="An explicit ``wavelength`` applies to this call only."
+    )
     def inverse(
         self, reals: AnyAxesType | None, wavelength: float | None = None
     ) -> AxesDict:
@@ -801,7 +808,7 @@ class Core:
 
         self._warn_if_ub_stale()
 
-        with self._solver_lock:
+        with self._solver_lock, self._wavelength_for_one_call(wavelength):
             # Just the reals expected by the solver.
             # Dictionary in order expected by the solver.
             reals: AxesDict = self.standardize_reals(reals)
@@ -1149,6 +1156,15 @@ class Core:
         with self._dirty_lock:
             dirty, self._solver_dirty = self._solver_dirty, _SolverDirty(0)
         return dirty
+
+    @contextmanager
+    def _wavelength_for_one_call(self, wavelength: float | None):
+        """An explicit ``wavelength`` applies to one call; restore the beam's after."""
+        try:
+            yield
+        finally:
+            if wavelength is not None:
+                self._flag_solver_dirty(_SolverDirty.WAVELENGTH)
 
     def _wavelength_updated(self, _value: bool) -> None:
         """Mark only the solver wavelength as needing synchronization."""

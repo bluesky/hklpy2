@@ -1610,3 +1610,33 @@ def test_refine_lattice_resyncs_solver(parms, context):
         assert [v for row in e4cv.core.solver.UB for v in row] == pytest.approx(
             ub, abs=1e-6
         )
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            {"call": lambda e4cv: e4cv.core.forward({"h": 4, "k": 0, "l": 0}, 1.0)},
+            does_not_raise(),
+            id="forward() at an explicit wavelength",
+        ),
+        pytest.param(
+            {"call": lambda e4cv: e4cv.core.inverse(PROBE_REALS, wavelength=1.0)},
+            does_not_raise(),
+            id="inverse() at an explicit wavelength",
+        ),
+        pytest.param(
+            {"call": lambda e4cv: e4cv.forward(20, 0, 0, wavelength=1.0)},
+            pytest.raises(NoForwardSolutions, match=re.escape("No solutions.")),
+            id="unreachable hkl at an explicit wavelength raises",
+        ),
+    ],
+)
+def test_explicit_wavelength_applies_to_one_call(parms, context):
+    with context:
+        e4cv = _oriented_e4cv()
+        expected = e4cv.inverse(**PROBE_REALS)  # at the beam wavelength, 1.54
+        parms["call"](e4cv)
+        assert e4cv.core.solver.wavelength == pytest.approx(1.0)
+        assert e4cv.inverse(**PROBE_REALS) == pytest.approx(expected, abs=1e-6)
+        assert e4cv.core.solver.wavelength == pytest.approx(1.54)
