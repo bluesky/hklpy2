@@ -35,6 +35,7 @@ describe future plans.
 
     * Avoid rebuilding solver samples after wavelength changes. (:issue:`436`)
     * Ensure *lazy* EPICS wavelength reads. (:issue:`430`)
+    * Fix solver state lost or corrupted by concurrent threads. (:issue:`436`)
     * Include the forward-solution selector in configuration snapshots. (:issue:`428`)
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
     * Preserve UB across ``HklSolver.inverse()`` calls. (:issue:`435`)

@@ -388,6 +388,7 @@ class DiffractometerBase(PseudoPositioner):
             "not match the current schema.  See :issue:`396`."
         ),
     )
+    @versionchanged(version="1.0.1", reason="Thread-safe with RLock serialization.")
     def restore(
         self,
         config,
@@ -551,37 +552,43 @@ class DiffractometerBase(PseudoPositioner):
             # Don't restore BOTH energy & wavelength
             bcfg.pop("energy", None)
         bcfg["class"] = self.beam.__class__.__name__
-        self.beam._fromdict(bcfg)
 
-        self.core.configuration._fromdict(
-            config,
-            clear=clear,
-            restore_constraints=restore_constraints,
-            restore_samples=restore_samples,
-            restore_extras=restore_extras,
-            restore_presets=restore_presets,
-        )
+        # Apply as one step: a monitor-thread inverse() must not see (or push
+        # to the solver) a half-restored configuration.
+        with self.core._solver_lock:
+            self.beam._fromdict(bcfg)
 
-        if "forward_solution_function" in config:
-            from .devices import dynamic_import
+            self.core.configuration._fromdict(
+                config,
+                clear=clear,
+                restore_constraints=restore_constraints,
+                restore_samples=restore_samples,
+                restore_extras=restore_extras,
+                restore_presets=restore_presets,
+            )
 
-            self._forward_solution = dynamic_import(config["forward_solution_function"])
+            if "forward_solution_function" in config:
+                from .devices import dynamic_import
 
-        saved_mode = config.get("solver", {}).get("mode")
-        if saved_mode is not None:
-            current_mode = self.core.mode  # use core.mode (authoritative)
-            if restore_mode:
-                self.core.mode = saved_mode
-            elif saved_mode != current_mode:
-                import warnings
-
-                warnings.warn(
-                    f"Saved mode {saved_mode!r} differs from current mode"
-                    f" {current_mode!r}. To apply the saved mode, use"
-                    f" restore(restore_mode=True).",
-                    UserWarning,
-                    stacklevel=2,
+                self._forward_solution = dynamic_import(
+                    config["forward_solution_function"]
                 )
+
+            saved_mode = config.get("solver", {}).get("mode")
+            if saved_mode is not None:
+                current_mode = self.core.mode  # use core.mode (authoritative)
+                if restore_mode:
+                    self.core.mode = saved_mode
+                elif saved_mode != current_mode:
+                    import warnings
+
+                    warnings.warn(
+                        f"Saved mode {saved_mode!r} differs from current mode"
+                        f" {current_mode!r}. To apply the saved mode, use"
+                        f" restore(restore_mode=True).",
+                        UserWarning,
+                        stacklevel=2,
+                    )
 
     @pseudo_position_argument
     def forward(self, pseudos: dict, wavelength: float | None = None) -> NamedTuple:
