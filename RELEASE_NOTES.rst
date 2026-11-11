@@ -33,6 +33,7 @@ describe future plans.
     Fixes
     -----
 
+    * ``%wa`` displays diffractometer real-axis positions. (:issue:`415`)
     * Avoid rebuilding solver samples after wavelength changes. (:issue:`436`)
     * Ensure *lazy* EPICS wavelength reads. (:issue:`430`)
     * Fix solver keeping an explicit calculation wavelength afterward. (:issue:`436`)
