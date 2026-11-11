@@ -989,68 +989,48 @@ def test_hkl_default_geometry_is_first_alphabetical():
     "parms, context",
     [
         pytest.param(
-            {
-                "reflection": {
-                    "pseudos": {"h": 4, "k": 0, "l": 0},
-                    "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
-                    "wavelength": 1.54,
-                },
-                "fail_add_reflection": False,
-            },
+            {"second_call": None},
             does_not_raise(),
-            id="addReflection succeeds normally",
+            id="wavelength restored after a failure; next call succeeds",
         ),
         pytest.param(
-            {
-                "reflection": {
-                    "pseudos": {"h": 4, "k": 0, "l": 0},
-                    "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
-                    "wavelength": 1.54,
-                },
-                "fail_add_reflection": True,
-            },
+            {"second_call": RuntimeError("Simulated failure")},
             pytest.raises(RuntimeError, match=re.escape("Simulated failure")),
-            id="addReflection wavelength restored on exception",
+            id="wavelength restored after a failure; next call fails too",
         ),
     ],
 )
 def test_addReflection_exception_safety(parms, context):
-    """
-    Verify wavelength is restored even if _sample.add_reflection() raises.
-
-    This tests the try/finally wrapper added in #436 to ensure that the
-    solver's wavelength is not left in an inconsistent state if an exception
-    occurs during reflection addition.
-    """
+    """addReflection() restores the solver wavelength even when it raises."""
     from unittest.mock import patch
 
     from ... import SI_LATTICE_PARAMETER
     from ... import creator
 
-    sim = creator()
-    sim.add_sample("silicon", SI_LATTICE_PARAMETER)
+    reflection = {
+        "pseudos": {"h": 4, "k": 0, "l": 0},
+        "reals": {"omega": -145.451, "chi": 0, "phi": 0, "tth": 69.0966},
+        "wavelength": 2.0,  # differs from the solver's, so a swap is visible
+    }
+    with context:
+        sim = creator()
+        sim.add_sample("silicon", SI_LATTICE_PARAMETER)
+        solver = sim.core.solver
+        original_wavelength = solver.wavelength
+        assert not math.isclose(original_wavelength, reflection["wavelength"])
 
-    # Get the wavelength before adding the reflection
-    solver = sim.core.solver
-    original_wavelength = solver.wavelength
-
-    # Optionally patch add_reflection to simulate a failure
-    if parms["fail_add_reflection"]:
-        with (
-            patch.object(
-                solver._sample,
-                "add_reflection",
-                side_effect=RuntimeError("Simulated failure"),
-            ),
-            context,
+        failure = RuntimeError("Simulated failure")
+        with patch.object(
+            solver._sample,
+            "add_reflection",
+            side_effect=[failure, parms["second_call"]],
         ):
-            solver.addReflection(parms["reflection"])
-    else:
-        with context:
-            solver.addReflection(parms["reflection"])
+            with pytest.raises(RuntimeError, match=re.escape("Simulated failure")):
+                solver.addReflection(reflection)
+            assert solver.wavelength == original_wavelength
 
-    # Verify the wavelength was restored (whether or not the call succeeded)
-    assert solver.wavelength == original_wavelength
+            solver.addReflection(reflection)
+            assert solver.wavelength == original_wavelength
 
 
 # Core must serialize the solver's internal save/restore windows: the

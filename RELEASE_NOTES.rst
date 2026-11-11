@@ -42,6 +42,7 @@ describe future plans.
     * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
     * Preserve UB across ``HklSolver.inverse()`` calls. (:issue:`435`)
     * Resolve test intermittently raising `NoForwardSolution`. (:issue:`431`)
+    * Restore solver wavelength when adding a reflection fails. (:issue:`436`)
 
     Maintenance
     -----------
