@@ -25,35 +25,41 @@ describe future plans.
 
 .. comment
 
-    1.0.1
+    1.0.2
     #####
 
-    Release expected 2026-Q4.
+    Release expected 2027-Q1.
 
-    Fixes
-    -----
 
-    * ``%wa`` displays diffractometer real-axis positions. (:issue:`415`)
-    * Avoid rebuilding solver samples after wavelength changes. (:issue:`436`)
-    * Ensure *lazy* EPICS wavelength reads. (:issue:`430`)
-    * Fix solver keeping an explicit calculation wavelength afterward. (:issue:`436`)
-    * Fix solver left out of sync after lattice refinement. (:issue:`436`)
-    * Fix solver state lost or corrupted by concurrent threads. (:issue:`436`)
-    * Include the forward-solution selector in configuration snapshots. (:issue:`428`)
-    * Preserve full precision during forward-solution constraint checks. (:issue:`427`)
-    * Preserve UB across ``HklSolver.inverse()`` calls. (:issue:`435`)
-    * Resolve test intermittently raising `NoForwardSolution`. (:issue:`431`)
-    * Restore solver wavelength when adding a reflection fails. (:issue:`436`)
+1.0.1
+#####
 
-    Maintenance
-    -----------
+Released 2026-11-12.
 
-    * Move the project baseline to Python 3.11. (:issue:`435`)
-    * Refactor CI workflows to use pixi tasks instead of inline commands. (:issue:`434`)
-    * Test Python 3.11-3.15, defer 3.16. (:issue:`432`, :issue:`434`)
-    * Use locked Pixi environments for CI.  (:issue:`432`)
-    * Use scheduled dependency updates. (:issue:`432`)
-    * Use Python 3.13 as the default Pixi environment. (:issue:`435`)
+Fixes
+-----
+
+* ``%wa`` displays diffractometer real-axis positions. (:issue:`415`)
+* Avoid rebuilding solver samples after wavelength changes. (:issue:`436`)
+* Ensure *lazy* EPICS wavelength reads. (:issue:`430`)
+* Fix solver keeping an explicit calculation wavelength afterward. (:issue:`436`)
+* Fix solver left out of sync after lattice refinement. (:issue:`436`)
+* Fix solver state lost or corrupted by concurrent threads. (:issue:`436`)
+* Include the forward-solution selector in configuration snapshots. (:issue:`428`)
+* Preserve full precision during forward-solution constraint checks. (:issue:`427`)
+* Preserve UB across ``HklSolver.inverse()`` calls. (:issue:`435`)
+* Resolve test intermittently raising `NoForwardSolution`. (:issue:`431`)
+* Restore solver wavelength when adding a reflection fails. (:issue:`436`)
+
+Maintenance
+-----------
+
+* Move the project baseline to Python 3.11. (:issue:`435`)
+* Refactor CI workflows to use pixi tasks instead of inline commands. (:issue:`434`)
+* Test Python 3.11-3.15, defer 3.16. (:issue:`432`, :issue:`434`)
+* Use locked Pixi environments for CI.  (:issue:`432`)
+* Use scheduled dependency updates. (:issue:`432`)
+* Use Python 3.13 as the default Pixi environment. (:issue:`435`)
 
 
 1.0.0
