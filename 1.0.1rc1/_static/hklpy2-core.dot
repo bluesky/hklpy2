@@ -1,0 +1,118 @@
+// hklpy2 -- Core detail
+// Layout:
+//   Top row:    [User stub: Diffractometer | Wavelength]  [spacer]  [Solver stub]
+//   Bottom row: [Core cluster: Core node | blocks row]
+digraph hklpy2_core {
+    graph [rankdir=TB, splines=ortho, nodesep=0.6, ranksep=1.0,
+           fontname="sans-serif", fontsize=12, bgcolor="transparent",
+           compound=true]
+    node  [shape=box, style="rounded,filled", fontname="sans-serif",
+           fontsize=12, margin="0.20,0.10"]
+    edge  [fontname="sans-serif", fontsize=11]
+
+    // ── Invisible spacer: pushes solver stub to the right ──────────────────
+    spacer [style=invis, width=1.5, height=0]
+
+    // ── Top-left: User stub ────────────────────────────────────────────────
+    subgraph cluster_user {
+        label="User-facing"
+        style=filled
+        fillcolor="#f0f4ff"
+        color="#3a6898"
+        fontname="sans-serif"
+        fontsize=12
+
+        diffract   [label="DiffractometerBase\n(see User diagram)",
+                    fillcolor="#dce8f8", color="#3a6898",
+                    style="rounded,filled,dashed"]
+        wavelength [label="Wavelength / beam\n(see User diagram)",
+                    fillcolor="#dce8f8", color="#3a6898",
+                    style="rounded,filled,dashed"]
+    }
+
+    // ── Top-right: Solvers stub ────────────────────────────────────────────
+    subgraph cluster_solvers {
+        label="Solvers"
+        style=filled
+        fillcolor="#f4f0ff"
+        color="#6a3a98"
+        fontname="sans-serif"
+        fontsize=12
+
+        solver_box [label="SolverBase\n(see Solvers diagram)",
+                    fillcolor="#e8e0f8", color="#6a3a98",
+                    style="rounded,filled,dashed"]
+    }
+
+    // ── Bottom: Core cluster ───────────────────────────────────────────────
+    subgraph cluster_core {
+        label="Core  (diffractometer.core)"
+        style=filled
+        fillcolor="#fffbe8"
+        color="#a07820"
+        fontname="sans-serif"
+        fontsize=12
+
+        core [label="Core",
+              fillcolor="#fdf3dc", color="#a07820"]
+
+        // blocks sit at a deeper rank inside this cluster
+        sample      [label="Sample",
+                     fillcolor="#fdf3dc", color="#a07820"]
+        lattice     [label="Lattice",
+                     fillcolor="#fdf3dc", color="#a07820"]
+        reflection  [label="Reflection",
+                     fillcolor="#fdf3dc", color="#a07820"]
+        constraints [label="Constraints\ncut_point",
+                     fillcolor="#fdf3dc", color="#a07820"]
+        presets     [label="Presets",
+                     fillcolor="#fdf3dc", color="#a07820"]
+        zone        [label="Zone",
+                     fillcolor="#fdf3dc", color="#a07820"]
+        configure   [label="Configuration",
+                     fillcolor="#fdf3dc", color="#a07820"]
+
+        // Draw a visible "blocks" border using a subgraph with no extra nesting
+        subgraph cluster_blocks {
+            label="blocks"
+            style=filled
+            fillcolor="#fff8e0"
+            color="#c09030"
+            fontname="sans-serif"
+            fontsize=11
+
+            sample; lattice; reflection; constraints; presets; zone; configure
+        }
+    }
+
+    // ── Rank constraints ───────────────────────────────────────────────────
+    // Top row: diffract, wavelength side-by-side; spacer and solver_box also top
+    { rank=same; diffract; wavelength; spacer; solver_box }
+
+    // Core node one rank below the top stubs
+    { rank=same; core }
+
+    // All blocks on the bottom rank
+    { rank=same; sample; lattice; reflection; constraints; presets; zone; configure }
+
+    // ── Invisible edges to enforce left→right order in the top row ─────────
+    diffract   -> spacer    [style=invis]
+    spacer     -> solver_box [style=invis]
+
+    // Invisible edge keeps wavelength right of diffract inside the cluster
+    diffract   -> wavelength [style=invis]
+
+    // ── Visible edges ──────────────────────────────────────────────────────
+    diffract   -> core      [xlabel=".core"]
+    wavelength -> core      [xlabel="beam"]
+
+        core -> sample
+        core -> lattice
+    core -> reflection
+    core -> constraints
+    core -> presets
+    core -> zone
+    core -> configure
+
+    core -> solver_box [xlabel="calculations"]
+}

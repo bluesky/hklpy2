@@ -1,0 +1,76 @@
+// hklpy2 -- top-level overview: user | core | solvers (left to right)
+digraph hklpy2_overview {
+    graph [rankdir=LR, splines=ortho, nodesep=0.8, ranksep=1.2,
+           fontname="sans-serif", fontsize=12, bgcolor="transparent",
+           compound=true]
+    node  [shape=box, style="rounded,filled", fontname="sans-serif",
+           fontsize=12, margin="0.20,0.10"]
+    edge  [fontname="sans-serif", fontsize=11]
+
+    subgraph cluster_external_left {
+        label="External"
+        style=dashed
+        color="#888888"
+        fontname="sans-serif"
+        fontsize=12
+
+        bluesky [label="Bluesky\n(plans, RE)",
+                 fillcolor="#e0e0e0", color="#666666"]
+        epics   [label="EPICS\n(hardware)",
+                 fillcolor="#e0e0e0", color="#666666"]
+    }
+
+    subgraph cluster_user {
+        label="User-facing"
+        style=filled
+        fillcolor="#f0f4ff"
+        color="#3a6898"
+        fontname="sans-serif"
+        fontsize=12
+
+        user_box [label="hklpy2.user\nDiffractometerBase\nWavelength / beam\ncreator()",
+                  fillcolor="#dce8f8", color="#3a6898"]
+    }
+
+    subgraph cluster_core {
+        label="Core"
+        style=filled
+        fillcolor="#fffbe8"
+        color="#a07820"
+        fontname="sans-serif"
+        fontsize=12
+
+        core_box [label="Core\n(blocks: Sample, Lattice,\nReflection, Constraints,\nPresets, Zone, Configuration)",
+                  fillcolor="#fdf3dc", color="#a07820"]
+    }
+
+    subgraph cluster_solvers {
+        label="Solvers"
+        style=filled
+        fillcolor="#f4f0ff"
+        color="#6a3a98"
+        fontname="sans-serif"
+        fontsize=12
+
+        solver_box [label="SolverBase\n(HklSolver, ThTthSolver,\nNoOpSolver, ...)",
+                    fillcolor="#e8e0f8", color="#6a3a98"]
+    }
+
+    subgraph cluster_backend {
+        label="Backend libraries"
+        style=dashed
+        color="#888888"
+        fontname="sans-serif"
+        fontsize=12
+
+        backend_box [label="libhkl\nother libraries ...",
+                     fillcolor="#e0e0e0", color="#666666",
+                     style="rounded,filled,dashed"]
+    }
+
+    bluesky    -> user_box   [dir=both]
+    epics      -> user_box   [style=dashed, color="#888888", dir=both]
+    user_box   -> core_box   [xlabel=".core"]
+    core_box   -> solver_box [xlabel="calculations"]
+    solver_box -> backend_box [style=dashed]
+}
