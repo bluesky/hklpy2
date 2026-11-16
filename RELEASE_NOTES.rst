@@ -35,6 +35,11 @@ describe future plans.
 
     * Fix pixi-canary workflow shell-hook incompatibility. (:issue:`449`)
 
+    Maintenance
+    -----------
+
+    * Run pixi-canary workflow 2x/month, only. (:issue:`449`)
+
 
 1.0.1
 #####
