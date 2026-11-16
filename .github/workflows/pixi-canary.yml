@@ -3,7 +3,7 @@ name: Pixi latest-dependencies canary
 on:
   workflow_dispatch:
   schedule:
-    - cron: "31 4 * * 1"
+    - cron: "1 1 1,15 * *"
 
 permissions:
   contents: read
@@ -48,20 +48,21 @@ jobs:
       - name: Install latest environment
         run: pixi install -e "${{ matrix.pixi-environment }}"
 
-      - name: Activate latest environment
-        run: pixi shell-hook -e "${{ matrix.pixi-environment }}" >> "$GITHUB_ENV"
-
       - name: Diagnostic
         run: |
+          pixi run -e "${{ matrix.pixi-environment }}" bash -c '
           set -euo pipefail
           pixi list -e "${{ matrix.pixi-environment }}"
           command -v python
           python --version
           python -m coverage --version
+          '
 
       - name: Run tests
         run: |
+          pixi run -e "${{ matrix.pixi-environment }}" bash -c '
           set -euo pipefail
           python -m coverage run --parallel-mode -m pytest -q .
           python -m coverage combine
           python -m coverage report --precision 3 -m
+          '
