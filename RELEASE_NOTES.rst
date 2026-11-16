@@ -30,6 +30,11 @@ describe future plans.
 
     Release expected 2027-Q1.
 
+    Fixes
+    -----
+
+    * Fix pixi-canary workflow shell-hook incompatibility. (:issue:`449`)
+
 
 1.0.1
 #####
